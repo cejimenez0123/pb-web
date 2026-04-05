@@ -1,319 +1,11 @@
-// import { IonContent, IonImg, useIonRouter } from "@ionic/react";
-// import { useEffect, useState, useContext } from "react";
-// import { useDispatch, useSelector } from "react-redux";
-// import { useParams } from "react-router";
 
-// import {
-//   fetchCollectionProtected,
-//   patchCollectionContent,
-//   deleteCollection,
-//   deleteCollectionFromCollection,
-//   deleteStoryFromCollection,
-// } from "../../actions/CollectionActions";
-
-// import StoryToCollection from "../../domain/models/storyToColleciton";
-// import CollectionToCollection from "../../domain/models/CollectionToCollection";
-// import { RoleType } from "../../core/constants";
-// import Paths from "../../core/paths";
-
-// import SortableList from "../../components/SortableList";
-// import Context from "../../context";
-// import { useDialog } from "../../domain/usecases/useDialog";
-
-// import addIcon from "../../images/icons/add_circle.svg";
-// import deleteIcon from "../../images/icons/delete.svg";
-// import Pill from "../../components/Pill";
-
-// export default function EditCollectionContainer() {
-//   const dispatch = useDispatch();
-//   const router = useIonRouter();
-//   const { id } = useParams();
-
-//   const { setError, setSuccess } = useContext(Context);
-//   const { openDialog, resetDialog } = useDialog();
-
-//   const colInView = useSelector((s) => s.books.collectionInView);
-//   const currentProfile = useSelector((s) => s.users.currentProfile);
-
-//   const [loading, setLoading] = useState(true);
-
-//   const [title, setTitle] = useState("");
-//   const [purpose, setPurpose] = useState("");
-//   const [isPrivate, setIsPrivate] = useState(true);
-//   const [isOpen, setIsOpen] = useState(false);
-//   const [followersAre, setFollowersAre] = useState(RoleType.commenter);
-
-//   const [newPages, setNewPages] = useState([]);
-//   const [newCollections, setNewCollections] = useState([]);
-//   const [activeTab, setActiveTab] = useState("pages");
-
-//   // ===== Load =====
-//   useEffect(() => {
-//     dispatch(fetchCollectionProtected(id)).then(() => setLoading(false));
-//   }, [id]);
-
-//   // ===== Populate =====
-//   useEffect(() => {
-//     if (!colInView) return;
-
-//     setTitle(colInView.title);
-//     setPurpose(colInView.purpose);
-//     setIsPrivate(colInView.isPrivate);
-//     setIsOpen(colInView.isOpenCollaboration);
-//     setFollowersAre(colInView.followersAre ?? RoleType.commenter);
-
-//     if (colInView.storyIdList) {
-//       setNewPages(
-//         colInView.storyIdList.map(
-//           (s, i) =>
-//             new StoryToCollection(
-//               s.id,
-//               s.index ?? i,
-//               colInView.id,
-//               s.story,
-//               currentProfile
-//             )
-//         )
-//       );
-//     }
-
-//     if (colInView.childCollections) {
-//       setNewCollections(
-//         colInView.childCollections.map(
-//           (c, i) =>
-//             new CollectionToCollection(
-//               c.id,
-//               c.index ?? i,
-//               c.childCollection,
-//               colInView,
-//               currentProfile
-//             )
-//         )
-//       );
-//     }
-//   }, [colInView]);
-
-//   // ===== Save =====
-//   const handleSave = () => {
-//     dispatch(
-//       patchCollectionContent({
-//         id,
-//         title,
-//         purpose,
-//         isPrivate,
-//         isOpenCollaboration: isOpen,
-//         storyToCol: newPages,
-//         colToCol: newCollections,
-//         col: colInView,
-//         profile: currentProfile,
-//       })
-//     )
-//       .then(() => setSuccess("Saved"))
-//       .catch((e) => setError(e.message));
-//   };
-
-//   const handleDelete = () => {
-//     openDialog({
-//       isOpen: true,
-//       text: `Delete ${colInView?.title}?`,
-//       agreeText: "Delete",
-//       agree: () => {
-//         dispatch(deleteCollection({ id })).then(() => {
-//           router.push(Paths.myProfile);
-//           resetDialog();
-//         });
-//       },
-//     });
-//   };
-
-//   if (loading || !colInView) return <Skeleton />;
-
-//   return (
-//     <IonContent fullscreen style={{ "--background": "#f9fafb" }}>
-//       <div className="max-w-lg mx-auto px-4 pb-28 pt-6 space-y-6">
-
-//         {/* TITLE */}
-//         <div className="card bg-base-100 shadow-sm">
-//           <div className="card-body p-4">
-//             <p className="text-xs text-gray-500">Title</p>
-//             <input
-//               className="input input-ghost text-lg font-semibold px-0"
-//               value={title}
-//               onChange={(e) => setTitle(e.target.value)}
-//               placeholder="Collection title"
-//             />
-//           </div>
-//         </div>
-
-//         {/* DESCRIPTION */}
-//         <div className="card bg-base-100 shadow-sm">
-//           <div className="card-body p-4">
-//             <p className="text-xs text-gray-500">Description</p>
-//             <textarea
-//               className="textarea textarea-ghost mt-2 text-sm"
-//               value={purpose}
-//               onChange={(e) => setPurpose(e.target.value)}
-//               placeholder="Describe your collection"
-//             />
-//           </div>
-//         </div>
-
-//         {/* SETTINGS */}
-//         <div className="card bg-base-100 shadow-sm">
-//           <div className="card-body p-4 space-y-4">
-
-//             {/* Open Collaboration */}
-//             <div className="flex justify-between items-center">
-//               <span className="text-sm">Open Collaboration</span>
-//               <input
-//                 type="checkbox"
-//                 className="toggle toggle-success"
-//                 checked={isOpen}
-//                 onChange={() => setIsOpen(!isOpen)}
-//               />
-//             </div>
-
-//             {/* Privacy */}
-//             <div className="flex justify-between items-center">
-//               <span className="text-sm">Public</span>
-//               <input
-//                 type="checkbox"
-//                 className="toggle toggle-success"
-//                 checked={!isPrivate}
-//                 onChange={() => setIsPrivate(!isPrivate)}
-//               />
-//             </div>
-
-//             {/* Followers */}
-//             <select
-//               className="select select-bordered w-full"
-//               value={followersAre}
-//               onChange={(e) => setFollowersAre(e.target.value)}
-//             >
-//               <option value={RoleType.commenter}>Commenters</option>
-//               <option value={RoleType.reader}>Readers</option>
-//               <option value={RoleType.writer}>Writers</option>
-//             </select>
-//           </div>
-//         </div>
-
-//         {/* ACTIONS */}
-//         <div className="space-y-3">
-//           <button className="btn btn-success w-full" onClick={handleSave}>
-//             Save
-//           </button>
-// <Pill  
-// baseClass="bg-soft bg-opacity-70 "
-// label={"View Collection"}
-// onClick={() =>
-//               router.push(Paths.collection.createRoute(colInView.id))
-//             }/>
-//           {/* <button
-//             className="btn btn-outline w-full"
-//             onClick={() =>
-//               router.push(Paths.collection.createRoute(colInView.id))
-//             }
-//           >
-      
-//           </button> */}
-
-//           {/* <button
-//             className="btn btn-outline w-full flex gap-2"
-//             onClick={() =>
-//               router.push(Paths.addToCollection.createRoute(id))
-//             }
-//           >
-//             <IonImg src={addIcon} className="w-5 h-5" />
-//             Add Story
-//           </button> */}
-//           <Pill label={"Add story"} baseClass="bg-sky-200" icon={addIcon}  onClick={() =>
-//               router.push(Paths.addToCollection.createRoute(id))
-//             }/>
-//         </div>
-
-//         {/* SEGMENT */}
-//         <div className="tabs tabs-boxed">
-//           <a
-//             className={`tab ${activeTab === "pages" && "tab-active"}`}
-//             onClick={() => setActiveTab("pages")}
-//           >
-//             Pages
-//           </a>
-//           <a
-//             className={`tab ${activeTab === "collections" && "tab-active"}`}
-//             onClick={() => setActiveTab("collections")}
-//           >
-//             Collections
-//           </a>
-//         </div>
-
-//         {/* LISTS */}
-//         {activeTab === "pages" && (
-//           <SortableList
-//             items={newPages}
-//             onOrderChange={setNewPages}
-//             onDelete={(s) =>
-//               dispatch(deleteStoryFromCollection({ stId: s.id }))
-//             }
-//           />
-//         )}
-
-//         {activeTab === "collections" && (
-//           <SortableList
-//             items={newCollections}
-//             onOrderChange={setNewCollections}
-//             onDelete={(c) =>
-//               dispatch(deleteCollectionFromCollection({ tcId: c.id }))
-//             }
-//           />
-//         )}
-
-//         {/* DELETE */}
-//         <button
-//           className="btn btn-error btn-outline w-full mt-6"
-//           onClick={handleDelete}
-//         >
-//           <IonImg src={deleteIcon} className="w-5 h-5" />
-//           Delete Collection
-//         </button>
-
-//       </div>
-//     </IonContent>
-//   );
-// }
-// const Skeleton = () => (
-//   <div className="max-w-lg mx-auto px-4 pt-6 space-y-4">
-//     <div className="card bg-base-100 shadow-sm p-4 space-y-3">
-//       <div className="skeleton h-4 w-24" />
-//       <div className="skeleton h-6 w-full" />
-//     </div>
-
-//     <div className="card bg-base-100 shadow-sm p-4 space-y-3">
-//       <div className="skeleton h-4 w-32" />
-//       <div className="skeleton h-24 w-full" />
-//     </div>
-
-//     <div className="card bg-base-100 shadow-sm p-4 space-y-3">
-//       <div className="skeleton h-6 w-full" />
-//       <div className="skeleton h-6 w-full" />
-//     </div>
-//   </div>
-// );   
 
 
 
 import {
-  IonHeader,
-  IonToolbar,
-  IonButtons,
-  IonBackButton,
-  IonTitle,
+ 
   IonContent,
-  IonList,
-  IonItem,
-  IonLabel,
-  IonInput,
-  IonTextarea,
+
   IonImg,
   IonSpinner,
   IonText,
@@ -404,38 +96,6 @@ const tabs = [
 
 const [activeTab, setActiveTab] = useState("pages");
 
-// const TabBar = ({ active, onChange }) => (
-//   <div className="flex justify-center gap-2 bg-gray-100 rounded-xl p-1 mb-4">
-//     {/* {tabs.map((tab) => (
-//       <button
-//         key={tab.key}
-//         onClick={() => onChange(tab.key)}
-//         className={`
-//           flex-1 text-center py-2 text-sm rounded-lg transition
-//           ${active === tab.key
-//             ? "text-white bg-soft shadow-sm"
-//             : "bg-softBlue text-soft"
-//           }
-//         `}
-//         role="tab"
-//         aria-selected={active === tab.key}
-//       >
-//         {tab.label}
-//       </button>
-//     ))} */}
-//     <div className="flex justify-center gap-2 p-1 rounded-xl bg-gray-100 shadow-sm mb-4">
-//   {tabs.map(tab => (
-//     <button
-//       key={tab.key}
-//       onClick={() => setActiveTab(tab.key)}
-//       className={`flex-1 py-2 text-sm rounded-lg transition ${activeTab === tab.key ? "bg-blueSea text-white shadow-sm" : "bg-gray-100 text-gray-500"}`}
-//     >
-//       {tab.label}
-//     </button>
-//   ))}
-// </div>
-//   </div>
-// );
 const TabBar = ({ tabs,active, onChange }) => (
   <div className="flex flex-wrap gap-1 bg-gray-100 rounded-xl p-1 px-2 sm:px-4">
     {tabs.map((tab) => (
@@ -471,6 +131,21 @@ const TabBar = ({ tabs,active, onChange }) => (
   const deleteChildFromCollection = (tc) => {
     if (tc) dispatch(deleteCollectionFromCollection({ tcId: tc.id }));
   };
+  const [search, setSearch] = useState("");
+
+// Memoized filtered lists
+const filteredPages = useMemo(() => {
+  if (!search.trim()) return newPages;
+  const lower = search.toLowerCase();
+  return newPages.filter((s) => s.story?.title?.toLowerCase().includes(lower));
+}, [newPages, search]);
+
+const filteredCollections = useMemo(() => {
+  if (!search.trim()) return newCollections;
+  const lower = search.toLowerCase();
+  return newCollections.filter((c) => c.childCollection?.title?.toLowerCase().includes(lower));
+}, [newCollections, search]);
+
   const setItems = (col) => {
     
     if (!col) return;
@@ -488,7 +163,6 @@ const TabBar = ({ tabs,active, onChange }) => (
     }).sort((a, b) => a.index - b.index);
 
     setNewPages(stcList);
-    console.log(newPages)
   }
 if (col.childCollections) {
     const collList = col.childCollections.map((c, i) => {
@@ -504,14 +178,7 @@ if (col.childCollections) {
 
     setNewCollections(collList);
   }}
-         const handleBack = (e) => {
-    e.preventDefault();
-    if (window.history.length > 1) {
-       router.goBack()
-    } else {
-      router.push(Paths.discovery);
-    }
-  };
+        
   const roleCycle = [
   RoleType.commenter,
   RoleType.reader,
@@ -707,6 +374,17 @@ const cycleFollowersRole = () => {
     </div>
 
     {/* TABS */}
+    {/* SEARCH */}
+<div className="bg-white rounded-2xl p-3 shadow-sm flex items-center gap-2">
+  <input
+    type="text"
+    value={search}
+    onChange={(e) => setSearch(e.target.value)}
+    placeholder={`Search ${activeTab}...`}
+    className="w-full bg-transparent outline-none text-sm"
+  />
+  <IonImg src={arrowDown} className="w-5 h-5" />
+</div>
   <TabBar tabs={[{label:"pages"},{label:"collections"}]} active={activeTab} onChange={setActiveTab}/>
     {/* <div className="flex gap-2">
       <Pill
@@ -732,7 +410,7 @@ const cycleFollowersRole = () => {
     {/* LISTS */}
     {activeTab === "pages" && (
       <SortableList
-        items={newPages}
+        items={filteredPages}
         onOrderChange={setNewPages}
         onDelete={(s) =>
           dispatch(deleteStoryFromCollection({ stId: s.id }))
@@ -742,7 +420,7 @@ const cycleFollowersRole = () => {
 
     {activeTab === "collections" && (
       <SortableList
-        items={newCollections}
+        items={filteredCollections}
         onOrderChange={setNewCollections}
         onDelete={(c) =>
           dispatch(deleteCollectionFromCollection({ tcId: c.id }))
@@ -762,6 +440,7 @@ const cycleFollowersRole = () => {
 
   </div>
 </IonContent>
+
 //   return (
 
 

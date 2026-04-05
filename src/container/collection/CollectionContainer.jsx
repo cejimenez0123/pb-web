@@ -215,10 +215,10 @@ useEffect(() => {
 
   const perms = computePermissions(collection, currentProfile);
 
-  setCanUserAdd(perms.canAdd);
-  setCanUserEdit(perms.canEdit);
-  setCanUserSee(perms.canSee);
-  setRole(perms.role);
+  setCanUserAdd(perms?.canAdd);
+  setCanUserEdit(perms?.canEdit);
+  setCanUserSee(perms?.canSee);
+  setRole(perms?.role);
 
   setPermissionsLoading(false);
 }, [collection, currentProfile]);

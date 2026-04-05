@@ -1,63 +1,166 @@
+// import React, { useEffect, useState, useMemo } from "react";
+// import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+// import dragHandle from "../images/icons/drag_handle.svg";
+// import Paths from "../core/paths";
+// import { IonImg, IonText, useIonRouter } from "@ionic/react";
+
+// export default function SortableList({ items, type, onOrderChange, onDelete }) {
+//   const router = useIonRouter()
+
+//   // Memoize items to prevent unnecessary resets
+//   const memoizedItems = useMemo(() => items ?? [], [items]);
+
+//   // Local state for drag-and-drop
+//   const [listItems, setListItems] = useState(memoizedItems);
+
+//   // Sync local state only when items meaningfully change
+//   useEffect(() => {
+//     const same =
+//       listItems.length === memoizedItems.length &&
+//       listItems.every((it, i) => it.id === memoizedItems[i].id);
+
+//     if (!same) setListItems(memoizedItems);
+//     console.log("SortableList items:", type, listItems);
+//   }, [memoizedItems, listItems, type]);
+
+//   // Handle drag-and-drop reordering
+//   const handleOnDragEnd = (result) => {
+//     if (!result.destination) return;
+
+//     const newList = Array.from(listItems); // Use local state
+//     const [movedItem] = newList.splice(result.source.index, 1);
+//     newList.splice(result.destination.index, 0, movedItem);
+
+//     setListItems(newList);
+//     onOrderChange(newList);
+//   };
+
+//   // Handle item deletion
+//   const handleDelete = (e, index) => {
+//     e.preventDefault();
+//     onDelete(listItems[index]);
+
+//     const newList = listItems.filter((_, i) => i !== index);
+//     setListItems(newList);
+//     onOrderChange(newList);
+//   };
+
+//   // Navigate to story or collection
+//   const handleNavigate = (item) => {
+//     if (item.childCollection) {
+//       router.push(Paths.collection.createRoute(item.childCollection.id));
+//     } else {
+//       router.push(Paths.page.createRoute(item.story.id));
+//     }
+//   };
+
+//   if (!listItems.length) {
+//     return (
+//       <div className="my-4 h-[20em]  px-2 sm:h-page flex bg-emerald-100 rounded-lg bg-opacity-80  mx-auto text-emerald-800">
+//         <IonText className="text-emerald-800 text-center mx-auto mt-16 text-2xl">
+//           Add something
+//         </IonText>
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <div className="py-4 mx-auto">
+//       <DragDropContext onDragEnd={handleOnDragEnd}>
+//         <Droppable droppableId="sortableList">
+//           {(provided) => (
+//             <ul {...provided.droppableProps} ref={provided.innerRef} className="space-y-2">
+//               {listItems.map((item, index) => (
+//                 <Draggable key={item.id} draggableId={item.id} index={index}>
+//                   {(provided) => (
+//                     <li
+//                       ref={provided.innerRef}
+//                       {...provided.draggableProps}
+//                       {...provided.dragHandleProps}
+//                       className="] mx-auto items-center text-emerald-800 py-4 bg-transparent border-blueSea border-opacity-60 border-2 rounded-full shadow-md hover:bg-gray-100"
+//                     >
+//                       <div className="flex justify-between mr-3">
+//                         <IonImg src={dragHandle} className="my-auto ml-4" />
+//                         <div className="justify-between flex-grow flex flex-row mr-4">
+//                           <h6
+//                             onClick={() => handleNavigate(item)}
+//                             className="text-emerald-800 text-nowrap text-left my-auto max-w-[13em] min-w-[10em] min-h-[1.5rem] overflow-hidden text-ellipsis  sm:text-[1rem]"
+//                           >
+//                             {/* {item.story
+//                               ? item && item.story && item.story?.title.slice(0,20)
+//                               : item.childCollection
+//                               ? item?.childCollection?.title.slice(0,20)
+//                               : "Not found"} */}
+//                               {item?.story?.title?.slice(0, 20) 
+//   || item?.childCollection?.title?.slice(0, 20) 
+//   || "Untitled"}
+//                           </h6>
+//                           <button
+//                             onClick={(e) => handleDelete(e, index)}
+//                             className="ml-2 px-2 py-1 text-red-500 rounded-full open-sans-medium bg-transparent border-1 border-red-500 hover:bg-red-600"
+//                           >
+//                             Delete
+//                           </button>
+//                         </div>
+//                       </div>
+//                     </li>
+//                   )}
+//                 </Draggable>
+//               ))}
+//               {provided.placeholder}
+//             </ul>
+//           )}
+//         </Droppable>
+//       </DragDropContext>
+//     </div>
+//   );
+// }
+
 import React, { useEffect, useState, useMemo } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { IonImg, IonText, useIonRouter } from "@ionic/react";
 import dragHandle from "../images/icons/drag_handle.svg";
 import Paths from "../core/paths";
-import { IonImg, IonText, useIonRouter } from "@ionic/react";
 
 export default function SortableList({ items, type, onOrderChange, onDelete }) {
-  const router = useIonRouter()
-
-  // Memoize items to prevent unnecessary resets
+  const router = useIonRouter();
   const memoizedItems = useMemo(() => items ?? [], [items]);
-
-  // Local state for drag-and-drop
   const [listItems, setListItems] = useState(memoizedItems);
 
-  // Sync local state only when items meaningfully change
+  // Sync local state with props
   useEffect(() => {
     const same =
       listItems.length === memoizedItems.length &&
       listItems.every((it, i) => it.id === memoizedItems[i].id);
-
     if (!same) setListItems(memoizedItems);
-    console.log("SortableList items:", type, listItems);
-  }, [memoizedItems, listItems, type]);
+  }, [memoizedItems, listItems]);
 
-  // Handle drag-and-drop reordering
   const handleOnDragEnd = (result) => {
     if (!result.destination) return;
-
-    const newList = Array.from(listItems); // Use local state
+    const newList = Array.from(listItems);
     const [movedItem] = newList.splice(result.source.index, 1);
     newList.splice(result.destination.index, 0, movedItem);
-
     setListItems(newList);
     onOrderChange(newList);
   };
 
-  // Handle item deletion
   const handleDelete = (e, index) => {
     e.preventDefault();
     onDelete(listItems[index]);
-
     const newList = listItems.filter((_, i) => i !== index);
     setListItems(newList);
     onOrderChange(newList);
   };
 
-  // Navigate to story or collection
   const handleNavigate = (item) => {
-    if (item.childCollection) {
-      router.push(Paths.collection.createRoute(item.childCollection.id));
-    } else {
-      router.push(Paths.page.createRoute(item.story.id));
-    }
+    if (item.childCollection) router.push(Paths.collection.createRoute(item.childCollection.id));
+    else router.push(Paths.page.createRoute(item.story.id));
   };
 
   if (!listItems.length) {
     return (
-      <div className="my-4 h-[20em]  px-2 sm:h-page flex bg-emerald-100 rounded-lg bg-opacity-80  mx-auto text-emerald-800">
-        <IonText className="text-emerald-800 text-center mx-auto mt-16 text-2xl">
+      <div className="my-4 h-[20em] px-2 sm:h-page flex items-center justify-center bg-emerald-100 bg-opacity-30 rounded-xl">
+        <IonText className="text-emerald-800 text-center text-2xl font-medium">
           Add something
         </IonText>
       </div>
@@ -65,44 +168,46 @@ export default function SortableList({ items, type, onOrderChange, onDelete }) {
   }
 
   return (
-    <div className="py-4 mx-auto">
+    <div className="py-4 mx-auto max-w-lg">
       <DragDropContext onDragEnd={handleOnDragEnd}>
         <Droppable droppableId="sortableList">
           {(provided) => (
-            <ul {...provided.droppableProps} ref={provided.innerRef} className="space-y-2">
+            <ul {...provided.droppableProps} ref={provided.innerRef} className="space-y-[1.618rem]">
               {listItems.map((item, index) => (
                 <Draggable key={item.id} draggableId={item.id} index={index}>
-                  {(provided) => (
+                  {(provided, snapshot) => (
                     <li
                       ref={provided.innerRef}
                       {...provided.draggableProps}
                       {...provided.dragHandleProps}
-                      className="] mx-auto items-center text-emerald-800 py-4 bg-transparent border-blueSea border-opacity-60 border-2 rounded-full shadow-md hover:bg-gray-100"
+                      className={`
+                        flex items-center justify-between p-4 
+                        rounded-2xl shadow-lg 
+                        bg-white hover:shadow-xl 
+                        transition-shadow duration-150
+                        border border-gray-200
+                        ${snapshot.isDragging ? "bg-gray-50 shadow-2xl" : ""}
+                      `}
                     >
-                      <div className="flex justify-between mr-3">
-                        <IonImg src={dragHandle} className="my-auto ml-4" />
-                        <div className="justify-between flex-grow flex flex-row mr-4">
-                          <h6
-                            onClick={() => handleNavigate(item)}
-                            className="text-emerald-800 text-nowrap text-left my-auto max-w-[13em] min-w-[10em] min-h-[1.5rem] overflow-hidden text-ellipsis  sm:text-[1rem]"
-                          >
-                            {/* {item.story
-                              ? item && item.story && item.story?.title.slice(0,20)
-                              : item.childCollection
-                              ? item?.childCollection?.title.slice(0,20)
-                              : "Not found"} */}
-                              {item?.story?.title?.slice(0, 20) 
-  || item?.childCollection?.title?.slice(0, 20) 
-  || "Untitled"}
-                          </h6>
-                          <button
-                            onClick={(e) => handleDelete(e, index)}
-                            className="ml-2 px-2 py-1 text-red-500 rounded-full open-sans-medium bg-transparent border-1 border-red-500 hover:bg-red-600"
-                          >
-                            Delete
-                          </button>
-                        </div>
-                      </div>
+                      {/* Drag handle */}
+                      <IonImg src={dragHandle} className="w-5 h-5 mr-4 cursor-grab" />
+
+                      {/* Title */}
+                      <h6
+                        onClick={() => handleNavigate(item)}
+                        className="flex-1 text-left text-gray-800 font-medium truncate cursor-pointer"
+                        style={{ maxWidth: "calc(100% - 100px)" }}
+                      >
+                        {item?.story?.title?.slice(0, 30) || item?.childCollection?.title?.slice(0, 30) || "Untitled"}
+                      </h6>
+
+                      {/* Delete button */}
+                      <button
+                        onClick={(e) => handleDelete(e, index)}
+                        className="ml-4 px-3 py-1 text-red-500 font-medium rounded-full border border-red-400 hover:bg-red-500 hover:text-white transition"
+                      >
+                        Delete
+                      </button>
                     </li>
                   )}
                 </Draggable>
