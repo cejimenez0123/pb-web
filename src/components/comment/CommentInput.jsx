@@ -2,12 +2,13 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useState } from "react";
 import { createComment, updateComment } from "../../actions/PageActions.jsx";
+import { useDialog } from "../../domain/usecases/useDialog.jsx";
 
 export default function CommentInput({ parentComment, page, defaultComment, handleClose }) {
   const dispatch = useDispatch();
   const currentProfile = useSelector((state) => state.users.currentProfile);
   const [commentInput, setComment] = useState(defaultComment ? defaultComment.content : "");
-
+const {resetDialog}=useDialog()
   const saveComment = (e) => {
     e.preventDefault();
     if (!currentProfile) return;
@@ -19,13 +20,13 @@ export default function CommentInput({ parentComment, page, defaultComment, hand
     };
     dispatch(createComment(params)).then(() => {
       setComment("");
-      handleClose();
+      resetDialog()
     });
   };
 
   const clickUpdateComment = () => {
     dispatch(updateComment({ newText: commentInput, comment: defaultComment }));
-    handleClose();
+    resetDialog()
   };
 
   return (

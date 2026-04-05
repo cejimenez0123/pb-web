@@ -9,12 +9,13 @@ import CommentInput from "../comment/CommentInput";
 import ProfileCircle from "../profile/ProfileCircle";
 import DataElement from "./DataElement";
 import { initGA, sendGAEvent } from "../../core/ga4";
+import { useDialog } from "../../domain/usecases/useDialog";
 
 export default function PageViewItem({ page }) {
   const router = useIonRouter();
   const currentProfile = useSelector((state) => state.users.currentProfile);
   const [commenting, setCommenting] = useState(false);
-
+const {openDialog,resetDialog,closeDialog,dialog}=useDialog()
   useLayoutEffect(() => {
     initGA();
     sendGAEvent("View Story", JSON.stringify(page));
@@ -22,8 +23,22 @@ export default function PageViewItem({ page }) {
   const closeInput = () => {
     setCommenting(false)
   };
-  const handleClose = () => setCommenting(false);
-
+  
+const handleOpenCommentInput = () => {
+  openDialog({
+    title: "", // optional, you can hide it if you want
+    height: 50, // 👈 replaces your old "maxHeight: 35%"
+    text: (
+      <CommentInput
+        page={page}
+     
+        handleClose={closeDialog} // important
+      />
+    ),
+    disagreeText: null,
+    disagree: null
+  });
+};
   const header = () => (
     <div className="bg-cream rounded-xl shadow-sm p-4 mb-4">
       <div className="flex items-center gap-3">
@@ -50,31 +65,11 @@ export default function PageViewItem({ page }) {
     <div>
       {header()}
       <DataElement page={page} isGrid={false} />
-      <PageViewButtonRow page={page} profile={currentProfile} setCommenting={setCommenting} />
+      <PageViewButtonRow page={page} profile={currentProfile} setCommenting={handleOpenCommentInput} />
 
  
-    { commenting && <div>
 
-    <div
-    className={`fixed inset-0 z-40 bg-black bg-opacity-30 transition-opacity duration-300 ${
-      commenting ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-    }`}
-    onClick={closeInput}
-  />
 
-  {/* Sliding input panel */}
-  <div
-    className={`fixed left-0 right-0 z-50 h-[100%] bg-white shadow-lg border-t border-gray-200 transition-transform duration-300 ${
-      commenting ? "translate-y-0" : "translate-y-full"
-    }`}
-      style={{
-      bottom: "6rem", // leave space for navbar
-      maxHeight: "35%",
-      overflowY: "auto",
-    }}>
-      <CommentInput page={page} handleClose={handleClose} />
-    </div></div>
-  }
       </div>
    
   );
