@@ -56,10 +56,6 @@ import DashboardContainer from './container/DashboardContainer.jsx';
 import { LoadScript } from '@react-google-maps/api';
 import ContentHubContainer from './container/ContentHubContainer.jsx';
 import DiscoveryContainer from './container/DiscoveryContainer.jsx';
-import debounce from './core/debounce.js';
-import checkResult from './core/checkResult.js';
-import { getMyCollections } from './actions/CollectionActions.js';
-import { getMyStories } from './actions/StoryActions.jsx';
 
 setupIonicReact()
 
@@ -96,6 +92,9 @@ const [firstLaunchChecked, setFirstLaunchChecked] = useState(false);
 useEffect(() => {
   const checkFirstLaunch = async () => {
     if (isNative) {
+
+
+
       const { value } = await Preferences.get({ key: 'hasSeenOnboarding' });
       if (value === null) {
         await Preferences.set({ key: "hasSeenOnboarding", value: 'true' });
