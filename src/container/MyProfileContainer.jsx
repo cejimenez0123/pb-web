@@ -27,6 +27,9 @@ import PaginationControls from "../components/PaginationControls";
 import CommunitiesPanel from "../components/profile/CommunitiesPanel";
 import AboutPanel from "../components/profile/AboutPanel";
 import debounce from "../core/debounce";
+import PageProfileList from "../components/page/PageProfileList";
+import PaginatedIndexList from "../components/PaginatedIndexList";
+import PaginatedPageList from "../components/page/PaginatedPageList";
 const TABS = {
   POSTS: "posts",
   COLLECTIONS: "collections",
@@ -37,11 +40,18 @@ function MyProfileContainer() {
     const { setSeo, setError,  } = useContext(Context);
 
   const profile = useSelector((state) => state.users.currentProfile);
-  const {myCollections}=useSelector(state=>state.books)
-  const {myPages:myStories}=useSelector(state=>state.pages)
-  const communities  = myCollections.filter(col=>col?.type=="library")
+  const {myCollections:collectionsRaw}=useSelector(state=>state.books)
+  const {myPages:pagesRaw}=useSelector(state=>state.pages)
+  const communities  =collectionsRaw?.filter(col=>col?.type=="library")??[]
  
-  // useSelector((state) => state.pages.pagesInView ?? []);
+;
+const debouncedSearch = useMemo(
+  () => debounce((value) => setSearch(value), 250),
+  []
+);
+useEffect(() => {
+  return () => debouncedSearch.cancel?.();
+}, [debouncedSearch]);
   const dispatch = useDispatch();
   const router = useIonRouter();
   // const { id } = useParams();
@@ -50,14 +60,8 @@ function MyProfileContainer() {
   const [search, setSearch] = useState("");
   const [following, setFollowing] = useState(null);
   //  
-   const collectionsRaw = myCollections||[]
-    const pagesRaw = myStories ||  []
-useEffect(() => {
-  if (!profile) return;
-
-   dispatch(getMyCollections());
-dispatch(getMyStories());
-}, [profile]);
+  //  const collectionsRaw = myCollections||[]
+  
 
 
 
@@ -111,21 +115,6 @@ const tabs = [
 ];
 
 
-const FollowButton = ({ following, onClick, isSelf }) => {
-
-  if (isSelf) return null;
-  return (
-    <button
-      onClick={onClick}
-      className={`
-        px-4 py-1.5 text-sm rounded-lg transition
-        ${following ? "bg-gray-200 text-gray-800" : "bg-black text-white"}
-      `}
-    >
-      {following ? "Following" : "Follow"}
-    </button>
-  );
-};
 
 
 
@@ -136,66 +125,15 @@ const EmptyState = ({ text }) => (
   </div>
 );
 
-// ── Stub Components for Missing Ones ────────────────
-// const PageList = ({ items }) => (
 
-//   <div className="space-y-2">
-//     {items.map((p) => {
 
-//       return<div key={p.id} onClick={()=>{router.push(Paths.page.createRoute(p.id))}} className="p-2 border border-seaBlue rounded">{p?.title?.length>0 ? p.title:"Untitled"}</div>
-//  } )}
-//   </div>
-// );
-const PageList = ({ items, router }) => (
-    <div className="space-y-2">
-    {items.map((p) => (
-      <div
-        key={p.id}
-        onClick={() => router.push(Paths.page.createRoute(p.id))}
-        // {Enviroment.palette.base.surface}
-        className="p-3 rounded-xl border border-blue bg-base-bg backdrop-blur-sm shadow-sm active:scale-[0.98] transition"
-      >
-        <span className="text-[0.95rem] font-medium text-gray-800">
-        {p?.title?.length > 0 ? p.title : "Untitled"}
-        </span>
-      </div>
-    ))}
-  </div>
-);
-
-const PaginatedPageList = ({ items }) => {
-  const router = useIonRouter();
-
-  const [page, setPage] = useState(1);
-  const limit = 10; // items per page
-
-  const totalPages = Math.ceil(items.length / limit);
-
-  const paginatedItems = useMemo(() => {
-    const start = (page - 1) * limit;
-    const end = start + limit;
-    return items.slice(start, end);
-  }, [items, page]);
-
-  return (
-    <div className="space-y-4">
-      <PageList items={paginatedItems} router={router} />
-
-      <PaginationControls
-        page={page}
-        totalPages={totalPages}
-        setPage={setPage}
-      />
-    </div>
-  );
-};
 const IndexList = ({ items, router }) => (
   <div className="space-y-2">
     {items.map((i) => (
       <div
         key={i.id}
         onClick={() => router.push(Paths.collection.createRoute(i.id))}
-        className="p-3 rounded-xl border border-gray-200 bg-white/70 backdrop-blur-sm shadow-sm active:scale-[0.98] transition"
+        className="p-3 rounded-full border border-purple border-1 bg-base-bg backdrop-blur-sm shadow-sm active:scale-[0.98] transition"
       >
         <span className="text-[0.95rem] font-medium text-gray-800">
           {i.title ?? i.name ?? "Untitled"}
@@ -205,31 +143,6 @@ const IndexList = ({ items, router }) => (
   </div>
 )
 
-const PaginatedIndexList = ({ items }) => {
-  const router = useIonRouter();
-
-  const [page, setPage] = useState(1);
-  const limit = 8;
-
-  const totalPages = Math.ceil(items.length / limit);
-
-  const paginatedItems = useMemo(() => {
-    const start = (page - 1) * limit;
-    return items.slice(start, start + limit);
-  }, [items, page]);
-
-  return (
-    <div className="space-y-4">
-      <IndexList items={paginatedItems} router={router} />
-
-      <PaginationControls
-        page={page}
-        totalPages={totalPages}
-        setPage={setPage}
-      />
-    </div>
-  );
-};
 // const ExploreList = () => <div className="text-center text-gray-400 py-4">Explore placeholder</div>;
 const StatChip = ({ value, label }) => (
   <div className="flex flex-col text-center">
@@ -267,10 +180,7 @@ const StatChip = ({ value, label }) => (
       type: "profile",
     });
   }, [profile, setSeo]);
-const debouncedSearch = useMemo(
-  () => debounce((value) => setSearch(value), 20),
-  []
-);
+
 
  
   if (!profile) return <IonContent
@@ -355,8 +265,7 @@ const debouncedSearch = useMemo(
     />
 
   </div>
-      {/* <FollowButton following={following} onClick={()=>{onClickFollow()}}isSelf={true}
-      /> */}
+    
            <div className="px-2"><TabBar tabs={tabs} active={tab} onChange={setTab} /></div> 
           </div>
 
@@ -367,15 +276,15 @@ const debouncedSearch = useMemo(
                 {search.length==0 && recentPosts.length > 0 && (
                   <section className="space-y-4">
                     <SectionLabel>Recent</SectionLabel>
-                    <PageList items={recentPosts}  router={router}/>
+                    <PageProfileList items={recentPosts}  router={router}/>
                   </section>
                 )}
 
                 {pages.length > 0 && (
                   <section className="space-y-4">
                     <SectionLabel>All Posts</SectionLabel>
-                    {/* <PageList items={pages} /> */}
-                    <PaginatedPageList items={pages} />
+                  
+                    <PaginatedPageList items={pages} router={router} />
                   </section>
                 )}
 
@@ -388,12 +297,12 @@ const debouncedSearch = useMemo(
                  {search.length==0 && recentPosts.length > 0 && (
                   <section className="space-y-4">
                     <SectionLabel>Recent</SectionLabel>
-                    <IndexList items={recentCollections} router={router}/>
+                   <IndexList items={recentCollections} router={router}/>
                    
                   </section>
                 )}
                     <SectionLabel>All Collections</SectionLabel>
-                <PaginatedIndexList items={collections}/></> 
+                <PaginatedIndexList router={router} items={collections}/></> 
               
               : <EmptyState text="No collections yet." />
             )

@@ -1,12 +1,12 @@
-import React, { useState, useLayoutEffect, useContext,useEffect } from 'react';
+import React, { useState,useEffect } from 'react';
 import '../App.css';
 import { useSelector, useDispatch } from 'react-redux';
-import { createStory, fetchRecommendedStories } from '../actions/StoryActions';
+import { createStory, getMyStories } from '../actions/StoryActions';
 import ExploreList from '../components/collection/ExploreList.jsx';
 import arrowToRight from '../images/icons/arrowToRight.svg'
 import checkResult from '../core/checkResult.js';
 import ErrorBoundary from '../ErrorBoundary.jsx';
-import {IonText, IonItem, useIonRouter, IonContent, IonList} from '@ionic/react';
+import {IonText, useIonRouter,  IonList} from '@ionic/react';
 
 import { fetchYourWorkshops } from '../actions/WorkshopActions.jsx';
 import ProfileCircle from '../components/profile/ProfileCircle.jsx';
@@ -20,6 +20,8 @@ import { useDialog } from '../domain/usecases/useDialog.jsx';
 import CreateCollectionForm from '../components/collection/CreateCollectionForm.jsx';
 import Enviroment from '../core/Enviroment.js';
 import { Capacitor } from '@capacitor/core';
+import { getMyCollections } from '../actions/CollectionActions.js';
+import StoryDashboardItem from '../components/StoryDashboardItem.jsx';
 function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex = 0, role = "button" }) {
   return (
     <span
@@ -42,7 +44,7 @@ function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex
 function DashboardEmbed() {
 
   const currentProfile = useSelector(state=>state.users.currentProfile)
-
+ 
   const router = useIonRouter()
   const dispatch = useDispatch();
    const collectionsRaw = useSelector(state => state.books.collections) ?? [];
@@ -55,11 +57,19 @@ const collections = collectionsRaw
   const [saves,setSaved]=useState([])
   const {openDialog,dialog,closeDialog,resetDialog}=useDialog()
   const isNative = Capacitor.isNativePlatform()
-
+     const [homeCol,setHomeCol]=useState(null)
+    const [archiveCol,setArchiveCol]=useState(null)
+ const myCollections = useSelector(state=>state.books.myCollections.filter(t=>t))
 useEffect(()=>{
  fetchWorkshops()
 },[])
+useEffect(()=>{
+  if(currentProfile){
+  dispatch(getMyCollections())
+  dispatch(getMyStories())
+  }
 
+},[currentProfile])
 useEffect(() => {
   try {
     if (results?.length > 1) {
@@ -87,7 +97,7 @@ const openYourWorkshops=()=>{
     disagree:()=>resetDialog(),
     text: (<div className=''>
 
-      <div className={`bg-cream overflow-y-auto border  ounded-xl border-soft px-4 ${isNative? "h-[36rem] sm:h-[40rem] md:h-[48rem] lg:h-[50rem]":"h-[30rem] sm:h-[40rem] md:h-[48rem] lg:h-[50rem]"}`}> 
+      <div className={`bg-cream overflow-y-auto  px-4 ${isNative? "h-[36rem] sm:h-[40rem] md:h-[48rem] lg:h-[50rem]":"h-[30rem] sm:h-[40rem] md:h-[48rem] lg:h-[50rem]"}`}> 
         <IonList 
          style={{
           backgroundColor: Enviroment.palette.cream,
@@ -138,7 +148,8 @@ const openCollections=()=>{
     </div>
     )})}
     const openCommunities=()=>{
-      const communities = currentProfile.collections.filter(col=>col.type=="library")
+      console.log(myCollections)
+      const communities = myCollections?.filter(col=>col.type=="library")
  openDialog({
     title: "Communities",
   scrollY: false,
@@ -147,7 +158,7 @@ const openCollections=()=>{
 
     disagree:()=>resetDialog(),
     text: (<div className=''>
-        {/* <div className={`bg-cream overflow-y-scroll ${isNative? "h-[35rem]":"h-[30rem]"}`}>  */}
+    
   
         <IonList style={{backgroundColor:Enviroment.palette.cream}}>
         
@@ -189,8 +200,7 @@ const openPages=()=>{
       
     </div>
     )})}
-    const [homeCol,setHomeCol]=useState(null)
-    const [archiveCol,setArchiveCol]=useState(null)
+ 
               useEffect(() => {
                 
                 if (currentProfile?.profileToCollections) {
@@ -253,15 +263,7 @@ function WorkshopItem({workshop}){
 }</div>
                 </div>)
 }
-    function StoryItem({story}){
-      return<div onClick={()=>router.push(Paths.page.createRoute(story.id))}className={'border border-blue rounded-full shadow-md  py-4 bg-base-bg px-10'}>
-    <div className='flex flex-col gap-2'>
-      
-      {/* {Enviroment.palette.text.inverse} */}
-       <h4 className='text-[1.2em] text-text-soft'>{story.title.length>0?story.title:"Untitled"}</h4>
-  <h6 className='text-[1em] text-text-soft'>{story.status}</h6>
-  </div></div>
-    }
+  
 useEffect(()=>{
   if(homeCol){
  let save = [...homeCol?.childCollections.map(c=>c.childCollection),...homeCol?.storyIdList.map(s=>s.story)].slice(0,4)
@@ -342,6 +344,7 @@ scrollY: false,
       </div>
       <div className='flex flex-row justify-between max-h-24'>
               <h4 className='text-xl pt-8 mx-4 lora-medium pb-4'>Saves</h4>
+
               <img src={arrowToRight} onClick={()=>homeCol && router.push(Paths.collection.createRoute(homeCol.id))}className='max-w-8 mt-auto mb-4 max-h-8 mx-4' />
               </div>
               <div className='flex mx-4 flex-col gap-4'>
@@ -354,14 +357,13 @@ scrollY: false,
         ? router.push(Paths.page.createRoute(item.id), "forward")
         : router.push(Paths.collection.createRoute(item.id), "forward");
     }}
-    // className="border border-soft rounded-xl p-4"
-    // {Enviroment.palette.base.}
+  
     className={`border shadow-md border-1 rounded-full border-purple bg-base-bg  p-4`}
   >
     {/* {Enviroment.palette.accent.} */}
     {item ? (
       // ✅ REAL CONTENT
-      <div className="flex flex-row gap-4 items-center">
+      <div className="flex flex-row gap-4 px-4 items-center">
         <h6 className='text-text-primary'>{item.type} ·</h6>
         {/* {Enviroment.palette.base.} */}
         <h5 className="text-[1.2em] text-text-primary" >{item.title}</h5>
@@ -375,10 +377,7 @@ scrollY: false,
     )}
   </div>
 );
-                  // console.log("SAVES",item)
-                  // return<div onClick={()=>item?.data?router.push(Paths.page.createRoute(item.id),"forward"):router.push(Paths.collection.createRoute(item.id),"forward")}className='border-1 border border-soft rounded-xl p-4'><div className='flex flex-row gap-4 '><h6>{item?.type} ·</h6>
-                  // <h5 className='text-[1.2em]'>{item?.title}</h5></div></div>
-                })}
+                    })}
                 
               </div>
             </div>
@@ -401,13 +400,14 @@ scrollY: false,
       // {Enviroment.palette.accent.blue}
         key={item.label}
         onClick={item.onClick}
-        className="
+        className={`
           flex-shrink-0
           
           min-w-36 sm:w-36 md:w-44 lg:w-44 
           aspect-square                
           rounded-2xl
-          border border-blue
+          border border-soft
+          
           bg-base-bg
   bg-button
           backdrop-blur-sm
@@ -416,7 +416,7 @@ scrollY: false,
           transition-all
           flex items-end
           p-3 relative
-        "
+        `}
       >
 
            <h4 className={`
@@ -435,21 +435,25 @@ scrollY: false,
 </div>
              
             </div>
+            
             <div className='flex flex-col justify-between mt-8'>
-              <div className='flex flex-row justify-between px-4 pb-4 mt-8'
-              ><h4 className='text-xl lora-medium'>Workshop</h4><h5 onClick={()=>{openYourWorkshops()}}>Your workshops {"->"} </h5></div>
+              <div className='flex flex-row justify-between px-4 pb-4 mt-8'>
+              <h4   onClick={()=>{openYourWorkshops()}} className='text-xl lora-medium'>Workshop</h4>
+          
+              <img  onClick={()=>{openYourWorkshops()}} src={arrowToRight} className='max-w-8 mt-auto mb-4 max-h-8 mx-4' />
+</div>
               {workshop&&<div className='px-4'><WorkshopItem workshop={workshop}/></div>}
               <div className=' p-4 '></div>
             </div>
             <div  className='w-fit mx-auto '>
-              <div className='flex flex-row justify-between'><h4 className='text-xl mx-4 lora-medium pb-4  '>Recent Pages</h4><h4 className='my-auto mx-4' onClick={()=>ClickWriteAStory()}>Write Something new+</h4></div>
+              <div className='flex flex-row px-4 justify-between pb-4'><h5 className='text-xl mx-4 lora-medium  '>Recent Pages</h5><h5 className='text-[1.2em] mt-1' onClick={()=>ClickWriteAStory()}>Write Something new +</h5></div>
             
               <div className="grid grid-cols-1 px-4 md:grid-cols-2 lg:grid-cols-3 gap-4">
 
                 {[...(currentProfile?.stories || [])]
   .sort((a, b) => a.updated - b.updated)
   .slice(0, 4)
-  .map(story => <StoryItem story={story}/>)}
+  .map(story => <StoryDashboardItem story={story} router={router}/>)}
               </div>
             </div>
             </div>

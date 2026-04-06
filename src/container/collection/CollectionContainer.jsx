@@ -51,6 +51,7 @@ import checkResult from "../../core/checkResult.js";
 import { setPagesInView } from "../../actions/PageActions.jsx";
 import ProfileCircle from "../../components/profile/ProfileCircle.jsx";
 import Enviroment from "../../core/Enviroment.js";
+import CollectionActions from "../../components/collection/CollecitonActions.jsx";
 
 export default function CollectionContainer() {
 
@@ -502,39 +503,25 @@ const getCol = async (id) => {
     </button>
   );
 };
-// const FollowBtn=()=>     {return!role ? (
-//                 <div onClick={handleFollow} className="btn flex-1 bg-transparent rounded-full border-2 px-4 px-2 border-emerald-300">
-//                 <IonText  fill="outline" >
-//                   Join Community
-//                 </IonText>
-//                 </div>
-//               ) : (
-//                 <div
-//                 onClick={deleteFollow}
-//                 className="btn rounded-full flex-1 bg-transparent  border-3 border-blueSea">
-//                 <IonText fill="solid" >
-//                Following
-//                 </IonText>
-//                 </div>
-//               )}
-    const SaveBtn=()=> {return<div
-              className="p-2"
-                onClick={() => handleBookmark()}
-                color={isBookmarked? "warning" : "medium"}
-                disabled={bookmarkLoading}
-              >
-                <img className="w-[2.8em] h-[2.8em]" src={isBookmarked ? bookmarkFill : bookmarkOutline} />
-                {bookmarkLoading && <IonSpinner name="dots" />}
-              </div>}
-      const ArchiveBtn=()=> {return<div
-              className={` flex  w-[3rem] my-auto h-[3rem] ${isArchived?"border border-soft border-2 bg-soft rounded-full p-2":"bg-blueSea w-[3rem] h-[3rem] p-2 rounded-full  "}`}
-                onClick={() => handleArchive()}
-                color={isArchived ? "warning" : "medium"}
-                disabled={bookmarkLoading}
-              >
-                <IonImg  style={{height:"2.5em",width:"2.5em",filter:"invert(100%)"}}  className=" my-auto mx-auto" src={archive} />
-                {bookmarkLoading && <IonSpinner name="dots" />}
-              </div>}
+
+    // const SaveBtn=()=> {return<div
+    //           className="p-2"
+    //             onClick={() => handleBookmark()}
+    //             color={isBookmarked? "warning" : "medium"}
+    //             disabled={bookmarkLoading}
+    //           >
+    //             <img className="w-[2.8em] h-[2.8em]" src={isBookmarked ? bookmarkFill : bookmarkOutline} />
+    //             {bookmarkLoading && <IonSpinner name="dots" />}
+    //           </div>}
+    //   const ArchiveBtn=()=> {return<div
+    //           className={` flex  w-[3rem] my-auto h-[3rem] ${isArchived?"border border-soft border-2 bg-soft rounded-full p-2":"bg-blueSea w-[3rem] h-[3rem] p-2 rounded-full  "}`}
+    //             onClick={() => handleArchive()}
+    //             color={isArchived ? "warning" : "medium"}
+    //             disabled={bookmarkLoading}
+    //           >
+    //             <IonImg  style={{height:"2.5em",width:"2.5em",filter:"invert(100%)"}}  className=" my-auto mx-auto" src={archive} />
+    //             {bookmarkLoading && <IonSpinner name="dots" />}
+    //           </div>}
 // const EditBtn=()=>{
    
 //   return canUserEdit?<div 
@@ -557,35 +544,35 @@ const getCol = async (id) => {
 //       </IonContent>
 //     );
 //   }
-const EditButton = ({ canUserEdit, loading, id, router }) => {
-  const isDisabled = loading || !canUserEdit;
+// const EditButton = ({ canUserEdit, loading, id, router }) => {
+//   const isDisabled = loading || !canUserEdit;
 
-  return (
-    <div
-      onClick={() => {
-        if (isDisabled) return;
-        router.push(Paths.editCollection.createRoute(id));
-      }}
-      className={`
-        w-[3rem] h-[3rem] my-auto p-2 rounded-full border-2 transition-all duration-200 flex items-center justify-center
+//   return (
+//     <div
+//       onClick={() => {
+//         if (isDisabled) return;
+//         router.push(Paths.editCollection.createRoute(id));
+//       }}
+//       className={`
+//         w-[3rem] h-[3rem] my-auto p-2 rounded-full border-2 transition-all duration-200 flex items-center justify-center
         
-        ${isDisabled
-          ? "bg-gray-100 border-gray-200 opacity-40 pointer-events-none"
-          : "bg-soft border-soft cursor-pointer active:scale-95"}
-      `}
-    >
-      <IonImg
-        src={edit}
-        style={{
-          height: "2.2em",
-          width: "2.2em",
-          filter: "invert(100%)",
-          opacity: isDisabled ? 0.6 : 1,
-        }}
-      />
-    </div>
-  );
-};
+//         ${isDisabled
+//           ? "bg-gray-100 border-gray-200 opacity-40 pointer-events-none"
+//           : "bg-soft border-soft cursor-pointer active:scale-95"}
+//       `}
+//     >
+//       <IonImg
+//         src={edit}
+//         style={{
+//           height: "2.2em",
+//           width: "2.2em",
+//           filter: "invert(100%)",
+//           opacity: isDisabled ? 0.6 : 1,
+//         }}
+//       />
+//     </div>
+//   );
+// };
   if (!canUserSee) {
   return (
     <IonContent fullscreen>
@@ -613,7 +600,8 @@ const AddButton=({disabled, loading,className})=>{
     if (!canUserAdd) return;
     e.stopPropagation();
     router.push(Paths.addToCollection.createRoute(collection.id));
-  }} className="w-[100%] rounded-full bg-soft text-white py-3">
+    // {Enviroment.palette.card}
+  }} className="w-[100%] rounded-full bg-soft hover:bg-card-highlight text-white py-3">
     Add to Collection
   </button>
 </div>
@@ -624,7 +612,7 @@ const AddButton=({disabled, loading,className})=>{
 return (
   <ErrorBoundary>
     <IonContent
-      style={{ "--background": "#f8f6f1" }}
+      style={{ "--background": Enviroment.palette.base.background }}
       scrollY={true}
       fullscreen
       className="pb-24 pt-12"
@@ -659,11 +647,30 @@ return (
             <div className="my-4 flex-1  min-w-[10rem] h-12 rounded-full  flex items-center justify-center transition">
             <FollowBtn />
 </div>
+<CollectionActions handleArchive={handleArchive} 
+ collection={collection}
+ role={role}
+ isTheArchive={collection?.id == archiveCol?.id}
+ isTheHome={collection?.id == homeCol?.id}
+ canUserEdit={canUserEdit}
+ isBookmarked={isBookmarked}
+ isArchived={isArchived}
+ handleBookmark={handleBookmark}
+ router={router}
 
+  />
             {/* Dropdown for Other Actions */}
-            <div className="dropdown dropdown-end ">
-              <label tabIndex={0} className="btn h-12 rounded-full bg-blueSea text-white hover:bg-cyan-200 flex items-center justify-center gap-2">
-                <div className="flex flex-row ">
+            {/* <div className="dropdown dropdown-end ">
+              <label
+  tabIndex={0}
+  className="
+    h-12 rounded-full flex items-center justify-center gap-2
+    bg-blueSea text-white
+    hover:bg-cyan-200
+    opacity-100 !bg-opacity-100
+    shadow-none
+  "
+>  <div className="flex flex-row ">
                <h6>Actions</h6>
                 <svg className="max=w-4 max-h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7"></path>
@@ -696,7 +703,7 @@ return (
                   </li>
                 )}
               </ul>
-            </div>
+            </div> */}
           </div>
 
           {/* Add to Collection */}
@@ -737,15 +744,15 @@ const PageTab = ({ collections }) => {
   const [isOwner,setIsOwner]=useState(collection?.profileId==currentProfile?.id)
   const router = useIonRouter()
   return (
-    <div className=" bg-base-bg">
-    
-        <><h2 className="text-[1.4rem] bg-base-bg  my-8 px-4 lora-bold text-soft ">
+    <div className=" bg-base-surface">
+    {/* {Enviroment.palette.text.} */}
+        <><h2 className="text-[1.4rem] bg-base-surface  my-8 px-4 lora-bold text-text-brand ">
           Anthologies
         </h2>
       
 {collections && collections?.length > 0 ? (
 
-    <div className="flex flex-row bg-base-bg min-h-[14rem] overflow-x-scroll">
+    <div className="flex flex-row bg-base-surface min-h-[14rem] overflow-x-scroll">
       {collections
         .filter((col) => col)
         .map((col, i) => (
@@ -759,7 +766,7 @@ const PageTab = ({ collections }) => {
   <div className="flex flex-row gap-3 overflow-x-scroll py-8 px-3">
    
 
-      <div className=" flex flex-col items-center mx-auto justify-center bg-base-bg rounded-lg p-4  text-center">
+      <div className=" flex flex-col items-center mx-auto justify-center bg-base-surface rounded-lg p-4  text-center">
         <p className="mb-2 text-gray-700">No anthologies yet.</p>
          {isOwner  && collection?.childCollections?.length<1 && (   <button
           onClick={() => router.push(Paths.addToCollection.createRoute(collection?.id))}
@@ -926,7 +933,7 @@ const AboutTab = ({ collection}) => {
 // // Tabs
 function CollectionTabs({ tab, setTab, pages, members, about }) {
   return (
-    <div className="bg-base-bg pt-6 sm:pt-12">
+    <div className="bg-base-surface pt-6 sm:pt-12">
       <div className="flex justify-center lg:justify-start lg:mx-12 mb-4">
         <div className="flex rounded-full border overflow-hidden w-full sm:w-[40em] lg:w-[30em] border-emerald-600">
           {["pages", "members", "about"].map((t) => (

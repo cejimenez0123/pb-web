@@ -318,7 +318,7 @@ openDialog({
 
 
 return (
-  <IonCard className="mt-3 mx-auto bg-white rounded-2xl border border-[#bae6fe]/40 shadow-sm">
+  <div className="mt-3 mx-auto bg-base-bg rounded-2xl border border-blue shadow-sm">
 
     {/* Header */}
     <IonCardHeader className="pb-2">
@@ -413,7 +413,7 @@ return (
 
 </div>
     
-  </IonCard>
+  </div>
 );
 }
 

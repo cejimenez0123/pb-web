@@ -1,5 +1,5 @@
 const TabBar = ({ tabs,active, onChange }) => (
-  <div className="flex flex-wrap gap-1 bg-gray-100 rounded-xl p-1 px-2 sm:px-4">
+  <div className="flex items-center flex-row justify-center  gap-1 bg-gray-100 rounded-xl p-1 px-2 sm:px-4">
     {tabs.map((tab) => (
       <button
         key={tab.key}
@@ -7,6 +7,7 @@ const TabBar = ({ tabs,active, onChange }) => (
         className={`
           text-center 
           px-3 py-1 
+     
           text-xs sm:text-sm 
           rounded-lg transition 
           whitespace-nowrap

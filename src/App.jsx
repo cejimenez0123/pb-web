@@ -56,6 +56,7 @@ import DashboardContainer from './container/DashboardContainer.jsx';
 import { LoadScript } from '@react-google-maps/api';
 import ContentHubContainer from './container/ContentHubContainer.jsx';
 import DiscoveryContainer from './container/DiscoveryContainer.jsx';
+import { SplashScreen } from '@capacitor/splash-screen';
 
 setupIonicReact()
 
@@ -89,21 +90,28 @@ const [chuecking,setChecking]=useState(null)
 const [firstLaunchChecked, setFirstLaunchChecked] = useState(false);
 
 
-useEffect(() => {
+useIonViewWillEnter(() => {
   const checkFirstLaunch = async () => {
+    await SplashScreen.show({
+      showDuration: 3000,
+      autoHide: true,
+  })
     if (isNative) {
-
-
-
       const { value } = await Preferences.get({ key: 'hasSeenOnboarding' });
       if (value === null) {
         await Preferences.set({ key: "hasSeenOnboarding", value: 'true' });
         setIsFirstLaunch(true);
+      }else if(currentProfile){
+        
+
+
+        // await SplashScreen.hide()
+        return
       }
     }
     setFirstLaunchChecked(true);
   };
-  checkFirstLaunch();
+ !firstLaunchChecked && checkFirstLaunch();
 }, [isNative]);
  
 
@@ -142,7 +150,7 @@ const showBottomNavbar = isMobileOrTablet || isNative
        <Route exact path={Paths.login()}
                   render={()=> 
       
-        <PageWrapper showHeader={false}>
+        <PageWrapper presenHeader={false}>
       <PrivateRoute>
             <LogInContainer  currentProfile={currentProfile} logIn={props.logIn}/>
              </PrivateRoute>
@@ -154,11 +162,13 @@ const showBottomNavbar = isMobileOrTablet || isNative
  
      <Route exact path="/" render={() => 
          <PageWrapper>{
-     isFirstLaunch?Capacitor.isNativePlatform()?<Redirect to={Paths.onboard} />:<Redirect to={Paths.about()}/>:<Redirect to={Paths.login()}/>}   
+  currentProfile? 
+  <Redirect to={Paths.home} />:  
+  isFirstLaunch && isNative?<Redirect to={Paths.onboard}/>:<Redirect to={Paths.about()}/>   }
      </PageWrapper>}
 />
 <Route exact path="/about" render={() => 
-    <PageWrapper showHeader={false}>
+    <PageWrapper presenHeader={false}>
      <AboutContainer/></PageWrapper>}
 />
 <Route exact path="/search" render={() => 
@@ -168,7 +178,7 @@ const showBottomNavbar = isMobileOrTablet || isNative
 
 
    
-      <Route path={Paths.onboard} render={()=><PageWrapper showHeader={false}><OnboardingContainer/></PageWrapper>}/>
+      <Route path={Paths.onboard} render={()=><PageWrapper presenHeader={false}><OnboardingContainer/></PageWrapper>}/>
 
 
             <Route exact path={Paths.notifications()}
@@ -198,7 +208,7 @@ const showBottomNavbar = isMobileOrTablet || isNative
     </Route>
     <Route exact path={Paths.myProfile}
       render={()=>  
-        <PageWrapper showBackbutton={false} showHeader={isNative}>
+        <PageWrapper showBackbutton={false} >
           <PrivateRoute>
           <MyProfileContainer
 
@@ -211,7 +221,7 @@ const showBottomNavbar = isMobileOrTablet || isNative
     />
           <Route exact path="/discovery" 
                 render={()=>
-                   <PageWrapper showBackbutton={false} showHeader={false} showSearchButton={true}> 
+                   <PageWrapper showBackbutton={false} presentHeader={false} showSearchButton={true}> 
                     <DiscoveryContainer/>
                      </PageWrapper>
                       
@@ -223,7 +233,7 @@ const showBottomNavbar = isMobileOrTablet || isNative
                   />
     
       <Route exact path={Paths.calendar()}
-     render={()=><PageWrapper showBackbutton={false}  showHeader={false}><CalendarContainer/></PageWrapper>}/>
+     render={()=><PageWrapper showBackbutton={false}  presenHeader={false}><CalendarContainer/></PageWrapper>}/>
           <Route exact path={Paths.newsletter() }
      render={()=><LoggedRoute 
  currentProfile={currentProfile}

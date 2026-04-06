@@ -71,7 +71,7 @@ const paginatedEvents = events.slice(
   .map((event) => {
           const hashtags = extractHashtags(event.description || "");
 let obj = event.description?cleanDescriptionAndExtractHashtags(event.description):{cleanedDescription: "",suggestions:[]}             
-console.log(obj)      
+console.log(event.organizer.displayName)      
 return {
             summary: event.summary,
             shortSummary: event.summary?.slice(0, 30),
@@ -82,7 +82,7 @@ return {
             rawLocation: event.location,
             googleLink: event.htmlLink || "",
             organizerLink: extractFirstUrl(event.description),
-            area: event.organizer?.displayName || "",
+            area: event.organizer?.displayName.toLowerCase() || "",
           };
         });
 
@@ -101,10 +101,10 @@ return {
     let filtered = list;
 
     if (selectedArea) {
-      filtered = filtered.filter(
-        (e) => e.area.toLowerCase() === selectedArea.toLowerCase()
-      );
-    }
+   filtered = filtered.filter(
+  (e) =>
+    e.area.toLowerCase().includes(selectedArea.toLowerCase())
+)}
 
     if (searchTerm) {
       const lower = searchTerm.toLowerCase();

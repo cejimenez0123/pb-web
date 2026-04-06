@@ -22,7 +22,7 @@ const DEFAULT_LOCATION = { latitude: 40.818622458906425, longitude: -73.88903636
 const WorkshopContainer = () => {
   const dispatch   = useDispatch();
   const router     = useIonRouter();
-  const pathParams = useParams();
+  // const pathParams = useParams();
   const isNative   = DeviceCheck();
 
   const { currentProfile } = useSelector(state => state.users);
@@ -202,39 +202,7 @@ const clickGlobal = () => {
 //   }
 // }, [navigateTo]);
 
-// const handleGroupClick = () => {
-//   if (!location?.latitude || !location?.longitude) return;
 
-//   setLoading(true);
-//   setError(null);
-//   setSuccess(null);
-//   dispatch(setPagesInView({ pages: [] }));
-//   dispatch(setCollections({ collections: [] }));
-//   dispatch(findWorkshopGroup({
-//     profile: currentProfile,
-//     story: page ?? null,
-//     isGlobal,
-//     location,
-//     radius
-//   })).then(res => {
-//     checkResult(res,
-//       payload => {
-//         if (payload?.collection) {
-//           setTimeout(()=>{
-// router.push(Paths.collection.createRoute(payload.collection.id),"forward");
-        
-//           },0)
-//         }
-//         if (payload?.error) {
-//           setError(payload.error.message);
-//           setSuccess(null);
-//         }
-//       },
-//       err => setError(err.message)
-//     );
-//     setLoading(false);
-//   });
-// };
 const handleGroupClick = () => {
   // Don't proceed if location is missing
   if (!location?.latitude || !location?.longitude) return;
@@ -271,39 +239,7 @@ const handleGroupClick = () => {
     ).finally(() => setLoading(false));
   });
 };
-// const handleGroupClick = () => {
-//   if (!location?.latitude || !location?.longitude) return
 
-//     setLoading(true);
-//     setError(null);
-//     setSuccess(null);
-//     dispatch(setPagesInView({ pages: [] }));
-//     dispatch(setCollections({ collections: [] }));
-//     dispatch(findWorkshopGroup({
-//       profile: currentProfile,
-//       story: page ?? null,
-//       isGlobal,
-//       location,
-//       radius
-//     })).then(res => {
-//       checkResult(res,
-//         payload => {
-//           // console.log("WORKSHOP PAYLOAD", payload);
-//           if (payload?.collection) {
-//             router.push(Paths.collection.createRoute(payload.collection.id));
-//           }
-//           if (payload?.error) {
-//             setError(payload.error.message);
-//             setSuccess(null);
-//           }
-//         },
-//         err => setError(err.message)
-//       );
-//       setLoading(false);
-//     });
-//   };
-
-  // ─── Render ───────────────────────────────────────────────────────────────────
 
   const isLocationReady = isGlobal || (location?.latitude && location?.longitude);
 return<IonContent
@@ -317,10 +253,10 @@ return<IonContent
       <img src={loadingAnimation} alt="Loading..." className="w-24 h-24" />
     </div>
   ) : (
-    <div className="w-full max-w-md mt-12 px-4 flex flex-col gap-6">
+    <div className=" mt-12  flex flex-col gap-6">
       
       {/* Profile Card */}
-      <div className="bg-white rounded-xl shadow-md p-6 flex flex-col gap-6">
+      <div className="bg-white rounded-xl w-[36em] max-w-[90%] mx-auto shadow-md p-6 flex flex-col gap-6">
         {/* Header */}
         <div className="flex justify-between items-center">
           <h2 className="text-2xl font-semibold">{currentProfile.username.toLowerCase()}</h2>
@@ -377,123 +313,13 @@ return<IonContent
       </div>
 
       {/* Workshops List */}
-      <div className="w-full mt-6">
+      <div className=" mt-6">
         <ExploreList items={workshops} />
       </div>
     </div>
   )}
 </IonContent>
 };
-// if(!currentProfile){
-//   return(<IonContent style={{ "--background": Enviroment.palette.cream }} fullscreen>
-//   {!currentProfile ? (
-//     <div className="flex justify-center items-center h-full">
-//       <img src={loadingAnimation} alt="Loading..." />
-//     </div>
-//   ) : (
-//     <div className="text-emerald-800 ..."> ... </div>
-//   )}
-// </IonContent>)
-// }
-//   return (
-//     <IonContent style={{ "--background": Enviroment.palette.cream }} fullscreen className=''>
-//       {/* <div className=' overflow-hidden'> */}
-//         {currentProfile ? (
-//           <div className="text-emerald-800 max-w-[40em] mx-auto w-full shadow-sm sm:min-h-[30em] mt-12 flex flex-col text-left sm:w-80 p-4 rounded-lg">
-
-//             {/* Header */}
-//             <span className='flex my-8 flex-row justify-between'>
-//               <h2 className='text-xl font-bold ml-2'>{currentProfile?.username?.toLowerCase()}</h2>
-//               <span className={`${isLocationReady ? "bg-emerald-600" : "bg-yellow-500"} rounded-full w-8 max-h-6 flex`}>
-//                 <img className="mx-auto my-auto" src={check} alt="status" />
-//               </span>
-//             </span>
-
-//             {/* Global / Local toggle */}
-//             <div className='flex flex-row mb-8 justify-start'>
-        
-//               {/* </label> */}
-//            <label className='flex w-full flex-row justify-between'>
-//   <h6 className='text-xl'>{isGlobal ? "Global" : "Local"}</h6></label>
-//                 <div/>
-//  <input
-//     type="checkbox"
-//     checked={isGlobal}
-//     onChange={(e=>{
-//       clickGlobal()
-//       // console.log("DSDx",e.target.value)
-      
-//     })}
-//     // onChange={(e) => {console.log(e.target.checked)
-//     //   setIsGlobal(e.target.checked)}}
-//     className="toggle toggle-success mx-4"
-//   /> 
-//     {/* <div className='py-8 max-w-40'> */}
-//     {/* <label>Global</label> */}
-//    {/* <button
-// onClick={clickGlobal}
-// className={` w-20 h-20  rounded-full ${isGlobal?"bg-soft":"bg-blue-200"}  `}
-  
-//   >Global</button>
-//   </div> */}
-//   {/* <GlobalRadio handleGlobal={clickGlobal} />
-//    */}
-// {/* // </label> */}
-//             </div>
-//             {/* {!isGlobal && ( */}
-//   <div className="space-y-4">
-
-//     {/* Collapse container */}
-//     <div className="collapse collapse-arrow bg-base-100 border border-base-300 rounded-box">
-      
-//       <input type="checkbox" defaultChecked /> 
-
-//       <div className="collapse-title text-lg font-medium">
-//         Choose Location
-//       </div>
-
-//       <div className={`${isGlobal?"collapse-content":""} space-y-4`}>
-        
-//         {/* Search */}
-//         <GoogleMapSearch onLocationSelected={setLocation} />
-
-//         {/* Radius */}
-//         <div className="flex items-center border-2 border-emerald-800 border-opacity-50 rounded-full p-2">
-//           <h6 className="text-xl ml-4">Radius:</h6>
-//           <input
-//             type="number"
-//             value={radius}
-//             onChange={(e) => setRadius(e.target.value)}
-//             className="input max-w-24 text-xl bg-transparent ml-4"
-//           />
-//           <span className="ml-2">mi</span>
-//         </div>
-
-//       </div>
-//     </div>
-
-//   </div>
-
-//             <div className="bg-soft flex bg-blueSea text-white mt-8 rounded-full cursor-pointer" onClick={handleGroupClick}>
-//               <h6 className='mx-auto text-xl p-6 my-auto'>Join a Workshop</h6>
-//             </div>
-
-//             {loading && (
-//               <div className='w-fit flex justify-center p-8'>
-//                 <img src={loadingAnimation} className='max-w-24 mx-auto p-6 max-h-24' alt="loading" />
-//               </div>
-//             )}
-//           </div>
-//         ) : (
-//           <div className='text-emerald-800 mx-auto w-[92vw] shadow-sm sm:h-[30em] mt-20 flex flex-col text-left sm:w-80 p-4 skeleton bg-slate-100 rounded-lg' />
-//         )}
-//       {/* </div> */}
-//      <div className="bottom-actions">
-//     <div onClick={handleGroupClick}>Join a Workshop</div>
-//     <ExploreList items={workshops} />
-//   </div>
-//     </IonContent>
-//   );
 
 
 export default WorkshopContainer;

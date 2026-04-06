@@ -82,19 +82,11 @@ const userSlice = createSlice({
             state.profilesInView = payload.profiles
     
         }).addCase(createFollow.fulfilled,(state,{payload})=>{
-            const {follow}=payload
-            if(follow && follow.following){
-                state.profileInView = follow.following
-                state.currentProfile = follow.follower
-            }
+         
+           
 
         }).addCase(deleteFollow.fulfilled,(state,{payload})=>{
-            if(payload.profile){
-                state.currentProfile = payload.profile
-            }
-            if(payload.followed){
-                state.profileInView = payload.followed
-            }
+          
         })
         .addCase(logIn.pending,(state) => {
         state.loading = true

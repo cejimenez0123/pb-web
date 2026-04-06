@@ -6,7 +6,7 @@ import Enviroment from "../../core/Enviroment";
 import { useContext, useEffect, useState } from "react";
 import Context from "../../context";
 import { PageType } from "../../core/constants";
-
+import loadingGif from "../../images/loading.gif"
 
 function StoryItem({ page, isGrid = true, html = null }) {
   const { isHorizPhone } = useContext(Context);

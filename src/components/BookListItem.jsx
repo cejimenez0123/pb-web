@@ -6,6 +6,7 @@ import { useLayoutEffect } from "react";
 import { initGA, sendGAEvent } from "../core/ga4.js";
 import { useIonRouter } from "@ionic/react";
 import { IonSkeletonText } from "@ionic/react";
+import Enviroment from "../core/Enviroment.js";
 
 function BookListItem({ book }) {
   const dispatch = useDispatch();
@@ -32,7 +33,8 @@ function BookListItem({ book }) {
   return (
     <div
       onClick={navigateToBook}
-      className="min-h-[10rem] min-w-[16rem] mx-4 flex flex-col justify-between rounded-xl bg-emerald-50 text-emerald-900 cursor-pointer shadow-md hover:shadow-xl transition-shadow duration-300 p-4 space-y-3"
+      // {Enviroment.palette.accent.}
+      className="min-h-[10rem] min-w-[16rem] mx-4 flex flex-col justify-between rounded-xl bg-base-bg  text-emerald-900  border-purple border-1 border cursor-pointer shadow-md transition-shadow duration-300 p-4 space-y-3"
     >
       {/* Title */}
       <h3 className="font-bold text-lg truncate">

@@ -287,7 +287,7 @@ const cycleFollowersRole = () => {
     openDialog(dia)
   
   }
-  if(loading||!colInView) return editCollectionSkeleton()
+  if(loading||!colInView){return editCollectionSkeleton()}
     return<IonContent fullscreen style={{ "--background": "#f8f6f1" }}>
   <div className="max-w-lg mx-auto px-4 pb-28 pt-6 space-y-6">
 
@@ -386,28 +386,7 @@ const cycleFollowersRole = () => {
   <IonImg src={arrowDown} className="w-5 h-5" />
 </div>
   <TabBar tabs={[{label:"pages"},{label:"collections"}]} active={activeTab} onChange={setActiveTab}/>
-    {/* <div className="flex gap-2">
-      <Pill
-        label="Pages"
-        onClick={() => setActiveTab("pages")}
-        baseClass={
-          activeTab === "pages"
-            ? "bg-blueSea text-white"
-            : "bg-gray-100 text-gray-600"
-        }
-      />
-      <Pill
-        label="Collections"
-        onClick={() => setActiveTab("collections")}
-        baseClass={
-          activeTab === "collections"
-            ? "bg-blueSea text-white"
-            : "bg-gray-100 text-gray-600"
-        }
-      />
-    </div> */}
 
-    {/* LISTS */}
     {activeTab === "pages" && (
       <SortableList
         items={filteredPages}
@@ -507,6 +486,7 @@ function FollowersDropdown({ followersAre, setFollowersAre }) {
 
 
 const editCollectionSkeleton = () => (
+  <IonContent>
   <div className="ion-padding sm:max-w-[50em] mx-auto animate-pulse">
     
     {/* Title Input Skeleton */}
@@ -551,4 +531,5 @@ const editCollectionSkeleton = () => (
     </div>
 
   </div>
+  </IonContent>
 ) 

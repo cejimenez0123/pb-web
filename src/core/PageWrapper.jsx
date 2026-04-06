@@ -27,9 +27,13 @@ import { debounce } from 'lodash';
 import Enviroment from './Enviroment';
 import { getMyStories } from '../actions/StoryActions';
 import { getMyCollections } from '../actions/CollectionActions';
+import { SplashScreen } from '@capacitor/splash-screen'
+import { IonContent } from '@ionic/react';
+// import { IonContext } from '@ionic/react/dist/types/contexts/IonContext';
 const PageWrapper = ({
   children,
   showHeader = true,
+  presenHeader = true,
   showBackbutton = true,
   showSearchButton = true,
    showMenubutton = true,
@@ -305,10 +309,10 @@ checkUser()
     }
   };
    if (!isOnline) {
-    // Offline UI
+  
     return (
       <IonPage >
-     
+     <IonContent>
           <IonText color="medium">
             <h2>No Internet Connection</h2>
             <p>Please check your connection and try again.</p>
@@ -316,7 +320,7 @@ checkUser()
           <IonButton onClick={handleRetry} style={{ marginTop: '1em' }}>
             Retry
           </IonButton>
-      
+      </IonContent>
       </IonPage>
     );
   }
@@ -325,7 +329,7 @@ checkUser()
       ref={pageRef}
        style={{ height: '100%', paddingTop: isDesktop ? '5em' : '0', }}
     >
-      {(showHeader &&!isNative&&!isDesktop) && (
+      {presenHeader && (
         <IonHeader >
           <div >
           <IonToolbar style={{

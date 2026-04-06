@@ -7,14 +7,13 @@ import Context from '../../context';
 
 import {
   fetchProfile,
-  getCurrentProfile,
+
   
  
 } from "../../actions/UserActions"
 
 import {
-  getProtectedProfilePages,
-  getPublicProfilePages,
+
   setPagesInView,
 } from "../../actions/PageActions";
 
@@ -36,6 +35,9 @@ import { Preferences } from '@capacitor/preferences';
 import Paths from '../../core/paths';
 import checkResult from '../../core/checkResult';
 import TabBar from '../../components/TabBar';
+import PaginatedPageList from '../../components/page/PaginatedPageList';
+import PageProfileList from '../../components/page/PageProfileList';
+import FollowButton from '../../components/profile/FollowButton';
 const TABS = {
   POSTS: "posts",
   COLLECTIONS: "collections",
@@ -46,7 +48,8 @@ function ProfileContainer() {
     const { setSeo, setError,  } = useContext(Context);
 
   const{ profileInView:profile, currentProfile }= useSelector((state) => state.users);
-
+  const [followingCount,setFollowingCount]=useState(0)
+    const [followerCount,setFollowerCount]=useState(0)
   const collectionsRaw = useSelector((state) => state.books.collections?? []);
 
   const pagesRaw = useSelector((state) => state.pages.pagesInView ?? []);
@@ -100,11 +103,12 @@ useIonViewDidLeave(() => {
     if (profile.id  === currentProfile.id) return;
 
     if (following) dispatch(deleteFollow({ follow: following })).then(res=>{
-        setFollowingCount(prev=>prev>0?prev-1:0)
+           setFollowerCount(prev=>prev-1)
+        setFollowing(null)
     })
     else dispatch(createFollow({ follower:currentProfile, following: profile })).then((res)=>{
       checkResult(res,payload=>{
-        setFollowingCount(prev=>prev+1)
+     setFollowerCount(prev=>prev+1)
      
           setFollowing(payload.follow)
       },err=>{
@@ -113,37 +117,7 @@ useIonViewDidLeave(() => {
     });
   }, 200);
    
-const FollowButton = ({ prof,current,follow,onClick}) => {
 
-  
-      const [isSelf,setIsSelf]=useState(false)
-
-
-     
-
-
-useEffect(()=>{
-  try{
-  setIsSelf(prof.id==current.id)
-
-  }catch(err){
-    console.log(isSelf)
-  }
-},[prof,current])
-
-  // if (isSelf) return null;
-  return (
-    <button
-      onClick={onClick}
-      className={`
-        px-4 py-1.5 text-sm  rounded-full mx-4 transition
-        ${follow ? "bg-gray-200 text-gray-800" : "bg-blueSea text-white"}
-      `}
-    >
-      {follow? "Following" : "Follow"}
-    </button>
-  );
-};
 
 
 // ── Communities Panel ─────────────────────────────────
@@ -242,7 +216,7 @@ const PageList = ({ items }) => (
 const IndexList = ({ items }) => (
   <div className="space-y-2">
     {items.map((i) => (
-      <div onClick={()=>router.push(Paths.collection.createRoute(i.id))}key={i.id} className="p-2 border rounded">{i.title ??i.name}</div>
+      <div onClick={()=>router.push(Paths.collection.createRoute(i.id))}key={i.id} className="p-2 border rounded-full border-purple px-4 py-3">{i.title ??i.name}</div>
     ))}
   </div>
 );
@@ -268,7 +242,8 @@ useEffect(() => {
    
       ({ collections: profile.collections }));
   }
-
+setFollowerCount(profile["_count"]?.followers)
+setFollowingCount(profile["_count"]?.following)
 }, [profile, dispatch]);
 
 
@@ -278,15 +253,7 @@ useEffect(() => {
   useIonViewWillEnter(() => {
     dispatch(fetchProfile({ id }));
 
-    // const fetchContent = async () => {
-    
-      
-    //     dispatch(getPublicProfilePages({ profile: { id } }));
-    //     dispatch(getPublicProfileCollections({ profile: { id } }));
-    
-    // };
 
-    // fetchContent();
   }, [id, dispatch]);
 
   // ── Follow logic
@@ -310,7 +277,17 @@ const tabs = [
   { key: TABS.COMMUNITIES, label: "Communities" },
   { key: TABS.ABOUT, label: "About" },
 ];
+ const [isSelf,setIsSelf]=useState(false)
+useEffect(()=>{
+  try{
+  setIsSelf(prof.id==current.id)
+
+  }catch(err){
+    console.log(isSelf)
+  }
+},[profile,currentProfile])
   // ── Render
+ 
     if (!profile) return <IonContent
   fullscreen
   scroll-y="true"
@@ -331,8 +308,8 @@ const tabs = [
 
             <div className="flex justify-between text-center">
              
-              <StatChip value={profile["_count"]?.followers??""} label="Followers" />
-              <StatChip value={profile["_count"]?.following??""} label="Following" />
+              <StatChip value={followerCount} label="Followers" />
+              <StatChip value={followingCount} label="Following" />
             </div>
 
             {(profile?.bio || profile?.selfStatement) && (
@@ -375,7 +352,7 @@ const tabs = [
         focus:outline-none focus:ring-1 focus:ring-gray-300
       "
     />
-    <FollowButton prof={profile} onClick={onClickFollow}follow={following} current={currentProfile}  />
+    <FollowButton isSelf={isSelf} prof={profile} onClick={onClickFollow}follow={following} current={currentProfile}  />
         
   </div>
             <TabBar tabs={tabs} active={tab} onChange={setTab} />
@@ -388,14 +365,15 @@ const tabs = [
                 {search.length==0 && recentPosts.length > 0 && (
                   <section className="space-y-4">
                     <SectionLabel>Recent</SectionLabel>
-                    <PageList items={recentPosts} />
+                    <PageProfileList items={recentPosts} />
                   </section>
                 )}
 
                 {pages.length > 0 && (
                   <section className="space-y-4">
                     <SectionLabel>All Posts</SectionLabel>
-                    <PageList items={pages} />
+              
+                    <PaginatedPageList items={pages} router={router}/>
                   </section>
                 )}
 
@@ -404,7 +382,7 @@ const tabs = [
             )}
 
             {tab === TABS.COLLECTIONS && (
-              collections.length > 0 ? <IndexList items={collections} /> : <EmptyState text="No collections yet." />
+              collections.length > 0 ? <div className='pt-8'><IndexList items={collections} /></div> : <EmptyState text="No collections yet." />
             )}
 
             {tab === TABS.COMMUNITIES && <CommunitiesPanel prof={profile} />}
