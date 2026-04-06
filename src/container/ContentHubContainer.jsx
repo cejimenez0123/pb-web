@@ -102,11 +102,12 @@ console.log("FDDF",{ workshops, stories, prompts })
   return (
   
       <ErrorBoundary>
-<IonContent fullscreen style={{"--background":Enviroment.palette.cream,paddingBottom:"10em"}} scrollY={true}>
-      
+<IonContent fullscreen style={{"--background":Enviroment.palette.cream,paddingTop:"10em",paddingBottom:"10em"}} scrollY={true}>
+   
         
   <DiscDashTabs tab={tab} setTab={setTab} disc={() =><HomeEmbed workshops={workshops} stories={stories}
   prompts={prompts||[]} isGlobal={isGlobal} setIsGlobal={setIsGlobal}/>} dash={()=><DashboardEmbed />} />
+
 </IonContent>
  
       </ErrorBoundary>
@@ -144,13 +145,13 @@ export default ContentHubContainer
     }),
   };
 
-   return <IonContent style={{"--background":Enviroment.palette.cream}} fullscreen={true} scrollY={true}>
+  //  return <IonContent style={{"--background":Enviroment.palette.cream}} fullscreen={true} scrollY={true}>
  
-         <div className='flex mt-4  pt-8 sm:pt-16 px-4 flex-row justify-between'>
-  
-                    </div>
+         {/* <div className='flex mt-4  pt-8 sm:pt-16 px-4 flex-row justify-between'>
+   */}
+                    {/* </div> */}
     
-    <div className=" sm:pt-12 bg-cream">
+   return <div className="pt-12 bg-cream">
       {/* Tabs */}
       <div className="flex justify-center lg:justify-start lg:mx-12 mb-2">
         <div className="flex rounded-full border overflow-clip min-h-12 sm:w-[40em] lg:w-[30em] border-emerald-600">
@@ -225,7 +226,7 @@ export default ContentHubContainer
         </AnimatePresence>
       </div>
       </div>
-</IonContent>
+{/* </IonContent> */}
   
 }
 

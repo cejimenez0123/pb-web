@@ -16,6 +16,7 @@ const PageList = ({ items = [], forFeedback, getMore = () => {}, hasMore = true,
   return (
     <div>
       {items.map((item, i) => (
+        <div>{
         item.authorId?   <DashboardItem
           key={i}
           item={item}
@@ -24,7 +25,7 @@ const PageList = ({ items = [], forFeedback, getMore = () => {}, hasMore = true,
           isGrid={isGrid}
           page={item}
         />
-      :<BookDashboardItem  book={item}/>))}
+      :<BookDashboardItem  book={item}/>}</div>))}
      
 
       <IonInfiniteScroll

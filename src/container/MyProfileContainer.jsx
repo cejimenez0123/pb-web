@@ -1,41 +1,32 @@
 
 
 
-import settings from "../images/icons/settings.svg"
-import React, { useContext, useEffect, useMemo, useState } from "react";
-import { IonContent, IonImg, useIonRouter } from "@ionic/react";
+import { useContext, useEffect, useMemo, useState } from "react";
+import { IonContent, useIonRouter } from "@ionic/react";
 import { useSelector, useDispatch } from "react-redux";
-import { useParams } from "react-router";
-import { Preferences } from "@capacitor/preferences";
-import { debounce } from "lodash";
 import Context from "../context";
 import Enviroment from "../core/Enviroment";
 
-import {
-  fetchProfile,
-  getCurrentProfile,
- 
-} from "../actions/UserActions";
 
-import {
-
-  setPagesInView,
-} from "../actions/PageActions";
 
 import {
 
   getMyCollections,
-  setCollections,
+
 } from "../actions/CollectionActions";
 
 import ErrorBoundary from "../ErrorBoundary";
 import ProfileInfo from "../components/profile/ProfileInfo";
 import fetchCity from "../core/fetchCity";
 import Paths from "../core/paths";
-import { createFollow, deleteFollow } from "../actions/FollowAction";
 import TabBar from "../components/TabBar";
 import { getMyStories } from "../actions/StoryActions";
 import ExploreList from "../components/collection/ExploreList";
+import Pill from "../components/Pill";
+import PaginationControls from "../components/PaginationControls";
+import CommunitiesPanel from "../components/profile/CommunitiesPanel";
+import AboutPanel from "../components/profile/AboutPanel";
+import debounce from "../core/debounce";
 const TABS = {
   POSTS: "posts",
   COLLECTIONS: "collections",
@@ -59,14 +50,14 @@ function MyProfileContainer() {
   const [search, setSearch] = useState("");
   const [following, setFollowing] = useState(null);
   //  
-   const collectionsRaw = myCollections|| profile?.collections||[]
-    const pagesRaw = myStories || profile.stories || []
+   const collectionsRaw = myCollections||[]
+    const pagesRaw = myStories ||  []
 useEffect(() => {
-    if (profile) {
-      dispatch(getMyCollections());
-      dispatch(getMyStories());
-    }
-  }, [profile, dispatch]);
+  if (!profile) return;
+
+   dispatch(getMyCollections());
+dispatch(getMyStories());
+}, [profile]);
 
 
 
@@ -83,36 +74,35 @@ useEffect(() => {
     () => pagesRaw.filter(Boolean).filter((page) => (search ? page.title?.toLowerCase().includes(search.toLowerCase()) : true)),
     [pagesRaw, search]
   );
-  const recentPosts = useMemo(
-    () => [...pagesRaw].filter(Boolean).sort((a, b) => new Date(b.updated ?? b.created) - new Date(a.updated ?? a.created)).slice(0, 5),
-    [pagesRaw]
+  // const recentPosts = useMemo(
+  //   () => [...pagesRaw].filter(Boolean).sort((a, b) => new Date(b.updated ?? b.created) - new Date(a.updated ?? a.created)).slice(0, 5),
+  //   [pagesRaw]
+  // );
+  const sortedPages = useMemo(() => {
+  return [...pagesRaw].sort(
+    (a, b) => new Date(b.updated ?? b.created) - new Date(a.updated ?? a.created)
   );
+}, [pagesRaw]);
+
+const recentPosts = sortedPages.slice(0, 5);
 // ── Tabs constants ─────────────────────────────────────
 
 
 // ── Pill Component ─────────────────────────────────────
-const Pill = ({ label,onClick }) => (
-  <span onClick={()=>onClick()}
+// const Pill = ({ label,onClick }) => (
+//   <span onClick={()=>onClick()}
   
-  className="text-xs px-3 py-1 shadow-sm rounded-full bg-gray-100 text-soft">
-    {label}
-  </span>
-);
+//   className="text-xs px-3 py-1 shadow-sm rounded-full bg-gray-100 text-soft">
+//     {label}
+//   </span>
+// );
 
 // ── Section Label ─────────────────────────────────────
 const SectionLabel = ({ children }) => (
   <p className="text-xs text-gray-400 uppercase tracking-wide">{children}</p>
 );
 
-// ── Search Bar ────────────────────────────────────────
-// const SearchBar = ({ value, onChange }) => (
 
-// );
-
-// ── Follow Button ─────────────────────────────────────
-
-
-// ── TabBar ────────────────────────────────────────────
 const tabs = [
   { key: TABS.POSTS, label: "Posts" },
   { key: TABS.COLLECTIONS, label: "Collections" },
@@ -136,126 +126,8 @@ const FollowButton = ({ following, onClick, isSelf }) => {
     </button>
   );
 };
-// ── Communities Panel ─────────────────────────────────
-// const CommunitiesPanel = ({ profile }) => {
 
 
-//   // c= profile?.communities ?? [];
-//   if (!communities.length)
-//     return <div className="text-center py-12 text-sm text-gray-400">No communities yet.</div>;
-
-//   return (
-//     <div className="space-y-4">
-//       {communities.map((c) => (
-//         <div key={c.id} onClick={()=>router.push(Paths.collection.createRoute(c.id))}className="p-4 rounded-xl bg-gray-50">
-//           <p className="text-sm font-medium text-gray-900">{c.title}</p>
-//           {c.purpose&& <p className="text-sm text-gray-500 mt-1">{c.purpose}</p>}
-//         </div>
-//       ))}
-//     </div>
-//   );
-// };
-
-
-const CommunitiesPanel = ({communities }) => {
-  const router = useIonRouter();
-
-  // const communities = profile?.communities ?? [];
-
-  const [page, setPage] = useState(1);
-  const limit = 6; // adjust based on feel
-
-  const totalPages = Math.ceil(communities.length / limit);
-
-  const paginatedCommunities = useMemo(() => {
-    const start = (page - 1) * limit;
-    return communities.slice(start, start + limit);
-  }, [communities, page]);
-
-  if (!communities.length) {
-    return (
-      <div className="text-center py-12 text-sm text-gray-400">
-        No communities yet.
-      </div>
-    );
-  }
-
-  return (
-    <div className="space-y-4">
-      
-      {/* List */}
-      {paginatedCommunities.map((c) => (
-        <div
-          key={c.id}
-          onClick={() => router.push(Paths.collection.createRoute(c.id))}
-          className="p-4 rounded-xl bg-gray-50 active:scale-[0.98] transition"
-        >
-          <p className="text-sm font-medium text-gray-900">
-            {c.title.length>0?c.title:"Untitled"}
-          </p>
-
-          {c.purpose && (
-            <p className="text-sm text-gray-500 mt-1">
-              {c.purpose}
-            </p>
-          )}
-        </div>
-      ))}
-
-      {/* Pagination */}
-      {totalPages > 1 && (
-        <PaginationControls
-          page={page}
-          totalPages={totalPages}
-          setPage={setPage}
-        />
-      )}
-    </div>
-  );
-};
-// ── About Panel ──────────────────────────────────────
-const AboutPanel = ({ profile }) => {
-  const [locationName,setLocationName]=useState("")
-  useEffect(()=>{
-    
-  async function city(){let address =await fetchCity(profile.location)
-if(locationName.length>0){
-    setLocationName(address)
-}
-  }
-  profile?.location ?setLocationName(profile.location.city):city()
-  },[profile])
-  if (!profile) return null;
-
-  const hashtags = profile.hashtags ?? profile.tags ?? [];
-
-  return (
-    <div className="space-y-6">
-      {(profile.bio || profile.selfStatement) && (
-        <p className="text-sm text-gray-700 leading-relaxed">
-          {profile.bio ?? profile.selfStatement}
-        </p>
-      )}
-
-      <div>
-          <p className="text-xs text-gray-400 uppercase">Location</p>
-          <p className="text-sm text-gray-700 mt-1">{locationName}</p>
-        </div>
-
-
-      {hashtags.length > 0 && (
-        <div>
-          <p className="text-xs text-gray-400 uppercase mb-2">Interests</p>
-          <div className="flex flex-wrap gap-2">
-            {hashtags.slice(0, 5).map((tag, i) => (
-              <Pill key={i} onClick={()=>router.push(Paths.hashtag.createRoute(tag.id))}label={`#${typeof tag === "string" ? tag : tag.name ?? tag.tag}`} />
-            ))}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
 
 // ── Minimal Empty State ──────────────────────────────
 const EmptyState = ({ text }) => (
@@ -280,7 +152,8 @@ const PageList = ({ items, router }) => (
       <div
         key={p.id}
         onClick={() => router.push(Paths.page.createRoute(p.id))}
-        className="p-3 rounded-xl border border-gray-200 bg-white/70 backdrop-blur-sm shadow-sm active:scale-[0.98] transition"
+        // {Enviroment.palette.base.surface}
+        className="p-3 rounded-xl border border-blue bg-base-bg backdrop-blur-sm shadow-sm active:scale-[0.98] transition"
       >
         <span className="text-[0.95rem] font-medium text-gray-800">
         {p?.title?.length > 0 ? p.title : "Untitled"}
@@ -290,69 +163,6 @@ const PageList = ({ items, router }) => (
   </div>
 );
 
-const PaginationControls = ({ page, totalPages, setPage }) => {
-  const [input, setInput] = useState(page);
-
-  useEffect(() => {
-    setInput(page);
-  }, [page]);
-
-  const goToPage = () => {
-    const p = Number(input);
-    if (p >= 1 && p <= totalPages) {
-      setPage(p);
-    } else {
-      setInput(page); // reset if invalid
-    }
-  };
-
-  return (
-    <div className="flex items-center justify-between px-3 py-2 rounded-2xl bg-white/60 backdrop-blur-md border border-gray-200 shadow-sm">
-      
-      {/* Prev */}
-      <button
-        disabled={page === 1}
-        onClick={() => setPage(page - 1)}
-        className={`px-3 py-1.5 rounded-full text-sm font-medium transition
-          ${page === 1 
-            ? "text-gray-300" 
-            : "text-seaBlue active:scale-95"}
-        `}
-      >
-        ‹
-      </button>
-
-      {/* Center (page indicator + input) */}
-      <div className="flex items-center gap-2 text-sm">
-        <span className="text-gray-500">Page</span>
-
-        <input
-          type="number"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onBlur={goToPage}
-          onKeyDown={(e) => e.key === "Enter" && goToPage()}
-          className="w-12 text-center bg-transparent border-b border-gray-300 focus:border-seaBlue outline-none"
-        />
-
-        <span className="text-gray-400">of {totalPages}</span>
-      </div>
-
-      {/* Next */}
-      <button
-        disabled={page === totalPages}
-        onClick={() => setPage(page + 1)}
-        className={`px-3 py-1.5 rounded-full text-sm font-medium transition
-          ${page === totalPages 
-            ? "text-gray-300" 
-            : "text-seaBlue active:scale-95"}
-        `}
-      >
-        ›
-      </button>
-    </div>
-  );
-};
 const PaginatedPageList = ({ items }) => {
   const router = useIonRouter();
 
@@ -434,11 +244,11 @@ const StatChip = ({ value, label }) => (
 
 
  
-  useEffect(() => {
-  if (!profile) return;
-  dispatch(setPagesInView({ pages: profile.stories || [] }));
-  dispatch(setCollections({ collections: profile.collections || [] }));
-}, [profile, dispatch]);
+//   useEffect(() => {
+//   if (!profile) return;
+//   dispatch(setPagesInView({ pages: profile.stories || [] }));
+//   dispatch(setCollections({ collections: profile.collections || [] }));
+// }, [profile, dispatch]);
 
   // ── Follow logic
   useEffect(() => {
@@ -457,20 +267,23 @@ const StatChip = ({ value, label }) => (
       type: "profile",
     });
   }, [profile, setSeo]);
-
+const debouncedSearch = useMemo(
+  () => debounce((value) => setSearch(value), 20),
+  []
+);
 
  
   if (!profile) return <IonContent
   fullscreen
   scroll-y="true"
-  style={{ "--background": Enviroment.palette.cream}}
+  style={{ "--background": Enviroment.palette.base.surface}}
 >Loading...</IonContent>;
   return (
     <ErrorBoundary>
       <IonContent
   fullscreen
   scroll-y="true"
-  style={{ "--background": Enviroment.palette.cream }}
+  style={{ "--background": Enviroment.palette.base.background}}
 >
         <div className="max-w-2xl mx-auto px-4 pb-24  space-y-8">
 <div className='flex sm:pt-16 p-4 flex-row justify-between'>
@@ -512,11 +325,12 @@ const StatChip = ({ value, label }) => (
               <div className="space-y-2">
                 <p className="text-xs text-gray-400 uppercase">Communities</p>
                 <div className="flex flex-wrap gap-2 ">
-                  {communities.slice(0, 3).map((c) => <Pill 
+                  {communities.slice(0, 3).map((c) => <div >
+                    <Pill
                    key={c.id} 
-                   onClick={()=>router.push(Paths.collection.createRoute(c.id)
-                  )}
-                  label={c.title} />)}
+                  baseClass="border-blue bg-base-bg"
+                  onClick={()=>router.push(Paths.collection.createRoute(c.id),"forward")}
+                  label={c.title} /></div>)}
                 </div>
               </div>
             )}
@@ -527,7 +341,7 @@ const StatChip = ({ value, label }) => (
               <div className="w-full">
     <input
       value={search}
-      onChange={(e) => setSearch(e.target.value)}
+      onChange={(e) => debouncedSearch(e.target.value)}
       placeholder="Search"
       className="
   
@@ -585,8 +399,8 @@ const StatChip = ({ value, label }) => (
             )
           }
 
-            {tab === TABS.COMMUNITIES && <CommunitiesPanel communities={communities} />}
-            {tab === TABS.ABOUT && <AboutPanel profile={profile} />}
+            {tab === TABS.COMMUNITIES && <CommunitiesPanel router={router} communities={communities} />}
+            {tab === TABS.ABOUT && <AboutPanel router={router} profile={profile} hashtags={profile.hashtags}/>}
           </div>
 
           {/* Explore */}

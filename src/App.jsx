@@ -198,7 +198,7 @@ const showBottomNavbar = isMobileOrTablet || isNative
     </Route>
     <Route exact path={Paths.myProfile}
       render={()=>  
-        <PageWrapper showBackbutton={false}>
+        <PageWrapper showBackbutton={false} showHeader={isNative}>
           <PrivateRoute>
           <MyProfileContainer
 
@@ -211,7 +211,7 @@ const showBottomNavbar = isMobileOrTablet || isNative
     />
           <Route exact path="/discovery" 
                 render={()=>
-                   <PageWrapper showBackbutton={false} showSearchButton={true}> 
+                   <PageWrapper showBackbutton={false} showHeader={false} showSearchButton={true}> 
                     <DiscoveryContainer/>
                      </PageWrapper>
                       

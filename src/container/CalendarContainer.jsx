@@ -1,7 +1,7 @@
 
 
-import { useEffect, useState } from "react";
-import { initGA,sendGAEvent } from "../core/ga4";
+import { useEffect, } from "react";
+import { initGA, } from "../core/ga4";
 import Enviroment from "../core/Enviroment";
 import Context from "../context";
 import { useContext } from "react";
@@ -39,7 +39,7 @@ export default function CalendarContainer(){
   
   },[])
   return (
-    <IonContent f        style={{ "--background": Enviroment.palette.cream}} ullscreen={true} scrollY={true} className="">
+    <IonContent f        style={{ "--background": Enviroment.palette.base.background}} fullscreen={true}  className="">
     <div className="mx-auto  m-4 pt-14   text-center">
 <div className=" w-[90%] sm:max-w-[30rem] mx-auto">
       <h1 className="lora-bold text-emerald-800 text-opacity-70 mb-4">Plumbum Calendar</h1>

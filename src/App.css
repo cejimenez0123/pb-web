@@ -1,6 +1,6 @@
 @import url("https://fonts.googleapis.com/css?family=Roboto:400,400i,700");
 @import url('https://fonts.googleapis.com/css2?family=Lora:wght@400..700&family=Montserrat:wght@500&family=Open+Sans:ital,wdth,wght@0,75..100,300..800;1,75..100,300..800&display=swap');
-
+@import url('https://fonts.cdnfonts.com/css/akzidenzgrotesk');
 .App{
 background-color: #f4f4e0!important;
   width: 100vw;
@@ -12,6 +12,8 @@ background-color: #f4f4e0!important;
   font-weight: 400;
   font-style: normal;
 }
+.azkin{ font-family: 'AkzidenzGrotesk', sans-serif;
+  }
 .responsive-dialog {
   --width: 100%;
   --max-width: 100%;
@@ -139,6 +141,8 @@ p,div,span,h6  {
   font-style: normal;
 } */
 
+
+                
 @media (min-width:768px) {
   
 

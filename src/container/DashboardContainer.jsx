@@ -237,23 +237,29 @@ const openPages=()=>{
     }
   }, 5);
 function WorkshopItem({workshop}){
-  return( <div onClick={()=>{router.push(Paths.collection.createRoute(workshop.group.id),"forward")}}className='border rounded-xl border-1 p-4 border-soft'>
-                  <h1 className='text-[1.4em] py-2 lora-medium'>{workshop.group.title}</h1>
-                  <h6 className='text-soft py-2'>Most Recent</h6>
-                  {workshop.story && <div className='py-2'>{workshop?.story?.title}</div>}
-                  {workshop.story && workshop.story.type==PageType.text && <div  className="bg-softBlue bg-opacity-30 p-2 rounded-xl"dangerouslySetInnerHTML={{__html:truncate(workshop.story.data,100,{})}}/>
+
+  return( <div onClick={()=>{router.push(Paths.collection.createRoute(workshop.group.id),"forward")}}
+
+  className={`border rounded-xl  bg-base-soft  hover:bg-card-highlight shadow-md  border-1 p-4 border-blue `}>
+
+                  <h1 className='text-[1.4em] py-2 text-text-inverse '>{workshop.group.title}</h1>
+                  <h6 className='text-soft  text-text-inverse py-2'>Most Recent</h6>
+                  {workshop.story && <div className='py-2  text-text-inverse'>{workshop?.story?.title}</div>}
+                  {workshop.story && workshop.story.type==PageType.text && <div  className=" text-text-inversep-2 rounded-xl"dangerouslySetInnerHTML={{__html:truncate(workshop.story.data,100,{})}}/>
                     }
                     {/* {<div dangerouslySetInnerHTML={{__html:truncate(workshop.story.data,20,{})/>}</div> */}
-                  <div className='flex flex-row py-4 '>{
+                  <div className='flex flex-row  text-text-inverse py-4 '>{
                     workshop.group.roles.map(role=><ProfileCircle profile={role.profile} includeUsername={false}/>)
 }</div>
                 </div>)
 }
     function StoryItem({story}){
-      return<div onClick={()=>router.push(Paths.page.createRoute(story.id))} className='border border-1 border-soft p-4 rounded-xl'>
+      return<div onClick={()=>router.push(Paths.page.createRoute(story.id))}className={'border border-blue rounded-full shadow-md  py-4 bg-base-bg px-10'}>
     <div className='flex flex-col gap-2'>
-       <h4 className='text-[1.2em]'>{story.title.length>0?story.title:"Untitled"}</h4>
-  <h6 className='text-[1em]'>{story.status}</h6>
+      
+      {/* {Enviroment.palette.text.inverse} */}
+       <h4 className='text-[1.2em] text-text-soft'>{story.title.length>0?story.title:"Untitled"}</h4>
+  <h6 className='text-[1em] text-text-soft'>{story.status}</h6>
   </div></div>
     }
 useEffect(()=>{
@@ -302,13 +308,13 @@ scrollY: false,
                       <div className="flex flex-row mx-auto max-w-[40em] flex-wrap my-4 justify-center gap-4">
         <ButtonWrapper
           onClick={ClickWriteAStory}
-          className="bg-soft hover:bg-emerald-500  border-emerald-700 border-opacity-80 text-white rounded-xl h-[3rem] w-[8.5rem]"
+          className="bg-button-secondary-bg hover:bg-button-secondary-hover  border-button-secondary-bg  border-opacity-80 text-white rounded-xl h-[3rem] w-[8.5rem]"
         >
           <IonText className='text-[1.2em]'><span className='pb-2'>Write</span><span> Something</span></IonText>
         </ButtonWrapper>
         <ButtonWrapper
           onClick={ClickCreateACollection}
-          className="bg-soft hover:bg-emerald-500  border-emerald-700 border-opacity-80 text-white rounded-xl h-[3rem] w-[8.5rem]"
+          className="bg-button-secondary-bg hover:bg-button-secondary-hover  border-button-secondary-bg  text-white rounded-xl h-[3rem] w-[8.5rem]"
         >
           <IonText className="text-white text-[1.2em]"><span className='pb-2'>Create</span><span> Collection</span></IonText>
         </ButtonWrapper>
@@ -316,12 +322,22 @@ scrollY: false,
 </div>
       {/* Row 2: Join a Workshop */}
       <div className="flex justify-center md:justify-start w-full">
-      
+          {/* "button": {
+      "primary": {
+        "bg": "#40906f", // Main CTA (Save, Add, Publish)
+        "text": "#ffffff", // Text on primary button
+        "hover": "#347a5e" // Hover/pressed state
+      },
+      "secondary": {
+        "bg": "#0097b2", // Secondary actions (View, Navigate)
+        "text": "#ffffff",
+        "hover": "#007c92"
+      }, */}
         <ButtonWrapper
        onClick={() => router.push(Paths.workshop.reader(), "forward")}
-          className="font-bold mx-auto bg-blueSea hover:bg-opacity-70 border-blueSea border-opacity-80 mx-4 rounded-xl h-[3rem] w-[90vw] sm:w-[21rem]"
+          className="font-bold mx-auto bg-button-primary-bg hover:bg-opacity-70 border-blueSea border-opacity-80 mx-4 rounded-full h-[3rem] w-[90vw] sm:w-[21rem]"
         >
-          <IonText className="text-white text-[1.2em]">Join a Workshop</IonText>
+          <IonText className="text-button-primary-text text-[1.2em]">Join a Workshop</IonText>
         </ButtonWrapper>
       </div>
       <div className='flex flex-row justify-between max-h-24'>
@@ -338,13 +354,17 @@ scrollY: false,
         ? router.push(Paths.page.createRoute(item.id), "forward")
         : router.push(Paths.collection.createRoute(item.id), "forward");
     }}
-    className="border border-soft rounded-xl p-4"
+    // className="border border-soft rounded-xl p-4"
+    // {Enviroment.palette.base.}
+    className={`border shadow-md border-1 rounded-full border-purple bg-base-bg  p-4`}
   >
+    {/* {Enviroment.palette.accent.} */}
     {item ? (
       // ✅ REAL CONTENT
       <div className="flex flex-row gap-4 items-center">
-        <h6>{item.type} ·</h6>
-        <h5 className="text-[1.2em]">{item.title}</h5>
+        <h6 className='text-text-primary'>{item.type} ·</h6>
+        {/* {Enviroment.palette.base.} */}
+        <h5 className="text-[1.2em] text-text-primary" >{item.title}</h5>
       </div>
     ) : (
       // ✅ SKELETON STATE
@@ -366,7 +386,7 @@ scrollY: false,
               
               {/* <h4 className='text-xl lora-medium mx-4 py-4'>Your Spaces</h4> */}
               <div>
-  <h4 className='text-xl lora-medium mx-4 py-4'>Your Spaces</h4>
+  <h4 className='text-xl lora-medium mx-4 pb-4 pt-8'>Your Spaces</h4>
 
   <div className='flex flex-row px-4 gap-4 overflow-x-auto'>
     
@@ -378,31 +398,35 @@ scrollY: false,
     ].map((item) => (
       
       <div
+      // {Enviroment.palette.accent.blue}
         key={item.label}
         onClick={item.onClick}
         className="
           flex-shrink-0
-          hover:bg-softBlue
+          
           min-w-36 sm:w-36 md:w-44 lg:w-44 
           aspect-square                
           rounded-2xl
-          border border-soft
-          bg-white/60
+          border border-blue
+          bg-base-bg
+  bg-button
           backdrop-blur-sm
-          shadow-sm
+         shadow-md 
           active:scale-95
           transition-all
           flex items-end
           p-3 relative
         "
       >
-           <span className="
+
+           <h4 className={`
           absolute top-3 left-3
-          lora-medium
-          text-sm md:text-base
-        ">
+       
+          text-[1.4em] text-[${Enviroment.palette.text.brand}]
+        `}>
+    {/* {Enviroment.palette.text.inverse} */}
           {item.label}
-        </span>
+        </h4>
       </div>
 
     ))}
@@ -419,7 +443,7 @@ scrollY: false,
             </div>
             <div  className='w-fit mx-auto '>
               <div className='flex flex-row justify-between'><h4 className='text-xl mx-4 lora-medium pb-4  '>Recent Pages</h4><h4 className='my-auto mx-4' onClick={()=>ClickWriteAStory()}>Write Something new+</h4></div>
-              {/* <div className='flex flex-col gap-4 px-4 py-4'> */}
+            
               <div className="grid grid-cols-1 px-4 md:grid-cols-2 lg:grid-cols-3 gap-4">
 
                 {[...(currentProfile?.stories || [])]

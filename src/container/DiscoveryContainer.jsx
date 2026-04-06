@@ -281,6 +281,7 @@ const LibraryForums = () => {
   return (
     <div className="">
       <IonText
+      style={{"--padding-bottom":"4em"}}
         className={`text-emerald-900 ${
           isNotPhone ? 'ml-16 pl-6' : 'ml-16'
         } mb-4 lora-bold font-extrabold text-2xl`}
@@ -289,8 +290,8 @@ const LibraryForums = () => {
       </IonText>
 
       {/* Horizontal scroll area */}
-      <div className="mb-4">
-        <div className="flex flex-row overflow-x-auto overflow-y-clip h-[14rem] space-x-4 px-4 no-scrollbar">
+      <div    style={{"--padding-top":"4em"}} className="mb-4">
+        <div className="flex flex-row overflow-x-auto overflow-y-clip  space-x-4 px-4 no-scrollbar">
           {libraries.map((library) => (
          
               <BookListItem book={library} />
@@ -307,7 +308,7 @@ const LibraryForums = () => {
     if (!books) return null;
     return (
       <div className=''>
-        <h3 className="text-emerald-900 text-left bg-transparent font-extrabold ml-16  mb-4 text-2xl">
+        <h3     style={{"--padding-bottom":"4em"}} className="text-emerald-900 text-left bg-transparent font-extrabold ml-16  mb-4 text-2xl">
           Collections
         </h3>
 <div className="mb-4 bg-transparent ">
@@ -334,7 +335,7 @@ const LibraryForums = () => {
 
 
   return (
-    <IonContent>
+    <IonContent style={{"--padding-top":"4em"}}>
 <div>
    
            
@@ -356,9 +357,9 @@ const LibraryForums = () => {
             </div>
           </div>
 
-        
+        <div className='mx-auto sm:max-w-[45em] '>
             <PageList items={viewItems} />
-         
+         </div>
 
           <div className="lg:flex-1 lg:mx-4" />
 

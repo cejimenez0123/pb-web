@@ -671,7 +671,7 @@ return (
                 </div>
               </label>
               
-              <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-cream rounded-box w-40">
+              <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-base-bg rounded-box w-40">
                 <li>
                   <button onClick={() => handleBookmark()} className="flex items-center gap-2">
                     {isBookmarked ? "Remove Bookmark" : "Bookmark"}
@@ -704,7 +704,7 @@ return (
           <AddButton
             disabled={!canUserAdd}
             loading={permissionsLoading}
-            className=" h-12 rounded-ful w-[100%] bg-soft text-white hover:bg-gray-800 transition"
+            className=" h-12 rounded-ful w-[100%] bg-button-primary text-button-primary-text hover:bg-button-accent-hover transition"
           /></div>
 
           {/* Tabs */}
@@ -712,7 +712,7 @@ return (
             <CollectionTabs
               tab={tab}
               setTab={setTab}
-              pages={<PageTab collections={collections} />}
+              pages={<PageTab collections={collections}  />}
               members={<MemberTab collection={collection} />}
               about={<AboutTab collection={collection} />}
             />
@@ -737,15 +737,15 @@ const PageTab = ({ collections }) => {
   const [isOwner,setIsOwner]=useState(collection?.profileId==currentProfile?.id)
   const router = useIonRouter()
   return (
-    <div className="">
-      {/* <div className="mx-auto my-4 rounded-xl bg-cream pt-12 px-4 pb-4"> */}
-        <><h2 className="text-[1.4rem] my-8 px-4 lora-bold text-soft ">
+    <div className=" bg-base-bg">
+    
+        <><h2 className="text-[1.4rem] bg-base-bg  my-8 px-4 lora-bold text-soft ">
           Anthologies
         </h2>
       
 {collections && collections?.length > 0 ? (
 
-    <div className="flex flex-row bg-cream min-h-[14rem] overflow-x-scroll">
+    <div className="flex flex-row bg-base-bg min-h-[14rem] overflow-x-scroll">
       {collections
         .filter((col) => col)
         .map((col, i) => (
@@ -759,7 +759,7 @@ const PageTab = ({ collections }) => {
   <div className="flex flex-row gap-3 overflow-x-scroll py-8 px-3">
    
 
-      <div className=" flex flex-col items-center mx-auto justify-center bg-cream rounded-lg p-4  text-center">
+      <div className=" flex flex-col items-center mx-auto justify-center bg-base-bg rounded-lg p-4  text-center">
         <p className="mb-2 text-gray-700">No anthologies yet.</p>
          {isOwner  && collection?.childCollections?.length<1 && (   <button
           onClick={() => router.push(Paths.addToCollection.createRoute(collection?.id))}
@@ -827,8 +827,8 @@ const MemberTab = ({ collection }) => {
         </h2>
 
         {
-          <IonList style={{ backgroundColor: Enviroment.palette.cream}}>
-            <div className="flex flex-col bg-cream pt-4 min-h-[14rem] overflow-x-scroll">
+          <IonList style={{ backgroundColor: Enviroment.palette.base.background}}>
+            <div className="flex flex-col bg-base-bg pt-4 min-h-[14rem] overflow-x-scroll">
               {
           
                 roles.map((role, i) => {
@@ -898,7 +898,7 @@ const AboutTab = ({ collection}) => {
       
 
       {collections && collections.length > 0 ? (
-        <IonList style={{ backgroundColor: Enviroment.palette.cream}}>
+        <IonList style={{ backgroundColor: Enviroment.palette.base.background}}>
           <div className="flex flex-row bg-cream min-h-[14rem] overflow-x-scroll">
             {collections
               .filter((col) => col)
@@ -926,7 +926,7 @@ const AboutTab = ({ collection}) => {
 // // Tabs
 function CollectionTabs({ tab, setTab, pages, members, about }) {
   return (
-    <div className="bg-cream pt-6 sm:pt-12">
+    <div className="bg-base-bg pt-6 sm:pt-12">
       <div className="flex justify-center lg:justify-start lg:mx-12 mb-4">
         <div className="flex rounded-full border overflow-hidden w-full sm:w-[40em] lg:w-[30em] border-emerald-600">
           {["pages", "members", "about"].map((t) => (
@@ -942,7 +942,7 @@ function CollectionTabs({ tab, setTab, pages, members, about }) {
           ))}
         </div>
       </div>
-      <div className="relative overflow-hidden bg-cream">
+      <div className="relative overflow-hidden ">
         <motion.div
           key={tab}
           initial={{ opacity: 0 }}

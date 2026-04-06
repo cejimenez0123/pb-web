@@ -84,7 +84,7 @@ return(
 <div className="navbar bg-emerald-800">
 
   <div className="navbar-start">
-   <h1 className='text-white text-xl px-4'>Pb</h1>
+   <p className='text-white text-xl px-4 text-[4em]'>Pb</p>
   </div>
 
   <div className="navbar-center">

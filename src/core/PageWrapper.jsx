@@ -8,10 +8,10 @@ import {
   IonToolbar,
   IonHeader,
   useIonRouter,
-  IonTitle,
   IonImg,
   IonText,
-  IonButton
+  IonButton,
+  IonList
 } from '@ionic/react';
 import { useEffect, useRef, useContext, useState } from 'react';
 import Context from '../context';
@@ -24,6 +24,9 @@ import { useSelector } from 'react-redux';
 import { getCurrentProfile } from '../actions/UserActions';
 import { useDispatch } from 'react-redux';
 import { debounce } from 'lodash';
+import Enviroment from './Enviroment';
+import { getMyStories } from '../actions/StoryActions';
+import { getMyCollections } from '../actions/CollectionActions';
 const PageWrapper = ({
   children,
   showHeader = true,
@@ -42,6 +45,9 @@ const isNativePlatform = Capacitor.isNativePlatform();
 
 const isNative = (isDev || isNativePlatform)
 const {currentProfile}=useSelector(state=>state.users)
+const myCollections=useSelector(state=>state.books.myCollections.filter(t=>t))
+const myStories=useSelector(state=>state.pages.myPages.filter(t=>t))
+// const  /
   const [isOnline, setIsOnline] = useState(navigator.onLine);
 const isDesktop = useMediaQuery({ query: '(min-width: 60.1em)' }) // 768px
 // const isMobileOrTablet = useMediaQuery({ query: '(max-width: 60em)' })
@@ -49,6 +55,13 @@ const [homeCol, setHomeCol] = useState(null);
 const dispatch = useDispatch()
     const [archiveCol, setArchiveCol] = useState(null);
     const { openDialog, dialog,resetDialog } = useDialog()
+    useEffect(() => {
+      if (!currentProfile) return;
+    
+       dispatch(getMyCollections());
+    dispatch(getMyStories());
+    }, []);
+    
        useEffect(() => {
                     
                     if (currentProfile?.profileToCollections) {
@@ -89,7 +102,7 @@ checkUser()
       text: (<div className=''>
   
         <div className={`bg-cream overflow-y-auto border border-1 rounded-xl border-soft px-4 ${isNative? "h-[36rem] sm:h-[40rem] md:h-[48rem] lg:h-[50rem]":"h-[30rem] sm:h-[40rem] md:h-[48rem] lg:h-[50rem]"}`}> 
-          <IonList 
+          <IonList
            style={{
             backgroundColor: Enviroment.palette.cream,
             paddingTop: "0.5em"
@@ -112,6 +125,7 @@ checkUser()
   }
 
   const openCollections = () => {
+  
   openDialog({
     title: "Collections",
     scrollY: false,
@@ -135,7 +149,7 @@ checkUser()
               backgroundColor: Enviroment.palette.cream,
             }}
           >
-            {currentProfile.collections.map((story) => (
+            {myCollections.map((story) => (
               <li
                 key={story.id}
                 className="my-2"
@@ -145,7 +159,7 @@ checkUser()
                 }}
               >
                 <div className="p-4 w-full border border-soft rounded-xl bg-cream">
-                  <h6>{story.title}</h6>
+                  <h6>{story?.title??"Untitled"}</h6>
                 </div>
               </li>
             ))}
@@ -175,7 +189,7 @@ checkUser()
               backgroundColor: Enviroment.palette.cream,
             }}
           >
-            {currentProfile.stories.filter(s=>s.status=="draft"||s.status=="fragment").map((story) => (
+            {myStories.filter(s=>s.status=="draft"||s.status=="fragment").map((story) => (
               <li
                 key={story.id}
                 className="my-2"
@@ -197,7 +211,7 @@ checkUser()
   });
 };
       const openCommunities=()=>{
-        const communities = currentProfile.collections.filter(col=>col.type=="library")
+        const communities = myCollections.filter(col=>col.type=="library")
    openDialog({
       title: "Communities",
     scrollY: false,
@@ -237,7 +251,7 @@ checkUser()
           backgroundColor: Enviroment.palette.cream,
         }}
       >
-        {currentProfile.stories.map((story) => {
+        {myStories.map((story) => {
           return (
             <li
               key={story.id}
@@ -309,16 +323,24 @@ checkUser()
   return (
     <IonPage
       ref={pageRef}
-      style={{ height: '100%', paddingTop: isDesktop ? '5em' : '0' }}
+       style={{ height: '100%', paddingTop: isDesktop ? '5em' : '0', }}
     >
-      {(showHeader ) && (
+      {(showHeader &&!isNative&&!isDesktop) && (
         <IonHeader >
-          <IonToolbar>
+          <div >
+          <IonToolbar style={{
+    '--background': Enviroment.palette.base.soft,
+    '--color': Enviroment.palette.text.inverse // text color
+  }} >
             {showBackbutton ? (
               <IonButtons slot="start">
-                <IonBackButton defaultHref={Paths.discovery} onClick={handleBack} />
+                <IonBackButton
+  defaultHref={Paths.discovery}
+  onClick={handleBack}
+  style={{ '--color': Enviroment.palette.text.inverse }}
+/>
               </IonButtons>):(<IonButtons slot="start">
-                <IonText>Pb</IonText>
+                <p className='azkin text-[4em]'>Pb</p>
               </IonButtons>)}
               {showSearchButton && (<SearchButton onClick={() => router.push("/search")} />)}
     
@@ -331,13 +353,15 @@ checkUser()
       style={{
         width: "2.5em",
         height: "2.5em",
-        filter:
-          "invert(33%) sepia(86%) saturate(749%) hue-rotate(111deg) brightness(92%) contrast(91%)"
-      }}/>
+        
+    '--background': Enviroment.palette.base.soft,
+    '--color': Enviroment.palette.base.text || '#000'}
+      }/>
  </div>
     </IonButtons>
   )}
           </IonToolbar>
+          </div>
         </IonHeader>
       )}
     <div className={`
