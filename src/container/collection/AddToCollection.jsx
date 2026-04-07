@@ -105,7 +105,7 @@ useEffect(()=>{
     let result = collections || [];
     if (filterType === filterTypes.feedback) {
       result = collections.filter(
-        (col) => col.type === "feedback" || col.purpose.toLowerCase().includes("feedback")
+        (col) => col && col.type === "feedback" || col.purpose.toLowerCase().includes("feedback")
       );
     }
     switch (filterType) {
@@ -252,7 +252,7 @@ useEffect(()=>{
     return (
       <div className="space-y-2">
         {filteredSortedCollections.map((col) => {
-          if (col.id === colInView.id) return null;
+          if (col?.id === colInView.id) return null;
           const added =
             newCollections.some((c) => c.id === col.id) ||
             colInView?.childCollections?.some((j) => j.childCollectionId === col.id);
@@ -313,7 +313,7 @@ useEffect(()=>{
   return (
     <IonContent fullscreen style={{ "--background": Enviroment.palette.cream }} className="ion-padding">
       <ErrorBoundary>
-        <div className="sm:max-w-[50rem] mx-auto py-4">
+        <div className="max-w-[50em] mx-auto py-4">
           {/* Header */}
           <div className="mb-4 space-y-2">
             <h2 className="text-xl font-semibold text-soft">Add to {colInView?.title||"Collection"}</h2>
@@ -368,18 +368,6 @@ useEffect(()=>{
             <StoryCollectionTabs tab={tab} setTab={setTab} storyList={storyList} colList={colList} />
           </div>
 
-          {/* Sticky Save
-          <div className="fixed bottom-4 left-0 right-0 px-4">
-            <div className="max-w-[42em] mx-auto">
-              <Pill
-                label={`Save (${newStories.length + newCollections.length})`}
-                onClick={save}
-                variant="primary"
-                color="blueSea"
-                className="w-full justify-center text-base py-4 shadow-lg"
-              />
-            </div>
-          </div> */}
         </div>
       </ErrorBoundary>
     </IonContent>

@@ -16,6 +16,7 @@ import Googlelogo from "../images/logo/googlelogo.png";
 import ErrorBoundary from "../ErrorBoundary"; // make sure this path matches your project
 import { sendGAEvent } from "../core/ga4";
 import Paths from "../core/paths";
+import { Capacitor } from "@capacitor/core";
 function GoogleLoginInner({ drive, onUserSignIn }) {
   const { isError } = useContext(Context);
   const [bootstrapping, setBootstrapping] = useState(true);
@@ -28,7 +29,7 @@ const [pending, setPending] = useState(false);
   const [accessToken, setAccessToken] = useState(null);
   const [idToken, setIdToken] = useState(null);
 
-  const isNative = DeviceCheck();
+  const isNative = Capacitor.isNativePlatform()
 const router =useIonRouter()
 
   const dispatch = useDispatch();
@@ -63,7 +64,7 @@ const router =useIonRouter()
   // ---------------------------
   // 2️⃣ Load GIS script (for web)
   // ---------------------------
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (isNative) return;
 
     try {

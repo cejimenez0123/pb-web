@@ -16,16 +16,17 @@ import ErrorBoundary from '../ErrorBoundary.jsx';
 import StoryItem from '../components/page/StoryItem.jsx';
 import Enviroment from '../core/Enviroment.js';
 import PageList from '../components/page/PageList.jsx';
+import SectionHeader from '../components/SectionHeader.jsx';
 
 
 
 // Section Header Component
-const SectionHeader = ({ title, right }) => (
-  <div className="flex items-center justify-between px-1 mb-2 mt-6">
-    <IonText className="text-lg font-semibold text-gray-900">{title}</IonText>
-    {right}
-  </div>
-);
+// const SectionHeader = ({ title, right }) => (
+//   <div className="flex items-center justify-between px-1 mb-2 mt-6">
+//     <IonText className="text-lg font-semibold text-gray-900">{title}</IonText>
+//     {right}
+//   </div>
+// );
 const WorkshopItem = ({ item, router }) => {
   if (!item) return <WorkshopItemSkeleton />;
 

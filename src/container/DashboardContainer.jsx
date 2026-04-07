@@ -59,6 +59,7 @@ const collections = collectionsRaw
   const isNative = Capacitor.isNativePlatform()
      const [homeCol,setHomeCol]=useState(null)
     const [archiveCol,setArchiveCol]=useState(null)
+const myStories = useSelector(state=>state.pages.myPages.filter(t=>t))
  const myCollections = useSelector(state=>state.books.myCollections.filter(t=>t))
 useEffect(()=>{
  fetchWorkshops()
@@ -135,7 +136,8 @@ const openCollections=()=>{
          
         }}>
          
-        {currentProfile.collections.map(story=>{
+        {myCollections.length==0?<div ><h3>No Collections</h3>
+        <h4 onClick={()=>router.push(Paths.discovery)}>Click Here</h4></div>:myCollections.map(story=>{
           return<li className=' my-2 bg-cream' onClick={()=>{
             router.push(Paths.collection.createRoute(story.id))
             resetDialog()
@@ -144,7 +146,7 @@ const openCollections=()=>{
    
         </IonList>
 
-           {/* </div> */}
+          
     </div>
     )})}
     const openCommunities=()=>{
@@ -188,7 +190,8 @@ const openPages=()=>{
           backgroundColor: Enviroment.palette.cream,
          
         }}>
-        {currentProfile.stories.map(story=>{
+        {myStories.length==0?<div className='text-center p-8'><h2 >No Posts</h2>
+        <h2 onClick={()=>router.push(Paths.discovery)}>Click here</h2></div>:myStories.map(story=>{
           return<li className=' my-2 bg-cream' onClick={()=>{
             router.push(Paths.page.createRoute(story.id))
             resetDialog()
@@ -324,17 +327,7 @@ scrollY: false,
 </div>
       {/* Row 2: Join a Workshop */}
       <div className="flex justify-center md:justify-start w-full">
-          {/* "button": {
-      "primary": {
-        "bg": "#40906f", // Main CTA (Save, Add, Publish)
-        "text": "#ffffff", // Text on primary button
-        "hover": "#347a5e" // Hover/pressed state
-      },
-      "secondary": {
-        "bg": "#0097b2", // Secondary actions (View, Navigate)
-        "text": "#ffffff",
-        "hover": "#007c92"
-      }, */}
+
         <ButtonWrapper
        onClick={() => router.push(Paths.workshop.reader(), "forward")}
           className="font-bold mx-auto bg-button-primary-bg hover:bg-opacity-70 border-blueSea border-opacity-80 mx-4 rounded-full h-[3rem] w-[90vw] sm:w-[21rem]"
@@ -348,7 +341,7 @@ scrollY: false,
               <img src={arrowToRight} onClick={()=>homeCol && router.push(Paths.collection.createRoute(homeCol.id))}className='max-w-8 mt-auto mb-4 max-h-8 mx-4' />
               </div>
               <div className='flex mx-4 flex-col gap-4'>
-               {saves.map(item=>{ 
+               {saves.length==0?<div><h2>Bookmark things you want to see often</h2></div>:saves.map(item=>{ 
                 return (
   <div
     onClick={() => {
@@ -442,7 +435,7 @@ scrollY: false,
           
               <img  onClick={()=>{openYourWorkshops()}} src={arrowToRight} className='max-w-8 mt-auto mb-4 max-h-8 mx-4' />
 </div>
-              {workshop&&<div className='px-4'><WorkshopItem workshop={workshop}/></div>}
+              {workshop?<div className='px-4'><WorkshopItem workshop={workshop}/></div>:<div><h2>Click Join a Workshop or Studio below</h2></div>}
               <div className=' p-4 '></div>
             </div>
             <div  className='w-fit mx-auto '>
@@ -460,7 +453,7 @@ scrollY: false,
 </div>
               <div className="grid grid-cols-1 px-4 md:grid-cols-2 lg:grid-cols-3 gap-4">
 
-                {[...(currentProfile?.stories || [])]
+                {myStories.length==0?<div>This is a beginning. Start writing</div>:[...(myStories)]
   .sort((a, b) => a.updated - b.updated)
   .slice(0, 4)
   .map(story => <StoryDashboardItem story={story} router={router}/>)}

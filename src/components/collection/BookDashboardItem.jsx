@@ -4,161 +4,294 @@ import {useDispatch} from 'react-redux'
 import bookmarkfill from "../../images/bookmarkfill.svg"
 import bookmarkoutline from "../../images/bookmarkadd.svg"
 import checkResult from '../../core/checkResult'
-import Paths from '../../core/paths'
+// import Paths from '../../core/paths'
 
-import ProfileCircle from '../profile/ProfileCircle'
-import {  addCollectionListToCollection, deleteCollectionFromCollection,  } from '../../actions/CollectionActions'
+import { IonImg, useIonRouter } from "@ionic/react";
+import Paths from "../../core/paths";
+import ProfileCircle from "../profile/ProfileCircle";
 import Context from '../../context'
-import { debounce } from 'lodash'
+import { useSelector } from 'react-redux'
+import debounce from '../../core/debounce'
 import Carousel from './Carousel'
-import { IonImg, useIonRouter } from '@ionic/react'
 
 
-function BookDashboardItem({book,isGrid}) {
 
-    const dispatch = useDispatch()
-    const {setError,currentProfile,isPhone,isHorizPhone}=useContext(Context)
-    const router = useIonRouter()
-    
-    const [bookmarked,setBookmarked]=useState()
-     const soCanUserEdit=()=>{
+function BookDashboardItem({ book, isGrid }) {
+  const dispatch = useDispatch();
+  const {currentProfile}=useSelector(state=>state.users)
+  const { setError } = useContext(Context);
+  const router = useIonRouter();
 
+  const [bookmarked, setBookmarked] = useState();
 
-        
-     }
+  useLayoutEffect(() => {
+    if (currentProfile?.profileToCollections) {
+      let archive = currentProfile.profileToCollections.find(
+        (col) => col.type === "archive"
+      );
 
-   
-const deleteBtc=()=>{
-
-        if(bookmarked){
-          
-          dispatch(deleteCollectionFromCollection({tcId:bookmarked.id})).then(res=>checkResult(res,payload=>{
-    setBookmarked(null)
-
-   },err=>{
-    setError(err.message)
-   })
-)
-}
-}
-
-const checkFound=()=>{
-    
-    if(currentProfile && currentProfile.profileToCollections){
-   let archive = currentProfile.profileToCollections.find(col=>col.type=="archive")
-
-    if(book&&book.parentCollections){
- 
-           
-            
-         let found = book.parentCollections.find(ptc=>ptc.parentCollectionId==archive.collection.id)
-
-            // setIsArchived(found)
-            setBookmarked(found)
-            }
- 
+      if (book?.parentCollections) {
+        let found = book.parentCollections.find(
+          (ptc) => ptc.parentCollectionId == archive?.collection?.id
+        );
+        setBookmarked(found);
+      }
     }
-}
- 
+  }, [book, currentProfile]);
 
-useLayoutEffect(()=>{
-    checkFound()
-},[book])
-const description = (book)=>{return !isPhone&&!isGrid?book.description && book.description.length>0?
-    <div id="book-description" className={`text-emerald-700 min-h-12 pt-4 px-3 rounded-t-lg`}>
-        <h6 className={`text-emerald-700 ${isGrid?isPhone?" w-grid-mobile-content ":" w-grid ":isHorizPhone?" w-page-content ":" w-page-mobile-content px-4 "} open-sans-medium text-left `}>
-            {book.description}
-        </h6>
-    </div>:null:null}
+  const handleBookmark = debounce((e) => {
+    e.stopPropagation();
 
-    useLayoutEffect(()=>{
-        soCanUserEdit()
+    if (!currentProfile) return setError("Please Login");
 
-    },[book])
-  
- const BookmarkBtn = ({ book }) => {
-  let title = book?.title.length > 23 ? book?.title.slice(0, 20) + "..." : book?.title;
+    if (bookmarked) {
+      dispatch(deleteCollectionFromCollection({ tcId: bookmarked.id }))
+        .then(() => setBookmarked(null));
+    } else {
+      let archive = currentProfile.profileToCollections.find(
+        (col) => col.type === "archive"
+      )?.collection;
+
+      if (!archive) return setError("Missing archive");
+
+      dispatch(
+        addCollectionListToCollection({
+          id: archive.id,
+          list: [book.id],
+          profile: currentProfile,
+        })
+      ).then((res) =>
+        checkResult(res, (payload) => {
+          const marked = payload.collection.parentCollections.find(
+            (col) => col.parentCollectionId == archive.id
+          );
+          setBookmarked(marked);
+        })
+      );
+    }
+  }, 10);
+
+  if (!book) {
+    return (
+      <div className="min-w-[16rem] h-[14rem] rounded-2xl bg-gray-100 animate-pulse" />
+    );
+  }
 
   return (
     <div
-      className={`flex justify-between items-center py-2 rounded-b-lg bg-bleuSea bg-opacity-10  px-3  px-2 w-[100%]`}
+      onClick={() => router.push(Paths.collection.createRoute(book.id))}
+      className="
+        min-w-[16rem]
+        rounded-2xl
+        bg-base-bg
+        border border-blue
+        shadow-sm
+        overflow-hidden
+        active:scale-[0.97]
+        transition-all duration-200
+      "
     >
-      {/* Profile Circle on left, hide if small phone in grid */}
-      {!(isPhone && isGrid) && (
-        <ProfileCircle isGrid={isGrid} color="emerald-700" profile={book.profile} />
-      )}
+      {/* 🔹 Carousel (Hero) */}
+    <div className="relative w-full aspect-[4/3] overflow-hidden">
+  <Carousel book={book} />
 
-      {/* Title + Bookmark */}
-      <div className="flex-1 flex justify-end items-center  px-2 gap-2 overflow-hidden">
-        <h6
-          className="text-emerald-700 open-sans-medium text-[0.7rem] truncate cursor-pointer"
-          onClick={() => router.push(Paths.collection.createRoute(book.id))}
-        >
-          {title}
-        </h6>
-        <IonImg
+        {/* Bookmark floating (iOS style) */}
+        <button
           onClick={handleBookmark}
-          src={bookmarked ? bookmarkfill : bookmarkoutline}
-          className="w-4 h-4 cursor-pointer"
-        />
+          className="
+            absolute top-3 right-3
+            p-2 rounded-full
+            bg-white/80 backdrop-blur
+            shadow-sm
+            active:scale-90
+            transition
+          "
+        >
+          <IonImg
+            className="w-4 h-4"
+            src={bookmarked ? bookmarkfill : bookmarkoutline}
+          />
+        </button>
+      </div>
+
+      {/* 🔹 Content */}
+      <div className="p-3 space-y-2">
+        {/* Title */}
+        <h4 className="text-sm font-semibold text-[#003b44] truncate">
+          {book.title || "Untitled"}
+        </h4>
+
+        {/* Purpose (description) */}
+        {book.description && (
+          <p className="text-xs text-[#003b44]/70 line-clamp-2 leading-relaxed">
+            {book.description}
+          </p>
+        )}
+
+        {/* Footer */}
+        <div className="flex items-center justify-between pt-2">
+          <ProfileCircle profile={book.profile} includeUsername={false} />
+
+          <span className="text-[0.7rem] text-[#003b44]/60">
+            {book.storyIdList?.length || 0} items
+          </span>
+        </div>
       </div>
     </div>
   );
-};
+}
+export default BookDashboardItem
+
+
+// import ProfileCircle from '../profile/ProfileCircle'
+// import {  addCollectionListToCollection, deleteCollectionFromCollection,  } from '../../actions/CollectionActions'
+// import Context from '../../context'
+// import { debounce } from 'lodash'
+// import Carousel from './Carousel'
+// import { IonImg, useIonRouter } from '@ionic/react'
+
+
+// function BookDashboardItem({book,isGrid}) {
+
+//     const dispatch = useDispatch()
+//     const {setError,currentProfile,isPhone,isHorizPhone}=useContext(Context)
+//     const router = useIonRouter()
+    
+//     const [bookmarked,setBookmarked]=useState()
+//      const soCanUserEdit=()=>{
+
+
+        
+//      }
+
+   
+// const deleteBtc=()=>{
+
+//         if(bookmarked){
+          
+//           dispatch(deleteCollectionFromCollection({tcId:bookmarked.id})).then(res=>checkResult(res,payload=>{
+//     setBookmarked(null)
+
+//    },err=>{
+//     setError(err.message)
+//    })
+// )
+// }
+// }
+
+// const checkFound=()=>{
+    
+//     if(currentProfile && currentProfile.profileToCollections){
+//    let archive = currentProfile.profileToCollections.find(col=>col.type=="archive")
+
+//     if(book&&book.parentCollections){
+ 
+           
+            
+//          let found = book.parentCollections.find(ptc=>ptc.parentCollectionId==archive.collection.id)
+
+//             // setIsArchived(found)
+//             setBookmarked(found)
+//             }
+ 
+//     }
+// }
+ 
+
+// useLayoutEffect(()=>{
+//     checkFound()
+// },[book])
+// const description = (book)=>{return !isPhone&&!isGrid?book.description && book.description.length>0?
+//     <div id="book-description" className={`text-emerald-700 min-h-12 pt-4 px-3 rounded-t-lg`}>
+//         <h6 className={`text-emerald-700 ${isGrid?isPhone?" w-grid-mobile-content ":" w-grid ":isHorizPhone?" w-page-content ":" w-page-mobile-content px-4 "} open-sans-medium text-left `}>
+//             {book.description}
+//         </h6>
+//     </div>:null:null}
+
+//     useLayoutEffect(()=>{
+//         soCanUserEdit()
+
+//     },[book])
+  
+//  const BookmarkBtn = ({ book }) => {
+//   let title = book?.title.length > 23 ? book?.title.slice(0, 20) + "..." : book?.title;
+
+//   return (
+//     <div
+//       className={`flex justify-between items-center py-2 rounded-b-lg bg-bleuSea bg-opacity-10  px-3  px-2 w-[100%]`}
+//     >
+//       {/* Profile Circle on left, hide if small phone in grid */}
+//       {!(isPhone && isGrid) && (
+//         <ProfileCircle isGrid={isGrid} color="emerald-700" profile={book.profile} />
+//       )}
+
+//       {/* Title + Bookmark */}
+//       <div className="flex-1 flex justify-end items-center  px-2 gap-2 overflow-hidden">
+//         <h6
+//           className="text-emerald-700 open-sans-medium text-[0.7rem] truncate cursor-pointer"
+//           onClick={() => router.push(Paths.collection.createRoute(book.id))}
+//         >
+//           {title}
+//         </h6>
+//         <IonImg
+//           onClick={handleBookmark}
+//           src={bookmarked ? bookmarkfill : bookmarkoutline}
+//           className="w-4 h-4 cursor-pointer"
+//         />
+//       </div>
+//     </div>
+//   );
+// };
 
  
    
-    const handleBookmark =debounce((e)=>{
-        if(currentProfile){
-        e.preventDefault()
-        if(bookmarked){
-                deleteBtc()
-        }else{
-         let archive =   currentProfile.profileToCollections.find(col=>col && col.collection && col?.collection?.title.toLowerCase()=="archive").collection
+//     const handleBookmark =debounce((e)=>{
+//         if(currentProfile){
+//         e.preventDefault()
+//         if(bookmarked){
+//                 deleteBtc()
+//         }else{
+//          let archive =   currentProfile.profileToCollections.find(col=>col && col.collection && col?.collection?.title.toLowerCase()=="archive").collection
        
-         if(archive.id&&book.id){
+//          if(archive.id&&book.id){
            
-           dispatch(addCollectionListToCollection({id:archive.id,list:[book.id],profile:currentProfile})).then(res=>{
-            checkResult(res,payload=>{
-                    const {collection}=payload
-                    const marked = collection.parentCollections.find(col=>col.parentCollectionId==archive.id)
+//            dispatch(addCollectionListToCollection({id:archive.id,list:[book.id],profile:currentProfile})).then(res=>{
+//             checkResult(res,payload=>{
+//                     const {collection}=payload
+//                     const marked = collection.parentCollections.find(col=>col.parentCollectionId==archive.id)
             
-                    setBookmarked(marked)
-                },err=>{
+//                     setBookmarked(marked)
+//                 },err=>{
 
-            })
-           })
-            }else{
-                setError("Error with Archive Collection")
-            }
-        }}else{
+//             })
+//            })
+//             }else{
+//                 setError("Error with Archive Collection")
+//             }
+//         }}else{
             
-            setError("Please Login")
-        }
-          },10)
+//             setError("Please Login")
+//         }
+//           },10)
 
 
-if(!book){
-    return<span className={`skeleton mt-2 shadow-md overflow-clip sm:max-w-[50em] w-[100%] w-[94vw]  rounded-box flex flex-col bg-emerald-100`}/>
-}
+// if(!book){
+//     return<span className={`skeleton mt-2 shadow-md overflow-clip sm:max-w-[50em] w-[100%] w-[94vw]  rounded-box flex flex-col bg-emerald-100`}/>
+// }
     
-        return(
-            <div className='bg-blueSea bg-opacity-10 w-[100%] rounded-lg '>
+//         return(
+//             <div className='bg-blueSea bg-opacity-10 w-[100%] rounded-lg '>
     
 
 
-        {description(book)}
+//         {description(book)}
     
-            <Carousel book={book}/>
+//             <Carousel book={book}/>
 
-                <BookmarkBtn book={book}/> 
+//                 <BookmarkBtn book={book}/> 
               
-</div>
+// </div>
 
-     )
+//      )
 
-}
-
-
-export default BookDashboardItem
-
+// }

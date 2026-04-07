@@ -588,10 +588,10 @@ const Why = ({ handleTab, nav }) => {
   );
 
   return (
-<IonContent fullscreen={true}>
-  <div className='pt-8 pb-12'>
+<IonContent fullscreen={true} style={{"--padding-bottom":"4em"}}>
+  {/* <div className='pt-8 pb-12'> */}
           {user ? <ThankYou user={user} /> : <MyTabs />}
-    </div>
+    {/* </div> */}
   </IonContent>
   );
 }

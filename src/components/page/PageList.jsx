@@ -3,20 +3,22 @@
 // import { useContext } from "react"
 // import Context from "../../context"
 // import { IonInfiniteScroll, IonItem, IonList } from "@ionic/react"
-import { IonInfiniteScroll, IonInfiniteScrollContent } from "@ionic/react";
+import { IonInfiniteScroll, IonInfiniteScrollContent, IonList } from "@ionic/react";
 import DashboardItem from "./DashboardItem";
 import { useContext } from "react";
 import Context from "../../context";
 import BookDashboardItem from "../collection/BookDashboardItem";
+import Enviroment from "../../core/Enviroment";
 
 const PageList = ({ items = [], forFeedback, getMore = () => {}, hasMore = true, isGrid }) => {
   // const { isPhone } = useContext(Context);
   // const pagesInView = items.filter(Boolean);
 
   return (
-    <div>
+    <div className="bg-base-surface">
+  {/* // <IonList style={{"--background":Enviroment.palette.base.background}}> */}
       {items.map((item, i) => (
-        <div>{
+        <div className="my-[0.5rem]" >{
         item.authorId?   <DashboardItem
           key={i}
           item={item}
@@ -41,7 +43,7 @@ const PageList = ({ items = [], forFeedback, getMore = () => {}, hasMore = true,
           loadingText="Loading more..."
         />
       </IonInfiniteScroll>
-    </div>
+  </div>
   );
 };
 

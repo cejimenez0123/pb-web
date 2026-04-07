@@ -104,8 +104,8 @@ return(
 const navItem =
   "flex-1 flex flex-col items-center justify-center bg-soft text-white active:scale-95 transition-transform";
 function MobileNavbar({currentProfile}){
-const router = useIonRouter()
-   
+  const router = useIonRouter()
+
   return (
     <div className="fixed bottom-0 w-[100%] bg-soft border-t border-white/10">
       <div className="flex flex-row justify-between items-center px-2 py-2 max-w-md mx-auto">

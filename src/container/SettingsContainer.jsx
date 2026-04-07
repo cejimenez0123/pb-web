@@ -300,9 +300,9 @@ dispatch(updateProfile({
 
     <IonContent fullscreen>
       
-      <div className="min-h-screen bg-base-200 flex justify-center pt-20 pb-32">
+      <div className="min-h-screen bg-base-200  flex justify-center pt-20 pb-32">
 
-        <div className="card w-96  p-6 space-y-6">
+        <div className="card w-96  sm:max-w-xl p-6 space-y-6">
 
           <h2 className="text-2xl font-bold text-center text-emerald-700">
             Profile Settings

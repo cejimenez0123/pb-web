@@ -18,6 +18,7 @@ import debounce from "../core/debounce";
 import PageProfileList from "../components/page/PageProfileList";
 import PaginatedIndexList from "../components/PaginatedIndexList";
 import PaginatedPageList from "../components/page/PaginatedPageList";
+import EmptyState from "../components/EmptyState";
 const TABS = {
   POSTS: "posts",
   COLLECTIONS: "collections",
@@ -107,11 +108,7 @@ const tabs = [
 
 
 // ── Minimal Empty State ──────────────────────────────
-const EmptyState = ({ text }) => (
-  <div className="text-center py-12">
-    <p className="text-sm text-gray-400">{text}</p>
-  </div>
-);
+
 
 
 
@@ -177,19 +174,20 @@ const StatChip = ({ value, label }) => (
   style={{ "--background": Enviroment.palette.base.surface}}
 >Loading...</IonContent>;
   return (
-    <ErrorBoundary>
+
       <IonContent
   fullscreen
   scroll-y="true"
   style={{ "--background": Enviroment.palette.base.background}}
 >
-        <div className="max-w-2xl mx-auto pb-24  space-y-8">
-<div className='flex sm:pt-16 p-4 flex-row justify-between'>
+      <ErrorBoundary>
+        <div className=" pb-24   space-y-8">
+<div className='flex sm:pt-16 flex-col justify-center'>
 
                   
             </div>
           {/* Header */}
-          <div className="space-y-6 p-8">
+          <div className="space-y-6 max-w-2xl  mx-auto p-8">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <ProfileInfo profile={profile} compact />
@@ -235,8 +233,10 @@ const StatChip = ({ value, label }) => (
           </div>
 
           {/* Search + Tabs */}
-          <div className="space-y-4 px-4">
-              <div className="w-full">
+          <div className="space-y-4 ">
+
+    <div className="max-w-xl mx-auto">
+                    <div className="w-full">
     <input
       value={search}
       onChange={(e) => debouncedSearch(e.target.value)}
@@ -245,17 +245,19 @@ const StatChip = ({ value, label }) => (
   
       border-soft border rounded-full
         w-full px-4 py-2
+        mx-4
   bg-cream
         text-sm text-soft
         placeholder-gray-400
         focus:outline-none focus:ring-1 focus:ring-gray-300
+        mb-4 
       "
     />
 
   </div>
-    
-           <div className="px-4 "><TabBar tabs={tabs} active={tab} onChange={setTab} /></div> 
-          
+  <div className="mx-1"> 
+           <TabBar tabs={tabs} active={tab} onChange={setTab} />
+      </div>    
 
           {/* Content */}
           <div className="space-y-10 min-h-[40rem]">
@@ -300,13 +302,15 @@ const StatChip = ({ value, label }) => (
             {tab === TABS.ABOUT && <AboutPanel router={router} profile={profile} hashtags={profile.hashtags}/>}
           </div>
 </div>
+</div>
           {/* Explore */}
           <div className="pt-6 border-t border-gray-100">
             <ExploreList/>
           </div>
         </div>
+           </ErrorBoundary>
       </IonContent>
-    </ErrorBoundary>
+ 
   );
 }
 

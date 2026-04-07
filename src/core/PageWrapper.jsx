@@ -406,15 +406,19 @@ checkUser()
       {/* NAV */}
       <div className="flex flex-col gap-5 text-[1.05rem] text-emerald-700">
         {[
+             { label: "Discovery", action: () => {router.push(Paths.discovery) }},
+               { label: "Pages", action: () => {openPages()} },
   { label: "Events", action: () => {router.push(Paths.calendar())} },
-  { label: "Pages", action: () => {openPages()} },
+ { label: "Studio", action: () => {router.push(Paths.workshop.reader())} },
+
   { label: "Your drafts", action: () => {openDrafts() }},
   { label: "Collections", action: () => {openCollections()} },
   { label: "Libraries", action: () => {openCommunities()} },
+    { label: "Saved", action: () => {router.push(Paths.collection.createRoute(homeCol.id))} },
   { label: "Archives", action: () => {router.push(Paths.collection.createRoute(archiveCol.id))} },
-  { label: "Studio", action: () => {router.push(Paths.workshop.reader())} },
+ 
   { label: "Dashboard", action: () => {router.push(Paths.home) }},
-  { label: "Saved", action: () => {router.push(Paths.collection.createRoute(homeCol.id))} },
+
   { label: "Notifications", action: () => {router.push(Paths.notifications())} },
 ].map((item) => (
   <button

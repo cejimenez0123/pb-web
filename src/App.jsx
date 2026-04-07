@@ -72,7 +72,7 @@ const isHorizPhone = useMediaQuery({ query: '(min-width: 800px)' });
   const dispatch = useDispatch()
   const [formerPage, setFormerPage] = useState(null);
   const [isSaved,setIsSaved]=useState(true)
-// const [showNav,setShowNav]=useState(true)
+
 
 
 const ionRouter = useIonRouter();
@@ -119,7 +119,7 @@ const isDesktop = useMediaQuery({ query: '(min-width: 60.1em)' }) // 768px
 const isMobileOrTablet = useMediaQuery({ query: '(max-width: 60em)' })
 
 const showTopNavbar = isDesktop && !isNative
-const showBottomNavbar = isMobileOrTablet || isNative
+const showBottomNavbar = (isMobileOrTablet || isNative)  && import.meta.env.VITE_NODE_ENV=="prod"
 
  return (
 
