@@ -260,7 +260,7 @@ const StatChip = ({ value, label }) => (
       </div>    
 
           {/* Content */}
-          <div className="space-y-10 min-h-[40rem]">
+          <div className="space-y-10  px-4 pt-4 min-h-[40rem]">
             {tab === TABS.POSTS && (
               <>
                 {search.length==0 && recentPosts.length > 0 && (

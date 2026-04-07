@@ -100,7 +100,7 @@ export default function ReferralForm({ onClose }) {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="name..."
-            className="w-full mt-1 px-3 py-3 rounded-xl bg-softBlue text-soft outline-none focus:ring-2 focus:ring-emerald-500"
+            className="w-full mt-1 px-3 py-3 rounded-full border-earth border border-1 bg-base-bg text-soft outline-none focus:ring-2 focus:ring-emerald-500"
             type="text"
           />
         </div>
@@ -115,7 +115,7 @@ export default function ReferralForm({ onClose }) {
               setEmail(e.target.value.toLowerCase().trim())
             }
             placeholder="example@example.com"
-            className="w-full mt-1 px-3 py-3 rounded-xl bg-softBlue text-soft outline-none focus:ring-2 focus:ring-emerald-500"
+            className="w-full mt-1 px-3 py-3 rounded-full bg-base-bg border-earth border border-1 text-soft outline-none focus:ring-2 focus:ring-emerald-500"
             type="email"
           />
         </div>

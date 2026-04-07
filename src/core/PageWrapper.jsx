@@ -29,6 +29,7 @@ import { getMyStories } from '../actions/StoryActions';
 import { getMyCollections } from '../actions/CollectionActions';
 import { SplashScreen } from '@capacitor/splash-screen'
 import { IonContent } from '@ionic/react';
+import ReferralForm from '../components/auth/ReferralForm';
 // import { IonContext } from '@ionic/react/dist/types/contexts/IonContext';
 const PageWrapper = ({
   children,

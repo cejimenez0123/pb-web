@@ -504,75 +504,7 @@ const getCol = async (id) => {
   );
 };
 
-    // const SaveBtn=()=> {return<div
-    //           className="p-2"
-    //             onClick={() => handleBookmark()}
-    //             color={isBookmarked? "warning" : "medium"}
-    //             disabled={bookmarkLoading}
-    //           >
-    //             <img className="w-[2.8em] h-[2.8em]" src={isBookmarked ? bookmarkFill : bookmarkOutline} />
-    //             {bookmarkLoading && <IonSpinner name="dots" />}
-    //           </div>}
-    //   const ArchiveBtn=()=> {return<div
-    //           className={` flex  w-[3rem] my-auto h-[3rem] ${isArchived?"border border-soft border-2 bg-soft rounded-full p-2":"bg-blueSea w-[3rem] h-[3rem] p-2 rounded-full  "}`}
-    //             onClick={() => handleArchive()}
-    //             color={isArchived ? "warning" : "medium"}
-    //             disabled={bookmarkLoading}
-    //           >
-    //             <IonImg  style={{height:"2.5em",width:"2.5em",filter:"invert(100%)"}}  className=" my-auto mx-auto" src={archive} />
-    //             {bookmarkLoading && <IonSpinner name="dots" />}
-    //           </div>}
-// const EditBtn=()=>{
-   
-//   return canUserEdit?<div 
-//       className={` border border-soft border-2 bg-soft rounded-full w-[3rem] my-auto h-[3rem]  p-2  rounded-full  `}
-//              onClick={()=>router.push(Paths.editCollection.createRoute(id))}>
-//         <IonImg   style={{height:"2.5em",width:"2.5em",filter:"invert(100%)"}} className="pb-1" src={edit}/></div>
-// :null
-// }
-
-//   if (loading||collection?.id!=id) {
-//     return (
-//       <IonContent>
-// <div>
-       
-//         <div className="ion-padding max-w-[50em] mx-auto">
-//           <IonSkeletonText animated style={{ width: '100%', height: 150, margin: "2rem auto", borderRadius: 18 }} />
-//           <IonSkeletonText animated style={{ width: '100%', height: 400, margin: "2rem auto", borderRadius: 18 }} />
-//         </div>
-//       </div>
-//       </IonContent>
-//     );
-//   }
-// const EditButton = ({ canUserEdit, loading, id, router }) => {
-//   const isDisabled = loading || !canUserEdit;
-
-//   return (
-//     <div
-//       onClick={() => {
-//         if (isDisabled) return;
-//         router.push(Paths.editCollection.createRoute(id));
-//       }}
-//       className={`
-//         w-[3rem] h-[3rem] my-auto p-2 rounded-full border-2 transition-all duration-200 flex items-center justify-center
-        
-//         ${isDisabled
-//           ? "bg-gray-100 border-gray-200 opacity-40 pointer-events-none"
-//           : "bg-soft border-soft cursor-pointer active:scale-95"}
-//       `}
-//     >
-//       <IonImg
-//         src={edit}
-//         style={{
-//           height: "2.2em",
-//           width: "2.2em",
-//           filter: "invert(100%)",
-//           opacity: isDisabled ? 0.6 : 1,
-//         }}
-//       />
-//     </div>
-//   );
-// };
+ 
   if (!canUserSee) {
   return (
     <IonContent fullscreen>
@@ -608,7 +540,7 @@ const AddButton=({disabled, loading,className})=>{
  
  
 }
-
+if(loading || !collection)return <CollectionContainerShadow/>
 return (
   <ErrorBoundary>
     <IonContent
@@ -624,9 +556,15 @@ return (
 
           {/* Collection Title */}
           <div className="px-4 py-4">
-            <IonText className="lora-bold">
-              <h1 className="text-[1.6rem]  sm:text-2xl ">{collection?.title?.length>0?collection?.title:"Untitled"}</h1>
-            </IonText>
+           <IonText className="lora-bold">
+  <h1 className="text-[1.6rem] sm:text-2xl">
+    {loading || !collection ? (
+      <IonSkeletonText animated style={{ width: '50%', height: '2rem' }} />
+    ) : (
+      collection.title
+    )}
+  </h1>
+</IonText>
           </div>
 
           {/* Collection Purpose */}
@@ -659,51 +597,7 @@ return (
  router={router}
 
   />
-            {/* Dropdown for Other Actions */}
-            {/* <div className="dropdown dropdown-end ">
-              <label
-  tabIndex={0}
-  className="
-    h-12 rounded-full flex items-center justify-center gap-2
-    bg-blueSea text-white
-    hover:bg-cyan-200
-    opacity-100 !bg-opacity-100
-    shadow-none
-  "
->  <div className="flex flex-row ">
-               <h6>Actions</h6>
-                <svg className="max=w-4 max-h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7"></path>
-                </svg>
-                </div>
-              </label>
-              
-              <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-base-bg rounded-box w-40">
-                <li>
-                  <button onClick={() => handleBookmark()} className="flex items-center gap-2">
-                    {isBookmarked ? "Remove Bookmark" : "Bookmark"}
-                  </button>
-                </li>
-                
-                <li>
-                  <button onClick={() => handleArchive()} className="flex items-center gap-2">
-                    {isArchived ? "Remove Archive" : "Archive"}
-                  </button>
-                </li>
-                 <li>
-                  <button onClick={() => router.push(Paths.addStoryToCollection.collection(collection.id))} className="flex items-center gap-2">
-                    Add to Communities
-                  </button>
-                </li>
-                {canUserEdit && collection?.id && (
-                  <li>
-                    <button onClick={() => router.push(Paths.editCollection.createRoute(collection.id))} className="flex items-center gap-2">
-                      Edit
-                    </button>
-                  </li>
-                )}
-              </ul>
-            </div> */}
+            
           </div>
 
           {/* Add to Collection */}
@@ -740,6 +634,7 @@ return (
 const PageTab = ({ collections }) => {
     const currentProfile = useSelector(state => state.users.currentProfile);
     const collection = useSelector(state => state.books.collectionInView);
+    console.log(collection)
   const pagesInView = useSelector(state => state.pages.pagesInView);
   const [isOwner,setIsOwner]=useState(collection?.profileId==currentProfile?.id)
   const router = useIonRouter()
@@ -766,23 +661,18 @@ const PageTab = ({ collections }) => {
   <div className="flex flex-row gap-3 overflow-x-scroll py-8 px-3">
    
 
-      <div className=" flex flex-col items-center mx-auto justify-center bg-base-surface rounded-lg p-4  text-center">
-        <p className="mb-2 text-gray-700">No anthologies yet.</p>
-         {isOwner  && collection?.childCollections?.length<1 && (   <button
+      {(isOwner || collection.isOpenCollaboration)? <button
           onClick={() => router.push(Paths.addToCollection.createRoute(collection?.id))}
-          className="px-4 py-2  text-emerald-800   "
+          className="px-4 py-2 btn bg-softBlue rounded-full mx-auto text-emerald-800   "
         >
-          Add Your First Anthology
-        </button>   )} 
-      </div>
+          Add First Anthology
+        </button>:<div className=" flex flex-col items-center mx-auto justify-center bg-base-surface rounded-lg p-4  text-center">
+        <p className="mb-2 text-gray-700">No anthologies yet.</p>
+       
+      </div>}
 
   </div>
-)}</>: {isOwner && collection?.childCollections?.length<1&& <button
-          onClick={() => router.push(Paths.addToCollection.createRoute(collection?.id))}
-          className="px-4 py-2 btn bg-softBlue rounded-full text-emerald-800   "
-        >
-          Add Your First Anthology
-        </button>}
+)}</> 
   <h2 className="text-[2em] lora-bold text-soft  px-4 pb-2">
           Pages
         </h2> 
@@ -962,6 +852,42 @@ function CollectionTabs({ tab, setTab, pages, members, about }) {
           {tab === "members" && members}
           {tab === "about" && about}
         </motion.div>
+      </div>
+    </div>
+  );
+}
+function CollectionContainerShadow() {
+  return (
+    <div className="bg-white rounded-xl shadow-lg p-6 flex flex-col gap-6 animate-pulse">
+      
+      {/* Title */}
+      <div className="h-8 w-1/2 bg-gray-300 rounded-md mb-4"></div>
+
+      {/* Purpose */}
+      <div className="h-4 w-full bg-gray-200 rounded-md mb-4"></div>
+      <div className="h-4 w-5/6 bg-gray-200 rounded-md mb-4"></div>
+
+      {/* Action Buttons */}
+      <div className="flex flex-wrap gap-3 mb-4">
+        <div className="h-12 w-32 bg-gray-300 rounded-full"></div>
+        <div className="h-12 w-32 bg-gray-300 rounded-full"></div>
+      </div>
+
+      {/* Add Button */}
+      <div className="h-12 w-full bg-gray-300 rounded-full mb-4"></div>
+
+      {/* Tabs */}
+      <div className="flex gap-2 mb-4">
+        <div className="h-8 w-20 bg-gray-300 rounded-full"></div>
+        <div className="h-8 w-20 bg-gray-300 rounded-full"></div>
+        <div className="h-8 w-20 bg-gray-300 rounded-full"></div>
+      </div>
+
+      {/* Content Placeholder */}
+      <div className="flex flex-col gap-4">
+        {[...Array(3)].map((_, i) => (
+          <div key={i} className="h-32 w-full bg-gray-200 rounded-lg"></div>
+        ))}
       </div>
     </div>
   );

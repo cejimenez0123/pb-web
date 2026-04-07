@@ -195,7 +195,7 @@ useEffect(()=>{
                 onClick={() => router.push(Paths.page.createRoute(story.id))}
                 className="flex-1 pr-3 cursor-pointer"
               >
-                <p className="text-sm font-medium truncate">{story.title.length>25?story.title.slice(0,25)+"..." : story.title || "Untitled"}</p>
+                <p className="text-sm font-medium truncate">{story.title.length>20?story.title.slice(0,20)+"..." : story.title || "Untitled"}</p>
               </div>
               <Pill
                 label={added ? "Added ✓" : "Add"}
@@ -266,7 +266,7 @@ useEffect(()=>{
                 onClick={() => router.push(Paths.collection.createRoute(col.id))}
                 className="flex-1 pr-3 cursor-pointer"
               >
-                <p className="text-sm font-medium truncate">{col.title || "Untitled"}</p>
+                <p className="text-sm font-medium truncate">{col?.title?.length>20?col.title.slice(0,20)+"...":col.title.length>0?col.title:"Untitled"}</p>
               </div>
               <Pill
                 label={added ? "Added ✓" : "Add"}

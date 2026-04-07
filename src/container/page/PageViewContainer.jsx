@@ -123,9 +123,36 @@ export default function PageViewContainer() {
       <IonContent
         fullscreen
         className="ion-padding-bottom"
-        style={{ "--background":Enviroment.palette.cream }}
+        style={{ "--background":Enviroment.palette.cream,"--padding-bottom":"15em" }}
       >
-        <div className="min-h-[40em] pt-4 pb-[8em] text-center">
+        <div className="relative">
+  {pending && <PageViewSkeleton />}
+
+  <div
+    className={`transition-opacity duration-500 ${
+      pending ? "opacity-0" : "opacity-100"
+    }`}
+  >
+    {(!pending && canUserSee) && (
+      <div className="w-fit mx-auto sm:max-w-[50em] bg-cream p-4 rounded-xl shadow-sm">
+        <PageViewItem page={page} currentProfile={currentProfile} />
+        <div className="mt-8 mb-4 text-left">
+          <h6 className="text-[1em] font-bold text-emerald-800">Responses</h6>
+        </div>
+        <CommentThread page={page} comments={rootComments} rawComments={comments}/>
+      </div>
+    )}
+
+    {!pending && errorStatus === 403 && (
+      <h1 className="mont-medium text-emerald-800 my-12">🚫 You don’t have permission to view this story.</h1>
+    )}
+
+    {!pending && !canUserSee && errorStatus !== 403 && (
+      <h1 className="mont-medium my-12 mx-auto">Took a wrong turn</h1>
+    )}
+  </div>
+</div>
+        {/* <div className="min-h-[40em] pt-4 pb-[8em] text-center">
           {pending ? (
             <div className="skeleton mx-auto bg-slate-50 w-[95vw] md:w-[50em] h-page" />
           ) : errorStatus === 403 ? (
@@ -140,9 +167,14 @@ export default function PageViewContainer() {
             </div>
           ) : (
             <h1 className="mont-medium my-12 mx-auto">Took a wrong turn</h1>
-          )}
-        </div>
+          )} */}
+        {/* </div> */}
       </IonContent>
     </ErrorBoundary>
+  );
+}
+function PageViewSkeleton() {
+  return (
+    <div className="w-[95vw] md:w-[50em] mx-auto bg-slate-50 rounded-xl shadow-inner animate-pulse min-h-[40em]" />
   );
 }
