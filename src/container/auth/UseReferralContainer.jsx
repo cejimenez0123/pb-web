@@ -17,9 +17,11 @@ import { Capacitor } from "@capacitor/core";
 
 export default function UseReferralContainer() {
  
-  const query = setIonRouter().routeInfo.search;
-  // const selectRef = useRef();
-  const [token, setToken] = useState(query.get("token"));
+  const router = useIonRouter()
+const path = router.routeInfo?.pathname + router.routeInfo?.search; 
+const params = new URLSearchParams(router.routeInfo?.search);
+  const [token, setToken] = useState(params.get("token"))
+  console.log(token)
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   console.log(username)
@@ -32,17 +34,16 @@ export default function UseReferralContainer() {
   const [isPrivate, setIsPrivate] = useState(false);
   const [usernameUnique, setUsernameUnique] = useState(true);
   const [canUser, setCanUser] = useState(false);
-  const [searchParams] = router.routeInfo.search
-console.log(searchParams)
-  const dispatch = useDispatch();
-  const router = useIonRouter()
-  const { error, setError, setSuccess } = useContext(Context);
-  useEffect(() => {
-    let toke = searchParams.get("token")
 
-    if(!token&&toke)setToken(toke)
-    return async ()=>await Preferences.set({key:"token",value:toke})
-  }, []);
+  const dispatch = useDispatch();
+
+  const { error, setError, setSuccess } = useContext(Context);
+  // useEffect(() => {
+  //   let toke = searchParams.get("token")
+
+  //   if(!token&&toke)setToken(toke)
+  //   return async ()=>await Preferences.set({key:"token",value:toke})
+  // }, []);
   useEffect(() => {
     if (confirmPassword === password) {
       if (username.length > 4) {
