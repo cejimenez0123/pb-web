@@ -485,21 +485,27 @@ const getCol = async (id) => {
   // Metadata
  const FollowBtn = () => {
   const baseClasses =
-    "flex-1 py-3 rounded-full px-4 flex items-center justify-center transition-all duration-150";
-
+    "flex-1 py-3 rounded-full btn h-10 flex items-center justify-center transition-all duration-150";
+  // Enviroment.palette.states.
   return !role ? (
     <button
       onClick={handleFollow}
-      className={`${baseClasses} bg-transparent border-2 border-emerald-300 hover:bg-emerald-50`}
+      className={`${baseClasses}  bg-blue text-button-primary-text border-2 border-emerald-300 hover:bg-states-success`}
     >
-      <IonText>Join Community</IonText>
+        <label
+      tabIndex={0}
+      // className="btn h-12 px-5 rounded-full bg-blueSea text-white hover:bg-cyan-500 flex items-center justify-center gap-2 transition"
+    > Join Community</label>
     </button>
   ) : (
     <button
       onClick={deleteFollow}
-      className={`${baseClasses} bg-sky-100 border-2 border-blueSea hover:bg-blue-50`}
+      className={`${baseClasses} bg-button-primary-bg text-white bg-border-2 border-soft hover:bg-blue-50`}
     >
-      <IonText>Following</IonText>
+     <label
+      tabIndex={0}
+      // className="btn h-12 px-5 rounded-full bg-blueSea text-white hover:bg-cyan-500 flex items-center justify-center gap-2 transition"
+    >Following</label>
     </button>
   );
 };
@@ -532,15 +538,15 @@ const AddButton=({disabled, loading,className})=>{
     if (!canUserAdd) return;
     e.stopPropagation();
     router.push(Paths.addToCollection.createRoute(collection.id));
-    // {Enviroment.palette.card}
-  }} className="w-[100%] rounded-full bg-soft hover:bg-card-highlight text-white py-3">
+
+  }} className="w-[100%] rounded-full bg-soft hover:bg-card-highlight text-white h-10 btn">
     Add to Collection
   </button>
 </div>
  
  
 }
-if(loading || !collection)return <CollectionContainerShadow/>
+if(!collection)return <CollectionContainerShadow/>
 return (
   <ErrorBoundary>
     <IonContent
@@ -549,7 +555,7 @@ return (
       fullscreen
       className="pb-24 pt-12"
     >
-      <div className="pt-8 mx-auto w-full max-w-[50em]  sm:px-6">
+      <div className="pt-8 mx-auto sm:max-w-[50em]  ">
 
         {/* Collection Container */}
         {/* <div className="bg-white rounded-xl shadow-md p-6 flex flex-col gap-6"> */}
@@ -558,11 +564,9 @@ return (
           <div className="px-4 py-4">
            <IonText className="lora-bold">
   <h1 className="text-[1.6rem] sm:text-2xl">
-    {loading || !collection ? (
+    {collection && collection.title ? collection.title:(
       <IonSkeletonText animated style={{ width: '50%', height: '2rem' }} />
-    ) : (
-      collection.title
-    )}
+    ) }
   </h1>
 </IonText>
           </div>
@@ -658,7 +662,7 @@ const PageTab = ({ collections }) => {
     </div>
   // </IonList>
 ) : (
-  <div className="flex flex-row gap-3 overflow-x-scroll py-8 px-3">
+  <div className="flex flex-row gap-3 overflow-x-scroll py-8 ">
    
 
       {(isOwner || collection.isOpenCollaboration)? <button
@@ -673,12 +677,12 @@ const PageTab = ({ collections }) => {
 
   </div>
 )}</> 
-  <h2 className="text-[2em] lora-bold text-soft  px-4 pb-2">
+  <h2 className="text-[2em] lora-bold text-soft mx-auo px-4 pb-2">
           Pages
         </h2> 
         
  {pagesInView?.length>0 ? (
-  <div className="px-4">
+  <div className="px-4 max-w-[50em] mx-auto">
         <PageList
           items={pagesInView}
           isGrid={false}
@@ -689,7 +693,7 @@ const PageTab = ({ collections }) => {
         </div>
       ) : (
         <div className="py-8 text-center text-gray-500">
-          {isOwner ? (
+          {(isOwner || collection.isOpenCollaboration)? (
             <div>
               <p>No pages yet.</p>
               <button
@@ -724,13 +728,13 @@ const MemberTab = ({ collection }) => {
         </h2>
 
         {
-          <IonList style={{ backgroundColor: Enviroment.palette.base.background}}>
-            <div className="flex flex-col bg-base-bg pt-4 min-h-[14rem] overflow-x-scroll">
+          <IonList style={{ backgroundColor: Enviroment.palette.base.surface}}>
+            <div className="flex flex-col bg-base-surface pt-4 min-h-[14rem] overflow-x-scroll">
               {
           
                 roles.map((role, i) => {
            
-               return<div key={i} onClick={()=>router.push(Paths.profile.createRoute(role.profile.id))} className="  w-[100%] my-1 rounded-full border px-4 border-1 border-soft">
+               return<div key={i} onClick={()=>router.push(Paths.profile.createRoute(role.profile.id))} className="  w-[100%] my-1 rounded-full border px-4 border-1 bg-base-bg border-soft">
                   <div className="flex flex-row justify-between  w-[100%]">
                   <div className="py-4 "><ProfileCircle profile={role.profile}/></div><div className="my-auto">{role.role}</div>
                   </div>
@@ -824,8 +828,8 @@ const AboutTab = ({ collection}) => {
 function CollectionTabs({ tab, setTab, pages, members, about }) {
   return (
     <div className="bg-base-surface pt-6 sm:pt-12">
-      <div className="flex justify-center lg:justify-start lg:mx-12 mb-4">
-        <div className="flex rounded-full border overflow-hidden w-full sm:w-[40em] lg:w-[30em] border-emerald-600">
+      <div className="flex justify-center lg:justify-start  mb-4">
+        <div className="flex rounded-full border overflow-hidden w-full  border-emerald-600">
           {["pages", "members", "about"].map((t) => (
             <button
               key={t}
@@ -846,7 +850,7 @@ function CollectionTabs({ tab, setTab, pages, members, about }) {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
-          className="w-full"
+          // className="w-full"
         >
           {tab === "pages" && pages}
           {tab === "members" && members}
@@ -858,13 +862,13 @@ function CollectionTabs({ tab, setTab, pages, members, about }) {
 }
 function CollectionContainerShadow() {
   return (
-    <div className="bg-white rounded-xl shadow-lg p-6 flex flex-col gap-6 animate-pulse">
+    <div className="animate-pulse bg-white rounded-xl shadow-lg p-6 flex flex-col gap-6 max-w-[50em] mx-auto">
       
       {/* Title */}
       <div className="h-8 w-1/2 bg-gray-300 rounded-md mb-4"></div>
 
       {/* Purpose */}
-      <div className="h-4 w-full bg-gray-200 rounded-md mb-4"></div>
+      <div className="h-4 w-full bg-gray-200 rounded-md mb-2"></div>
       <div className="h-4 w-5/6 bg-gray-200 rounded-md mb-4"></div>
 
       {/* Action Buttons */}

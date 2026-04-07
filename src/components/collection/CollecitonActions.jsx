@@ -19,76 +19,73 @@ export default function CollectionActions({
   handleArchive,
   router
 }) {
-  return (
-    <div className="flex flex-wrap sm:flex-nowrap items-center justify-between gap-3">
+return(<div className="flex flex-wrap sm:flex-nowrap items-center justify-between gap-3">
 
+  {/* Dropdown Actions */}
+  <div className="dropdown dropdown-end">
+    <label
+      tabIndex={0}
+      className="btn h-10  px-5 rounded-full bg-blueSea text-white hover:bg-cyan-500 flex items-center justify-center gap-2 transition"
+    >
+      Actions
 
-      {/* Dropdown Actions */}
-      <div className="dropdown dropdown-end">
-        <label
-          tabIndex={0}
-          className="btn h-12 rounded-full bg-blueSea text-white hover:bg-cyan-200 flex items-center justify-center gap-2"
+    </label>
+
+    <ul
+      tabIndex={0}
+      className="dropdown-content menu p-2 shadow-lg bg-base-100 rounded-box w-48"
+    >
+      {/* Bookmark */}
+      <li>
+        <button
+          onClick={handleBookmark}
+          className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded-md w-full text-left"
         >
-          <div className="flex flex-row">
-            <h6>Actions</h6>
-            <svg
-              className="max=w-4 max-h-4"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7"></path>
-            </svg>
-          </div>
-        </label>
+          {isBookmarked ? "Remove Bookmark" : "Bookmark"}
+          {bookmarkLoading && <IonSpinner name="dots" className="ml-auto" />}
+        </button>
+      </li>
 
-        <ul
-          tabIndex={0}
-          className="dropdown-content menu p-2 shadow bg-base-bg rounded-box w-40"
-        >
-          {/* Bookmark */}
-          <li>
-            <button onClick={handleBookmark} className="flex items-center gap-2">
-              {isBookmarked ? "Remove Bookmark" : "Bookmark"}
-              {bookmarkLoading && <IonSpinner name="dots" />}
-            </button>
-          </li>
+      {/* Archive */}
+      {!isTheArchive && (
+        <li>
+          <button
+            onClick={handleArchive}
+            className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded-md w-full text-left"
+          >
+            {isArchived ? "Remove Archive" : "Archive"}
+          </button>
+        </li>
+      )}
 
-          {/* Archive */}
-          {!isTheArchive &&<li>
-            <button onClick={handleArchive} className="flex items-center gap-2">
-              {isArchived ? "Remove Archive" : "Archive"}
-            </button>
-          </li>}
+      {/* Add to Communities */}
+      {!isTheHome && (
+        <li>
+          <button
+            onClick={() =>
+              router.push(Paths.addStoryToCollection.collection(collection.id))
+            }
+            className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded-md w-full text-left"
+          >
+            Add to Communities
+          </button>
+        </li>
+      )}
 
-          {/* Add to Communities */}
-          {!isTheHome &&<li>
-            <button
-              onClick={() =>
-                router.push(Paths.addStoryToCollection.collection(collection.id))
-              }
-              className="flex items-center gap-2"
-            >
-              Add to Communities
-            </button>
-          </li>}
-
-          {/* Edit (only if user can edit) */}
-          {canUserEdit && collection?.id && (
-            <li>
-              <button
-                onClick={() =>
-                  router.push(Paths.editCollection.createRoute(collection.id))
-                }
-                className="flex items-center gap-2"
-              >
-                Edit
-              </button>
-            </li>
-          )}
-        </ul>
-      </div>
-    </div>
-  );
+      {/* Edit */}
+      {canUserEdit && collection?.id && (
+        <li>
+          <button
+            onClick={() =>
+              router.push(Paths.editCollection.createRoute(collection.id))
+            }
+            className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded-md w-full text-left"
+          >
+            Edit
+          </button>
+        </li>
+      )}
+    </ul>
+  </div>
+</div>)
 }

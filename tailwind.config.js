@@ -138,6 +138,7 @@ export default {
       "grid-mobile-content":"15rem",
       'grid':"35rem",
       'grid-content':"30rem",
+      "button":"calc(var(--spacing) * 10)"
     },
     borderWidth: {
       DEFAULT: '1px',

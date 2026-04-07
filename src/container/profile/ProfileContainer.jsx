@@ -11,7 +11,7 @@ import {
   
  
 } from "../../actions/UserActions"
-
+import loadingGif from "../../images/loading.gif"
 import {
 getPublicProfilePages,
 getProtectedProfilePages,
@@ -40,6 +40,7 @@ import TabBar from '../../components/TabBar';
 import PaginatedPageList from '../../components/page/PaginatedPageList';
 import PageProfileList from '../../components/page/PageProfileList';
 import FollowButton from '../../components/profile/FollowButton';
+import CommunitiesPanel from '../../components/profile/CommunitiesPanel';
 const TABS = {
   POSTS: "posts",
   COLLECTIONS: "collections",
@@ -55,7 +56,8 @@ function ProfileContainer() {
   const collectionsRaw = useSelector((state) => state.books.collections?? []);
 
   const pagesRaw = useSelector((state) => state.pages.pagesInView ?? []);
-
+const [isLoading, setIsLoading] = useState(true);
+const [isReady, setIsReady] = useState(false);
   const dispatch = useDispatch();
   const router = useIonRouter();
   const { id } = useParams();
@@ -63,10 +65,24 @@ function ProfileContainer() {
   const [tab, setTab] = useState(TABS.POSTS);
   const [search, setSearch] = useState("");
 
+useEffect(() => {
+  if (profile) {
+    // slight delay prevents flicker on fast loads
+    const t = setTimeout(() => {
+      setIsLoading(false);
+      setIsReady(true);
+    }, 120); // 100–200ms sweet spot
 
+    return () => clearTimeout(t);
+  }
+}, [profile]);
   // ── Derived
   const collections = useMemo(
     () => collectionsRaw.filter(Boolean).filter((col) => (search ? col.title?.toLowerCase().includes(search.toLowerCase()) : true)),
+    [collectionsRaw, search]
+  );
+  const communities = useMemo(
+    () => collectionsRaw.filter(col=>(col && col.type=="library")).filter((col) => (search ? col.title?.toLowerCase().includes(search.toLowerCase()) : true)),
     [collectionsRaw, search]
   );
   const pages = useMemo(
@@ -80,13 +96,10 @@ function ProfileContainer() {
 // ── Tabs constants ─────────────────────────────────────
 
 useEffect(()=>{
-    if(currentProfile){
-      dispatch(getProtectedProfilePages({profile}))
-      dispatch(getProtectedProfileCollections({profile}))
-    }else{
+   
       dispatch(getPublicProfilePages({profile}))
       dispatch(getPublicProfileCollections({profile}))
-    }
+    
 },[profile])
 // ── Pill Component ─────────────────────────────────────
 const Pill = ({ label,onClick }) => (
@@ -130,42 +143,9 @@ useIonViewDidLeave(() => {
 
 
 
-// ── Communities Panel ─────────────────────────────────
-const CommunitiesPanel = ({prof}) => {
-    // const prof = useSelector(state=>state.users.profileInView)
-    if(!prof && !prof.collections)return null
 
-const communities  = prof.collections.filter(col=>col.type=="library")
-  
-  if (!communities.length)
-    return <div className="text-center py-12 text-sm text-gray-400">No communities yet.</div>;
+const AboutPanel = ({ profile:prof,city}) => {
 
-  return (
-    <div className="space-y-4">
-      {communities.map((c) => (
-        <div key={c.id} className="p-4 rounded-xl bg-gray-50">
-          <p className="text-sm font-medium text-gray-900">{c.title}</p>
-          {c.purpose&& <p className="text-sm text-gray-500 mt-1">{c.purpose}</p>}
-        </div>
-      ))}
-    </div>
-  );
-};
-
-
-const AboutPanel = ({ profile:prof }) => {
-  const [locationName,setLocationName]=useState("")
-  const [isPendingLocation,setIsPendingLocation]=useState(false)
-  useEffect(()=>{
-    setIsPendingLocation(true)
-    console.log("Fetching city for location:", prof.location)
-  async function city(){let address =await fetchCity(prof.location)
-  
-    setLocationName(address)
-    setIsPendingLocation(false)
-  }
-  prof?.location?.city?setLocationName(prof.location.city):city()
-  },[])
 
   const hashTags = prof?.hashtags ?? [];
   if (!prof) return null;
@@ -181,12 +161,10 @@ const AboutPanel = ({ profile:prof }) => {
 
   
   <p className="text-xs text-gray-400 uppercase">Location</p>
-  {prof.location?.city ? (
-        <p className="text-sm text-gray-700 mt-1">{prof.location.city}</p>
-      ) : isPendingLocation ? (
-        <div className="mt-1 h-4 w-32 bg-gray-200 rounded animate-pulse shadow-sm" />
+{ isPendingLocation ? (
+        <div className="mt-1 h-4 w-32 bg-gray-200 skeleton rounded animate-pulse shadow-sm" />
       ) : (
-        <p className="text-sm text-gray-700 mt-1">Location not specified</p>
+        <p className="text-sm text-gray-700 mt-1">{locationName}</p>
       )}
         {/* {!isPendingLocation &&locationName.length>0 ? (
           <p className="text-sm text-gray-700 mt-1">{locationName}</p>
@@ -297,25 +275,86 @@ useEffect(()=>{
   }
 },[profile,currentProfile])
   // ── Render
- 
-    if (!profile) return <IonContent
-  fullscreen
-  scroll-y="true"
-  style={{ "--background": Enviroment.palette.cream, paddingTop: "env(safe-area-inset-top)" }}
->Loading...</IonContent>;
+   const [locationName,setLocationName]=useState("Location not specified")
+  const [isPendingLocation,setIsPendingLocation]=useState(true)
+  useEffect(()=>{
+    setIsPendingLocation(true)
+    console.log("Fetching city for location:", profile?.location)
+  async function city(){
+    
+    let address =await fetchCity(profile?.location)
+    setLocationName(address)
+    setIsPendingLocation(false)
+  }
+  profile?.location?.city?setLocationName(prof.location.city):profile?.location&& city()
+  },[])
+    
   return (
     <ErrorBoundary>
-      <IonContent             style={{ "--background": Enviroment.palette.cream }} fullscreen className="bg-cream">
-        <div className="max-w-2xl mx-auto px-4 pb-24 pt-safe space-y-8">
+      
+<IonContent style={{ "--background": Enviroment.palette.cream }} fullscreen>
+  <div className="relative max-w-2xl mx-auto px-4 pb-24 pt-safe">
+
+    {/* 🔹 Skeleton Layer */}
+    <div
+      className={`
+        absolute inset-0 transition-opacity duration-300
+        ${isLoading ? "opacity-100" : "opacity-0 pointer-events-none"}
+      `}
+    >
+      <ProfileSkeleton />
+    </div>
+
+    {/* 🔹 Real Content */}
+    <div
+      className={`
+        transition-opacity duration-300
+        ${isReady ? "opacity-100" : "opacity-0"}
+      `}
+    >
+     
+
 
           {/* Header */}
           <div className="space-y-6 p-8">
-            <div className="flex items-center justify-between">
+            {/* <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <ProfileInfo profile={profile} compact />
               </div>
-              </div>
+              </div> */}
+<div className="flex items-center justify-between">
+  <div className="flex items-center gap-4">
 
+    {/* Avatar (inside ProfileInfo) */}
+    <ProfileInfo profile={profile} compact />
+
+    {/* Name + Username */}
+    <div className="flex flex-col  leading-tight">
+      {/* <span className="font-semibold text-base text-gray-900">
+        {profile.displayName || "Unnamed"}
+      </span> */}
+
+      <span className=" ">
+       <h6 className='text-[1rem] text-soft'>@{profile?.username?.toLowerCase()}</h6> 
+      </span>
+    </div>
+
+  </div>
+  
+</div>
+      {(communities?.length ?? 0) > 0 && (
+              <div className="space-y-2">
+                <p className="text-xs text-gray-400 uppercase">Communities</p>
+                <div className="flex flex-wrap gap-2 ">
+                  {communities.slice(0, 3).map((c) => <div >
+                    <Pill
+                   key={c.id} 
+                  baseClass="border-blue bg-base-bg"
+                  onClick={()=>router.push(Paths.collection.createRoute(c.id),"forward")}
+                  label={c.title} /></div>)}
+                </div>
+              </div>
+            )}
             <div className="flex justify-between text-center">
              
               <StatChip value={followerCount} label="Followers" />
@@ -365,7 +404,9 @@ useEffect(()=>{
     <FollowButton isSelf={isSelf} prof={profile} onClick={onClickFollow}follow={following} current={currentProfile}  />
         
   </div>
+  <div className='pb-8'>
             <TabBar tabs={tabs} active={tab} onChange={setTab} />
+            </div>
           </div>
 
           {/* Content */}
@@ -395,8 +436,8 @@ useEffect(()=>{
               collections.length > 0 ? <div className='pt-8'><IndexList items={collections} router={router}/></div> : <EmptyState text="No collections yet." />
             )}
 
-            {tab === TABS.COMMUNITIES && <CommunitiesPanel prof={profile} />}
-            {tab === TABS.ABOUT && <AboutPanel profile={profile} />}
+            {tab === TABS.COMMUNITIES && <CommunitiesPanel communities={communities} router={router} />}
+            {tab === TABS.ABOUT && <AboutPanel profile={profile} city={locationName} />}
           </div>
 
           {/* Explore */}
@@ -404,9 +445,57 @@ useEffect(()=>{
             <ExploreList />
           </div>
         </div>
+         {/* your existing UI */}
+    </div>
       </IonContent>
     </ErrorBoundary>
   );
 }
 
 export default ProfileContainer;
+
+function ProfileSkeleton() {
+  return (
+    <div className="animate-pulse space-y-8 p-6">
+
+      {/* Header */}
+      <div className="flex items-center gap-4">
+        <div className="w-14 h-14 rounded-full bg-base-300 skeleton"></div>
+        <div className="flex flex-col gap-2">
+          <div className="h-4 w-32 bg-base-300 rounded skeleton"></div>
+          <div className="h-3 w-24 bg-base-200 rounded skeleton"></div>
+        </div>
+      </div>
+
+      {/* Stats */}
+      <div className="flex justify-between">
+        {[1,2].map(i => (
+          <div key={i} className="flex flex-col items-center gap-2">
+            <div className="h-4 w-10 bg-base-300 rounded skeleton"></div>
+            <div className="h-3 w-16 bg-base-200 rounded skeleton"></div>
+          </div>
+        ))}
+      </div>
+
+      {/* Bio */}
+      <div className="space-y-2">
+        <div className="h-3 w-full bg-base-200 rounded skeleton"></div>
+        <div className="h-3 w-5/6 bg-base-200 rounded skeleton"></div>
+      </div>
+
+      {/* Tabs */}
+      <div className="flex gap-2">
+        {[1,2,3,4].map(i => (
+          <div key={i} className="h-8 w-20 rounded-full bg-base-300 skeleton"></div>
+        ))}
+      </div>
+
+      {/* Content blocks */}
+      <div className="space-y-4">
+        {[1,2,3].map(i => (
+          <div key={i} className="h-24 w-full bg-base-200 rounded-xl skeleton"></div>
+        ))}
+      </div>
+    </div>
+  );
+}
