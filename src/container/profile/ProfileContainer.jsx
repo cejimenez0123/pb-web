@@ -13,11 +13,13 @@ import {
 } from "../../actions/UserActions"
 
 import {
-
+getPublicProfilePages,
+getProtectedProfilePages,
   setPagesInView,
 } from "../../actions/PageActions";
 
 import {
+ 
   getProtectedProfileCollections,
   getPublicProfileCollections,
   setCollections,
@@ -77,7 +79,15 @@ function ProfileContainer() {
   );
 // ── Tabs constants ─────────────────────────────────────
 
-
+useEffect(()=>{
+    if(currentProfile){
+      dispatch(getProtectedProfilePages({profile}))
+      dispatch(getProtectedProfileCollections({profile}))
+    }else{
+      dispatch(getPublicProfilePages({profile}))
+      dispatch(getPublicProfileCollections({profile}))
+    }
+},[profile])
 // ── Pill Component ─────────────────────────────────────
 const Pill = ({ label,onClick }) => (
   <span onClick={onClick} className="text-xs px-3 py-1 rounded-full bg-gray-100 text-gray-700">
@@ -213,10 +223,10 @@ const PageList = ({ items }) => (
  } )}
   </div>
 );
-const IndexList = ({ items }) => (
+const IndexList = ({ items ,router}) => (
   <div className="space-y-2">
     {items.map((i) => (
-      <div onClick={()=>router.push(Paths.collection.createRoute(i.id))}key={i.id} className="p-2 border rounded-full border-purple px-4 py-3">{i.title ??i.name}</div>
+      <div onClick={()=>router.push(Paths.collection.createRoute(i.id))}key={i.id} className="p-2 border rounded-full bg-base-bg border-purple px-4 py-3">{i.title ??i.name}</div>
     ))}
   </div>
 );
@@ -365,7 +375,7 @@ useEffect(()=>{
                 {search.length==0 && recentPosts.length > 0 && (
                   <section className="space-y-4">
                     <SectionLabel>Recent</SectionLabel>
-                    <PageProfileList items={recentPosts} />
+                    <PageProfileList items={recentPosts} router={router} />
                   </section>
                 )}
 
@@ -382,7 +392,7 @@ useEffect(()=>{
             )}
 
             {tab === TABS.COLLECTIONS && (
-              collections.length > 0 ? <div className='pt-8'><IndexList items={collections} /></div> : <EmptyState text="No collections yet." />
+              collections.length > 0 ? <div className='pt-8'><IndexList items={collections} router={router}/></div> : <EmptyState text="No collections yet." />
             )}
 
             {tab === TABS.COMMUNITIES && <CommunitiesPanel prof={profile} />}

@@ -34,7 +34,7 @@ function BookListItem({ book }) {
     <div
       onClick={navigateToBook}
       // {Enviroment.palette.accent.}
-      className="min-h-[10rem] min-w-[16rem] mx-4 flex flex-col justify-between rounded-xl bg-base-bg  text-emerald-900  border-purple border-1 border cursor-pointer shadow-md transition-shadow duration-300 p-4 space-y-3"
+      className="min-h-[10rem] min-w-[16rem] flex flex-col justify-between rounded-xl bg-base-bg  text-emerald-900  border-purple border-1 border cursor-pointer shadow-md mx-2 transition-shadow duration-300 p-4 space-y-3"
     >
       {/* Title */}
       <h3 className="font-bold text-lg truncate">

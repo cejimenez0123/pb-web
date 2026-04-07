@@ -6,24 +6,12 @@ import { IonContent, useIonRouter } from "@ionic/react";
 import { useSelector, useDispatch } from "react-redux";
 import Context from "../context";
 import Enviroment from "../core/Enviroment";
-
-
-
-import {
-
-  getMyCollections,
-
-} from "../actions/CollectionActions";
-
 import ErrorBoundary from "../ErrorBoundary";
 import ProfileInfo from "../components/profile/ProfileInfo";
-import fetchCity from "../core/fetchCity";
 import Paths from "../core/paths";
 import TabBar from "../components/TabBar";
-import { getMyStories } from "../actions/StoryActions";
 import ExploreList from "../components/collection/ExploreList";
 import Pill from "../components/Pill";
-import PaginationControls from "../components/PaginationControls";
 import CommunitiesPanel from "../components/profile/CommunitiesPanel";
 import AboutPanel from "../components/profile/AboutPanel";
 import debounce from "../core/debounce";
@@ -195,7 +183,7 @@ const StatChip = ({ value, label }) => (
   scroll-y="true"
   style={{ "--background": Enviroment.palette.base.background}}
 >
-        <div className="max-w-2xl mx-auto px-4 pb-24  space-y-8">
+        <div className="max-w-2xl mx-auto pb-24  space-y-8">
 <div className='flex sm:pt-16 p-4 flex-row justify-between'>
 
                   
@@ -247,7 +235,7 @@ const StatChip = ({ value, label }) => (
           </div>
 
           {/* Search + Tabs */}
-          <div className="space-y-4">
+          <div className="space-y-4 px-4">
               <div className="w-full">
     <input
       value={search}
@@ -266,8 +254,8 @@ const StatChip = ({ value, label }) => (
 
   </div>
     
-           <div className="px-2"><TabBar tabs={tabs} active={tab} onChange={setTab} /></div> 
-          </div>
+           <div className="px-4 "><TabBar tabs={tabs} active={tab} onChange={setTab} /></div> 
+          
 
           {/* Content */}
           <div className="space-y-10 min-h-[40rem]">
@@ -301,7 +289,7 @@ const StatChip = ({ value, label }) => (
                    
                   </section>
                 )}
-                    <SectionLabel>All Collections</SectionLabel>
+                <SectionLabel>All Collections</SectionLabel>
                 <PaginatedIndexList router={router} items={collections}/></> 
               
               : <EmptyState text="No collections yet." />
@@ -311,7 +299,7 @@ const StatChip = ({ value, label }) => (
             {tab === TABS.COMMUNITIES && <CommunitiesPanel router={router} communities={communities} />}
             {tab === TABS.ABOUT && <AboutPanel router={router} profile={profile} hashtags={profile.hashtags}/>}
           </div>
-
+</div>
           {/* Explore */}
           <div className="pt-6 border-t border-gray-100">
             <ExploreList/>

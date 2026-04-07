@@ -446,8 +446,18 @@ scrollY: false,
               <div className=' p-4 '></div>
             </div>
             <div  className='w-fit mx-auto '>
-              <div className='flex flex-row px-4 justify-between pb-4'><h5 className='text-xl mx-4 lora-medium  '>Recent Pages</h5><h5 className='text-[1.2em] mt-1' onClick={()=>ClickWriteAStory()}>Write Something new +</h5></div>
-            
+          <div className="flex items-center justify-between px-4 pb-4">
+  <h5 className="text-xl lora-medium">
+    Recent Pages
+  </h5>
+
+  <h5
+    className="text-base text-emerald-700 cursor-pointer hover:opacity-70 transition"
+    onClick={ClickWriteAStory}
+  >
+    Write Something new +
+  </h5>
+</div>
               <div className="grid grid-cols-1 px-4 md:grid-cols-2 lg:grid-cols-3 gap-4">
 
                 {[...(currentProfile?.stories || [])]

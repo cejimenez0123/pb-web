@@ -111,7 +111,7 @@ useIonViewWillEnter(() => {
     }
     setFirstLaunchChecked(true);
   };
- !firstLaunchChecked && checkFirstLaunch();
+ checkFirstLaunch();
 }, [isNative]);
  
 

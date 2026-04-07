@@ -1,4 +1,22 @@
 import React,{ useMemo, useState } from "react";
+import PaginationControls from "./PaginationControls";
+import Paths from "../core/paths";
+
+const IndexList = ({ items, router }) => (
+  <div className="space-y-2">
+    {items.map((i) => (
+      <div
+        key={i.id}
+        onClick={() => router.push(Paths.collection.createRoute(i.id))}
+        className="p-3 rounded-full border border-purple border-1 bg-base-bg backdrop-blur-sm shadow-sm active:scale-[0.98] transition"
+      >
+        <span className="text-[0.95rem] font-medium text-gray-800">
+          {i.title ?? i.name ?? "Untitled"}
+        </span>
+      </div>
+    ))}
+  </div>
+)
 
 const PaginatedIndexList = ({ items,router }) => {
 
@@ -19,6 +37,7 @@ const PaginatedIndexList = ({ items,router }) => {
 
       <PaginationControls
         page={page}
+      
         totalPages={totalPages}
         setPage={setPage}
       />
