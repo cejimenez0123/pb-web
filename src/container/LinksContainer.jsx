@@ -68,9 +68,7 @@ export default function LinksContainer(props){
                       description={"Limited Slots to perform!"}/>
  
                  
-                    {/* title={"March 21st. Writers Workshop"}
-                    description={`Join us for our Writers Workshop. We will read Sonia Sanchez and give feedback.`}/> */}
-                     </li>
+   </li>
                      <li>  
                       <LinkNode image={bxFuture}
                       name={"Plumbum x Bronx Frame Creative Tech Mixer"}

@@ -200,39 +200,41 @@ useLayoutEffect(() => {
   const stayInLoop = () => (
     <div className="p-3 flex flex-col text-cream text-center ">
       <div className="py-12">
-      <h1 className="text-[3rem] mx-auto lora-bold">Stay in the Loop</h1>
-      <h2 className="mx-4 my-2 open-sans-medium text-[1.2em] pt-4">Be the first to know about new features, workshops, and events.</h2>
-      <h2 className="mx-4 my-2 open-sans-medium text-[1.4em] pt-4">Follow the Journey</h2>
+      {/* <h1 className="text-[3rem] mx-auto lora-bold">Stay in the Loop</h1> */}
+      {/* <h2 className="mx-4 my-2 open-sans-medium text-[1.2em] pt-4">Be the first to know about new features, workshops, and events.</h2> */}
+      {/* <h2 className="mx-4 my-2 open-sans-medium text-[1.4em] pt-4">Follow the Journey</h2> */}
       <a
         onClick={() =>
-    sendGAEvent("outbound_click", {
-      destination: "instagram_channel",
+    sendGAEvent("nav click", {
+      destination: "link tree",
       source: "about_stay_in_loop",
     })
   }
         className="flex flex-col text-center my-4 mx-auto cursor-pointer"
-        href="https://www.instagram.com/channel/AbaI9yaoN4KfPze_/"
+        href="https://plumbum.app/links"
         target="_blank" rel="noreferrer"
       >
-        <p className="open-sans-medium mx-4 my-4 text-emerald-600">Join the Instagram Channel. Today!</p>
-        <img  className="mx-auto w-[8em]" src={ig} alt="Slack invite" />
+        <h6 className="open-sans-bold text-[1.6rem] mx-4 my-4  text-yellow-300 ">
+  Everything Plumbum 🔗
+</h6>
+        
       </a>
-    
+           <p
+        className=" mx-auto px-4 my-4 mx-auto text-center cursor-pointer"
+        onClick={() => goToCalendar("about_text_link")}
+      >
+        Check out the Calendar of NYC events for writer and creatives
+      </p> 
      <img
   onClick={() => goToCalendar("about_icon")}
   className="h-[8em] mx-auto w-[8em] cursor-pointer filter invert brightness-125 sepia saturate-50 hue-rotate-30"
   src={events}
   alt="Calendar icon"
 />
-        <p
-        className=" mx-auto px-4 my-4 mx-auto text-center cursor-pointer"
-        onClick={() => goToCalendar("about_text_link")}
-      >
-        Check out the Calendar of NYC events for writer and creatives
-      </p>
+
       <div className="flex my-4 open-sans-medium mx-auto text-lg text-left leading-loose tracking-loose">
         <p className="mx-auto">
-          <a className="text-cream "href="https://www.instagram.com/plumbumapp" target="_blank" rel="noreferrer">@plumbumapp</a> | <a className="text-cream " href="https://www.instagram.com/bxwriters" target="_blank" rel="noreferrer">@bxwriters</a>
+          <a className="text-cream "href="https://www.instagram.com/plumbumapp" target="_blank" rel="noreferrer">@plumbumapp</a> 
         </p>
       </div>
       </div>
