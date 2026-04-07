@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useLayoutEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import {
   IonHeader,
   IonToolbar,
@@ -61,24 +61,26 @@ export default function CollectionContainer() {
     const collection = useSelector(state => state.books.collectionInView);
   const dispatch = useDispatch();
   const router = useIonRouter()
- const [canUserAdd, setCanUserAdd] = useState(false);
-  const [canUserEdit, setCanUserEdit] = useState(false);
-  const [canUserSee, setCanUserSee] = useState(false);
-   const {id}=useParams()
 
+   const writeArr = [RoleType.editor, RoleType.writer];
+   const {id}=useParams()
+const permissions = computePermissions(collection,currentProfile)
+ const  {canSee,
+    canAdd,
+    canEdit,role}  = permissions
 
   const collections = useSelector(state => state.books.collections);
-const [permissionsLoading, setPermissionsLoading] = useState(true);
+
   const [loading, setLoading] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [isArchived, setIsArchived] = useState(false);
- 
+  
   const [homeCol, setHomeCol] = useState(null);
   const [archiveCol, setArchiveCol] = useState(null);
-  const [role, setRole] = useState(null);
+  const [foundRole, setRole] = useState(role);
   const [hasMore, setHasMore] = useState(false);
   const [bookmarkLoading, setBookmarkLoading] = useState(false);
-  const writeArr = [RoleType.editor, RoleType.writer];
+ 
  useScrollTracking({
   contentType: "collection",
   contentId: collection?.id,
@@ -87,7 +89,7 @@ const [permissionsLoading, setPermissionsLoading] = useState(true);
 });
   const [tab,setTab]=useState("pages")
   useEffect(() => {
-  if (!collection || !canUserSee) return;
+  if (!collection || !canSee) return;
 
   setSeo({
     ...seo,
@@ -114,6 +116,7 @@ useEffect(() => {
 
   setBookmarkLoading(false);
 }, [collection, homeCol, archiveCol]);
+
 function computePermissions(collection, profile) {
   // Default state
   let canSee = false;
@@ -209,20 +212,7 @@ useEffect(() => {
   
 }, [id,currentProfile]); 
 
- useEffect(() => {
-  if (!collection) return;
 
-  setPermissionsLoading(true);
-
-  const perms = computePermissions(collection, currentProfile);
-
-  setCanUserAdd(perms?.canAdd);
-  setCanUserEdit(perms?.canEdit);
-  setCanUserSee(perms?.canSee);
-  setRole(perms?.role);
-
-  setPermissionsLoading(false);
-}, [collection, currentProfile]);
   
   function checkFound() {
     if (collection && homeCol && collection.parentCollections) {
@@ -235,37 +225,54 @@ useEffect(() => {
   }
 
 
+const className=" h-12 rounded-full w-[100%]  border border-sky-100 border-1 bg-blue text-cream hover:bg-teal btn transition"
 
 
+  
+  const actionLock = useRef(false);
 
-  const handleFollow = () => {
+const handleFollow = async () => {
+  if (actionLock.current) return;
+  actionLock.current = true;
+
+
+  try {
     if (currentProfile && collection) {
       let type = collection.followersAre ?? RoleType.commenter;
+
       if (currentProfile.id === collection.profileId) {
         type = RoleType.editor;
       }
-    if(!collection && !collection.id){return }
-      dispatch(postCollectionRole({
-        type: type,
-        profileId: currentProfile.id,
-        collectionId: collection.id,
-      })).then(res => {
-        checkResult(res,({collection} )=> {
-          
-            setRole({role:"commenter"})
+
+      const res = await dispatch(
+        postCollectionRole({
+          type,
+          profileId: currentProfile.id,
+          collectionId: collection.id,
+        })
+      );
+
+      checkResult(
+        res,
+        (payload) => {
+        console.log("handleFollow",payload)
           setSuccess("You are now following this collection");
-          computePermissions(collection,currentProfile)
-        }, err => {
-          console.log(err)
+        },
+        (err) => {
           setError(err.message);
-        });
-      });
+        }
+      );
     } else {
       setError("Please Sign In");
     }
-  };
+  } finally {
+    actionLock.current = false;
+  
+  }
+};
+
 useEffect(()=>{
-canUserSee&& getContent()
+canSee&& getContent()
 
 },[collection])
 const getCol = async (id) => {
@@ -319,7 +326,7 @@ const getCol = async (id) => {
               if (payload.collection) {
         
                 dispatch(setPagesInView({pages:payload.collection?.storyIdList.map(str=>str.story)}))
-                setCanUserSee(true)
+                // setCanUserSee(true)
                 //
               
               } 
@@ -329,10 +336,10 @@ const getCol = async (id) => {
               if (err.status === 403) {
          
                 setError("Access Denied: You do not have permission to view this collection.");
-                setCanUserSee(false);
+                // setCanUserSee(false);
                 
               } else {
-                 console.log(err)
+                //  console.log(err)
                 setError(err.message || "Failed to load collection.");
               }
               // setLoading(false);
@@ -356,15 +363,19 @@ const getCol = async (id) => {
 
 
   const deleteFollow = () => {
+    if(currentProfile.id == collection.profile.id){
+setError("This is yours, delete it silly")
+return
+    }
     if (currentProfile && role) {
-      setRole(null);
+      // setRole(null);
       dispatch(deleteCollectionRole({id, role })).then(res => {
         checkResult(res, payload => {
           setSuccess("Unfollowed collection");
       
         
         }, err => {
-           console.log(err)
+          //  console.log(err)
           setError(err.message);
         });
       });
@@ -373,7 +384,6 @@ const getCol = async (id) => {
     }
   };
 
-  
        
   const handleBookmark = (type) => {
     if (!currentProfile) {
@@ -476,42 +486,87 @@ const getCol = async (id) => {
       router.push(Paths.discovery,"back");
     }
   };
-  // Example getMore for infinite scrolling (to be filled with your pagination logic)
-  const getMore = () => {
-    // Example: dispatch get more pages/stories for pagination
-    setHasMore(false); // Or change based on actual load
-  };
+  
+ const isReady = collection !== null;
+// const FollowBtnSkeleton = () => {
+//   return (
+//     <div className="flex-1 h-10 rounded-full bg-gray-200 animate-pulse flex items-center justify-center">
+//       <div className="w-24 h-3 bg-gray-300 rounded" />
+//     </div>
+//   );
+// };
 
-  // Metadata
- const FollowBtn = () => {
-  const baseClasses =
-    "flex-1 py-3 rounded-full btn h-10 flex items-center justify-center transition-all duration-150";
-  // Enviroment.palette.states.
-  return !role ? (
-    <button
-      onClick={handleFollow}
-      className={`${baseClasses}  bg-blue text-button-primary-text border-2 border-emerald-300 hover:bg-states-success`}
-    >
-        <label
-      tabIndex={0}
-      // className="btn h-12 px-5 rounded-full bg-blueSea text-white hover:bg-cyan-500 flex items-center justify-center gap-2 transition"
-    > Join Community</label>
-    </button>
-  ) : (
-    <button
-      onClick={deleteFollow}
-      className={`${baseClasses} bg-button-primary-bg text-white bg-border-2 border-soft hover:bg-blue-50`}
-    >
-     <label
-      tabIndex={0}
-      // className="btn h-12 px-5 rounded-full bg-blueSea text-white hover:bg-cyan-500 flex items-center justify-center gap-2 transition"
-    >Following</label>
-    </button>
-  );
-};
+//  const baseClasses =
+//     "flex-1 rounded-full flex btn py-3 items-center justify-center transition-all duration-200";
+
+// const FollowBtn = ({ role, follow, unfollow, loading }) => {
+//   // const [hover, setHover] = useState(false);
+
+//   const baseClasses =
+//     "flex-1 rounded-full flex py-3 items-center justify-center transition-all duration-200";
+
+//   if (loading) {
+//     return (
+//       <div className={`${baseClasses} bg-gray-200 animate-pulse`}>
+//         <div className="w-24 h-3 bg-gray-300 rounded" />
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <button
+//       className={`${baseClasses} ${
+//         role
+//           ? "bg-soft text-white hover:bg-blue-500"
+//           : "bg-blue text-white hover:bg-sky-400"
+//       }`}
+//       onClick={role ? unfollow : follow}
+//       // onMouseEnter={() => setHover(true)}
+//       // onMouseLeave={() => setHover(false)}
+//       style={{
+//         transform: hover ? "scale(1.05)" : "scale(1)",
+//       }}
+//     >
+//       {role ? "Following" : "Follow"}
+//     </button>
+//   );
+// };
+// const FollowBtn = ({profile,role,unfollow,follow}) => {
+//
+//   return !role ? (
+//     <button
+//       disabled={actionLoading || permissionsLoading}
+//       onClick={(e) => {
+//   e.preventDefault();
+//   e.stopPropagation();
+//   follow();
+// }}
+//       className={`
+//         ${baseClasses}
+//         ${actionLoading ? "opacity-60 pointer-events-none" : ""}
+//       `}
+//     >
+//       {actionLoading ? <IonSpinner name="dots" /> : "Join Community"}
+//     </button>
+//   ) : (
+//     <button
+//       disabled={actionLoading}
+//       onClick={unfollow}
+//       className={`
+//         ${baseClasses}
+//         bg-button-primary-bg text-white border-2 border-soft hover:bg-blue-50
+//         ${actionLoading ? "opacity-60 pointer-events-none" : ""}
+//       `}
+//     >
+//       {actionLoading ? <IonSpinner name="dots" /> : "Following"}
+//     </button>
+//   );
+// };
+
+   const baseClasses = "flex-1 py-3 rounded-full btn h-10 flex items-center justify-center transition-all duration-150";
 
  
-  if (!canUserSee) {
+  if (!canSee) {
   return (
     <IonContent fullscreen>
       <IonHeader>
@@ -528,25 +583,10 @@ const getCol = async (id) => {
   );
 }
 
-const AddButton=({disabled, loading,className})=>{
-  // return     canUserAdd && <div 
-
-  return <div className={`mt-4 rounded-full  transition-all duration-200 ${className} ${canUserAdd 
-      ? `bg-white shadow-sm border border-soft cursor-pointer opacity-100` 
-      : `bg-gray-100 border border-gray-200 opacity-50 cursor-not-allowed`}`}>
-  <button onClick={(e) => {
-    if (!canUserAdd) return;
-    e.stopPropagation();
-    router.push(Paths.addToCollection.createRoute(collection.id));
-
-  }} className="w-[100%] rounded-full bg-soft hover:bg-card-highlight text-white h-10 btn">
-    Add to Collection
-  </button>
-</div>
+console.log(canAdd)
  
- 
-}
-if(!collection)return <CollectionContainerShadow/>
+// }
+// if(!collection)return <CollectionContainerShadow/>
 return (
   <ErrorBoundary>
     <IonContent
@@ -555,6 +595,12 @@ return (
       fullscreen
       className="pb-24 pt-12"
     >
+       <div
+    className={`transition-opacity duration-300 ${
+      collection ? "opacity-100" : "opacity-0"
+    }`}
+  >
+    {collection &&
       <div className="pt-8 mx-auto sm:max-w-[50em]  ">
 
         {/* Collection Container */}
@@ -587,14 +633,28 @@ return (
             {/* Follow / Join Button */}
                {/* <div className="> */}
             <div className="my-4 flex-1  min-w-[10rem] h-12 rounded-full  flex items-center justify-center transition">
-            <FollowBtn />
+            <div className="my-4 flex-1 min-w-[10rem] h-12 flex items-center justify-center">
+
+        <button
+      className={`${baseClasses} ${
+        role
+          ? "bg-soft text-white hover:bg-blue-500"
+          : "bg-blue text-white hover:bg-sky-400"
+      }`}
+      onClick={()=>role ? deleteFollow(role) : handleFollow()}
+ 
+    >
+      {role ? "Following" : "Follow"}
+    </button>
+  {/* )} */}
+</div>
 </div>
 <CollectionActions handleArchive={handleArchive} 
  collection={collection}
- role={role}
+ role={foundRole}
  isTheArchive={collection?.id == archiveCol?.id}
  isTheHome={collection?.id == homeCol?.id}
- canUserEdit={canUserEdit}
+ canUserEdit={canEdit}
  isBookmarked={isBookmarked}
  isArchived={isArchived}
  handleBookmark={handleBookmark}
@@ -604,13 +664,23 @@ return (
             
           </div>
 
-          {/* Add to Collection */}
           <div className="px-4 ">
-          <AddButton
-            disabled={!canUserAdd}
-            loading={permissionsLoading}
-            className=" h-12 rounded-ful w-[100%] bg-button-primary text-button-primary-text hover:bg-button-accent-hover transition"
-          /></div>
+  <button
+
+
+   onClick={()=>router.push(Paths.addToCollection.createRoute(collection.id))}
+
+      className={`
+        w-full h-12 rounded-full btn transition
+   
+         border-blue bg-blue text-cream hover:bg-teal"
+    
+        ${className || ""}
+      `}
+    >
+      Add to Collection
+    </button>
+          </div>
 
           {/* Tabs */}
           <div className="mt-4">
@@ -623,12 +693,13 @@ return (
             />
           </div>
         </div>
-
+   }</div>
         {/* Explore List */}
         <div className="mt-6">
           <ExploreList collection={collection} />
         </div>
       {/* </div> */}
+     
     </IonContent>
   </ErrorBoundary>
 );

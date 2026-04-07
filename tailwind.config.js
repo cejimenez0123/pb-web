@@ -115,12 +115,13 @@ export default {
         "border-default": "#e5e7eb",
 "border-soft": "#d1d5db",
 "border-focus": "#40906f",
+teal:"#007c92",
   "blue": "#0097b2", // Navigation, links, secondary emphasis
       "purple": "#9b67b6", // Depth, hierarchy, creative elements
       "pink": "#e96fbd", // Emotional highlights, reactions
       "orange": "#f85e30" ,// Energy, alerts, strong emphasis
         "green": "#7ed957", // Positive tags, growth, success
-      "blue": "#598ec8", // Informational tags
+      "info-blue": "#598ec8", // Informational tags
       "purple": "#a9a1d4", // Creative categories
       "earth": "#c28558" // Grounded, neutral tags
       // "cream":"#f8f6f1"

@@ -184,7 +184,7 @@ const handlePrivate = useCallback(
   []
 );
   return (
-    <IonContent>
+    <IonContent style={{"--padding-bottom":"10em"}}>
 <div>
 
 

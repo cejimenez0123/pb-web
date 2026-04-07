@@ -120,9 +120,9 @@ state.loading = true
         state.collections = list
     }
 }).addCase(postCollectionRole.fulfilled,(state,{payload})=>{
-    if(payload.collection){
+    // if(payload.collection){
 state.collectionInView = payload.collection
-    }
+    // }
     
 }).addCase(createCollection.pending,(state)=>{
     state.loading = true

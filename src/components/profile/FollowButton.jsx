@@ -19,7 +19,7 @@ const FollowButton = ({ prof,isSelf,current,follow,onClick}) => {
     <button
       onClick={onClick}
       className={`
-        px-4 py-1.5 text-sm  rounded-full mx-4 transition
+        px-4 h-10 text-sm   rounded-full mx-4 transition
         
         ${follow ? "bg-button-secondary-bg text-white" : " bg-button-primary-bg text-white"}
       `}

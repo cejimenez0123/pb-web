@@ -96,10 +96,10 @@ useEffect(() => {
 // ── Tabs constants ─────────────────────────────────────
 
 useEffect(()=>{
-   
+   if(profile){
       dispatch(getPublicProfilePages({profile}))
       dispatch(getPublicProfileCollections({profile}))
-    
+   }
 },[profile])
 // ── Pill Component ─────────────────────────────────────
 const Pill = ({ label,onClick }) => (

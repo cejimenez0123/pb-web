@@ -25,7 +25,7 @@ return(<div className="flex flex-wrap sm:flex-nowrap items-center justify-betwee
   <div className="dropdown dropdown-end">
     <label
       tabIndex={0}
-      className="btn h-10  px-5 rounded-full bg-blueSea text-white hover:bg-cyan-500 flex items-center justify-center gap-2 transition"
+      className="btn h-10  px-5 rounded-full bg-purple text-cream hover:bg-cyan-500 flex items-center justify-center gap-2 transition"
     >
       Actions
 

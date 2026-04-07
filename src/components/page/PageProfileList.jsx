@@ -6,10 +6,9 @@ const PageProfileList = ({ items, router }) => (
       <div
         key={p.id}
         onClick={() => router.push(Paths.page.createRoute(p.id))}
-    
-        className="p-3 backdrop-blur-sm shadow-sm border-blue bg-base-bg rounded-full border-1 border active:scale-[0.98] transition"
+      className="px-3 py-3 rounded-full border border-purple border-1 bg-base-bg backdrop-blur-sm shadow-sm active:scale-[0.98] transition"
       >
-        <span className="text-[0.95rem] font-medium text-gray-800">
+        <span className="text-[0.95rem] min-h-10  font-medium text-gray-800">
         {p?.title?.length > 0 ? p.title : "Untitled"}
         </span>
       </div>

@@ -167,7 +167,7 @@ const handleUseRefferal=(params)=>{
         <IonInput
           label="Email"
           labelPlacement="stacked"
-          placeholder="example@x.com"
+          placeholder="example@example.com"
           className="text-emerald-700 mb-4"
           value={email}
           onIonInput={(e) => setEmail(e.target.value)}

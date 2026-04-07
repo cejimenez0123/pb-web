@@ -124,7 +124,7 @@ export default function ReferralForm({ onClose }) {
       {/* Submit Button */}
       <button
         onClick={handleClick}
-        className="mt-6 h-12 rounded-full bg-emerald-600 text-white font-medium active:scale-[0.98]"
+        className="mt-8 h-12 py-3 rounded-full bg-emerald-600 text-white font-medium active:scale-[0.98]"
       >
         Send Invite
       </button>
