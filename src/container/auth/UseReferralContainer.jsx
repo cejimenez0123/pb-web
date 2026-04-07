@@ -38,12 +38,12 @@ const params = new URLSearchParams(router.routeInfo?.search);
   const dispatch = useDispatch();
 
   const { error, setError, setSuccess } = useContext(Context);
-  // useEffect(() => {
-  //   let toke = searchParams.get("token")
-
-  //   if(!token&&toke)setToken(toke)
-  //   return async ()=>await Preferences.set({key:"token",value:toke})
-  // }, []);
+  useEffect(() => {
+   
+    if(token){
+   return async ()=>await Preferences.set({key:"token",value:token})
+    }
+  }, []);
   useEffect(() => {
     if (confirmPassword === password) {
       if (username.length > 4) {
