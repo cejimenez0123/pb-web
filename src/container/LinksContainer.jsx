@@ -50,14 +50,18 @@ export default function LinksContainer(props){
                 
        
                 <li>  
-                      {/* <LinkNode image={pen}
-                      name={"Writers Workshop"}
+                      <LinkNode image={pen}
+                      title={"Writers Workshop"}
+                        description={"Get Feedback, Build Connection, Be Inspired • Poetry Month Workshop:'Why Poetry?' "}
                       links={
-                         showThirdSaturdayNode?[{name:"To Be Read Spreadsheet",url:"https://docs.google.com/spreadsheets/d/1bPnD3ufcoBYkttmdZJLEnc2K_662yktJ_tzK2w9ueVM/edit?usp=sharing"},{name:"RSVP Here",url:"https://partiful.com/e/fQ5D7Qsk6OXzl0FYNbt3?c=LiATxtWz"}]:
                         
-                        [
+                         showThirdSaturdayNode?[{name:"To Be Read Spreadsheet",url:"https://docs.google.com/spreadsheets/d/1bPnD3ufcoBYkttmdZJLEnc2K_662yktJ_tzK2w9ueVM/edit?usp=sharing"},
+                          {name:"RSVP Here",url:"https://partiful.com/e/eMXeu8WRozzVjvd07Gr7?c=xuzYZPht"}]:
+                         [{name:"RSVP Here",url:"https://partiful.com/e/eMXeu8WRozzVjvd07Gr7?c=xuzYZPht"}]
+                        
+                        
                       
-                      ]} */}
+                      } />
   <LinkNode image={form}
   title={"Las Lineas Film Festival Open Mic"}
                       links={[{name:"Apply today",url:"https://forms.gle/USFXSyZSJ8t9QEsk7"}]}
