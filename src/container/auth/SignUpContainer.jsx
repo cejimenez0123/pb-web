@@ -206,16 +206,16 @@ const handlePrivate = useCallback(
   []
 );
 return (
-  <IonContent>
-    <div className="max-w-xl mx-auto px-4 pt-6 pb-24">
+  <IonContent style={{"--padding-bottom":"8em","--padding-top":"4em"}}>
+    
 
       {/* Header */}
       <IonHeader className="bg-opacity-80 rounded-lg">
-        <IonTitle className="text-green-800 text-center text-3xl">
+        <IonTitle className="text-green-800 text-center text-xl">
           Complete Sign Up
         </IonTitle>
       </IonHeader>
-
+<div className="max-w-xl mx-auto px-4 pt-20 pb-24">
       <IonCard className="mt-6 shadow-none bg-transparent">
         <IonCardContent className="space-y-6">
 
