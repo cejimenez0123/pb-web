@@ -6,8 +6,8 @@ const TabBar = ({ tabs,active, onChange }) => (
         onClick={() => onChange(tab.key)}
         className={`
           text-center 
-          px-3 py-1 
-     
+          px-3 py-2 
+          text-[1.2em]
           text-xs sm:text-sm 
           rounded-lg transition 
           whitespace-nowrap

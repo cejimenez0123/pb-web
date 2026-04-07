@@ -8,7 +8,7 @@ const IndexList = ({ items, router }) => (
       <div
         key={i.id}
         onClick={() => router.push(Paths.collection.createRoute(i.id))}
-        className="px-3 rounded-full border border-purple border-1 bg-base-bg backdrop-blur-sm shadow-sm active:scale-[0.98] transition"
+        className="px-3 py-3 rounded-full border border-purple border-1 bg-base-bg backdrop-blur-sm shadow-sm active:scale-[0.98] transition"
       >
         <span className="text-[0.95rem] h-10  font-medium text-gray-800">
           {i.title ?? i.name ?? "Untitled"}

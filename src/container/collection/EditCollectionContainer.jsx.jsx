@@ -7,13 +7,12 @@ import {
   IonContent,
 
   IonImg,
-  IonSpinner,
-  IonText,
+
   useIonRouter,
 } from "@ionic/react";
 import CollectionToCollection from "../../domain/models/CollectionToCollection";
 import { useContext, useEffect, useMemo, useState } from "react";
-
+import HashtagForm from "../../components/hashtag/HashtagForm";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteCollection, deleteCollectionFromCollection, deleteStoryFromCollection, fetchCollectionProtected, patchCollectionContent } from "../../actions/CollectionActions";
 import Paths from "../../core/paths";
@@ -30,9 +29,9 @@ import RoleForm from "../../components/role/RoleForm";
 import ErrorBoundary from "../../ErrorBoundary";
 import { Capacitor } from "@capacitor/core";
 import { useParams } from "react-router";
-import HashtagForm from "../../components/hashtag/HashtagForm";
 import { useDialog } from "../../domain/usecases/useDialog";
 import Pill from "../../components/Pill";
+import Enviroment from "../../core/Enviroment";
 
 const EditCollectionContainer = () => {
 
@@ -51,6 +50,7 @@ const EditCollectionContainer = () => {
 const [canUserEdit,setCanUserEdit]=useState(false)
  const [title,setTitle]=useState("")
  const [openHashtag,setOpenHashtag]=useState(false)
+ 
  const [purpose,setPurpose]=useState("")
   const [newCollections, setNewCollections] = useState([]);
   const currentProfile = useSelector((state) => state.users.currentProfile);
@@ -118,19 +118,8 @@ const TabBar = ({ tabs,active, onChange }) => (
     ))}
   </div>
 );
-// export default TabBar;
-  const handleColOrderChange = (newOrder) => {
-    setNewCollections(
-      newOrder.map((c, i) => new CollectionToCollection(c.id, i, c.childCollection, colInView, currentProfile))
-    );
-  };
-     const deleteStory = (stc) => {
-    dispatch(deleteStoryFromCollection({ stId: stc.id }));
-  };
 
-  const deleteChildFromCollection = (tc) => {
-    if (tc) dispatch(deleteCollectionFromCollection({ tcId: tc.id }));
-  };
+;
   const [search, setSearch] = useState("");
 
 // Memoized filtered lists
@@ -250,7 +239,7 @@ const cycleFollowersRole = () => {
   useEffect(()=>{
      getCol(id).then()
   },[id])
-  const handleAddStory = () => router.push(Paths.addToCollection.createRoute(id));
+
   const handleDelete = () => {
    
     closeDialog()
@@ -288,7 +277,7 @@ const cycleFollowersRole = () => {
   
   }
   if(loading||!colInView){return editCollectionSkeleton()}
-    return<IonContent fullscreen style={{ "--background": "#f8f6f1" }}>
+    return<IonContent fullscreen style={{ "--background": Enviroment.palette.base.background }}>
   <div className="max-w-lg mx-auto px-4 pb-28 pt-6 space-y-6">
 
     {/* TITLE */}
@@ -362,17 +351,29 @@ const cycleFollowersRole = () => {
         }
         baseClass="bg-softBlue text-blueSea"
       />
-
+{/* <div className="pt-4"> */}
+  <Pill
+    label={openHashtag ? "- Hashtags" : "+ Hashtags"}
+    onClick={() => setOpenHashtag(!openHashtag)}
+    baseClass="bg-emerald-500 text-white"
+  />
+{/* </div> */}
       <Pill
         label="Add Story"
-        icon={addIcon}
+        // icon={addIcon}
         onClick={() =>
           router.push(Paths.addToCollection.createRoute(id))
         }
         baseClass="bg-soft text-white"
       />
     </div>
-
+<div
+  className={`overflow-hidden transition-all duration-300 ${
+    openHashtag ? "max-h-[600px] mt-2" : "max-h-0"
+  }`}
+>
+  {openHashtag && <HashtagForm item={colInView} type="collection" />}
+</div>
     {/* TABS */}
     {/* SEARCH */}
 <div className="bg-white rounded-2xl p-3 shadow-sm flex items-center gap-2">

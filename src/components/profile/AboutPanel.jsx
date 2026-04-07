@@ -22,7 +22,7 @@ if (address) {
   const hashtags = profile.hashtags ?? profile.tags ?? [];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 px-4">
       {(profile.bio || profile.selfStatement) && (
         <p className="text-sm text-gray-700 leading-relaxed">
           {profile.bio ?? profile.selfStatement}

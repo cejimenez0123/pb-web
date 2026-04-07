@@ -163,11 +163,11 @@ function HomeEmbed({workshops,stories,prompts,isGlobal,setIsGlobal}) {
   return (
     <ErrorBoundary>
 
-        <div className="max-w-[60rem] mx-auto px-4 mt-4">
+        <div className="max-w-[60rem] mx-auto  mt-4">
           
           {/* Stories */}
           <SectionHeader title="What's happening in your communities" />
-          <div className="flex gap-4 overflow-x-auto pb-2">
+          <div className="flex gap-4 overflow-x-auto px-4 pb-2">
             {whatsHappeningList.length
               ? whatsHappeningList.map(story => <StoryItem key={story.id} page={story} isGrid />)
               : [1,2,3].map(i => <div key={i} className="skeleton min-w-[20em] min-h-[20em]" />)
@@ -185,7 +185,7 @@ function HomeEmbed({workshops,stories,prompts,isGlobal,setIsGlobal}) {
             }
           />
           {/* <IonList inset> */}
-          <div className='flex-row col'>
+          <div className='flex-row col px-4'>
             {sortedWorkshops? sortedWorkshops.map(workshop => (
               <WorkshopItem key={workshop.id} item={workshop} router={router} />
             )):[1,2,3].map(i=>{
@@ -197,14 +197,16 @@ function HomeEmbed({workshops,stories,prompts,isGlobal,setIsGlobal}) {
           {/* Prompts */}
           <SectionHeader title="Writing Prompts for you" />
        
-          <div className="grid pb-[10em] grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid pb-[10em] grid-cols-1 px-4 md:grid-cols-2 lg:grid-cols-3 gap-4">
 
             {filteredPrompts.length
               ? filteredPrompts.map(({ story }) => <StoryItem key={story.id} page={story} />)
               : [1,2,3,4].map(i => <div key={i} className="skeleton min-w-[20em] min-h-[20em]" />)
             }
           </div>
+          <div className='px-4'>
           <PageList  items={recommendedStories}/>
+          </div>
         </div>
     
     </ErrorBoundary>

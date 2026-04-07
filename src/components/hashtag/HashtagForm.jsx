@@ -10,7 +10,7 @@ import Context from "../../context";
 import { useParams } from "react-router-dom";
 import { IonImg, IonLabel, IonTextarea } from "@ionic/react";
 export function HashtagForm({item,type="story"}){
-    const storyHashtags = useSelector(state=>state.hashtags.storyHashtags)
+
     const {setError}=useContext(Context)
     const isStory = type == "story"
     const [inputValue, setInputValue] = useState('');
@@ -19,7 +19,7 @@ export function HashtagForm({item,type="story"}){
   
     const currentProfile = useSelector(state=>state.users.currentProfile)
 
-  
+
     const handleInputChange = (e) => {
       setInputValue(e.target.value);
     };
