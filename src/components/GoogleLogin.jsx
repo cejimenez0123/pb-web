@@ -134,7 +134,7 @@ const router =useIonRouter()
       drive: !!drive,
     });
     try {
-      localStorage.clear()
+     
       await Preferences.clear()
       await SocialLogin.logout({ provider: "google" });
       setPending(true);

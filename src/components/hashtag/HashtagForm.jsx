@@ -5,10 +5,10 @@ import { createHashtagCollection, createHashtagPage, deleteHashtagCollection, de
 import { useDispatch } from "react-redux";
 import checkResult from "../../core/checkResult";
 import clear from "../../images/icons/close.svg"
-import ErrorBoundary from "../../ErrorBoundary";
+
 import Context from "../../context";
-import { useParams } from "react-router-dom";
 import { IonImg, IonLabel, IonTextarea } from "@ionic/react";
+import { ErrorBoundary } from "@sentry/react";
 export function HashtagForm({item,type="story"}){
 
     const {setError}=useContext(Context)
@@ -116,6 +116,7 @@ try{
    
     },[])
     return (
+      <ErrorBoundary>
        <form className="  w-full flex flex-col mt-2 ">
      
         <textarea
@@ -143,6 +144,7 @@ try{
       </div>
    
     </form>
+    </ErrorBoundary>
   
   );
 };

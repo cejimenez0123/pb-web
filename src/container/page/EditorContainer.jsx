@@ -30,6 +30,10 @@ import menu from "../../images/icons/menu.svg";
 import EditorDiv from "../../components/page/EditorDiv.jsx";
 import { motion, AnimatePresence } from "framer-motion";
 import Enviroment from "../../core/Enviroment.js";
+import { SocialLogin } from "@capgo/capacitor-social-login";
+import { Preferences } from "@capacitor/preferences";
+     const CLIENT_ID = import.meta.env.VITE_OAUTH2_CLIENT_ID;
+  const IOS_CLIENT_ID = import.meta.env.VITE_IOS_CLIENT_ID;
 export default function EditorContainer({ presentingElement }) {
   const { id, type } = useParams();
   const dispatch = useDispatch();
@@ -38,12 +42,13 @@ export default function EditorContainer({ presentingElement }) {
   const editPage = useSelector((state) => state.pages.editingPage);
   const htmlContent = useSelector((state) => state.pages.editorHtmlContent);
   const { setError, setSuccess, setIsSaved } = useContext(Context);
-
+  const [files,setFiles]=useState([])
   const isNative = Capacitor.isNativePlatform();
   const hasInitialized = useRef(false);
   const [pending, setPending] = useState(false);
   const [openHashtag, setOpenHashtag] = useState(false);
   const { openDialog, closeDialog, dialog, resetDialog } = useDialog();
+    const { isPhone } = useContext(Context);
   const [parameters, setParameters] = useState({
     isPrivate: true,
     data: "",
@@ -149,31 +154,6 @@ export default function EditorContainer({ presentingElement }) {
     }, (err) => setError(err.message))
   );
 };
-// const createPageAction = () => {
-//   if (!currentProfile?.id) return;
-// //  console.log("Creating page with parameters:", parameters.data,htmlContent);
-// // const payload = {
-// //   title: parameters.title,
-// //   data:  htmlContent,
-// //   description: parameters.description,
-// //   needsFeedback: parameters.needsFeedback,
-// //   isPrivate: parameters.isPrivate,
-// //   commentable: parameters.commentable,
-// //   type: type || parameters.type, // ✅ explicitly keep original type
-// //   profileId: currentProfile.id,
-// // };
-  
-// //   dispatch(createStory(payload)).then((res) =>
-// //     checkResult(res, ({ story }) => {
-// //       dispatch(setEditingPage({ page: story }));
-  
-// //       handleChange("isSaved",true)
-// //       router.push(Paths.editPage.createRoute(story.id));
-      
-// //     }, (err) => setError(err.message))
-// //   );
-
-// };
 
 
   const handleChange = (key, value) => setParameters((prev) => ({ ...prev, [key]: value }));
@@ -185,6 +165,7 @@ function TopBarDropdown({
   parameters,
   setOpenHashtag,
   openHashtag,
+  openGoogleDrive,
   openRoleFormDialog,
   openConfirmDeleteDialog,
 }) {
@@ -217,7 +198,12 @@ function TopBarDropdown({
         >
           Get Feedback
         </li>
-
+  <li
+          className="text-emerald-600 pt-3 pb-2 cursor-pointer"
+          onClick={() => openGoogleDrive()}
+        >
+          Google Doc Import
+        </li>
         {editPage && (
           <li
             className="text-emerald-600 pt-3 pb-2 cursor-pointer"
@@ -271,9 +257,152 @@ function TopBarDropdown({
     </div>
   );
 }
+ const driveTokenKey = "googledrivetoken";
+   const TOKEN_EXPIRY_KEY = "googledrivetoken_expiry"; // 
+const [accessToken,setAccessToken]=useState(null)
+  async function checkAccessToken() {
+    const token = (await Preferences.get({ key: driveTokenKey })).value;
+    const tokenExpiry = (await Preferences.get({ key: TOKEN_EXPIRY_KEY })).value;
+    const tokenValid = token && tokenExpiry && Date.now() < parseInt(tokenExpiry, 10);
+console.log("ACCESS TOKEN",accessToken)
+    if(tokenValid){
+      setAccessToken(token);
+    }else{
+      setAccessToken(null)
+    }
+    
+  }
+  useEffect(() => {
+    
+    fetchFiles()
+  }, [accessToken]);
+  const fetchFiles = async () => {
+    const token =(await Preferences.get({ key: driveTokenKey})).value
 
+    try{
+    if (!token) return;
 
+    // setLoading(true);
+    fetch('https://www.googleapis.com/drive/v3/files?q=mimeType="application/vnd.google-apps.document"&fields=files(id,name,mimeType,iconLink)', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/json',
+      },
+    })
+      .then(res => {
+        if (res.status === 401) throw new Error('Unauthorized — invalid or expired token');
+        return res.json();
+      })
+      .then(data => {
+        
+        setFiles(data.files || []);
+     
+      })
+      .catch(err => {
+        console.error('Google Drive API error:', err);
+        setAccessToken(null)
+        // setLoading(false);
+      });
+    }catch(err){
+        console.error("Error in fetchFiles:", err);
+            setAccessToken(null)
+        }
+  };
+    const onFilePicked = async (file) => {
+    try {
+      // const accessToken = (await Preferences.get({ key: "googledrivetoken" })).value;
+      if (!file?.id || !accessToken) return;
 
+      const url = `https://www.googleapis.com/drive/v3/files/${file.id}/export?mimeType=text/html`;
+      const response = await axios.get(url, {
+        headers: { 'Authorization': `Bearer ${accessToken}` },
+        responseType: 'text'
+      });
+
+      const htmlContent = response.data;
+  
+      dispatch(updateStory(
+        { ...parameters,data:htmlContent,description:feedbackDesc,status:"draft", id: editPage.id,needsFeedback:true, type: PageType.text}
+      )).then(res => checkResult(res, ({ story }) => {
+    setStory(story)
+      
+                      handleChange("isSaved",true)
+              
+  
+      }, err => setErrorLocal(err.message)));
+    } catch (error) {
+      console.error("Error fetching Google Doc:", error);
+      setErrorLocal(error.message);
+    }
+  };
+  const nativeGoogleSignIn = async () => {
+    try {
+     
+      const user = await SocialLogin.login({
+        provider:"google",
+        options:{
+          scopes:["email","profile", "https://www.googleapis.com/auth/drive.readonly"]
+        }
+    
+        
+        
+      }).catch((err) => console.error("SocialLogin error:", err));
+     
+      if (!user?.result) throw new Error("No user data returned.")
+      const { accessToken } = user.result;
+      const expiry = Date.now() + 3600 * 1000;
+
+      setAccessToken(accessToken.token);
+     await Preferences.set({key:driveTokenKey,value:accessToken.token})
+  await Preferences.set({key:TOKEN_EXPIRY_KEY,value:expiry})
+  fetchFiles()
+    } catch (err) {
+      console.log(err)
+      console.error("Native sign-in error", err);
+   
+    } 
+  };
+
+const openGoogleDrive = async()=>{
+   if(!accessToken){
+    nativeGoogleSignIn()
+    return
+   }
+
+  openDialog({
+    title: null,
+    text: (
+      <div
+        style={{ "--background": Enviroment.palette.base.surface}}
+        className="bg-cream"
+      >
+       
+        <div
+          className={`overflow-y-auto ${isPhone ? "grid grid-cols-2 gap-2" : "grid gap-2"}`}
+          style={{ maxHeight: "70vh" }} // limits height so content scrolls
+        >
+          {files.map(file => (
+            <div
+              key={file.id}
+              className="px-2 py-2 flex border w-[100%] rounded-box shadow-sm border-blueSea border-opacity-20 hover:border-blueSea "
+              onClick={() => onFilePicked(file)}
+            >
+              {/* <div className="te  p-2 "> */}
+                <h5 className="mx-auto p-2 my-auto text-center bg-cream text-sm">
+                  {file.name}
+                </h5>
+          
+            </div>
+          ))}
+        </div>
+      </div>
+    ),
+    // breakpoint: 1,
+    // disagreeText: "Close",
+  });
+// };
+
+}
 const topBar = () => (
   <div className="rounded-lg w-full sm:max-w-[50em] mx-auto p-2 bg-emerald-50 border border-emerald-200 flex flex-col gap-1">
     {/* Top row: input + dropdown */}
@@ -293,6 +422,7 @@ const topBar = () => (
         editPage={editPage}
         openFeedback={openFeedback}
         parameters={parameters}
+        openGoogleDrive={openGoogleDrive}
         setOpenHashtag={setOpenHashtag}
         openHashtag={openHashtag}
         openRoleFormDialog={openRoleFormDialog}
@@ -385,7 +515,21 @@ useEffect(() => {
     handleChange("data", "");
     handleChange("isSaved", false);
   }
+  
 }, [type]);
+useEffect(()=>{ 
+  // useLayoutEffect(() => {
+
+      SocialLogin.initialize({
+        google: {
+          webClientId: CLIENT_ID,
+            iOSClientId: IOS_CLIENT_ID,
+            iOSServerClientId: CLIENT_ID,
+          mode: 'online',
+        },
+      }).catch(err => console.error('SocialLogin init error:', err));
+    
+  checkAccessToken()},[])
   // ------------------ Render ------------------
   return (
     <EditorContext.Provider value={{ page: editPage, parameters, setParameters }}>
