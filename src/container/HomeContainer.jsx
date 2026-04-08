@@ -152,7 +152,7 @@ function HomeEmbed({workshops,stories,prompts,isGlobal,setIsGlobal}) {
       commentable: true
     })).then(res => checkResult(res, payload => {
       if (!payload.story) return window.alert("COULD NOT CREATE STORY");
-      dispatch(setEditingPage({ page: payload.story }));
+      // dispatch(setEditingPage({ page: payload.story }));
       dispatch(setPageInView({ page: payload.story }));
       router.push(Paths.editPage.createRoute(payload.story.id), 'forward', 'push');
     }));

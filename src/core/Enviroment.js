@@ -3,14 +3,14 @@
 let url = import.meta.env.VITE_URL
 let redirectUrl = import.meta.env.VITE_REDIRECT_URL
 const isDev =import.meta.env.VITE_NODE_ENV=="dev"
-if(isDev=="dev"){
+if(isDev){
  
-    url = import.meta.env.VITE_DEV_URL
+    url = "http://localhost:8888"??import.meta.env.VITE_DEV_URL
     redirectUrl = import.meta.env.VITE_DEV_REDIRECT_URL
    
 }
 
-
+console.log("URL",url)
 const Enviroment = {
     proxyUrl:import.meta.env.VITE_PROXY_URL,
     redirectUrl:import.meta.env.VITE_REDIRECT_URI,

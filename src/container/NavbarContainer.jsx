@@ -341,7 +341,7 @@ useEffect(() => {
       })).then(res=>checkResult(res,data=>{
       
           dispatch(setPageInView({page:data.story}))
-          dispatch(setEditingPage({page:data.story}))
+          // dispatch(setEditingPage({page:data.story}))
           router.push(Paths.editPage.createRoute(data.story.id),'forward', 'replace');
       },e=>{
         setError(e.message)
@@ -357,7 +357,7 @@ const menuItems = [
     icon:ImageIcon,
     action:()=>{
       dispatch(setHtmlContent(""))
-      dispatch(setEditingPage({page:null}))
+      // dispatch(setEditingPage({page:null}))
       router.push(Paths.editor.image,"forward")
     }
   },
@@ -366,7 +366,7 @@ const menuItems = [
     icon:LinkIcon,
     action:()=>{
       dispatch(setHtmlContent({html:""}))
-      dispatch(setEditingPage({page:null}))
+      // dispatch(setEditingPage({page:null}))
       router.push(Paths.editor.link,"forward")
     }
   },
@@ -491,7 +491,7 @@ const {currentProfile }= useSelector(state=>state.users)
         commentable: true
       })).then(res => checkResult(res, payload => {
         if (payload.story) {
-          dispatch(setEditingPage({ page: payload.story }));
+          // dispatch(setEditingPage({ page: payload.story }));
           dispatch(setPageInView({ page: payload.story }));
         router.push(Paths.editPage.createRoute(payload.story.id),'forward', 'replace');
         }else{
@@ -531,7 +531,8 @@ const {currentProfile }= useSelector(state=>state.users)
 const debouncedNavigate = useRef(
     debounce((type) => {
       dispatch(setHtmlContent(null))
-      dispatch(setEditingPage({page:null}))
+      dispatch(setPageInView({page:null}))
+      // dispatch(setEditingPage({page:null}))
       switch (type) {
         case "write":
           ClickWriteAStory();

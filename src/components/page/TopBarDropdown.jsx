@@ -8,6 +8,7 @@ function TopBarDropdown({
   editPage,
   openFeedback,
   handleChange,
+  handleView,
   parameters,
   setOpenHashtag,
   openHashtag,
@@ -69,7 +70,7 @@ useEffect(()=>{
         {editPage && editPage?.id && (
           <li
             className="text-emerald-600 pt-3 pb-2 cursor-pointer"
-            onClick={() => router.push(Paths.page.createRoute(editPage.id))}
+            onClick={() => handleView()}
           >
             View
           </li>

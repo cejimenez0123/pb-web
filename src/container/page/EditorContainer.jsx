@@ -41,7 +41,7 @@ export default function EditorContainer({ presentingElement }) {
   const router = useIonRouter();
  
   const currentProfile = useSelector((state) => state.users.currentProfile);
-  const editPage = useSelector((state) => state.pages.editingPage);
+  const editPage = useSelector((state) => state.pages.pageInView);
    
   const { setError, setSuccess,  } = useContext(Context);
   const [files,setFiles]=useState([])
@@ -53,7 +53,7 @@ export default function EditorContainer({ presentingElement }) {
   const { openDialog, closeDialog, dialog, resetDialog } = useDialog();
     const { isPhone } = useContext(Context);
   const htmlContent = useSelector(state=>state.pages.editorHtmlContent)
-
+const [pageType,setPageType]=useState(editPage?.type??type)
   const [parameters, setParameters] = useState({
     isPrivate: true,
     data: editPage?.data || htmlContent,
@@ -63,14 +63,26 @@ export default function EditorContainer({ presentingElement }) {
     status:"draft",
     description: "",
     commentable: true,
+    authorId:currentProfile?.id,
     profile: currentProfile,
     profileId: currentProfile ? currentProfile.id : "",
-    type: type|| PageType.text,
+    type: pageType|| PageType.text,
   });
-  const pageType = type??parameters.type??PageType.text
+
     const [pending, setPending] = useState(!(pageType==PageType.link||pageType==PageType.picture));
   const notText = pageType !== PageType.link && pageType !== PageType.picture;
+//  useEffect(() => {
+//   if (!editPage) return;
 
+//   setParameters(prev => ({
+//     ...prev,              // ✅ keep defaults
+//     ...editPage,          // ✅ override only what exists
+//     isPrivate: editPage.isPrivate ?? prev.isPrivate,
+//     needsFeedback: editPage.needsFeedback ?? prev.needsFeedback,
+//     description: editPage.description ?? prev.description,
+//     commentable: editPage.commentable ?? prev.commentable,
+//   }));
+// }, [editPage]);
   // ------------------ Lifecycle ------------------
   useEffect(() => {
     closeDialog();
@@ -95,31 +107,36 @@ const debouncedSave = useRef(
     );
   }, 300)
 ).current;
-console.log("HTMLCONTENT",htmlContent)
+// console.log("HTMLCONTENT",htmlContent)
 
   const setStory = (story) => {
     dispatch(setHtmlContent(story?.data ));
-    dispatch(setEditingPage({ page: story }));
-    
+    dispatch(setPageInView({ page: story }));
     setParameters((prev) => ({
       ...prev,
-      data:story.data,
-      commentable: story.commentable,
+      data:htmlContent,
+      commentable: story?.commentable??false,
       page: story,
-      isPrivate: story.isPrivate,
-      data: story.data,
-      title: story.title,
-      type: story.type,
+      isPrivate: story?.isPrivate??true,
+  
+      title: story?.title??"Untitled",
+      type: story?.type??pageType??PageType.text,
     }));
     setPending(false);
   }
+const hasLoaded = useRef(false);
 
 useEffect(() => {
+  if (!hasLoaded.current) {
+    hasLoaded.current = true;
+    return;
+  }
+
   if (!editPage?.id || !currentProfile?.id || !notText) return;
 
-  const payload = {
+    const payload = {
     id: editPage.id,
-    type: editPage.type,
+    ...parameters,
     profileId: currentProfile.id,
     data: parameters.data,
     title: parameters.title,
@@ -129,9 +146,7 @@ useEffect(() => {
     needsFeedback: parameters.needsFeedback,
   };
 
-  // 🔥 Prevent duplicate calls
-  const isSame =JSON.stringify(payload) === JSON.stringify(lastSavedRef.current);
-
+  const isSame = JSON.stringify(payload) === JSON.stringify(lastSavedRef.current);
   if (isSame) return;
 
   lastSavedRef.current = payload;
@@ -145,6 +160,37 @@ useEffect(() => {
   parameters.description,
   parameters.needsFeedback,
 ]);
+// useEffect(() => {
+//   if (!editPage?.id || !currentProfile?.id || !notText) return;
+
+//   const payload = {
+//     id: editPage.id,
+//     ...parameters,
+//     profileId: currentProfile.id,
+//     data: parameters.data,
+//     title: parameters.title,
+//     isPrivate: parameters.isPrivate,
+//     commentable: parameters.commentable,
+//     description: parameters.description,
+//     needsFeedback: parameters.needsFeedback,
+//   };
+
+//   // 🔥 Prevent duplicate calls
+//   const isSame =JSON.stringify(payload) === JSON.stringify(lastSavedRef.current);
+
+//   if (isSame) return;
+
+//   lastSavedRef.current = payload;
+
+//   debouncedSave(payload);
+// }, [
+//   parameters.data,
+//   parameters.title,
+//   parameters.isPrivate,
+//   parameters.commentable,
+//   parameters.description,
+//   parameters.needsFeedback,
+// ]);
   const fetchStory = () => {
    
     if (!id) return;
@@ -172,30 +218,45 @@ useEffect(() => {
   const payload = {
     title: parameters.title,
     data: dataToUse, 
-    description: parameters.description,
+    description: parameters.description??"",
     needsFeedback: parameters.needsFeedback,
     isPrivate: parameters.isPrivate,
+    isSaved:true,
     status:"draft",
-    commentable: parameters.commentable,
-    type: type,
+    commentable: parameters?.commentable??false,
+    type: pageType??editPage?.type??PageType.text,
     profileId: currentProfile.id,
   };
 
   dispatch(createStory(payload)).then((res) =>
-    checkResult(res, ({ story }) => {
-      dispatch(setEditingPage({ page: story }));
-      handleChange("isSaved", true);
-      router.push(Paths.editPage.createRoute(story.id));
+    checkResult(res, (payload) => {
+   
+     
+      setStory({...payload.story,isSaved:true})
+      router.push(Paths.editPage.createRoute(payload.story.id,"foward","replace"))
     }, (err) => setError(err.message))
   );
 };
 
 
-  const handleChange = (key, value) =>{ 
-    setParameters((prev) => ({ ...prev, [key]: value }))
+//   const handleChange = (key, value) =>{ 
+//     setParameters((prev) => ({ ...prev, [key]: value }))
 
+// };
+
+const handleChange = (key, value) => {
+  setParameters((prev) => {
+    const updated = { ...prev, [key]: value };
+
+    debouncedSave({
+      ...updated,
+      id: editPage.id,
+      profileId: currentProfile.id,
+    });
+
+    return updated;
+  });
 };
-
  const driveTokenKey = "googledrivetoken";
    const TOKEN_EXPIRY_KEY = "googledrivetoken_expiry"; // 
 const [accessToken,setAccessToken]=useState(null)
@@ -203,7 +264,6 @@ const [accessToken,setAccessToken]=useState(null)
     const token = (await Preferences.get({ key: driveTokenKey })).value;
     const tokenExpiry = (await Preferences.get({ key: TOKEN_EXPIRY_KEY })).value;
     const tokenValid = token && tokenExpiry && Date.now() < parseInt(tokenExpiry, 10);
-console.log("accesstokenTOKENE",token)
     if(tokenValid){
       setAccessToken(token);
     }
@@ -315,6 +375,12 @@ const openGoogleDrive = async()=>{
 // };
 
 }
+const handleView =()=>{
+  dispatch(updateStory({...parameters})).then(res=>{
+    router.push(Paths.page.createRoute(editPage.id))
+  })
+}
+
 const topBar = () => (
   <div className="rounded-lg w-full sm:max-w-[50em] mx-auto p-2 bg-emerald-50 border border-emerald-200 flex flex-col gap-1">
     {/* Top row: input + dropdown */}
@@ -332,6 +398,7 @@ const topBar = () => (
       <TopBarDropdown
       router={router}
         id={id}
+        handleView={handleView}
         editPage={editPage}
         handleChange={handleChange}
         openFeedback={openFeedback}
@@ -385,13 +452,13 @@ const openRoleFormDialog = (page) => {
           handleChange={(e) => handleChange("description", e)}
           handleFeedback={(feedbackDesc) => {
             resetDialog();
-          dispatch(updateStory({ ...parameters,description:feedbackDesc,status:"workshop", needsFeedback:true, type: editPage.type || parameters.type }))
+          dispatch(updateStory({ ...parameters,description:feedbackDesc,status:"workshop", needsFeedback:true}))
          
           }}
           handlePostPublic={(desc) => {
             handleChange("isPrivate", false);
             handleChange("status","finished")
-            dispatch(updateStory({ ...parameters,description:desc, needsFeedback:true, type: editPage.type || parameters.type }))
+            dispatch(updateStory({ ...parameters,description:desc, needsFeedback:true }))
          
             router.push(Paths.page.createRoute(editPage.id), "forward");
                  resetDialog();
@@ -422,14 +489,14 @@ const openRoleFormDialog = (page) => {
   };
 useEffect(() => {
   if (!id) { // only for new page creation
-    dispatch(setEditingPage({ page: null })); // clear old editPage
+    dispatch(setPageInView({ page: null })); // clear old editPage
     dispatch(setHtmlContent( "" )); // clear editor content
     handleChange("data", "");
     handleChange("isSaved", false);
   }
   
 }, [type]);
-console.log("DOMAN",Enviroment.domain)
+
 
   // ------------------ Render ------------------
   return<EditorContext.Provider value={{ page: editPage, parameters, setParameters }}>
@@ -468,7 +535,7 @@ console.log("DOMAN",Enviroment.domain)
       animate={{ opacity: pending ? 0 : 1 }}
       transition={{ duration: 0.3 }}
     >
-      <EditorDiv handleChange={handleChange} parameters={parameters} type={pageType} createPageAction={createPageAction} />
+      <EditorDiv page={editPage} handleChange={handleChange} parameters={parameters} type={pageType} createPageAction={createPageAction} />
     </motion.div>
 
     {/* Skeleton overlays EditorDiv while pending */}

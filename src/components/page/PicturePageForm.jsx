@@ -32,31 +32,63 @@ export default function PicturePageForm({ handleChange,type, parameters,createPa
   const dispatch = useDispatch();
   const [file,setFile]=useState(null)
    const [url,setUrl]=useState(null)
+   const htmlContent = useSelector(state=>state.pages.editorHtmlContent)
   const [localPreview, setLocalPreview] = useState(parameters.data); // file preview
   const [uploading, setUploading] = useState(false);
 
 const isNative = Capacitor.isNativePlatform()
 
+
 const pickImage = async () => {
-  const image = await Camera.getPhoto({
-    quality: 80,
-    resultType: CameraResultType.Uri,
-    source: CameraSource.Photos,
-  });
-
-  setLocalPreview(image.webPath);
-
-  if (Capacitor.isNativePlatform()) {
-    // ✅ Native → store path
-    setFile({
-      path: image.path,
+  try {
+    const image = await Camera.getPhoto({
+      quality: 80,
+      resultType: CameraResultType.Uri,
+      source: CameraSource.Photos,
     });
-  } else {
-    // ✅ Web → convert to File
-    const response = await fetch(image.webPath);
-    const blob = await response.blob();
-    const file = new File([blob], "image.jpg", { type: blob.type });
-    setFile(file);
+
+    // ✅ Get mime type (best effort)
+    let mimeType = image.format; // 'jpeg', 'png', etc.
+
+    if (mimeType) {
+      mimeType = mimeType.toLowerCase();
+    }
+
+    // ✅ Validate type
+    const isValid =
+      mimeType === "jpeg" ||
+      mimeType === "jpg" ||
+      mimeType === "png";
+
+    if (!isValid) {
+      setError("Only JPG and PNG images are allowed");
+      return;
+    }
+
+    setLocalPreview(image.webPath);
+
+    if (isNative) {
+      // ✅ Native → pass path
+      setFile({
+        path: image.path,
+        format: mimeType,
+      });
+    } else {
+      // ✅ Web → convert to File
+      const response = await fetch(image.webPath);
+      const blob = await response.blob();
+
+      // Extra safety check using blob type
+      if (!["image/jpeg", "image/png"].includes(blob.type)) {
+        setError("Only JPG and PNG images are allowed");
+        return;
+      }
+
+      const file = new File([blob], "image.jpg", { type: blob.type });
+      setFile(file);
+    }
+  } catch (err) {
+    console.error("Image pick error:", err);
   }
 };
  // Instead of dispatching on every keystroke:
@@ -71,6 +103,7 @@ const handleInput = (e) => {
 
 
 const handleCreate = async () => {
+  setUploading(true)
   if (type === PageType.picture) {
   
     if (file && !parameters.data) {
@@ -87,6 +120,7 @@ const handleCreate = async () => {
   } else {
     createPageAction(url);
   }
+  setUploading(false)
 };
 const uploadPictureFile = async () => {
   if (!file && type === PageType.picture) {
@@ -99,9 +133,8 @@ const uploadPictureFile = async () => {
     const { url } = await dispatch(uploadPicture({ file })).unwrap();
 
     handleChange("data", url);
-    //  handleChange("isSaved", true);
     dispatch(setHtmlContent(url));
-createPageAction(url)
+    createPageAction(url)
    
 
   } catch (err) {
@@ -110,20 +143,35 @@ createPageAction(url)
     setUploading(false);
   }
 };
-  const handleFileChange = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-setFile(file);
-    // Show preview immediately
-    const reader = new FileReader();
-    reader.onload = () => setLocalPreview(reader.result);
-    reader.readAsDataURL(file);
+//   const handleFileChange = async (e) => {
+//     const file = e.target.files[0];
+//     if (!file) return;
+// setFile(file);
+//     // Show preview immediately
+//     const reader = new FileReader();
+//     reader.onload = () => setLocalPreview(reader.result);
+//     reader.readAsDataURL(file);
 
-    setUploading(false);
-
+//     setUploading(false);
+// }
    
-  };
+const handleFileChange = (e) => {
+  const file = e.target.files?.[0];
+  if (!file) return;
 
+  const isValidType = ["image/jpeg", "image/png"].includes(file.type);
+
+  if (!isValidType) {
+    setError("Only JPG and PNG images are allowed");
+    return;
+  }
+
+  setFile(file);
+
+  const reader = new FileReader();
+  reader.onload = () => setLocalPreview(reader.result);
+  reader.readAsDataURL(file);
+};
   const renderPreview = () => {
   const previewSrc = localPreview ?? parameters.data;
     if (!previewSrc) return null;
@@ -144,7 +192,7 @@ setFile(file);
 
     return null;
   };
-console.log(parameters)
+console.log("HTML",htmlContent)
   return (
     <div className="flex flex-col w-full max-w-xl mx-auto">
       {/* Input */}
@@ -155,7 +203,7 @@ console.log(parameters)
           </IonLabel>
 
           <IonInput
-            value={parameters.data}
+            value={htmlContent}
             onIonChange={handleInput}
             placeholder={
               type === PageType.link ? "https://example.com" : "Paste image URL"
@@ -174,7 +222,7 @@ console.log(parameters)
 ): (
             <input
               type="file"
-              accept="image/*"
+               accept="image/png, image/jpeg"
               onChange={handleFileChange}
               className="mb-2 file-input"
             />

@@ -1,20 +1,18 @@
-import { useParams } from "react-router";
 import { useSelector } from "react-redux";
 import { PageType } from "../../core/constants";
 import RichEditor from "./RichEditor";
 import PicturePageForm from "./PicturePageForm";
-import { setHtmlContent } from "../../actions/PageActions";
-import { useDispatch } from "react-redux";
-import { useEffect } from "react";
 
-export default function EditorDiv({ handleChange,parameters, type, createPageAction }) {
+export default function EditorDiv({ handleChange,page,parameters, type, createPageAction }) {
 
-  const page = useSelector((state) => state.pages.editingPage);
+  
 
-
+let pageType = page?.type??type
+console.log("TYPE",page)
+console.log("TYPE<",pageType)
   // switch (type) {
   
-if(type==PageType.link){
+if(pageType==PageType.link){
     return (
       <PicturePageForm
       type={type}
@@ -24,7 +22,7 @@ if(type==PageType.link){
         createPageAction={createPageAction}
       />
     );
-  }else if(type==PageType.picture){
+  }else if(pageType==PageType.picture){
     return (
       <PicturePageForm
       parameters={parameters}

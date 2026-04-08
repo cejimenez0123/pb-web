@@ -90,7 +90,7 @@ const createStory = createAsyncThunk("pages/createStory",async (params,thunkApi)
       if(story && !story.isPrivate && story.id) {
        await algoliaRepo.partialUpdateObject("story",story.id,{title:story?.title})
       }
-   
+   console.log("DATA",data)
       return {
         story:data.story
       }
