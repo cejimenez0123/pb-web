@@ -41,6 +41,14 @@ function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex
     </span>
   );
 }
+const WRAP = "max-w-2xl mx-auto px-4";
+const SECTION_GAP = "pt-10";  // applied to each section's root div
+const SECTION_HEADING = "text-xl lora-medium";          // text style only
+const SECTION_HEADER_ROW = "flex items-center justify-between py-4"; // row layout
+const LIST_WRAP = "flex flex-col gap-4";  // Saves
+// Recent Pages grid already has px-4 — move it to the section wrapper
+const TILE = "w-36 md:w-44 flex-shrink-0";
+const ACTION_ROW = "flex flex-col items-center gap-4 w-full";
 function DashboardEmbed() {
 
   const currentProfile = useSelector(state=>state.users.currentProfile)
@@ -151,7 +159,7 @@ const openCollections=()=>{
     )})}
     const openCommunities=()=>{
       console.log(myCollections)
-      const communities = myCollections?.filter(col=>col.type=="library")
+     const communities = myCollections?.filter(col=>col.type=="library")||[]
  openDialog({
     title: "Communities",
   scrollY: false,
@@ -170,7 +178,7 @@ const openCollections=()=>{
             resetDialog()
           }}><div className='p-4 w-[100%] border-1 border border-soft rounded-xl'><h4 className='text-[.9rem]'>{story.title.length?story.title:
         "Untitled"}</h4></div></li>
-        })}
+        })||null}
     
         </IonList>
     </div>
@@ -300,16 +308,8 @@ scrollY: false,
  return (
         <ErrorBoundary>
 
-          <div className='bg-cream h-[100%]'>
-<div className='text-left'>
-            <div className=' '>
-                               <div className='flex  bg-cream h-[100%] pt-8 flex-row justify-between'>
-                        
-
           
-                  
-                    </div>
-                    <div className='mx-auto'>
+            
                       <div className="flex flex-row mx-auto max-w-[40em] flex-wrap my-4 justify-center gap-4">
         <ButtonWrapper
           onClick={ClickWriteAStory}
@@ -324,7 +324,7 @@ scrollY: false,
           <IonText className="text-white text-[1.2em]"><span className='pb-2'>Create</span><span> Collection</span></IonText>
         </ButtonWrapper>
       </div>
-</div>
+
       {/* Row 2: Join a Workshop */}
       <div className="flex justify-center md:justify-start w-full">
 
@@ -335,8 +335,12 @@ scrollY: false,
           <IonText className="text-button-primary-text text-[1.2em]">Join a Workshop</IonText>
         </ButtonWrapper>
       </div>
-      <div className='flex flex-row justify-between max-h-24'>
-              <h4 className='text-xl pt-8 mx-4 lora-medium pb-4'>Saves</h4>
+      <div>
+     <div className={`${WRAP} ${SECTION_GAP}`}>
+  <div className={SECTION_HEADER_ROW}>
+    <h4 className={SECTION_HEADING}>Saves</h4>
+
+           
 
               <img src={arrowToRight} onClick={()=>homeCol && router.push(Paths.collection.createRoute(homeCol.id))}className='max-w-8 mt-auto mb-4 max-h-8 mx-4' />
               </div>
@@ -353,6 +357,7 @@ scrollY: false,
   
     className={`border shadow-md border-1 rounded-full border-purple bg-base-bg  p-4`}
   >
+    
     {/* {Enviroment.palette.accent.} */}
     {item ? (
       // ✅ REAL CONTENT
@@ -370,15 +375,24 @@ scrollY: false,
     )}
   </div>
 );
+
                     })}
-                
-              </div>
-            </div>
-            <div>
+             
+  </div>
+</div>
+
               
               {/* <h4 className='text-xl lora-medium mx-4 py-4'>Your Spaces</h4> */}
-              <div>
-  <h4 className='text-xl lora-medium mx-4 pb-4 pt-8'>Your Spaces</h4>
+              {/* <div> */}
+            
+                <div className={`${WRAP} ${SECTION_GAP}`}>
+  <div className={SECTION_HEADER_ROW}>
+    <h4 className={SECTION_HEADING}>Your Spaces</h4>
+
+</div>
+  {/* content */}
+{/* </div>
+  <h4 className='text-xl lora-medium mx-4 pb-4 pt-8'></h4> */}
 
   <div className='flex flex-row px-4 gap-4 overflow-x-auto'>
     
@@ -423,15 +437,17 @@ scrollY: false,
       </div>
 
     ))}
-
-  </div>
 </div>
+</div>
+  {/* </div> */}
+{/* </div> */}
              
             </div>
             
-            <div className='flex flex-col justify-between mt-8'>
-              <div className='flex flex-row justify-between px-4 pb-4 mt-8'>
-              <h4   onClick={()=>{openYourWorkshops()}} className='text-xl lora-medium'>Workshop</h4>
+                           <div className={`${WRAP} ${SECTION_GAP}`}>
+  <div className={SECTION_HEADER_ROW}>
+
+              <h4 className={SECTION_HEADING}  onClick={()=>{openYourWorkshops()}} >Workshop</h4>
           
               <img  onClick={()=>{openYourWorkshops()}} src={arrowToRight} className='max-w-8 mt-auto mb-4 max-h-8 mx-4' />
 </div>
@@ -439,10 +455,13 @@ scrollY: false,
               <div className=' p-4 '></div>
             </div>
             <div  className='w-fit mx-auto '>
-          <div className="flex items-center justify-between px-4 pb-4">
-  <h5 className="text-xl lora-medium">
+               <div className={`${WRAP} ${SECTION_GAP}`}>
+  <div className={SECTION_HEADER_ROW}>
+
+              <h4 className={SECTION_HEADING}
+         >
     Recent Pages
-  </h5>
+  </h4>
 
   <h5
     className="text-base text-emerald-700 cursor-pointer hover:opacity-70 transition"
@@ -457,14 +476,14 @@ scrollY: false,
   .sort((a, b) => a.updated - b.updated)
   .slice(0, 4)
   .map(story => <StoryDashboardItem story={story} router={router}/>)}
-              </div>
-            </div>
-            </div>
+         </div>  
+            
+            
             {/* Explore List */}
             <ExploreList items={collections} />
-          </div>
-   
-   {/* </IonContent> */}
+       </div>
+   </div>
+ 
       </ErrorBoundary>
   );
 }

@@ -5,8 +5,7 @@ import { IonImg } from "@ionic/react";
 import Enviroment from "../core/Enviroment";
 import Context from "../context";
 import SpotifyEmbed from "./SpotifyEmbed";
-
-export default function LinkPreview({ url }) {
+export default function LinkPreview({ url,compact }) {
   const { isPhone } = useContext(Context);
 
   const [previewData, setPreviewData] = useState(null);
@@ -76,7 +75,7 @@ export default function LinkPreview({ url }) {
 
   // ===== SPECIAL =====
   if (previewData?.type === "spotify") {
-    return <SpotifyEmbed url={normalizedUrl} />;
+    return <SpotifyEmbed url={normalizedUrl} compact={compact}/>;
   }
 
   if (previewData?.type === "youtube") {

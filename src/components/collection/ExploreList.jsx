@@ -6,7 +6,10 @@ import {
   getRecommendedCollections,
   getRecommendedCollectionsProfile,
 } from "../../actions/CollectionActions";
-
+const SECTION_GAP = "pt-10";  // applied to each section's root div
+const SECTION_HEADING = "text-xl lora-medium";          // text style only
+const SECTION_HEADER_ROW = "flex items-center justify-between py-4"; // r
+const WRAP = "max-w-2xl mx-auto px-4";
 export default function ExploreList({ collection }) {
   const items = useSelector((state) => state.books.recommendedCols);
   const { currentProfile } = useSelector((state) => state.users);
@@ -46,11 +49,14 @@ export default function ExploreList({ collection }) {
   }, [currentProfile, collection, dispatch]);
 
   return (
-    <div className="min-h-[14rem] mt-4 pb-[10em] overflow-hidden">
-      <h3 className="text-soft text-left font-extrabold ml-16 lora-bold mb-4 text-2xl">
+    <div className={`${WRAP} ${SECTION_GAP}`}>
+      <div>
+  <div className={SECTION_HEADER_ROW}>
+    {/* <div> */}
+    <h4 className={SECTION_HEADING}>
         Explore
-      </h3>
-
+      </h4>
+</div>
       <div className="relative">
         {/* 🔹 Skeleton (slides OUT) */}
         <div
@@ -92,6 +98,7 @@ export default function ExploreList({ collection }) {
           )}
         </div>
       </div>
+    </div>
     </div>
   );
 }

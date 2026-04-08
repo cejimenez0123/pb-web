@@ -11,8 +11,9 @@ import truncate from "html-truncate";
 export default function PageDataElement({
   page,
   isGrid,
-  size = "lg",
-  truncateNumber = 400
+  // size = "lg",
+  compact,
+  truncateNumber = 350
 }) {
   const [image, setImage] = useState(isValidUrl(page?.data) ? page.data : null);
   const router = useIonRouter();
@@ -37,7 +38,7 @@ export default function PageDataElement({
         return (
           <div className="w-[100%] px-4">
             <div
-              className="text-[15px] w-[100%] leading-7 text-[#003b44] space-y-3"
+              className="text-[15px] w-[100%]  max-h-[30em] leading-7 text-[#003b44] space-y-3"
               dangerouslySetInnerHTML={{
                 __html: truncate(t, truncateNumber, {})
               }}
@@ -73,7 +74,7 @@ export default function PageDataElement({
         return (
           <div className="">
             <div className="rounded-xl w-[100%] border border-[#bae6fe]/40 overflow-hidden">
-              <LinkPreview isGrid={isGrid} url={page.data} />
+              <LinkPreview isGrid={isGrid}  url={page.data} />
             </div>
           </div>
         );

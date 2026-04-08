@@ -83,7 +83,7 @@ case PageType.link:{
     
         <LinkPreview
 
-      
+        
             isGrid={isGrid}
             url={page.data}
         />

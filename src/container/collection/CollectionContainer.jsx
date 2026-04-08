@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import {
   IonHeader,
   IonToolbar,
@@ -6,22 +6,14 @@ import {
   
   IonContent,
 
-  IonSpinner,
-  
-  IonCardContent,
   IonList,
   IonText,
   IonSkeletonText,
-  IonImg,
+
 
   useIonRouter,
  
 } from "@ionic/react";
-import edit from "../../images/icons/edit.svg"
-
-import { AnimatePresence, motion } from "framer-motion";
-import add from "../../images/icons/add_circle.svg"
-import archive from "../../images/icons/archive.svg"
 
 import { useDispatch, useSelector } from "react-redux";
 
@@ -29,20 +21,17 @@ import PageList from "../../components/page/PageList";
 import ErrorBoundary from "../../ErrorBoundary";
 import {BookListItem,BookListItemShadow} from "../../components/BookListItem";
 import ExploreList from "../../components/collection/ExploreList.jsx";
-import bookmarkOutline from "../../images/bookmark_add.svg"
-import bookmarkFill from "../../images/bookmark_fill_green.svg"
 import {
   addCollectionListToCollection,
   deleteCollectionFromCollection,
   fetchCollection,
   fetchCollectionProtected,
+  setCollections,
 } from "../../actions/CollectionActions";
 
 import { deleteCollectionRole, postCollectionRole } from "../../actions/RoleActions";
 import Role from "../../domain/models/role";
 import { RoleType } from "../../core/constants";
-import { Preferences } from "@capacitor/preferences";
-import { Capacitor } from "@capacitor/core";
 import { useParams } from "react-router";
 import Context from "../../context.jsx";
 import useScrollTracking from "../../core/useScrollTracking.jsx";
@@ -52,8 +41,48 @@ import { setPagesInView } from "../../actions/PageActions.jsx";
 import ProfileCircle from "../../components/profile/ProfileCircle.jsx";
 import Enviroment from "../../core/Enviroment.js";
 import CollectionActions from "../../components/collection/CollecitonActions.jsx";
+import {motion} from 'framer-motion'
+const containerVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.08, // 🔥 key for smooth loading
+    },
+  },
+};
 
+const itemVariants = {
+  hidden: { opacity: 0, y: 20, scale: 0.98 },
+  show: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { duration: 0.3, ease: "easeOut" },
+  },
+};
+// Layout system
+const WRAP = "max-w-[50em] mx-auto px-4";        // main horizontal alignment
+const SECTION = "pt-10";                         // vertical spacing between sections
+const HEADER = "flex items-center justify-between mb-4"; 
+const TITLE = "lora-bold text-[1.6rem] sm:text-2xl";
+const SUBTEXT = "text-gray-600 text-sm sm:text-base";
+
+// Actions
+const ACTION_ROW = "flex flex-wrap sm:flex-nowrap items-center gap-3";
+const BUTTON_FULL = "h-12 rounded-full btn transition";
+
+// Lists / content
+const LIST = "flex flex-col gap-4";
+const H_SCROLL = "flex flex-row gap-4 overflow-x-auto";
+
+// Tabs
+const TAB_WRAP = "pt-6 sm:pt-12";
+
+// Inner spacing (ONLY for cards/content blocks)
+const BLOCK = "py-4";
 export default function CollectionContainer() {
+
 
   const { setError, setSuccess, setSeo, seo } = useContext(Context);
   
@@ -272,9 +301,14 @@ const handleFollow = async () => {
 };
 
 useEffect(()=>{
-canSee&& getContent()
 
+
+canSee&& getContent()
 },[collection])
+useEffect(()=>{
+    dispatch(setCollections({collections:[]}))
+  dispatch(setPagesInView({pages:[]}))
+},[])
 const getCol = async (id) => {
  
   try {
@@ -488,80 +522,6 @@ return
   };
   
  const isReady = collection !== null;
-// const FollowBtnSkeleton = () => {
-//   return (
-//     <div className="flex-1 h-10 rounded-full bg-gray-200 animate-pulse flex items-center justify-center">
-//       <div className="w-24 h-3 bg-gray-300 rounded" />
-//     </div>
-//   );
-// };
-
-//  const baseClasses =
-//     "flex-1 rounded-full flex btn py-3 items-center justify-center transition-all duration-200";
-
-// const FollowBtn = ({ role, follow, unfollow, loading }) => {
-//   // const [hover, setHover] = useState(false);
-
-//   const baseClasses =
-//     "flex-1 rounded-full flex py-3 items-center justify-center transition-all duration-200";
-
-//   if (loading) {
-//     return (
-//       <div className={`${baseClasses} bg-gray-200 animate-pulse`}>
-//         <div className="w-24 h-3 bg-gray-300 rounded" />
-//       </div>
-//     );
-//   }
-
-//   return (
-//     <button
-//       className={`${baseClasses} ${
-//         role
-//           ? "bg-soft text-white hover:bg-blue-500"
-//           : "bg-blue text-white hover:bg-sky-400"
-//       }`}
-//       onClick={role ? unfollow : follow}
-//       // onMouseEnter={() => setHover(true)}
-//       // onMouseLeave={() => setHover(false)}
-//       style={{
-//         transform: hover ? "scale(1.05)" : "scale(1)",
-//       }}
-//     >
-//       {role ? "Following" : "Follow"}
-//     </button>
-//   );
-// };
-// const FollowBtn = ({profile,role,unfollow,follow}) => {
-//
-//   return !role ? (
-//     <button
-//       disabled={actionLoading || permissionsLoading}
-//       onClick={(e) => {
-//   e.preventDefault();
-//   e.stopPropagation();
-//   follow();
-// }}
-//       className={`
-//         ${baseClasses}
-//         ${actionLoading ? "opacity-60 pointer-events-none" : ""}
-//       `}
-//     >
-//       {actionLoading ? <IonSpinner name="dots" /> : "Join Community"}
-//     </button>
-//   ) : (
-//     <button
-//       disabled={actionLoading}
-//       onClick={unfollow}
-//       className={`
-//         ${baseClasses}
-//         bg-button-primary-bg text-white border-2 border-soft hover:bg-blue-50
-//         ${actionLoading ? "opacity-60 pointer-events-none" : ""}
-//       `}
-//     >
-//       {actionLoading ? <IonSpinner name="dots" /> : "Following"}
-//     </button>
-//   );
-// };
 
    const baseClasses = "flex-1 py-3 rounded-full btn h-10 flex items-center justify-center transition-all duration-150";
 
@@ -601,15 +561,15 @@ return (
     }`}
   >
     {collection &&
-      <div className="pt-8 mx-auto sm:max-w-[50em]  ">
+      <div className={`${WRAP}`}>
 
         {/* Collection Container */}
         {/* <div className="bg-white rounded-xl shadow-md p-6 flex flex-col gap-6"> */}
 
           {/* Collection Title */}
-          <div className="px-4 py-4">
+        <div className={`${SECTION}`}>
            <IonText className="lora-bold">
-  <h1 className="text-[1.6rem] sm:text-2xl">
+<h1 className={TITLE}>
     {collection && collection.title ? collection.title:(
       <IonSkeletonText animated style={{ width: '50%', height: '2rem' }} />
     ) }
@@ -618,7 +578,7 @@ return (
           </div>
 
           {/* Collection Purpose */}
-             <div className="px-4 py-4">
+            <div className={BLOCK}>
           {collection?.purpose? (
             <p className="text-gray-600 text-sm min-h-8 sm:text-base">
               {collection.purpose}
@@ -628,7 +588,7 @@ return (
             </p>}
 </div>
           {/* Action Buttons */}
-          <div className="flex flex-wrap px-4 sm:flex-nowrap items-center justify-between gap-3">
+         <div className={`${SECTION} ${ACTION_ROW}`}>
 
             {/* Follow / Join Button */}
                {/* <div className="> */}
@@ -664,26 +624,28 @@ return (
             
           </div>
 
-          <div className="px-4 ">
+  <div className={BLOCK}>
   <button
 
 
    onClick={()=>router.push(Paths.addToCollection.createRoute(collection.id))}
-
-      className={`
-        w-full h-12 rounded-full btn transition
-   
-         border-blue bg-blue text-cream hover:bg-teal"
+className={BUTTON_FULL+"btn transition w-[100%] border-blue bg-blue text-cream hover:bg-teal"}
     
-        ${className || ""}
-      `}
+      //   ${className || ""}"}
+      // className={`
+      //   w-full h-12 rounded-full 
+   
+      //    border-blue bg-blue text-cream hover:bg-teal"
+    
+      //   ${className || ""}
+      // `}
     >
       Add to Collection
     </button>
           </div>
 
           {/* Tabs */}
-          <div className="mt-4">
+       <div className={SECTION}>
             <CollectionTabs
               tab={tab}
               setTab={setTab}
@@ -695,7 +657,7 @@ return (
         </div>
    }</div>
         {/* Explore List */}
-        <div className="mt-6">
+     <div className={SECTION}>
           <ExploreList collection={collection} />
         </div>
       {/* </div> */}
@@ -710,29 +672,36 @@ const PageTab = ({ collections }) => {
     const currentProfile = useSelector(state => state.users.currentProfile);
     const collection = useSelector(state => state.books.collectionInView);
     console.log(collection)
+    
   const pagesInView = useSelector(state => state.pages.pagesInView);
   const [isOwner,setIsOwner]=useState(collection?.profileId==currentProfile?.id)
   const router = useIonRouter()
   return (
     <div className=" bg-base-surface">
     {/* {Enviroment.palette.text.} */}
-        <><h2 className="text-[1.4rem] bg-base-surface  my-8 px-4 lora-bold text-text-brand ">
-          Anthologies
+        <><h2 className={`${SECTION} ${TITLE}`}>Anthologies
         </h2>
       
-{collections && collections?.length > 0 ? (
-
-    <div className="flex flex-row bg-base-surface min-h-[14rem] overflow-x-scroll">
-      {collections
+{/* {collections ? ( */}
+<div className={H_SCROLL}>
+        <motion.div
+    className="flex flex-row space-x-4"
+    variants={containerVariants}
+    initial="hidden"
+    animate="show"
+  >
+      {collection.length>0?collections
         .filter((col) => col)
         .map((col, i) => (
+           <motion.div key={col.id} variants={itemVariants}>
           <div key={i} className="mx-3">
             <BookListItem book={col} />
           </div>
-        ))}
-    </div>
-  // </IonList>
-) : (
+          </motion.div>
+        )):null}
+   
+</motion.div>
+
   <div className="flex flex-row gap-3 overflow-x-scroll py-8 ">
    
 
@@ -741,19 +710,21 @@ const PageTab = ({ collections }) => {
           className="px-4 py-2 btn bg-softBlue rounded-full mx-auto text-emerald-800   "
         >
           Add First Anthology
-        </button>:<div className=" flex flex-col items-center mx-auto justify-center bg-base-surface rounded-lg p-4  text-center">
+        </button>
+        :<div className=" flex flex-col items-center mx-auto justify-center bg-base-surface rounded-lg p-4  text-center">
         <p className="mb-2 text-gray-700">No anthologies yet.</p>
        
       </div>}
-
+</div>
   </div>
-)}</> 
-  <h2 className="text-[2em] lora-bold text-soft mx-auo px-4 pb-2">
+</> 
+
+  <h2 className={`${SECTION} ${TITLE}`}>
           Pages
         </h2> 
         
  {pagesInView?.length>0 ? (
-  <div className="px-4 max-w-[50em] mx-auto">
+  <div className={WRAP}>
         <PageList
           items={pagesInView}
           isGrid={false}
@@ -792,7 +763,7 @@ const MemberTab = ({ collection }) => {
   const roles = [...collection.roles.filter(role=>role.profile.id!=collection.profile.id), collection.profile ? { role: "owner", profile: collection.profile } : null].filter(r => r).sort((a, b) => a.role.localeCompare(b.role))
   return (
     <>
-     <div className="px-4"> 
+    <div className={`${WRAP} ${SECTION}`}>
        <h2 className="text-[1.4rem] my-8 lora-bold text-soft ">
       
          Contributors
@@ -843,7 +814,7 @@ const AboutTab = ({ collection}) => {
 
 
   return (
-    <div className=" my-8 ">
+   <div className={`${WRAP} ${SECTION}`}>
     <h5 className="text-gray-400 uppercase font-medium text-[1.4rem]">Purpose</h5>
 <p className="text-sm text-gray-700leading-relaxed mt-4 font-sans">
   {collection.purpose}
@@ -898,7 +869,7 @@ const AboutTab = ({ collection}) => {
 // // Tabs
 function CollectionTabs({ tab, setTab, pages, members, about }) {
   return (
-    <div className="bg-base-surface pt-6 sm:pt-12">
+   <div className={`bg-base-surface ${TAB_WRAP}`}>
       <div className="flex justify-center lg:justify-start  mb-4">
         <div className="flex rounded-full border overflow-hidden w-full  border-emerald-600">
           {["pages", "members", "about"].map((t) => (

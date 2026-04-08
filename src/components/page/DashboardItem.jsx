@@ -347,7 +347,7 @@ return (
       )}
 
       <div className="mt-3 rounded-xl overflow-hidden border border-[#bae6fe]/30">
-        <PageDataElement isGrid={isGrid} page={page} />
+        <PageDataElement truncateNumber={200}isGrid={isGrid} page={page} />
       </div>
     </IonCardContent>
 <div className="flex items-center justify-between px-4 pb-3">

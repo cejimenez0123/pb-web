@@ -25,6 +25,7 @@ const TABS = {
   COMMUNITIES: "communities",
   ABOUT: "about",
 };
+const WRAP = "max-w-2xl mx-auto px-4";
 function MyProfileContainer() {
     const { setSeo, setError,  } = useContext(Context);
 
@@ -187,7 +188,7 @@ const StatChip = ({ value, label }) => (
                   
             </div>
           {/* Header */}
-          <div className="space-y-6 max-w-2xl  mx-auto p-8">
+          <div className={`${WRAP} pt-8 space-y-6`}>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <ProfileInfo profile={profile} compact />
@@ -233,7 +234,7 @@ const StatChip = ({ value, label }) => (
           </div>
 
           {/* Search + Tabs */}
-          <div className="space-y-4 ">
+          <div className={`${WRAP} space-y-4`}>
 
     <div className="max-w-xl mx-auto">
                     <div className="w-full">
@@ -255,12 +256,12 @@ const StatChip = ({ value, label }) => (
     />
 
   </div>
-  <div className="mx-1"> 
+  <div className="mx-1 py-2"> 
            <TabBar tabs={tabs} active={tab} onChange={setTab} />
       </div>    
 
           {/* Content */}
-          <div className="space-y-10  px-4 pt-4 min-h-[40rem]">
+         <div className={`${WRAP} space-y-10 min-h-[40rem]`}>
             {tab === TABS.POSTS && (
               <>
                 {search.length==0 && recentPosts.length > 0 && (
@@ -304,7 +305,7 @@ const StatChip = ({ value, label }) => (
 </div>
 </div>
           {/* Explore */}
-          <div className="pt-6 border-t border-gray-100">
+          <div className={`${WRAP} pt-6 border-t border-gray-100`}>
             <ExploreList/>
           </div>
         </div>

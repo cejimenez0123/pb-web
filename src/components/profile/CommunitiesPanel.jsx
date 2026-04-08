@@ -45,7 +45,7 @@ const CommunitiesPanel = ({communities ,router}) => {
             </p>
           )}
         </div>
-      ))}
+      ))||null}
 
       {/* Pagination */}
       {totalPages > 1 && (

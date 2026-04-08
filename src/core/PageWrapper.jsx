@@ -235,7 +235,7 @@ checkUser()
               resetDialog()
             }}><div className='p-4 w-[100%] border-1 border border-soft rounded-xl'><h6>{story.title.length?story.title:
           "Untitled"}</h6></div></li>
-          })}
+          })||null}
       
           </IonList>
       </div>
@@ -344,8 +344,8 @@ checkUser()
   onClick={handleBack}
   style={{ '--color': Enviroment.palette.text.inverse }}
 />
-              </IonButtons>):(<IonButtons slot="start">
-                <p className='azkin text-[4em]'>Pb</p>
+              </IonButtons>):(<IonButtons onClick={()=>router.push(Paths.discovery)}slot="start">
+                <p className='azkin flex-1 min-w-[4rem] px-2 text-[4em]'>Pb</p>
               </IonButtons>)}
               {showSearchButton && (<SearchButton onClick={() => router.push("/search")} />)}
     

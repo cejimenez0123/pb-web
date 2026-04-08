@@ -24,6 +24,7 @@ import EmptyState from '../components/EmptyState.jsx';
 import HorizontalScroll from '../components/HorizontalScroll.jsx';
 import BookDashboardItem from '../components/collection/BookDashboardItem.jsx';
 import DashboardItem from '../components/page/DashboardItem.jsx';
+import {motion} from "framer-motion"
 function DiscoveryContainer() {
   const { seo,setSeo } = useContext(Context);
   const  currentProfile = useSelector(state=>state.users.currentProfile)
@@ -96,7 +97,25 @@ const {
       .catch(() => setHasMoreLibraries(false));
   };
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.08, // 🔥 key for smooth loading
+    },
+  },
+};
 
+const itemVariants = {
+  hidden: { opacity: 0, y: 20, scale: 0.98 },
+  show: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { duration: 0.3, ease: "easeOut" },
+  },
+};
 const LibraryForums = () => {
   if (!libraries) return null;
 
@@ -155,40 +174,50 @@ const LibraryForums = () => {
   };
 
 return<IonContent style={{ "--background": Enviroment.palette.base.background }}>
-  <div className="max-w-[45em] mx-auto px-4 pb-24 space-y-10">
+  <div className="max-w-[45em] mx-auto pb-24 space-y-10">
 
     {/* Communities */}
     <SectionHeader title="Communities" />
-    {/* <HorizontalScroll> */}
-    <HorizontalScroll>
-      {libraries?.map((library) => (
-          <BookListItem key={library.id} book={library} />
-      
-      ))}
-      </HorizontalScroll>
+
+
+<HorizontalScroll>
+  <motion.div
+    className="flex flex-row space-x-4"
+    variants={containerVariants}
+    initial="hidden"
+    animate="show"
+  >
+    {libraries?.map((library) => (
+      <motion.div key={library.id} variants={itemVariants}>
+        <BookListItem book={library} />
+      </motion.div>
+    ))}
+  </motion.div>
+</HorizontalScroll>
     {/* </HorizontalScroll> */}
 
     {/* Collections */}
     <SectionHeader title="Collections" />
-  <HorizontalScroll>
-      {books?.map((book) => (
-        <BookListItem key={book.id} book={book}/>
-        // <BookDashboardItem key={book.id} book={book} isGrid />
-      ))}
-    </HorizontalScroll>
+<HorizontalScroll>
+  <motion.div
+    className="flex flex-row space-x-4"
+    variants={containerVariants}
+    initial="hidden"
+    animate="show"
+  >
+    {books?.map((book) => (
+      <motion.div key={book.id} variants={itemVariants}>
+        <BookListItem book={book} />
+      </motion.div>
+    ))}
+  </motion.div>
+</HorizontalScroll>
 
     {/* Pages */}
     <SectionHeader title="Pages" />
+    <div className='px-4'>
   <PageList items={viewItems} />
-    {/* <div className="space-y-4">
-      {viewItems?.length === 0 ? (
-        <EmptyState text="No pages yet." />
-      ) : (
-        viewItems.map((page) => (
-          <DashboardItem key={page.id} page={page} />
-        ))
-      )}
-    </div> */}
+  </div>
 
     {!currentProfile && (
       <ScrollDownButton
@@ -199,48 +228,7 @@ return<IonContent style={{ "--background": Enviroment.palette.base.background }}
   </div>
 </IonContent>
 
-//   return (
-//     <IonContent style={{"--padding-top":"4em"}}>
-// <div>
-   
-           
-             
-//           <div className="text-left  ">
-            
-//             <LibraryForums books={books}/>
-//           </div>
 
-//           <div className="mb-12"><BookList books={books}/></div>
-
-//           <div className="flex max-w-[100vw] md:w-[50em] mx-auto flex-col">
-//             <div className="flex flex-row items-center justify-between">
-//               <h3 className="text-emerald-900 font-extrabold text-2xl text-left mx-4 lora-bold my-4 lg:mb-4">
-//                 Pages
-//               </h3>
-
-         
-//             </div>
-//           </div>
-
-//         <div className='mx-auto sm:max-w-[45em] '>
-//             <PageList items={viewItems} />
-//          </div>
-
-//           <div className="lg:flex-1 lg:mx-4" />
-
-//           {!currentProfile ? (
-//             <ScrollDownButton
-//               text="Join the community"
-//               onClick={() => {
-//                 sendGAEvent('Navigate to Apply', 'Navigate to Apply', 'Join the community', 0, false);
-//                 router.push(Paths.onboard);
-//               }}
-//             />
-//           ) : null}
-//          {/* </div> */}
-//      </div>
-// </IonContent>
-//   );
 }
 
 export default DiscoveryContainer

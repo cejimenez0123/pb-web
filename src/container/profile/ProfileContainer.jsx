@@ -47,6 +47,17 @@ const TABS = {
   COMMUNITIES: "communities",
   ABOUT: "about",
 };
+const WRAP           = "max-w-2xl mx-auto px-4";
+const PAGE_PADDING_Y = "pb-24 pt-safe";
+const HEADER_PADDING = "py-8";
+const HEADER_STACK   = "space-y-6";
+const STATS_GAP      = "flex gap-8";
+const TOOLBAR_STACK  = "space-y-4";
+const SEARCH_ROW     = "flex items-center py-8 flex-row gap-3";
+const CONTENT_STACK  = "space-y-10 min-h-[40rem]";
+const SECTION_STACK  = "space-y-4";
+const SKELETON_PADDING = "px-4 py-8";
+const SKELETON_STACK = "space-y-8";
 function ProfileContainer() {
     const { setSeo, setError,  } = useContext(Context);
 
@@ -293,8 +304,8 @@ useEffect(()=>{
     <ErrorBoundary>
       
 <IonContent style={{ "--background": Enviroment.palette.cream }} fullscreen>
-  <div className="relative max-w-2xl mx-auto px-4 pb-24 pt-safe">
-
+  {/* <div className="relative max-w-2xl mx-auto px-4 pb-24 pt-safe"> */}
+<div className={`${WRAP} ${PAGE_PADDING_Y}`}> 
     {/* 🔹 Skeleton Layer */}
     <div
       className={`
@@ -302,6 +313,7 @@ useEffect(()=>{
         ${isLoading ? "opacity-100" : "opacity-0 pointer-events-none"}
       `}
     >
+      
       <ProfileSkeleton />
     </div>
 
@@ -316,7 +328,7 @@ useEffect(()=>{
 
 
           {/* Header */}
-          <div className="space-y-6 p-8">
+         <div className={`${HEADER_PADDING} ${HEADER_STACK}`}>
             {/* <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <ProfileInfo profile={profile} compact />
@@ -346,7 +358,7 @@ useEffect(()=>{
               <div className="space-y-2">
                 <p className="text-xs text-gray-400 uppercase">Communities</p>
                 <div className="flex flex-wrap gap-2 ">
-                  {communities.slice(0, 3).map((c) => <div >
+            {communities.slice(0, 3).map((c) => <div >
                     <Pill
                    key={c.id} 
                   baseClass="border-blue bg-base-bg"
@@ -355,7 +367,7 @@ useEffect(()=>{
                 </div>
               </div>
             )}
-            <div className="flex justify-between text-center">
+        <div className={STATS_GAP}>
              
               <StatChip value={followerCount} label="Followers" />
               <StatChip value={followingCount} label="Following" />
@@ -386,8 +398,9 @@ useEffect(()=>{
           </div>
 
           {/* Search + Tabs */}
-          <div className="space-y-4">
-              <div className="w-full">
+          {/* <div className={`${SEARCH_ROW}`}> */}
+              {/* <div className="w-full flex-row flex"> */}
+              <div className={`${SEARCH_ROW}`}>
     <input
       value={search}
       onChange={(e) => setSearch(e.target.value)}
@@ -402,13 +415,14 @@ useEffect(()=>{
       "
     />
     <FollowButton isSelf={isSelf} prof={profile} onClick={onClickFollow}follow={following} current={currentProfile}  />
-        
+        </div>
   </div>
   <div className='pb-8'>
             <TabBar tabs={tabs} active={tab} onChange={setTab} />
             </div>
-          </div>
-
+            {/* </div>
+          </div> */}
+<div>
           {/* Content */}
           <div className="space-y-10 min-h-[40rem]">
             {tab === TABS.POSTS && (
@@ -456,7 +470,7 @@ export default ProfileContainer;
 
 function ProfileSkeleton() {
   return (
-    <div className="animate-pulse space-y-8 p-6">
+<div className={`animate-pulse ${SKELETON_PADDING} ${SKELETON_STACK}`}>
 
       {/* Header */}
       <div className="flex items-center gap-4">
