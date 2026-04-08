@@ -356,7 +356,7 @@ const menuItems = [
     label:"Pictures",
     icon:ImageIcon,
     action:()=>{
-      dispatch(setHtmlContent({html:""}))
+      dispatch(setHtmlContent(""))
       dispatch(setEditingPage({page:null}))
       router.push(Paths.editor.image,"forward")
     }
@@ -504,31 +504,64 @@ const {currentProfile }= useSelector(state=>state.users)
   }, 5);
 
 
-  const handleNavigate = (type) => {
+  // const handleNavigate = (type) => {
    
 
-    switch (type) {
-      case "write":
-       ClickWriteAStory()
-        break;
-      case "image":
-        router.push(Paths.editor.image,"forward");
-        break;
-      case "link":
-        router.push(Paths.editor.link,"forward");
-        break;
-      case "collection":{
+  //   switch (type) {
+  //     case "write":
+  //      ClickWriteAStory()
+  //       break;
+  //     case "image":
+  //       router.push(Paths.editor.image,"forward");
+  //       break;
+  //     case "link":
+  //       router.push(Paths.editor.link,"forward");
+  //       break;
+  //     case "collection":{
       
-             handleOpenCreateCollection({dispatch,submitCollection,initPages:[],router,currentProfile,formData,setFormData,openDialog,setSubmitting,submitting,setError})
+  //            handleOpenCreateCollection({dispatch,submitCollection,initPages:[],router,currentProfile,formData,setFormData,openDialog,setSubmitting,submitting,setError})
     
 
-   }
-        break;
-      default:
-        break;
-    }
-  };
-
+  //  }
+  //       break;
+  //     default:
+  //       break;
+  //   }
+  // };
+const debouncedNavigate = useRef(
+    debounce((type) => {
+      dispatch(setHtmlContent(null))
+      dispatch(setEditingPage({page:null}))
+      switch (type) {
+        case "write":
+          ClickWriteAStory();
+          break;
+        case "image":
+          router.push(Paths.editor.image, "forward");
+          break;
+        case "link":
+          router.push(Paths.editor.link, "forward");
+          break;
+        case "collection":
+          handleOpenCreateCollection({
+            dispatch,
+            submitCollection,
+            initPages: [],
+            router,
+            currentProfile,
+            formData,
+            setFormData,
+            openDialog,
+            setSubmitting,
+            submitting,
+            setError
+          });
+          break;
+        default:
+          break;
+      }
+    }, 300) // 300ms debounce
+  ).current;
   return (
 
 <div
@@ -554,7 +587,7 @@ const {currentProfile }= useSelector(state=>state.users)
       {["write", "image", "link", "collection"].map((item) => (
         <button
           key={item}
-          onClick={() => handleNavigate(item)}
+          onClick={() => debouncedNavigate(item)}
           className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 capitalize"
         >
           {item}

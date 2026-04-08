@@ -52,7 +52,7 @@ export default function IndexItem({item,type}) {
     const handleEditClick = (comp)=>{
  
       if(comp.author){
-        dispatch(setHtmlContent({html:comp.data}))
+        dispatch(setHtmlContent(comp.data))
         dispatch(setEditingPage({page:comp}))
         dispatch(setPageInView({page:comp}))
         router.push(Paths.editPage.createRoute(comp.id));

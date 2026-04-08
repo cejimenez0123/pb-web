@@ -26,7 +26,34 @@ export default function PageViewContainer() {
   const page = useSelector((state) => state.pages.pageInView);
   const comments = useSelector((state) => state.comments.comments);
 
-  const [canUserSee, setCanUserSee] = useState(false);
+const canUserEdit = (() => {
+  if (!currentProfile || !page) return false;
+  if (currentProfile.id === page.authorId) return true; // author can edit
+  // check beta readers
+  const roles = ["editor"];
+  return !!page.betaReaders?.find(
+    (r) => r.profileId === currentProfile.id && roles.includes(r.role)
+  );
+})();
+
+const canUserSee = (() => {
+  if (!page) return false;
+  
+  if(page?.authorId === currentProfile?.id ){
+    return true
+  }
+   if (!page.isPrivate) return true;
+    if(page.betaReaders?.find(
+    (r) => r.profileId === currentProfile.id && roles.includes(r.role))){
+      return true
+    }
+   if (!currentProfile) return false;
+  // public story
+  // private story, not logged in
+ 
+  
+})();
+console.log("canUserSee",canUserSee)
   const [pending, setPending] = useState(true);
   const [rootComments, setRootComments] = useState([]);
   const [errorStatus, setErrorStatus] = useState(null);
@@ -98,8 +125,7 @@ export default function PageViewContainer() {
   useEffect(() => {
     if (page) {
       setSeo({ ...seo, title: page.title, description: page.description });
-      const canSee = !page.isPrivate || page?.authorId === currentProfile?.id;
-      setCanUserSee(canSee);
+    
       sendGAEvent({
         story_id: page.id,
         author_id: page.authorId,
@@ -117,7 +143,7 @@ export default function PageViewContainer() {
     });
     window.history.length > 1 ? router.goBack() : router.push(Paths.discovery, "back");
   };
-
+console.log("canUserSee",canUserSee )
   return (
     <ErrorBoundary>
       <IonContent
@@ -135,7 +161,7 @@ export default function PageViewContainer() {
   >
     {(!pending && canUserSee) && (
       <div className="w-fit mx-auto sm:max-w-[50em] bg-cream p-4 rounded-xl shadow-sm">
-        <PageViewItem page={page} currentProfile={currentProfile} />
+        <PageViewItem page={page}  currentProfile={currentProfile} />
         <div className="mt-8 mb-4 text-left">
           <h6 className="text-[1em] font-bold text-emerald-800">Responses</h6>
         </div>
@@ -147,7 +173,7 @@ export default function PageViewContainer() {
       <h1 className="mont-medium text-emerald-800 my-12">🚫 You don’t have permission to view this story.</h1>
     )}
 
-    {!pending && !canUserSee && errorStatus !== 403 && (
+    {pending && !canUserSee && errorStatus !== 403 && (
       <h1 className="mont-medium my-12 mx-auto">Took a wrong turn</h1>
     )}
   </div>

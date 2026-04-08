@@ -9,13 +9,13 @@ export default function RichEditor({ handleChange}){
 
     
       const htmlContent = useSelector(state=>state.pages.editorHtmlContent)
-      const [html,setHtml] = useState(htmlContent.html)
+      const [html,setHtml] = useState(htmlContent)
 
     useEffect(()=>{
        
-        handleTextChange(htmlContent.html??"")
+        handleTextChange(htmlContent)
       
-    },[htmlContent.html])
+    },[htmlContent])
     const modules = {
       toolbar: [
         [{ 'font': []}],

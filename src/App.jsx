@@ -57,6 +57,7 @@ import { LoadScript } from '@react-google-maps/api';
 import ContentHubContainer from './container/ContentHubContainer.jsx';
 import DiscoveryContainer from './container/DiscoveryContainer.jsx';
 import { SplashScreen } from '@capacitor/splash-screen';
+import OAuthCallback from './container/page/OauthCallback.jsx';
 
 setupIonicReact()
 
@@ -71,7 +72,7 @@ const isHorizPhone = useMediaQuery({ query: '(min-width: 800px)' });
   const [isFirstLaunch, setIsFirstLaunch] = useState(true);
   const dispatch = useDispatch()
   const [formerPage, setFormerPage] = useState(null);
-  const [isSaved,setIsSaved]=useState(true)
+
 
 
 
@@ -124,7 +125,7 @@ const showBottomNavbar = (isMobileOrTablet || isNative)  && import.meta.env.VITE
  return (
 
     <ErrorBoundary>
-        <Context.Provider value={{setPresentingEl,isDesktop,isTablet:isMobileOrTablet,isPhone:isMobileOrTablet,isNotPhone:!isMobileOrTablet,isHorizPhone,seo,setSeo,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
+        <Context.Provider value={{setPresentingEl,isDesktop,isTablet:isMobileOrTablet,isPhone:isMobileOrTablet,isNotPhone:!isMobileOrTablet,isHorizPhone,seo,setSeo,formerPage,setFormerPage,setError,setSuccess,success}}>
 
     <LoadScript
       googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
@@ -351,7 +352,15 @@ const showBottomNavbar = (isMobileOrTablet || isNative)  && import.meta.env.VITE
          <PageWrapper> 
           <TermsContainer />  </PageWrapper> }
     /> 
-  
+  <Route
+  exact
+  path="/oauth2callback"
+  render={() => (
+    <PageWrapper presenHeader={false}>
+      <OAuthCallback />
+    </PageWrapper>
+  )}
+/>
    </IonRouterOutlet>
 </div>
 

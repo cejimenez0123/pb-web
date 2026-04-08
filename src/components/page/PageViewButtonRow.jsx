@@ -14,24 +14,24 @@ export default function PageViewButtonRow({ page, profile, setCommenting }) {
   const handleClickComment = () => setCommenting(true);
   const {openDialog,dialog,resetDialog}=useDialog()
   const handleBookmark = () => setBookmarked(!bookmarked);
-  const [canUserEdit, setCanUserEdit] = useState(false);
+  // const [canUserEdit, setCanUserEdit] = useState(false);
 
-  useEffect(()=>{
+  // useEffect(()=>{
 
-      const roles = ["editor"];
-      console.log("Checking edit permissions for profile:", profile, "on page:", page);
-      if (profile && page) {
-        if (profile.id === page.authorId) {
-          setCanUserEdit(true);
-          return;
-        }
-        if (page?.betaReaders) {
-          let found = page?.betaReaders?.find((rTc) => rTc.profileId === profile.id && roles.includes(rTc.role));
-          setCanUserEdit(!!found);
-        }
-      }
+  //     const roles = ["editor"];
+  //     console.log("Checking edit permissions for profile:", profile, "on page:", page);
+  //     if (profile && page) {
+  //       if (profile.id === page.authorId) {
+  //         // setCanUserEdit(true);
+  //         return;
+  //       }
+  //       if (page?.betaReaders) {
+  //         let found = page?.betaReaders?.find((rTc) => rTc.profileId === profile.id && roles.includes(rTc.role));
+  //         // setCanUserEdit(!!found);
+  //       }
+  //     }
     
-  },[page,profile])
+  // },[page,profile])
   const [archiveCol,setArchiveCol]=useState(null)
   useEffect(()=>{
     if(profile?.profileToCollections){
@@ -87,14 +87,7 @@ if(!page || !profile) return null;
           ⤴
         </button>
       </div>
-      {page.author.id === profile?.id  && (
-  <button
-    onClick={() => router.push(Paths.editPage.createRoute(page.id), "forward")}
-    className="rounded-full px-3 py-2 bg-emerald-200 text-emerald-800 hover:bg-emerald-300 transition"
-  >
-    ✏️ Edit
-  </button>
-)}
+
       <button
         onClick={handleBookmark}
         className="p-2 rounded-full bg-emerald-100 hover:bg-emerald-200 transition"

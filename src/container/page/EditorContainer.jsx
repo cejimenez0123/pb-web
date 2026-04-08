@@ -8,14 +8,12 @@ import { useState, useEffect, useContext, useRef } from "react";
 import { useParams } from "react-router";
 import { IonContent, useIonRouter, IonImg } from "@ionic/react";
 import { Capacitor } from "@capacitor/core";
-// import EditorDiv from "../../components/page/EditorDiv.jsx"
 import Paths from "../../core/paths";
 import { PageType } from "../../core/constants";
 import { createStory, deleteStory, getStory, updateStory } from "../../actions/StoryActions";
 import { setEditingPage, setHtmlContent, setPageInView } from "../../actions/PageActions.jsx";
 import checkResult from "../../core/checkResult";
 import debounce from "../../core/debounce.js";
-import RichEditor from "../../components/page/RichEditor.jsx"
 import Context from "../../context";
 import EditorContext from "./EditorContext";
 import ErrorBoundary from "../../ErrorBoundary";
@@ -32,37 +30,46 @@ import { motion, AnimatePresence } from "framer-motion";
 import Enviroment from "../../core/Enviroment.js";
 import { SocialLogin } from "@capgo/capacitor-social-login";
 import { Preferences } from "@capacitor/preferences";
+import axios from "axios";
+import TopBarDropdown from "../../components/page/TopBarDropdown.jsx";
      const CLIENT_ID = import.meta.env.VITE_OAUTH2_CLIENT_ID;
   const IOS_CLIENT_ID = import.meta.env.VITE_IOS_CLIENT_ID;
 export default function EditorContainer({ presentingElement }) {
   const { id, type } = useParams();
+
   const dispatch = useDispatch();
   const router = useIonRouter();
+ 
   const currentProfile = useSelector((state) => state.users.currentProfile);
   const editPage = useSelector((state) => state.pages.editingPage);
-  const htmlContent = useSelector((state) => state.pages.editorHtmlContent);
-  const { setError, setSuccess, setIsSaved } = useContext(Context);
+   
+  const { setError, setSuccess,  } = useContext(Context);
   const [files,setFiles]=useState([])
   const isNative = Capacitor.isNativePlatform();
   const hasInitialized = useRef(false);
-  const [pending, setPending] = useState(false);
+    
+
   const [openHashtag, setOpenHashtag] = useState(false);
   const { openDialog, closeDialog, dialog, resetDialog } = useDialog();
     const { isPhone } = useContext(Context);
+  const htmlContent = useSelector(state=>state.pages.editorHtmlContent)
+
   const [parameters, setParameters] = useState({
     isPrivate: true,
-    data: "",
+    data: editPage?.data || htmlContent,
     title: "",
     isSaved:false,
     needsFeedback: false,
+    status:"draft",
     description: "",
     commentable: true,
     profile: currentProfile,
     profileId: currentProfile ? currentProfile.id : "",
-    type: type || PageType.text,
+    type: type|| PageType.text,
   });
-
-  const notText = type !== PageType.link && type !== PageType.picture;
+  const pageType = type??parameters.type??PageType.text
+    const [pending, setPending] = useState(!(pageType==PageType.link||pageType==PageType.picture));
+  const notText = pageType !== PageType.link && pageType !== PageType.picture;
 
   // ------------------ Lifecycle ------------------
   useEffect(() => {
@@ -75,33 +82,28 @@ export default function EditorContainer({ presentingElement }) {
 
   useEffect(() => {
     if (id) fetchStory();
-  }, [currentProfile, id]);
+  }, [type, id]);
 
+const lastSavedRef = useRef(null);
 
-  useEffect(() => {
-  if (!editPage?.id) return;
-  
-  if (currentProfile?.id && notText) {
-
-    setIsSaved(false);
-     handleChange("isSaved",false)
-    debounce(() => {
-      dispatch(updateStory({ ...parameters,type:editPage.type, profileId: currentProfile.id, id: editPage.id }))
-        .then((res) =>
-          checkResult(res, () => {setIsSaved(true)
-            handleChange("isSaved",true)
-          }, (err) => setError(err.message))
-        );
-    }, 100)();
-  }
-}, [parameters.data, parameters.title, parameters.isPrivate, parameters.commentable, parameters.description, parameters.needsFeedback]);
+const debouncedSave = useRef(
+  debounce((payload) => {
+    dispatch(updateStory(payload)).then(res =>
+      checkResult(res, () => {
+        handleChange("isSaved", payload.data?.length > 0);
+      })
+    );
+  }, 300)
+).current;
+console.log("HTMLCONTENT",htmlContent)
 
   const setStory = (story) => {
-    dispatch(setHtmlContent({ html: story?.data }));
+    dispatch(setHtmlContent(story?.data ));
     dispatch(setEditingPage({ page: story }));
-    dispatch(setPageInView({ page: story }));
+    
     setParameters((prev) => ({
       ...prev,
+      data:story.data,
       commentable: story.commentable,
       page: story,
       isPrivate: story.isPrivate,
@@ -110,18 +112,50 @@ export default function EditorContainer({ presentingElement }) {
       type: story.type,
     }));
     setPending(false);
+  }
+
+useEffect(() => {
+  if (!editPage?.id || !currentProfile?.id || !notText) return;
+
+  const payload = {
+    id: editPage.id,
+    type: editPage.type,
+    profileId: currentProfile.id,
+    data: parameters.data,
+    title: parameters.title,
+    isPrivate: parameters.isPrivate,
+    commentable: parameters.commentable,
+    description: parameters.description,
+    needsFeedback: parameters.needsFeedback,
   };
 
+  // 🔥 Prevent duplicate calls
+  const isSame =JSON.stringify(payload) === JSON.stringify(lastSavedRef.current);
+
+  if (isSame) return;
+
+  lastSavedRef.current = payload;
+
+  debouncedSave(payload);
+}, [
+  parameters.data,
+  parameters.title,
+  parameters.isPrivate,
+  parameters.commentable,
+  parameters.description,
+  parameters.needsFeedback,
+]);
   const fetchStory = () => {
-    setPending(true);
+   
     if (!id) return;
-    handleChange("isSaved",false)
+  
     dispatch(getStory({ id })).then((res) =>
       checkResult(
         res,
         (payload) => {
-          handleChange("isSaved",true)
+  
           setStory(payload.story);
+                  // handleChange("isSaved",true)
           setPending(false);
         },
         (err) => {
@@ -132,17 +166,18 @@ export default function EditorContainer({ presentingElement }) {
     );
   };
   const createPageAction = (dataOverride) => {
-  const dataToUse = dataOverride || parameters.data; // <- always take the latest local value
+  const dataToUse = dataOverride || htmlContent  // <- always take the latest local value
   if (!currentProfile?.id) return;
 
   const payload = {
     title: parameters.title,
-    data: dataToUse, // use local state
+    data: dataToUse, 
     description: parameters.description,
     needsFeedback: parameters.needsFeedback,
     isPrivate: parameters.isPrivate,
+    status:"draft",
     commentable: parameters.commentable,
-    type: type || parameters.type,
+    type: type,
     profileId: currentProfile.id,
   };
 
@@ -156,107 +191,11 @@ export default function EditorContainer({ presentingElement }) {
 };
 
 
-  const handleChange = (key, value) => setParameters((prev) => ({ ...prev, [key]: value }));
+  const handleChange = (key, value) =>{ 
+    setParameters((prev) => ({ ...prev, [key]: value }))
 
-function TopBarDropdown({
-  id,
-  editPage,
-  openFeedback,
-  parameters,
-  setOpenHashtag,
-  openHashtag,
-  openGoogleDrive,
-  openRoleFormDialog,
-  openConfirmDeleteDialog,
-}) {
-  const router = useIonRouter();
+};
 
-  return (
-    <div className="dropdown dropdown-bottom dropdown-end flex-shrink-0">
-      <div tabIndex={0} role="button" className="rounded-md">
-        <img
-          className="w-[2.8rem] h-[2.8rem] rounded-lg"
-          src={menu}
-          style={{ backgroundColor: "#40906f" }}
-        />
-      </div>
-      <ul
-        tabIndex={0}
-        className="dropdown-content menu bg-white rounded-box shadow-lg z-[10] p-2"
-        style={{ minWidth: "12rem" }}
-      >
-        <li
-          className="text-emerald-600 pt-3 pb-2 cursor-pointer"
-          onClick={() => router.push(Paths.addStoryToCollection.story(id))}
-        >
-          Add to Collection
-        </li>
-
-        <li
-          className="text-emerald-600 pt-3 pb-2 cursor-pointer"
-          onClick={() => openFeedback(true)}
-        >
-          Get Feedback
-        </li>
-  <li
-          className="text-emerald-600 pt-3 pb-2 cursor-pointer"
-          onClick={() => openGoogleDrive()}
-        >
-          Google Doc Import
-        </li>
-        {editPage && (
-          <li
-            className="text-emerald-600 pt-3 pb-2 cursor-pointer"
-            onClick={() => router.push(Paths.page.createRoute(editPage.id))}
-          >
-            View
-          </li>
-        )}
-
-        {editPage && editPage.id ? (
-          parameters.isPrivate ? (
-            <li
-              className="text-emerald-600 pt-3 pb-2 cursor-pointer"
-              onClick={() => openFeedback(false)}
-            >
-              Share Now
-            </li>
-          ) : (
-            <li
-              className="text-emerald-600 pt-3 pb-2 cursor-pointer"
-              onClick={() => handleChange("isPrivate", true)}
-            >
-              Make Private
-            </li>
-          )
-        ) : null}
-
-        <li
-          className="text-emerald-600 pt-3 pb-2 cursor-pointer"
-          onClick={() => setOpenHashtag(!openHashtag)}
-        >
-          {openHashtag ? "Close Hashtag" : "Add Hashtag"}
-        </li>
-
-        {editPage && (
-          <li
-            className="text-emerald-600 pt-3 pb-2 cursor-pointer"
-            onClick={() => openRoleFormDialog(parameters.page)}
-          >
-            Manage Access
-          </li>
-        )}
-
-        <li
-          className="text-emerald-600 pt-3 pb-2 cursor-pointer"
-          onClick={openConfirmDeleteDialog}
-        >
-          Delete
-        </li>
-      </ul>
-    </div>
-  );
-}
  const driveTokenKey = "googledrivetoken";
    const TOKEN_EXPIRY_KEY = "googledrivetoken_expiry"; // 
 const [accessToken,setAccessToken]=useState(null)
@@ -264,13 +203,10 @@ const [accessToken,setAccessToken]=useState(null)
     const token = (await Preferences.get({ key: driveTokenKey })).value;
     const tokenExpiry = (await Preferences.get({ key: TOKEN_EXPIRY_KEY })).value;
     const tokenValid = token && tokenExpiry && Date.now() < parseInt(tokenExpiry, 10);
-console.log("ACCESS TOKEN",accessToken)
+console.log("accesstokenTOKENE",token)
     if(tokenValid){
       setAccessToken(token);
-    }else{
-      setAccessToken(null)
     }
-    
   }
   useEffect(() => {
     
@@ -308,6 +244,11 @@ console.log("ACCESS TOKEN",accessToken)
             setAccessToken(null)
         }
   };
+ useEffect(() => {
+  setParameters(prev =>
+    prev.type === pageType ? prev : { ...prev, type: pageType }
+  );
+}, [pageType]);
     const onFilePicked = async (file) => {
     try {
       // const accessToken = (await Preferences.get({ key: "googledrivetoken" })).value;
@@ -320,85 +261,56 @@ console.log("ACCESS TOKEN",accessToken)
       });
 
       const htmlContent = response.data;
-  
-      dispatch(updateStory(
-        { ...parameters,data:htmlContent,description:feedbackDesc,status:"draft", id: editPage.id,needsFeedback:true, type: PageType.text}
-      )).then(res => checkResult(res, ({ story }) => {
-    setStory(story)
-      
-                      handleChange("isSaved",true)
-              
-  
-      }, err => setErrorLocal(err.message)));
+  debouncedSave( { ...parameters,data:htmlContent,status:"draft", id: editPage.id,needsFeedback:true, type: PageType.text}
+ )
+
     } catch (error) {
       console.error("Error fetching Google Doc:", error);
-      setErrorLocal(error.message);
+      // setErrorLocal(error.message);
     }
+    resetDialog()
   };
-  const nativeGoogleSignIn = async () => {
-    try {
-     
-      const user = await SocialLogin.login({
-        provider:"google",
-        options:{
-          scopes:["email","profile", "https://www.googleapis.com/auth/drive.readonly"]
-        }
-    
-        
-        
-      }).catch((err) => console.error("SocialLogin error:", err));
-     
-      if (!user?.result) throw new Error("No user data returned.")
-      const { accessToken } = user.result;
-      const expiry = Date.now() + 3600 * 1000;
-
-      setAccessToken(accessToken.token);
-     await Preferences.set({key:driveTokenKey,value:accessToken.token})
-  await Preferences.set({key:TOKEN_EXPIRY_KEY,value:expiry})
-  fetchFiles()
-    } catch (err) {
-      console.log(err)
-      console.error("Native sign-in error", err);
-   
-    } 
-  };
+  
 
 const openGoogleDrive = async()=>{
+     const accessToken = (await Preferences.get({ key: driveTokenKey })).value;
+  
    if(!accessToken){
-    nativeGoogleSignIn()
+    setError("No Access Token")
     return
    }
 
   openDialog({
     title: null,
-    text: (
-      <div
-        style={{ "--background": Enviroment.palette.base.surface}}
-        className="bg-cream"
+    text:<div
+  style={{ "--background": Enviroment.palette.base.surface }}
+  className="bg-cream p-3 rounded-xl"
+>
+  <div
+    className={`overflow-y-auto ${
+      isPhone ? "grid grid-cols-2 gap-3" : "grid grid-cols-3 gap-4"
+    }`}
+    style={{ maxHeight: "70vh", padding: "0.5rem" }}
+  >
+    {files.map((file) => (
+      <button
+        key={file.id}
+        onClick={() => onFilePicked(file)}
+        className="flex flex-col justify-center items-center px-3 py-3 bg-white rounded-xl shadow-md border border-blueSea border-opacity-20 hover:border-blueSea hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-emerald-300 transition-all duration-150"
       >
-       
-        <div
-          className={`overflow-y-auto ${isPhone ? "grid grid-cols-2 gap-2" : "grid gap-2"}`}
-          style={{ maxHeight: "70vh" }} // limits height so content scrolls
-        >
-          {files.map(file => (
-            <div
-              key={file.id}
-              className="px-2 py-2 flex border w-[100%] rounded-box shadow-sm border-blueSea border-opacity-20 hover:border-blueSea "
-              onClick={() => onFilePicked(file)}
-            >
-              {/* <div className="te  p-2 "> */}
-                <h5 className="mx-auto p-2 my-auto text-center bg-cream text-sm">
-                  {file.name}
-                </h5>
-          
-            </div>
-          ))}
-        </div>
-      </div>
-    ),
-    // breakpoint: 1,
-    // disagreeText: "Close",
+        <img
+          src={file.iconLink}
+          alt="file icon"
+          className="w-10 h-10 mb-2 rounded"
+        />
+       <span className="text-center text-sm text-emerald-800 w-full break-words">
+  {file.name}
+</span>
+      </button>
+    ))}
+  </div>
+</div> 
+ 
   });
 // };
 
@@ -418,8 +330,10 @@ const topBar = () => (
 
       {/* Dropdown */}
       <TopBarDropdown
+      router={router}
         id={id}
         editPage={editPage}
+        handleChange={handleChange}
         openFeedback={openFeedback}
         parameters={parameters}
         openGoogleDrive={openGoogleDrive}
@@ -459,9 +373,9 @@ const openRoleFormDialog = (page) => {
 }
   const openFeedback = (isFeedback) => {
     openDialog({
-      // ...dialog, 
+  
       disagree: null,
-      // agree: () => resetDialog(),
+    
       disagreeText: null,
       scrollY: false,
       text: (
@@ -471,16 +385,14 @@ const openRoleFormDialog = (page) => {
           handleChange={(e) => handleChange("description", e)}
           handleFeedback={(feedbackDesc) => {
             resetDialog();
-            dispatch(updateStory({ ...parameters,description:feedbackDesc,status:"workshop", id: editPage.id,needsFeedback:true, type: editPage.type || parameters.type })).then((res) =>
-              checkResult(res, (payload) => {
-                      handleChange("isSaved",true)
-                if (payload.story) router.push(Paths.workshop.createRoute(payload.story.id, "foward"));
-              })
-            );
+          dispatch(updateStory({ ...parameters,description:feedbackDesc,status:"workshop", needsFeedback:true, type: editPage.type || parameters.type }))
+         
           }}
-          handlePostPublic={() => {
+          handlePostPublic={(desc) => {
             handleChange("isPrivate", false);
-       
+            handleChange("status","finished")
+            dispatch(updateStory({ ...parameters,description:desc, needsFeedback:true, type: editPage.type || parameters.type }))
+         
             router.push(Paths.page.createRoute(editPage.id), "forward");
                  resetDialog();
           }}
@@ -511,48 +423,71 @@ const openRoleFormDialog = (page) => {
 useEffect(() => {
   if (!id) { // only for new page creation
     dispatch(setEditingPage({ page: null })); // clear old editPage
-    dispatch(setHtmlContent({ html: "" })); // clear editor content
+    dispatch(setHtmlContent( "" )); // clear editor content
     handleChange("data", "");
     handleChange("isSaved", false);
   }
   
 }, [type]);
-useEffect(()=>{ 
-  // useLayoutEffect(() => {
+console.log("DOMAN",Enviroment.domain)
 
-      SocialLogin.initialize({
-        google: {
-          webClientId: CLIENT_ID,
-            iOSClientId: IOS_CLIENT_ID,
-            iOSServerClientId: CLIENT_ID,
-          mode: 'online',
-        },
-      }).catch(err => console.error('SocialLogin init error:', err));
-    
-  checkAccessToken()},[])
   // ------------------ Render ------------------
-  return (
-    <EditorContext.Provider value={{ page: editPage, parameters, setParameters }}>
-      <IonContent
-        fullscreen
-        scrollY
-        style={{ "--background": Enviroment.palette.cream, "--padding-bottom": "30em", "--padding-top": isNative ? "0.3rem" : "6em" }}
-        className="ion-padding"
-      >
-        <div className="mx-auto md:p-8">
-          {pending ? (
-            <div className="skeleton rounded-lg w-full h-fit sm:max-w-[50em] mx-auto" />
-          ) : (
-            topBar()
-          )}
+  return<EditorContext.Provider value={{ page: editPage, parameters, setParameters }}>
+  <IonContent
+    fullscreen
+    scrollY
+    style={{ "--background": Enviroment.palette.cream, "--padding-bottom": "30em", "--padding-top": isNative ? "0.3rem" : "6em" }}
+    className="ion-padding"
+  >
+    {/* Top Bar with fade/slide */}
+<AnimatePresence mode="wait">
+  {!pending && (
+    <motion.div
+      key="topbar"
+      initial={{ opacity: 0, y: -10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+      transition={{ duration: 0.3 }}
+      // className="rounded-lg w-full sm:max-w-[50em] mx-auto p-2 bg-emerald-50 border border-emerald-200 flex flex-col gap-1"
+    >
+      {topBar()}
+    </motion.div>
+  )}
+</AnimatePresence>
 
-          <div className="mx-2 md:w-page mb-12 mx-auto bg-white rounded-lg p-4 shadow-sm">
-            <ErrorBoundary>
-              {pending ? <div className="skeleton mx-auto bg-slate-100 max-w-[96vw] h-page" /> : <EditorDiv handleChange={handleChange} createPageAction={createPageAction}/>}
-            </ErrorBoundary>
-          </div>
-        </div>
-      </IonContent>
-    </EditorContext.Provider>
-  );
+{/* Editor / Skeleton with fade */}
+<div className="mx-2 md:w-page mb-12 mx-auto bg-white rounded-lg p-4 shadow-sm">
+  <ErrorBoundary>
+    <AnimatePresence mode="wait">
+      {/* <div className="mx-2 md:w-page mb-12 mx-auto bg-white rounded-lg p-4 shadow-sm relative"> */}
+  <ErrorBoundary>
+    {/* EditorDiv always present */}
+    <motion.div
+      key="editor"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: pending ? 0 : 1 }}
+      transition={{ duration: 0.3 }}
+    >
+      <EditorDiv handleChange={handleChange} parameters={parameters} type={pageType} createPageAction={createPageAction} />
+    </motion.div>
+
+    {/* Skeleton overlays EditorDiv while pending */}
+    {pending && (
+      <motion.div
+        key="skeleton"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="absolute inset-0 skeleton bg-slate-100 rounded-lg animate-pulse"
+      />
+    )}
+  </ErrorBoundary>
+{/* </div> */}
+    </AnimatePresence>
+  </ErrorBoundary>
+</div>
+
+  </IonContent>
+</EditorContext.Provider>
+
 }
