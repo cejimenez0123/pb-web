@@ -8,14 +8,12 @@ export default function EditorDiv({ handleChange,page,parameters, type, createPa
   
 
 let pageType = page?.type??type
-console.log("TYPE",page)
-console.log("TYPE<",pageType)
-  // switch (type) {
+
   
 if(pageType==PageType.link){
     return (
       <PicturePageForm
-      type={type}
+      type={pageType}
   parameters={parameters}
         key={`link-${page?.id ?? "new"}`} // <-- forces remount on type/id change
         handleChange={handleChange}
@@ -26,7 +24,7 @@ if(pageType==PageType.link){
     return (
       <PicturePageForm
       parameters={parameters}
-      type={type}
+      type={pageType}
         key={`picture-${page?.id ?? "new"}`} // <-- new key resets editor
         handleChange={handleChange}
         createPageAction={createPageAction}

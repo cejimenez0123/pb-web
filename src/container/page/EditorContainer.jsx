@@ -71,18 +71,7 @@ const [pageType,setPageType]=useState(editPage?.type??type)
 
     const [pending, setPending] = useState(!(pageType==PageType.link||pageType==PageType.picture));
   const notText = pageType !== PageType.link && pageType !== PageType.picture;
-//  useEffect(() => {
-//   if (!editPage) return;
 
-//   setParameters(prev => ({
-//     ...prev,              // ✅ keep defaults
-//     ...editPage,          // ✅ override only what exists
-//     isPrivate: editPage.isPrivate ?? prev.isPrivate,
-//     needsFeedback: editPage.needsFeedback ?? prev.needsFeedback,
-//     description: editPage.description ?? prev.description,
-//     commentable: editPage.commentable ?? prev.commentable,
-//   }));
-// }, [editPage]);
   // ------------------ Lifecycle ------------------
   useEffect(() => {
     closeDialog();
@@ -98,22 +87,20 @@ const [pageType,setPageType]=useState(editPage?.type??type)
 
 const lastSavedRef = useRef(null);
 
-const debouncedSave = useRef(
+
+  const debouncedSave = useRef(
   debounce((payload) => {
-    dispatch(updateStory(payload)).then(res =>
-      checkResult(res, () => {
-        handleChange("isSaved", payload.data?.length > 0);
-      })
-    );
-  }, 300)
+    dispatch(updateStory(payload));
+  }, 500)
 ).current;
-// console.log("HTMLCONTENT",htmlContent)
+
 
   const setStory = (story) => {
     dispatch(setHtmlContent(story?.data ));
     dispatch(setPageInView({ page: story }));
     setParameters((prev) => ({
       ...prev,
+      id:story?.id,
       data:htmlContent,
       commentable: story?.commentable??false,
       page: story,
@@ -135,7 +122,7 @@ useEffect(() => {
   if (!editPage?.id || !currentProfile?.id || !notText) return;
 
     const payload = {
-    id: editPage.id,
+    id: editPage?.id,
     ...parameters,
     profileId: currentProfile.id,
     data: parameters.data,
@@ -143,7 +130,7 @@ useEffect(() => {
     isPrivate: parameters.isPrivate,
     commentable: parameters.commentable,
     description: parameters.description,
-    needsFeedback: parameters.needsFeedback,
+    // needsFeedback: parameters.needsFeedback,
   };
 
   const isSame = JSON.stringify(payload) === JSON.stringify(lastSavedRef.current);
@@ -155,42 +142,11 @@ useEffect(() => {
 }, [
   parameters.data,
   parameters.title,
-  parameters.isPrivate,
+
   parameters.commentable,
-  parameters.description,
-  parameters.needsFeedback,
+
 ]);
-// useEffect(() => {
-//   if (!editPage?.id || !currentProfile?.id || !notText) return;
 
-//   const payload = {
-//     id: editPage.id,
-//     ...parameters,
-//     profileId: currentProfile.id,
-//     data: parameters.data,
-//     title: parameters.title,
-//     isPrivate: parameters.isPrivate,
-//     commentable: parameters.commentable,
-//     description: parameters.description,
-//     needsFeedback: parameters.needsFeedback,
-//   };
-
-//   // 🔥 Prevent duplicate calls
-//   const isSame =JSON.stringify(payload) === JSON.stringify(lastSavedRef.current);
-
-//   if (isSame) return;
-
-//   lastSavedRef.current = payload;
-
-//   debouncedSave(payload);
-// }, [
-//   parameters.data,
-//   parameters.title,
-//   parameters.isPrivate,
-//   parameters.commentable,
-//   parameters.description,
-//   parameters.needsFeedback,
-// ]);
   const fetchStory = () => {
    
     if (!id) return;
@@ -250,8 +206,8 @@ const handleChange = (key, value) => {
 
     debouncedSave({
       ...updated,
-      id: editPage.id,
-      profileId: currentProfile.id,
+      id: editPage?.id,
+   
     });
 
     return updated;
@@ -377,7 +333,7 @@ const openGoogleDrive = async()=>{
 }
 const handleView =()=>{
   dispatch(updateStory({...parameters})).then(res=>{
-    router.push(Paths.page.createRoute(editPage.id))
+    router.push(Paths.page.createRoute(id))
   })
 }
 
@@ -452,16 +408,21 @@ const openRoleFormDialog = (page) => {
           handleChange={(e) => handleChange("description", e)}
           handleFeedback={(feedbackDesc) => {
             resetDialog();
-          dispatch(updateStory({ ...parameters,description:feedbackDesc,status:"workshop", needsFeedback:true}))
+          dispatch(updateStory({ ...parameters,description:feedbackDesc,status:"workshop", needsFeedback:true})).then(res=>{
+           editPage && router.push(router.push(Paths.editPage.createRoute(editPage?.id)))
+          })
          
           }}
           handlePostPublic={(desc) => {
             handleChange("isPrivate", false);
             handleChange("status","finished")
-            dispatch(updateStory({ ...parameters,description:desc, needsFeedback:true }))
+            dispatch(updateStory({ ...parameters,description:desc, needsFeedback:true })).then(res=>{
+               editPage &&  router.push(Paths.page.createRoute(editPage.id), "forward");
+                       resetDialog();
+            })
          
-            router.push(Paths.page.createRoute(editPage.id), "forward");
-                 resetDialog();
+         
+           
           }}
           handleClose={() => closeDialog()}
         />

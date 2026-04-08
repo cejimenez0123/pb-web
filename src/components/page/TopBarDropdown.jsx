@@ -2,6 +2,7 @@ import { Preferences } from "@capacitor/preferences";
 import menu from "../../images/icons/menu.svg"
 import { useEffect, useState } from "react";
 import Paths from "../../core/paths";
+import { useParams } from "react-router";
 function TopBarDropdown({
   id,
   router,
@@ -18,6 +19,7 @@ function TopBarDropdown({
 }) {
 const driveTokenKey = "googledrivetoken";
    const TOKEN_EXPIRY_KEY = "googledrivetoken_expiry"; // 
+   const {id:pageId}=useParams()
 const [accessToken,setAccessToken]=useState(null)
   async function checkAccessToken() {
     const token = (await Preferences.get({ key: driveTokenKey })).value;
@@ -67,7 +69,7 @@ useEffect(()=>{
         >
           Google Doc Import
         </li>}
-        {editPage && editPage?.id && (
+        {parameters?.id&& (
           <li
             className="text-emerald-600 pt-3 pb-2 cursor-pointer"
             onClick={() => handleView()}

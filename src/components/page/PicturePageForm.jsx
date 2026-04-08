@@ -28,6 +28,9 @@ export default function PicturePageForm({ handleChange,type, parameters,createPa
   const page = useSelector((state) => state.pages.editingPage);
   // const { parameters } = useContext(EditorContext);
   const { type: typeOrNull } = useParams();
+  console.log("FORM TYPE null",typeOrNull)
+  console.log("FORM TYPE",type)
+  const pageType = typeOrNull || type
   const {setError}=useContext(Context)
   const dispatch = useDispatch();
   const [file,setFile]=useState(null)
@@ -94,9 +97,10 @@ const pickImage = async () => {
  // Instead of dispatching on every keystroke:
 const handleInput = (e) => {
   const value = e.detail?.value ?? e.target.value;
-  const finalValue = value;
+  // const finalValue = value;
   setUrl(value)
-
+handleChange("data",value)
+dispatch(setHtmlContent(value))
   
 
 };
@@ -173,7 +177,7 @@ const handleFileChange = (e) => {
   reader.readAsDataURL(file);
 };
   const renderPreview = () => {
-  const previewSrc = localPreview ?? parameters.data;
+ const previewSrc = localPreview || parameters.data;
     if (!previewSrc) return null;
 
     if (type === PageType.link) {
@@ -192,7 +196,7 @@ const handleFileChange = (e) => {
 
     return null;
   };
-console.log("HTML",htmlContent)
+console.log("HTML type",type==PageType.picture)
   return (
     <div className="flex flex-col w-full max-w-xl mx-auto">
       {/* Input */}
@@ -212,23 +216,23 @@ console.log("HTML",htmlContent)
             disabled={uploading}
           />
 
-          {type === PageType.picture && isNative? (
+
+{pageType === PageType.picture?(isNative ? (
   <button
     onClick={pickImage}
     className="btn bg-emerald-600 text-white mt-2"
   >
     Choose Image
   </button>
-): (
-            <input
-              type="file"
-               accept="image/png, image/jpeg"
-              onChange={handleFileChange}
-              className="mb-2 file-input"
-            />
-          )}
-
-          {type === PageType.link &&
+) : (
+  <input
+    type="file"
+    accept="image/png, image/jpeg"
+    onChange={handleFileChange}
+    className="mb-2 file-input"
+  />
+)):null}
+          {pageType== PageType.link &&
             parameters.data &&
             !isValidUrl(parameters.data) && (
               <IonText className="text-red-500 text-sm mt-1">Invalid URL</IonText>
@@ -238,7 +242,7 @@ console.log("HTML",htmlContent)
 
       {/* Button */}
       <div className="w-full mt-4">
-        {!parameters.isSaved || parameters.data.length==0 ? (
+        {!parameters?.id? (
           <button
   onClick={handleCreate}
   disabled={uploading}
@@ -248,7 +252,7 @@ console.log("HTML",htmlContent)
 </button>
         ) : (
           <div className="w-full h-[3.5em] rounded-xl bg-gray-100 text-gray-500 flex items-center justify-center text-sm">
-            {!typeOrNull? "Saved ✓" : "Saving..."}
+            {!parameters.isSaved? "Saved ✓" : "Saving..."}
           </div>
         )}
       </div>
