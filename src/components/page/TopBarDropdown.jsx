@@ -40,7 +40,7 @@ useEffect(()=>{
     <div className="dropdown dropdown-bottom dropdown-end flex-shrink-0">
       <div tabIndex={0} role="button" className="rounded-md">
         <img
-          className="w-[2.8rem] h-[2.8rem] rounded-lg"
+          className="w-[3.6rem] h-[3.6rem] rounded-lg"
           src={menu}
           style={{ backgroundColor: "#40906f" }}
         />

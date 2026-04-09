@@ -32,8 +32,12 @@ import { SocialLogin } from "@capgo/capacitor-social-login";
 import { Preferences } from "@capacitor/preferences";
 import axios from "axios";
 import TopBarDropdown from "../../components/page/TopBarDropdown.jsx";
-     const CLIENT_ID = import.meta.env.VITE_OAUTH2_CLIENT_ID;
-  const IOS_CLIENT_ID = import.meta.env.VITE_IOS_CLIENT_ID;
+
+  const editorContainerBase = "mx-auto bg-white rounded-lg shadow-sm";
+const editorContainerSpacing = "mx-2 mb-12 p-4";
+const editorContainerResponsive = "md:w-page";
+// Shared container for editor and top bar
+const CONTAINER = "mx-auto w-full max-w-3xl p-4 md:p-6 bg-white rounded-lg shadow-sm";
 export default function EditorContainer({ presentingElement }) {
   const { id, type } = useParams();
 
@@ -54,11 +58,12 @@ export default function EditorContainer({ presentingElement }) {
     const { isPhone } = useContext(Context);
   const htmlContent = useSelector(state=>state.pages.editorHtmlContent)
 const [pageType,setPageType]=useState(editPage?.type??type)
+const [isSaved,setIsSaved]=useState(true)
   const [parameters, setParameters] = useState({
     isPrivate: true,
     data: editPage?.data || htmlContent,
     title: "",
-    isSaved:false,
+   
     needsFeedback: false,
     status:"draft",
     description: "",
@@ -90,7 +95,14 @@ const lastSavedRef = useRef(null);
 
   const debouncedSave = useRef(
   debounce((payload) => {
-    dispatch(updateStory(payload));
+    setIsSaved(false)
+    dispatch(updateStory(payload)).then(res=>checkResult(res,payload=>{
+setIsSaved(true)
+    },err=>{
+console.log(err)
+    setIsSaved(false)
+setError(err.message)
+    }))
   }, 500)
 ).current;
 
@@ -332,57 +344,72 @@ const openGoogleDrive = async()=>{
 
 }
 const handleView =()=>{
+  setIsSaved(false)
   dispatch(updateStory({...parameters})).then(res=>{
+    setIsSaved(true)
     router.push(Paths.page.createRoute(id))
   })
 }
 
-const topBar = () => (
-  <div className="rounded-lg w-full sm:max-w-[50em] mx-auto p-2 bg-emerald-50 border border-emerald-200 flex flex-col gap-1">
-    {/* Top row: input + dropdown */}
-    <div className="flex flex-row gap-2 items-center w-full">
-      {/* Title Input */}
-      <input
-        type="text"
-        className="p-2 flex-grow text-emerald-800 text-[1rem] bg-white rounded-md border border-emerald-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-bold"
-        value={parameters.title}
-        onChange={(e) => handleChange("title", e.target.value)}
-        placeholder="Untitled"
-      />
+// const TopBar = ({isSaved,change}) => (
+//   <div className="rounded-lg w-full sm:max-w-[50em] mx-auto p-2 bg-emerald-50 border border-emerald-200 flex flex-col gap-1">
+//     {/* Top row: input + dropdown */}
+//     <div className="flex flex-row gap-2 items-center w-full">
+//       {/* Title Input */}
+//       <div className="flex flex-col w-[100%]"> 
 
-      {/* Dropdown */}
-      <TopBarDropdown
-      router={router}
-        id={id}
-        handleView={handleView}
-        editPage={editPage}
-        handleChange={handleChange}
-        openFeedback={openFeedback}
-        parameters={parameters}
-        openGoogleDrive={openGoogleDrive}
-        setOpenHashtag={setOpenHashtag}
-        openHashtag={openHashtag}
-        openRoleFormDialog={openRoleFormDialog}
-        openConfirmDeleteDialog={openConfirmDeleteDialog}
-      />
-    </div>
+//       <input
+//         type="text"
+//         className="p-2 flex-grow text-emerald-800 text-[1rem] bg-white rounded-md border border-emerald-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-bold"
+//         value={parameters.title}
+//         onChange={(e) => change("title", e.target.value)}
+//         placeholder="Untitled"
+//       />
+//              {isSaved? (
+//     <span className="text-emerald-700 font-semibold flex items-center gap-1">
+//       ✅ Saved
+//     </span>
+//   ) : (
+//     <span className="text-yellow-600 font-semibold flex items-center gap-1">
+//       💾 Saving...
+//     </span>
+//   )}
+// </div>
+//       {/* Dropdown */}
+//       <TopBarDropdown
+//       router={router}
+//         id={id}
+//         handleView={handleView}
+//         editPage={editPage}
+//         handleChange={handleChange}
+//         openFeedback={openFeedback}
+//         parameters={parameters}
+//         openGoogleDrive={openGoogleDrive}
+//         setOpenHashtag={setOpenHashtag}
+//         openHashtag={openHashtag}
+//         openRoleFormDialog={openRoleFormDialog}
+//         openConfirmDeleteDialog={openConfirmDeleteDialog}
+//       />
 
-    {/* Hashtag Form (slide down) */}
-    <AnimatePresence>
-      {openHashtag && (
-        <motion.div
-          initial={{ height: 0, opacity: 0 }}
-          animate={{ height: "auto", opacity: 1 }}
-          exit={{ height: 0, opacity: 0 }}
-          transition={{ type: "spring", stiffness: 300, damping: 30 }}
-          className="overflow-hidden w-full"
-        >
-          <HashtagForm item={parameters.page} type="story" />
-        </motion.div>
-      )}
-    </AnimatePresence>
-  </div>
-);
+
+//     </div>
+
+//     {/* Hashtag Form (slide down) */}
+//     <AnimatePresence>
+//       {openHashtag && (
+//         <motion.div
+//           initial={{ height: 0, opacity: 0 }}
+//           animate={{ height: "auto", opacity: 1 }}
+//           exit={{ height: 0, opacity: 0 }}
+//           transition={{ type: "spring", stiffness: 300, damping: 30 }}
+//           className="overflow-hidden w-full"
+//         >
+//           <HashtagForm item={parameters.page} type="story" />
+//         </motion.div>
+//       )}
+//     </AnimatePresence>
+//   </div>
+// );
 const openRoleFormDialog = (page) => {
   openDialog({
 
@@ -408,15 +435,20 @@ const openRoleFormDialog = (page) => {
           handleChange={(e) => handleChange("description", e)}
           handleFeedback={(feedbackDesc) => {
             resetDialog();
+            setIsSaved(false)
           dispatch(updateStory({ ...parameters,description:feedbackDesc,status:"workshop", needsFeedback:true})).then(res=>{
-           editPage && router.push(router.push(Paths.editPage.createRoute(editPage?.id)))
+              
+            editPage && router.push(router.push(Paths.editPage.createRoute(editPage?.id)))
+             setIsSaved(true)
           })
          
           }}
           handlePostPublic={(desc) => {
             handleChange("isPrivate", false);
             handleChange("status","finished")
+              setIsSaved(false)
             dispatch(updateStory({ ...parameters,description:desc, needsFeedback:true })).then(res=>{
+                setIsSaved(true)
                editPage &&  router.push(Paths.page.createRoute(editPage.id), "forward");
                        resetDialog();
             })
@@ -478,13 +510,72 @@ useEffect(() => {
       transition={{ duration: 0.3 }}
       // className="rounded-lg w-full sm:max-w-[50em] mx-auto p-2 bg-emerald-50 border border-emerald-200 flex flex-col gap-1"
     >
-      {topBar()}
+ {/* <div className={`mx-auto w-full max-w-3xl p-4 md:p-6 bg-emerald-50 rounded-lg border border-emerald-200 flex flex-col gap-2`}> */}
+{/* <TopBar isSaved={isSaved} change={handleChange}/> */}
+<div className="rounded-lg my-1 w-full max-w-3xl  mx-auto p-2 bg-emerald-50 border border-emerald-200 flex flex-col gap-1">
+    {/* Top row: input + dropdown */}
+    <div className="flex flex-row gap-2 items-center w-full">
+      {/* Title Input */}
+      <div className="flex flex-col w-[100%]"> 
+
+      <input
+        type="text"
+        className="p-2 flex-grow text-emerald-800 text-[1rem] bg-white rounded-md border border-emerald-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-bold"
+        value={parameters.title}
+        onChange={(e) => handleChange("title", e.target.value)}
+        placeholder="Untitled"
+      />
+             {isSaved? (
+    <span className="text-emerald-700 font-semibold flex items-center gap-1">
+      ✅ Saved
+    </span>
+  ) : (
+    <span className="text-yellow-600 font-semibold flex items-center gap-1">
+      💾 Saving...
+    </span>
+  )}
+</div>
+      {/* Dropdown */}
+      <TopBarDropdown
+      router={router}
+        id={id}
+        handleView={handleView}
+        editPage={editPage}
+        handleChange={handleChange}
+        openFeedback={openFeedback}
+        parameters={parameters}
+        openGoogleDrive={openGoogleDrive}
+        setOpenHashtag={setOpenHashtag}
+        openHashtag={openHashtag}
+        openRoleFormDialog={openRoleFormDialog}
+        openConfirmDeleteDialog={openConfirmDeleteDialog}
+      />
+
+
+    </div>
+
+    {/* Hashtag Form (slide down) */}
+    <AnimatePresence>
+      {openHashtag && (
+        <motion.div
+          initial={{ height: 0, opacity: 0 }}
+          animate={{ height: "auto", opacity: 1 }}
+          exit={{ height: 0, opacity: 0 }}
+          transition={{ type: "spring", stiffness: 300, damping: 30 }}
+          className="overflow-hidden w-full"
+        >
+          <HashtagForm item={parameters.page} type="story" />
+        </motion.div>
+      )}
+    </AnimatePresence>
+  </div>
+{/* </div> */}
     </motion.div>
   )}
 </AnimatePresence>
 
 {/* Editor / Skeleton with fade */}
-<div className="mx-2 md:w-page mb-12 mx-auto bg-white rounded-lg p-4 shadow-sm">
+{/* <div className={`${editorContainerBase} ${editorContainerSpacing} ${editorContainerResponsive}`}> */}
   <ErrorBoundary>
     <AnimatePresence mode="wait">
       {/* <div className="mx-2 md:w-page mb-12 mx-auto bg-white rounded-lg p-4 shadow-sm relative"> */}
@@ -496,7 +587,10 @@ useEffect(() => {
       animate={{ opacity: pending ? 0 : 1 }}
       transition={{ duration: 0.3 }}
     >
+      <div className={CONTAINER}>
+
       <EditorDiv page={editPage} handleChange={handleChange} parameters={parameters} type={pageType} createPageAction={createPageAction} />
+    </div>
     </motion.div>
 
     {/* Skeleton overlays EditorDiv while pending */}
@@ -513,7 +607,7 @@ useEffect(() => {
 {/* </div> */}
     </AnimatePresence>
   </ErrorBoundary>
-</div>
+{/* </div> */}
 
   </IonContent>
 </EditorContext.Provider>

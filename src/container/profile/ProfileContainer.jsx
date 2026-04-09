@@ -47,6 +47,7 @@ const TABS = {
   COMMUNITIES: "communities",
   ABOUT: "about",
 };
+const tabWrapper = "max-w-lg mx-auto px-4"; // same for both containers
 const WRAP           = "max-w-2xl mx-auto px-4";
 const PAGE_PADDING_Y = "pb-24 pt-safe";
 const HEADER_PADDING = "py-8";
@@ -417,11 +418,10 @@ useEffect(()=>{
     <FollowButton isSelf={isSelf} prof={profile} onClick={onClickFollow}follow={following} current={currentProfile}  />
         </div>
   </div>
-  <div className='pb-8'>
+  <div className={tabWrapper}>
             <TabBar tabs={tabs} active={tab} onChange={setTab} />
             </div>
-            {/* </div>
-          </div> */}
+           
 <div>
           {/* Content */}
           <div className="space-y-10 min-h-[40rem]">

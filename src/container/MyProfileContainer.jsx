@@ -1,6 +1,3 @@
-
-
-
 import { useContext, useEffect, useMemo, useState } from "react";
 import { IonContent, useIonRouter } from "@ionic/react";
 import { useSelector, useDispatch } from "react-redux";
@@ -28,6 +25,7 @@ const TABS = {
   ABOUT: "about",
 };
 const WRAP = "max-w-2xl mx-auto px-4";
+const tabWrapper = "max-w-lg mx-auto px-4"; // same for both containers
 function MyProfileContainer() {
     const { setSeo  } = useContext(Context);
 
@@ -267,7 +265,7 @@ const StatChip = ({ value, label }) => (
     />
 
   </div>
-  <div className="mx-1 py-2"> 
+  <div className={tabWrapper}> 
            <TabBar tabs={tabs} active={tab} onChange={setTab} />
       </div>    
 

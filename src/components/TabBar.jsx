@@ -3,7 +3,7 @@ const TabBar = ({ tabs,active, onChange }) => (
     {tabs.map((tab) => (
       <button
         key={tab.key}
-        onClick={() => onChange(tab.key)}
+        onClick={() => onChange(tab.key.toLowerCase())}
         className={`
           text-center 
           px-3 py-2 

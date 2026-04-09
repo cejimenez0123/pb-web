@@ -1,7 +1,3 @@
-
-
-
-
 import {
  
   IonContent,
@@ -16,7 +12,6 @@ import HashtagForm from "../../components/hashtag/HashtagForm";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteCollection, deleteCollectionFromCollection, deleteStoryFromCollection, fetchCollectionProtected, patchCollectionContent } from "../../actions/CollectionActions";
 import Paths from "../../core/paths";
-import addIcon from "../../images/icons/add_circle.svg";
 import deleteIcon from "../../images/icons/delete.svg";
 import "../../styles/EditBook.css";
 import SortableList from "../../components/SortableList";
@@ -32,7 +27,27 @@ import { useParams } from "react-router";
 import { useDialog } from "../../domain/usecases/useDialog";
 import Pill from "../../components/Pill";
 import Enviroment from "../../core/Enviroment";
+import TabBar from "../../components/TabBar";
+// Layout & spacing
+const containerPadding = "px-4 pb-28 pt-6"; // consistent padding
+const cardPadding = "p-4"; // inner card padding
+const cardRadius = "rounded-2xl"; // consistent border radius
+const cardShadow = "shadow-sm"; // subtle shadow for cards
+const gapBetweenCards = "space-y-6"; // vertical gap between sections
+const buttonGap = "gap-3 flex flex-wrap"; // for action buttons
+// Example for input text size
+const inputResponsiveClass = "text-sm sm:text-base md:text-lg";
+const tabWrapper = "max-w-lg mx-auto px-4"; // same for both containers
+// Example for container width
+const containerResponsive = "w-full sm:max-w-md md:max-w-lg lg:max-w-xl mx-auto";
+// Breakpoints
+const maxContainerWidth = "max-w-lg"; // desktop limit
+const inputTextClass = "bg-transparent outline-none"; // text inputs and textarea
 
+// Tab bar
+const tabBarBase = "flex flex-wrap gap-1 bg-gray-100 rounded-xl p-1 px-2 sm:px-4";
+const tabActive = "text-white bg-soft shadow-sm";
+const tabInactive = "bg-softBlue text-soft";
 const EditCollectionContainer = () => {
 
 
@@ -96,28 +111,6 @@ const tabs = [
 
 const [activeTab, setActiveTab] = useState("pages");
 
-const TabBar = ({ tabs,active, onChange }) => (
-  <div className="flex flex-wrap gap-1 bg-gray-100 rounded-xl p-1 px-2 sm:px-4">
-    {tabs.map((tab) => (
-      <button
-        key={tab.key}
-        onClick={() => onChange(tab.key)}
-        className={`
-          text-center 
-          px-3 py-1 
-          text-xs sm:text-sm 
-          rounded-lg transition 
-          whitespace-nowrap
-          ${active === tab.key
-            ? "text-white bg-soft shadow-sm"
-            : "bg-softBlue text-soft"}
-        `}
-      >
-        {tab.label}
-      </button>
-    ))}
-  </div>
-);
 
 ;
   const [search, setSearch] = useState("");
@@ -278,32 +271,35 @@ const cycleFollowersRole = () => {
   }
   if(loading||!colInView){return editCollectionSkeleton()}
     return<IonContent fullscreen style={{ "--background": Enviroment.palette.base.background }}>
-  <div className="max-w-lg mx-auto px-4 pb-28 pt-6 space-y-6">
+  {/* <div className="max-w-lg mx-auto px-4 pb-28 pt-6 space-y-6"> */}
+<div className={`${maxContainerWidth} mx-auto ${containerPadding} ${gapBetweenCards}`}>
+  {/* TITLE */}
+  <div className={`bg-white ${cardRadius} ${cardPadding} ${cardShadow}`}>
+    <p className="text-xs text-soft mb-1">Title</p>
+  <input
+  className={`${inputTextClass} ${inputResponsiveClass} w-[100%] font-semibold`}
+      value={title}
+      onChange={(e) => setTitle(e.target.value)}
+      placeholder="Collection title"
 
-    {/* TITLE */}
-    <div className="bg-white rounded-2xl p-4 shadow-sm">
-      <p className="text-xs text-soft mb-1">Title</p>
-      <input
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        placeholder="Collection title"
-        className="w-[100%] text-lg font-semibold bg-transparent outline-none"
-      />
-    </div>
+    />
+  </div>
 
-    {/* DESCRIPTION */}
-    <div className="bg-white rounded-2xl p-4 shadow-sm">
-      <p className="text-xs text-soft mb-2">Description</p>
-      <textarea
-        value={purpose}
-        onChange={(e) => setPurpose(e.target.value)}
-        placeholder="Describe your collection"
-        className="w-[100%] text-sm bg-transparent outline-none min-h-[120px]"
-      />
-    </div>
+  {/* DESCRIPTION */}
+  <div className={`bg-white ${cardRadius} ${cardPadding} ${cardShadow}`}>
+    <p className="text-xs text-soft mb-2">Description</p>
+    <textarea
+      value={purpose}
+      onChange={(e) => setPurpose(e.target.value)}
+      placeholder="Describe your collection"
+      className={`${inputTextClass} text-sm min-h-[120px]`}
+    />
+  </div>
 
-    {/* SETTINGS */}
-    <div className="bg-white rounded-2xl p-4 shadow-sm space-y-3">
+  {/* SETTINGS */}
+  <div className={`bg-white ${cardRadius} ${cardPadding} ${cardShadow} space-y-3`}>
+    <div className="flex flex-wrap gap-2">
+   <div className="bg-white rounded-2xl p-4 shadow-sm space-y-3">
 
       <div className="flex flex-wrap gap-2">
         <Pill
@@ -334,9 +330,12 @@ const cycleFollowersRole = () => {
 />
       </div>
     </div>
+    </div>
+  </div>
 
-    {/* ACTIONS */}
-    <div className="flex flex-wrap gap-3">
+  {/* ACTIONS */}
+  <div className={buttonGap}>
+       <div className="flex flex-wrap gap-3">
 
       <Pill
         label="Save"
@@ -366,7 +365,28 @@ const cycleFollowersRole = () => {
         }
         baseClass="bg-soft text-white"
       />
+
+  </div>
+</div>
+    {/* TITLE */}
+
+
+    {/* DESCRIPTION */}
+    <div className="bg-white rounded-2xl p-4 shadow-sm">
+      <p className="text-xs text-soft mb-2">Description</p>
+      <textarea
+        value={purpose}
+        onChange={(e) => setPurpose(e.target.value)}
+        placeholder="Describe your collection"
+        className="w-[100%] text-sm bg-transparent outline-none min-h-[120px]"
+      />
     </div>
+
+    {/* SETTINGS */}
+    
+
+    {/* ACTIONS */}
+
 <div
   className={`overflow-hidden transition-all duration-300 ${
     openHashtag ? "max-h-[600px] mt-2" : "max-h-0"
@@ -386,8 +406,9 @@ const cycleFollowersRole = () => {
   />
   <IonImg src={arrowDown} className="w-5 h-5" />
 </div>
-  <TabBar tabs={[{label:"pages"},{label:"collections"}]} active={activeTab} onChange={setActiveTab}/>
-
+<div className={tabWrapper}>
+  <TabBar tabs={tabs} active={activeTab} onChange={setActiveTab}/>
+</div>
     {activeTab === "pages" && (
       <SortableList
         items={filteredPages}

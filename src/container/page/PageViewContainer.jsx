@@ -18,7 +18,7 @@ import Enviroment from "../../core/Enviroment.js";
 
 // Layout
 const WRAP = "max-w-[50em] mx-auto px-4";
-const SECTION = "pt-10";
+const SECTION  = "pt-8 sm:pt-10 lg:pt-12 "; 
 const BLOCK = "py-4";
 
 // Typography
