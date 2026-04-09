@@ -11,6 +11,7 @@ import Context from "../../context";
 import ProfileCircle from "../profile/ProfileCircle";
 import { getStory } from "../../actions/StoryActions";
 import Enviroment from "../../core/Enviroment";
+import Pill from "../Pill";
 
 export default function RoleForm({ item }) {
   const dispatch = useDispatch();
@@ -23,14 +24,17 @@ export default function RoleForm({ item }) {
   const [roles, setRoles] = useState([]);
   const [search, setSearch] = useState("");
 const handleResetAllRoles = () => {
-  const updatedRoles = profiles.map((r) => new Role(null, r, item, "none"));
-  setRoles(updatedRoles);
+ const newRoles = roles.map(role=>{
+ return new Role(role.id, role.profile, item, "none",role.created)
+  })
+ 
+  setRoles(newRoles);
 };
 const handleUpdateRole = ({ role, profile }) => {
-  console.log("ROLES UPDATE",role)
+
   setRoles((prevRoles) =>
     prevRoles.map((r) =>{
-    console.log("X",r)
+     
       return r.profile.id === profile.id
         ? new Role(r.id, profile, item, role, r.created) // preserve id & created
         : r
@@ -61,26 +65,50 @@ const handleUpdateRole = ({ role, profile }) => {
 
 //   setRoles(list);
 // }, [item, profiles]);
-  useEffect(() => {
-    if (!item) return;
+useEffect(() => {
+  if (!item || !profiles) return;
 
-    const source = item.storyIdList?item.roles: item.betaReaders 
-      console.log("X SOURCE",item)
-    console.log("X SOURCE",source)
-    const list = source.map(
-      (role) =>
-        new Role(
-          role.id,
-          role.profile,
-          item,
-          
-          role.role,
-          role.created
-        )
+  const sourceRoles = item.roles || item.betaReaders || [];
+
+  const roleMap = new Map(
+    sourceRoles.map((r) => [r.profile.id, r])
+  );
+
+  const list = profiles.map((profile) => {
+    const existing = roleMap.get(profile.id);
+
+    return new Role(
+      existing?.id || null,
+      profile,
+      item,
+      existing?.role || "none",
+      existing?.created || null
     );
-console.log("X< ROLES",roles)
-    setRoles(list);
-  }, [item]);
+  });
+
+  setRoles(list);
+}, [item, profiles]);
+
+//   useEffect(() => {
+//     if (!item) return;
+
+//     const source = item.storyIdList?item.roles: item.betaReaders 
+      
+//     console.log("X SOURCE",source)
+//     const list = source.map(
+//       (role) =>
+//         new Role(
+//           role.id,
+//           role.profile,
+//           item,
+          
+//           role.role,
+//           role.created
+//         )
+//     );
+// console.log("X< ROLES",roles)
+//     setRoles(list);
+//   }, [item,dispatch]);
 
   const handlePatchRoles = () => {
     if (!currentProfile) return;
@@ -104,21 +132,45 @@ console.log("X< ROLES",roles)
     dispatch(fetchProfiles());
   }, [currentProfile,dispatch])
 
-  const cycleRole = (profile) => {
+//   const cycleRole = (profile) => {
 
-    const roleTypes = Object.values(RoleType);
-   
-    const current = roles.find((r) => r.profile.id === profile.id)?.role;
+//     const roleTypes = Object.values(RoleType);
+//  console.log("Current L",roles)
+//     const current = roles.find((r) => r.profile.id === profile.id)
 
-    const nextIndex =
-      (roleTypes.indexOf(current) + 1) % roleTypes.length;
+//     const nextIndex =
+//       (roleTypes.indexOf(current) + 1) % roleTypes.length;
+// console.log("RR CUR",roleTypes[nextIndex])
+//     handleUpdateRole({
+//       role: roleTypes[nextIndex],
+//       profile,
+//     });
+//   };
+const cycleRole = (profile) => {
+  const roleTypes = Object.values(RoleType);
+  const current = roles.find((r) => r.profile.id === profile.id)?.role;
 
-    handleUpdateRole({
-      role: roleTypes[nextIndex],
-      profile,
-    });
-  };
+  const currentIndex = roleTypes.indexOf(current);
+  const nextIndex =
+    currentIndex === -1 ? 0 : (currentIndex + 1) % roleTypes.length;
 
+  handleUpdateRole({
+    role: roleTypes[nextIndex],
+    profile,
+  });
+};
+  //  const cycleRole = (profile) => {
+  //   const roleTypes = Object.values(RoleType);
+  //   const current = roles.find((r) => r.profile.id === profile.id)?.role;
+
+  //   const nextIndex =
+  //     (roleTypes.indexOf(current) + 1) % roleTypes.length;
+
+  //   handleUpdateRole({
+  //     role: roleTypes[nextIndex],
+  //     profile,
+  //   });
+  // };
  const filteredProfiles = useMemo(() => {
   if (!profiles?.length) return [];
 
@@ -165,7 +217,7 @@ const sortedResult = [...result].sort((a, b) => {
 });
  console.log(`sortedResult after filtering with search="${search}":`, sortedResult.slice(0,5));
   return sortedResult;
-}, [profiles, search]);
+}, [profiles, search,dispatch]);
 console.log("Filtered Profiles:", filteredProfiles.slice(0,5), "Search:", search, "Roles:", roles);
   return (
     <div className="bg-base-surface  ">
@@ -180,8 +232,22 @@ console.log("Filtered Profiles:", filteredProfiles.slice(0,5), "Search:", search
           Who is in conversation with this piece
         </p>
       </div>
-      <div className="flex flex-row gap-6 mb-4">
-     <button
+      <div className="flex flex-row justify-center gap-6 mb-4">
+                <Pill
+          label="Reset All Roles"
+           onClick={handleResetAllRoles}
+          variant="secondary"
+          baseClass={"bg-button-primary"}
+        />
+    
+ 
+        <Pill
+          label="Save Changes"
+           onClick={handlePatchRoles}
+          variant="primary"
+        baseClass="bg-soft text-white"
+        />
+     {/* <button
     onClick={handleResetAllRoles}
     className="text-sm  hover:text-red-700 underline underline-offset-4"
   >
@@ -192,7 +258,7 @@ console.log("Filtered Profiles:", filteredProfiles.slice(0,5), "Search:", search
     className="text-sm text-gray-700 hover:text-black underline underline-offset-4"
   >
     Save changes
-  </button>
+  </button> */}
   
   </div>
   {(error || success) && (
@@ -216,12 +282,12 @@ console.log("Filtered Profiles:", filteredProfiles.slice(0,5), "Search:", search
       {/* LIST */}
       <div className="space-y-4 bg-base-surface overflow-y-auto min-w-[20em] w-[100%] mb-4 max-h-[30rem]">
         {filteredProfiles.map((profile) => {
+ 
           const role = roles.find((r) => r.profile.id === profile.id);
-
           return (
                       <div
               key={profile.id}
-              className="flex items-center bg-base-bg py-2 justify-between border-b py-2 border-gray-200 px-2 rounded-full"
+              className="flex items-center bg-base-bg py-2 justify-between border-b  border-gray-200 px-2 rounded-full"
             >
               <div className="flex items-center gap-3">
                 <ProfileCircle profile={profile} includeUsername={false} />
@@ -232,30 +298,10 @@ console.log("Filtered Profiles:", filteredProfiles.slice(0,5), "Search:", search
                 onClick={() => cycleRole(profile)}
                 className="text-sm text-gray-500 italic hover:text-gray-800 transition"
               >
-                {role?.role || "reader"}
+                {role?.role}
               </button>
             </div>
-            // <div
-            //   key={profile.id}
-            //   className="flex items-center justify-between border-b border-gray-200 pb-3"
-            // >
-            //   {/* LEFT */}
-            //   <div className="flex items-center gap-3">
-            //     <ProfileCircle profile={profile} includeUsername={false} />
-
-            //     <span className="text-[0.95rem] text-gray-800">
-            //       {profile.username}
-            //     </span>
-            //   </div>
-
-            //   {/* RIGHT (Editorial Role) */}
-            //   <button
-            //     onClick={() => cycleRole(profile)}
-            //     className="text-sm text-gray-500 italic hover:text-gray-800 transition"
-            //   >
-            //     {role?.role || "reader"}
-            //   </button>
-            // </div>
+         
           );
         })}
       </div>

@@ -89,7 +89,7 @@ const [isSaved,setIsSaved]=useState(true)
 
   useEffect(() => {
     if (id) fetchStory();
-  }, [type, id]);
+  }, [type, id,dispatch]);
 
 const lastSavedRef = useRef(null);
 
