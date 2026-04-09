@@ -62,7 +62,7 @@ class StoryRepo{
         let res = await axios.get(this.url+"/"+id+"/protected",{
             headers:headers
         })
-       
+       console.log(res)
         return res.data
     }
     async getStoryPublic({id}){

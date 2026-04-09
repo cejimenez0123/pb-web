@@ -10,10 +10,12 @@ const getStory = createAsyncThunk("story/getStory",async ({id},thunkApi)=>{
 
     let token =(await Preferences.get({key:"token"})).value
     if(token){
+         console.log("GO")
      let data = await storyRepo.getStoryProtected({id:id})
      return {story:data.story}
 
     }else{
+      console.log("STOP")
           let data = await storyRepo.getStoryPublic({id:id})
         return {story:data.story}
 

@@ -19,6 +19,8 @@ import PageProfileList from "../components/page/PageProfileList";
 import PaginatedIndexList from "../components/PaginatedIndexList";
 import PaginatedPageList from "../components/page/PaginatedPageList";
 import EmptyState from "../components/EmptyState";
+import { getMyCollections } from "../actions/CollectionActions";
+import { getMyStories } from "../actions/StoryActions";
 const TABS = {
   POSTS: "posts",
   COLLECTIONS: "collections",
@@ -27,11 +29,11 @@ const TABS = {
 };
 const WRAP = "max-w-2xl mx-auto px-4";
 function MyProfileContainer() {
-    const { setSeo, setError,  } = useContext(Context);
+    const { setSeo  } = useContext(Context);
 
   const profile = useSelector((state) => state.users.currentProfile);
   const {myCollections:collectionsRaw}=useSelector(state=>state.books)
-  const {myPages:pagesRaw}=useSelector(state=>state.pages)
+  const pagesRaw=useSelector(state=>state.pages.myPages.filter(p=>p))
   const communities  =collectionsRaw?.filter(col=>col?.type=="library")??[]
  
 ;
@@ -39,6 +41,9 @@ const debouncedSearch = useMemo(
   () => debounce((value) => setSearch(value), 250),
   []
 );
+useEffect(()=>{
+
+})
 useEffect(() => {
   return () => debouncedSearch.cancel?.();
 }, [debouncedSearch]);
@@ -52,7 +57,13 @@ useEffect(() => {
   //  
   //  const collectionsRaw = myCollections||[]
   
+useEffect(() => {
+    if (profile) {
+      dispatch(getMyCollections());
+      dispatch(getMyStories());
+    }
 
+  }, []);
 
 
   // ── Derived

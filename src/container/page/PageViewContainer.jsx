@@ -57,7 +57,7 @@ const canUserSee = (() => {
 
   
 })();
-console.log("canUserSee",canUserSee)
+
   const [pending, setPending] = useState(true);
   const [rootComments, setRootComments] = useState([]);
   const [errorStatus, setErrorStatus] = useState(null);
@@ -93,10 +93,13 @@ console.log("canUserSee",canUserSee)
             } else throw new Error("Story not found");
           },
           (err) => {
-            console.log("STORY ERROR", err);
+            console.log(err.response.status)
             setPending(false);
-            if (err?.response?.status === 404){ setErrorStatus(404);
+            if (err?.response?.status === 404){ 
+              setErrorStatus(404);
+              setPending(false)
               setError("Story not found");
+
             }
             else {
               setError(err.message || "Failed to load story");
@@ -147,7 +150,8 @@ console.log("canUserSee",canUserSee)
     });
     window.history.length > 1 ? router.goBack() : router.push(Paths.discovery, "back");
   };
-console.log("canUserSee",canUserSee )
+  console.log("pending",pending)
+  console.log("ERRORSTATUS",errorStatus)
   return (
     <ErrorBoundary>
       <IonContent
@@ -160,7 +164,7 @@ console.log("canUserSee",canUserSee )
 
  <div className={`${FADE} ${pending ? "opacity-0" : "opacity-100"}`}
   >
-    {(!pending && canUserSee) && (
+  {!pending && !errorStatus && canUserSee && (
       <div className={`${WRAP}`}>
   <div className={`${CARD} ${BLOCK}`}>
         <PageViewItem page={page}  currentProfile={currentProfile} />
@@ -172,13 +176,34 @@ console.log("canUserSee",canUserSee )
       </div>
     )}
 
-    {!pending && errorStatus === 403 && (
-      <h1 className={`${CENTER} ${SECTION} text-emerald-800`}>🚫 You don’t have permission to view this story.</h1>
-    )}
 
-    {pending && !canUserSee && errorStatus !== 403 && (
+{!pending && errorStatus === 404 && 
+(<div className={`${CENTER} ${SECTION}`}>
+    <h1 className="text-emerald-800 font-bold text-lg">
+      📖 Story not found
+    </h1>
+    <p className="text-sm mt-2">
+      It may have been deleted or never existed.
+    </p>
+    <button
+      onClick={handleBack}
+      className="mt-4 px-4 py-2 bg-emerald-700 text-white rounded-lg"
+    >
+      Go back
+    </button>
+  </div>)}
+{!pending && errorStatus === 403 && (<div>
+  <h1 className={`${CENTER} ${SECTION} text-emerald-800`}>🚫 You don’t have permission to view this story.</h1>
      <h1 className={`${CENTER} ${SECTION}`}>Took a wrong turn</h1>
-    )}
+  </div>)}
+  {!pending && !errorStatus && !canUserSee && (
+  <h1 className={`${CENTER} ${SECTION}`}>
+    🚫 You can’t view this story
+  </h1>
+)}
+
+
+
   </div>
 </div>
 

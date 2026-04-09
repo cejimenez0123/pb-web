@@ -1,6 +1,6 @@
 import './App.css';
 import { useDispatch,connect,useSelector} from "react-redux"
-import { useEffect, useState ,useRef, useLayoutEffect, useContext} from 'react';
+import {  useState } from 'react';
 import {  getPublicStories } from './actions/PageActions.jsx';
 import LogInContainer from './container/auth/LogInContainer';
 import NavbarContainer from './container/NavbarContainer';
@@ -11,10 +11,10 @@ import SettingsContainer from './container/SettingsContainer';
 import ProfileContainer from './container/profile/ProfileContainer.jsx';
 import SearchDialog from './components/SearchDialog';
 import PrivacyNoticeContrainer from './container/PrivacyNoticeContainer.jsx';
-import {  getCurrentProfile,
+import {  
           setSignedInTrue,
           setSignedInFalse,
-          setUserLoading,
+      
       } from './actions/UserActions'
       import { IonApp, setupIonicReact, IonRouterOutlet,  useIonRouter, IonFooter, useIonViewWillEnter} from '@ionic/react';
  import LoggedRoute from './LoggedRoute';
