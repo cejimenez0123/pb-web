@@ -42,6 +42,7 @@ import ProfileCircle from "../../components/profile/ProfileCircle.jsx";
 import Enviroment from "../../core/Enviroment.js";
 import CollectionActions from "../../components/collection/CollecitonActions.jsx";
 import {motion} from 'framer-motion'
+import SectionHeader from "../../components/SectionHeader.jsx";
 const containerVariants = {
   hidden: { opacity: 0 },
   show: {
@@ -582,15 +583,13 @@ return (
             </p>}
 </div>
           {/* Action Buttons */}
-         <div className={`${SECTION} ${ACTION_ROW}`}>
+         <div className={`${SECTION}  ${ACTION_ROW}`}>
 
-            {/* Follow / Join Button */}
-               {/* <div className="> */}
-            <div className="my-4 flex-1  min-w-[10rem] h-12 rounded-full  flex items-center justify-center transition">
-            <div className="my-4 flex-1 min-w-[10rem] h-12 flex items-center justify-center">
-
+            
+            <div className={`my-4 flex-1  ${GAP} min-w-[10rem] h-12 rounded-full  flex items-center justify-center transition`}>
+           
         <button
-      className={`${baseClasses} ${
+      className={`${baseClasses} btn  ${
         role
           ? "bg-soft text-white hover:bg-blue-500"
           : "bg-blue text-white hover:bg-sky-400"
@@ -600,9 +599,8 @@ return (
     >
       {role ? "Following" : "Follow"}
     </button>
-  {/* )} */}
-</div>
-</div>
+
+
 <CollectionActions handleArchive={handleArchive} 
  collection={collection}
  role={foundRole}
@@ -615,7 +613,7 @@ return (
  router={router}
 
   />
-            
+         </div>   
           </div>
 
   <div className={BLOCK}>
@@ -754,9 +752,8 @@ const PageTab = ({ collections }) => {
 
   return (
     <div className="bg-base-surface">
-      {/* Anthologies Section */}
-      <h2 className={`${SECTION} ${TITLE}`}>Anthologies</h2>
-
+   
+<SectionHeader title={"Anthologies"} />
       {hasAnthologies ? (
         <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           <motion.div
@@ -788,8 +785,8 @@ const PageTab = ({ collections }) => {
         </div>
       )}
 
-      {/* Pages Section */}
-      <h2 className={`${SECTION} ${TITLE}`}>Pages</h2>
+      
+      <SectionHeader title={"Pages"}/>
       {pagesInView?.length > 0 ? (
         <div className="w-full">
           <PageList

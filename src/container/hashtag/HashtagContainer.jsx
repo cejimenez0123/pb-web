@@ -18,24 +18,37 @@ import grid from "../../images/grid.svg";
 import stream from "../../images/stream.svg";
 import loadingGif from "../../images/loading.gif";
 import { useParams } from "react-router";
+import SectionHeader from "../../components/SectionHeader.jsx";
+import Enviroment from "../../core/Enviroment.js"
+import { motion, AnimatePresence } from "framer-motion";;
+// Layout
+const containerBase = "mx-auto w-full md:w-page";
+const containerSpacing = "px-3 md:px-4 pb-16 pt-2";
+const sectionSpacing = "mb-6";
+
+// Cards / items
+const itemBase = "bg-white rounded-xl border border-gray-200 shadow-sm";
+const itemPadding = "p-4";
+const itemSpacing = "space-y-3";
+
+// Text
+const titleStyle = "text-xl font-semibold text-gray-900";
+const subtitleStyle = "text-sm text-gray-500";
+
+// States
+const centerState = "flex flex-col items-center justify-center text-center py-12";
 
 export default function HashtagContainer() {
 
   const { id } = useParams()
   const dispatch = useDispatch();
   const router = useIonRouter()
-  const { setError, seo, setSeo } = useContext(Context);
-  const handleBack = () => {
-    if (window.history.length > 1) {
-        router.goBack()
-    } else {
-      router.push(Paths.discovery);
-    }
-  };
+  const { setError, seo, setSeo,isPhone } = useContext(Context);
+const [pending,setPending]=useState(false)
   const collections = useSelector((state) => state.books.collections);
   const pagesInView = useSelector((state) => state.pages.pagesInView);
 
-  const [hash, setHashtag] = useState(null);
+  const [hashtag, setHashtag] = useState(null);
   const [hasMoreLibraries, setHasMoreLibraries] = useState(true);
   const [hasMoreBooks, setHasMoreBooks] = useState(true);
   const [hasMorePages, setHasMorePages] = useState(true);
@@ -61,26 +74,28 @@ export default function HashtagContainer() {
       ),
     [collections]
   );
-
+console.log("BOOKS",books)
+console.log("LIBRARIEs",libraries)
   /** Initialize analytics & SEO */
   useLayoutEffect(() => {
     initGA();
-    if (hash) {
+    if (hashtag) {
       sendGAEvent(
         "View Page",
-        `View Hashtag ${JSON.stringify({ id: hash.id, name: hash.name })}`,
-        hash.name
+        `View Hashtag ${JSON.stringify({ id: hashtag.id, name: hashtag.name })}`,
+       hashtag.name
       );
       setSeo({
         ...seo,
-        title: `Plumbum Hashtag (${hash.name}) - Your Writing, Your Community`,
+        title: `Plumbum Hashtag (${hashtag.name}) - Your Writing, Your Community`,
       });
     }
-  }, [hash]);
+  }, [hashtag]);
 
   /** Fetch hashtag data */
   const getHashtag = async () => {
     try {
+      setPending(true)
       dispatch(setCollections({ collections: [] }));
       dispatch(setPagesInView({ pages: [] }));
 
@@ -98,16 +113,14 @@ export default function HashtagContainer() {
             const stories = c.collection.storyIdList.map((sTc) => sTc.story);
             dispatch(appendToPagesInView({ pages: stories }));
           });
-
-          setHasMoreLibraries(false);
-          setHasMoreBooks(false);
-          setHasMorePages(false);
+setPending(false)
         },
         (err) => {
           setError(err);
           setHasMoreLibraries(false);
           setHasMoreBooks(false);
           setHasMorePages(false);
+          setPending(false)
         }
       );
     } catch (err) {
@@ -118,7 +131,7 @@ export default function HashtagContainer() {
   /** Load data on mount or ID change */
   useLayoutEffect(() => {
     getHashtag();
-  }, [id]);
+  }, [id])
 
   /** Auto toggle grid view on screen resize */
   useEffect(() => {
@@ -142,15 +155,16 @@ export default function HashtagContainer() {
   }
     return (
   <div className="w-full  h-[14rem]">
-        <h3 className="text-emerald-900 font-extrabold lora-bold text-2xl ml-14 md:ml-16 mb-4">
+        {/* <h3 className="text-emerald-900 font-extrabold lora-bold text-2xl ml-14 md:ml-16 mb-4">
           Communities
-        </h3>
+        </h3> */}
+        <SectionHeader title={"Communities"}/>
        <div className="mb-4">
-        <div className="flex flex-row overflow-x-auto overflow-y-clip sh-[12rem] space-x-4 px-4 no-scrollbar">
+        <div className="flex flex-row overflow-x-auto bg-cream overflow-y-clip sh-[12rem] space-x-4 px-4 no-scrollbar">
             {libraries.map((library) => (
-              <IonItem key={library.id} className="mx-3">
+              // <IonItem key={library.id} className="mx-3">
                 <BookListItem book={library} />
-              </IonItem>
+              // </IonItem>
             ))}
           </div>
         </div>
@@ -161,58 +175,99 @@ export default function HashtagContainer() {
   /** Books (Collections) section */
   const renderBooks = () => (
     <div className="w-full  h-[14rem]">
-        <h3 className="text-emerald-900 text-left font-extrabold ml-14 lora-bold mb-4 text-2xl">
-          Collections
-        </h3>
-      <div className="mb-12">
-        <div className="flex flex-row overflow-x-auto overflow-y-clip min-h-[14rem] space-x-4 px-4 no-scrollbar">
-        
-        {books.map((book, i) => (
+      
+        <SectionHeader title="Collections"/>
+        <AnimatePresence mode="wait">
+  {pending ? (
+    <motion.div
+      key="loading"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+    >
+      <SkeletonList />
+    </motion.div>
+  ) : books.length === 0 ? (
+    <motion.div
+      key="empty"
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.25 }}
+    >
+      <EmptyState hashtag={hashtag} />
+    </motion.div>
+  ) : (
+    <motion.div
+      key="content"
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.25 }}
+      className={itemSpacing}
+    >
+          {books.map((book, i) => (
           <IonItem  className="my-auto mx-4  " key={`${book.id}_${i}`}>
             <BookListItem book={book} />
           </IonItem>
         ))}
-        </div>
-        </div>
+    </motion.div>
+  )}
+</AnimatePresence>
+  
 
     </div>
   );
 
   /** Individual story pages */
   const renderPages = () => (
-    <div className="w-[96vw] md:w-page mx-auto">
-      <IonInfiniteScroll
-        dataLength={pagesInView.length}
-        hasMore={hasMorePages}
-        scrollThreshold={1}
-        endMessage={
-          <div className="flex">
-            <h2 className="mx-auto my-12 text-emerald-800 lora-medium">
-              You can write for this hashtag.<br />
-              Add a hashtag to your work.
-            </h2>
-          </div>
-        }
-        loader={
-          <div className="flex">
-            <img className="max-h-36 mx-auto my-12 max-w-36" src={loadingGif} />
-          </div>
-        }
-      >
-        <div className={`${isGrid ? "grid grid-cols-2 gap-2" : ""}`}>
+    <AnimatePresence mode="wait">
+  {pending ? (
+    <motion.div
+      key="loading"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+    >
+      <SkeletonList />
+    </motion.div>
+  ) : pagesInView.length === 0 ? (
+    <motion.div
+      key="empty"
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.25 }}
+    >
+      <EmptyState hashtag={hashtag} />
+    </motion.div>
+  ) : (
+    <motion.div
+      key="content"
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.25 }}
+      className={itemSpacing}
+    >
+      { <div className={`px-4 ${isGrid ? "grid grid-cols-2 gap-2" : ""}`}>
           {pagesInView.filter(Boolean).map((page, i) => (
             <div key={`${page.id}_${i}`} className="break-inside-avoid mb-4 auto-cols-min">
               <DashboardItem item={page} index={i} isGrid={isGrid} page={page} />
             </div>
           ))}
-        </div>
-      </IonInfiniteScroll>
-    </div>
+        </div>}
+    </motion.div>
+  )}
+</AnimatePresence>
+
   );
 
   return (
     <ErrorBoundary>
-   <IonContent fullscreen>
+   <IonContent  fullscreen style={{'--padding-top':isPhone?"4em":"10em", '--background': Enviroment.palette.cream  }}>
             
        
 
@@ -221,9 +276,10 @@ export default function HashtagContainer() {
               {renderBooks()}
 
               <div className="flex flex-col max-w-[96vw] md:w-page mx-auto">
-                <h3 className="text-emerald-900 font-extrabold text-2xl text-left lora-bold my-4">
+                {/* <h3 className="text-emerald-900 font-extrabold text-2xl text-left lora-bold my-4">
                   Pages
-                </h3>
+                </h3> */}
+                <SectionHeader title={"Pages"}/>
                 {isNotPhone && (
                   <div className="flex flex-row pb-8">
                     <button
@@ -251,3 +307,32 @@ export default function HashtagContainer() {
     </ErrorBoundary>
   );
 }
+
+const EmptyState = ({ hashtag }) => (
+  <div className={centerState}>
+    {/* <div className="text-4xl mb-3">#</div> */}
+
+    <h2 className="text-lg font-medium text-gray-800">
+      No posts for #{hashtag.name}
+    </h2>
+
+    <p className="text-sm text-gray-500 mt-1 max-w-sm">
+      Be the first to start the conversation. Share something and shape what this space becomes.
+    </p>
+  </div>
+);
+const SkeletonItem = () => (
+  <div className={`${itemBase} ${itemPadding} animate-pulse`}>
+    <div className="h-4 bg-gray-200 rounded w-2/3 mb-3" />
+    <div className="h-3 bg-gray-200 rounded w-1/2 mb-2" />
+    <div className="h-3 bg-gray-200 rounded w-1/3" />
+  </div>
+);
+
+const SkeletonList = () => (
+  <div className={itemSpacing}>
+    {[...Array(5)].map((_, i) => (
+      <SkeletonItem key={i} />
+    ))}
+  </div>
+);

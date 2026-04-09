@@ -116,62 +116,62 @@ const itemVariants = {
     transition: { duration: 0.3, ease: "easeOut" },
   },
 };
-const LibraryForums = () => {
-  if (!libraries) return null;
+// const LibraryForums = () => {
+//   if (!libraries) return null;
 
-  return (
-    <div className="">
-      <IonText
-      style={{"--padding-bottom":"4em"}}
-        className={`text-emerald-900 ${
-          isNotPhone ? 'ml-16 pl-6' : 'ml-16'
-        } mb-4 lora-bold font-extrabold text-2xl`}
-      >
-        Communities
-      </IonText>
+//   return (
+//     <div className="">
+//       <IonText
+//       style={{"--padding-bottom":"4em"}}
+//         className={`text-emerald-900 ${
+//           isNotPhone ? 'ml-16 pl-6' : 'ml-16'
+//         } mb-4 lora-bold font-extrabold text-2xl`}
+//       >
+//         Communities
+//       </IonText>
 
-      {/* Horizontal scroll area */}
-      <div    style={{"--padding-top":"4em"}} className="mb-4">
-        <div className="flex flex-row overflow-x-auto overflow-y-clip  space-x-4 px-4 no-scrollbar">
-          {libraries.map((library) => (
+//       {/* Horizontal scroll area */}
+//       <div    style={{"--padding-top":"4em"}} className="mb-4">
+//         <div className="flex flex-row overflow-x-auto overflow-y-clip  space-x-4 px-4 no-scrollbar">
+//           {libraries.map((library) => (
          
-              <BookListItem book={library} />
+//               <BookListItem book={library} />
        
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-};
+//           ))}
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
 
-  const BookList = () => {
+//   const BookList = () => {
 
-    if (!books) return null;
-    return (
-      <div className=''>
-        <h3     style={{"--padding-bottom":"4em"}} className="text-emerald-900 text-left bg-transparent font-extrabold ml-16  mb-4 text-2xl">
-          Collections
-        </h3>
-<div className="mb-4 bg-transparent ">
+//     if (!books) return null;
+//     return (
+//       <div className=''>
+//         <h3     style={{"--padding-bottom":"4em"}} className="text-emerald-900 text-left bg-transparent font-extrabold ml-16  mb-4 text-2xl">
+//           Collections
+//         </h3>
+// <div className="mb-4 bg-transparent ">
 
-         <IonList style={{background:"transparent"}} className="bg-transparent">
+//          <IonList style={{background:"transparent"}} className="bg-transparent">
         
-          <div className="flex flex-row  overflow-x-auto overflow-y-clip h-[14rem] space-x-4 px-4 no-scrollbar">
-          {books.map((book, i) => {
-            const id = `${book.id}_${i}`;
-            return (
+//           <div className="flex flex-row  overflow-x-auto overflow-y-clip h-[14rem] space-x-4 px-4 no-scrollbar">
+//           {books.map((book, i) => {
+//             const id = `${book.id}_${i}`;
+//             return (
          
-                <BookListItem book={book} />
+//                 <BookListItem book={book} />
         
-            );
-          })}
-          </div>
-          </IonList>
-    </div>
+//             );
+//           })}
+//           </div>
+//           </IonList>
+//     </div>
 
-      </div>
-    );
-  };
+//       </div>
+//     );
+//   };
 
 return<IonContent style={{ "--background": Enviroment.palette.base.background }}>
   <div className="max-w-[45em] mx-auto pb-24 space-y-10">
