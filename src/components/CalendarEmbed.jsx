@@ -5,10 +5,13 @@ import Context from "../context";
 import { useSelector } from "react-redux";
 import calendar from "../images/icons/calendar_add_blue.svg";
 import { IonImg, IonInput, IonList, IonText } from "@ionic/react";
-import InfoTooltip from "./InfoTooltip";
 import { useDialog } from "../domain/usecases/useDialog";
 import Enviroment from "../core/Enviroment";
-
+const WRAP = "max-w-[42rem] mx-auto px-4";
+const PAGE_Y = "pt-16 pb-10";
+const STACK_LG = "space-y-8";
+const STACK_MD = "space-y-4";
+const STACK_SM = "space-y-2";
 function CalendarEmbed({ variant = "eventbrite" }) {
   const { isPhone, setError } = useContext(Context);
   const { openDialog, closeDialog } = useDialog();
@@ -168,7 +171,7 @@ return {
     <div
       key={i}
       onClick={() => handleDialogOpen(event)}
-      className="mx-4 mb-3 bg-white rounded-2xl p-4 shadow-sm active:scale-[0.98]"
+      className="bg-white rounded-2xl p-4 shadow-sm active:scale-[0.98]"
     >
       <div className="flex justify-between gap-3">
         <div className="flex flex-col flex-1 min-w-0">
@@ -226,8 +229,10 @@ return {
     if (!solEvents.length) return null;
 
     return (
-      <div className="px-4 pb-3">
-        <div className="flex items-center gap-2 mb-2">
+      <div>
+    <div className="px-4 pb-3">
+      <div className="flex gap-3 overflow-x-auto pb-1 -mx-1 px-1">
+        {/* // <div className="flex items-center gap-2 mb-2"> */}
           <IonText className="font-semibold text-sm">Events from Pb</IonText>
          
         </div>
@@ -256,14 +261,16 @@ return {
             </div>
           ))}
         </div>
+        </div>
+        
       </div>
     );
   };
 
   return (
-    <div>
+  <div className="space-y-6">
       {/* FILTERS */}
-      <div className="py-3">
+    <div className="space-y-3">
         <div className="flex gap-2 overflow-x-auto">
           <button onClick={() => setSelectedArea("")} className={`pill px-4 ${selectedArea==""?"bg-soft text-white":""}`}>
             All
@@ -291,11 +298,14 @@ return {
       <HorizontalScroll />
 
       {/* MAIN LIST */}
-      <IonList style={{ "--background": Enviroment.palette.cream,minHeight:"12em"}}>
+   {/* <div className="px-4"> */}
+  <IonList style={{ "--background": Enviroment.palette.cream }}>
+  
         {paginatedEvents.map(renderEvent)}
       </IonList>
+      {/* </div> */}
       {totalPages > 1 && (
-  <div className="flex items-center justify-between px-6 py-4 max-w-[500px] mx-auto">
+  <div className="flex items-center justify-between px-4 py-4">
 
     {/* PREVIOUS */}
     <button

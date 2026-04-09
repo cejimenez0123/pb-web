@@ -22,7 +22,7 @@ import Pill from "../../components/Pill";
 const WRAP         = "max-w-2xl mx-auto px-4";
 const PAGE_Y       = "py-6";
 const PAGE_STACK   = "space-y-6";
-
+const FADE_IN = "transition-all duration-500 ease-out";
 const CARD         = "bg-white rounded-2xl p-4 shadow-sm";
 const SECTION_STACK = "space-y-2";
 
@@ -32,7 +32,7 @@ export default function AddToCollectionsContainer() {
   const { setError, seo, setSeo } = useContext(Context);
   const { currentProfile } = useSelector((state) => state.users);
   const { dialog, openDialog, closeDialog, resetDialog } = useDialog();
-
+const [pendingStories, setPendingStories] = useState(true);
   const { id, type } = useParams(); // id = item to add, type = "story" | "collection"
   const dispatch = useDispatch();
 
@@ -61,12 +61,18 @@ export default function AddToCollectionsContainer() {
   }, [rawCollections, item, search]);
 
   // Load collections & stories
-  useEffect(() => {
-    if (currentProfile) {
-      dispatch(getMyCollections());
-      dispatch(getMyStories());
-    }
-  }, [currentProfile, dispatch]);
+ useEffect(() => {
+  if (currentProfile) {
+    setPendingStories(true);
+
+    Promise.all([
+      dispatch(getMyCollections()),
+      dispatch(getMyStories()),
+    ]).finally(() => {
+      setPendingStories(false);
+    });
+  }
+}, [currentProfile, dispatch]);
 
   // Optional: load token
   useLayoutEffect(() => {
@@ -122,7 +128,7 @@ export default function AddToCollectionsContainer() {
   if (!item) {
     return (
       <IonContent fullscreen style={{ "--background": Enviroment.palette.cream }}>
-        <div className="p-4 space-y-4 animate-pulse">
+       <div className={`${WRAP} ${PAGE_Y} ${PAGE_STACK} animate-pulse`}>
           <div className="h-6 w-40 bg-gray-200 rounded" />
           <div className="h-24 bg-gray-200 rounded-2xl" />
           <div className="h-10 bg-gray-200 rounded-full w-32" />
@@ -135,8 +141,8 @@ export default function AddToCollectionsContainer() {
   return (
     <ErrorBoundary>
       <IonContent fullscreen style={{ "--background": Enviroment.palette.cream }}>
-        <div className="max-w-[42em] mx-auto px-4 py-6 space-y-6">
-
+        {/* <div className="max-w-[42em] mx-auto px-4 py-6 space-y-6"> */}
+<div className={`${WRAP} ${PAGE_Y} ${PAGE_STACK}`}>
           {/* Header */}
           <div>
             <h1 className="text-xl font-semibold text-soft">Add to Collection</h1>
@@ -174,13 +180,54 @@ export default function AddToCollectionsContainer() {
           <p className={LABEL}>Your Collections</p>
 
           {/* List */}
-          <div className={SECTION_STACK}>
-            {collections.map((col, i) => (
+         <div
+  className={`${SECTION_STACK} ${FADE_IN} ${
+    pendingStories ? "opacity-0 translate-y-2" : "opacity-100 translate-y-0"
+  }`}
+>
+  {pendingStories ? (
+  <CollectionsSkeleton />
+) : collections.length === 0 ? (
+  <EmptyCollections />
+) : (
+  <div
+    className={`${SECTION_STACK} ${FADE_IN} opacity-100 translate-y-0`}
+  >
+    {collections.map((col, i) => (
+      <AddToItem key={col.id || i} col={col} item={item} />
+    ))}
+  </div>
+)}
+            {/* {collections.map((col, i) => (
               <AddToItem key={col.id || i} col={col} item={item} /> // Pass `item` for both story or collection
-            ))}
+            ))} */}
           </div>
         </div>
       </IonContent>
     </ErrorBoundary>
+  );
+}
+function CollectionsSkeleton() {
+  return (
+    <div className="space-y-2 animate-pulse">
+      {[...Array(4)].map((_, i) => (
+        <div key={i} className="h-12 bg-gray-200 rounded-2xl" />
+      ))}
+    </div>
+  );
+}
+function EmptyCollections({ onCreate }) {
+  return (
+    <div className="text-center py-10 space-y-3">
+      <p className="text-sm text-gray-500">
+        No collections yet
+      </p>
+      <button
+        onClick={onCreate}
+        className="px-4 py-2 bg-emerald-700 text-white rounded-full text-sm"
+      >
+        Create your first collection
+      </button>
+    </div>
   );
 }

@@ -43,7 +43,7 @@ function useProfileDependentEffects(currentProfile, isGlobal) {
         global: isGlobal
       }));
       checkResult(res, (payload) => {
-        console.log("WORKSTUDIO",payload)
+       
         const {groups}=payload
         const sorted = [...groups].sort((a,b)=>new Date(b.updated)-new Date(a.updated));
         setResults(prev => ({ ...prev, workshops: sorted || [] }));

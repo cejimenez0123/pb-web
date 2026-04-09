@@ -14,6 +14,11 @@ import "../App.css"
 import CalendarEmbed from "../components/CalendarEmbed";
 import { Capacitor } from "@capacitor/core";
 import { useSelector } from "react-redux";
+const WRAP = "max-w-[42rem] mx-auto px-4";
+const PAGE_Y = "pt-16 pb-10";
+const STACK_LG = "space-y-8";
+const STACK_MD = "space-y-4";
+const STACK_SM = "space-y-2";
 export default function CalendarContainer(){
 
   const {seo,setSeo}=useContext(Context)
@@ -40,11 +45,11 @@ export default function CalendarContainer(){
   },[])
   return (
     <IonContent f        style={{ "--background": Enviroment.palette.base.background}} fullscreen={true}  className="">
-    <div className="mx-auto  m-4 pt-14   text-center">
-<div className=" w-[90%] sm:max-w-[30rem] mx-auto">
-      <h1 className="lora-bold text-emerald-800 text-opacity-70 mb-4">Plumbum Calendar</h1>
+   <div className={`${WRAP} ${PAGE_Y} ${STACK_LG} text-center`}>
+ 
+      {/* <h1 className="lora-bold text-emerald-800 text-opacity-70 mb-4">Plumbum Calendar</h1>
   
-     {!currentProfile &&<div className="mb-8"><p className="mb-4 mx-auto  text-sm mont-medium text-emerald-600">
+     {!currentProfile &&<div className={STACK_MD}><p className="mb-4 mx-auto  text-sm mont-medium text-emerald-600">
         Get weekly writing events in your inbox, or go deeper:<br/> apply to become a user and share your own writing and feedback on our site.
       </p>
     <div><IonText className="text-xl text-emerald-700" onClick={()=>router.push(Paths.newsletter())}>Join the Newsletter</IonText></div>
@@ -52,13 +57,44 @@ export default function CalendarContainer(){
      <div>
     <IonText onClick={()=>{router.push("/onboard")}} className="text-xl text-emerald-700">Apply to be a user</IonText> 
      </div>
-      </div>}
+      </div>} */}
+<div className={STACK_SM}>
+  <h1 className="lora-bold text-emerald-800 text-opacity-70">
+    Plumbum Calendar
+  </h1>
 
+  {!currentProfile && (
+    <div className={STACK_SM}>
+      <p className="text-sm text-emerald-600 max-w-md mx-auto">
+        Get weekly writing events in your inbox, or go deeper:
+        apply to become a user and share your writing and feedback.
+      </p>
+
+      <div className="flex flex-col items-center gap-2">
+        <IonText
+          className="text-lg text-emerald-700"
+          onClick={() => router.push(Paths.newsletter())}
+        >
+          Join the Newsletter
+        </IonText>
+
+        <IonText className="text-xs text-gray-400">or</IonText>
+
+        <IonText
+          onClick={() => router.push("/onboard")}
+          className="text-lg text-emerald-700"
+        >
+          Apply to be a user
+        </IonText>
+      </div>
+    </div>
+  )}
+</div>
       </div>
 <div className="w-fit pb-36 mx-auto">
       <CalendarEmbed  variant={isNative?"ios":""} />
       </div>
-    </div>
+   
     </IonContent>
   );
 

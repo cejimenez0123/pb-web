@@ -67,7 +67,7 @@ return(<div className="flex flex-wrap sm:flex-nowrap items-center justify-betwee
             }
             className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded-md w-full text-left"
           >
-            Add to Communities
+            Add Collections
           </button>
         </li>
       )}

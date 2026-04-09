@@ -631,14 +631,6 @@ return (
    onClick={()=>router.push(Paths.addToCollection.createRoute(collection.id))}
 className={BUTTON_FULL+"btn transition w-[100%] border-blue bg-blue text-cream hover:bg-teal"}
     
-      //   ${className || ""}"}
-      // className={`
-      //   w-full h-12 rounded-full 
-   
-      //    border-blue bg-blue text-cream hover:bg-teal"
-    
-      //   ${className || ""}
-      // `}
     >
       Add to Collection
     </button>

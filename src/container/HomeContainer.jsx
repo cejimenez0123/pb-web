@@ -3,13 +3,13 @@
 import { useEffect, useState, useContext, useMemo } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { createStory, } from '../actions/StoryActions';
-import { setPageInView, setEditingPage } from '../actions/PageActions.jsx';
+import { setPageInView, } from '../actions/PageActions.jsx';
 import { sendGAEvent } from '../core/ga4.js';
 import Paths from '../core/paths';
 import checkResult from '../core/checkResult';
 import { PageType } from '../core/constants';
 import Context from '../context';
-import { IonText, IonContent, IonSpinner, IonItem, IonLabel, IonToggle, useIonRouter, useIonViewWillEnter } from '@ionic/react';
+import { IonText,  IonSpinner, IonItem, IonLabel, IonToggle, useIonRouter, useIonViewWillEnter } from '@ionic/react';
 
 import { debounce } from 'lodash';
 import ErrorBoundary from '../ErrorBoundary.jsx';
@@ -18,24 +18,43 @@ import Enviroment from '../core/Enviroment.js';
 import PageList from '../components/page/PageList.jsx';
 import SectionHeader from '../components/SectionHeader.jsx';
 
+// ── Layout ──────────────────────────────────────
+const WRAP = "max-w-[72rem] mx-auto sm:px-6 lg:px-8";
 
 
-// Section Header Component
-// const SectionHeader = ({ title, right }) => (
-//   <div className="flex items-center justify-between px-1 mb-2 mt-6">
-//     <IonText className="text-lg font-semibold text-gray-900">{title}</IonText>
-//     {right}
-//   </div>
-// );
+// ── Sections ────────────────────────────────────
+
+//
+// ── Layout ──────────────────────────────────────
+const PAGE_Y = "pt-4 pb-12";
+const STACK_LG = "space-y-10";
+const STACK_MD = "space-y-6";
+
+// ── Sections ────────────────────────────────────
+const SECTION = "space-y-4";
+
+// horizontal scroll that feels native
+const SCROLL_ROW = "flex gap-4 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0";
+
+// responsive grid
+const GRID = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4";
+
+// ── Cards ───────────────────────────────────────
+const CARD = "bg-white rounded-2xl shadow-sm w-full";
+const CARD_PAD = "p-4 sm:p-5";
+
+// ── Skeleton ────────────────────────────────────
+const SKELETON_BLOCK = "bg-gray-200 rounded animate-pulse";
 const WorkshopItem = ({ item, router }) => {
   if (!item) return <WorkshopItemSkeleton />;
 
   return (
-    <IonItem
-      style={{ "--background": Enviroment.palette.cream }}
-      onClick={() => router.push(Paths.collection.createRoute(item.id))}
-      className="bg-cream"
-    >
+ <IonItem
+  lines="none"
+  style={{ "--background": "transparent" }}
+  className="px-0"
+>
+  <div className={`${CARD} ${CARD_PAD} w-[100%]`}>
       <IonLabel>
         <h2 className="text-md font-semibold text-emerald-800 truncate">
           {item.title}
@@ -55,55 +74,11 @@ const WorkshopItem = ({ item, router }) => {
           ) : null}
         </div>
       </IonLabel>
+      </div>
     </IonItem>
   );
 };
-// Workshop Card Component
-// const WorkshopItem = ({ item, router }) => (
-//   const WorkshopItem = ({ item, router }) => (
-//   <div className="px-3 py-2">
-//     <IonItem
-//       onClick={() => router.push(Paths.collection.createRoute(item.id))}
-//       className="!bg-transparent !p-0 !inner-padding-end-0"
-//       lines="none"
-//     >
-//       <div className="w-full bg-base-100 rounded-2xl shadow-md hover:shadow-xl transition-all duration-200 p-4 border border-base-200">
-        
-//         <h2 className="text-md font-semibold text-emerald-800 truncate">
-//           {item.title}
-//         </h2>
 
-//         <p className="text-sm text-gray-600 line-clamp-3 mt-1">
-//           {item.description || "No description available."}
-//         </p>
-
-//         <div className="flex justify-between text-xs text-gray-500 mt-3">
-//           <span>{item.location || "Online / TBD"}</span>
-
-//           {item.participants ? (
-//             <span className="font-bold text-emerald-600">
-//               {item.participants} participants
-//             </span>
-//           ) : null}
-//         </div>
-
-//       </div>
-//     </IonItem>
-//   </div>
-// );
-  // <IonItem  style={{"--background":Enviroment.palette.cream}} onClick={() => router.push(Paths.collection.createRoute(item.id))} className="bg-cream ">
-  //   <IonLabel>
-  //     <h2 className="text-md font-semibold text-emerald-800 truncate">{item.title}</h2>
-  //     <p className="text-sm text-gray-600 line-clamp-3">{item.description || "No description available."}</p>
-  //     <div className="flex justify-between text-xs text-gray-500 mt-1">
-  //       <span>{item.location || "Online / TBD"}</span>
-  //       {item.participants ? <span className="font-bold text-emerald-600">{item.participants} participants</span> : null}
-  //     </div>
-  //   </IonLabel>
-  // </IonItem>
-// );
-
-// Hook for fetching profile-dependent data
 
 function HomeEmbed({workshops,stories,prompts,isGlobal,setIsGlobal}) {
 
@@ -163,18 +138,30 @@ function HomeEmbed({workshops,stories,prompts,isGlobal,setIsGlobal}) {
   return (
     <ErrorBoundary>
 
-        <div className="max-w-[60rem] mx-auto  mt-4">
-          
+        <div className={`${WRAP} ${PAGE_Y} ${STACK_LG}`}>
+          <div className={SECTION}>
           {/* Stories */}
           <SectionHeader title="What's happening in your communities" />
-          <div className="flex gap-4 overflow-x-auto px-4 pb-2">
-            {whatsHappeningList.length
-              ? whatsHappeningList.map(story => <StoryItem key={story.id} page={story} isGrid />)
-              : [1,2,3].map(i => <div key={i} className="skeleton min-w-[20em] min-h-[20em]" />)
-            }
-          </div>
+      
 
+<div className={SCROLL_ROW}>
+  {whatsHappeningList.length
+    ? whatsHappeningList.map(story => (
+        <div className="min-w-[75%]  sm:min-w-[16rem] lg:min-w-[18rem]">
+          <StoryItem key={story.id} page={story} isGrid />
+        </div>
+      ))
+    : [1,2,3].map(i => (
+        <div
+          key={i}
+          className={`${SKELETON_BLOCK} min-w-[75%] sm:min-w-[16rem] lg:min-w-[18rem] h-[16rem]`}
+        />
+      ))
+  }
+</div>
+</div>
           {/* Workshops */}
+           <div className={SECTION}>
           <SectionHeader
             title="Workshops near you"
             right={
@@ -184,29 +171,37 @@ function HomeEmbed({workshops,stories,prompts,isGlobal,setIsGlobal}) {
               </div>
             }
           />
+          </div>
           {/* <IonList inset> */}
-          <div className='flex-row col px-4'>
-            {sortedWorkshops? sortedWorkshops.map(workshop => (
-              <WorkshopItem key={workshop.id} item={workshop} router={router} />
-            )):[1,2,3].map(i=>{
-                <WorkshopItem key={i} item={null} router={router}/>
-            })}
+           <div className={SECTION}>
+  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-2">
+            {sortedWorkshops?.length
+  ? sortedWorkshops.map(workshop => (
+      <WorkshopItem key={workshop.id} item={workshop} router={router} />
+    ))
+  : [1,2,3].map(i => (
+      <WorkshopItem key={i} item={null} router={router} />
+    ))
+}
+</div>
             </div>
         
-
+     <div className={SECTION}>
           {/* Prompts */}
           <SectionHeader title="Writing Prompts for you" />
        
-          <div className="grid pb-[10em] grid-cols-1 px-4 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className={`${GRID} pb-[10em]`}>
 
             {filteredPrompts.length
               ? filteredPrompts.map(({ story }) => <StoryItem key={story.id} page={story} />)
               : [1,2,3,4].map(i => <div key={i} className="skeleton min-w-[20em] min-h-[20em]" />)
             }
           </div>
-          <div className='px-4'>
-          <PageList  items={recommendedStories}/>
           </div>
+          {/* <div className='px-4'> */}
+           <SectionHeader title="What's new" />
+          <PageList  items={recommendedStories}/>
+          {/* </div> */}
         </div>
     
     </ErrorBoundary>
@@ -216,19 +211,17 @@ function HomeEmbed({workshops,stories,prompts,isGlobal,setIsGlobal}) {
 export default HomeEmbed
 const WorkshopItemSkeleton = () => {
   return (
-    <div className="px-3 py-2">
-      <div className="bg-base-100 rounded-2xl shadow-md p-4 animate-pulse border border-base-200">
-        
-        <div className="h-4 w-2/3 bg-gray-300 rounded mb-2"></div>
+    <div className={`${CARD} ${CARD_PAD} animate-pulse space-y-3`}>
+      <div className="h-4 w-2/3 bg-gray-300 rounded" />
 
-        <div className="h-3 w-full bg-gray-200 rounded mb-1"></div>
-        <div className="h-3 w-5/6 bg-gray-200 rounded mb-3"></div>
+      <div className="space-y-1">
+        <div className="h-3 w-full bg-gray-200 rounded" />
+        <div className="h-3 w-5/6 bg-gray-200 rounded" />
+      </div>
 
-        <div className="flex justify-between">
-          <div className="h-3 w-1/4 bg-gray-200 rounded"></div>
-          <div className="h-3 w-1/4 bg-gray-300 rounded"></div>
-        </div>
-
+      <div className="flex justify-between">
+        <div className="h-3 w-1/4 bg-gray-200 rounded" />
+        <div className="h-3 w-1/4 bg-gray-300 rounded" />
       </div>
     </div>
   );

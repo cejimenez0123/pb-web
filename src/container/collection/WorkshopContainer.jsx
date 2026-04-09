@@ -18,7 +18,31 @@ import fetchCity from '../../core/fetchCity';
 import Enviroment from '../../core/Enviroment';
 
 const DEFAULT_LOCATION = { latitude: 40.818622458906425, longitude: -73.8890363605602 };
+// ── Layout ──────────────────────────────────────
+const WRAP = "max-w-[42rem] mx-auto px-4";
+const PAGE_Y = "pt-16 pb-10";
+const STACK_LG = "space-y-8";
+const STACK_MD = "space-y-6";
+const STACK_SM = "space-y-3";
 
+// ── Card ────────────────────────────────────────
+const CARD = "bg-white rounded-2xl shadow-sm p-6";
+const CARD_INNER = "space-y-5";
+
+// ── Rows / alignment ────────────────────────────
+const ROW_BETWEEN = "flex items-center justify-between";
+const ROW_CENTER = "flex items-center gap-2";
+
+// ── Inputs / controls ───────────────────────────
+const INPUT_WRAP = "bg-gray-50 border border-gray-200 rounded-xl p-4";
+const INPUT_ROW = "flex items-center gap-2 border border-gray-300 rounded-full px-4 py-2";
+
+// ── Buttons ─────────────────────────────────────
+const BTN_PRIMARY = "w-full bg-emerald-600 text-white rounded-full py-4 font-semibold shadow-sm hover:bg-emerald-700 transition-colors duration-200";
+
+// ── Text ────────────────────────────────────────
+const TITLE = "text-xl font-semibold";
+const SUBTLE = "text-sm text-gray-500";
 const WorkshopContainer = () => {
   const dispatch   = useDispatch();
   const router     = useIonRouter();
@@ -137,11 +161,6 @@ useEffect(() => {
  
   }, [isGlobal]);
 
-  // useEffect(() => {
-  //   const timer = setTimeout(() => { setError(null); setSuccess(null); }, 4001);
-  //   return () => clearTimeout(timer);
-  // }, [error]);
-console.log(isGlobal)
   useEffect(() => {
 
       
@@ -193,14 +212,7 @@ const clickGlobal = () => {
 
 };
 
-// const [navigateTo, setNavigateTo] = useState(null);
 
-// useEffect(() => {
-//   if (navigateTo) {
-//     router.push(navigateTo);
-//     setNavigateTo(null);
-//   }
-// }, [navigateTo]);
 
 
 const handleGroupClick = () => {
@@ -249,24 +261,26 @@ return<IonContent
 >
   {!currentProfile ? (
     // Loading State
-    <div className="flex justify-center items-center h-full w-full">
+   <div className="flex items-center justify-center h-full">
       <img src={loadingAnimation} alt="Loading..." className="w-24 h-24" />
     </div>
   ) : (
-    <div className=" mt-12  flex flex-col gap-6">
+   <div className={`${WRAP} ${PAGE_Y} ${STACK_LG}`}>
       
       {/* Profile Card */}
-      <div className="bg-white rounded-xl w-[36em] max-w-[90%] mx-auto shadow-md p-6 flex flex-col gap-6">
+      <div className={`${CARD} ${CARD_INNER}`}>
         {/* Header */}
-        <div className="flex justify-between items-center">
-          <h2 className="text-2xl font-semibold">{currentProfile.username.toLowerCase()}</h2>
+   <div className={ROW_BETWEEN}>
+       <h2 className={TITLE}>
+  {currentProfile.username.toLowerCase()}
+</h2>
           <div className={`w-8 h-8 rounded-full flex items-center justify-center ${isLocationReady ? "bg-emerald-600" : "bg-yellow-500"}`}>
             <img src={check} alt="status" className="w-5 h-5" />
           </div>
         </div>
 
         {/* Global / Local Toggle using DaisyUI */}
-        <div className="flex justify-between items-center">
+       <div className={ROW_BETWEEN}>
           <span className="text-lg font-medium">{isGlobal ? "Global" : "Local"}</span>
           <input
             type="checkbox"
@@ -278,20 +292,21 @@ return<IonContent
 
         {/* Google Map Search + Radius (only show for Local) */}
         {!isGlobal && (
-          <div className="space-y-4 mt-4">
-            <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 flex flex-col gap-4">
+        <div className={STACK_MD}>
+  <div className={`${INPUT_WRAP} ${STACK_SM}`}>
               <h3 className="font-medium text-lg">Choose Location</h3>
               <GoogleMapSearch onLocationSelected={setLocation} />
-              <div className="flex items-center gap-2 border border-gray-300 rounded-full p-2 px-4">
-                <span className="text-lg">Radius:</span>
-                <input
-                  type="number"
-                  value={radius}
-                  onChange={(e) => setRadius(e.target.value)}
-                  className="w-20 bg-transparent text-lg text-gray-800 outline-none"
-                />
-                <span>mi</span>
-              </div>
+              <div className={INPUT_ROW}>
+  <span className="text-sm text-gray-600">Radius</span>
+  <input
+    type="number"
+    value={radius}
+    onChange={(e) => setRadius(e.target.value)}
+    className="w-16 bg-transparent text-sm outline-none"
+  />
+  <span className="text-sm text-gray-500">mi</span>
+</div>
+         
             </div>
           </div>
         )}
@@ -299,21 +314,20 @@ return<IonContent
         {/* Join Workshop Button */}
         <button
           onClick={handleGroupClick}
-          className="w-full bg-emerald-600 text-white rounded-full py-4 font-semibold shadow-md hover:bg-emerald-700 transition-colors duration-200 mt-4"
-        >
+          className={BTN_PRIMARY}  >
           Join a Workshop
         </button>
 
         {/* Loading Indicator */}
         {loading && (
-          <div className="flex justify-center py-4">
+         <div className="flex justify-center pt-2">
             <img src={loadingAnimation} alt="Loading..." className="w-20 h-20" />
           </div>
         )}
       </div>
 
       {/* Workshops List */}
-      <div className=" mt-6">
+   <div className={STACK_MD}>
         <ExploreList items={workshops} />
       </div>
     </div>
