@@ -382,7 +382,7 @@ const cycleFollowersRole = () => {
     value={search}
     onChange={(e) => setSearch(e.target.value)}
     placeholder={`Search ${activeTab}...`}
-    className="w-full bg-transparent outline-none text-sm"
+    className="w-[100%] bg-transparent outline-none text-sm"
   />
   <IonImg src={arrowDown} className="w-5 h-5" />
 </div>

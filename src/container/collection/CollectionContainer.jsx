@@ -62,25 +62,27 @@ const itemVariants = {
   },
 };
 // Layout system
-const WRAP = "max-w-[50em] mx-auto px-4";        // main horizontal alignment
-const SECTION = "pt-10";                         // vertical spacing between sections
+const WRAP = "w-full max-w-5xl md:max-w-[52em] mx-auto px-4 sm:px-6 lg:px-8";    // main horizontal alignment
+const SECTION = "pt-8 sm:pt-10 lg:pt-12 "; // sections
+const BLOCK = "py-4 sm:py-5";             // inner blocks
+const GAP = "gap-4 sm:gap-6";             // flex/grid gaps// vertical spacing between sections
 const HEADER = "flex items-center justify-between mb-4"; 
-const TITLE = "lora-bold text-[1.6rem] sm:text-2xl";
+const TITLE = "lora-bold text-[1.5rem] sm:text-2xl lg:text-3xl";
 const SUBTEXT = "text-gray-600 text-sm sm:text-base";
 
 // Actions
-const ACTION_ROW = "flex flex-wrap sm:flex-nowrap items-center gap-3";
+const ACTION_ROW = "flex flex-col sm:flex-row items-stretch sm:items-center gap-3";
 const BUTTON_FULL = "h-12 rounded-full btn transition";
 
 // Lists / content
 const LIST = "flex flex-col gap-4";
-const H_SCROLL = "flex flex-row gap-4 overflow-x-auto";
+const H_SCROLL = "flex gap-4 overflow-x-auto lg:grid lg:grid-cols-3 lg:overflow-visible";
 
 // Tabs
-const TAB_WRAP = "pt-6 sm:pt-12";
+const TAB_WRAP = "pt-6 sm:pt-12 md:max-w-[48em] mx-auto";
 
 // Inner spacing (ONLY for cards/content blocks)
-const BLOCK = "py-4";
+// const BLOCK = "py-4";
 export default function CollectionContainer() {
 
 
@@ -523,9 +525,7 @@ return
   
  const isReady = collection !== null;
 
-   const baseClasses = "flex-1 py-3 rounded-full btn h-10 flex items-center justify-center transition-all duration-150";
-
- 
+   const baseClasses = "w-full sm:w-auto flex-1 sm:flex-none py-3 rounded-full btn h-12 flex items-center justify-center transition";
   if (!canSee) {
   return (
     <IonContent fullscreen>
@@ -543,10 +543,6 @@ return
   );
 }
 
-console.log(canAdd)
- 
-// }
-// if(!collection)return <CollectionContainerShadow/>
 return (
   <ErrorBoundary>
     <IonContent
@@ -560,14 +556,12 @@ return (
       collection ? "opacity-100" : "opacity-0"
     }`}
   >
+  <div>
     {collection &&
       <div className={`${WRAP}`}>
-
-        {/* Collection Container */}
-        {/* <div className="bg-white rounded-xl shadow-md p-6 flex flex-col gap-6"> */}
-
-          {/* Collection Title */}
-        <div className={`${SECTION}`}>
+<div>
+      
+        <div className={`${SECTION} `}>
            <IonText className="lora-bold">
 <h1 className={TITLE}>
     {collection && collection.title ? collection.title:(
@@ -647,12 +641,13 @@ className={BUTTON_FULL+"btn transition w-[100%] border-blue bg-blue text-cream h
             />
           </div>
         </div>
+           </div>
    }</div>
-        {/* Explore List */}
-     <div className={SECTION}>
-          <ExploreList collection={collection} />
-        </div>
-      {/* </div> */}
+   </div>
+ <div className="w-[100%] mx-auto ">
+  <ExploreList collection={collection} />
+</div>
+      
      
     </IonContent>
   </ErrorBoundary>
@@ -660,78 +655,158 @@ className={BUTTON_FULL+"btn transition w-[100%] border-blue bg-blue text-cream h
 }
 
 
-const PageTab = ({ collections }) => {
-    const currentProfile = useSelector(state => state.users.currentProfile);
-    const collection = useSelector(state => state.books.collectionInView);
-    console.log(collection)
+// const PageTab = ({ collections }) => {
+//     const currentProfile = useSelector(state => state.users.currentProfile);
+//     const collection = useSelector(state => state.books.collectionInView);
+//     console.log(collection)
     
-  const pagesInView = useSelector(state => state.pages.pagesInView);
-  const [isOwner,setIsOwner]=useState(collection?.profileId==currentProfile?.id)
-  const router = useIonRouter()
-  return (
-    <div className=" bg-base-surface">
-    {/* {Enviroment.palette.text.} */}
-        <><h2 className={`${SECTION} ${TITLE}`}>Anthologies
-        </h2>
+//   const pagesInView = useSelector(state => state.pages.pagesInView);
+//   const [isOwner,setIsOwner]=useState(collection?.profileId==currentProfile?.id)
+//   const router = useIonRouter()
+//   return (
+//     <div className=" bg-base-surface">
+//     {/* {Enviroment.palette.text.} */}
+//         <><h2 className={`${SECTION} ${TITLE}`}>Anthologies
+//         </h2>
       
-{/* {collections ? ( */}
-<div className={H_SCROLL}>
-        <motion.div
-    className="flex flex-row space-x-4"
-    variants={containerVariants}
-    initial="hidden"
-    animate="show"
-  >
-      {collection.length>0?collections
-        .filter((col) => col)
-        .map((col, i) => (
-           <motion.div key={col.id} variants={itemVariants}>
-          <div key={i} className="mx-3">
-            <BookListItem book={col} />
-          </div>
-          </motion.div>
-        )):null}
+// {/* {collections ? ( */}
+// <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+//         <motion.div
+//     className="flex flex-row "
+//     variants={containerVariants}
+//     initial="hidden"
+//     animate="show"
+//   >
+//       {collection.length>0?collections
+//         .filter((col) => col)
+//         .map((col, i) => (
+//            <motion.div key={col.id} variants={itemVariants}>
+//          <div className="w-64 sm:w-72 lg:w-80">
+//   <BookListItem book={col} />
+// </div>
+//           </motion.div>
+//         )):null}
    
-</motion.div>
+// </motion.div>
 
-  <div className="flex flex-row gap-3 overflow-x-scroll py-8 ">
+//   <div className="flex gap-3 overflow-x-auto lg:overflow-visible lg:flex-wrap py-6">
    
 
-      {(isOwner || collection.isOpenCollaboration)? <button
-          onClick={() => router.push(Paths.addToCollection.createRoute(collection?.id))}
-          className="px-4 py-2 btn bg-softBlue rounded-full mx-auto text-emerald-800   "
-        >
-          Add First Anthology
-        </button>
-        :<div className=" flex flex-col items-center mx-auto justify-center bg-base-surface rounded-lg p-4  text-center">
-        <p className="mb-2 text-gray-700">No anthologies yet.</p>
+//       {(isOwner || collection.isOpenCollaboration)? <button
+//           onClick={() => router.push(Paths.addToCollection.createRoute(collection?.id))}
+//           className="px-4 py-2 btn bg-softBlue rounded-full mx-auto text-emerald-800   "
+//         >
+//           Add First Anthology
+//         </button>
+//         :<div className=" flex flex-col items-center mx-auto justify-center bg-base-surface rounded-lg p-4  text-center">
+//         <p className="mb-2 text-gray-700">No anthologies yet.</p>
        
-      </div>}
-</div>
-  </div>
-</> 
+//       </div>}
+// </div>
+//   </div>
+// </> 
 
-  <h2 className={`${SECTION} ${TITLE}`}>
-          Pages
-        </h2> 
+//   <h2 className={`${SECTION} ${TITLE}`}>
+//           Pages
+//         </h2> 
         
- {pagesInView?.length>0 ? (
-  <div className={WRAP}>
-        <PageList
-          items={pagesInView}
-          isGrid={false}
-          hasMore={false}
-          getMore={() => {}}
-          forFeedback={false}
-        />
+//  {pagesInView?.length>0 ? (
+// <div className="w-full">
+//         <PageList
+//           items={pagesInView}
+//           isGrid={false}
+//           hasMore={false}
+//           getMore={() => {}}
+//           forFeedback={false}
+//         />
+//         </div>
+//       ) : (
+//         <div className="py-8 text-center text-gray-500">
+//           {(isOwner || collection.isOpenCollaboration)? (
+//             <div>
+//               <p>No pages yet.</p>
+//               <button
+//                 onClick={()=>router.push(Paths.addToCollection.createRoute(collection.id))}
+//                 className="mt-4 px-4 py-2 bg-emerald-600 text-white rounded-full shadow hover:bg-emerald-700"
+//               >
+//                 Add Your First Page
+//               </button>
+//             </div>
+//           ) : (
+//             <p>This collection has no pages yet.</p>
+//           )}
+//         </div>
+//       )}
+       
+ 
+//    </div>
+//   );
+// };
+
+const PageTab = ({ collections }) => {
+  const currentProfile = useSelector(state => state.users.currentProfile);
+  const collection = useSelector(state => state.books.collectionInView);
+  const pagesInView = useSelector(state => state.pages.pagesInView);
+  const isOwner = collection?.profileId === currentProfile?.id;
+  const router = useIonRouter();
+
+  const hasAnthologies = collections?.length > 0;
+
+  return (
+    <div className="bg-base-surface">
+      {/* Anthologies Section */}
+      <h2 className={`${SECTION} ${TITLE}`}>Anthologies</h2>
+
+      {hasAnthologies ? (
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+          <motion.div
+            className="flex flex-row"
+            variants={containerVariants}
+            initial="hidden"
+            animate="show"
+          >
+            {collections.filter(col => col).map(col => (
+              <motion.div key={col.id} variants={itemVariants}>
+                <div className="w-64 sm:w-72 lg:w-80">
+                  <BookListItem book={col} />
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      ) : (
+        <div className="flex flex-col items-center mx-auto justify-center bg-base-surface rounded-lg p-4 text-center py-6">
+          <p className="mb-2 text-gray-700">No anthologies yet.</p>
+          {(isOwner || collection.isOpenCollaboration) && (
+            <button
+              onClick={() => router.push(Paths.addToCollection.createRoute(collection?.id))}
+              className="px-4 py-2 btn bg-softBlue rounded-full text-emerald-800"
+            >
+              Add Your First Anthology
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* Pages Section */}
+      <h2 className={`${SECTION} ${TITLE}`}>Pages</h2>
+      {pagesInView?.length > 0 ? (
+        <div className="w-full">
+          <PageList
+            items={pagesInView}
+            isGrid={false}
+            hasMore={false}
+            getMore={() => {}}
+            forFeedback={false}
+          />
         </div>
       ) : (
         <div className="py-8 text-center text-gray-500">
-          {(isOwner || collection.isOpenCollaboration)? (
+          {(isOwner || collection.isOpenCollaboration) ? (
             <div>
               <p>No pages yet.</p>
               <button
-                onClick={()=>router.push(Paths.addToCollection.createRoute(collection.id))}
+                onClick={() => router.push(Paths.addToCollection.createRoute(collection.id))}
                 className="mt-4 px-4 py-2 bg-emerald-600 text-white rounded-full shadow hover:bg-emerald-700"
               >
                 Add Your First Page
@@ -742,13 +817,9 @@ const PageTab = ({ collections }) => {
           )}
         </div>
       )}
-       
- 
-   </div>
+    </div>
   );
 };
-
-
 const MemberTab = ({ collection }) => {
   const router = useIonRouter()
 
@@ -763,7 +834,7 @@ const MemberTab = ({ collection }) => {
 
         {
           <IonList style={{ backgroundColor: Enviroment.palette.base.surface}}>
-            <div className="flex flex-col bg-base-surface pt-4 min-h-[14rem] overflow-x-scroll">
+            <div className="flex flex-col bg-base-surface pt-4 min-h-[14rem]">
               {
           
                 roles.map((role, i) => {
@@ -806,7 +877,7 @@ const AboutTab = ({ collection}) => {
 
 
   return (
-   <div className={`${WRAP} ${SECTION}`}>
+   <div className={`bg-base-surface ${TAB_WRAP}`}>
     <h5 className="text-gray-400 uppercase font-medium text-[1.4rem]">Purpose</h5>
 <p className="text-sm text-gray-700leading-relaxed mt-4 font-sans">
   {collection.purpose}
@@ -858,17 +929,54 @@ const AboutTab = ({ collection}) => {
 }
 
 
-// // Tabs
+// // // Tabs
+// function CollectionTabs({ tab, setTab, pages, members, about }) {
+//   return (
+//    <div className={`bg-base-surface ${TAB_WRAP}`}>
+//       <div className="flex justify-center lg:justify-start  mb-4">
+//       <div className="flex rounded-full border overflow-hidden w-full sm:w-auto border-emerald-600">
+//           {["pages", "members", "about"].map((t) => (
+//             <button
+//               key={t}
+//               className={`flex-1 py-2 px-4 font-semibold text-sm transition-colors ${
+//                 tab === t ? "bg-emerald-700 text-white" : "bg-transparent text-emerald-700 hover:bg-emerald-50"
+//               }`}
+//               onClick={() => setTab(t)}
+//             >
+//               {t.charAt(0).toUpperCase() + t.slice(1)}
+//             </button>
+//           ))}
+//         </div>
+//       </div>
+//       <div className="relative overflow-hidden ">
+//         <motion.div
+//           key={tab}
+//           initial={{ opacity: 0 }}
+//           animate={{ opacity: 1 }}
+//           exit={{ opacity: 0 }}
+//           transition={{ duration: 0.2 }}
+//           // className="w-full"
+//         >
+//           {tab === "pages" && pages}
+//           {tab === "members" && members}
+//           {tab === "about" && about}
+//         </motion.div>
+//       </div>
+//     </div>
+//   );
+// }
 function CollectionTabs({ tab, setTab, pages, members, about }) {
   return (
-   <div className={`bg-base-surface ${TAB_WRAP}`}>
-      <div className="flex justify-center lg:justify-start  mb-4">
-        <div className="flex rounded-full border overflow-hidden w-full  border-emerald-600">
+    <div className={`bg-base-surface ${TAB_WRAP}`}>
+      <div className="flex justify-center lg:justify-start mb-4 overflow-x-auto">
+        <div className="inline-flex rounded-full border border-emerald-600">
           {["pages", "members", "about"].map((t) => (
             <button
               key={t}
-              className={`flex-1 py-2 px-4 font-semibold text-sm transition-colors ${
-                tab === t ? "bg-emerald-700 text-white" : "bg-transparent text-emerald-700 hover:bg-emerald-50"
+              className={`px-4 py-2 font-semibold text-sm transition-colors whitespace-nowrap rounded-full ${
+                tab === t
+                  ? "bg-emerald-700 text-white"
+                  : "bg-transparent text-emerald-700 hover:bg-emerald-50"
               }`}
               onClick={() => setTab(t)}
             >
@@ -877,14 +985,13 @@ function CollectionTabs({ tab, setTab, pages, members, about }) {
           ))}
         </div>
       </div>
-      <div className="relative overflow-hidden ">
+      <div className="relative overflow-hidden">
         <motion.div
           key={tab}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
-          // className="w-full"
         >
           {tab === "pages" && pages}
           {tab === "members" && members}

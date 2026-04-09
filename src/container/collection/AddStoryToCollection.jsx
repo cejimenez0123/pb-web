@@ -172,7 +172,7 @@ const [pendingStories, setPendingStories] = useState(true);
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search collections"
-              className="w-full bg-transparent outline-none text-sm"
+              className="w-[100%] bg-transparent outline-none text-sm"
             />
           </div>
 
