@@ -58,7 +58,7 @@ const userSlice = createSlice({
                return state.currentProfile && prof.id!=state.currentProfile.id
             })
             state.profilesInView = profiles
-            state.loading=false
+            // state.loading=false
         }).addCase(fetchProfiles.pending,(state,{payload})=>{
             state.loading = true
         }).addCase(setEvents.type,(state,{payload})=>{
@@ -160,14 +160,14 @@ state.notifications = payload
     })
  
     .addCase(fetchProfile.pending,(state)=>{
-        state.loading=true
+        // state.loading=true
     }).addCase(fetchProfile.fulfilled,(state,{ payload })=>{
        
         state.profileInView = payload.profile
-        state.loading = false
+        // state.loading = false
     }).addCase(fetchProfile.rejected,(state,{ payload })=>{
         state.error = payload.error
-        state.loading = false
+        // state.loading = false
     }).addCase(setProfileInView,(state,{payload})=>{
         state.profileInView = payload.profile
     }

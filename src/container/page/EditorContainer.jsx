@@ -32,6 +32,7 @@ import { SocialLogin } from "@capgo/capacitor-social-login";
 import { Preferences } from "@capacitor/preferences";
 import axios from "axios";
 import TopBarDropdown from "../../components/page/TopBarDropdown.jsx";
+import { fetchProfiles } from "../../actions/ProfileActions.jsx";
 
   const editorContainerBase = "mx-auto bg-white rounded-lg shadow-sm";
 const editorContainerSpacing = "mx-2 mb-12 p-4";
@@ -237,8 +238,11 @@ const [accessToken,setAccessToken]=useState(null)
     }
   }
   useEffect(() => {
-    
+   try{ 
     fetchFiles()
+   }catch(err){
+    console.log(err)
+   }
   }, [accessToken]);
   const fetchFiles = async () => {
     const token =(await Preferences.get({ key: driveTokenKey})).value
@@ -410,17 +414,9 @@ const handleView =()=>{
 //     </AnimatePresence>
 //   </div>
 // );
-const openRoleFormDialog = (page) => {
-  openDialog({
 
-    disagree: null,
 
-    disagreeText: null,
-    height: 90,
-    scrollY: false,
-    text: <RoleForm item={page} handleClose={() => resetDialog()} />,
-  });
-}
+// }
   const openFeedback = (isFeedback) => {
     openDialog({
   
@@ -467,6 +463,7 @@ const openRoleFormDialog = (page) => {
       resetDialog()
     });
   }, 10);
+  
   const openConfirmDeleteDialog = () => {
     let dia = {
       isOpen: true,
@@ -547,7 +544,7 @@ useEffect(() => {
         openGoogleDrive={openGoogleDrive}
         setOpenHashtag={setOpenHashtag}
         openHashtag={openHashtag}
-        openRoleFormDialog={openRoleFormDialog}
+        // openRoleFormDialog={openRoleFormDialog}
         openConfirmDeleteDialog={openConfirmDeleteDialog}
       />
 

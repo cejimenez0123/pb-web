@@ -3,6 +3,8 @@ import menu from "../../images/icons/menu.svg"
 import { useEffect, useState } from "react";
 import Paths from "../../core/paths";
 import { useParams } from "react-router";
+import { useDialog } from "../../domain/usecases/useDialog";
+import RoleForm from "../role/RoleForm";
 function TopBarDropdown({
   id,
   router,
@@ -14,12 +16,14 @@ function TopBarDropdown({
   setOpenHashtag,
   openHashtag,
   openGoogleDrive,
-  openRoleFormDialog,
+  // openRoleFormDialog,
   openConfirmDeleteDialog,
 }) {
+
 const driveTokenKey = "googledrivetoken";
    const TOKEN_EXPIRY_KEY = "googledrivetoken_expiry"; // 
    const {id:pageId}=useParams()
+   const {dialog,openDialog,closeDialog,resetDialog}=useDialog()
 const [accessToken,setAccessToken]=useState(null)
   async function checkAccessToken() {
     const token = (await Preferences.get({ key: driveTokenKey })).value;
@@ -32,6 +36,15 @@ const [accessToken,setAccessToken]=useState(null)
       setAccessToken(null)
     }
     
+  }
+  
+    const openRoleFormDialog = () => {
+      openDialog({
+        ...dialog,
+      text: <RoleForm item={parameters.page} />,
+      disagreeText: null,
+      disagree: null,
+    });
   }
 useEffect(()=>{ 
     

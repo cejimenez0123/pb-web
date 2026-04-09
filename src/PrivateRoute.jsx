@@ -6,7 +6,7 @@ import loadingGif from "./images/loading.gif";
 import Paths from "./core/paths";
 
 const PrivateRoute = ({ children }) => {
-  const { currentProfile, loading } = useSelector((state) => state.users);
+  const { currentProfile } = useSelector((state) => state.users);
   const router = useIonRouter();
   const pathName = router.routeInfo.pathname;
 
@@ -14,7 +14,7 @@ const PrivateRoute = ({ children }) => {
   const loggedOutPaths = [Paths.home, Paths.myProfile];
 
   useEffect(() => {
-    if (loading) return; // <-- wait until we know the auth state
+    // if (loading) return; // <-- wait until we know the auth state
 
     // Redirect logged-in users away from login
     if (currentProfile && loggedInPaths.includes(pathName)) {
@@ -27,16 +27,10 @@ const PrivateRoute = ({ children }) => {
       router.push(Paths.login(), "root");
       return;
     }
-  }, [pathName, currentProfile, loading]);
+  }, [pathName, currentProfile]);
 
   // Optionally show a loading overlay while fetching profile
-  if (loading) {
-    return (
-      <IonContent fullscreen className="flex justify-center pt-24 items-center">
-        <IonImg src={loadingGif} className="max-w-24 max-h-24" />
-      </IonContent>
-    );
-  }
+
 
   return <>{children}</>;
 };

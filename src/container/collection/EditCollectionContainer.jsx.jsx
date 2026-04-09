@@ -258,17 +258,7 @@ const cycleFollowersRole = () => {
     );
   openDialog(dia)
   };
-  const openRoleForm=()=>{
 
-    let dia = { ...dialog,scrollY:true };
-    dia.title = null;
-    dia.isOpen = true;
-  dia.disagree = ()=>resetDialog()
-  dia.disagreeText = "Close"
-    dia.text = <RoleForm item={colInView} onClose={()=>closeDialog()}/>
-    openDialog(dia)
-  
-  }
   if(loading||!colInView){return editCollectionSkeleton()}
     return<IonContent fullscreen style={{ "--background": Enviroment.palette.base.background }}>
   {/* <div className="max-w-lg mx-auto px-4 pb-28 pt-6 space-y-6"> */}

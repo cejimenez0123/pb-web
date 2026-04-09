@@ -23,12 +23,10 @@ export const useDialog = () => {
   };
 
   // Close the modal (keeps content for a moment if needed)
-  const closeDialog = () => {
-    if (dialog?.isOpen) {
-      dispatch(setDialog({ ...dialog, isOpen: false }));
-    }
-  };
-
+const closeDialog = () => {
+  // Only close if actually open
+  dispatch(setDialog(prev => prev.isOpen ? { ...prev, isOpen: false } : prev));
+};
   // Fully reset modal after dismiss
   const resetDialog = () => {
     dispatch(setDialog({
