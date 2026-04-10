@@ -29,7 +29,7 @@ const BUTTON_PRIMARY =
   "bg-soft rounded-full w-[90%] mx-auto py-3 mt-2 text-white text-lg";
 
 const LINK =
-  "text-emerald-800 hover:text-green-400 cursor-pointer";
+  "text-soft hover:text-green-400 cursor-pointer";
 
 // ── Width Consistency ────────────────────────
 const INPUT_WRAP = "max-w-md mx-auto";
@@ -256,22 +256,9 @@ openDialog(dia)
     
      />
      </span>
-     <div className={ACTIONS}>
-  <div className={CENTER}>
-    <AppleSignInButton
-      onUserSignIn={({ idToken, email }) => {
-        dispatchLogin({ email, idToken, isNative });
-      }}
-    />
-  </div>
 
-  <GoogleLogin
-    onUserSignIn={({ email, googleId }) => {
-      dispatchLogin({ email, googleId, isNative });
-    }}
-  />
 
-  <div className="text-center space-y-3">
+  <div className="text-center space-y-3 ">
     <p onClick={handleFirstTimeClick} className={LINK}>
       First time here?
     </p>
@@ -290,20 +277,8 @@ openDialog(dia)
       Forgot Password?
     </p>
   </div>
-</div>
-        {/* <div className='mt-4 text-center p-4'>
-        <a  onClick={handleFirstTimeClick}
-        className='text-emerald-800 text-xl hover:text-green-400  '>Click here if this your first time?</a>
-      
-        {pending? <div className='flex'>
-       <img  
-        className="max-w-24 mx-auto max-w-24 min-w-20 min-h-20"src={loadingGif}/>
-        </div>:null}
-                
-                <h5 onClick={()=>{
-                    handleForgotPasswordDialog()
-                 }} className='text-[1rem] pt-8 w-fit hover:text-green-400 mx-auto text-emerald-800'>Forgot Password?</h5>
-              </div> */}
+{/* </div> */}
+       
         </form>
 
                 </div></div>

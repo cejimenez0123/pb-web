@@ -1,12 +1,12 @@
 import { Preferences } from '@capacitor/preferences';
 import {
-  IonPage,
+
   IonContent,
   IonGrid,
   IonRow,
   IonCol,
   IonInput,
-  IonTextarea,
+
   IonLabel,
   IonList,
   IonText,
