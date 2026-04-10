@@ -1,5 +1,5 @@
 import { useContext, useRef,useEffect, useState } from 'react';
-import { registerUser, postActiveUser, findWorkshopGroup,  findWorkshopGroups } from "../../actions/WorkshopActions";
+import { registerUser, postActiveUser, findWorkshopGroup,  findWorkshopGroups, fetchWorkshopGroups } from "../../actions/WorkshopActions";
 import { useSelector, useDispatch } from 'react-redux';
 import checkResult from '../../core/checkResult';
 import Paths from '../../core/paths';
@@ -19,7 +19,8 @@ import Enviroment from '../../core/Enviroment';
 
 const DEFAULT_LOCATION = { latitude: 40.818622458906425, longitude: -73.8890363605602 };
 // ── Layout ──────────────────────────────────────
-const WRAP = "max-w-[42rem] mx-auto px-4";
+const WRAP = "max-w-[50em] mx-auto px-4";
+const WRAPB ="mx-auto w-[100%]"
 const PAGE_Y = "pt-16 pb-10";
 const STACK_LG = "space-y-8";
 const STACK_MD = "space-y-6";
@@ -53,6 +54,7 @@ const WorkshopContainer = () => {
   const page                = useSelector(state => state.pages.pageInView);
   const { error, setError, setSuccess, setSeo } = useContext(Context);
   const [workshops,setWorkshops]=useState([])
+  const [communities,setCommunities]=useState([])
   const [loading,  setLoading]  = useState(false);
   const [radius,   setRadius]   = useState(50);
   const [isGlobal, setIsGlobal] = useState(true);
@@ -162,7 +164,7 @@ useEffect(() => {
   }, [isGlobal]);
 
   useEffect(() => {
-
+    dispatch(fetchWorkshopGroups())
       
 async function activeUser(params) {
   
@@ -265,12 +267,12 @@ return<IonContent
       <img src={loadingAnimation} alt="Loading..." className="w-24 h-24" />
     </div>
   ) : (
-   <div className={`${WRAP} ${PAGE_Y} ${STACK_LG}`}>
+   <div className={`${WRAPB} ${PAGE_Y} ${STACK_LG}`}>
       
-      {/* Profile Card */}
+      <div className={WRAP}>
       <div className={`${CARD} ${CARD_INNER}`}>
         {/* Header */}
-   <div className={ROW_BETWEEN}>
+   <div className={ROW_BETWEEN+" "}>
        <h2 className={TITLE}>
   {currentProfile.username.toLowerCase()}
 </h2>
@@ -325,10 +327,16 @@ return<IonContent
           </div>
         )}
       </div>
-
-      {/* Workshops List */}
-   <div className={STACK_MD}>
-        <ExploreList items={workshops} />
+    <div>
+</div>
+    </div>
+ <div className={` w-[100%] border-t border-gray-100`}>
+        <ExploreList label={"Communities"} collection={communities} />
+        {/* </div> */}
+      {/* </div>
+   <div className={STACK_MD}> */}
+    {/* <div className={`${WRAP} pt-6 border-t border-gray-100`}> */}
+        <ExploreList collection={workshops} />
       </div>
     </div>
   )}

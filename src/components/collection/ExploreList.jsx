@@ -11,7 +11,7 @@ const SECTION_GAP = "pt-10";  // applied to each section's root div
 const SECTION_HEADING = "text-xl lora-medium";          // text style only
 const SECTION_HEADER_ROW = "flex items-center justify-between py-4"; // r
 const WRAP = "w-[100%] mx-auto ";
-export default function ExploreList({ collection }) {
+export default function ExploreList({ label="Explore",collection }) {
   const items = useSelector((state) => state.books.recommendedCols);
   const { currentProfile } = useSelector((state) => state.users);
 
@@ -50,14 +50,11 @@ export default function ExploreList({ collection }) {
   }, [collection]);
 
   return (
-    <div className={`${WRAP} pb-36 ${SECTION_GAP}`}>
+    <div className={`${WRAP} ${SECTION_GAP}`}>
       <div>
   <div className={SECTION_HEADER_ROW}>
-    {/* <div> */}
-    {/* <h4 className={SECTION_HEADING}>
-        Explore
-      </h4> */}
-      <SectionHeader title={"Explore"}/>
+  
+      <SectionHeader title={label}/>
 </div>
       <div className="relative">
         {/* 🔹 Skeleton (slides OUT) */}

@@ -478,7 +478,7 @@ scrollY: false,
      
           
        </div>
-       <div className='pb-40'>
+      <div className={`${WRAP} pt-6 border-t border-gray-100`}>
         <ExploreList items={collections} />
  </div>
       </ErrorBoundary>

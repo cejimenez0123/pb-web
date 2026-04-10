@@ -31,6 +31,14 @@ import { SplashScreen } from '@capacitor/splash-screen'
 import { IonContent } from '@ionic/react';
 import ReferralForm from '../components/auth/ReferralForm';
 // import { IonContext } from '@ionic/react/dist/types/contexts/IonContext';
+// spacing rules (mentally or constants)
+const SPACING = {
+  pageX: "px-5",     // horizontal padding
+  sectionY: "py-6",  // vertical section spacing
+  gap: "gap-4",      // default gap
+  gapSm: "gap-3",
+  gapLg: "gap-6",
+};
 const PageWrapper = ({
   children,
   showHeader = true,
@@ -48,15 +56,7 @@ const PageWrapper = ({
   const { setPresentingEl } = useContext(Context);
    const isDev = import.meta.env.VITE_NODE_ENV=="dev"
 const isNativePlatform = Capacitor.isNativePlatform();
-const requireAuth = (action) => {
-  return () => {
-    if (!currentProfile?.id) {
-      router.push(Paths.login()); // or onboarding
-      return;
-    }
-    action?.();
-  };
-};
+
 const isNative = (isDev || isNativePlatform)
 const {currentProfile,loading,signedIn}=useSelector(state=>state.users)
   const isAuthed = !!currentProfile?.id;
@@ -402,6 +402,7 @@ let signedInMenu = [
           </div>
         </IonHeader>
       )}
+      
     <div className={`
   fixed inset-0 z-[999] transition-all duration-300
    ${menuOpen ? "pointer-events-auto" : "pointer-events-none"} `}>
@@ -415,8 +416,9 @@ let signedInMenu = [
 
   {/* DRAWER */}
   <div
+  style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     className={`
-      overflow-y-scroll pb-24
+overflow-y-auto pb-20
       absolute left-0 top-0 h-[100dvh] w-[85%] max-w-[22em]
       bg-[#f8f6f1] shadow-xl rounded-r-3xl
       transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]
@@ -426,25 +428,35 @@ let signedInMenu = [
     <div className="p-6 flex flex-col h-full">
 
       {/* PROFILE */}
-      <div className="flex items-center gap-3 mb-8">
+      {/* <div className="flex items-center gap-3 mb-8"> */}
         {/* <IonImg
           src="/profile.jpg"
           className="w-14 h-14 rounded-md object-cover"
         /> */}
-        <div className='pt-12'>
-          <p className="text-sm text-gray-500">Welcome back</p>
-          <p className="text-lg font-semibold">{currentProfile?.username}</p>
-        </div>
-      </div>
+        {/* <div className='pt-12'> */}
+          <div className="flex items-center gap-3 pb-6 border-b border-soft">
+    <div>
+      <p className="text-xs text-gray-500">Welcome back</p>
+      <p className="text-base font-semibold text-emerald-800">
+        {currentProfile?.username || "Guest"}
+      </p>
+    </div>
+  </div>
+      {/* </div> */}
 
       {/* NAV */}
-      <div className="flex flex-col gap-5 text-[1.05rem] text-emerald-700">
-        
+      <div className="flex flex-col gap-4 py-6">
+      
 {menuArr.map((item) => (
   <button
     key={item.label}
-    className="text-left hover:text-emerald-900 transition"
-    onClick={() => {
+   className="
+          text-left 
+          text-[1rem] 
+          text-emerald-700 
+          hover:text-emerald-900 
+          transition
+        " onClick={() => {
       setMenuOpen(false); // close menu first
       item.action();      // then run custom logic
     }}
@@ -458,12 +470,17 @@ let signedInMenu = [
       <div className="flex-1" />
 
       {/* FOOTER */}
-      <div className="flex flex-col gap-4 text-emerald-700">
+      <div className="flex flex-col  gap-3 pt-6 border-t border-soft">
+  
         <button onClick={() =>{ 
           openReferral()
+          className="text-left text-emerald-700"
+    
            setMenuOpen(false)}}>Refer a friend 🥰</button>
-        <button onClick={() => router.push(Paths.feedback())}>Report a bug</button>
-        {currentProfile && <button onClick={() => router.push(Paths.editProfile)}>Settings ⚙️</button>}
+        <button  className="text-left text-emerald-700"
+    onClick={() => router.push(Paths.feedback())}>Report a bug</button>
+        {currentProfile && <button className="text-left text-emerald-700"
+    onClick={() => router.push(Paths.editProfile)}>Settings ⚙️</button>}
       </div>
 
     </div>

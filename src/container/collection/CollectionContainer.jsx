@@ -642,7 +642,7 @@ className={BUTTON_FULL+"btn transition w-[100%] border-blue bg-blue text-cream h
            </div>
    }</div>
    </div>
- <div className="w-[100%] mx-auto ">
+ <div className={`${WRAP} pt-6 border-t border-gray-100`}>
   <ExploreList collection={collection} />
 </div>
       

@@ -7,6 +7,7 @@ import ErrorBoundary from "../ErrorBoundary";
 import ProfileInfo from "../components/profile/ProfileInfo";
 import Paths from "../core/paths";
 import TabBar from "../components/TabBar";
+import settings from "../images/icons/settings.svg"
 import ExploreList from "../components/collection/ExploreList";
 import Pill from "../components/Pill";
 import CommunitiesPanel from "../components/profile/CommunitiesPanel";
@@ -73,10 +74,7 @@ useEffect(() => {
     () => pagesRaw.filter(Boolean).filter((page) => (search ? page.title?.toLowerCase().includes(search.toLowerCase()) : true)),
     [pagesRaw, search]
   );
-  // const recentPosts = useMemo(
-  //   () => [...pagesRaw].filter(Boolean).sort((a, b) => new Date(b.updated ?? b.created) - new Date(a.updated ?? a.created)).slice(0, 5),
-  //   [pagesRaw]
-  // );
+
   const sortedPages = useMemo(() => {
   return [...pagesRaw].sort(
     (a, b) => new Date(b.updated ?? b.created) - new Date(a.updated ?? a.created)
@@ -85,16 +83,6 @@ useEffect(() => {
 
 const recentPosts = sortedPages.slice(0, 5);
 // ── Tabs constants ─────────────────────────────────────
-
-
-// ── Pill Component ─────────────────────────────────────
-// const Pill = ({ label,onClick }) => (
-//   <span onClick={()=>onClick()}
-  
-//   className="text-xs px-3 py-1 shadow-sm rounded-full bg-gray-100 text-soft">
-//     {label}
-//   </span>
-// );
 
 // ── Section Label ─────────────────────────────────────
 const SectionLabel = ({ children }) => (
@@ -144,16 +132,6 @@ const StatChip = ({ value, label }) => (
 
 // ── Main Container ──────────────────────────────────
 
-
-
-
- 
-//   useEffect(() => {
-//   if (!profile) return;
-//   dispatch(setPagesInView({ pages: profile.stories || [] }));
-//   dispatch(setCollections({ collections: profile.collections || [] }));
-// }, [profile, dispatch]);
-
   // ── Follow logic
   useEffect(() => {
     if (!profile) return;
@@ -185,7 +163,11 @@ const StatChip = ({ value, label }) => (
       <ErrorBoundary>
         <div className=" pb-24   space-y-8">
 <div className='flex sm:pt-16 flex-col justify-center'>
-
+<div className=" px-4">
+  {/* {Enviroment.palette.button.} */}
+<button  onClick={() => router.push(Paths.editProfile)}
+className="bg-soft rounded-full p-2"><img src={settings} /></button>
+</div>
                   
             </div>
           {/* Header */}

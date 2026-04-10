@@ -171,11 +171,12 @@ return {
     <div
       key={i}
       onClick={() => handleDialogOpen(event)}
-      className="bg-white rounded-2xl p-4 shadow-sm active:scale-[0.98]"
+      className="bg-base-bg  p-4 shadow-sm border-soft border-b border-1 active:scale-[0.98]"
     >
+   
       <div className="flex justify-between gap-3">
         <div className="flex flex-col flex-1 min-w-0">
-          <span className="font-semibold truncate">{event.summary}</span>
+          <span className="font-semibold  text-text-primary truncate">{event.summary}</span>
 
           <span
             onClick={(e) => {
@@ -194,7 +195,7 @@ return {
             {event.hashtags.slice(0, 4).map((tag, idx) => (
               <span
                 key={idx}
-                className="text-xs bg-gray-100 px-2 py-1 rounded-full text-gray-600"
+                className="text-xs bg-sky-100 px-2 py-1 rounded-full text-soft"
               >
                 #{tag}
               </span>
@@ -242,7 +243,7 @@ return {
             <div
               key={i}
               onClick={() => handleDialogOpen(event)}
-              className="min-w-[220px] bg-white rounded-xl p-3 shadow-sm"
+              className="min-w-[220px] bg-base-bg rounded-xl p-4 border-soft border border-1  shadow-sm"
             >
               <p className="font-semibold text-sm">{event.summary}</p>
               <p className="text-xs text-gray-500">{event.location}</p>
@@ -277,7 +278,7 @@ return {
           </button>
 
           {areas.map((area) => (
-            // Enviroment.palette.card
+           
             <button key={area} onClick={() => setSelectedArea(area)} className={`pill px-2 mx-1 ${selectedArea==area?"bg-soft hover:bg-card-highlight text-white":""}`}>
               {area}
             </button>
@@ -428,7 +429,7 @@ window.open(`https://www.google.com/maps/search/?api=1&query=${encoded}`)
                 <div  
 
                 className="
-                bg-cream
+                bg-base-bg
                border-blueSea border-opacity-50 border rounded-[30px]
                  min-w-[16rem] max-w-[18rem]
                 flex-shrink-0 flex-col p-4

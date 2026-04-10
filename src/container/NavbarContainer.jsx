@@ -491,9 +491,9 @@ const {currentProfile }= useSelector(state=>state.users)
         commentable: true
       })).then(res => checkResult(res, payload => {
         if (payload.story) {
-          // dispatch(setEditingPage({ page: payload.story }));
+        
           dispatch(setPageInView({ page: payload.story }));
-        router.push(Paths.editPage.createRoute(payload.story.id),'forward', 'replace');
+        router.push(Paths.editPage.createRoute(payload.story.id),'forward');
         }else{
           windowl.alert("COULD NOT CREATE STORY")
         }
@@ -504,30 +504,6 @@ const {currentProfile }= useSelector(state=>state.users)
   }, 5);
 
 
-  // const handleNavigate = (type) => {
-   
-
-  //   switch (type) {
-  //     case "write":
-  //      ClickWriteAStory()
-  //       break;
-  //     case "image":
-  //       router.push(Paths.editor.image,"forward");
-  //       break;
-  //     case "link":
-  //       router.push(Paths.editor.link,"forward");
-  //       break;
-  //     case "collection":{
-      
-  //            handleOpenCreateCollection({dispatch,submitCollection,initPages:[],router,currentProfile,formData,setFormData,openDialog,setSubmitting,submitting,setError})
-    
-
-  //  }
-  //       break;
-  //     default:
-  //       break;
-  //   }
-  // };
 const debouncedNavigate = useRef(
     debounce((type) => {
       dispatch(setHtmlContent(null))
@@ -580,7 +556,7 @@ const debouncedNavigate = useRef(
     className={navItem}
   >
     <IonImg src={addCircle} className="w-6 h-6 mb-1 invert" />
-    <span className="text-[11px]">Home</span>
+    <span className="text-[11px]">Create</span>
   </button>
 
   {isOpen && (
