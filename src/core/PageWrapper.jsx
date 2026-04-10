@@ -34,7 +34,7 @@ import ReferralForm from '../components/auth/ReferralForm';
 const PageWrapper = ({
   children,
   showHeader = true,
-  presenHeader = true,
+  presentHeader = true,
   showBackbutton = true,
   showSearchButton = true,
    showMenubutton = true,
@@ -175,6 +175,26 @@ checkUser()
     ),
   });
 };
+let signedOutMenu = [{ label: "Discovery", action: () => {router.push(Paths.discovery) }},
+          { label: "Events", action: () => {router.push(Paths.calendar())} },
+        ]
+        
+let signedInMenu = [
+             { label: "Discovery", action: () => {router.push(Paths.discovery) }},
+               { label: "Pages", action: () => {openPages()} },
+  { label: "Events", action: () => {router.push(Paths.calendar())} },
+ { label: "Studio", action: () => {router.push(Paths.workshop.reader())} },
+
+  { label: "Your drafts", action: () => {openDrafts() }},
+  { label: "Collections", action: () => {openCollections()} },
+  { label: "Libraries", action: () => {openCommunities()} },
+    { label: "Saved", action: () => {router.push(Paths.collection.createRoute(homeCol.id))} },
+  { label: "Archives", action: () => {router.push(Paths.collection.createRoute(archiveCol.id))} },
+ 
+  { label: "Dashboard", action: () => {router.push(Paths.home) }},
+
+  { label: "Notifications", action: () => {router.push(Paths.notifications())}}]
+  const menuArr = currentProfile && currentProfile.id ? signedInMenu:signedOutMenu
   const openDrafts = () => {
   openDialog({
     title: "Drafts",
@@ -330,7 +350,7 @@ checkUser()
       ref={pageRef}
        style={{ height: '100%', paddingTop: isDesktop ? '5em' : '0', }}
     >
-      {presenHeader && (
+      {presentHeader && (
         <IonHeader >
           <div >
           <IonToolbar style={{
@@ -351,7 +371,7 @@ checkUser()
     
          
          
-                    {showMenubutton && currentProfile && (
+                    {showMenubutton && (
     <IonButtons slot="end">
       <div  onClick={() => setMenuOpen(true)}>
       <IonImg src={menu}  
@@ -406,22 +426,8 @@ checkUser()
 
       {/* NAV */}
       <div className="flex flex-col gap-5 text-[1.05rem] text-emerald-700">
-        {[
-             { label: "Discovery", action: () => {router.push(Paths.discovery) }},
-               { label: "Pages", action: () => {openPages()} },
-  { label: "Events", action: () => {router.push(Paths.calendar())} },
- { label: "Studio", action: () => {router.push(Paths.workshop.reader())} },
-
-  { label: "Your drafts", action: () => {openDrafts() }},
-  { label: "Collections", action: () => {openCollections()} },
-  { label: "Libraries", action: () => {openCommunities()} },
-    { label: "Saved", action: () => {router.push(Paths.collection.createRoute(homeCol.id))} },
-  { label: "Archives", action: () => {router.push(Paths.collection.createRoute(archiveCol.id))} },
- 
-  { label: "Dashboard", action: () => {router.push(Paths.home) }},
-
-  { label: "Notifications", action: () => {router.push(Paths.notifications())} },
-].map((item) => (
+        
+{menuArr.map((item) => (
   <button
     key={item.label}
     className="text-left hover:text-emerald-900 transition"
@@ -444,7 +450,7 @@ checkUser()
           openReferral()
            setMenuOpen(false)}}>Refer a friend 🥰</button>
         <button onClick={() => router.push(Paths.feedback())}>Report a bug</button>
-        <button onClick={() => router.push(Paths.editProfile)}>Settings ⚙️</button>
+        {currentProfile && <button onClick={() => router.push(Paths.editProfile)}>Settings ⚙️</button>}
       </div>
 
     </div>

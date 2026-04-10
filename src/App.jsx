@@ -155,7 +155,9 @@ const showBottomNavbar = (isMobileOrTablet || isNative)  && import.meta.env.VITE
        <Route exact path={Paths.login()}
                   render={()=> 
       
-        <PageWrapper presenHeader={false}>
+        <PageWrapper presentHeader={false
+        
+        } showBackbutton={false} >
       <PrivateRoute>
             <LogInContainer  currentProfile={currentProfile} logIn={props.logIn}/>
              </PrivateRoute>
@@ -174,7 +176,7 @@ const showBottomNavbar = (isMobileOrTablet || isNative)  && import.meta.env.VITE
      </PageWrapper>}
 />
 <Route exact path="/about" render={() => 
-    <PageWrapper presenHeader={false}>
+    <PageWrapper  showBackbutton={false} >
      <AboutContainer/></PageWrapper>}
 />
 <Route exact path="/search" render={() => 
@@ -239,7 +241,7 @@ const showBottomNavbar = (isMobileOrTablet || isNative)  && import.meta.env.VITE
                   />
     
       <Route exact path={Paths.calendar()}
-     render={()=><PageWrapper showBackbutton={false}  presenHeader={false}><CalendarContainer/></PageWrapper>}/>
+     render={()=><PageWrapper showBackbutton={false} ><CalendarContainer/></PageWrapper>}/>
           <Route exact path={Paths.newsletter() }
      render={()=><LoggedRoute 
  currentProfile={currentProfile}
