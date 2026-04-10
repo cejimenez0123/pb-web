@@ -7,7 +7,6 @@ import arrowToRight from '../images/icons/arrowToRight.svg'
 import checkResult from '../core/checkResult.js';
 import ErrorBoundary from '../ErrorBoundary.jsx';
 import {IonText, useIonRouter,  IonList} from '@ionic/react';
-
 import { fetchYourWorkshops } from '../actions/WorkshopActions.jsx';
 import ProfileCircle from '../components/profile/ProfileCircle.jsx';
 import truncate from 'html-truncate';
@@ -15,13 +14,14 @@ import { PageType } from '../core/constants.js';
 import Paths from '../core/paths.js';
 import debounce from '../core/debounce.js';
 import { sendGAEvent } from '../core/ga4.js';
-import { setEditingPage, setPageInView } from '../actions/PageActions.jsx';
+import { setPageInView } from '../actions/PageActions.jsx';
 import { useDialog } from '../domain/usecases/useDialog.jsx';
 import CreateCollectionForm from '../components/collection/CreateCollectionForm.jsx';
 import Enviroment from '../core/Enviroment.js';
 import { Capacitor } from '@capacitor/core';
 import { getMyCollections } from '../actions/CollectionActions.js';
 import StoryDashboardItem from '../components/StoryDashboardItem.jsx';
+import SectionHeader from '../components/SectionHeader.jsx';
 function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex = 0, role = "button" }) {
   return (
     <span
@@ -41,7 +41,7 @@ function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex
     </span>
   );
 }
-const WRAP = "max-w-2xl mx-auto px-4";
+const WRAP = "max-w-2xl mx-auto ";
 const SECTION_GAP = "pt-10";  // applied to each section's root div
 const SECTION_HEADING = "text-xl lora-medium";          // text style only
 const SECTION_HEADER_ROW = "flex items-center justify-between py-4"; // row layout
@@ -310,7 +310,7 @@ scrollY: false,
 
           
             
-                      <div className="flex flex-row mx-auto max-w-[40em] flex-wrap my-4 justify-center gap-4">
+                      <div className="flex flex-row mx-auto  md:max-w-[40em] flex-wrap my-4 justify-center gap-4">
         <ButtonWrapper
           onClick={ClickWriteAStory}
           className="bg-button-secondary-bg hover:bg-button-secondary-hover  border-button-secondary-bg  border-opacity-80 text-white rounded-xl h-[3rem] w-[8.5rem]"
@@ -338,8 +338,8 @@ scrollY: false,
       <div>
      <div className={`${WRAP} ${SECTION_GAP}`}>
   <div className={SECTION_HEADER_ROW}>
-    <h4 className={SECTION_HEADING}>Saves</h4>
-
+    {/* <h4 className={SECTION_HEADING}>Saves</h4> */}
+<SectionHeader title={"Saves"}/>
            
 
               <img src={arrowToRight} onClick={()=>homeCol && router.push(Paths.collection.createRoute(homeCol.id))}className='max-w-8 mt-auto mb-4 max-h-8 mx-4' />
@@ -387,8 +387,8 @@ scrollY: false,
             
                 <div className={`${WRAP} ${SECTION_GAP}`}>
   <div className={SECTION_HEADER_ROW}>
-    <h4 className={SECTION_HEADING}>Your Spaces</h4>
-
+    {/* <h4 className={SECTION_HEADING}>Your Spaces</h4> */}
+<SectionHeader title="Your Spaces"/>
 </div>
   {/* content */}
 {/* </div>
@@ -439,32 +439,28 @@ scrollY: false,
     ))}
 </div>
 </div>
-  {/* </div> */}
-{/* </div> */}
+ 
              
             </div>
             
                            <div className={`${WRAP} ${SECTION_GAP}`}>
   <div className={SECTION_HEADER_ROW}>
 
-              <h4 className={SECTION_HEADING}  onClick={()=>{openYourWorkshops()}} >Workshop</h4>
+              <div  onClick={()=>{openYourWorkshops()}} ><SectionHeader title={"Workshops"} right={ <img  onClick={()=>{openYourWorkshops()}} src={arrowToRight} className='max-w-8 max-h-8 ' />}/></div>
           
-              <img  onClick={()=>{openYourWorkshops()}} src={arrowToRight} className='max-w-8 mt-auto mb-4 max-h-8 mx-4' />
+             
 </div>
               {workshop?<div className='px-4'><WorkshopItem workshop={workshop}/></div>:<div><h2>Click Join a Workshop or Studio below</h2></div>}
-              <div className=' p-4 '></div>
+            
             </div>
-            <div  className='w-fit mx-auto '>
+        
                <div className={`${WRAP} ${SECTION_GAP}`}>
   <div className={SECTION_HEADER_ROW}>
-
-              <h4 className={SECTION_HEADING}
-         >
-    Recent Pages
-  </h4>
+<SectionHeader title={"Rcenent Pages"}/>
+         
 
   <h5
-    className="text-base text-emerald-700 cursor-pointer hover:opacity-70 transition"
+    className="text-md text-emerald-700 cursor-pointer mt-4 pr-4 hover:opacity-70 transition"
     onClick={ClickWriteAStory}
   >
     Write Something new +
@@ -479,11 +475,12 @@ scrollY: false,
          </div>  
             
             
-            {/* Explore List */}
-            <ExploreList items={collections} />
+     
+          
        </div>
-   </div>
- 
+        <ExploreList items={collections} />
+   {/* </div>
+   */}
       </ErrorBoundary>
   );
 }

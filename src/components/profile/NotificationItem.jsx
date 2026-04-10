@@ -129,14 +129,14 @@ export default function NotificationItem({ item, lastNotified }) {
 
   if (item === Enviroment.blankPage) {
     return (
-      <div className="w-full text-center py-2 text-emerald-800 text-opacity-60 font-bold">
+      <div className="w-full text-center py-2 y-2 bg-base-surface text-emerald-800 text-opacity-60 font-bold">
         Older than today
       </div>
     );
   }
 
   const containerClasses =
-    "border-emerald-600 border-opacity-50 border-2 rounded-2xl p-4 bg-white shadow-lg flex flex-col justify-center w-full max-w-[40rem] mx-auto cursor-pointer hover:bg-emerald-50 transition duration-300 ease-in-out";
+    "border-emerald-600 border-opacity-50 border-2 rounded-2xl p-4  shadow-lg  bg-base-bg flex flex-col justify-center w-full max-w-[40rem] mx-auto cursor-pointer hover:bg-emerald-50 transition duration-300 ease-in-out";
 
   const renderHeader = (profile, rightText) => (
     <div className="flex flex-row items-center justify-between gap-4 w-full">
@@ -216,7 +216,7 @@ export default function NotificationItem({ item, lastNotified }) {
           onClick={() => router.push(Paths.page.createRoute(comment.story.id))}
           className={containerClasses}
         >
-          <div className="flex flex-row items-center justify-between gap-3 w-full">
+          <div className="flex flex-row bg-base-bg items-center justify-between gap-3 w-full">
             <div className="flex items-center gap-2 truncate">
               <ProfileCircle profile={comment.profile} color="emerald-700" />
               <span className="text-emerald-700 text-[0.75rem] open-sans-medium truncate">

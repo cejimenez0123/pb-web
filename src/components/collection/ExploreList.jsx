@@ -6,10 +6,11 @@ import {
   getRecommendedCollections,
   getRecommendedCollectionsProfile,
 } from "../../actions/CollectionActions";
+import SectionHeader from "../SectionHeader";
 const SECTION_GAP = "pt-10";  // applied to each section's root div
 const SECTION_HEADING = "text-xl lora-medium";          // text style only
 const SECTION_HEADER_ROW = "flex items-center justify-between py-4"; // r
-const WRAP = "max-w-2xl mx-auto px-4";
+const WRAP = "max-w-2xl mx-auto ";
 export default function ExploreList({ collection }) {
   const items = useSelector((state) => state.books.recommendedCols);
   const { currentProfile } = useSelector((state) => state.users);
@@ -49,13 +50,14 @@ export default function ExploreList({ collection }) {
   }, [currentProfile, collection, dispatch]);
 
   return (
-    <div className={`${WRAP} ${SECTION_GAP}`}>
+    <div className={`${WRAP} pb-36 ${SECTION_GAP}`}>
       <div>
   <div className={SECTION_HEADER_ROW}>
     {/* <div> */}
-    <h4 className={SECTION_HEADING}>
+    {/* <h4 className={SECTION_HEADING}>
         Explore
-      </h4>
+      </h4> */}
+      <SectionHeader title={"Explore"}/>
 </div>
       <div className="relative">
         {/* 🔹 Skeleton (slides OUT) */}
@@ -65,7 +67,7 @@ export default function ExploreList({ collection }) {
             ${isLoading ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-6 pointer-events-none"}
           `}
         >
-          <div className="flex min-h-[14rem] flex-row overflow-x-auto space-x-4 no-scrollbar px-4 animate-pulse">
+          <div className="flex min-h-[14rem] flex-row overflow-x-auto space-x-4 no-scrollbar  animate-pulse">
             {[...Array(4)].map((_, i) => (
               <div
                 key={i}
@@ -90,7 +92,7 @@ export default function ExploreList({ collection }) {
           `}
         >
           {!isLoading && items?.length > 0 && (
-            <div className="flex min-h-[14rem] flex-row overflow-x-auto space-x-4 no-scrollbar px-4">
+            <div className="flex min-h-[14rem] flex-row overflow-x-auto space-x-4 no-scrollbar ">
               {items.map((item, i) => (
                 <BookListItem key={item.id + i} book={item} />
               ))}

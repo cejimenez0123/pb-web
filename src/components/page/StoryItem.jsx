@@ -7,7 +7,32 @@ import { useContext, useEffect, useState } from "react";
 import Context from "../../context";
 import { PageType } from "../../core/constants";
 import loadingGif from "../../images/loading.gif"
+// ── Card Layout ─────────────────────────────
+const CARD =
+  "bg-softBlue shadow-sm hover:shadow-md rounded-xl transition-shadow duration-200 cursor-pointer";
 
+const CARD_INNER = "p-4 flex flex-col h-full";
+
+// ── Vertical Rhythm ─────────────────────────
+const STACK_SM = "space-y-2";
+const STACK_MD = "space-y-3";
+
+// ── Content Blocks ──────────────────────────
+const TITLE =
+  "text-base font-semibold text-emerald-800 truncate";
+
+const MEDIA =
+  "w-full h-44 object-cover rounded-lg";
+
+const TEXT =
+  "text-sm text-gray-800 line-clamp-5 break-words";
+
+const DESCRIPTION =
+  "text-sm text-gray-600 line-clamp-3 break-words";
+
+// ── Width Behavior (important for HomeEmbed)
+const CARD_WIDTH =
+  "w-[100%] "; // ❗ remove min/max width constraints
 function StoryItem({ page, isGrid = true, html = null }) {
   const { isHorizPhone } = useContext(Context);
   const router = useIonRouter();
@@ -68,24 +93,48 @@ function StoryItem({ page, isGrid = true, html = null }) {
     }
   };
 
-  return (
-    <div
-      className="bg-softBlue shadow-md mx-4 rounded-xl p-4 min-h-[14em] flex flex-col cursor-pointer hover:shadow-xl transition-shadow duration-200 min-w-[18rem] max-w-[22rem]"
-      onClick={handleClick}
-    >
-      <h2 className="text-lg font-semibold text-emerald-800 mb-2 truncate">
+//   return (
+// <div className={`${CARD} ${CARD_WIDTH}`} onClick={handleClick}>
+//   <div className={CARD_INNER}>
+//       <h2 className="text-lg font-semibold text-emerald-800 mb-2 truncate">
+//         {page.title || "Untitled"}
+//       </h2>
+
+//       <div className="flex-1 mb-2 overflow-hidden">{renderContent()}</div>
+
+//       {page.description && (
+//         <p className="text-sm text-gray-600 line-clamp-3 break-words">
+//           {page.description}
+//         </p>
+//       )}
+//       </div>
+//     </div>
+//   );
+return (
+  <div className="px-4 ">
+  <div className={`${CARD} ${CARD_WIDTH}`} onClick={handleClick}>
+    <div className={`${CARD_INNER} ${STACK_MD}`}>
+      
+      {/* Title */}
+      <h2 className={TITLE}>
         {page.title || "Untitled"}
       </h2>
 
-      <div className="flex-1 mb-2 overflow-hidden">{renderContent()}</div>
+      {/* Content */}
+      <div className="flex-1 overflow-hidden">
+        <div className={STACK_SM}>{renderContent()}</div>
+      </div>
 
+      {/* Description */}
       {page.description && (
-        <p className="text-sm text-gray-600 line-clamp-3 break-words">
+        <p className={DESCRIPTION}>
           {page.description}
         </p>
       )}
     </div>
-  );
+  </div>
+  </div>
+);
 }
 
 export default StoryItem;

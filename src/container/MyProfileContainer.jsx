@@ -25,7 +25,7 @@ const TABS = {
   ABOUT: "about",
 };
 const WRAP = "max-w-2xl mx-auto px-4";
-const tabWrapper = "max-w-lg mx-auto px-4"; // same for both containers
+const tabWrapper = "max-w-lg mx-auto px-4 pb-4"; // same for both containers
 function MyProfileContainer() {
     const { setSeo  } = useContext(Context);
 
@@ -309,7 +309,7 @@ const StatChip = ({ value, label }) => (
           }
 
             {tab === TABS.COMMUNITIES && <CommunitiesPanel router={router} communities={communities} />}
-            {tab === TABS.ABOUT && <AboutPanel router={router} profile={profile} hashtags={profile.hashtags}/>}
+            {tab === TABS.ABOUT && <AboutPanel router={router} profile={profile} />}
           </div>
 </div>
 </div>

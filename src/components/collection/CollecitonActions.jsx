@@ -1,9 +1,5 @@
-import React from "react";
+
 import { IonImg, IonSpinner } from "@ionic/react";
-import bookmarkOutline from "../../images/bookmark_add.svg";
-import bookmarkFill from "../../images/bookmark_fill_green.svg";
-import archive from "../../images/icons/archive.svg";
-import edit from "../../images/icons/edit.svg";
 import Paths from "../../core/paths";
 
 export default function CollectionActions({
@@ -67,7 +63,7 @@ return(<div className="flex flex-wrap sm:flex-nowrap items-center justify-betwee
             }
             className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded-md w-full text-left"
           >
-            Add Collections
+            Add Collection to ...
           </button>
         </li>
       )}

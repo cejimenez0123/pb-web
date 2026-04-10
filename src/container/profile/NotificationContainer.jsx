@@ -1,14 +1,17 @@
-import { useContext, useEffect } from "react";
+import {  useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchNotifcations } from "../../actions/ProfileActions";
 import NotificationItem from "../../components/profile/NotificationItem";
 import { IonList, IonContent } from "@ionic/react";
-import Context from "../../context";
-
+import SectionHeader from "../../components/SectionHeader";
+import Enviroment from "../../core/Enviroment";
+const WRAP = "max-w-2xl mx-auto px-4";
+const SECTION = "space-y-4 pt-10 bg-base-surface";
+const SECTION_TITLE = "text-xl font-semibold text-emerald-800 border-b border-emerald-600 pb-1";
 export default function NotificationContainer({ currentProfile }) {
   const dispatch = useDispatch();
   const items = useSelector((state) => state.users.notifications ?? []);
-  const { isDesktop } = useContext(Context);
+  // const { isDesktop } = useContext(Context);
 
   useEffect(() => {
     if (currentProfile) {
@@ -24,41 +27,49 @@ export default function NotificationContainer({ currentProfile }) {
   );
 
   return (
-    <IonContent className="bg-cream p-4">
-      <div className="mx-auto w-[96vw] md:w-page">
-
+    <IonContent 
+    style={{"--background":Enviroment.palette.base.background}}
+    >
+    
+<div  className={WRAP}>
         {/* Today Section */}
         {todayItems.length > 0 && (
-          <section className="mb-8">
-            <h2 className=" text-2xl text-emerald-800 mb-4 border-b-2 border-emerald-600 pb-1">
-              Today
-            </h2>
-            <IonList className="space-y-2">
+          <section className={SECTION}>
+            {/* <h2 className=" text-2xl text-emerald-800 mb-4 border-b-2 border-emerald-600 pb-1"> */}
+              <SectionHeader title={"Today"}/>
+            {/* </h2> */}
+            <div className="space-y-2" style={{"--background":Enviroment.palette.base.surface}}>
               {todayItems.map((item, i) => (
+                <div className="py-2">
                 <NotificationItem
                   key={i}
                   item={item}
                   lastNotified={currentProfile.lastNotified}
                 />
+                </div>
               ))}
-            </IonList>
+            </div>
           </section>
         )}
 
         {/* Older Notifications */}
         {olderItems.length > 0 && (
-          <section className="mb-8 px-4 pt-8">
-            <h2 className=" text-2xl text-emerald-800 mb-4 border-b-2 border-emerald-600 pb-1">
-              Earlier
-            </h2>
-            <IonList className="space-y-2">
+          <section className={SECTION+" bg-cream"}>
+            {/* <h2 className=" text-2xl text-emerald-800 mb-4 border-b-2 border-emerald-600 pb-1"> */}
+              <SectionHeader title={"Earlier"} />
+            {/* </h2> */}
+            <IonList >
+                 {/* <div className="flex flex-col gap-2 w-[100%]"> */}
               {olderItems.map((item, i) => (
+                  <div className="py-2 bg-base-surface">
                 <NotificationItem
                   key={i}
                   item={item}
                   lastNotified={currentProfile.lastNotified}
                 />
+</div>
               ))}
+              {/* </div> */}
             </IonList>
           </section>
         )}

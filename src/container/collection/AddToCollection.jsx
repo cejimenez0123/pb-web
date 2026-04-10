@@ -48,9 +48,7 @@ export default function AddToCollectionContainer() {
   const stories = useSelector((state) => state.pages.myPages);
   const [pending,setPending]=useState(false)
   const storyIdList = colInView?.storyIdList || [];
-  // const storiesLoaded = !!stories;
-  // const collectionLoaded = colInView && colInView.storyIdList;
-  // const pending = !(storiesLoaded && collectionLoaded);
+
 
   const isOwner = currentProfile && colInView && currentProfile.id === colInView.authorId;
 useEffect(() => {

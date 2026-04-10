@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import Paths from "../../core/paths";
 import PaginationControls from "../PaginationControls";
+import EmptyState from "../EmptyState";
 
 const CommunitiesPanel = ({communities ,router}) => {
 //   const router = useIonRouter();
@@ -19,9 +20,8 @@ const CommunitiesPanel = ({communities ,router}) => {
 
   if (!communities.length) {
     return (
-      <div className="text-center py-12 text-sm text-gray-400">
-        No communities yet.
-      </div>
+      <EmptyState text={"No Communities"}/>
+    
     );
   }
 

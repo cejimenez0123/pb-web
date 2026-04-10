@@ -13,10 +13,28 @@ import AppleSignInButton from '../../components/auth/AppleSignInButton';
 import GoogleLogin from '../../components/GoogleLogin';
 import { Capacitor } from '@capacitor/core';
 import { useDialog } from '../../domain/usecases/useDialog.jsx';
+// ── Layout System ─────────────────────────────
+const WRAP = "max-w-2xl mx-auto px-4";
+const CARD = "max-w-lg mx-auto px-4 py-6 rounded-lg text-emerald-800";
+const FORM = "space-y-6";
+const FIELD = "space-y-2";
+const ACTIONS = "space-y-4 pt-4";
+const CENTER = "flex flex-col items-center justify-center";
+
+// ── Inputs / Buttons ─────────────────────────
+const INPUT =
+  "w-[100%] rounded-full px-4 py-2 text-emerald-800 bg-base-bg text-sm focus:outline-none focus:ring-1 focus:ring-gray-300";
+
+const BUTTON_PRIMARY =
+  "bg-soft rounded-full w-[90%] mx-auto py-3 mt-2 text-white text-lg";
+
+const LINK =
+  "text-emerald-800 hover:text-green-400 cursor-pointer";
+
+// ── Width Consistency ────────────────────────
+const INPUT_WRAP = "max-w-md mx-auto";
 export default function LogInContainer({currentProfile}) {
     const {setError,seo,setSeo}=useContext(Context)
-
-    const router = useIonRouter()
 
     useEffect(()=>{
         let soo = seo
@@ -155,15 +173,26 @@ openDialog(dia)
     }
     return(
     //    
-    <div  className=' flex md:mt-8  mx-auto sm:max-w-[50em]  lg:mt-36 mb-16 rounded-lg   text-emerald-800 p-4 '><div className='   '>
+<div className={WRAP}>
+  <div className={CARD}>
         
         <div  className='mx-auto'>
-            <form className=' sm:max-w-[40em] overflow-auto pt-4'>
+           <form className={FORM}>
         <h1 className='text-emerald-800 mont-medium mx-auto text-center pb-4'> Log In</h1>
-        <div className='w-[90vw] text-center sm:w-[40em] '>
-  <div className='text-left flex flex-col'>
-    
-    <label>Email</label>
+ 
+    <div className={FIELD}>
+  <label>Email</label>
+  <div className={INPUT_WRAP}>
+    <input
+      type="text"
+      value={email}
+      onInput={(e) => setEmail(e.target.value)}
+      placeholder="example@email.com"
+      className={INPUT}
+    />
+  </div>
+</div>
+    {/* <label>Email</label>
   <input type="text" 
     value={email} 
          className='  w-[100%] rounded-full  px-2 py-2 text-emerald-800 bg-base-bg text-[1rem]'
@@ -172,41 +201,36 @@ openDialog(dia)
         //  style={{"--ion-max-width":"50em"}}
         onInput={(e) => setEmail(e.target.value)}
         placeholder='example@email.com' />
-    </div>
-</div>   
+    </div> */}
+{/* </div>    */}
+<div className={FIELD}>
+  <label>Password</label>
+  <div className={INPUT_WRAP}>
+    <input
+      type={showPassword ? "text" : "password"}
+      value={password}
+      onInput={(e) => setPassword(e.target.value)}
+      placeholder="*****"
+      className={INPUT}
+    />
+  </div>
 
-<label>Password</label>
-  <input type={showPassword?"text":`password`}
-         value={password}
-         label='Password'
-        className='  w-[100%] rounded-full  px-2 py-2 text-emerald-800 bg-base-bg text-[1rem]'
-         labelPlacement='stacked'
-       onInput={(e) => setPassword(e.target.value)}
-        placeholder='*****' 
-        />
-            {/* <IonIcon slot='end'> */}
-         <h5 slot='end' onClick={()=>setShowPassword(!showPassword)}
-                className={`text-[0.7rem] open-sans-medium ${showPassword?"":"" } my-auto`}>
-                    {showPassword?"Hide":"Show"}</h5>
-                    {/* </IonIcon> */}
-        {/* </input> */}
+  <div className="text-right text-xs pr-2">
+    <span onClick={() => setShowPassword(!showPassword)} className={LINK}>
+      {showPassword ? "Hide" : "Show"}
+    </span>
+  </div>
+</div>
+
+
+
          
+            {/* <div className={INPUT_WRAP}> */}
+  <button type="button" onClick={handleLogIn} className={BUTTON_PRIMARY}>
+    Log In
+  </button>
+{/* </div> */}
 
-
-         
-            
-            {/* <div
-            className='bg-green-600  rounded-full btn  mx-4 mx-auto  mx-auto hover:bg-green-400  font-bold py-3 px-12 mt-4 '
-               onClick={handleLogIn}
-                
-                variant="contained" ><IonText className='  text-white text-xl text-center '>Log In</IonText></div> */}
-                <button
-  type="button"
-  onClick={handleLogIn}
-  className="bg-soft rounded-full w-full w-[100%] mx-auto sm:w-[40em] py-3 px-12 mt-8"
->
-  <IonText className='text-white text-xl'>Log In</IonText>
-</button>
         <span className='flex flex-col mt-4 justify-center '> 
         <div className='w-fit mx-auto'>
         <AppleSignInButton
@@ -232,7 +256,42 @@ openDialog(dia)
     
      />
      </span>
-        <div className='mt-4 text-center p-4'>
+     <div className={ACTIONS}>
+  <div className={CENTER}>
+    <AppleSignInButton
+      onUserSignIn={({ idToken, email }) => {
+        dispatchLogin({ email, idToken, isNative });
+      }}
+    />
+  </div>
+
+  <GoogleLogin
+    onUserSignIn={({ email, googleId }) => {
+      dispatchLogin({ email, googleId, isNative });
+    }}
+  />
+
+  <div className="text-center space-y-3">
+    <p onClick={handleFirstTimeClick} className={LINK}>
+      First time here?
+    </p>
+
+    {pending && (
+      <img
+        className="mx-auto w-16 h-16"
+        src={loadingGif}
+      />
+    )}
+
+    <p
+      onClick={handleForgotPasswordDialog}
+      className={`${LINK} text-sm`}
+    >
+      Forgot Password?
+    </p>
+  </div>
+</div>
+        {/* <div className='mt-4 text-center p-4'>
         <a  onClick={handleFirstTimeClick}
         className='text-emerald-800 text-xl hover:text-green-400  '>Click here if this your first time?</a>
       
@@ -244,7 +303,7 @@ openDialog(dia)
                 <h5 onClick={()=>{
                     handleForgotPasswordDialog()
                  }} className='text-[1rem] pt-8 w-fit hover:text-green-400 mx-auto text-emerald-800'>Forgot Password?</h5>
-              </div>
+              </div> */}
         </form>
 
                 </div></div>

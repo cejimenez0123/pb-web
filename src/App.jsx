@@ -1,6 +1,6 @@
 import './App.css';
 import { useDispatch,connect,useSelector} from "react-redux"
-import {  useState } from 'react';
+import {  useEffect, useLayoutEffect, useState } from 'react';
 import {  getPublicStories } from './actions/PageActions.jsx';
 import LogInContainer from './container/auth/LogInContainer';
 import NavbarContainer from './container/NavbarContainer';
@@ -77,7 +77,6 @@ const isHorizPhone = useMediaQuery({ query: '(min-width: 800px)' });
 
 
 const ionRouter = useIonRouter();
-const location = ionRouter.routeInfo?.pathname??window.location
 
   const [seo,setSeo]=useState({title:"Plumbum",heading:"Plumbum" ,image:Enviroment.logoChem,description:"Your writing, Your community", name:"Plumbum", type:"website",url:"https://plumbum.app"})
 
@@ -88,33 +87,38 @@ const [token,setToken]=useState(null)
 const [chuecking,setChecking]=useState(null)
   const {dialog,loading:userLoading} = useSelector(state=>state.users)
 
-const [firstLaunchChecked, setFirstLaunchChecked] = useState(false);
+
 
 
 useIonViewWillEnter(() => {
   const checkFirstLaunch = async () => {
-    await SplashScreen.show({
-      showDuration: 3000,
-      autoHide: true,
-  })
-    if (isNative) {
+        if (isNative) {
       const { value } = await Preferences.get({ key: 'hasSeenOnboarding' });
       if (value === null) {
         await Preferences.set({ key: "hasSeenOnboarding", value: 'true' });
-        setIsFirstLaunch(true);
+  
       }else if(currentProfile){
         
+        
 
-
-        // await SplashScreen.hide()
         return
       }
+  
+
     }
     setFirstLaunchChecked(true);
   };
  checkFirstLaunch();
 }, [isNative]);
- 
+ useIonViewWillEnter(()=>{
+    const splash = async ()=>await SplashScreen.show({
+      showDuration:3000,
+      autoHide: true,
+      fadeInDuration:1000
+  })
+  splash()
+
+ },[])
 
 const isDesktop = useMediaQuery({ query: '(min-width: 60.1em)' }) // 768px
 const isMobileOrTablet = useMediaQuery({ query: '(max-width: 60em)' })
@@ -163,6 +167,7 @@ const showBottomNavbar = (isMobileOrTablet || isNative)  && import.meta.env.VITE
  
      <Route exact path="/" render={() => 
          <PageWrapper>{
+          currentProfile&&isNative?<ContentHubContainer/>:
   currentProfile? 
   <Redirect to={Paths.home} />:  
   isFirstLaunch && isNative?<Redirect to={Paths.onboard}/>:<Redirect to={Paths.about()}/>   }

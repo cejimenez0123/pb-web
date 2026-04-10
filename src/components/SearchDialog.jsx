@@ -1,38 +1,94 @@
 import React, {
   useState,
   useEffect,
-  useLayoutEffect,
+  
   useMemo,
   useCallback,
   useContext,
 } from 'react';
 import {
-  IonModal,
-  IonText,
-  IonHeader,
-  IonToolbar,
+
+
   IonList,
-  IonGrid,
+ 
   IonRow,
-  IonItem,
-  IonLabel,
+
   useIonRouter,
-  IonTitle,
+
   IonSearchbar,
   IonContent,
 } from '@ionic/react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   searchMultipleIndexes,
-  searchDialogToggle,
+
 } from '../actions/UserActions';
-import { getMyCollections, getPublicCollections } from '../actions/CollectionActions';
-import { getMyStories } from '../actions/StoryActions';
-import { getPublicStories } from '../actions/PageActions';
 import checkResult from '../core/checkResult';
 import Context from '../context';
 import Enviroment from '../core/Enviroment';
+// ── Layout ───────────────────────────────
+const WRAP = "max-w-2xl mx-auto px-4";
+const HEADER = "flex items-center gap-3";
+const SECTION = "space-y-4 bg-base-surface";
+// ── Layout ───────────────────────────────
+// const WRAP = "max-w-2xl mx-auto px-4";
+// const HEADER = "flex items-center gap-3";
+// const SECTION = "space-y-4";
+const STACK_SM = "space-y-2";
+const STACK_MD = "space-y-4";
+// ── Layout ───────────────────────────────
+// const WRAP = "max-w-2xl mx-auto px-4";
+const STACK = "space-y-5";
+// const STACK_SM = "space-y-3";
 
+// ── Surfaces (iOS feel) ──────────────────
+const SURFACE_CARD =
+  "bg-base-surface  shadow-sm px-4 py-3";
+
+const SURFACE_SOFT =
+  "bg-base-bg rounded-2xl";
+
+// ── Header ───────────────────────────────
+// const HEADER = "flex items-center gap-3";
+const LOGO = "text-text-brand text-xl font-semibold";
+
+// ── Search ───────────────────────────────
+const SEARCH_WRAP =
+  "flex-1 bg-base-surface rounded-full px-2";
+
+// ── Filters ──────────────────────────────
+const FILTER_ROW = "flex flex-wrap gap-2";
+
+const FILTER_PILL =
+  "px-3 py-1.5 rounded-full text-xs shadow-sm border transition-all duration-150";
+
+// ── List ─────────────────────────────────
+const LIST = "divide-y divide-border-soft h-[100%]";
+
+const LIST_ITEM =
+  "py-3 px-2 flex items-center justify-between rounded-lg transition";
+
+// ── Text ─────────────────────────────────
+const TITLE = "text-sm text-text-primary";
+// const SUBTLE = "text-xs text-text-secondary";
+// ── Search UI ───────────────────────────
+// const SEARCH_WRAP = "flex-1";
+// const LOGO = "text-emerald-700 text-2xl font-semibold";
+
+// // ── Filters ─────────────────────────────
+// const FILTER_ROW = "flex flex-wrap gap-2";
+// const FILTER_PILL =
+//   "cursor-pointer rounded-full border px-4 py-1 text-sm transition-colors duration-200";
+
+// // ── Results ─────────────────────────────
+// const LIST = "space-y-1";
+// const LIST_ITEM =
+//   "px-3 py-2 rounded-lg hover:bg-emerald-50 transition cursor-pointer";
+const SUBTLE = "text-xs text-text-secondary";
+// ── Surface ─────────────────────────────
+const SURFACE = "bg-base-surface";
+// ── Surface ─────────────────────────────
+// const SURFACE = "bg-cream";
 const SearchDialog = ({ presentingElement }) => {
   const dispatch = useDispatch();
   const router = useIonRouter();
@@ -200,88 +256,104 @@ const searchAction = useCallback(() => {
 
 
   return (
-    <IonContent
-      fullscreen
-      scrollY={true}
-      className="ion-padding"
+    // <IonContent
+    //   fullscreen
+    //   scrollY={true}
+    //   className="ion-padding"
 
-      style={{'--padding-top':isPhone?"4em":"10em", '--background': Enviroment.palette.cream  }}
-    >
-      <div className='flex flex-row'>
-       <IonSearchbar     value={searchText}
-       debounce={1000} onIonInput={(event) => {
-let query = '';
-      const target = event.target
-    if (target){
-       query = target.value.toLowerCase();
-         setSearchText(query)}}}/>
+    //   style={{'--padding-top':isPhone?"4em":"10em", '--background': Enviroment.palette.cream  }}
+    // >
+    <IonContent fullscreen scrollY className={SURFACE}>
+  <div className={`${WRAP} ${SECTION}`}>
+    {/* <div className={`${WRAP} ${SECTION}`}> */}
+        <div className={STACK_SM}>
+  <div className={HEADER}>
+  <div className={SEARCH_WRAP}>
+    <IonSearchbar
+      value={searchText}
+      debounce={250}
+      className="rounded-full"
+      style={{
+        "--background": "transparent",
+        "--box-shadow": "none",
+      }}
+      onIonInput={(e) => {
+        const query = e.target.value?.toLowerCase() ?? "";
+        setSearchText(query);
+      }}
+      placeholder="Search"
+    />
+  </div>
 
- 
-
-   
-       <h6 className='my-auto text-emerald-700 text-[2rem]'>Pb</h6>
+  <span className={LOGO}>Pb</span>
+{/* </div> */}
 </div>
-      <IonGrid>
-        <IonRow
-          className="ion-justify-content-start gap-x-2 gap-y-2 ion-align-items-center ion-padding-vertical"
-          style={{ '--background': Enviroment.palette.cream }}
-        >
-          {filters
-            .filter(filter => !!filter)
-            .map((genre, i) => {
-              const selected = selectedFilters.includes(genre);
-              return (
-                <div
-                  key={genre ?? i}
-                  className={`
-                    cursor-pointer 
-                    rounded-full 
-                    border 
-                    bg-cream
-                    border-emerald-500 
-                    py-1 px-4 
-                    text-center 
-                    transition-colors duration-300 
-                    ${
-                      selected
-                        ? 'bg-emerald-500 text-white'
-                        : 'bg-transparent text-emerald-600 hover:bg-emerald-200'
-                    }
-                  `}
-                  onClick={() => toggleFilters(genre)}
-                >
-                  <IonText className="open-sans-medium select-none">
-                    {genre}
-                  </IonText>
-                </div>
-              );
-            })}
-        </IonRow>
-      </IonGrid>
+</div>
+</div>
 
+      {/* <IonGrid style={{ '--background': Enviroment.palette.cream }}> */}
+      <div className='px-4 bg-base-surface  '>
+        <IonRow
+          className="ion-justify-content-star gap-x-2 gap-y-2 ion-align-items-center ion-padding-vertical"
+          // style={{ '--background': Enviroment.palette.cream }}
+        >
+          <div className={FILTER_ROW}>
+  {filters.filter(Boolean).map((genre, i) => {
+    const selected = selectedFilters.includes(genre);
+
+    return (
+      <div
+        key={genre ?? i}
+        onClick={() => toggleFilters(genre)}
+        className={`${FILTER_PILL} ${
+          selected
+            ? "bg-soft text-white border-soft"
+            : "bg-base-bg text-text-secondary border-border-soft"
+        }`}
+      >
+        {genre}
+      </div>
+    );
+  })}
+</div>
+  
+        </IonRow>
+        </div>
+      {/* </IonGrid> */}
+      
+<div className={STACK_SM+" bg-base-surface pb-60"}>
       <IonList
         style={{
-          overflowY: 'scroll',
-          '--background': Enviroment.palette.cream,
+        
         }}
       >
-        {filteredContent?.length
-          ? filteredContent.map((content, i) => (
-              <IonItem
-                key={content.objectID ?? i}
-                style={{ '--background': Enviroment.palette.cream }}
-                onClick={() => handleOnClick(content)}
-              >
-                <IonText className="text-emerald-800">
-                  {content.item?.title ||
-                    content.item?.username ||
-                    content.item?.name ||
-                    'Untitled'}
-                </IonText>
-              </IonItem>
-            ))
-          : null}
-      </IonList>
+        <div className={SURFACE_CARD}>
+  <div className={LIST}>
+    {filteredContent?.length ? (
+      filteredContent.map((content, i) => (
+        <div
+          key={content.objectID ?? i}
+          className={`${LIST_ITEM} hover:bg-base-bg`}
+          onClick={() => handleOnClick(content)}
+        >
+          <span className={TITLE}>
+            {content.item?.title ||
+              content.item?.username ||
+              content.item?.name ||
+              "Untitled"}
+          </span>
+        </div>
+      ))
+    ) : (
+      <div className="py-6 min-h-[50rem] text-center">
+        <p className={SUBTLE}>No results</p>
+      </div>
+    )}
+  </div>
+</div>
+     </IonList>
+  
+      </div>
     </IonContent>
   );
 };

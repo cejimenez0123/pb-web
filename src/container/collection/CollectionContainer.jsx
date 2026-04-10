@@ -824,11 +824,11 @@ const MemberTab = ({ collection }) => {
   return (
     <>
     <div className={`${WRAP} ${SECTION}`}>
-       <h2 className="text-[1.4rem] my-8 lora-bold text-soft ">
+       {/* <h2 className="text-[1.4rem] my-8 lora-bold text-soft ">
       
          Contributors
-        </h2>
-
+        </h2> */}
+<SectionHeader title={"Contributors"}/>
         {
           <IonList style={{ backgroundColor: Enviroment.palette.base.surface}}>
             <div className="flex flex-col bg-base-surface pt-4 min-h-[14rem]">
@@ -874,13 +874,15 @@ const AboutTab = ({ collection}) => {
 
 
   return (
-   <div className={`bg-base-surface ${TAB_WRAP}`}>
-    <h5 className="text-gray-400 uppercase font-medium text-[1.4rem]">Purpose</h5>
+<div className={`${WRAP} ${SECTION}`}>
+   
+    <SectionHeader title={"Purpose"}/>
+    {/* <h5 className="text-gray-400 uppercase font-medium text-[1.4rem]">Purpose</h5> */}
 <p className="text-sm text-gray-700leading-relaxed mt-4 font-sans">
   {collection.purpose}
 </p>
 
-  
+ 
         <div>
          {collection?.location &&<> <p className="text-xs text-gray-400 uppercase">Location</p>
           <p className="text-sm text-gray-700 mt-1">{collection.location.city}</p></>}

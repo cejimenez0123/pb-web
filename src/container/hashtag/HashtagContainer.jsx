@@ -267,7 +267,7 @@ setPending(false)
 
   return (
     <ErrorBoundary>
-   <IonContent  fullscreen style={{'--padding-top':isPhone?"4em":"10em", '--background': Enviroment.palette.cream  }}>
+   <IonContent  fullscreen style={{"--padding-bottom":"15em",'--padding-top':isPhone?"4em":"10em", '--background': Enviroment.palette.cream  }}>
             
        
 
@@ -300,9 +300,7 @@ setPending(false)
 
               <div className="max-w-screen">{renderPages()}</div>
             </div>
-          {/* </div> */}
-        {/* </IonContent> */}
-      {/* </IonPage> */}
+     
       </IonContent>
     </ErrorBoundary>
   );
@@ -310,10 +308,10 @@ setPending(false)
 
 const EmptyState = ({ hashtag }) => (
   <div className={centerState}>
-    {/* <div className="text-4xl mb-3">#</div> */}
+    
 
     <h2 className="text-lg font-medium text-gray-800">
-      No posts for #{hashtag.name}
+      No posts for #{hashtag?.name}
     </h2>
 
     <p className="text-sm text-gray-500 mt-1 max-w-sm">

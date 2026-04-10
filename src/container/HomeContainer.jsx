@@ -147,9 +147,9 @@ function HomeEmbed({workshops,stories,prompts,isGlobal,setIsGlobal}) {
 <div className={SCROLL_ROW}>
   {whatsHappeningList.length
     ? whatsHappeningList.map(story => (
-        <div className="min-w-[75%]  sm:min-w-[16rem] lg:min-w-[18rem]">
+        // <div className="min-w-[75%]  sm:min-w-[16rem] lg:min-w-[18rem]">
           <StoryItem key={story.id} page={story} isGrid />
-        </div>
+        // </div>
       ))
     : [1,2,3].map(i => (
         <div
@@ -161,6 +161,7 @@ function HomeEmbed({workshops,stories,prompts,isGlobal,setIsGlobal}) {
 </div>
 </div>
           {/* Workshops */}
+          
            <div className={SECTION}>
           <SectionHeader
             title="Workshops near you"
@@ -171,8 +172,8 @@ function HomeEmbed({workshops,stories,prompts,isGlobal,setIsGlobal}) {
               </div>
             }
           />
-          </div>
-          {/* <IonList inset> */}
+         
+        
            <div className={SECTION}>
   <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-2">
             {sortedWorkshops?.length
@@ -183,27 +184,32 @@ function HomeEmbed({workshops,stories,prompts,isGlobal,setIsGlobal}) {
       <WorkshopItem key={i} item={null} router={router} />
     ))
 }
-</div>
-            </div>
+ </div>
+{/* </div>
+            </div> */}
         
      <div className={SECTION}>
           {/* Prompts */}
           <SectionHeader title="Writing Prompts for you" />
-       
-          <div className={`${GRID} pb-[10em]`}>
+       {/* <div className='px-4'> */}
+          <div className={`${GRID} `}>
 
             {filteredPrompts.length
               ? filteredPrompts.map(({ story }) => <StoryItem key={story.id} page={story} />)
               : [1,2,3,4].map(i => <div key={i} className="skeleton min-w-[20em] min-h-[20em]" />)
             }
+            </div>
           </div>
-          </div>
-          {/* <div className='px-4'> */}
-           <SectionHeader title="What's new" />
-          <PageList  items={recommendedStories}/>
           {/* </div> */}
+       <div className={SECTION}>
+           <SectionHeader title="What's new" />
+              <div className='px-4'>
+          <PageList  items={recommendedStories}/>
+          </div>
+          </div>
         </div>
-    
+    </div>
+    </div>
     </ErrorBoundary>
   );
 }

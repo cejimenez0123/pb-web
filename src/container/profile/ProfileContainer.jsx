@@ -41,13 +41,15 @@ import PaginatedPageList from '../../components/page/PaginatedPageList';
 import PageProfileList from '../../components/page/PageProfileList';
 import FollowButton from '../../components/profile/FollowButton';
 import CommunitiesPanel from '../../components/profile/CommunitiesPanel';
+import AboutPanel from '../../components/profile/AboutPanel';
 const TABS = {
   POSTS: "posts",
   COLLECTIONS: "collections",
   COMMUNITIES: "communities",
   ABOUT: "about",
 };
-const tabWrapper = "max-w-lg mx-auto px-4"; // same for both containers
+
+const tabWrapper = "max-w-lg mx-auto px-4 pb-4"// same for both containers
 const WRAP           = "max-w-2xl mx-auto px-4";
 const PAGE_PADDING_Y = "pb-24 pt-safe";
 const HEADER_PADDING = "py-8";
@@ -59,15 +61,33 @@ const CONTENT_STACK  = "space-y-10 min-h-[40rem]";
 const SECTION_STACK  = "space-y-4";
 const SKELETON_PADDING = "px-4 py-8";
 const SKELETON_STACK = "space-y-8";
+
 function ProfileContainer() {
     const { setSeo, setError,  } = useContext(Context);
 
   const{ profileInView:profile, currentProfile }= useSelector((state) => state.users);
   const [followingCount,setFollowingCount]=useState(0)
     const [followerCount,setFollowerCount]=useState(0)
-  const collectionsRaw = useSelector((state) => state.books.collections?? []);
-
+      const [search, setSearch] = useState("");
   const pagesRaw = useSelector((state) => state.pages.pagesInView ?? []);
+  const collectionsRaw = useSelector((state) => state.books.collections?? []);
+  const collections = useMemo(
+    () => collectionsRaw.filter(Boolean).filter((col) => (search ? col.childCollections.length == 0&& col.title?.toLowerCase().includes(search.toLowerCase()) : true)),
+    [collectionsRaw, search]
+  );
+  const communities = useMemo(
+    () => collectionsRaw.filter(col=>(col && col.type=="library"||col.childCollections.length>0)).filter((col) => (search ? col.title?.toLowerCase().includes(search.toLowerCase()) : true)),
+    [collectionsRaw, search]
+  );
+  const pages = useMemo(
+    () => pagesRaw.filter(Boolean).filter((page) => (search ? page.title?.toLowerCase().includes(search.toLowerCase()) : true)),
+    [pagesRaw, search]
+  );
+  const recentPosts = useMemo(
+    () => [...pagesRaw].filter(Boolean).sort((a, b) => new Date(b.updated ?? b.created) - new Date(a.updated ?? a.created)).slice(0, 5),
+    [pagesRaw]
+  );
+
 const [isLoading, setIsLoading] = useState(true);
 const [isReady, setIsReady] = useState(false);
   const dispatch = useDispatch();
@@ -75,7 +95,6 @@ const [isReady, setIsReady] = useState(false);
   const { id } = useParams();
 
   const [tab, setTab] = useState(TABS.POSTS);
-  const [search, setSearch] = useState("");
 
 useEffect(() => {
   if (profile) {
@@ -89,22 +108,7 @@ useEffect(() => {
   }
 }, [profile]);
   // ── Derived
-  const collections = useMemo(
-    () => collectionsRaw.filter(Boolean).filter((col) => (search ? col.title?.toLowerCase().includes(search.toLowerCase()) : true)),
-    [collectionsRaw, search]
-  );
-  const communities = useMemo(
-    () => collectionsRaw.filter(col=>(col && col.type=="library")).filter((col) => (search ? col.title?.toLowerCase().includes(search.toLowerCase()) : true)),
-    [collectionsRaw, search]
-  );
-  const pages = useMemo(
-    () => pagesRaw.filter(Boolean).filter((page) => (search ? page.title?.toLowerCase().includes(search.toLowerCase()) : true)),
-    [pagesRaw, search]
-  );
-  const recentPosts = useMemo(
-    () => [...pagesRaw].filter(Boolean).sort((a, b) => new Date(b.updated ?? b.created) - new Date(a.updated ?? a.created)).slice(0, 5),
-    [pagesRaw]
-  );
+
 // ── Tabs constants ─────────────────────────────────────
 
 useEffect(()=>{
@@ -156,45 +160,51 @@ useIonViewDidLeave(() => {
 
 
 
-const AboutPanel = ({ profile:prof,city}) => {
+// const AboutPanel = ({ profile:prof,city}) => {
 
 
-  const hashTags = prof?.hashtags ?? [];
-  if (!prof) return null;
+//   const hashTags = prof?.hashtags ?? [];
+//   if (!prof) return null;
 
 
-  return (
-    <div className="space-y-6">
-    <div>
-        <p className="text-sm text-gray-700 leading-relaxed">
-          {  prof.selfStatement}
-        </p>
-        </div>
+//   return (
+//     <div className="space-y-6">
+//     {/* <div>
+//         <p className="text-sm text-gray-700 leading-relaxed">
+//           {  prof.selfStatement}
+//         </p>
+//         </div> */}
+//             <div className="space-y-6 px-4">
+//       {(profile.bio || profile.selfStatement) && (
+//         <p className="text-sm text-gray-700 leading-relaxed">
+//           {profile.bio ?? profile.selfStatement}
+//         </p>
+//       )}
 
   
-  <p className="text-xs text-gray-400 uppercase">Location</p>
-{ isPendingLocation ? (
-        <div className="mt-1 h-4 w-32 bg-gray-200 skeleton rounded animate-pulse shadow-sm" />
-      ) : (
-        <p className="text-sm text-gray-700 mt-1">{locationName}</p>
-      )}
-        {/* {!isPendingLocation &&locationName.length>0 ? (
-          <p className="text-sm text-gray-700 mt-1">{locationName}</p>
-        ) : (
-          <div className="mt-1 h-4 w-32 bg-gray-200 rounded animate-pulse shadow-sm" />
-        )} */}
-      {hashTags.length > 0 && (
-        <div>
-          <p className="text-xs text-gray-400 uppercase mb-2">Interests</p>
-          <div className="flex flex-wrap gap-2">
-            {hashTags.slice(0, 5).map((tag, i) => (
-              <Pill key={i} onClick={()=>router.push(Paths.hashtag.createRoute(tag.id))}label={`#${tag.name }`} />
-            ))}
-          </div>
-        </div>
+//   <p className="text-xs text-gray-400 uppercase">Location</p>
+// { isPendingLocation ? (
+//         <div className="mt-1 h-4 w-32 bg-gray-200 skeleton rounded animate-pulse shadow-sm" />
+//       ) : (
+//         <p className="text-sm text-gray-700 mt-1">{locationName}</p>
+//       )}
+//         {/* {!isPendingLocation &&locationName.length>0 ? (
+//           <p className="text-sm text-gray-700 mt-1">{locationName}</p>
+//         ) : (
+//           <div className="mt-1 h-4 w-32 bg-gray-200 rounded animate-pulse shadow-sm" />
+//         )} */}
+//       {hashTags.length > 0 && (
+//         <div>
+//           <p className="text-xs text-gray-400 uppercase mb-2">Interests</p>
+//           <div className="flex flex-wrap gap-2">
+//             {hashTags.slice(0, 5).map((tag, i) => (
+//               <Pill key={i} onClick={()=>router.push(Paths.hashtag.createRoute(tag.id))}label={`#${tag.name }`} />
+//             ))}
+//           </div>
+//         </div>
          
-      )}</div>)
-    }
+//       )}</div></div>)
+//     }
 
 
 {/* // ── Minimal Empty State ────────────────────────────── */}
@@ -278,14 +288,10 @@ const tabs = [
   { key: TABS.ABOUT, label: "About" },
 ];
  const [isSelf,setIsSelf]=useState(false)
-useEffect(()=>{
-  try{
-  setIsSelf(prof.id==current.id)
-
-  }catch(err){
-    console.log(isSelf)
-  }
-},[profile,currentProfile])
+useEffect(() => {
+  if (!profile || !currentProfile) return;
+  setIsSelf(profile.id === currentProfile.id);
+}, [profile, currentProfile]);
   // ── Render
    const [locationName,setLocationName]=useState("Location not specified")
   const [isPendingLocation,setIsPendingLocation]=useState(true)
@@ -422,9 +428,9 @@ useEffect(()=>{
             <TabBar tabs={tabs} active={tab} onChange={setTab} />
             </div>
            
-<div>
-          {/* Content */}
-          <div className="space-y-10 min-h-[40rem]">
+{/* <div> */}
+      
+          <div className={`${WRAP} space-y-10 min-h-[40rem]`}>
             {tab === TABS.POSTS && (
               <>
                 {search.length==0 && recentPosts.length > 0 && (
@@ -451,7 +457,7 @@ useEffect(()=>{
             )}
 
             {tab === TABS.COMMUNITIES && <CommunitiesPanel communities={communities} router={router} />}
-            {tab === TABS.ABOUT && <AboutPanel profile={profile} city={locationName} />}
+            {tab === TABS.ABOUT && <AboutPanel router={router} profile={profile}  />}
           </div>
 
           {/* Explore */}
@@ -460,7 +466,7 @@ useEffect(()=>{
           </div>
         </div>
          {/* your existing UI */}
-    </div>
+    {/* </div> */}
       </IonContent>
     </ErrorBoundary>
   );
