@@ -24,7 +24,7 @@ const TABS = {
   COMMUNITIES: "communities",
   ABOUT: "about",
 };
-const WRAP = "w-[100%] mx-auto ";
+const WRAP = "w-[100%] max-w-[50em] px-4 mx-auto ";
 const tabWrapper = "max-w-lg mx-auto px-4 pb-4"; // same for both containers
 function MyProfileContainer() {
   const { setSeo  } = useContext(Context);
@@ -193,7 +193,7 @@ const StatChip = ({ value, label }) => (
                   
             </div>
           {/* Header */}
-          <div className={`${WRAP} max-w-[50em] pt-8 space-y-6`}>
+          <div className={`${WRAP} max-w-[50em] px-4 pt-8 space-y-6`}>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <ProfileInfo profile={profile} compact />
