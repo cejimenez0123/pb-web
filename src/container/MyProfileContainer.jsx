@@ -24,29 +24,25 @@ const TABS = {
   COMMUNITIES: "communities",
   ABOUT: "about",
 };
-const WRAP = "max-w-2xl mx-auto px-4";
+const WRAP = "w-[100%] mx-auto ";
 const tabWrapper = "max-w-lg mx-auto px-4 pb-4"; // same for both containers
 function MyProfileContainer() {
-    const { setSeo  } = useContext(Context);
-
+  const { setSeo  } = useContext(Context);
   const profile = useSelector((state) => state.users.currentProfile);
   const {myCollections:collectionsRaw}=useSelector(state=>state.books)
-  const pagesRaw=useSelector(state=>state.pages.myPages.filter(p=>p))
-  const communities  =collectionsRaw?.filter(col=>col?.type=="library")??[]
- 
-;
+  const pagesRaw = useSelector(state=>state.pages.myPages.filter(p=>p))
+  const communities  =collectionsRaw?.filter(col=>col?.childCollections>0??[])
+  const dispatch = useDispatch();
+  const router = useIonRouter();
 const debouncedSearch = useMemo(
   () => debounce((value) => setSearch(value), 250),
   []
 );
-useEffect(()=>{
 
-})
 useEffect(() => {
   return () => debouncedSearch.cancel?.();
 }, [debouncedSearch]);
-  const dispatch = useDispatch();
-  const router = useIonRouter();
+ 
   // const { id } = useParams();
 
   const [tab, setTab] = useState(TABS.POSTS);
@@ -66,7 +62,7 @@ useEffect(() => {
 
   // ── Derived
   const collections = useMemo(
-    () => collectionsRaw.filter(Boolean).filter((col) => (search ? col.title?.toLowerCase().includes(search.toLowerCase()) : true)),
+    () => collectionsRaw.filter(Boolean).filter((col) => (search ? col.childCollections==0 && col.title?.toLowerCase().includes(search.toLowerCase()) : true)),
     [collectionsRaw, search]
   );
     const recentCollections = useMemo(
@@ -197,7 +193,7 @@ const StatChip = ({ value, label }) => (
                   
             </div>
           {/* Header */}
-          <div className={`${WRAP} pt-8 space-y-6`}>
+          <div className={`${WRAP} max-w-[50em] pt-8 space-y-6`}>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <ProfileInfo profile={profile} compact />
@@ -228,7 +224,7 @@ const StatChip = ({ value, label }) => (
             )}
 
             {(communities?.length ?? 0) > 0 && (
-              <div className="space-y-2">
+              <div className="space-y-2 px-4">
                 <p className="text-xs text-gray-400 uppercase">Communities</p>
                 <div className="flex flex-wrap gap-2 ">
                   {communities.slice(0, 3).map((c) => <div >
@@ -309,7 +305,7 @@ const StatChip = ({ value, label }) => (
           }
 
             {tab === TABS.COMMUNITIES && <CommunitiesPanel router={router} communities={communities} />}
-            {tab === TABS.ABOUT && <AboutPanel router={router} profile={profile} />}
+            {tab === TABS.ABOUT && <AboutPanel router={router} profile={profile}  />}
           </div>
 </div>
 </div>

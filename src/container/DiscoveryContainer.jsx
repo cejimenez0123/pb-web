@@ -3,28 +3,37 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useState, useEffect, useLayoutEffect, useContext } from 'react';
 import '../styles/Discovery.css';
 import '../Dashboard.css';
-import { getPublicStories, setPagesInView } from '../actions/PageActions.jsx';
-import { getPublicCollections, setCollections } from '../actions/CollectionActions.js';
+import { getPublicStories, } from '../actions/PageActions.jsx';
+import { getPublicCollections, } from '../actions/CollectionActions.js';
 import { getPublicLibraries } from '../actions/LibraryActions.jsx';
 import checkResult from '../core/checkResult.js';
 import { useMediaQuery } from 'react-responsive';
 import {BookListItem} from '../components/BookListItem.jsx';
-import { initGA, sendGAEvent } from '../core/ga4.js';
-import ListView from '../components/page/ListView.jsx';
+import { initGA} from '../core/ga4.js';
 import ScrollDownButton from '../components/ScrollDownButton.jsx';
 import Context from '../context.jsx';
 import Paths from '../core/paths.js';
 import useScrollTracking from '../core/useScrollTracking.jsx';
 import sortItems from '../core/sortItems.js';
-import {   IonContent, IonItem, IonList, IonText, useIonRouter } from '@ionic/react';
+import {   IonContent, useIonRouter } from '@ionic/react';
 import PageList from '../components/page/PageList.jsx';
 import Enviroment from '../core/Enviroment.js';
 import SectionHeader from '../components/SectionHeader.jsx';
-import EmptyState from '../components/EmptyState.jsx';
 import HorizontalScroll from '../components/HorizontalScroll.jsx';
-import BookDashboardItem from '../components/collection/BookDashboardItem.jsx';
-import DashboardItem from '../components/page/DashboardItem.jsx';
 import {motion} from "framer-motion"
+// ── Layout System (Discovery + global reuse) ─────────────────
+
+const PAGE_WRAP = " mx-auto   pb-24";
+
+const SECTION_STACK = "space-y-4 sm:space-y-6";
+
+const SECTION = "space-y-4";
+
+const SECTION_HEADER = "px-0 sm:px-0"; // keep headers aligned with content
+
+const H_SCROLL_WRAP = "px-0 sm:px-0 -mx-4 sm:mx-0";
+
+const H_SCROLL_ROW = "flex flex-row gap-4";
 function DiscoveryContainer() {
   const { seo,setSeo } = useContext(Context);
   const  currentProfile = useSelector(state=>state.users.currentProfile)
@@ -116,73 +125,22 @@ const itemVariants = {
     transition: { duration: 0.3, ease: "easeOut" },
   },
 };
-// const LibraryForums = () => {
-//   if (!libraries) return null;
 
-//   return (
-//     <div className="">
-//       <IonText
-//       style={{"--padding-bottom":"4em"}}
-//         className={`text-emerald-900 ${
-//           isNotPhone ? 'ml-16 pl-6' : 'ml-16'
-//         } mb-4 lora-bold font-extrabold text-2xl`}
-//       >
-//         Communities
-//       </IonText>
-
-//       {/* Horizontal scroll area */}
-//       <div    style={{"--padding-top":"4em"}} className="mb-4">
-//         <div className="flex flex-row overflow-x-auto overflow-y-clip  space-x-4 px-4 no-scrollbar">
-//           {libraries.map((library) => (
-         
-//               <BookListItem book={library} />
-       
-//           ))}
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-//   const BookList = () => {
-
-//     if (!books) return null;
-//     return (
-//       <div className=''>
-//         <h3     style={{"--padding-bottom":"4em"}} className="text-emerald-900 text-left bg-transparent font-extrabold ml-16  mb-4 text-2xl">
-//           Collections
-//         </h3>
-// <div className="mb-4 bg-transparent ">
-
-//          <IonList style={{background:"transparent"}} className="bg-transparent">
-        
-//           <div className="flex flex-row  overflow-x-auto overflow-y-clip h-[14rem] space-x-4 px-4 no-scrollbar">
-//           {books.map((book, i) => {
-//             const id = `${book.id}_${i}`;
-//             return (
-         
-//                 <BookListItem book={book} />
-        
-//             );
-//           })}
-//           </div>
-//           </IonList>
-//     </div>
-
-//       </div>
-//     );
-//   };
 
 return<IonContent style={{ "--background": Enviroment.palette.base.background }}>
-  <div className="max-w-[45em] mx-auto pb-24 space-y-10">
+<div className={PAGE_WRAP}>
 
     {/* Communities */}
+    <div className={SECTION}>
+  {/* <SectionHeader title="Communities" /> */}
+  <div className='px-4 max-w-[50em] mx-auto'>
     <SectionHeader title="Communities" />
 
+</div>
+<div className={H_SCROLL_WRAP}>
+  <HorizontalScroll>
+    <motion.div className={H_SCROLL_ROW}
 
-<HorizontalScroll>
-  <motion.div
-    className="flex flex-row space-x-4"
     variants={containerVariants}
     initial="hidden"
     animate="show"
@@ -194,13 +152,18 @@ return<IonContent style={{ "--background": Enviroment.palette.base.background }}
     ))}
   </motion.div>
 </HorizontalScroll>
+</div>
     {/* </HorizontalScroll> */}
-
+</div>
     {/* Collections */}
+    <div className={SECTION}>
+ <div className='px-4 max-w-[50em] mx-auto'>
     <SectionHeader title="Collections" />
-<HorizontalScroll>
-  <motion.div
-    className="flex flex-row space-x-4"
+    </div>
+<div className={H_SCROLL_WRAP}>
+  <HorizontalScroll>
+    <motion.div className={H_SCROLL_ROW}
+
     variants={containerVariants}
     initial="hidden"
     animate="show"
@@ -212,10 +175,14 @@ return<IonContent style={{ "--background": Enviroment.palette.base.background }}
     ))}
   </motion.div>
 </HorizontalScroll>
-
+</div>
+</div>
     {/* Pages */}
+    <div className={SECTION}>
+  <div className='px-4 max-w-[50em] mx-auto'>
     <SectionHeader title="Pages" />
-    <div className='px-4'>
+    </div>
+    <div className='px-4 max-w-[50em] mx-auto'>
   <PageList items={viewItems} />
   </div>
 
@@ -225,6 +192,7 @@ return<IonContent style={{ "--background": Enviroment.palette.base.background }}
         onClick={() => router.push(Paths.onboard)}
       />
     )}
+  </div>
   </div>
 </IonContent>
 

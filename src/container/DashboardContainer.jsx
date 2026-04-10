@@ -478,9 +478,9 @@ scrollY: false,
      
           
        </div>
+       <div className='pb-40'>
         <ExploreList items={collections} />
-   {/* </div>
-   */}
+ </div>
       </ErrorBoundary>
   );
 }
