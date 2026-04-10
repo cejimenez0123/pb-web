@@ -174,11 +174,7 @@ const StatChip = ({ value, label }) => (
 
 
  
-  if (!profile) return <IonContent
-  fullscreen
-  scroll-y="true"
-  style={{ "--background": Enviroment.palette.base.surface}}
->Loading...</IonContent>;
+ if (!profile) return <EmptyProfileState />;
   return (
 
       <IonContent
@@ -321,3 +317,40 @@ const StatChip = ({ value, label }) => (
 }
 
 export default MyProfileContainer;
+
+
+function EmptyProfileState() {
+  const router = useIonRouter();
+
+  return (
+    <IonContent
+      fullscreen
+      scroll-y="true"
+      style={{ "--background": Enviroment.palette.base.background }}
+    >
+      <div className="max-w-[50em] mx-auto px-4 pt-16 space-y-6 text-center">
+
+        <h1 className="text-2xl font-semibold text-emerald-800">
+          Welcome to Plumbum
+        </h1>
+
+        <p className="text-gray-600 text-sm leading-relaxed">
+          Sign in to view your profile, stories, collections, and communities.
+        </p>
+
+        <div
+          onClick={() => router.push(Paths.login())}
+          className="
+            mx-auto w-fit px-6 py-3
+            rounded-full
+            bg-emerald-700 text-white
+            shadow-md active:scale-95 transition
+          "
+        >
+          Log in / Sign up
+        </div>
+
+      </div>
+    </IonContent>
+  );
+}

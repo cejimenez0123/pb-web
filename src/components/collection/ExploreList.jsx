@@ -47,7 +47,7 @@ export default function ExploreList({ collection }) {
     return () => {
       mounted = false;
     };
-  }, [currentProfile, collection, dispatch]);
+  }, [collection]);
 
   return (
     <div className={`${WRAP} pb-36 ${SECTION_GAP}`}>

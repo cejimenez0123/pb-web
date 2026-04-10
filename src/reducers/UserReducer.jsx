@@ -181,8 +181,11 @@ state.notifications = payload
         state.signedIn = false
         
       
+    }).addCase(signOutAction.pending,(state,{payload})=>{
+        state.loading = true
     }).addCase(signOutAction.rejected,(state,{payload})=>{
         state.error = payload.error
+             state.signedIn = false
     })
 
     .addCase(setDialog.type,(state,{payload})=>{

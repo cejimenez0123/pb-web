@@ -41,15 +41,25 @@ const PageWrapper = ({
 
   title = ''
 }) => {
+
   const [menuOpen, setMenuOpen] = useState(false);
   const pageRef = useRef(null);
   const router = useIonRouter();
   const { setPresentingEl } = useContext(Context);
    const isDev = import.meta.env.VITE_NODE_ENV=="dev"
 const isNativePlatform = Capacitor.isNativePlatform();
-
+const requireAuth = (action) => {
+  return () => {
+    if (!currentProfile?.id) {
+      router.push(Paths.login()); // or onboarding
+      return;
+    }
+    action?.();
+  };
+};
 const isNative = (isDev || isNativePlatform)
-const {currentProfile}=useSelector(state=>state.users)
+const {currentProfile,loading,signedIn}=useSelector(state=>state.users)
+  const isAuthed = !!currentProfile?.id;
 const myCollections=useSelector(state=>state.books.myCollections.filter(t=>t))
 const myStories=useSelector(state=>state.pages.myPages.filter(t=>t))
 // const  /
@@ -61,12 +71,12 @@ const dispatch = useDispatch()
     const [archiveCol, setArchiveCol] = useState(null);
     const { openDialog, dialog,resetDialog } = useDialog()
     useEffect(() => {
-      if (!currentProfile) return;
+    
     
        dispatch(getMyCollections());
     dispatch(getMyStories());
     }, []);
-    
+  
        useEffect(() => {
                     
                     if (currentProfile?.profileToCollections) {
@@ -188,8 +198,8 @@ let signedInMenu = [
   { label: "Your drafts", action: () => {openDrafts() }},
   { label: "Collections", action: () => {openCollections()} },
   { label: "Libraries", action: () => {openCommunities()} },
-    { label: "Saved", action: () => {router.push(Paths.collection.createRoute(homeCol.id))} },
-  { label: "Archives", action: () => {router.push(Paths.collection.createRoute(archiveCol.id))} },
+    { label: "Saved", action: () => {router.push(Paths.collection.createRoute(homeCol?.id))} },
+  { label: "Archives", action: () => {router.push(Paths.collection.createRoute(archiveCol?.id))} },
  
   { label: "Dashboard", action: () => {router.push(Paths.home) }},
 
@@ -345,6 +355,9 @@ let signedInMenu = [
       </IonPage>
     );
   }
+  if (!currentProfile?.id&&loading) {
+  return <IonContent />;
+}
   return (
     <IonPage
       ref={pageRef}

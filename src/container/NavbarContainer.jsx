@@ -170,7 +170,7 @@ return(
     <li>
       <button 
         className="w-full text-left" 
-        onClick={() => dispatch(signOutAction({ profile: currentProfile }))}
+        onClick={() => dispatch(signOutAction({profile:currentProfile}).then(res=>router.push(Paths.login())))}
       >
         Logout
       </button>

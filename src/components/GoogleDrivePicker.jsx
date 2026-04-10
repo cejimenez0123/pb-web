@@ -11,8 +11,7 @@ import Enviroment from '../core/Enviroment';
 export default function GoogleDrivePicker({ onFilePicked, onReauthenticateNeeded }) {
 
 
-  const { dialog, isPhone, } = useContext(Context);
-  const dispatch = useDispatch();
+  const {  isPhone, } = useContext(Context);
   const [files, setFiles] = useState([]);
   const [accessToken, setAccessToken] = useState(null);
    const driveTokenKey = "googledrivetoken";
@@ -36,7 +35,7 @@ export default function GoogleDrivePicker({ onFilePicked, onReauthenticateNeeded
   // --- Native Google Sign-In Flow ---
 const nativeGoogleSignIn = async () => {
     try {
-     
+     console.log("WHATS UP")
       const user = await SocialLogin.login({
         provider:"google",
         options:{
@@ -154,7 +153,7 @@ const fetchFiles = async () => {
 
   return (
     <button 
-  onClick={!accessToken ? () => nativeGoogleSignIn() : () => open()}  
+  onClick={() => nativeGoogleSignIn()}  
   className={`
     flex items-center justify-start text-center 
      btn

@@ -17,6 +17,7 @@ const createProfile= createAsyncThunk("users/createProfile",async (params,thunkA
 
     const data = await profileRepo.create(params)
     const profile = data.profile
+    console.log(token)
     if(data.token){
     
        await Preferences.set({key:"token",value:JSON.stringify(data.token)})

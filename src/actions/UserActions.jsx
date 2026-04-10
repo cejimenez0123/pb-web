@@ -11,14 +11,13 @@ const logIn = createAsyncThunk(
    
      
 try{        const {uId,email,password,idToken,isNative}=params
+console.log("AUTH LOG WHAT")
 
-console.log("Toch")
         const authData = await authRepo.startSession({uId:uId,email:email,password,identityToken:idToken})
    
         
         const {token}=authData  
-console.log("toch FOR",authData)
-  
+  console.log("WHAT TOKEN",token)
          await Preferences.set({key:"token",value:token})
   
         return {token:token,profile:authData.profile}
@@ -37,6 +36,7 @@ const signOutAction = createAsyncThunk('users/signOut',async (params,thunkApi)=>
     try{
        await Preferences.clear()
    await signOut(auth)
+   return 
     }catch(err){
       
     }
