@@ -109,11 +109,11 @@ const handleOpenCommentInput = () => {
       <div tabIndex={0} role="button">
         <IonImg src={horiz} className="max-w-5 max-h-5 cursor-pointer" />
       </div>
-      <ul tabIndex={0} className="dropdown-content bg-cream menu text-emerald-800 rounded-box z-[1] w-52 p-2 shadow">
-        <li className="p-2 hover:bg-emerald-50 rounded" onClick={handleEdit}>
+      <ul tabIndex={0} className="dropdown-content bg-base-bg  menu text-emerald-800 rounded-box z-[1] w-52 p-2 shadow">
+        <li className="p-2 bg-base-bg  hover:bg-sky-100 rounded" onClick={handleEdit}>
           Edit
         </li>
-        <li className="p-2 hover:bg-emerald-50 rounded" onClick={handleDelete}>
+        <li className="p-2 bg-base-bg  hover:bg-sky-100 rounded" onClick={handleDelete}>
           Delete
         </li>
       </ul>

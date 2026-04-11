@@ -1,4 +1,5 @@
 
+
 import { useDialog } from '../domain/usecases/useDialog';
 
 import {
@@ -434,7 +435,7 @@ overflow-y-auto pb-20
           className="w-14 h-14 rounded-md object-cover"
         /> */}
         {/* <div className='pt-12'> */}
-          <div className="flex items-center gap-3 pb-6 border-b border-soft">
+          <div className="flex items-center gap-3 pb-6 pt-10 overflow-y-scroll border-b border-soft">
     <div>
       <p className="text-xs text-gray-500">Welcome back</p>
       <p className="text-base font-semibold text-emerald-800">
@@ -451,10 +452,15 @@ overflow-y-auto pb-20
   <button
     key={item.label}
    className="
+   rounded-s-full
           text-left 
           text-[1rem] 
-          text-emerald-700 
-          hover:text-emerald-900 
+          bg-base-surface
+          text-soft 
+          my-1
+       
+          hover:bg-purple
+          hover:text-green
           transition
         " onClick={() => {
       setMenuOpen(false); // close menu first
@@ -470,16 +476,44 @@ overflow-y-auto pb-20
       <div className="flex-1" />
 
       {/* FOOTER */}
-      <div className="flex flex-col  gap-3 pt-6 border-t border-soft">
+      <div className="flex flex-col  gap-3 pb-20 border-t border-soft">
   
         <button onClick={() =>{ 
           openReferral()
-          className="text-left text-emerald-700"
+       setMenuOpen(false)}}
+          className=" rounded-s-full
+          text-left 
+          text-[1rem] 
+          bg-base-surface
+          text-soft 
+          my-1
+         
+          hover:bg-purple
+        hover:text-green
+          transition"
     
-           setMenuOpen(false)}}>Refer a friend 🥰</button>
-        <button  className="text-left text-emerald-700"
+           >Refer a friend 🥰</button>
+        <button  className=" rounded-s-full
+          text-left 
+          text-[1rem] 
+          bg-base-surface
+          text-soft 
+          my-1
+        
+          hover:bg-purple
+         hover:text-green
+          transition"
     onClick={() => router.push(Paths.feedback())}>Report a bug</button>
-        {currentProfile && <button className="text-left text-emerald-700"
+        {currentProfile && <button className=" rounded-s-full
+          text-left 
+          text-[1rem] 
+          bg-base-surface
+          text-soft 
+          my-1
+        
+          hover:bg-purple
+          hover:text-green
+          transition"
     onClick={() => router.push(Paths.editProfile)}>Settings ⚙️</button>}
       </div>
 

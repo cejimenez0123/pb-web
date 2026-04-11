@@ -76,26 +76,18 @@ function PlacesSearchMap({ initLocationName, onLocationSelected }) {
           onChange={handleInput}
           disabled={!ready}
           placeholder="Search a place"
-          className="input input-bordered w-full"
+          className="input bg-base-bg w-[100%] border border-1 border-earth input-bordered "
         />
 
-        {/* {status === "OK" && ( */}
-{/* <div className="dropdown w-full">
-  <input
-    tabIndex={0}
-    className="input input-bordered w-full"
-    value={value || ""}
-    onChange={handleInput}
-    placeholder="Search a place"
-  /> */}
+
 
   {status === "OK" && (
   
-  <div className="bg-white border rounded-box shadow max-h-60 overflow-auto">
+  <div className="bg-base-bg border rounded-box shadow max-h-60 overflow-auto">
     {data.map((suggestion) => (
       <div
         key={suggestion.place_id}
-        className="p-3 cursor-pointer hover:bg-base-200"
+        className="p-3 cursor-pointer text-soft hover:bg-sky-200"
         onClick={() => handleSelect(suggestion)}
       >
         {suggestion.description}

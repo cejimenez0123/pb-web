@@ -6,6 +6,12 @@ background-color: #f4f4e0!important;
   width: 100vw;
 
 }
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
 .lora-medium{
   font-family: "Lora", serif;
   font-optical-sizing: auto;

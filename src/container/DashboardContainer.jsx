@@ -22,6 +22,8 @@ import { Capacitor } from '@capacitor/core';
 import { getMyCollections } from '../actions/CollectionActions.js';
 import StoryDashboardItem from '../components/StoryDashboardItem.jsx';
 import SectionHeader from '../components/SectionHeader.jsx';
+import { useMediaQuery } from 'react-responsive';
+import { useResponsiveGrid } from '../core/ResponsiveGrid.jsx';
 function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex = 0, role = "button" }) {
   return (
     <span
@@ -52,11 +54,15 @@ const ACTION_ROW = "flex flex-col items-center gap-4 w-full";
 function DashboardEmbed() {
 
   const currentProfile = useSelector(state=>state.users.currentProfile)
- 
+ const isTablet = useMediaQuery({ query: '(min-width: 768px)' });
+const isDesktop = useMediaQuery({ query: '(min-width: 1024px)' });
   const router = useIonRouter()
   const dispatch = useDispatch();
    const collectionsRaw = useSelector(state => state.books.collections) ?? [];
-
+// const { columns, visibleCount } = useResponsiveGrid();
+const { columns, rows } = useResponsiveGrid();
+const visibleCount = columns * rows;
+console.log("VISTIBLE",visibleCount)
 const collections = collectionsRaw
   .slice() // safer than spread in this context
   .sort((a, b) => new Date(b.updated) - new Date(a.updated));
@@ -106,7 +112,7 @@ const openYourWorkshops=()=>{
     disagree:()=>resetDialog(),
     text: (<div className=''>
 
-      <div className={`bg-cream overflow-y-auto  px-4 ${isNative? "h-[36rem] sm:h-[40rem] md:h-[48rem] lg:h-[50rem]":"h-[30rem] sm:h-[40rem] md:h-[48rem] lg:h-[50rem]"}`}> 
+      <div className={`bg-cream overflow-y-auto  px-4 ${isNative? "h-[36rem] w-[100%] sm:h-[40rem] md:h-[48rem] lg:h-[50rem]":"h-[30rem] w-[100%] sm:h-[40rem] md:h-[48rem] lg:h-[50rem]"}`}> 
         <IonList 
          style={{
           backgroundColor: Enviroment.palette.cream,
@@ -303,7 +309,8 @@ scrollY: false,
 });
 
   };
-  
+//  const columns = isDesktop ? 3 : isTablet ? 2 : 1;
+// const visibleCount = columns * 2; 
 
  return (
         <ErrorBoundary>
@@ -450,35 +457,109 @@ scrollY: false,
           
              
 </div>
-              {workshop?<div className='px-4'><WorkshopItem workshop={workshop}/></div>:<div><h2>Click Join a Workshop or Studio below</h2></div>}
-            
+             <div className="relative min-h-[120px]">
+  <div
+    className={`
+      transition-all duration-300 ease-out
+      ${workshop ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2 pointer-events-none absolute inset-0"}
+    `}
+  >
+    {workshop && (
+      <div className="px-4">
+        <WorkshopItem workshop={workshop} />
+      </div>
+    )}
+  </div>
+
+  <div
+    className={`
+      transition-all duration-300 ease-out
+      ${!workshop ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2 pointer-events-none absolute inset-0"}
+    `}
+  >
+    {!workshop && (
+      <div className="px-4">
+        <h2 className="text-lg text-soft">
+          Click Join a Workshop or Studio below
+        </h2>
+      </div>
+    )}
+  </div>
+</div>
             </div>
         
-               <div className={`${WRAP} ${SECTION_GAP}`}>
+               <div className={` ${SECTION_GAP}`}>
   <div className={SECTION_HEADER_ROW}>
-<SectionHeader title={"Rcenent Pages"}/>
+<SectionHeader title={"Recent Pages"}/>
          
 
   <h5
-    className="text-md text-emerald-700 cursor-pointer mt-4 pr-4 hover:opacity-70 transition"
+    className="text-[1rem] text-soft cursor-pointer mt-4 pr-4 hover:opacity-70 transition"
     onClick={ClickWriteAStory}
   >
     Write Something new +
   </h5>
 </div>
-              <div className="grid grid-cols-1 px-4 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="w-full px-4 grid gap-4 auto-rows-fr items-stretch">
+  <div className="relative min-h-[120px]">
 
-                {myStories.length==0?<div>This is a beginning. Start writing</div>:[...(myStories)]
-  .sort((a, b) => a.updated - b.updated)
-  .slice(0, 4)
-  .map(story => <StoryDashboardItem story={story} router={router}/>)}
+  {/* EMPTY STATE */}
+  <div
+    className={`
+      transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]
+      ${myStories.length === 0
+        ? "opacity-100 translate-y-0"
+        : "opacity-0 -translate-y-2 pointer-events-none absolute inset-0"}
+    `}
+  >
+    {myStories.length === 0 && (
+      <div className="px-4 text-soft text-sm">
+        This is a beginning. Start writing
+      </div>
+    )}
+  </div>
+
+  {/* STORIES LIST */}
+  <div
+    className={`
+      transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]
+      ${myStories.length > 0
+        ? "opacity-100 translate-y-0"
+        : "opacity-0 translate-y-2 pointer-events-none absolute inset-0"}
+    `}
+  >
+    {myStories.length > 0 &&  (
+<div
+  className="w-full px-4 grid gap-4"
+  style={{
+    gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
+  }}
+>
+    {[...myStories]
+      .sort((a, b) => b.updated - a.updated) // newest first 🔥
+      .slice(0, visibleCount)
+      .map((story, index) => (
+        <div
+          key={story.id}
+         className="transition-all duration-300"
+          style={{
+            transitionDelay: `${index * 60}ms`
+          }}
+        >
+          <StoryDashboardItem story={story} router={router} />
+        </div>
+      ))}
+  </div>
+)}
+   </div>
+</div>
          </div>  
             
             
      
           
        </div>
-      <div className={`${WRAP} pt-6 border-t border-gray-100`}>
+      <div className={` pt-6 pb-10  border-t  border-gray-100`}>
         <ExploreList items={collections} />
  </div>
       </ErrorBoundary>
@@ -486,3 +567,4 @@ scrollY: false,
 }
 
 export default DashboardEmbed
+

@@ -5,7 +5,7 @@ import { IonImg, useIonRouter } from "@ionic/react"
 import LinkPreview from "../LinkPreview"
 import Context from "../../context"
 import { PageType } from "../../core/constants"
-import loadingGif from "../../images/loading.gif"
+
 import Enviroment from "../../core/Enviroment"
 import Paths from "../../core/paths"
 function DataElement({page,isGrid,book=null,html=null}){
@@ -91,7 +91,11 @@ case PageType.link:{
 }
 default:
     return(<div        className={`skeleton `}>
-   <IonImg src={loadingGif}/>
+   <IonLoading
+  isOpen={!page}
+  message={"Loading your space..."}
+  spinner="crescent"
+/>
 </div>)
 }
 }

@@ -3,7 +3,7 @@ import authRepo from "../../data/authRepo"
 import Context from "../../context"
 import loadingGif from "../../images/loading.gif"
 import copyContent from "../../images/icons/content_copy.svg"
-import { IonImg } from "@ionic/react"
+import { IonImg, IonLoading } from "@ionic/react"
 
 export default function ReferralForm({ onClose }) {
   const [name, setName] = useState("");
@@ -59,7 +59,12 @@ export default function ReferralForm({ onClose }) {
 
       {/* Link Section */}
       {pending ? (
-        <IonImg src={loadingGif} className="w-10 mx-auto my-6" />
+        
+        <IonLoading
+  isOpen={pending}
+  message={"Loading your space..."}
+  spinner="crescent"
+/>
       ) : referralLink ? (
         <div className="flex items-center gap-2 bg-gray-100 rounded-xl px-3 py-2">
           <input

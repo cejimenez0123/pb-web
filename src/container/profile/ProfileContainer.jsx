@@ -72,11 +72,11 @@ function ProfileContainer() {
   const pagesRaw = useSelector((state) => state.pages.pagesInView ?? []);
   const collectionsRaw = useSelector((state) => state.books.collections?? []);
   const collections = useMemo(
-    () => collectionsRaw.filter(Boolean).filter((col) => (search ? col.childCollections.length == 0&& col.title?.toLowerCase().includes(search.toLowerCase()) : true)),
+    () => collectionsRaw.filter(Boolean).filter((col) => (search ?col && col?.childCollections?.length == 0&& col.title?.toLowerCase().includes(search.toLowerCase()) : true)),
     [collectionsRaw, search]
   );
   const communities = useMemo(
-    () => collectionsRaw.filter(col=>(col && col.type=="library"||col.childCollections.length>0)).filter((col) => (search ? col.title?.toLowerCase().includes(search.toLowerCase()) : true)),
+    () => collectionsRaw.filter(col=>(col && col.type=="library"||col?.childCollections?.length>0)).filter((col) => (search ? col.title?.toLowerCase().includes(search.toLowerCase()) : true)),
     [collectionsRaw, search]
   );
   const pages = useMemo(
@@ -461,12 +461,11 @@ useEffect(() => {
           </div>
 
           {/* Explore */}
-          <div className="pt-6 border-t border-gray-100">
+          <div className="pt-6 pb-10 border-t border-gray-100">
             <ExploreList />
           </div>
         </div>
-         {/* your existing UI */}
-    {/* </div> */}
+    
       </IonContent>
     </ErrorBoundary>
   );

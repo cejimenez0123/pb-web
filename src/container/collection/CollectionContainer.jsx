@@ -96,7 +96,10 @@ export default function CollectionContainer() {
 
    const writeArr = [RoleType.editor, RoleType.writer];
    const {id}=useParams()
-const permissions = computePermissions(collection,currentProfile)
+const permissions = computePermissions(collection,currentProfile)??{canSee:false,
+    canAdd:false,
+    canEdit:false,
+    role:null}
  const  {canSee,
     canAdd,
     canEdit,role}  = permissions
@@ -642,7 +645,7 @@ className={BUTTON_FULL+"btn transition w-[100%] border-blue bg-blue text-cream h
            </div>
    }</div>
    </div>
- <div className={`${WRAP} pt-6 border-t border-gray-100`}>
+ <div className={`${WRAP} pt-6 pb-10 border-t border-gray-100`}>
   <ExploreList collection={collection} />
 </div>
       
@@ -820,7 +823,7 @@ const PageTab = ({ collections }) => {
 const MemberTab = ({ collection }) => {
   const router = useIonRouter()
 
-  const roles = [...collection.roles.filter(role=>role.profile.id!=collection.profile.id), collection.profile ? { role: "owner", profile: collection.profile } : null].filter(r => r).sort((a, b) => a.role.localeCompare(b.role))
+  const roles = [...collection?.roles?.filter(role=>role.profile.id!=collection.profile.id), collection.profile ? { role: "owner", profile: collection.profile } : null].filter(r => r).sort((a, b) => a.role.localeCompare(b.role))
   return (
     <>
     <div className={`${WRAP} ${SECTION}`}>
@@ -975,7 +978,7 @@ function CollectionTabs({ tab, setTab, pages, members, about }) {
               className={`px-4 py-2 font-semibold text-sm transition-colors whitespace-nowrap rounded-full ${
                 tab === t
                   ? "bg-emerald-700 text-white"
-                  : "bg-transparent text-emerald-700 hover:bg-emerald-50"
+                  : "bg-transparent text-soft hover:bg-emerald-50"
               }`}
               onClick={() => setTab(t)}
             >

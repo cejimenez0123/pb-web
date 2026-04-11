@@ -40,7 +40,7 @@ const SCROLL_ROW = "flex gap-4 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0";
 const GRID = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4";
 
 // ── Cards ───────────────────────────────────────
-const CARD = "bg-white rounded-2xl shadow-sm w-full";
+const CARD = "bg-base-bg rounded-2xl shadow-sm w-full";
 const CARD_PAD = "p-4 sm:p-5";
 
 // ── Skeleton ────────────────────────────────────
@@ -49,12 +49,8 @@ const WorkshopItem = ({ item, router }) => {
   if (!item) return <WorkshopItemSkeleton />;
 
   return (
- <IonItem
-  lines="none"
-  style={{ "--background": "transparent" }}
-  className="px-0"
->
-  <div className={`${CARD} ${CARD_PAD} w-[100%]`}>
+
+  <div className={`${CARD} ${CARD_PAD}  w-[100%]`}>
       <IonLabel>
         <h2 className="text-md font-semibold text-emerald-800 truncate">
           {item.title}
@@ -75,7 +71,7 @@ const WorkshopItem = ({ item, router }) => {
         </div>
       </IonLabel>
       </div>
-    </IonItem>
+    // </IonItem>
   );
 };
 
@@ -166,7 +162,7 @@ function HomeEmbed({workshops,stories,prompts,isGlobal,setIsGlobal}) {
           <SectionHeader
             title="Workshops near you"
             right={
-              <div className="flex items-center gap-2">
+              <div className="flex items-center  gap-2">
                 <IonText className="text-sm">{isGlobal ? "Global" : "Local"}</IonText>
                 <IonToggle checked={isGlobal} onIonChange={handleGlobal} />
               </div>
@@ -175,7 +171,7 @@ function HomeEmbed({workshops,stories,prompts,isGlobal,setIsGlobal}) {
          
         
            <div className={SECTION}>
-  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-2">
+  <div className="grid gap-4 sm:grid-cols-2 px-4 lg:grid-cols-2">
             {sortedWorkshops?.length
   ? sortedWorkshops.map(workshop => (
       <WorkshopItem key={workshop.id} item={workshop} router={router} />

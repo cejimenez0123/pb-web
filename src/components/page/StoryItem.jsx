@@ -1,4 +1,4 @@
-import { IonImg, useIonRouter } from "@ionic/react";
+import { IonImg, IonLoading, useIonRouter } from "@ionic/react";
 import LinkPreview from "../LinkPreview";
 import Paths from "../../core/paths";
 import isValidUrl from "../../core/isValidUrl";
@@ -6,10 +6,9 @@ import Enviroment from "../../core/Enviroment";
 import { useContext, useEffect, useState } from "react";
 import Context from "../../context";
 import { PageType } from "../../core/constants";
-import loadingGif from "../../images/loading.gif"
 // ── Card Layout ─────────────────────────────
 const CARD =
-  "bg-softBlue shadow-sm hover:shadow-md rounded-xl transition-shadow duration-200 cursor-pointer";
+  "bg-softBlue mx-4 shadow-sm hover:shadow-md rounded-xl transition-shadow duration-200 cursor-pointer";
 
 const CARD_INNER = "p-4 flex flex-col h-full";
 
@@ -32,7 +31,7 @@ const DESCRIPTION =
 
 // ── Width Behavior (important for HomeEmbed)
 const CARD_WIDTH =
-  "w-[100%] "; // ❗ remove min/max width constraints
+  "w-[100%]"; // ❗ remove min/max width constraints
 function StoryItem({ page, isGrid = true, html = null }) {
   const { isHorizPhone } = useContext(Context);
   const router = useIonRouter();
@@ -52,7 +51,11 @@ function StoryItem({ page, isGrid = true, html = null }) {
     }
   }, [page]);
 
-  if (!page) return <IonImg src={loadingGif} className="w-full h-24 rounded-lg" />;
+  if (!page) return <IonLoading
+  isOpen={!page}
+  message={"Loading your space..."}
+  spinner="crescent"
+/>
 
   const handleClick = () => {
     const target = Paths.page.createRoute(page.id);
@@ -87,31 +90,20 @@ function StoryItem({ page, isGrid = true, html = null }) {
       default:
         return (
           <div className="skeleton w-full h-24 rounded-lg flex items-center justify-center">
-            <IonImg src={loadingGif} />
+         <IonLoading
+  isOpen={loading}
+  message={"Loading your space..."}
+  spinner="crescent"
+/>
           </div>
         );
     }
   };
 
-//   return (
-// <div className={`${CARD} ${CARD_WIDTH}`} onClick={handleClick}>
-//   <div className={CARD_INNER}>
-//       <h2 className="text-lg font-semibold text-emerald-800 mb-2 truncate">
-//         {page.title || "Untitled"}
-//       </h2>
 
-//       <div className="flex-1 mb-2 overflow-hidden">{renderContent()}</div>
-
-//       {page.description && (
-//         <p className="text-sm text-gray-600 line-clamp-3 break-words">
-//           {page.description}
-//         </p>
-//       )}
-//       </div>
-//     </div>
 //   );
 return (
-  <div className="px-4 ">
+  // <div className="px-4 ">
   <div className={`${CARD} ${CARD_WIDTH}`} onClick={handleClick}>
     <div className={`${CARD_INNER} ${STACK_MD}`}>
       
@@ -133,7 +125,7 @@ return (
       )}
     </div>
   </div>
-  </div>
+  // </div>
 );
 }
 

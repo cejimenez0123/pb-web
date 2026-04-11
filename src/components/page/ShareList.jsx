@@ -224,23 +224,7 @@ const handleBookmarkClick = async () => {
         >
         {currentProfile && (
   <div className="text-left w-full px-4">
-{/* {currentProfile && (
-  <div className="text-left w-full px-4">
-    {loadingBookmarkId === page.id ? (
-      <IonImg
-        src={loadingGif}
-        className="mx-auto max-h-10 max-w-10"
-        alt="Saving bookmark"
-      />
-    ) : (
-      <IonImg
-        src={localBookmark ? bookmarkFill : bookmarkadd}
-        className="max-h-10 max-w-10"
-        alt={localBookmark ? "Remove bookmark" : "Add bookmark"}
-      />
-    )}
-  </div>
-)} */}
+
 
   </div>
 )}

@@ -191,11 +191,11 @@ closeDialog()
        
        <div className="dropdown  absolute my-auto relative w-fit z-40 dropdown-left">
   <div  tabIndex={0} role="button" className=" m-1 p-2 rounded-full w-[4rem]  border-2 hover:bg-emerald-600 border border-soft h-[4rem]  "> <IonImg className="  my-auto mx-auto  " style={{width:"3rem", height:"3rem",padding:"0.5em"}} src={edit}/></div>
-  <ul tabIndex={0} className="dropdown-content menu bg-emerald-50 rounded-box z-10 w-52 p-2 shadow">
-  <li className="" onClick={
-        ()=>handleEditClick(item)}><a className=" ">Edit</a></li>
-       {item.author?<li className=" " onClick={handleFeedback}><a className=" "><IonText>Get Feedback</IonText></a></li>:null}
-       {canUserAdd?<li className=" no-underline" onClick={handleAddToClick}><a className="no-underline "><IonText>{item && item.storyIdList!=null?`Add items to ${item?.title}`:"Add to Collection" }</IonText></a></li>:null}
+  <ul tabIndex={0} className="dropdown-content bg-base-bg  hover:bg-sky-100 text-soft  menu rounded-box z-10 w-52 p-2 shadow">
+  <li className="bg-base-bg  hover:bg-sky-100" onClick={
+        ()=>handleEditClick(item)}><a className="bg-base-bg  hover:bg-sky-100 text-soft ">Edit</a></li>
+       {item.author?<li className=" bg-base-bg  hover:bg-sky-100 text-soft" onClick={handleFeedback}><a className=" "><IonText>Get Feedback</IonText></a></li>:null}
+       {canUserAdd?<li className=" no-underline bg-base-bg  hover:bg-sky-100 text-soft" onClick={handleAddToClick}><a className="no-underline bg-base-bg  hover:bg-sky-100 text-soft"><IonText>{item && item.storyIdList!=null?`Add items to ${item?.title}`:"Add to Collection" }</IonText></a></li>:null}
          </ul>
   </div>
        

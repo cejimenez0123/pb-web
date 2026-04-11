@@ -272,25 +272,25 @@ return {
   <div className="space-y-6">
       {/* FILTERS */}
     <div className="space-y-3">
-        <div className="flex gap-2 overflow-x-auto">
-          <button onClick={() => setSelectedArea("")} className={`pill px-4 ${selectedArea==""?"bg-soft text-white":""}`}>
+        <div className="flex gap-2 justify-center overflow-x-auto">
+          <button onClick={() => setSelectedArea("")} className={`pill px-4 ${selectedArea==""?"bg-soft text-white":"bg-purple text-white"}`}>
             All
           </button>
 
           {areas.map((area) => (
            
-            <button key={area} onClick={() => setSelectedArea(area)} className={`pill px-2 mx-1 ${selectedArea==area?"bg-soft hover:bg-card-highlight text-white":""}`}>
+            <button key={area} onClick={() => setSelectedArea(area)} className={`pill px-2 mx-1 ${selectedArea==area?"bg-soft hover:bg-card-highlight text-white":"bg-purple hover:bg-card-highlight text-white"}`}>
               {area}
             </button>
           ))}
         </div>
 
-        <div className="mt-3">
+        <div className="mt-3 max-w-[50em] bg-base-bg rounded-full px-4   px-4 mx-auto">
           <IonInput
             value={searchTerm}
             onIonInput={handleSearchInputChange}
             placeholder="Search events"
-            className="bg-gray-100 rounded-xl px-3 py-2"
+            className="text-soft  bg-base-bg  py-2"
           />
         </div>
       </div>

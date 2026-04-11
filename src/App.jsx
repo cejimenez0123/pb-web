@@ -186,7 +186,7 @@ const showBottomNavbar = (isMobileOrTablet || isNative)  && import.meta.env.VITE
 
 
    
-      <Route path={Paths.onboard} render={()=><PageWrapper presenHeader={false}><OnboardingContainer/></PageWrapper>}/>
+      <Route path={Paths.onboard} render={()=><PageWrapper showBackbutton={false} presentHeader={false}><OnboardingContainer/></PageWrapper>}/>
 
 
             <Route exact path={Paths.notifications()}
@@ -346,7 +346,7 @@ const showBottomNavbar = (isMobileOrTablet || isNative)  && import.meta.env.VITE
     /> 
 
 
-      <Route path="/profile/edit" render={()=>
+      <Route path={Paths.editProfile} render={()=>
   <PageWrapper showBackbutton={false}> 
         <PrivateRoute  >
            

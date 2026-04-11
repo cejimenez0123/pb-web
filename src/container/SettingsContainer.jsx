@@ -9,7 +9,7 @@ import {
 } from "../actions/UserActions";
 import { uploadProfilePicture } from "../actions/ProfileActions";
 import { Geolocation } from "@capacitor/geolocation";
-import { IonContent, useIonRouter } from "@ionic/react";
+import { IonContent, IonLoading, useIonRouter } from "@ionic/react";
 
 import checkResult from "../core/checkResult";
 import Context from "../context";
@@ -290,6 +290,11 @@ dispatch(updateProfile({
     return (
       <IonContent>
         <div className="flex justify-center mt-20">
+         <IonLoading
+  isOpen={loading}
+  message={"Loading your space..."}
+  spinner="crescent"
+/>
           <span className="loading loading-spinner loading-lg text-emerald-600"></span>
         </div>
       </IonContent>
@@ -300,7 +305,7 @@ dispatch(updateProfile({
 
     <IonContent fullscreen>
       
-      <div className="min-h-screen bg-base-200  flex justify-center pt-20 pb-32">
+      <div className="min-h-screen  px-4 bg-base-surface flex justify-center pt-20 pb-32">
 
         <div className="card w-96  sm:max-w-xl p-6 space-y-6">
 
@@ -315,8 +320,8 @@ dispatch(updateProfile({
 setError(err.message)
           }))}}
 
-         className="btn btn-error btn-outline w-full">
-            <h4>Log Out</h4>
+         className="btn mx-4 bg-base-bg btn-error flex btn-outline w-full">
+            <h4 className="mx-auto my-auto">Log Out</h4>
           </div>
           {/* Username */}
 
@@ -328,7 +333,7 @@ setError(err.message)
 
             <input
               type="text"
-              className="input input-bordered"
+              className="input bg-base-bg text-soft input-bordered"
               value={form.username}
               onChange={(e)=>handleChange("username",e.target.value)}
             />
@@ -352,7 +357,7 @@ setError(err.message)
             <input
               type="file"
               accept="image/*"
-              className="file-input file-input-bordered w-full"
+              className="file-input bg-base-bg text-soft file-input-bordered w-full"
               onChange={handleImage}
             />
 
@@ -385,7 +390,7 @@ setError(err.message)
             </label>
 
             <textarea
-              className="textarea textarea-bordered h-32"
+              className="textarea bg-base-bg text-soft textarea-bordered h-32"
               value={form.selfStatement}
               onChange={(e)=>{
                 if(e.target.value.length <= 120){
@@ -408,7 +413,7 @@ setError(err.message)
 
               <input
                 type="checkbox"
-                className="toggle toggle-primary"
+                className="toggle bg-base-bg text-soft toggle-primary"
                 checked={form.isPrivate}
                 onChange={()=>handleChange("isPrivate",!form.isPrivate)}
               />

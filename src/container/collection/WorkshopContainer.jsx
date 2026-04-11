@@ -8,7 +8,7 @@ import Context from '../../context';
 import check from "../../images/icons/check.svg";
 import { Geolocation } from '@capacitor/geolocation';
 import DeviceCheck from '../../components/DeviceCheck';
-import { IonContent, IonInput, useIonRouter, useIonViewWillEnter } from '@ionic/react';
+import { IonContent, IonInput, IonLoading, useIonRouter, useIonViewWillEnter } from '@ionic/react';
 import { setPagesInView } from '../../actions/PageActions';
 import { setCollections } from '../../actions/CollectionActions';
 import { useParams } from 'react-router';
@@ -27,8 +27,8 @@ const STACK_MD = "space-y-6";
 const STACK_SM = "space-y-3";
 
 // ── Card ────────────────────────────────────────
-const CARD = "bg-white rounded-2xl shadow-sm p-6";
-const CARD_INNER = "space-y-5";
+const CARD = "rounded-2xl shadow-sm bg-base-bg border-1 border border-earth p-6";
+const CARD_INNER = "space-y-5 bg-base-bg ";
 
 // ── Rows / alignment ────────────────────────────
 const ROW_BETWEEN = "flex items-center justify-between";
@@ -264,19 +264,23 @@ return<IonContent
   {!currentProfile ? (
     // Loading State
    <div className="flex items-center justify-center h-full">
-      <img src={loadingAnimation} alt="Loading..." className="w-24 h-24" />
+      <IonLoading
+  isOpen={!currentProfile}
+  message={"Loading your space..."}
+  spinner="crescent"
+/>
     </div>
   ) : (
    <div className={`${WRAPB} ${PAGE_Y} ${STACK_LG}`}>
       
-      <div className={WRAP}>
-      <div className={`${CARD} ${CARD_INNER}`}>
+      <div className={WRAP+""}>
+      <div className={`${CARD}  bg-base-bg   ${CARD_INNER}`}>
         {/* Header */}
-   <div className={ROW_BETWEEN+" "}>
+   <div className={ROW_BETWEEN+"  "}>
        <h2 className={TITLE}>
   {currentProfile.username.toLowerCase()}
 </h2>
-          <div className={`w-8 h-8 rounded-full flex items-center justify-center ${isLocationReady ? "bg-emerald-600" : "bg-yellow-500"}`}>
+          <div className={`w-8 h-8  rounded-full flex items-center justify-center ${isLocationReady ? "bg-emerald-600" : "bg-yellow-500"}`}>
             <img src={check} alt="status" className="w-5 h-5" />
           </div>
         </div>
@@ -323,19 +327,20 @@ return<IonContent
         {/* Loading Indicator */}
         {loading && (
          <div className="flex justify-center pt-2">
-            <img src={loadingAnimation} alt="Loading..." className="w-20 h-20" />
+            <IonLoading
+  isOpen={loading}
+  message={"Loading your space..."}
+  spinner="crescent"
+/>
           </div>
         )}
       </div>
     <div>
 </div>
     </div>
- <div className={` w-[100%] border-t border-gray-100`}>
+ <div className={` w-[100%] border-t pb-10 border-gray-100`}>
         <ExploreList label={"Communities"} collection={communities} />
-        {/* </div> */}
-      {/* </div>
-   <div className={STACK_MD}> */}
-    {/* <div className={`${WRAP} pt-6 border-t border-gray-100`}> */}
+      {/* <div className='py-8'/> */}
         <ExploreList collection={workshops} />
       </div>
     </div>

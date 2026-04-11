@@ -29,13 +29,13 @@ return(<div className="flex flex-wrap sm:flex-nowrap items-center justify-betwee
 
     <ul
       tabIndex={0}
-      className="dropdown-content menu p-2 shadow-lg bg-base-100 rounded-box w-48"
+      className="dropdown-content bg-base-bg menu p-2 shadow-lg bg-base-100 rounded-box w-48"
     >
       {/* Bookmark */}
       <li>
         <button
           onClick={handleBookmark}
-          className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded-md w-full text-left"
+          className="flex items-center gap-2 bg-base-bg px-3 py-2 rounded-md w-full text-left"
         >
           {isBookmarked ? "Remove Bookmark" : "Bookmark"}
           {bookmarkLoading && <IonSpinner name="dots" className="ml-auto" />}
@@ -47,7 +47,7 @@ return(<div className="flex flex-wrap sm:flex-nowrap items-center justify-betwee
         <li>
           <button
             onClick={handleArchive}
-            className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded-md w-full text-left"
+            className="flex items-center gap-2 bg-base-bg  hover:bg-sky-100 px-3 py-2  rounded-md w-full text-left"
           >
             {isArchived ? "Remove Archive" : "Archive"}
           </button>
@@ -61,7 +61,7 @@ return(<div className="flex flex-wrap sm:flex-nowrap items-center justify-betwee
             onClick={() =>
               router.push(Paths.addStoryToCollection.collection(collection.id))
             }
-            className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded-md w-full text-left"
+            className="flex items-center gap-2 px-3 bg-base-bg  hover:bg-sky-100 py-2 hover:bg-gray-100 rounded-md w-full text-left"
           >
             Add Collection to ...
           </button>
@@ -75,7 +75,7 @@ return(<div className="flex flex-wrap sm:flex-nowrap items-center justify-betwee
             onClick={() =>
               router.push(Paths.editCollection.createRoute(collection.id))
             }
-            className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded-md w-full text-left"
+            className="flex items-center gap-2 px-3 py-2 bg-base-bg  hover:bg-sky-100 rounded-md w-full text-left"
           >
             Edit
           </button>

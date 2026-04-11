@@ -93,7 +93,11 @@ export default function PageDataElement({
   if (!page) {
     return (
       <div className="flex justify-center py-6">
-        <IonImg src={loadingGif} className="w-8 h-8 opacity-60" />
+        <IonLoading
+  isOpen={!page}
+  message={"Loading your space..."}
+  spinner="crescent"
+/>
       </div>
     );
   }

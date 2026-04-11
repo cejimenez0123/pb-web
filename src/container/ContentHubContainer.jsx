@@ -158,8 +158,8 @@ export default ContentHubContainer
           <button
             className={`px-4 py-2 transition-colors w-[45vw]  sm:w-[20em] lg:w-[15em]  ${
               tab === "home"
-                ? "bg-emerald-700 text-white"
-                : "text-emerald-700 bg-transparent"
+                ? "bg-soft text-white"
+                : "text-soft bg-transparent"
             }`}
           onClick={() => {
   sendGAEvent("tab_select", {
@@ -219,7 +219,7 @@ export default ContentHubContainer
               ease: "easeOut", // more responsive
             }}
            
-            className="w-full"
+            className="w-full text-soft"
           >
             {tab === "home" ? disc() :dash()}
           </motion.div>

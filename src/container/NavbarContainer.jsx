@@ -111,8 +111,26 @@ function MobileNavbar({currentProfile}){
       <div className="flex flex-row justify-between items-center px-2 py-2 max-w-md mx-auto">
         <HomeButton  router={router}/>
         <EventButton  router={router}/>
-        {currentProfile && <CreateButton router={router}/>}
-        {currentProfile && <WorkshopButton router={router}/>}
+        {/* {currentProfile && <CreateButton router={router}/>}
+        {currentProfile && <WorkshopButton router={router}/>} */}
+        {currentProfile && (
+  <div className="
+    transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]
+    opacity-100 translate-y-0 scale-100
+  ">
+    <CreateButton router={router} />
+  </div>
+)}
+
+{currentProfile && (
+  <div className="
+    transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]
+    delay-75
+    opacity-100 translate-y-0 scale-100
+  ">
+    <WorkshopButton router={router} />
+  </div>
+)}
         <ProfileButton  router={router}currentProfile={currentProfile} />
       </div>
     </div>

@@ -163,7 +163,7 @@ const StatChip = ({ value, label }) => (
       <ErrorBoundary>
         <div className=" pb-24   space-y-8">
 <div className='flex sm:pt-16 flex-col justify-center'>
-<div className=" px-4">
+<div className=" p-4 ">
   {/* {Enviroment.palette.button.} */}
 <button  onClick={() => router.push(Paths.editProfile)}
 className="bg-soft rounded-full p-2"><img src={settings} /></button>
@@ -288,7 +288,7 @@ className="bg-soft rounded-full p-2"><img src={settings} /></button>
 </div>
 </div>
           {/* Explore */}
-          <div className={`${WRAP} pt-6 border-t border-gray-100`}>
+          <div className={` pb-10 pt-6 border-t border-gray-100`}>
             <ExploreList/>
           </div>
         </div>
@@ -307,7 +307,7 @@ function EmptyProfileState() {
   return (
     <IonContent
       fullscreen
-      scroll-y="true"
+   
       style={{ "--background": Enviroment.palette.base.background }}
     >
       <div className="max-w-[50em] mx-auto px-4 pt-16 space-y-6 text-center">
