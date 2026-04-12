@@ -39,7 +39,7 @@ import { use } from "react";
 const editorContainerSpacing = "mx-2 mb-12 p-4";
 const editorContainerResponsive = "md:w-page";
 // Shared container for editor and top bar
-const CONTAINER = "mx-auto w-full max-w-3xl p-4 md:p-6 bg-white rounded-lg shadow-sm";
+const CONTAINER = "mx-auto w-full max-w-3xl p-4 md:p-6 bg-base-bg rounded-lg shadow-sm";
 export default function EditorContainer({ presentingElement }) {
     const router = useIonRouter();
 const { id, type: paramType } = useParams();
@@ -472,7 +472,7 @@ useEffect(() => {
 
       <input
         type="text"
-        className="p-2 flex-grow text-emerald-800 text-[1rem] bg-white rounded-md border border-emerald-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-bold"
+        className="p-2 flex-grow bg-base-bg text-emerald-800 text-[1rem] rounded-md border border-emerald-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-bold"
         value={parameters.title}
         onChange={(e) => handleChange("title", e.target.value)}
         placeholder="Untitled"

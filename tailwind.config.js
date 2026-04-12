@@ -2,6 +2,7 @@
 import colors from "tailwindcss/colors"
 import daisyui from "daisyui"
 
+
 export default {
 
   content: [
@@ -9,8 +10,9 @@ export default {
     "./src/**/*.{html,js,jsx}",
   ],
 
-
+  darkMode: 'class',
   theme: {
+  
     // maxWidth:{
     //     'page':"50em"
     // },
