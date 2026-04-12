@@ -340,12 +340,13 @@ return<IonContent
     <div>
 </div>
     </div>
- <div className={` w-[100%] border-t pb-10 border-gray-100`}>
+
         <ExploreList label={"Communities"} collection={communities} />
-      {/* <div className='py-8'/> */}
+     
+      <div className='min-h-[28rem]'>
         <ExploreList collection={workshops} />
       </div>
-    </div>
+   </div>
   )}
 </IonContent>
 };

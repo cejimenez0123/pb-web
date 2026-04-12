@@ -83,7 +83,7 @@ const Dialog = () => {
                       dialog.disagree();
                       handleClose();
                     }}
-                    className="px-5 h-[3rem] rounded-full border border-emerald-400 text-emerald-600 active:scale-95 transition"
+                    className="px-5 h-[3rem] rounded-full border bg-soft text-white border-emerald-400 text-emerald-600 active:scale-95 transition"
                   >
                     {dialog.disagreeText}
                   </button>

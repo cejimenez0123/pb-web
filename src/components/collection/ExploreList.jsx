@@ -7,10 +7,10 @@ import {
   getRecommendedCollectionsProfile,
 } from "../../actions/CollectionActions";
 import SectionHeader from "../SectionHeader";
-const SECTION_GAP = "pt-10";  // applied to each section's root div
+const SECTION_GAP = "mt-4";  // applied to each section's root div
 const SECTION_HEADING = "text-xl lora-medium";          // text style only
 const SECTION_HEADER_ROW = "flex items-center justify-between py-4"; // r
-const WRAP = "w-[100%]  min-h-[26rem]  mx-auto ";
+const WRAP = "w-[100%]  mx-auto ";
 export default function ExploreList({ label="Explore",collection }) {
   const items = useSelector((state) => state.books.recommendedCols);
   const { currentProfile } = useSelector((state) => state.users);
@@ -50,6 +50,7 @@ export default function ExploreList({ label="Explore",collection }) {
   }, [collection]);
 
   return (
+    <div>
     <div className={`${WRAP} ${SECTION_GAP}`}>
       <div>
   <div className={SECTION_HEADER_ROW}>
@@ -97,6 +98,7 @@ export default function ExploreList({ label="Explore",collection }) {
           )}
         </div>
       </div>
+    </div>
     </div>
     </div>
   );

@@ -645,7 +645,7 @@ className={BUTTON_FULL+"btn transition w-[100%] border-blue bg-blue text-cream h
            </div>
    }</div>
    </div>
- <div className={`${WRAP} pt-6 pb-10 border-t border-gray-100`}>
+   <div className='min-h-[28rem]'>
   <ExploreList collection={collection} />
 </div>
       

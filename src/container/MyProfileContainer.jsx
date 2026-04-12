@@ -287,11 +287,12 @@ className="bg-soft rounded-full p-2"><img src={settings} /></button>
           </div>
 </div>
 </div>
+   </div>
           {/* Explore */}
-          <div className={` pb-10 pt-6 border-t border-gray-100`}>
+     <div className='min-h-[28rem]'>
             <ExploreList/>
           </div>
-        </div>
+     
            </ErrorBoundary>
       </IonContent>
  

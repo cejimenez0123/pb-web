@@ -18,7 +18,7 @@ const PrivateRoute = ({ children }) => {
 
     // Redirect logged-in users away from login
     if (currentProfile && loggedInPaths.includes(pathName)) {
-      router.push(Paths.myProfile, "root");
+      router.push(Paths.home, "root");
       return;
     }
 

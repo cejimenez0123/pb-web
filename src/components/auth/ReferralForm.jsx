@@ -66,17 +66,17 @@ export default function ReferralForm({ onClose }) {
   spinner="crescent"
 />
       ) : referralLink ? (
-        <div className="flex items-center gap-2 bg-gray-100 rounded-xl px-3 py-2">
+        <div className="flex items-center gap-2 bg-base-bg rounded-xl px-3 py-2">
           <input
             value={referralLink}
             disabled
-            className="flex-1 bg-transparent text-sm text-gray-700 outline-none"
+            className="flex-1 bg-base-bg text-sm text-gray-700 outline-none"
           />
           <button
             onClick={copyToClipboard}
-            className="p-2 rounded-lg active:scale-95"
+            className="p-2 rounded-lg bg-base-bg  rounded-full active:scale-95"
           >
-            <IonImg src={copyContent} className="w-5 h-5 opacity-70" />
+            <img src={copyContent} className="w-5 h-5 text-soft opacity-70" />
           </button>
         </div>
       ) : null}

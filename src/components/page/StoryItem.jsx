@@ -8,7 +8,7 @@ import Context from "../../context";
 import { PageType } from "../../core/constants";
 // ── Card Layout ─────────────────────────────
 const CARD =
-  "bg-softBlue mx-4 shadow-sm hover:shadow-md rounded-xl transition-shadow duration-200 cursor-pointer";
+  "bg-softBlue shadow-sm hover:shadow-md rounded-xl transition-shadow duration-200 cursor-pointer";
 
 const CARD_INNER = "p-4 flex flex-col h-full";
 

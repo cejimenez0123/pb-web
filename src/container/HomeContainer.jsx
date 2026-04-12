@@ -26,7 +26,7 @@ const WRAP = "max-w-[72rem] mx-auto sm:px-6 lg:px-8";
 
 //
 // ── Layout ──────────────────────────────────────
-const PAGE_Y = "pt-4 pb-12";
+const PAGE_Y = "pt-4 px-4 pb-12";
 const STACK_LG = "space-y-10";
 const STACK_MD = "space-y-6";
 
@@ -50,7 +50,7 @@ const WorkshopItem = ({ item, router }) => {
 
   return (
 
-  <div className={`${CARD} ${CARD_PAD}  w-[100%]`}>
+  <div onClick={() => router.push(Paths.collection.createRoute(item.id))} className={`${CARD} ${CARD_PAD}  w-[100%]`}>
       <IonLabel>
         <h2 className="text-md font-semibold text-emerald-800 truncate">
           {item.title}
@@ -171,7 +171,7 @@ function HomeEmbed({workshops,stories,prompts,isGlobal,setIsGlobal}) {
          
         
            <div className={SECTION}>
-  <div className="grid gap-4 sm:grid-cols-2 px-4 lg:grid-cols-2">
+  <div className="grid gap-4 sm:grid-cols-2  lg:grid-cols-2">
             {sortedWorkshops?.length
   ? sortedWorkshops.map(workshop => (
       <WorkshopItem key={workshop.id} item={workshop} router={router} />
@@ -199,9 +199,9 @@ function HomeEmbed({workshops,stories,prompts,isGlobal,setIsGlobal}) {
           {/* </div> */}
        <div className={SECTION}>
            <SectionHeader title="What's new" />
-              <div className='px-4'>
+              {/* <div className='px-4'> */}
           <PageList  items={recommendedStories}/>
-          </div>
+          {/* </div> */}
           </div>
         </div>
     </div>

@@ -559,7 +559,7 @@ scrollY: false,
      
           
        </div>
-      <div className={` pt-6 pb-10  border-t  border-gray-100`}>
+      <div className='min-h-[28rem]'>
         <ExploreList items={collections} />
  </div>
       </ErrorBoundary>

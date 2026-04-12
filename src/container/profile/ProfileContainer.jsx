@@ -461,7 +461,7 @@ useEffect(() => {
           </div>
 
           {/* Explore */}
-          <div className="pt-6 pb-10 border-t border-gray-100">
+          <div className='min-h-[28rem]'>
             <ExploreList />
           </div>
         </div>
