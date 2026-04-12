@@ -49,7 +49,25 @@ export default function LinksContainer(props){
                 
                 
        
-                <li>  
+             
+                        <li>  
+                
+                    </li>
+  <LinkNode image={form}
+  title={"Las Lineas Film Festival Open Mic"}
+                      links={[{name:"Join the Call",url:"https://forms.gle/USFXSyZSJ8t9QEsk7"}]}
+                      description={"Limited Slots to perform!"}/>
+ 
+          <li> 
+                  <LinkNode image={bxFuture}
+                      name={"Plumbum x Bronx Frame Creative Tech Mixer"}
+                      links={[{name:"RSVP Here",url:"https://posh.vip/e/plumbum-x-bronx-frame-create-tech-mixer"}]}
+  
+                    title={"May 1st. Mixer"}
+                    description={`Creative and Tech mixer, bring the heart to tech, and the impact to art. Connect with the next generation of creators.`}/>
+                        
+   </li>
+                   <li>  
                       <LinkNode image={pen}
                       title={"Writers Workshop"}
                         description={"Get Feedback, Build Connection, Be Inspired • Poetry Month Workshop:'Why Poetry?' "}
@@ -61,22 +79,7 @@ export default function LinksContainer(props){
                         
                         
                       
-                      } />
-  <LinkNode image={form}
-  title={"Las Lineas Film Festival Open Mic"}
-                      links={[{name:"Join the Call",url:"https://forms.gle/USFXSyZSJ8t9QEsk7"}]}
-                      description={"Limited Slots to perform!"}/>
- 
-                 
-   </li>
-                     <li>  
-                      <LinkNode image={bxFuture}
-                      name={"Plumbum x Bronx Frame Creative Tech Mixer"}
-                      links={[{name:"RSVP Here",url:"https://posh.vip/e/plumbum-x-bronx-frame-create-tech-mixer"}]}
-  
-                    title={"May 1st. Mixer"}
-                    description={`Creative and Tech mixer, bring the heart to tech, and the impact to art. Connect with the next generation of creators.`}/>
-                    </li>
+                      } /></li>   
                   <LinkNode image={clinic}
                   name={""}
                   links={[{name:"Book a Session",url:"https://calendly.com/solemilio-decibao"},
