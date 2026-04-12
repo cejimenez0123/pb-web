@@ -205,169 +205,343 @@ const handlePrivate = useCallback(
   }, 100),
   []
 );
-return (
-  <IonContent style={{"--padding-bottom":"8em","--padding-top":"4em"}}>
-    
+return(<IonContent
+  fullscreen
+  className="ion-padding"
+  style={{
+    "--padding-top": "0px",
+    "--padding-bottom": "env(safe-area-inset-bottom)"
+  }}
+>
+   <div className="mb-10 text-center">
+      <h1 className="text-emerald-800 mx-auto text-2xl font-semibold">
+        Complete Sign Up
+      </h1>
+    </div>
 
-      {/* Header */}
-      <IonHeader className="bg-opacity-80 rounded-lg">
-        <IonTitle className="text-green-800 text-center text-xl">
-          Complete Sign Up
-        </IonTitle>
-      </IonHeader>
-<div className="max-w-xl mx-auto px-4 pt-20 pb-24">
-      <IonCard className="mt-6 shadow-none bg-transparent">
-        <IonCardContent className="space-y-6">
+  <div className="max-w-xl mx-auto px-5 pt-16 pb-32">
 
-          {/* Username */}
-          <div>
-            <IonInput
-              label="Username"
-              labelPlacement="stacked"
-              className="border-b border-emerald-300 text-emerald-800"
-              value={username}
-              placeholder="username"
-                 onIonInput={e => setUsername((e.detail?.value ?? e.target.value ?? "").trim())}
-            
-            />
-            {username.length !== 0 && username.length < 4 && (
-              <IonText color="danger">
-                <p className="text-sm mt-1">
-                  Minimum username length is 4 characters
-                </p>
-              </IonText>
-            )}
+    {/* Header */}
+   
+    <IonCard className="shadow-none bg-transparent">
+      <IonCardContent className="space-y-8">
+
+        {/* Username */}
+        <div className="space-y-2">
+          <IonInput
+            label="Username"
+            labelPlacement="stacked"
+            className="border-b border-emerald-300 text-emerald-800 pb-2"
+            value={username}
+            placeholder="username"
+            onIonInput={e =>
+              setUsername((e.detail?.value ?? e.target.value ?? "").trim())
+            }
+          />
+          {username.length !== 0 && username.length < 4 && (
+            <IonText color="danger">
+              <p className="text-sm">Minimum username length is 4 characters</p>
+            </IonText>
+          )}
+        </div>
+
+        {/* Password */}
+        <div className="space-y-2">
+          <IonInput
+            label="Password"
+            labelPlacement="stacked"
+            type="password"
+            className="border-b border-emerald-300 text-emerald-800 pb-2"
+            value={password}
+            onIonInput={e =>
+              setPassword((e.detail?.value ?? e.target.value ?? "").trim())
+            }
+            placeholder="password"
+          />
+          {password.length > 0 && password.length <= 6 && (
+            <IonText color="danger">
+              <p className="text-sm">Minimum password length is 6 characters</p>
+            </IonText>
+          )}
+        </div>
+
+        {/* Confirm Password */}
+        <div className="space-y-2">
+          <IonInput
+            label="Confirm Password"
+            type="password"
+            labelPlacement="stacked"
+            className="border-b border-emerald-300 text-emerald-800 pb-2"
+            value={confirmPassword}
+            onIonInput={e =>
+              setConfirmPassword((e.detail?.value ?? e.target.value ?? "").trim())
+            }
+            placeholder="confirm password"
+          />
+          {password !== confirmPassword && (
+            <IonText color="danger">
+              <p className="text-sm">Passwords need to match</p>
+            </IonText>
+          )}
+        </div>
+
+        {/* Privacy */}
+        <div className="flex items-center justify-between pt-2">
+          <div className="flex items-center gap-2">
+            <InfoTooltip text="Will your account be private?" />
+            <IonText className="text-emerald-800 font-medium">
+              Private Account
+            </IonText>
           </div>
 
-          {/* Password */}
-          <div>
-            <IonInput
-              label="Password"
-              labelPlacement="stacked"
-              type="password"
-              className="border-b border-emerald-300 text-emerald-800"
-              value={password}
-         
-                 onIonInput={e => setPassword((e.detail?.value ?? e.target.value ?? "").trim())}
-              placeholder="password"
-            />
-            {password.length > 0 && password.length <= 6 && (
-              <IonText color="danger">
-                <p className="text-sm mt-1">
-                  Minimum password length is 6 characters
-                </p>
-              </IonText>
-            )}
-          </div>
-
-          {/* Confirm Password */}
-          <div>
-            <IonInput
-              label="Confirm Password"
-              type="password"
-              labelPlacement="stacked"
-              className="border-b border-emerald-300 text-emerald-800"
-              value={confirmPassword}
-                 onIonInput={e => setConfirmPassword((e.detail?.value ?? e.target.value ?? "").trim())}
-          
-              placeholder="confirm password"
-            />
-            {password !== confirmPassword && (
-              <IonText color="danger">
-                <p className="text-sm mt-1">
-                  Passwords need to match
-                </p>
-              </IonText>
-            )}
-          </div>
-
-          {/* Privacy Toggle */}
-          <div className="flex items-center justify-between pt-2">
-            <div className="flex items-center gap-2">
-              <InfoTooltip text="Will your account be private?" />
-              <IonText className="text-emerald-800 font-medium">
-                Private Account
-              </IonText>
-            </div>
-
-            <div
-              onClick={handlePrivate}
-              className="flex items-center gap-2 cursor-pointer"
-            >
-              <IonText className="text-emerald-700 font-semibold">
-                {isPrivate ? "Yes" : "No"}
-              </IonText>
-              <input
-                type="checkbox"
-                className="accent-emerald-600 cursor-pointer"
-                checked={isPrivate}
-                onClick={handlePrivate}
-              />
-            </div>
-          </div>
-
-          {/* Profile Picture */}
-          <div>
-            <IonLabel className="text-lg text-emerald-800 font-medium block mb-2">
-              Profile Picture
-            </IonLabel>
+          <div
+            onClick={handlePrivate}
+            className="flex items-center gap-3 cursor-pointer"
+          >
+            <IonText className="text-emerald-700 font-semibold">
+              {isPrivate ? "Yes" : "No"}
+            </IonText>
             <input
-              type="file"
-              accept="image/*"
-              className="block w-full text-sm text-emerald-700 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-emerald-100 file:text-emerald-700"
-              onChange={(e) => handleProfilePicture(e)}
-            />
-            <div className="mt-4 flex justify-center">
-              <ProfilePicture image={pictureUrl} />
-            </div>
-          </div>
-
-          {/* Email Frequency */}
-          <div>
-            <IonLabel className="text-lg text-emerald-800 font-medium block mb-2">
-              Email Frequency
-            </IonLabel>
-            <select
-              className="w-full rounded-lg bg-emerald-50 text-emerald-700 px-4 py-2 border border-emerald-200"
-              value={frequency}
-              ref={selectRef}
-              onChange={(e) => setFrequency(e.target.value)}
-            >
-              <option value={1}>Daily</option>
-              <option value={2}>Every 3 days</option>
-              <option value={3}>Weekly</option>
-              <option value={14}>Every 2 Weeks</option>
-              <option value={30}>Monthly</option>
-            </select>
-          </div>
-
-          {/* Self Statement */}
-          <div>
-            <IonLabel className="text-lg text-emerald-800 font-medium block mb-2">
-              Self Statement
-            </IonLabel>
-            <IonTextarea
-              placeholder="What are you about?"
-              rows={5}
-              autoGrow={true}
-              className="bg-emerald-50 p-3 w-full text-emerald-800 rounded-lg"
-              value={selfStatement}
-              maxlength={250}
-    onIonInput={e => setSelfStatement((e.detail?.value ?? e.target.value ?? "").trim())}
+              type="checkbox"
+              className="accent-emerald-600 scale-110"
+              checked={isPrivate}
+              onClick={handlePrivate}
             />
           </div>
+        </div>
 
-          {/* Submit */}
+        {/* Profile Picture */}
+        <div className="space-y-4">
+          <IonLabel className="text-lg text-emerald-800 font-medium block">
+            Profile Picture
+          </IonLabel>
+
+          <input
+            type="file"
+            accept="image/*"
+            className="block w-full text-sm text-emerald-700 file:mr-4 file:py-2 file:px-4 file:rounded-full file:bg-emerald-100 file:text-emerald-700"
+            onChange={handleProfilePicture}
+          />
+
+          <div className="flex justify-center pt-2">
+            <ProfilePicture image={pictureUrl} />
+          </div>
+        </div>
+
+        {/* Email Frequency */}
+        <div className="space-y-2">
+          <IonLabel className="text-lg text-emerald-800 font-medium block">
+            Email Frequency
+          </IonLabel>
+          <select
+            className="w-full rounded-lg bg-emerald-50 text-emerald-700 px-4 py-3 border border-emerald-200"
+            value={frequency}
+            ref={selectRef}
+            onChange={(e) => setFrequency(e.target.value)}
+          >
+            <option value={1}>Daily</option>
+            <option value={2}>Every 3 days</option>
+            <option value={3}>Weekly</option>
+            <option value={14}>Every 2 Weeks</option>
+            <option value={30}>Monthly</option>
+          </select>
+        </div>
+
+        {/* Self Statement */}
+        <div className="space-y-2">
+          <IonLabel className="text-lg text-emerald-800 font-medium block">
+            Self Statement
+          </IonLabel>
+          <IonTextarea
+            placeholder="What are you about?"
+            rows={5}
+            autoGrow
+            className="bg-emerald-50 p-4 w-full text-emerald-800 rounded-lg"
+            value={selfStatement}
+            maxlength={250}
+            onIonInput={e =>
+              setSelfStatement((e.detail?.value ?? e.target.value ?? "").trim())
+            }
+          />
+        </div>
+
+        {/* Submit */}
+        <div className="pt-6">
           <div
             onClick={completeSignUp}
-            className="mt-6 bg-emerald-700 text-white text-center py-3 rounded-full cursor-pointer hover:bg-emerald-500 transition"
+            className="w-full bg-emerald-700 text-white text-center py-4 rounded-full cursor-pointer hover:bg-emerald-500 transition text-lg font-medium"
           >
             Join Plumbum!
           </div>
+        </div>
 
-        </IonCardContent>
-      </IonCard>
-    </div>
-  </IonContent>
-);
+      </IonCardContent>
+    </IonCard>
+  </div>
+</IonContent>)
+// return (
+//   <IonContent style={{"--padding-bottom":"8em","--padding-top":"4em"}}>
+    
+
+//       {/* Header */}
+//       <IonHeader className="bg-opacity-80 rounded-lg">
+//         <IonTitle className="text-green-800 text-center text-xl">
+//           Complete Sign Up
+//         </IonTitle>
+//       </IonHeader>
+// <div className="max-w-xl mx-auto px-4 pt-20 pb-24">
+//       <IonCard className="mt-6 shadow-none bg-transparent">
+//         <IonCardContent className="space-y-6">
+
+//           {/* Username */}
+//           <div>
+//             <IonInput
+//               label="Username"
+//               labelPlacement="stacked"
+//               className="border-b border-emerald-300 text-emerald-800"
+//               value={username}
+//               placeholder="username"
+//                  onIonInput={e => setUsername((e.detail?.value ?? e.target.value ?? "").trim())}
+            
+//             />
+//             {username.length !== 0 && username.length < 4 && (
+//               <IonText color="danger">
+//                 <p className="text-sm mt-1">
+//                   Minimum username length is 4 characters
+//                 </p>
+//               </IonText>
+//             )}
+//           </div>
+
+//           {/* Password */}
+//           <div>
+//             <IonInput
+//               label="Password"
+//               labelPlacement="stacked"
+//               type="password"
+//               className="border-b border-emerald-300 text-emerald-800"
+//               value={password}
+         
+//                  onIonInput={e => setPassword((e.detail?.value ?? e.target.value ?? "").trim())}
+//               placeholder="password"
+//             />
+//             {password.length > 0 && password.length <= 6 && (
+//               <IonText color="danger">
+//                 <p className="text-sm mt-1">
+//                   Minimum password length is 6 characters
+//                 </p>
+//               </IonText>
+//             )}
+//           </div>
+
+//           {/* Confirm Password */}
+//           <div>
+//             <IonInput
+//               label="Confirm Password"
+//               type="password"
+//               labelPlacement="stacked"
+//               className="border-b border-emerald-300 text-emerald-800"
+//               value={confirmPassword}
+//                  onIonInput={e => setConfirmPassword((e.detail?.value ?? e.target.value ?? "").trim())}
+          
+//               placeholder="confirm password"
+//             />
+//             {password !== confirmPassword && (
+//               <IonText color="danger">
+//                 <p className="text-sm mt-1">
+//                   Passwords need to match
+//                 </p>
+//               </IonText>
+//             )}
+//           </div>
+
+//           {/* Privacy Toggle */}
+//           <div className="flex items-center justify-between pt-2">
+//             <div className="flex items-center gap-2">
+//               <InfoTooltip text="Will your account be private?" />
+//               <IonText className="text-emerald-800 font-medium">
+//                 Private Account
+//               </IonText>
+//             </div>
+
+//             <div
+//               onClick={handlePrivate}
+//               className="flex items-center gap-2 cursor-pointer"
+//             >
+//               <IonText className="text-emerald-700 font-semibold">
+//                 {isPrivate ? "Yes" : "No"}
+//               </IonText>
+//               <input
+//                 type="checkbox"
+//                 className="accent-emerald-600 cursor-pointer"
+//                 checked={isPrivate}
+//                 onClick={handlePrivate}
+//               />
+//             </div>
+//           </div>
+
+//           {/* Profile Picture */}
+//           <div>
+//             <IonLabel className="text-lg text-emerald-800 font-medium block mb-2">
+//               Profile Picture
+//             </IonLabel>
+//             <input
+//               type="file"
+//               accept="image/*"
+//               className="block w-full text-sm text-emerald-700 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-emerald-100 file:text-emerald-700"
+//               onChange={(e) => handleProfilePicture(e)}
+//             />
+//             <div className="mt-4 flex justify-center">
+//               <ProfilePicture image={pictureUrl} />
+//             </div>
+//           </div>
+
+//           {/* Email Frequency */}
+//           <div>
+//             <IonLabel className="text-lg text-emerald-800 font-medium block mb-2">
+//               Email Frequency
+//             </IonLabel>
+//             <select
+//               className="w-full rounded-lg bg-emerald-50 text-emerald-700 px-4 py-2 border border-emerald-200"
+//               value={frequency}
+//               ref={selectRef}
+//               onChange={(e) => setFrequency(e.target.value)}
+//             >
+//               <option value={1}>Daily</option>
+//               <option value={2}>Every 3 days</option>
+//               <option value={3}>Weekly</option>
+//               <option value={14}>Every 2 Weeks</option>
+//               <option value={30}>Monthly</option>
+//             </select>
+//           </div>
+
+//           {/* Self Statement */}
+//           <div>
+//             <IonLabel className="text-lg text-emerald-800 font-medium block mb-2">
+//               Self Statement
+//             </IonLabel>
+//             <IonTextarea
+//               placeholder="What are you about?"
+//               rows={5}
+//               autoGrow={true}
+//               className="bg-emerald-50 p-3 w-full text-emerald-800 rounded-lg"
+//               value={selfStatement}
+//               maxlength={250}
+//     onIonInput={e => setSelfStatement((e.detail?.value ?? e.target.value ?? "").trim())}
+//             />
+//           </div>
+
+//           {/* Submit */}
+//           <div
+//             onClick={completeSignUp}
+//             className="mt-6 bg-emerald-700 text-white text-center py-3 rounded-full cursor-pointer hover:bg-emerald-500 transition"
+//           >
+//             Join Plumbum!
+//           </div>
+
+//         </IonCardContent>
+//       </IonCard>
+//     </div>
+//   </IonContent>
+// );
 }
