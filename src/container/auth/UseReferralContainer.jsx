@@ -327,7 +327,7 @@ function EmailSettings({ frequency, setFrequency }) {
         </label>
         <ul
           tabIndex={0}
-          className="dropdown-content menu bg-white rounded-box w-full border border-emerald-200 shadow-md"
+          className="dropdown-content menu bg-base-bg text-soft rounded-box w-full border border-emerald-200 shadow-md"
         >
           <li>
             <button

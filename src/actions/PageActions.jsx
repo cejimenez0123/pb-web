@@ -80,6 +80,14 @@ const setPageInView = createAction("pages/setPageInView", (params)=> {
     
   
 })
+const setPageType = createAction("pages/setPageType", (params)=> {
+
+  const {type} = params
+  return  {payload:
+    type}
+    
+  
+})
 const setPagesInView = createAction("pages/setPagesInView", (params)=> {
 
   const {pages} = params
@@ -269,7 +277,7 @@ try{
           setPagesInView,
           createPageApproval,
           deletePageApproval,
-       
+       setPageType,
           getPublicStories,
          appendToPagesInView,
          setComments

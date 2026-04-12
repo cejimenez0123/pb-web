@@ -14,6 +14,7 @@ import {
           setEditingPage,
           getPublicStories,
           setPagesInView,
+          setPageType,
        
         } from "../actions/PageActions.jsx"
         
@@ -160,10 +161,12 @@ const pageSlice = createSlice({
       .addCase(clearEditingPage,(state)=>{
         state.editingPage =null
       }).addCase(setPageInView,(state,{payload})=>{
-     
+  
       state.pageInView = payload
-   
-      
+
+
+      }).addCase(setPageType,(state,{payload})=>{
+        state.type = payload
       }).addCase(setEditingPage.type,(state,{payload})=>{
         state.editingPage = payload
       })

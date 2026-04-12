@@ -33,6 +33,7 @@ import { Preferences } from "@capacitor/preferences";
 import axios from "axios";
 import TopBarDropdown from "../../components/page/TopBarDropdown.jsx";
 import { fetchProfiles } from "../../actions/ProfileActions.jsx";
+import { use } from "react";
 
   const editorContainerBase = "mx-auto bg-white rounded-lg shadow-sm";
 const editorContainerSpacing = "mx-2 mb-12 p-4";
@@ -40,14 +41,15 @@ const editorContainerResponsive = "md:w-page";
 // Shared container for editor and top bar
 const CONTAINER = "mx-auto w-full max-w-3xl p-4 md:p-6 bg-white rounded-lg shadow-sm";
 export default function EditorContainer({ presentingElement }) {
-  const { id, type } = useParams();
-
+    const router = useIonRouter();
+const { id, type: paramType } = useParams();
+// const id =router.routeInfo.pathname.split("/")[2]
   const dispatch = useDispatch();
-  const router = useIonRouter();
- 
+
+//  console.log()
   const currentProfile = useSelector((state) => state.users.currentProfile);
-  const editPage = useSelector((state) => state.pages.pageInView);
-   
+  const { editPage ,type:sliceType} = useSelector((state) => state.pages);
+   const type = sliceType || paramType
   const { setError, setSuccess,  } = useContext(Context);
   const [files,setFiles]=useState([])
   const isNative = Capacitor.isNativePlatform();
@@ -58,25 +60,40 @@ export default function EditorContainer({ presentingElement }) {
   const { openDialog, closeDialog, dialog, resetDialog } = useDialog();
     const { isPhone } = useContext(Context);
   const htmlContent = useSelector(state=>state.pages.editorHtmlContent)
-const [pageType,setPageType]=useState(editPage?.type??type)
+
 const [isSaved,setIsSaved]=useState(true)
   const [parameters, setParameters] = useState({
     isPrivate: true,
     data: editPage?.data || htmlContent,
     title: "",
-   
+    id: id ||editPage?.id || null,
     needsFeedback: false,
     status:"draft",
     description: "",
     commentable: true,
     authorId:currentProfile?.id,
     profile: currentProfile,
-    profileId: currentProfile ? currentProfile.id : "",
-    type: pageType|| PageType.text,
+    profileId: currentProfile ? currentProfile?.id : "",
+    type: type,
   });
+  const effectiveId = parameters.id || editPage?.id;
 
-    const [pending, setPending] = useState(!(pageType==PageType.link||pageType==PageType.picture));
-  const notText = pageType !== PageType.link && pageType !== PageType.picture;
+const payload = {
+  ...parameters,
+  id: effectiveId,
+};
+ useEffect(() => {
+  setParameters((prev) => ({
+    ...prev,
+    id: id ?? prev.id ?? editPage?.id,
+    type,
+    authorId: currentProfile?.id,
+    profile: currentProfile,
+    profileId: currentProfile?.id || "",
+  }));
+}, [type, id, currentProfile, editPage]);
+    const [pending, setPending] = useState(!(type==PageType.link||type==PageType.picture));
+  const notText = type !== PageType.link && type !== PageType.picture;
 
   // ------------------ Lifecycle ------------------
   useEffect(() => {
@@ -113,14 +130,14 @@ setError(err.message)
     dispatch(setPageInView({ page: story }));
     setParameters((prev) => ({
       ...prev,
-      id:story?.id,
+      id:id,
       data:htmlContent,
       commentable: story?.commentable??false,
       page: story,
       isPrivate: story?.isPrivate??true,
   
       title: story?.title??"Untitled",
-      type: story?.type??pageType??PageType.text,
+      type: story?.type??type??PageType.text,
     }));
     setPending(false);
   }
@@ -132,7 +149,7 @@ useEffect(() => {
     return;
   }
 
-  if (!editPage?.id || !currentProfile?.id || !notText) return;
+if (!parameters.id && !editPage?.id) return;
 
     const payload = {
     id: editPage?.id,
@@ -193,7 +210,7 @@ useEffect(() => {
     isSaved:true,
     status:"draft",
     commentable: parameters?.commentable??false,
-    type: pageType??editPage?.type??PageType.text,
+    type: type??editPage?.type??PageType.text,
     profileId: currentProfile.id,
   };
 
@@ -217,11 +234,10 @@ const handleChange = (key, value) => {
   setParameters((prev) => {
     const updated = { ...prev, [key]: value };
 
-    debouncedSave({
-      ...updated,
-      id: editPage?.id,
-   
-    });
+  debouncedSave({
+  ...updated,
+  id: updated.id || editPage?.id,
+});
 
     return updated;
   });
@@ -278,9 +294,9 @@ const [accessToken,setAccessToken]=useState(null)
   };
  useEffect(() => {
   setParameters(prev =>
-    prev.type === pageType ? prev : { ...prev, type: pageType }
+    prev.type === type ? prev : { ...prev, type: type }
   );
-}, [pageType]);
+}, [type]);
     const onFilePicked = async (file) => {
     try {
       // const accessToken = (await Preferences.get({ key: "googledrivetoken" })).value;
@@ -349,74 +365,12 @@ const openGoogleDrive = async()=>{
 }
 const handleView =()=>{
   setIsSaved(false)
-  dispatch(updateStory({...parameters})).then(res=>{
+  dispatch(updateStory({...parameters,id})).then(res=>{
     setIsSaved(true)
     router.push(Paths.page.createRoute(id))
   })
 }
 
-// const TopBar = ({isSaved,change}) => (
-//   <div className="rounded-lg w-full sm:max-w-[50em] mx-auto p-2 bg-emerald-50 border border-emerald-200 flex flex-col gap-1">
-//     {/* Top row: input + dropdown */}
-//     <div className="flex flex-row gap-2 items-center w-full">
-//       {/* Title Input */}
-//       <div className="flex flex-col w-[100%]"> 
-
-//       <input
-//         type="text"
-//         className="p-2 flex-grow text-emerald-800 text-[1rem] bg-white rounded-md border border-emerald-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-bold"
-//         value={parameters.title}
-//         onChange={(e) => change("title", e.target.value)}
-//         placeholder="Untitled"
-//       />
-//              {isSaved? (
-//     <span className="text-emerald-700 font-semibold flex items-center gap-1">
-//       ✅ Saved
-//     </span>
-//   ) : (
-//     <span className="text-yellow-600 font-semibold flex items-center gap-1">
-//       💾 Saving...
-//     </span>
-//   )}
-// </div>
-//       {/* Dropdown */}
-//       <TopBarDropdown
-//       router={router}
-//         id={id}
-//         handleView={handleView}
-//         editPage={editPage}
-//         handleChange={handleChange}
-//         openFeedback={openFeedback}
-//         parameters={parameters}
-//         openGoogleDrive={openGoogleDrive}
-//         setOpenHashtag={setOpenHashtag}
-//         openHashtag={openHashtag}
-//         openRoleFormDialog={openRoleFormDialog}
-//         openConfirmDeleteDialog={openConfirmDeleteDialog}
-//       />
-
-
-//     </div>
-
-//     {/* Hashtag Form (slide down) */}
-//     <AnimatePresence>
-//       {openHashtag && (
-//         <motion.div
-//           initial={{ height: 0, opacity: 0 }}
-//           animate={{ height: "auto", opacity: 1 }}
-//           exit={{ height: 0, opacity: 0 }}
-//           transition={{ type: "spring", stiffness: 300, damping: 30 }}
-//           className="overflow-hidden w-full"
-//         >
-//           <HashtagForm item={parameters.page} type="story" />
-//         </motion.div>
-//       )}
-//     </AnimatePresence>
-//   </div>
-// );
-
-
-// }
   const openFeedback = (isFeedback) => {
     openDialog({
   
@@ -430,20 +384,21 @@ const handleView =()=>{
           isFeedback={isFeedback}
           handleChange={(e) => handleChange("description", e)}
           handleFeedback={(feedbackDesc) => {
-            resetDialog();
-            setIsSaved(false)
-          dispatch(updateStory({ ...parameters,description:feedbackDesc,status:"workshop", needsFeedback:true})).then(res=>{
-              
-            editPage && router.push(router.push(Paths.editPage.createRoute(editPage?.id)))
-             setIsSaved(true)
-          })
-         
+            console.log("Handling feedback with description:", feedbackDesc);
+     
+            setIsSaved(false);
+            dispatch(updateStory({ ...parameters, description: feedbackDesc, status: "workshop", needsFeedback: true })).then(res => {
+              resetDialog();
+                     console.log("Feedback Desc:", feedbackDesc);
+                     router.push(Paths.workshop.createRoute(id), "forward");
+          //  router.push(router.push(Paths.editPage.createRoute(id)));
+            });
           }}
           handlePostPublic={(desc) => {
             handleChange("isPrivate", false);
             handleChange("status","finished")
               setIsSaved(false)
-            dispatch(updateStory({ ...parameters,description:desc, needsFeedback:true })).then(res=>{
+            dispatch(updateStory({ ...parameters,id,description:desc, needsFeedback:true })).then(res=>{
                 setIsSaved(true)
                editPage &&  router.push(Paths.page.createRoute(editPage.id), "forward");
                        resetDialog();
@@ -586,7 +541,7 @@ useEffect(() => {
     >
       <div className={CONTAINER}>
 
-      <EditorDiv page={editPage} handleChange={handleChange} parameters={parameters} type={pageType} createPageAction={createPageAction} />
+      <EditorDiv page={editPage} handleChange={handleChange} parameters={parameters} type={type} createPageAction={createPageAction} />
     </div>
     </motion.div>
 

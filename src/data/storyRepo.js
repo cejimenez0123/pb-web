@@ -112,10 +112,13 @@ class StoryRepo{
             commentable,
             type
            }=params
+           console.log("Updating Story with params",params)
              let headers = await this.getAuthHeaders()
        const res = await axios.put(this.url+"/"+id,{
+        ...params,
             data: data,
             isPrivate:isPrivate,
+            page:page,
             description,
             needsFeedback,
             approvalScore:approvalScore,

@@ -99,10 +99,6 @@ const handleOpenCommentInput = () => {
       );
   };
 
-  // const closeInput = () => {
-  //   setReplyInput(false);
-  //   setUpdateCommentState(null);
-  // };
 
   const CommentDropdown = () => (
     <div className="relative dropdown dropdown-left">

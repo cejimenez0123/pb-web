@@ -4,7 +4,7 @@ import storyRepo from "../data/storyRepo";
 import Context from "../context";
 import { useSelector } from "react-redux";
 import calendar from "../images/icons/calendar_add_blue.svg";
-import { IonImg, IonInput, IonList, IonText } from "@ionic/react";
+import { IonImg, IonInput, IonList, IonLoading, IonText } from "@ionic/react";
 import { useDialog } from "../domain/usecases/useDialog";
 import Enviroment from "../core/Enviroment";
 const WRAP = "max-w-[42rem] mx-auto px-4";
@@ -13,6 +13,7 @@ const STACK_LG = "space-y-8";
 const STACK_MD = "space-y-4";
 const STACK_SM = "space-y-2";
 function CalendarEmbed({ variant = "eventbrite" }) {
+  const [loading, setLoading] = useState(true);
   const { isPhone, setError } = useContext(Context);
   const { openDialog, closeDialog } = useDialog();
 
@@ -62,6 +63,7 @@ const paginatedEvents = events.slice(
 
   const addEvents = () => {
     try {
+          setLoading(true);
       storyRepo.fetchEvents({ days: 28 }).then((res) => {
         let events = res.events.flatMap((e) => e.events);
 
@@ -95,6 +97,8 @@ return {
       });
     } catch (err) {
       setError(err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -271,7 +275,10 @@ return {
   return (
   <div className="space-y-6">
       {/* FILTERS */}
-    <div className="space-y-3">
+       <IonLoading isOpen={loading} message="Loading events..." />
+    
+ 
+    (<div><div className="space-y-3">
         <div className="flex gap-2 justify-center overflow-x-auto">
           <button onClick={() => setSelectedArea("")} className={`pill px-4 ${selectedArea==""?"bg-soft text-white":"bg-purple text-white"}`}>
             All
@@ -294,12 +301,18 @@ return {
           />
         </div>
       </div>
-
+<div
+  className={`
+    overflow-hidden transition-all duration-300 ease-in-out
+    ${selectedArea === ""
+      ? "max-h-[800px] opacity-100 translate-y-0"
+      : "max-h-0 opacity-0 -translate-y-2"}
+  `}
+>
+  <HorizontalScroll />
+</div>
       {/* HORIZONTAL PB EVENTS */}
-      <HorizontalScroll />
 
-      {/* MAIN LIST */}
-   {/* <div className="px-4"> */}
   <IonList style={{ "--background": Enviroment.palette.cream }}>
   
         {paginatedEvents.map(renderEvent)}
@@ -345,7 +358,7 @@ return {
       Next
     </button>
   </div>
-)}
+)}</div>)
     </div>
   );
 }

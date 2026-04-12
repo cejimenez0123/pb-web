@@ -256,7 +256,7 @@ const openPages=()=>{
           dispatch(setPageInView({ page: payload.story }));
         router.push(Paths.editPage.createRoute(payload.story.id),'forward', 'push');
         }else{
-          windowl.alert("COULD NOT CREATE STORY")
+          window.alert("COULD NOT CREATE STORY")
         }
       },err=>{
         setErrorLocal(err.message)

@@ -31,6 +31,7 @@ import { getMyCollections } from '../actions/CollectionActions';
 import { SplashScreen } from '@capacitor/splash-screen'
 import { IonContent } from '@ionic/react';
 import ReferralForm from '../components/auth/ReferralForm';
+import { setPageInView } from '../actions/PageActions';
 // import { IonContext } from '@ionic/react/dist/types/contexts/IonContext';
 // spacing rules (mentally or constants)
 const SPACING = {
@@ -194,7 +195,9 @@ let signedInMenu = [
              { label: "Discovery", action: () => {router.push(Paths.discovery) }},
                { label: "Pages", action: () => {openPages()} },
   { label: "Events", action: () => {router.push(Paths.calendar())} },
- { label: "Studio", action: () => {router.push(Paths.workshop.reader())} },
+ { label: "Studio", action: () => {
+  dispatch(setPageInView({page:null}))
+  router.push(Paths.workshop.reader())} },
 
   { label: "Your drafts", action: () => {openDrafts() }},
   { label: "Collections", action: () => {openCollections()} },

@@ -6,12 +6,10 @@ import '../App.css'
 import "../styles/Navbar.css"
 import person from "../images/icons/person.png"
 import addCircle from "../images/icons/plus.app.svg"
-import {getCurrentProfile, signOutAction} from "../actions/UserActions"
+import { signOutAction} from "../actions/UserActions"
 import calendar from "../images/icons/calendar.svg"
 import home from "../images/icons/home.svg"
-import menu from "../images/icons/menu.svg"
 import library from "../images/icons/book.svg"
-import search from "../images/icons/magnifyingglass.svg"
 import hammer from "../images/icons/hammer.svg"
 import LinkIcon from '../images/icons/link.svg';
 import CreateIcon from '../images/icons/ink_pen.svg'
@@ -20,11 +18,11 @@ import Paths from '../core/paths'
 import { createStory } from '../actions/StoryActions'
 import checkResult from '../core/checkResult'
 import CreateCollectionForm from '../components/collection/CreateCollectionForm'
-import { setEditingPage, setHtmlContent, setPageInView, setPagesInView } from '../actions/PageActions.jsx'
+import { setEditingPage, setHtmlContent, setPageInView,  setPageType } from '../actions/PageActions.jsx'
 import isValidUrl from '../core/isValidUrl'
 import Enviroment from '../core/Enviroment'
 import debounce from '../core/debounce.js'
-import { initGA, sendGAEvent } from '../core/ga4.js'
+import {sendGAEvent } from '../core/ga4.js'
 import {IonImg, useIonRouter,} from '@ionic/react';
 import { useSelector } from 'react-redux'
 import { PageType } from '../core/constants.js'
@@ -105,14 +103,13 @@ const navItem =
   "flex-1 flex flex-col items-center justify-center bg-soft text-white active:scale-95 transition-transform";
 function MobileNavbar({currentProfile}){
   const router = useIonRouter()
-
+const dispatch = useDispatch()
   return (
     <div className="fixed bottom-0 w-[100%] bg-soft border-t border-white/10">
       <div className="flex flex-row justify-between items-center px-2 py-2 max-w-md mx-auto">
         <HomeButton  router={router}/>
         <EventButton  router={router}/>
-        {/* {currentProfile && <CreateButton router={router}/>}
-        {currentProfile && <WorkshopButton router={router}/>} */}
+    
         {currentProfile && (
   <div className="
     transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]
@@ -128,10 +125,10 @@ function MobileNavbar({currentProfile}){
     delay-75
     opacity-100 translate-y-0 scale-100
   ">
-    <WorkshopButton router={router} />
+    <WorkshopButton router={router} dispatch={dispatch} />
   </div>
 )}
-        <ProfileButton  router={router}currentProfile={currentProfile} />
+        <ProfileButton  router={router} currentProfile={currentProfile} />
       </div>
     </div>
   );
@@ -168,7 +165,7 @@ return(
     />
   </button>
 
-  <ul className="dropdown-content menu bg-cream p-2 shadow rounded">
+  <ul className="dropdown-content menu bg-base-bg p-2 shadow rounded">
     <li>
       <button 
         className="w-full text-left" 
@@ -274,11 +271,12 @@ function HomeButton({router}) {
     </button>
   );
 }
-function WorkshopButton({router}){
+function WorkshopButton({router,dispatch}){
   // const router = useIonRouter();
   // const isNative = Capacitor.isNativePlatform()
 
   const handleWorkshopClick = () => {
+      dispatch(setPageInView({page:null}))
     router.push(`${Paths.workshop.reader()}?t=${Date.now()}`, 'forward');
 
     
@@ -353,7 +351,7 @@ useEffect(() => {
   const ClickWriteAStory = debounce(()=>{
      
       sendGAEvent("Create","Create Button Click Nav","Click Nav Create")
-     
+         dispatch(setPageType({type:PageType.text}))
         dispatch(createStory({profileId:currentProfile.id,privacy:true,type:PageType.text,
         title:"Unititled",commentable:true
       })).then(res=>checkResult(res,data=>{
@@ -375,7 +373,7 @@ const menuItems = [
     icon:ImageIcon,
     action:()=>{
       dispatch(setHtmlContent(""))
-      // dispatch(setEditingPage({page:null}))
+      
       router.push(Paths.editor.image,"forward")
     }
   },
@@ -384,7 +382,7 @@ const menuItems = [
     icon:LinkIcon,
     action:()=>{
       dispatch(setHtmlContent({html:""}))
-      // dispatch(setEditingPage({page:null}))
+     
       router.push(Paths.editor.link,"forward")
     }
   },
@@ -410,7 +408,7 @@ Create
 </a>
 
 {isOpen && (
-  <ul className="dropdown-content bg-cream menu rounded-box w-52 p-2 shadow">
+  <ul className="dropdown-content bg-base-bg text-soft menu rounded-box w-52 p-2 shadow">
     {menuItems.map((item) => (
       <li
         key={item.label}
@@ -422,7 +420,7 @@ Create
     }, 0);
   }}
       >
-        <a className="flex gap-2 items-center justify-center text-soft">
+        <a className="flex gap-2  bg-base-bg text-soft items-center justify-center">
           {item.icon && <IonImg src={item.icon} style={{ width: "1.4rem", height: "1.4rem" }} />}
           {item.label}
         </a>
@@ -499,6 +497,9 @@ function CreateButton({router}) {
 const {currentProfile }= useSelector(state=>state.users)
 
   const ClickWriteAStory = debounce(() => {
+    dispatch(setPageType({type:PageType.text}))
+    dispatch(setPageInView({ page: null }))
+  dispatch(setEditingPage({ page: null }))
     if (currentProfile?.id) {
       sendGAEvent("Create", "Write a Story", "Click Write Story");
       dispatch(createStory({
@@ -513,7 +514,7 @@ const {currentProfile }= useSelector(state=>state.users)
           dispatch(setPageInView({ page: payload.story }));
         router.push(Paths.editPage.createRoute(payload.story.id),'forward');
         }else{
-          windowl.alert("COULD NOT CREATE STORY")
+          window.alert("COULD NOT CREATE STORY")
         }
       },err=>{
         setErrorLocal(err.message)
@@ -531,13 +532,16 @@ const debouncedNavigate = useRef(
         case "write":
           ClickWriteAStory();
           break;
-        case "image":
+        case "image":{
+           dispatch(setPageType({type:PageType.image}))
           router.push(Paths.editor.image, "forward");
-          break;
-        case "link":
+          break;}
+        case "link":{
+           dispatch(setPageType({type:PageType.link}))
           router.push(Paths.editor.link, "forward");
+        }
           break;
-        case "collection":
+        case "collection":{
           handleOpenCreateCollection({
             dispatch,
             submitCollection,
@@ -551,7 +555,7 @@ const debouncedNavigate = useRef(
             submitting,
             setError
           });
-          break;
+          break;}
         default:
           break;
       }
@@ -578,12 +582,12 @@ const debouncedNavigate = useRef(
   </button>
 
   {isOpen && (
-    <div className="absolute bottom-full mb-2 w-36 bg-white rounded-xl shadow-lg py-2 z-50">
+    <div className="absolute bottom-full  bg-base-bg mb-2 w-36 bbg-base-bg text-soft rounded-xl shadow-lg py-2 z-50">
       {["write", "image", "link", "collection"].map((item) => (
         <button
           key={item}
           onClick={() => debouncedNavigate(item)}
-          className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 capitalize"
+          className="w-full text-center mx-auto px-4 py-2 bg-base-bg text-sm text-soft hover:bg-blue-100 capitalize"
         >
           {item}
         </button>

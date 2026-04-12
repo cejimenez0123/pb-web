@@ -29,7 +29,7 @@ return(<div className="flex flex-wrap sm:flex-nowrap items-center justify-betwee
 
     <ul
       tabIndex={0}
-      className="dropdown-content bg-base-bg menu p-2 shadow-lg bg-base-100 rounded-box w-48"
+      className="dropdown-content bg-base-bg menu p-2 shadow-lg rounded-box w-48"
     >
       {/* Bookmark */}
       <li>

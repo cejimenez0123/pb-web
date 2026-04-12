@@ -150,8 +150,7 @@ const canUserSee = (() => {
     });
     window.history.length > 1 ? router.goBack() : router.push(Paths.discovery, "back");
   };
-  console.log("pending",pending)
-  console.log("ERRORSTATUS",errorStatus)
+  
   return (
     <ErrorBoundary>
       <IonContent

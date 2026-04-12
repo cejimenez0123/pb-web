@@ -275,11 +275,13 @@ return<IonContent
       
       <div className={WRAP+""}>
       <div className={`${CARD}  bg-base-bg   ${CARD_INNER}`}>
+        <WorkshopContextCard page={page} />
         {/* Header */}
    <div className={ROW_BETWEEN+"  "}>
        <h2 className={TITLE}>
   {currentProfile.username.toLowerCase()}
 </h2>
+
           <div className={`w-8 h-8  rounded-full flex items-center justify-center ${isLocationReady ? "bg-emerald-600" : "bg-yellow-500"}`}>
             <img src={check} alt="status" className="w-5 h-5" />
           </div>
@@ -350,3 +352,35 @@ return<IonContent
 
 
 export default WorkshopContainer;
+
+ const WorkshopContextCard = ({ page }) => {
+  if (!page) return null;
+
+  return (
+    <div className={`${CARD} ${CARD_INNER} border-l-4 border-emerald-500`}>
+      
+      {/* Label */}
+      <span className="text-xs uppercase tracking-wide text-gray-400">
+        Workshop Context
+      </span>
+
+      {/* Title */}
+      <h3 className="text-lg font-semibold text-gray-900 leading-snug">
+        {page.title.length > 40 ? page.title.slice(0, 47) + "..." : page.title.length > 0 ? page.title : "Untitled Story"}
+      </h3>
+
+   
+
+      {/* Meta row */}
+      <div className="flex items-center justify-between pt-2">
+        <span className="text-xs text-gray-400">
+          Bring your voice into this space
+        </span>
+
+        <span className="text-xs font-medium text-emerald-600">
+          Active Workshop
+        </span>
+      </div>
+    </div>
+  );
+};
