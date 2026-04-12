@@ -64,7 +64,7 @@ export default function LinksContainer(props){
                       } />
   <LinkNode image={form}
   title={"Las Lineas Film Festival Open Mic"}
-                      links={[{name:"Apply today",url:"https://forms.gle/USFXSyZSJ8t9QEsk7"}]}
+                      links={[{name:"Join the Call",url:"https://forms.gle/USFXSyZSJ8t9QEsk7"}]}
                       description={"Limited Slots to perform!"}/>
  
                  
