@@ -55,13 +55,17 @@ export default function LinksContainer(props){
                     </li>
   <LinkNode image={form}
   title={"Las Lineas Film Festival Open Mic"}
-                      links={[{name:"Join the Call",url:"https://forms.gle/USFXSyZSJ8t9QEsk7"}]}
+                      links={[{name:"Join the Call",url:"https://forms.gle/USFXSyZSJ8t9QEsk7"},
+                        {name:"RSVP Here",url:"https://partiful.com/e/gQkDIrDyitmSaxxKc4Ul"}
+                      ]}
                       description={"Limited Slots to perform!"}/>
  
           <li> 
                   <LinkNode image={bxFuture}
                       name={"Plumbum x Bronx Frame Creative Tech Mixer"}
-                      links={[{name:"RSVP Here",url:"https://posh.vip/e/plumbum-x-bronx-frame-create-tech-mixer"}]}
+                      links={[{name:"RSVP Here",url:"https://posh.vip/e/plumbum-x-bronx-frame-create-tech-mixer"},
+                        
+                      ]}
   
                     title={"May 1st. Mixer"}
                     description={`Creative and Tech mixer, bring the heart to tech, and the impact to art. Connect with the next generation of creators.`}/>
