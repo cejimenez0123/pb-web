@@ -34,7 +34,7 @@ function LinkNode({ title, description, image, links = [], isGrid }) {
     <ErrorBoundary>
       <div
         className="
-        bg-white
+        bg-[#FFFFFF]
         border border-emerald-100
         rounded-2xl
         shadow-sm
