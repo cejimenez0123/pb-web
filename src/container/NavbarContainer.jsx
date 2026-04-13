@@ -33,6 +33,7 @@ import submitCollection from '../core/submitCollection'
 import DeviceCheck from '../components/DeviceCheck.jsx'
 import { Capacitor } from '@capacitor/core'
 import { Preferences } from '@capacitor/preferences'
+import { SocialLogin } from '@capgo/capacitor-social-login'
 const PageName = {
   home: "Home",
   about:"About",
@@ -185,7 +186,9 @@ return(
     <li>
       <button 
         className="w-full text-left" 
-        onClick={() => dispatch(signOutAction({profile:currentProfile}).then(res=>router.push(Paths.login())))}
+        onClick={async () =>{ 
+           await SocialLogin.logout({ provider: "google" });
+          dispatch(signOutAction({profile:currentProfile}).then(res=>router.push(Paths.login())))}}
       >
         Logout
       </button>

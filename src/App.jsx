@@ -251,10 +251,10 @@ const showBottomNavbar = (isMobileOrTablet || isNative)  && import.meta.env.VITE
      <Route path={Paths.collection.route()}
      render={()=><PageWrapper><CollectionContainer currentProfile={currentProfile}/></PageWrapper>}/>
      <Route path={'/signup'}
-                render={()=><LoggedRoute 
-                            currentProfile={currentProfile}><PageWrapper>
+                render={()=>
+                            <PageWrapper>
                               <SignUpContainer/></PageWrapper>
-                          </LoggedRoute>}/>
+                        }/>
       <Route path={'/register'}
                 render={()=><LoggedRoute 
                     currentProfile={currentProfile}><PageWrapper>

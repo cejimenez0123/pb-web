@@ -20,6 +20,7 @@ import { Capacitor } from "@capacitor/core";
 import Paths from "../core/paths";
 import fetchCity from "../core/fetchCity";
 import { useDialog } from "../domain/usecases/useDialog";
+import { SocialLogin } from "@capgo/capacitor-social-login";
 // List of countries (can be expanded)
 const COUNTRIES = [
   "United States",
@@ -322,7 +323,9 @@ dispatch(updateProfile({
           <h2 className="text-2xl font-bold text-center text-emerald-700">
             Profile Settings
           </h2>
-          <div  onClick={()=>{dispatch(signOutAction({profile:currentProfile})).then(res=>
+          <div  onClick={async ()=>{
+             await SocialLogin.logout({ provider: "google" });
+            dispatch(signOutAction({profile:currentProfile})).then(res=>
           
           checkResult(res,(data)=>{
             console.log("sign out",data)

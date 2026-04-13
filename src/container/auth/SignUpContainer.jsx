@@ -25,23 +25,7 @@ import InfoTooltip from '../../components/InfoTooltip';
 import { debounce } from 'lodash';
 import { Preferences } from '@capacitor/preferences';
 import { Capacitor } from '@capacitor/core';
-import Enviroment from '../../core/Enviroment';
-  // ── Layout tokens (Auth / Forms) ─────────────────────
-
-const WRAP = "min-h-full flex items-center justify-center px-4 py-10";
-
-const CARD = "w-full max-w-lg mx-auto bg-white rounded-2xl shadow-sm";
-
-const SECTION = "space-y-5";
-
-const FIELD = "space-y-2";
-
-const LABEL = "text-sm font-medium text-text-primary";
-
-const INPUT =
-  "w-full rounded-xl border border-border-soft bg-base-bg px-3 py-2 text-text-primary focus:outline-none focus:border-border-focus";
-
-const HELP_TEXT = "text-xs text-states-error";
+  
 const ProfilePicture = React.memo(({ image }) => (
   <IonImg
     src={image || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png"}
@@ -177,8 +161,20 @@ dispatch(uploadProfilePicture({ file:fileFind })).then(res => checkResult(res, p
       : err?.message || "Try reusing the link"
     );
   });
+//            dispatch(signUp(params)).then(res => checkResult(res, payload => {
+// console.log("GFDD")
+//         if (payload.profile) {
+//           router.push(Paths.login());
+//         } else {
+//           setSuccess(null);
+//           setError(payload.error.status==409?"Username is not unique":payload.error.message || "Try reusing the link");
+//         }
 
-
+//            },err=>{
+//             console.log("GERR")
+//              setSuccess(null);
+//       setError(err.status==409?"Username is not unique":err.message || "Try reusing the link");
+//            }))
         Preferences.set({key:"firstTime",value: payload.firstTime}).then(()=>{})
    },err=>{}))
       }else{
@@ -210,8 +206,8 @@ const handlePrivate = useCallback(
   []
 );
 return (
- <IonContent style={{ "--background": Enviroment.palette.base.background }}>
-  <div className={WRAP}>
+  <IonContent style={{"--padding-bottom":"8em","--padding-top":"4em"}}>
+    
 
       {/* Header */}
       <IonHeader className="bg-opacity-80 rounded-lg">
@@ -371,7 +367,6 @@ return (
 
         </IonCardContent>
       </IonCard>
-    </div>
     </div>
   </IonContent>
 );
