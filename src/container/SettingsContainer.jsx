@@ -19,6 +19,7 @@ import GoogleMapSearch from "./collection/GoogleMapSearch";
 import { Capacitor } from "@capacitor/core";
 import Paths from "../core/paths";
 import fetchCity from "../core/fetchCity";
+import { useDialog } from "../domain/usecases/useDialog";
 // List of countries (can be expanded)
 const COUNTRIES = [
   "United States",
@@ -54,7 +55,7 @@ async function reverseGeocode(lat, lng) {
 export default function SettingsContainer() {
   const dispatch = useDispatch();
   const router = useIonRouter();
-
+const {openDialog,dialog,closeDialog}=useDialog()
   const {  setError, setSuccess } = useContext(Context);
   const {currentProfile}=useSelector(state=>state.users)
   const [file, setFile] = useState(null);
@@ -89,8 +90,12 @@ const [form, setForm] = useState({
     "https://placehold.co/200"
   );
 
-  const [loading, setLoading] = useState(true);
-
+  const [loading, setLoading] = useState(false);
+useEffect(() => {
+  if (!loading && !currentProfile) {
+    router.push(Paths.login(), "root"); // replace history
+  }
+}, [loading, currentProfile]);
   /* --------------------------
      Load profile into form
   ---------------------------*/
@@ -277,14 +282,19 @@ dispatch(updateProfile({
   ---------------------------*/
   const handleDelete = () => {
 
-    dispatch(setDialog({
+    openDialog({
       title: "Delete account?",
       text: "This cannot be undone.",
       agreeText: "Delete",
-      agree: () => dispatch(deleteUserAccounts())
-    }));
+      agree: () => dispatch(deleteUserAccounts()).then(res=>{
+        checkResult(res,()=>{
+          setSuccess("Account deleted");
+          router.push(Paths.login())
+        },err=>{
+          setError(err.message)
+      })
 
-  };
+    })})}
 
   if (loading) {
     return (
