@@ -24,11 +24,9 @@ import { Capacitor } from '@capacitor/core';
 import { useSelector } from 'react-redux';
 import { getCurrentProfile } from '../actions/UserActions';
 import { useDispatch } from 'react-redux';
-import { debounce } from 'lodash';
 import Enviroment from './Enviroment';
 import { getMyStories } from '../actions/StoryActions';
 import { getMyCollections } from '../actions/CollectionActions';
-import { SplashScreen } from '@capacitor/splash-screen'
 import { IonContent } from '@ionic/react';
 import ReferralForm from '../components/auth/ReferralForm';
 import { setPageInView } from '../actions/PageActions';
@@ -324,7 +322,7 @@ let signedInMenu = [
   <div className="flex flex-col h-full">
     
     <div className="bg-cream overflow-y-auto flex-1">
-     <ReferralForm />
+     <ReferralForm  onClose={resetDialog}/>
     </div>
 
   </div>

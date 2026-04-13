@@ -317,5 +317,5 @@ export {logIn,
         deletePicture,
         updateSubscription,
         getIosInfo,
-        setUserLoading,setCurrentProfile
+        setUserLoading,setCurrentProfile,referSomeone
     }

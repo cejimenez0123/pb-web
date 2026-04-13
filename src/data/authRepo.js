@@ -80,6 +80,10 @@ const headers = await this.getAuthHeaders()
             token,frequency
         })
         return res.data
+    }async referral({email,name}){
+        const headers = await this.getAuthHeaders()
+        const res = await axios.post(Enviroment.url+"/auth/referral",{email,name}, {headers:headers})
+        return res.data
     }
 
     async useReferral({token, email, password ,username,profilePicture,selfStatement,isPrivate}){

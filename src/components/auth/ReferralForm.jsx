@@ -4,16 +4,21 @@ import Context from "../../context"
 import loadingGif from "../../images/loading.gif"
 import copyContent from "../../images/icons/content_copy.svg"
 import { IonImg, IonLoading } from "@ionic/react"
+import { useDispatch } from "react-redux"
+import { referSomeone } from "../../actions/UserActions"
+import { useDialog } from "../../domain/usecases/useDialog"
+import checkResult from "../../core/checkResult"
 
 export default function ReferralForm({ onClose }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [referralLink, setReferralLink] = useState("");
   const [pending, setPending] = useState(false);
+  const {closeDialog}=useDialog()
   const { setSuccess } = useContext(Context);
   const [message, setMessage] = useState("");
   const [referral, setReferral] = useState(null);
-
+  const dispatch = useDispatch();
   useLayoutEffect(() => {
     setPending(true);
     authRepo.generateReferral().then((data) => {
@@ -24,14 +29,21 @@ export default function ReferralForm({ onClose }) {
   }, []);
 
   const handleClick = () => {
-    authRepo
-      .referral({ email: email.toLowerCase(), name })
-      .then((data) => {
-        if (data.message) {
-          alert(data.message);
-          onClose();
-        }
-      });
+  dispatch(referSomeone({ email: email.toLowerCase(), name })).then((res) => {
+    checkResult(res, (payload) => {
+      console.log(payload)
+      if (payload.message) {
+        closeDialog()
+        setSuccess(payload.message);
+      }
+    },error=>{
+         onClose()
+      window.alert("An error occurred. Please try again.");
+  });
+
+
+  });
+  
   };
 
   const copyToClipboard = () => {
