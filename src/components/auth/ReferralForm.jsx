@@ -4,6 +4,8 @@ import Context from "../../context"
 import loadingGif from "../../images/loading.gif"
 import copyContent from "../../images/icons/content_copy.svg"
 import { IonImg } from "@ionic/react"
+import { referSomeone } from "../../actions/UserActions"
+import { useDispatch } from "react-redux"
 // import {DialogActions,Button} from "@mui/material"
 
 export default function ReferralForm({onClose}){
@@ -14,29 +16,58 @@ export default function ReferralForm({onClose}){
     const {setSuccess}=useContext(Context)
     const [message,setMessage]=useState("")
     const [referral,setReferral]=useState(null)
-    useLayoutEffect(()=>{
+    const dispatch = useDispatch()
+    useLayoutEffect(() => {
+  setPending(true);
 
-        setPending(true)
-        authRepo.generateReferral().then(data=>{
+  authRepo.generateReferral().then(data => {
+    if (data?.referralLink) {
+      setReferralLink(data.referralLink);
+    }
+
+    if (data?.message) {
+      setMessage(data.message);
+    }
+
+    // ✅ FIX: store referral object if backend sends it
+    if (data?.referral) {
+      setReferral(data.referral);
+    }
+
+    setPending(false);
+  });
+}, []);
+    // useLayoutEffect(()=>{
+
+    //     setPending(true)
+    //     authRepo.generateReferral().then(data=>{
         
-            if(data.referralLink){
-            setReferralLink(data.referralLink)
-            }
-            if(data.message){
-                setMessage(data.message)
-            }
-            // if(data.referral){
-            //     setReferral(data.referral)
-            // }
-            setPending(false)
-        })},[])
+    //         if(data.referralLink){
+    //         setReferralLink(data.referralLink)
+    //         }
+    //         if(data.message){
+    //             setMessage(data.message)
+    //         }
+    //         // if(data.referral){
+    //         //     setReferral(data.referral)
+    //         // }
+    //         setPending(false)
+    //     })},[])
     const handleClick = ()=>{
-        authRepo.referral({email:email.toLowerCase(),name}).then(data=>{
-            if(data.message){
-                alert(data.message)
-                onClose()
-            }
-        })}
+      dispatch(referSomeone({email: email.toLowerCase().trim(), name})).then(data=>{
+        if(data?.message){
+            setSuccess(data.message)
+            onClose()
+        }
+    })
+}
+
+
+//                 alert(data.message)
+//                 onClose()
+//             }
+//         })
+// }
    
     const copyToClipboard=()=>{
         navigator.clipboard.writeText(referralLink)
@@ -55,7 +86,9 @@ export default function ReferralForm({onClose}){
         
 <h1 className="mx-auto  text-emerald-800 mb-8 text-xl">Refer Someone Today</h1>
 
-            {referral&&   referral.usageCount?<h2 className="text-emerald-800">{referral.usageCount}</h2>:null}
+           {referral?.usageCount != null ? (
+  <h2 className="text-emerald-800">{referral.usageCount}</h2>
+) : null}
         {pending?<IonImg src={loadingGif} className="icon"/>:referralLink.trim().length>0?
         <span className="flex mt-6"><input type="text" 
          value={referralLink} disabled className="bg-transparent w-[100%] border-2 border-emerald-800 py-2 px-4 rounded-full text-[0.8rem] md:text-l "/><IonImg src={copyContent} onClick={copyToClipboard} className="icon"/></span>:<div className="icon"/>}

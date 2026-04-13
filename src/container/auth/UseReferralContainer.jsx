@@ -97,49 +97,127 @@ reader.readAsDataURL(file);
 }
 };
 
-  const completeSignUp = async () => {
-     const pictureParams = file ? { profilePicture:file } : { profilePicture: selectedImage };
-    // const toke = || token;
-    let tok = token?? (await Preferences.get({key:"token"})).value
-    
-    if (password.length && username.length && email) {
-          const params = {
-        email,
-        token: tok,
-        password,
-        username,
-        frequency,
-        // profilePicture: payload.fileName,
-        selfStatement,
-        isPrivate,
-        ...pictureParams
-      };
+//   const completeSignUp = async () => {
+//     try{
+   
+//      const pictureParams = file ? { profilePicture:file } : { profilePicture: selectedImage };
+//     // const toke = || token;
+//     let tok = token?? (await Preferences.get({key:"token"})).value
+
+//     if (password.length && username.length && email) {
+//           const params = {
+//         email,
+//         token: tok,
+//         password,
+//         username,
+//         frequency,
+//         // profilePicture: payload.fileName,
+//         selfStatement,
+//         isPrivate,
+//         ...pictureParams
+//       };
   
-            if(file){
-dispatch(uploadProfilePicture({ file:file})).then(res => checkResult(res, payload => {
-          params.profilePicture = payload.fileName
-             handleUseRefferal(params)
-},err=>{})
+//             if(file){
+// dispatch(uploadProfilePicture({ file:file})).then(res => checkResult(res, payload => {
+//          console.log("TCICJ",tok)
+//           params.profilePicture = payload.fileName
+//              handleUseRefferal(params)
+// },err=>{
+// console.log(err)
+//   setError(err.message)
+// })
 
 
-)}}}
+// )}}
+//     }catch(e){
+//       console.log(e)
+//       setError(e.message)
+//     }
+// }
+const completeSignUp = async () => {
+  try {
+    const pictureParams = file
+      ? { profilePicture: file }
+      : { profilePicture: selectedImage };
 
-const handleUseRefferal=(params)=>{
-     dispatch(useReferral(params)).then((res) =>
-        checkResult(
-          res,
-          (payload) => {
-            if (payload.token) Preferences.set({ key: "token", value: payload.token });
-            if (payload.profile) {
-              Preferences.set({ key: "firstTime", value: "true" });
-              router.push(Paths.myProfile);
-            }
-          },
-          (err) => setError(err.message)
-        )
+    const tok =
+      token ?? (await Preferences.get({ key: "token" })).value;
+
+    if (!password || !username || !email) {
+      setError("Missing fields");
+      return;
+    }
+
+    const baseParams = {
+      email,
+      token: tok,
+      password,
+      username,
+      frequency,
+      selfStatement,
+      isPrivate,
+      ...pictureParams
+    };
+
+    // CASE 1: upload image first
+    if (file) {
+      const res = await dispatch(uploadProfilePicture({ file }));
+
+      return checkResult(
+        res,
+        (payload) => {
+          baseParams.profilePicture = payload.fileName;
+          handleUseRefferal(baseParams);
+        },
+        (err) => setError(err?.message)
       );
-}
+    }
 
+    // CASE 2: no image upload
+    handleUseRefferal(baseParams);
+
+  } catch (e) {
+    console.log(e);
+    setError(e?.message || "Signup failed");
+  }
+};
+
+// const handleUseRefferal = (params) => {
+//   dispatch(useReferral(params)).then((res) =>
+//     checkResult(
+//       res,
+//       async (payload) => {
+//         if (payload?.token) {
+//           await Preferences.set({ key: "token", value: payload.token });
+//         }
+
+//         if (payload?.profile) {
+//           await Preferences.set({ key: "firstTime", value: "true" });
+//           router.push(Paths.myProfile);
+//         }
+//       },
+//       (err) => setError(err?.message)
+//     )
+//   );
+// };
+const handleUseRefferal = (params) => {
+  dispatch(useReferral(params)).then((res) =>
+    checkResult(
+      res,
+      async (payload) => {
+        if (payload?.token) {
+          await Preferences.set({ key: "token", value: payload.token });
+        }
+
+        if (payload?.profile) {
+          await Preferences.set({ key: "firstTime", value: "true" });
+          router.push(Paths.myProfile);
+        }
+      },
+      (err) => setError(err?.message || "Referral failed")
+    )
+  );
+};
 return (
   <ErrorBoundary>
     <IonContent

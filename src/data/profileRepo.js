@@ -54,11 +54,10 @@ class ProfileRepo {
      return res.data
 
     }
-    async register({uId,idToken,token,password,username,googleId,profilePicture,selfStatement,privacy}){
+    async register(params){
 
-       const res = await axios.post(Enviroment.url+"/auth/register",{googleId,identityToken:idToken,token,password,username,
-        profilePicture,selfStatement,privacy
-       }) 
+       const res = await axios.post(Enviroment.url+"/auth/register",
+       params) 
 
        return res.data
     

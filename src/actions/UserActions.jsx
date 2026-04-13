@@ -33,11 +33,22 @@ try{        const {uId,email,password,idToken,isNative}=params
     }
 )
 
+const referSomeone = createAsyncThunk(
+  'users/referral',
+  async (params, thunkApi) => {
+    try {
+      const data = await authRepo.referral(params);
+      return data;
+    } catch (err) {
+      return thunkApi.rejectWithValue(err);
+    }
+  }
+);
+// const referSomeone =createAsyncThunk('users/referral',async (params,thunkApi)=>{
+//   // let data = await authRepo.referral(params)
+//   return data
+//  })
 
-const referSomeone =createAsyncThunk('users/referral',async (params,thunkApi)=>{
-  let data = await authRepo.referral(params)
-  return data
- })
 const signOutAction = createAsyncThunk('users/signOut',async (params,thunkApi)=>{
     try{
        await Preferences.clear()
@@ -49,73 +60,143 @@ const signOutAction = createAsyncThunk('users/signOut',async (params,thunkApi)=>
         profile:null
    }
 })
-const useReferral = createAsyncThunk("users/useReferral",async(params,thunkApi)=>{
-  try{ 
-  let data = await authRepo.useReferral(params)
- if (data.profile && !data.profile.isPrivate) {
-  const { profile } = data;
-
-  try {
-    await algoliaRepo.partialUpdateObject(
-      "profile", // ✅ index name
-      profile.id, // ✅ objectID
-      {
-        username: profile.username, // ✅ field(s) to update
-      }
-    );
-
-    console.log("✅ Profile updated in Algolia via API");
-  } catch (err) {
-    console.error("⚠️ Failed to update profile in Algolia:", err);
-  }
-}
-    return data
-  }catch(err){
-    return err
-  }
-})
-const signUp = createAsyncThunk(
-    'users/signUp',
-    async (params,thunkApi) => {
-      const{email,token,idToken,googleId,frequency,password,username,profilePicture,selfStatement,privacy}=params
-
-      try {
-        
-          // const userCred = await  createUserWithEmailAndPassword(auth, email, password)
-          let data = await profileRepo.register({uId:"",idToken,frequency,token,email,password,username,profilePicture,selfStatement,privacy})
-           
-
-           
-          if (!privacy) {
-            const {profile}= data
+const useReferral = createAsyncThunk(
+  "users/useReferral",
+  async (params, thunkApi) => {
     try {
-      await algoliaRepo.saveObject("profile", {
-        objectID: profile.id,
-        username: profile.username,
-        selfStatement: profile.selfStatement,
-        profilePic: profile.profilePic,
-      });
-      console.log("✅ Profile indexed in Algolia");
+      const data = await authRepo.useReferral(params);
+      return data;
     } catch (err) {
-      console.error("⚠️ Failed to save to Algolia:", err);
+      return thunkApi.rejectWithValue(err);
     }
   }
+);
+// const useReferral = createAsyncThunk("users/useReferral",async(params,thunkApi)=>{
+//   try{ 
+//   let data = await authRepo.useReferral(params)
+//  if (data.profile && !data.profile.isPrivate) {
+//   const { profile } = data;
+
+//   try {
+//     await algoliaRepo.partialUpdateObject(
+//       "profile", // ✅ index name
+//       profile.id, // ✅ objectID
+//       {
+//         username: profile.username, // ✅ field(s) to update
+//       }
+//     );
+
+//     console.log("✅ Profile updated in Algolia via API");
+//   } catch (err) {
+//     console.error("⚠️ Failed to update profile in Algolia:", err);
+//   }
+// }
+//     return data
+//   }catch(err){
+//     return err
+//   }
+// })
+// const signUp = createAsyncThunk(
+//     'users/signUp',
+//     async (params,thunkApi) => {
+//       // const{email,token,idToken,googleId,frequency,password,username,profilePicture,selfStatement,isPrivate:privacy}=params
+//  const { authToken: identityToken,
+//   referralToken:referralToken,
+//   email,
+//   username,
+//   password,
+//   googleId,
+//   frequency,
+//   selfStatement,
+//   privacy,
+// profilePicture
+// } = params
+//       try {
+        
+//           // const userCred = await  createUserWithEmailAndPassword(auth, email, password)
+//          await profileRepo.register(params);
+           
+//           if (!privacy) {
+//             const {profile}= data
+//     try {
+//       await algoliaRepo.saveObject("profile", {
+//         objectID: profile.id,
+//         username: profile.username,
+//         selfStatement: profile.selfStatement,
+//         profilePic: profile.profilePic,
+//       });
+//       console.log("✅ Profile indexed in Algolia");
+//     } catch (err) {
+//       console.error("⚠️ Failed to save to Algolia:", err);
+//     }
+//   }
             
-      return {
+//       return {
       
-            profile:data.profile
+//             profile:data.profile
             
+//       }
+//     } catch (error){
+       
+//           console.error("⚠️", err);
+       
+//     }
+//     }
+// )
+
+const signUp = createAsyncThunk(
+  'users/signUp',
+  async (params, thunkApi) => {
+    const {
+      authToken,
+      referralToken,
+      email,
+      username,
+      password,
+      googleId,
+      frequency,
+      selfStatement,
+      privacy,
+      profilePicture
+    } = params;
+
+    try {
+      const data = await profileRepo.register({
+        authToken,
+        referralToken,
+        email,
+        username,
+        password,
+        googleId,
+        frequency,
+        selfStatement,
+        privacy,
+        profilePicture
+      });
+
+      const profile = data.profile;
+
+      if (!privacy && profile) {
+        try {
+          await algoliaRepo.saveObject("profile", {
+            objectID: profile.id,
+            username: profile.username,
+            selfStatement: profile.selfStatement,
+            profilePic: profile.profilePic,
+          });
+        } catch (err) {
+          console.error("⚠️ Algolia index failed:", err);
+        }
       }
-    } catch (error){
-       
-          console.error("⚠️", err);
-       
+
+      return { profile };
+
+    } catch (err) {
+      console.error("⚠️ signUp error:", err);
+      return thunkApi.rejectWithValue(err);
     }
-    }
-)
-
-
-
+  }
+);
 
 const searchMultipleIndexes = createAsyncThunk(
   "users/searchMultipleIndexes",
@@ -305,4 +386,5 @@ export {logIn,
         deletePicture,
         updateSubscription,
         getIosInfo,
+        referSomeone
     }

@@ -309,7 +309,10 @@ const navbarBot = Capacitor.isNativePlatform() || isTablet;
          <PageWrapper> 
           <TermsContainer />  </PageWrapper> }
     /> 
-  
+   <Route path={"/use-referral"} render={()=>
+         <PageWrapper> 
+          <UserReferralContainer />  </PageWrapper> }
+    /> 
    </IonRouterOutlet>
 
 
