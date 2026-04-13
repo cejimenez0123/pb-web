@@ -34,7 +34,8 @@ const params = new URLSearchParams(router.routeInfo?.search);
   const [isPrivate, setIsPrivate] = useState(false);
   const [usernameUnique, setUsernameUnique] = useState(true);
   const [canUser, setCanUser] = useState(false);
-
+const [showPassword, setShowPassword] = useState(false);
+const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const dispatch = useDispatch();
 
   const { error, setError, setSuccess } = useContext(Context);
@@ -122,27 +123,7 @@ dispatch(uploadProfilePicture({ file:file})).then(res => checkResult(res, payloa
 
 
 )}}}
-      // if(file){
 
-      
-// },err=>{
-
-// })}else{
-//               const params = {
-//         email,
-//         token: tok,
-//         password,
-//         username,
-//         frequency,
-//         profilePicture: selectedImage,
-//         selfStatement,
-//         isPrivate,
-//       };
-//     handleUseRefferal(params)
-// }
-
-      
-  // };c
 const handleUseRefferal=(params)=>{
      dispatch(useReferral(params)).then((res) =>
         checkResult(
@@ -158,213 +139,415 @@ const handleUseRefferal=(params)=>{
         )
       );
 }
-  return (
-    <ErrorBoundary>
-    <IonContent fullscreen={true} className="p-4 flex justify-center  bg-gradient-to-b from-emerald-800 to-emerald-600">
-      <div className="bg-white/10 backdrop-blur-md rounded-3xl w-full max-w-xl p-6 mx-auto shadow-lg">
-        <h2 className="text-emerald-700 text-center text-3xl mont-medium mb-6">Complete Sign Up</h2>
 
-        {/* Email */}
-        <IonInput
-          label="Email"
-          labelPlacement="stacked"
-          placeholder="example@x.com"
-          className="text-emerald-700 mb-4"
-          value={email}
-          onIonInput={(e) => setEmail(e.target.value)}
-        />
+return (
+  <ErrorBoundary>
+    <IonContent
+      fullscreen={true}
+      style={{"--padding-bottom": "10em"}}
+      className="bg-gradient-to-b from-emerald-800 to-emerald-600"
+    >
+      {/* Scroll Container */}
+      <div className="p-4 flex justify-center">
+        <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl w-full max-w-xl p-6 mx-auto shadow-xl pb-32">
+          
+          <h2 className="text-white text-center text-3xl mont-medium mb-6">
+            Complete Sign Up
+          </h2>
 
-        {/* Username */}
-        <IonInput
-          label="Username"
-          labelPlacement="stacked"
-          placeholder="username"
-          className="text-emerald-700 mb-2"
-          value={username}
-          onIonInput={(e) => setUsername(e.target.value.trim())}
-        />
-        {username && username.length < 4 && (
-          <p className="text-sm text-rose-400">Minimum username length is 4 characters</p>
-        )}
-        {!usernameUnique && <p className="text-sm text-rose-400">Username is already taken</p>}
+          {/* Email */}
+          {/* <IonInput
+              label="Email"
+              labelPlacement="stacked"
+              placeholder="example@x.com"
+            value={email}
+            onIonInput={(e) => setEmail(e.target.value)}
+            className="mb-4 bg-white/80 text-emerald-800 rounded-xl px-3"
+          /> */}
+     <TextInput
+      label="Email"
+              labelPlacement="stacked"
+              placeholder="example@x.com"
+  value={email}
+  onChange={(val) => setEmail(val.replace(/\s/g, ""))}
+/>
+          {/* Username */}
+       <TextInput
+  label="Username"
+  placeholder="username"
+  value={username}
+  onChange={(val) => setUsername(val.replace(/\s/g, ""))}
+/>
 
-        {/* Passwords */}
-        <IonInput
-          label="Password"
-          type="password"
-          labelPlacement="stacked"
-          placeholder="*****"
-          className="text-emerald-700 mb-2"
-          value={password}
-          onIonInput={(e) => setPassword(e.target.value.trim())}
-        />
-        {password.length > 0 && password.length < 6 && (
-          <p className="text-sm text-rose-400">Minimum password length is 6 characters</p>
-        )}
+{username && username.length < 4 && (
+  <p className="text-sm text-rose-300 mb-2">
+    Minimum username length is 4 characters
+  </p>
+)}
+{!usernameUnique && (
+  <p className="text-sm text-rose-300 mb-2">
+    Username is already taken
+  </p>
+)}
 
-        <IonInput
-          label="Confirm Password"
-          type="password"
-          labelPlacement="stacked"
-          placeholder="*****"
-          className="text-emerald-700 mb-2"
-          value={confirmPassword}
-          onIonInput={(e) => setConfirmPassword(e.target.value.trim())}
-        />
-        {password !== confirmPassword && (
-          <p className="text-sm text-rose-400">Passwords must match</p>
-        )}
+          {/* Password */}
+         <div className="mb-4">
+          <PasswordInput
+  label="Password"
+  value={password}
+  onChange={setPassword}
+  confirm={false}
+/>
 
-        {/* Privacy Toggle */}
-        <div className="flex justify-between items-center mt-4 mb-4">
-          <div className="flex items-center gap-2 relative">
-            <img src={info} className="w-5 h-5 cursor-pointer" />
-            <span className="absolute -top-10 left-0 text-xs bg-white text-emerald-800 rounded-lg px-2 py-1 opacity-0 hover:opacity-100 transition">
-              Hidden from search?
-            </span>
-            <IonLabel className="text-emerald-700">Private account</IonLabel>
-          </div>
-          <input
-            type="checkbox"
-            checked={isPrivate}
-            onChange={(e) => setIsPrivate(e.target.checked)}
-            className="toggle toggle-success"
-          />
-        </div>
+{password.length > 0 && password.length < 6 && (
+  <p className="text-sm text-rose-300 mb-2">
+    Minimum password length is 6 characters
+  </p>
+)}
 
-        {/* Profile Picture */}
-        <IonLabel className="text-emerald-700 text-lg font-bold block mb-2">Profile Picture</IonLabel>
-        <input
-          type="file"
-          accept="image/*"
-          className="file-input file-input-bordered w-full mb-4"
-      onChange={(e)=>handleProfilePicture(e)}
-        />
-        {selectedImage && (
-          <img src={selectedImage} alt="Selected" className="rounded-xl mx-auto mb-4 max-h-40" />
-        )}
+<PasswordInput
+  label="Confirm Password"
+  value={confirmPassword}
+  onChange={setConfirmPassword}
+  confirm={true}
+/>
 
-        {/* Email Frequency */}
-        <EmailSettings setFrequency={setFrequency} frequency={frequency}/>
-        {/* <IonLabel className="text-white text-lg font-bold block mb-2">Email Frequency</IonLabel>
-        <IonSelect
-          interface="popover"
-          value={frequency}
-          onIonChange={(e) => setFrequency(Number(e.detail.value))}
-          className="bg-white text-emerald-700 rounded-xl mb-4"
+{password !== confirmPassword && (
+  <p className="text-sm text-rose-300 mb-4">
+    Passwords must match
+  </p>
+)}
+          {/* <IonInput type={showPassword?"text":`password`}
+         value={password}
+         label='Password'
+         labelPlacement='stacked'
+         onIonInput={(e) => setPassword(e.target.value)}
+        placeholder='*****' 
         >
-          <IonSelectOption value={1}>Daily</IonSelectOption>
-          <IonSelectOption value={2}>Every 3 days</IonSelectOption>
-          <IonSelectOption value={3}>Weekly</IonSelectOption>
-          <IonSelectOption value={14}>Every 2 weeks</IonSelectOption>
-          <IonSelectOption value={30}>Monthly</IonSelectOption>
-        </IonSelect> */}
+            {/* <IonIcon slot='end'> */}
+         {/* <button slot='end' onClick={()=>setShowPassword(prev=>!prev)}
+                className={`text-[0.7rem] open-sans-medium ${showPassword?"":"" } my-auto`}>
+                    {showPassword?"Hide":"Show"}</button>  */}
+                    {/* </IonIcon> */}
+        {/* </IonInput> */}
+  {/* <IonLabel className="text-white">Password</IonLabel>
+  <div className="relative">
+    <IonInput
+      type={showPassword ? "text" : "password"}
+      placeholder="*****"
+      value={password}
+      onIonInput={(e) => setPassword(e.target.value.trim())}
+      className="bg-white/80 text-emerald-800 rounded-xl px-3 pr-12"
+    />
+    <button
+      type="button"
+      onClick={() => setShowPassword((prev) => !prev)}
+      className="absolute right-3 top-1/2 -translate-y-1/2 text-sm"
+    >
+      {showPassword ? "Hide" : "Show"}
+    </button>
+  </div> */}
 
-        {/* Self Statement */}
-        <IonTextarea
-          label="Self Statement"
-          labelPlacement="stacked"
-          placeholder="What are you about?"
-          value={selfStatement}
-          onIonInput={(e) => setSelfStatement(e.target.value)}
-          className="text-emerald-700 bg-transparent border border-white rounded-xl p-2 mb-8"
-        />
+  {/* {password.length > 0 && password.length < 6 && (
+    <p className="text-sm text-rose-300 mt-1">
+      Minimum password length is 6 characters
+    </p>
+  )} */}
+</div>
+         
 
-        {/* Submit */}
-        <div
-          disabled={!canUser}
+          {/* Confirm Password */}
+
+          {/* Privacy */}
+          <div className="flex justify-between items-center mb-6">
+            <div className="flex items-center gap-2">
+              <IonLabel className="text-white">Private account</IonLabel>
+              <span className="text-xs text-emerald-200">
+                Hidden from search
+              </span>
+            </div>
+            <input
+              type="checkbox"
+              checked={isPrivate}
+              onChange={(e) => setIsPrivate(e.target.checked)}
+              className="toggle toggle-success"
+            />
+          </div>
+
+          {/* Profile Picture */}
+          <IonLabel className="text-white text-lg font-semibold block mb-2">
+            Profile Picture
+          </IonLabel>
+          <input
+            type="file"
+            accept="image/*"
+            className="file-input file-input-bordered w-full mb-4"
+            onChange={(e) => handleProfilePicture(e)}
+          />
+
+          {selectedImage && (
+            <img
+              src={selectedImage}
+              alt="Selected"
+              className="rounded-xl mx-auto mb-6 max-h-40"
+            />
+          )}
+
+          {/* Email Settings */}
+          <div className="mb-6">
+            <EmailSettings
+              setFrequency={setFrequency}
+              frequency={frequency}
+            />
+          </div>
+
+          {/* Self Statement */}
+          <IonTextarea
+            label="Self Statement"
+            labelPlacement="stacked"
+            placeholder="What are you about?"
+            value={selfStatement}
+            onIonInput={(e) => setSelfStatement(e.target.value)}
+            className="mb-6 bg-white/80 text-emerald-800 rounded-xl px-3"
+          />
+                {/* <div className="fixed bottom-0 left-0 w-full px-4 pt-2 pb-[calc(env(safe-area-inset-bottom)+12px)] bg-gradient-to-t from-emerald-900/95 to-transparent backdrop-blur-md z-50"> */}
+        <button
+          // disabled={!canUser}
           onClick={completeSignUp}
-          className={`btn w-full flex py-3 rounded-full text-lg ${
+          className={`w-full py-4 rounded-full text-lg font-semibold shadow-lg transition ${
             canUser
               ? "bg-gradient-to-r from-emerald-500 to-emerald-700 text-white"
               : "bg-gray-300 text-gray-500"
           }`}
         >
-          <IonText className="my-auto mx-auto text-lg">Join Plumbum!</IonText>
+          Join Plumbum
+        </button>
+      {/* </div> */}
         </div>
+        
       </div>
+
+      {/* ✅ FIXED CTA */}
+
     </IonContent>
-    </ErrorBoundary>
-  );
+  </ErrorBoundary>
+);
+
+    {/* // <ErrorBoundary>
+    // <IonContent fullscreen={true} className="p-4 flex justify-center  bg-gradient-to-b from-emerald-800 to-emerald-600">
+    //   <div className="bg-white/10 backdrop-blur-md rounded-3xl w-full max-w-xl p-6 mx-auto shadow-lg">
+    //     <h2 className="text-emerald-700 text-center text-3xl mont-medium mb-6">Complete Sign Up</h2>
+ <IonInput 
+    //     {/* Email */}
+     {/*  
+    //       label="Email"
+    //       labelPlacement="stacked"
+    //       placeholder="example@x.com"
+    //       className="text-emerald-700 mb-4"
+    //       value={email}
+    //       onIonInput={(e) => setEmail(e.target.value)}
+    //     />
+
+    //     {/* Username */}
+    //     <IonInput
+    //       label="Username"
+    //       labelPlacement="stacked"
+    //       placeholder="username"
+    //       className="text-emerald-700 mb-2"
+    //       value={username}
+    //       onIonInput={(e) => setUsername(e.target.value.trim())}
+    //     />
+    //     {username && username.length < 4 && (
+    //       <p className="text-sm text-rose-400">Minimum username length is 4 characters</p>
+    //     )}
+    //     {!usernameUnique && <p className="text-sm text-rose-400">Username is already taken</p>}
+
+    //     {/* Passwords */}
+    //     <IonInput
+    //       label="Password"
+    //       type="password"
+    //       labelPlacement="stacked"
+    //       placeholder="*****"
+    //       className="text-emerald-700 mb-2"
+    //       value={password}
+    //       onIonInput={(e) => setPassword(e.target.value.trim())}
+    //     />
+    //     {password.length > 0 && password.length < 6 && (
+    //       <p className="text-sm text-rose-400">Minimum password length is 6 characters</p>
+    //     )}
+
+    //     <IonInput
+    //       label="Confirm Password"
+    //       type="password"
+    //       labelPlacement="stacked"
+    //       placeholder="*****"
+    //       className="text-emerald-700 mb-2"
+    //       value={confirmPassword}
+    //       onIonInput={(e) => setConfirmPassword(e.target.value.trim())}
+    //     />
+    //     {password !== confirmPassword && (
+    //       <p className="text-sm text-rose-400">Passwords must match</p>
+    //     )}
+
+    //     {/* Privacy Toggle */}
+    //     <div className="flex justify-between items-center mt-4 mb-4">
+    //       <div className="flex items-center gap-2 relative">
+    //         <img src={info} className="w-5 h-5 cursor-pointer" />
+    //         <span className="absolute -top-10 left-0 text-xs bg-white text-emerald-800 rounded-lg px-2 py-1 opacity-0 hover:opacity-100 transition">
+    //           Hidden from search?
+    //         </span>
+    //         <IonLabel className="text-emerald-700">Private account</IonLabel>
+    //       </div>
+    //       <input
+    //         type="checkbox"
+    //         checked={isPrivate}
+    //         onChange={(e) => setIsPrivate(e.target.checked)}
+    //         className="toggle toggle-success"
+    //       />
+    //     </div>
+
+    //     {/* Profile Picture */}
+    //     <IonLabel className="text-emerald-700 text-lg font-bold block mb-2">Profile Picture</IonLabel>
+    //     <input
+    //       type="file"
+    //       accept="image/*"
+    //       className="file-input file-input-bordered w-full mb-4"
+    //   onChange={(e)=>handleProfilePicture(e)}
+    //     />
+    //     {selectedImage && (
+    //       <img src={selectedImage} alt="Selected" className="rounded-xl mx-auto mb-4 max-h-40" />
+    //     )}
+
+    //     {/* Email Frequency */}
+    //     <EmailSettings setFrequency={setFrequency} frequency={frequency}/>
+    //     {/* <IonLabel className="text-white text-lg font-bold block mb-2">Email Frequency</IonLabel>
+    //     <IonSelect
+    //       interface="popover"
+    //       value={frequency}
+    //       onIonChange={(e) => setFrequency(Number(e.detail.value))}
+    //       className="bg-white text-emerald-700 rounded-xl mb-4"
+    //     >
+    //       <IonSelectOption value={1}>Daily</IonSelectOption>
+    //       <IonSelectOption value={2}>Every 3 days</IonSelectOption>
+    //       <IonSelectOption value={3}>Weekly</IonSelectOption>
+    //       <IonSelectOption value={14}>Every 2 weeks</IonSelectOption>
+    //       <IonSelectOption value={30}>Monthly</IonSelectOption>
+    //     </IonSelect> */}
+
+    //     {/* Self Statement */}
+    //     <IonTextarea
+    //       label="Self Statement"
+    //       labelPlacement="stacked"
+    //       placeholder="What are you about?"
+    //       value={selfStatement}
+    //       onIonInput={(e) => setSelfStatement(e.target.value)}
+    //       className="text-emerald-700 bg-transparent border border-white rounded-xl p-2 mb-8"
+    //     />
+
+    //     {/* Submit */}
+    //     <div
+    //       disabled={!canUser}
+    //       onClick={completeSignUp}
+    //       className={`btn w-full flex py-3 rounded-full text-lg ${
+    //         canUser
+    //           ? "bg-gradient-to-r from-emerald-500 to-emerald-700 text-white"
+    //           : "bg-gray-300 text-gray-500"
+    //       }`}
+    //     >
+    //       <IonText className="my-auto mx-auto text-lg">Join Plumbum!</IonText>
+    //     </div>
+    //   </div>
+    // </IonContent>
+    // </ErrorBoundary>
+  // );
 }
 
 
 function EmailSettings({ frequency, setFrequency }) {
-  // Map numeric frequency values to display labels
-  const frequencyLabels = {
-    1: "Daily",
-    7: "Weekly",
-    30: "Monthly",
-    0: "Unsubscribe",
-  };
-
-  const handleSetFrequency = (value) => {
-    setFrequency(value);
-  };
+  const options = [
+    { label: "Daily", value: 1 },
+    { label: "Weekly", value: 7 },
+    { label: "Monthly", value: 30 },
+    { label: "Unsubscribe", value: 0 },
+  ];
 
   return (
-    <div className="p-4 max-w-sm mx-auto space-y-4">
-      <h2 className="text-xl font-semibold text-emerald-700">
+    <div className="space-y-3">
+      <h2 className="text-lg font-semibold text-white">
         Email Preferences
       </h2>
 
-      {/* Tooltip */}
-      <div
-        className="tooltip tooltip-bottom"
-        data-tip="Choose how often you receive emails"
-      >
-        <label className="block text-emerald-700 font-medium mb-2">
-          Email Frequency
-        </label>
-      </div>
-
-      {/* DaisyUI dropdown */}
-      <div className="dropdown w-full">
-        <label
-          tabIndex={0}
-          className="btn w-full bg-white text-emerald-700 border border-emerald-300 hover:bg-emerald-50"
-        >
-          {frequencyLabels[frequency] || "Select Frequency"}
-        </label>
-        <ul
-          tabIndex={0}
-          className="dropdown-content menu bg-white rounded-box w-full border border-emerald-200 shadow-md"
-        >
-          <li>
-            <button
-              onClick={() => handleSetFrequency(1)}
-              className="text-emerald-700 hover:bg-emerald-50"
-            >
-              Daily
-            </button>
-          </li>
-          <li>
-            <button
-              onClick={() => handleSetFrequency(7)}
-              className="text-emerald-700 hover:bg-emerald-50"
-            >
-              Weekly
-            </button>
-          </li>
-          <li>
-            <button
-              onClick={() => handleSetFrequency(30)}
-              className="text-emerald-700 hover:bg-emerald-50"
-            >
-              Monthly
-            </button>
-          </li>
-          <li>
-            <button
-              onClick={() => handleSetFrequency(0)}
-              className="text-emerald-700 hover:bg-emerald-50"
-            >
-              Unsubscribe
-            </button>
-          </li>
-        </ul>
+      <div className="grid grid-cols-2 gap-2">
+        {options.map((opt) => (
+          <button
+            key={opt.value}
+            onClick={() => setFrequency(opt.value)}
+            className={`py-2 rounded-xl border transition ${
+              frequency === opt.value
+                ? "bg-emerald-500 text-white border-emerald-500"
+                : "bg-white/80 text-emerald-700 border-emerald-200"
+            }`}
+          >
+            {opt.label}
+          </button>
+        ))}
       </div>
     </div>
-    
+  );
+}
+function TextInput({
+  label,
+  type = "text",
+  value,
+  onChange,
+  placeholder,
+}) {
+  return (
+    <div className="mb-4">
+      <label className="block text-white mb-1 text-sm font-medium">
+        {label}
+      </label>
+      <input
+        type={type}
+        value={value}
+        placeholder={placeholder}
+        onChange={(e) => onChange(e.target.value)}
+        className="w-full bg-white/80 text-emerald-800 rounded-xl px-3 py-3 outline-none focus:ring-2 focus:ring-emerald-400 transition"
+      />
+    </div>
+  );
+}
+function PasswordInput({
+  label,
+  value,
+  onChange,
+  confirm=false
+}) {
+  const [show, setShow] = useState(false);
+
+  return (
+    <div className="mb-4">
+      <label className="block text-white mb-1 text-sm font-medium">
+        {label}
+      </label>
+
+      <div className="relative">
+        <input
+          type={show ? "text" : "password"}
+          value={value}
+          placeholder="*****"
+          onChange={(e) => onChange(e.target.value)}
+          className="w-full bg-white/80 text-emerald-800 rounded-xl px-3 py-3 pr-14 outline-none focus:ring-2 focus:ring-emerald-400 transition"
+        />
+
+        {!confirm && <button
+          type="button"
+          onClick={() => setShow((prev) => !prev)}
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-emerald-700"
+        >
+          {show ? "Hide" : "Show"}
+        </button>}
+      </div>
+    </div>
   );
 }

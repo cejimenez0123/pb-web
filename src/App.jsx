@@ -213,9 +213,8 @@ const navbarBot = Capacitor.isNativePlatform() || isTablet;
                               <SignUpContainer/></PageWrapper>
                 }/>
       <Route path={'/register'}
-                render={()=><LoggedRoute 
-                    currentProfile={currentProfile}><PageWrapper>
-                        <UserReferralContainer/></PageWrapper></LoggedRoute>}/>
+                render={()=><PageWrapper>
+                        <UserReferralContainer/></PageWrapper>}/>
        <Route path={Paths.feedback()}
             render={()=><PageWrapper><FeedbackContainer/></PageWrapper>}/>
      <Route path={Paths.addToCollection.route}
