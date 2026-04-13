@@ -69,6 +69,15 @@ const useReferral = createAsyncThunk("users/useReferral",async(params,thunkApi)=
     return err
   }
 })
+const setMainLoading = createAction("books/setCollectionInView", (params)=> {
+
+  
+    
+    return  {payload:params
+    }
+
+
+  })
 const signUp = createAsyncThunk(
     'users/signUp',
     async (params,thunkApi) => {
@@ -317,5 +326,5 @@ export {logIn,
         deletePicture,
         updateSubscription,
         getIosInfo,
-        setUserLoading,setCurrentProfile,referSomeone
+        setUserLoading,setCurrentProfile,referSomeone,setMainLoading
     }

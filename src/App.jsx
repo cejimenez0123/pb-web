@@ -16,7 +16,7 @@ import {
           setSignedInFalse,
       
       } from './actions/UserActions'
-      import { IonApp, setupIonicReact, IonRouterOutlet,  useIonRouter, IonFooter, useIonViewWillEnter} from '@ionic/react';
+      import { IonApp, setupIonicReact, IonRouterOutlet,  useIonRouter, IonFooter, useIonViewWillEnter, IonLoading} from '@ionic/react';
  import LoggedRoute from './LoggedRoute';
 import PrivateRoute from './PrivateRoute';
 
@@ -65,7 +65,7 @@ const libraries = ["places"];
 function App(props) {
   const {currentProfile} =props
 const isHorizPhone = useMediaQuery({ query: '(min-width: 800px)' });
-
+const {loading}=useSelector(state=>state.users)
 
   const isNative = Capacitor.isNativePlatform()
 
@@ -149,6 +149,7 @@ const showBottomNavbar = (isMobileOrTablet || isNative)  && import.meta.env.VITE
     
        
        <Dialog dialog={dialog} presentingElement={presentingEl} />
+       <IonLoading isOpen={loading} message="Loading..." />
 <Alert />
 <div  >
     <IonRouterOutlet>   

@@ -21,10 +21,12 @@ import {
 import { createSlice} from "@reduxjs/toolkit"
 import { getMyStories, getStory,createStory, fetchRecommendedStories,
   updateStory, deleteStory, getCollectionStoriesProtected,getCollectionStoriesPublic} from "../actions/StoryActions"
+import { PageType } from "../core/constants.js"
 
 
 const initialState = {pagesInView:[],
   myPages:[],
+  pageType:PageType.text,
                       storyToCollectionList:[],
                       recommendedStories:[],
                       editingPage:null,
@@ -166,7 +168,7 @@ const pageSlice = createSlice({
 
 
       }).addCase(setPageType,(state,{payload})=>{
-        state.type = payload
+        state.pageType  = payload
       }).addCase(setEditingPage.type,(state,{payload})=>{
         state.editingPage = payload
       })

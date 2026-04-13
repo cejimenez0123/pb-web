@@ -6,7 +6,7 @@ import '../App.css'
 import "../styles/Navbar.css"
 import person from "../images/icons/person.png"
 import addCircle from "../images/icons/plus.app.svg"
-import { signOutAction} from "../actions/UserActions"
+import { setMainLoading, signOutAction} from "../actions/UserActions"
 import calendar from "../images/icons/calendar.svg"
 import home from "../images/icons/home.svg"
 import library from "../images/icons/book.svg"
@@ -498,13 +498,14 @@ function CreateButton({router}) {
   const [error, setError] = useState(null);
   const [isOpen,setIsOpen]=useState(false)
 const {currentProfile }= useSelector(state=>state.users)
-
-  const ClickWriteAStory = debounce(() => {
+const {pageType}=useSelector(state=>state.pages)
+  const ClickWriteAStory = () => {
+    dispatch(setMainLoading(true))
     dispatch(setPageType({type:PageType.text}))
-    dispatch(setPageInView({ page: null }))
-  dispatch(setEditingPage({ page: null }))
+
     if (currentProfile?.id) {
-      sendGAEvent("Create", "Write a Story", "Click Write Story");
+   
+     
       dispatch(createStory({
         profileId: currentProfile.id,
         privacy: true,
@@ -513,7 +514,7 @@ const {currentProfile }= useSelector(state=>state.users)
         commentable: true
       })).then(res => checkResult(res, payload => {
         if (payload.story) {
-        
+        dispatch(setMainLoading(false))
           dispatch(setPageInView({ page: payload.story }));
         router.push(Paths.editPage.createRoute(payload.story.id),'forward');
         }else{
@@ -523,47 +524,46 @@ const {currentProfile }= useSelector(state=>state.users)
         setErrorLocal(err.message)
       }));
     }
-  }, 5);
+  }
 
 
-const debouncedNavigate = useRef(
-    debounce((type) => {
-      dispatch(setHtmlContent(null))
-      dispatch(setPageInView({page:null}))
-      // dispatch(setEditingPage({page:null}))
-      switch (type) {
-        case "write":
-          ClickWriteAStory();
-          break;
-        case "image":{
-           dispatch(setPageType({type:PageType.image}))
-          router.push(Paths.editor.image, "forward");
-          break;}
-        case "link":{
-           dispatch(setPageType({type:PageType.link}))
-          router.push(Paths.editor.link, "forward");
-        }
-          break;
-        case "collection":{
-          handleOpenCreateCollection({
-            dispatch,
-            submitCollection,
-            initPages: [],
-            router,
-            currentProfile,
-            formData,
-            setFormData,
-            openDialog,
-            setSubmitting,
-            submitting,
-            setError
-          });
-          break;}
-        default:
-          break;
-      }
-    }, 300) // 300ms debounce
-  ).current;
+const handleNavigate = (type) => {
+  switch (type) {
+    case "write":
+      console.log("navigating to write");
+      ClickWriteAStory();
+      break;
+
+    case "image":
+      dispatch(setPageType({ type: PageType.image }));
+      router.push(Paths.editor.image, "forward");
+      break;
+
+    case "link":
+      dispatch(setPageType({ type: PageType.link }));
+      router.push(Paths.editor.link, "forward");
+      break;
+
+    case "collection":
+      handleOpenCreateCollection({
+        dispatch,
+        submitCollection,
+        initPages: [],
+        router,
+        currentProfile,
+        formData,
+        setFormData,
+        openDialog,
+        setSubmitting,
+        submitting,
+        setError,
+      });
+      break;
+
+    default:
+      break;
+  }
+};
   return (
 
 <div
@@ -589,7 +589,7 @@ const debouncedNavigate = useRef(
       {["write", "image", "link", "collection"].map((item) => (
         <button
           key={item}
-          onClick={() => debouncedNavigate(item)}
+          onClick={() => handleNavigate(item)}
           className="w-full text-center mx-auto px-4 py-2 bg-base-bg text-sm text-soft hover:bg-blue-100 capitalize"
         >
           {item}

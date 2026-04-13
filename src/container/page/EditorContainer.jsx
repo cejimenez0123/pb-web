@@ -48,7 +48,7 @@ const { id, type: paramType } = useParams();
 
 //  console.log()
   const currentProfile = useSelector((state) => state.users.currentProfile);
-  const { editPage ,type:sliceType} = useSelector((state) => state.pages);
+  const { editPage ,pageType:sliceType} = useSelector((state) => state.pages);
    const type = sliceType || paramType
   const { setError, setSuccess,  } = useContext(Context);
   const [files,setFiles]=useState([])
@@ -142,39 +142,36 @@ setError(err.message)
     setPending(false);
   }
 const hasLoaded = useRef(false);
-
 useEffect(() => {
   if (!hasLoaded.current) {
     hasLoaded.current = true;
     return;
   }
 
-if (!parameters.id && !editPage?.id) return;
+  const validId = parameters.id || editPage?.id;
+  if (!validId || !currentProfile?.id) return;
 
-    const payload = {
-    id: editPage?.id,
+  const payload = {
     ...parameters,
+    id: validId,
     profileId: currentProfile.id,
-    data: parameters.data,
-    title: parameters.title,
-    isPrivate: parameters.isPrivate,
-    commentable: parameters.commentable,
-    description: parameters.description,
-    // needsFeedback: parameters.needsFeedback,
   };
 
-  const isSame = JSON.stringify(payload) === JSON.stringify(lastSavedRef.current);
+  const isSame =
+    JSON.stringify(payload) === JSON.stringify(lastSavedRef.current);
+
   if (isSame) return;
 
   lastSavedRef.current = payload;
 
-  debouncedSave(payload);
+  debouncedSave({...payload,status: "draft",isPrivate:true});
 }, [
   parameters.data,
   parameters.title,
-
   parameters.commentable,
-
+  parameters.id,
+  editPage?.id,
+  currentProfile?.id,
 ]);
 
   const fetchStory = () => {
@@ -218,29 +215,19 @@ if (!parameters.id && !editPage?.id) return;
     checkResult(res, (payload) => {
    
      
-      setStory({...payload.story,isSaved:true})
-      router.push(Paths.editPage.createRoute(payload.story.id,"foward","replace"))
+     setStory({...payload.story, isSaved: true});
+
+setTimeout(() => {
+  router.push(Paths.editPage.createRoute(payload.story.id, "forward", "replace"));
+}, 0);
     }, (err) => setError(err.message))
   );
 };
-
-
-//   const handleChange = (key, value) =>{ 
-//     setParameters((prev) => ({ ...prev, [key]: value }))
-
-// };
-
 const handleChange = (key, value) => {
-  setParameters((prev) => {
-    const updated = { ...prev, [key]: value };
-
-  debouncedSave({
-  ...updated,
-  id: updated.id || editPage?.id,
-});
-
-    return updated;
-  });
+  setParameters((prev) => ({
+    ...prev,
+    [key]: value,
+  }));
 };
  const driveTokenKey = "googledrivetoken";
    const TOKEN_EXPIRY_KEY = "googledrivetoken_expiry"; // 
@@ -433,13 +420,17 @@ const handleView =()=>{
     openDialog(dia);
   };
 useEffect(() => {
-  if (!id) { // only for new page creation
-    dispatch(setPageInView({ page: null })); // clear old editPage
-    dispatch(setHtmlContent( "" )); // clear editor content
-    handleChange("data", "");
-    handleChange("isSaved", false);
+  if (!id) {
+    dispatch(setPageInView({ page: null }));
+    dispatch(setHtmlContent(""));
+    
+    // ❌ DO NOT autosave here
+    setParameters(prev => ({
+      ...prev,
+      data: "",
+      isSaved: false
+    }));
   }
-  
 }, [type]);
 
 
@@ -477,7 +468,9 @@ useEffect(() => {
         onChange={(e) => handleChange("title", e.target.value)}
         placeholder="Untitled"
       />
-             {isSaved? (
+         
+  <div className="flex items-center gap-2 mt-1">
+  {isSaved ? (
     <span className="text-emerald-700 font-semibold flex items-center gap-1">
       ✅ Saved
     </span>
@@ -486,6 +479,24 @@ useEffect(() => {
       💾 Saving...
     </span>
   )}
+
+  {/* Status Badge */}
+  <span
+    className={`text-xs px-2 py-1 rounded-full font-semibold capitalize
+      ${
+        parameters.status === "draft"
+          ? "bg-gray-200 text-gray-700"
+          : parameters.status === "workshop"
+          ? "bg-blue-100 text-blue-700"
+          : parameters.status === "finished"
+          ? "bg-emerald-100 text-emerald-700"
+          : "bg-gray-200 text-gray-700"
+      }
+    `}
+  >
+    {parameters.status || "draft"}
+  </span>
+</div>
 </div>
       {/* Dropdown */}
       <TopBarDropdown
