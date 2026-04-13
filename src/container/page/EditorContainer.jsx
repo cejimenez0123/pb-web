@@ -56,14 +56,6 @@ const hasInitialized = useRef(false);
       },[])
 
 
-const handleBack = (e) => {
-  e.preventDefault();
-  if (router.canGoBack()) {
-    router.goBack();
-  } else {
-    router.push(Paths.discovery, 'back', 'pop');
-  }
-};
 
   
   const setStory=(story)=>{
@@ -320,14 +312,7 @@ const openRoleFormDialog = () => {
         return(
           <EditorContext.Provider value={{page:editPage,parameters,setParameters}}>
           <IonContent fullscreen={true} scrollY={true} style={{"--background":"#f4f4e0","--padding-bottom":"30em","--padding-top":isNative||isPhone?"0.3rem":"6em"}}className="ion-padding"  >
-           {isNative? <IonHeader className="   ">
-             <IonButtons onClick={handleBack} className="ion-padding">
-  <IonBackButton defaultHref={Paths.discovery} />
-</IonButtons>
 
-
-            <IonButtons></IonButtons>
-            </IonHeader>:null}
           <div  className=" mx-auto md:p-8  "> 
      {pending? <div className="skeleton rounded-lg  w-[100%] h-fit sm:max-w-[50em] mx-auto "/>:
             topBar()}
