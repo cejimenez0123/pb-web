@@ -82,7 +82,7 @@ const headers = await this.getAuthHeaders()
         return res.data
     }async referral({email,name}){
         const headers = await this.getAuthHeaders()
-        const res = await axios.post(Enviroment.url+"/auth/referral",{email,name}, {headers:headers})
+        const res = await axios.post(Enviroment.url+"/auth/invite",{email,name}, {headers:headers})
         return res.data
     }
 

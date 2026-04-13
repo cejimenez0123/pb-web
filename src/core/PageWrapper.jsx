@@ -479,7 +479,7 @@ overflow-y-auto pb-20
       {/* FOOTER */}
       <div className="flex flex-col  gap-3 pb-20 border-t border-soft">
   
-        <button onClick={() =>{ 
+      {currentProfile &&   <button onClick={() =>{ 
           openReferral()
        setMenuOpen(false)}}
           className=" rounded-s-full
@@ -493,7 +493,7 @@ overflow-y-auto pb-20
         hover:text-green
           transition"
     
-           >Refer a friend 🥰</button>
+           >Refer a friend 🥰</button>}
         <button  className=" rounded-s-full
           text-left 
           text-[1rem] 
