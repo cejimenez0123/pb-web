@@ -94,7 +94,7 @@ const [form, setForm] = useState({
   const [loading, setLoading] = useState(false);
 useEffect(() => {
   if (!loading && !currentProfile) {
-    router.push(Paths.login(), "root"); // replace history
+    router.push(Paths.login, "root"); // replace history
   }
 }, [loading, currentProfile]);
   /* --------------------------
@@ -290,7 +290,7 @@ dispatch(updateProfile({
       agree: () => dispatch(deleteUserAccounts()).then(res=>{
         checkResult(res,()=>{
           setSuccess("Account deleted");
-          router.push(Paths.login())
+          router.push(Paths.login)
         },err=>{
           setError(err.message)
       })
@@ -329,7 +329,7 @@ dispatch(updateProfile({
           
           checkResult(res,(data)=>{
             console.log("sign out",data)
-            router.push(Paths.login())},err=>{
+            router.push(Paths.login)},err=>{
 setError(err.message)
           }))}}
 

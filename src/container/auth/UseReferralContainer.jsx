@@ -24,7 +24,7 @@ const params = new URLSearchParams(router.routeInfo?.search);
   console.log(token)
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
-  console.log(username)
+
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [selectedImage, setSelectedImage] = useState("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png");

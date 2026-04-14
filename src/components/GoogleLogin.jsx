@@ -1,4 +1,3 @@
-
 import React, {
   useState,
   useEffect,
@@ -6,45 +5,39 @@ import React, {
   useContext,
   useRef,
 } from "react";
-import { IonText, IonSpinner, IonImg, IonRow, useIonRouter } from "@ionic/react";
+import { IonText, IonSpinner, IonImg, IonRow } from "@ionic/react";
 import { useDispatch } from "react-redux";
 import { SocialLogin } from "@capgo/capacitor-social-login";
-import DeviceCheck from "./DeviceCheck";
-import Context from "../context";
+// import DeviceCheck from "./DeviceCheck";
 import { Preferences } from "@capacitor/preferences";
 import Googlelogo from "../images/logo/googlelogo.png";
-import ErrorBoundary from "../ErrorBoundary"; // make sure this path matches your project
+import ErrorBoundary from "../ErrorBoundary";
 import { sendGAEvent } from "../core/ga4";
+import { Capacitor } from "@capacitor/core";
 
 function GoogleLoginInner({ drive, onUserSignIn }) {
-  const { isError } = useContext(Context);
   const [bootstrapping, setBootstrapping] = useState(true);
-const [pending, setPending] = useState(false);
+  const [pending, setPending] = useState(false);
 
   const [loginError, setLoginError] = useState(null);
   const [signedIn, setSignedIn] = useState(false);
-  const [userInfo, setUserInfo] = useState(null);
   const [gisLoaded, setGisLoaded] = useState(false);
+
   const [accessToken, setAccessToken] = useState(null);
   const [idToken, setIdToken] = useState(null);
 
-  const isNative = DeviceCheck();
-const router =useIonRouter()
-
-  const dispatch = useDispatch();
   const googleButtonRef = useRef(null);
+  const isNative =Capacitor.isNativePlatform()
 
   const CLIENT_ID = import.meta.env.VITE_OAUTH2_CLIENT_ID;
   const IOS_CLIENT_ID = import.meta.env.VITE_IOS_CLIENT_ID;
-     
+
   const driveTokenKey = "googledrivetoken";
 
   // ---------------------------
-  // 1️⃣ Initialize for mobile
+  // 1️⃣ Native init
   // ---------------------------
   useLayoutEffect(() => {
-    // if (!isNative) return;
-
     try {
       SocialLogin.initialize({
         google: {
@@ -52,107 +45,105 @@ const router =useIonRouter()
           iOSClientId: IOS_CLIENT_ID,
           iOSServerClientId: CLIENT_ID,
           mode: "online",
-          // redirectUrl:Enviroment.redirectUrl
         },
-      }).catch((err) => console.error("SocialLogin init error:", err));
+      }).catch(console.error);
     } catch (err) {
-      console.error("Error initializing SocialLogin:", err);
+      console.error(err);
     }
-  }, [isNative, CLIENT_ID, IOS_CLIENT_ID]);
+  }, [CLIENT_ID, IOS_CLIENT_ID]);
 
   // ---------------------------
-  // 2️⃣ Load GIS script (for web)
+  // 2️⃣ Load Google script (FIXED)
   // ---------------------------
   useLayoutEffect(() => {
     if (isNative) return;
 
-    try {
-      if (!isNative && window.google?.accounts) {
-        const script = document.createElement("script");
-        script.src = "https://accounts.google.com/gsi/client";
-        script.async = true;
-        script.defer = true;
-        script.onload = () => setGisLoaded(true);
-        script.onerror = () =>
-          setLoginError("Failed to load Google Sign-In script");
-        document.body.appendChild(script);
-      } else {
-        setGisLoaded(true);
-      }
-    } catch (err) {
-      console.error("Error loading GIS script:", err);
+    if (window.google?.accounts) {
+      setGisLoaded(true);
+      return;
     }
+
+    const script = document.createElement("script");
+    script.src = "https://accounts.google.com/gsi/client";
+    script.async = true;
+    script.defer = true;
+
+    script.onload = () => setGisLoaded(true);
+    script.onerror = () =>
+      setLoginError("Failed to load Google Sign-In script");
+
+    document.body.appendChild(script);
   }, [isNative]);
 
   // ---------------------------
-  // 3️⃣ Restore previous session
+  // 3️⃣ Restore session
   // ---------------------------
   useEffect(() => {
-  const loadStoredUser = async () => {
-    try {
-      const [email, name, googleId, driveToken, expiry, idToken] =
-        await Promise.all([
-          Preferences.get({ key: "userEmail" }),
-          Preferences.get({ key: "userName" }),
-          Preferences.get({ key: "googleId" }),
-          Preferences.get({ key: driveTokenKey }),
-          Preferences.get({ key: "googledrivetoken_expiry" }),
-          Preferences.get({ key: "googleIdToken" }),
-        ]);
+    const loadStoredUser = async () => {
+      try {
+        const [email, name, googleId, driveToken, expiry, storedIdToken] =
+          await Promise.all([
+            Preferences.get({ key: "userEmail" }),
+            Preferences.get({ key: "userName" }),
+            Preferences.get({ key: "googleId" }),
+            Preferences.get({ key: driveTokenKey }),
+            Preferences.get({ key: "googledrivetoken_expiry" }),
+            Preferences.get({ key: "googleIdToken" }),
+          ]);
 
-      const valid =
-        driveToken.value &&
-        expiry.value &&
-        Date.now() < parseInt(expiry.value, 10);
+        const valid =
+          driveToken.value &&
+          expiry.value &&
+          Date.now() < parseInt(expiry.value, 10);
 
-      if (email.value && googleId.value && valid) {
-        setAccessToken(driveToken.value);
-        setIdToken(idToken.value);
-        setUserInfo({
-          email: email.value,
-          name: name.value,
-          googleId: googleId.value,
-          uId: googleId.value,
-        });
-        setSignedIn(true);
+        if (email.value && googleId.value && valid) {
+          setAccessToken(driveToken.value);
+          setIdToken(storedIdToken.value);
+
+          setSignedIn(true);
+        }
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setBootstrapping(false);
       }
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setBootstrapping(false);
-    }
-  };
+    };
 
-  loadStoredUser();
-}, []);
-
+    loadStoredUser();
+  }, []);
 
   // ---------------------------
-  // 4️⃣ Native (mobile) login
+  // 4️⃣ Native login (FIXED)
   // ---------------------------
   const nativeGoogleSignIn = async () => {
-       sendGAEvent("login_start", {
+    if (pending) return;
+
+    setPending(true);
+    setLoginError(null);
+
+    sendGAEvent("login_start", {
       method: "google",
       platform: "native",
       drive: !!drive,
     });
-    try {
-      localStorage.clear()
-      await Preferences.clear()
-      await SocialLogin.logout({ provider: "google" });
-      setPending(true);
-      setLoginError(null);
 
+    try {
       const user = await SocialLogin.login({
         provider: "google",
         options: {
-          scopes: ["email", "profile", "https://www.googleapis.com/auth/drive.readonly"],
+          scopes: [
+            "email",
+            "profile",
+            "https://www.googleapis.com/auth/drive.readonly",
+          ],
         },
-      
       });
-      if (!user.result) throw new Error("No user data returned.");
+
+      if (!user.result) throw new Error("No user data returned");
 
       const { accessToken, idToken, profile } = user.result;
+
+      const tokenValue = accessToken?.token || accessToken;
       const expiry = Date.now() + 3600 * 1000;
 
       await Promise.all([
@@ -160,87 +151,65 @@ const router =useIonRouter()
         Preferences.set({ key: "userName", value: profile.name }),
         Preferences.set({ key: "googleId", value: profile.id }),
         Preferences.set({ key: "googleIdToken", value: idToken || "" }),
-        Preferences.set({ key: driveTokenKey, value: accessToken.token || "" }),
+        Preferences.set({ key: driveTokenKey, value: tokenValue || "" }),
         Preferences.set({
           key: "googledrivetoken_expiry",
           value: expiry.toString(),
         }),
       ]);
 
-      const info = {
-        email: profile.email,
-        name: profile.name,
-        googleId: profile.id,
-      };
-
-      setUserInfo(info);
-      setAccessToken(accessToken);
+      setAccessToken(tokenValue);
       setIdToken(idToken);
       setSignedIn(true);
 
       onUserSignIn?.({
-      
         email: profile.email,
         name: profile.name,
         googleId: profile.id,
-        driveAccessToken: accessToken,
+        driveAccessToken: tokenValue,
         idToken,
       });
-
-
     } catch (err) {
-     
-  sendGAEvent("login_error", {
-    method: "google",
-    platform: "native",
-    message: err?.message,
-  });
+      console.error(err);
 
-      console.error("Native sign-in error", err);
-      setLoginError(`Google Sign-In failed. ${err.message || JSON.stringify(err)}`);
+      setLoginError("Google Sign-In failed.");
     } finally {
       setPending(false);
     }
   };
 
   // ---------------------------
-  // 5️⃣ Web login setup
+  // 5️⃣ Web login
   // ---------------------------
   useEffect(() => {
     if (isNative || !gisLoaded || signedIn) return;
     if (!window.google?.accounts) return;
 
-    try {
-      window.google.accounts.id.initialize({
-        client_id: CLIENT_ID,
-        callback: handleCredentialResponse,
-        auto_select: false,
-        cancel_on_tap_outside: true,
-      });
+    window.google.accounts.id.initialize({
+      client_id: CLIENT_ID,
+      callback: handleCredentialResponse,
+    });
 
-      if (googleButtonRef.current) {
-        window.google.accounts.id.renderButton(googleButtonRef.current, {
-          theme: "outline",
-          size: "large",
-          text: "signin_with",
-          width: 240,
-        });
-      }
-    } catch (err) {
-      console.error("Error initializing Google button:", err);
+    if (googleButtonRef.current) {
+      window.google.accounts.id.renderButton(googleButtonRef.current, {
+        theme: "outline",
+        size: "large",
+        text: "signin_with",
+        width: 240,
+      });
     }
   }, [isNative, gisLoaded, signedIn, CLIENT_ID]);
 
   // ---------------------------
-  // 6️⃣ Handle web credential
+  // 6️⃣ Web credential (FIXED race)
   // ---------------------------
   const handleCredentialResponse = async (response) => {
-    if (!response?.credential) {
-      return setLoginError("No credential received.");
-    }
+    if (pending) return;
+    setPending(true);
 
     try {
       const decoded = JSON.parse(atob(response.credential.split(".")[1]));
+
       const info = {
         email: decoded.email,
         name: decoded.name || decoded.given_name,
@@ -251,11 +220,13 @@ const router =useIonRouter()
         Preferences.set({ key: "userEmail", value: info.email }),
         Preferences.set({ key: "userName", value: info.name }),
         Preferences.set({ key: "googleId", value: info.googleId }),
-        Preferences.set({ key: "googleIdToken", value: response.credential }),
+        Preferences.set({
+          key: "googleIdToken",
+          value: response.credential,
+        }),
       ]);
 
       setIdToken(response.credential);
-      setUserInfo(info);
       setSignedIn(true);
 
       if (window.google?.accounts?.oauth2) {
@@ -263,35 +234,44 @@ const router =useIonRouter()
           client_id: CLIENT_ID,
           scope: "https://www.googleapis.com/auth/drive.readonly",
           callback: async (tokenResponse) => {
-            if (tokenResponse.access_token) {
-              const expiryMs = Date.now() + tokenResponse.expires_in * 1000;
-              await Preferences.set({
+            if (!tokenResponse.access_token) {
+              setLoginError("Failed to get Drive token");
+              return;
+            }
+
+            const expiryMs =
+              Date.now() + tokenResponse.expires_in * 1000;
+
+            await Promise.all([
+              Preferences.set({
                 key: driveTokenKey,
                 value: tokenResponse.access_token,
-              });
-              await Preferences.set({
+              }),
+              Preferences.set({
                 key: "googledrivetoken_expiry",
                 value: expiryMs.toString(),
-              });
-              setAccessToken(tokenResponse.access_token);
+              }),
+            ]);
 
-              onUserSignIn?.({
-                ...info,
-                driveAccessToken: tokenResponse.access_token,
-                idToken: response.credential,
-              });
+            setAccessToken(tokenResponse.access_token);
 
+            setSignedIn(true); // ✅ FIXED PLACE
 
-            } else {
-              setLoginError("Failed to get Google Drive token.");
-            }
+            onUserSignIn?.({
+              ...info,
+              driveAccessToken: tokenResponse.access_token,
+              idToken: response.credential,
+            });
           },
         });
+
         tokenClient.requestAccessToken();
       }
     } catch (e) {
-      console.error("Web login error:", e);
-      setLoginError("Invalid ID token.");
+      console.error(e);
+      setLoginError("Login failed");
+    } finally {
+      setPending(false);
     }
   };
 
@@ -307,21 +287,18 @@ const router =useIonRouter()
   }
 
   return (
-    <div className="flex flex-col  justify-center items-center w-full min-h-full">
+    <div className="flex flex-col justify-center items-center w-full min-h-full">
       <div
         onClick={!pending ? nativeGoogleSignIn : undefined}
-        color="dark"
-        className="bg-gray-200 btn rounded-full flex h-[4rem] text-white w-[10rem] mt-8"
+        className="bg-gray-200 btn rounded-full flex h-[4rem] w-[10rem] mt-8"
       >
         <IonRow>
           <IonImg src={Googlelogo} className="max-h-5 max-w-5 mx-3 my-auto" />
           <IonText className="text-black my-auto">
-            {drive ? "Access your Google Drive" : "Sign in"}
+            {drive ? "Access Google Drive" : "Sign in"}
           </IonText>
         </IonRow>
       </div>
-
-      {/* <div ref={googleButtonRef} className="mt-4"></div> */}
 
       {loginError && (
         <IonText color="danger" className="mt-3">
@@ -332,9 +309,6 @@ const router =useIonRouter()
   );
 }
 
-// ---------------------------
-// 🔒 Wrapped Component
-// ---------------------------
 export default function GoogleLogin(props) {
   return (
     <ErrorBoundary fallback={<div>Login temporarily unavailable.</div>}>

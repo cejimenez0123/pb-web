@@ -341,22 +341,50 @@ let signedInMenu = [
       router.push(Paths.discovery);
     }
   };
-   if (!isOnline) {
-  
-    return (
-      <IonPage >
-     <IonContent>
-          <IonText color="medium">
-            <h2>No Internet Connection</h2>
-            <p>Please check your connection and try again.</p>
-          </IonText>
-          <IonButton onClick={handleRetry} style={{ marginTop: '1em' }}>
-            Retry
-          </IonButton>
+   const handleReload = () => {
+    // this.setState({ hasError: false, error: null, errorInfo: null });
+    window.location.reload();
+  };
+if (!isOnline) {
+  return (
+    <IonPage>
+      <IonContent fullscreen className="ion-padding">
+        <div className="flex flex-col items-center justify-center h-full text-center px-6">
+          
+          {/* Icon / visual cue */}
+          <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-5">
+            <span className="text-2xl">📡</span>
+          </div>
+
+          {/* Title */}
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">
+            No Internet Connection
+          </h2>
+
+          {/* Subtitle */}
+          <p className="text-sm text-gray-500 leading-relaxed max-w-sm">
+            You’re offline. Please check your connection and try again.
+          </p>
+
+          {/* Button */}
+          <button
+            onClick={handleReload}
+            className="
+              mt-6 px-6 py-3
+              rounded-full
+              bg-black text-white
+              text-sm font-medium
+              active:scale-95 transition
+              shadow-sm
+            "
+          >
+            Try Again
+          </button>
+        </div>
       </IonContent>
-      </IonPage>
-    );
-  }
+    </IonPage>
+  );
+}
   if (!currentProfile?.id&&loading) {
   return <IonContent />;
 }

@@ -11,13 +11,12 @@ const logIn = createAsyncThunk(
    
      
 try{        const {uId,email,password,idToken,isNative}=params
-console.log("AUTH LOG WHAT")
 
         const authData = await authRepo.startSession({uId:uId,email:email,password,identityToken:idToken})
    
         
         const {token}=authData  
-  console.log("WHAT TOKEN",token)
+ 
          await Preferences.set({key:"token",value:token})
   
         return {token:token,profile:authData.profile}

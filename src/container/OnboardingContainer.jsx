@@ -532,7 +532,7 @@ const Why = ({ handleTab, nav }) => {
             </ul>
           </IonText>
          <IonRow className='flex mx-auto w-[100%] mx-auto justify-between'> 
-            <div onClick={()=>router.push(Paths.login())} className='btn my-auto bg-transparent mt-4 border-none '><IonText  className=" text-emerald-800 text-[1.3rem]" style={{ width: '100%' }}>
+            <div onClick={()=>router.push(Paths.login)} className='btn my-auto bg-transparent mt-4 border-none '><IonText  className=" text-emerald-800 text-[1.3rem]" style={{ width: '100%' }}>
                  Log In
              </IonText></div>
       

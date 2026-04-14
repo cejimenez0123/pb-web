@@ -7,7 +7,6 @@ import Paths from '../../core/paths';
 import checkResult from '../../core/checkResult';
 import ForgotPasswordForm from '../../components/auth/ForgetPasswordForm';
 import Context from '../../context';
-import DeviceCheck from '../../components/DeviceCheck';
 import { IonContent,   IonLoading,  useIonRouter } from '@ionic/react';
 import AppleSignInButton from '../../components/auth/AppleSignInButton';
 import GoogleLogin from '../../components/GoogleLogin';
@@ -36,14 +35,44 @@ const INPUT_WRAP = "max-w-md mx-auto";
 export default function LogInContainer({currentProfile}) {
     const {setError,seo,setSeo}=useContext(Context)
 
-    useEffect(()=>{
-        let soo = seo
-        soo.title = "Plumbum (Log In) - Share Your Weirdness"
-        setSeo(soo)
-       
-   },[])
+useEffect(() => {
+  setSeo((prev) => ({
+    ...prev,
+    title: "Plumbum (Log In) - Share Your Weirdness",
+  }));
+}, [setSeo]);
 
+  
+//     const dispatchLogin=  ({email,googleId,idToken})=>{
+   
+//         if(idToken){
+//             dispatch(logIn({email,idToken:idToken,isNative})).then(res=>{
+//                 checkResult(res,async payload=>{
+//                   router.push(Paths.home)
+           
 
+//                     setPending(false)
+//                 },err=>{
+// handleAuthError(err)
+                    
+//                     setPending(false)
+//                 })
+//             })   
+//         }else if(googleId){
+
+        
+//         dispatch(logIn({email,uId:googleId,isNative})).then(res=>{
+//             checkResult(res,payload=>{
+//        router.push(Paths.home)
+//                 setPending(false)
+//             },err=>{
+               
+// handleAuthError(err)
+//                 setPending(false)
+//             })
+//         })   
+//     }
+//     }
     return (
         <IonContent fullscreen={true}>
             <div className='py-10'>
@@ -51,8 +80,8 @@ export default function LogInContainer({currentProfile}) {
             <LogInCard  
                        
             setLogInError={setError}
-            handleSubmit={(e)=>handleLogIn(e)}
-            setPassword={(str)=>setLiPassword(str)}/>
+            // handleSubmit={(e)=>handleLogIn(e)}
+            />
             </div>
   
          </IonContent>
@@ -64,7 +93,7 @@ function LogInCard({setLogInError}){
     const router = useIonRouter()
     const {setError}=useContext(Context)
     const [email, setEmail] = useState('');
-    const isNative = DeviceCheck()
+    const isNative = Capacitor.isNativePlatform()
     const [password, setPassword] = useState('');
     const [pending,setPending]=useState(false)
     const [showPassword, setShowPassword] = useState(false);
@@ -84,7 +113,7 @@ function LogInCard({setLogInError}){
    console.log(email,password)
         if(email.length>3 && password.length){
             setPending(true)
-            const params ={email:email.toLowerCase(),password:password,isNative:Capacitor.isNativePlatform()}
+            const params ={email:email.toLowerCase(),password:password,isNative:isNative}
             dispatch(logIn(params)).then(res=>{
                 checkResult(res,payload=>{
                     setPending(false)
@@ -92,43 +121,35 @@ function LogInCard({setLogInError}){
                     if(payload && payload.profile && payload.profile.id){
 
                    
-                    router.push(Paths.home,"root","replace")
+                    router.push(Paths.home,"forward","replace")
                      }else{
                         setError("Error with Profile")
                      }
                 },err=>{
-                    if(err.message=="Request failed with status code 401"){
-setError("User Not Found. Apply Below")
-                    }else{
-                        setError(err.message)
-                    }
+                  handleAuthError(err)
              
                     
                     setPending(false)
                 })
             })       
         }else{
-            setPending(false)
-            setError("Values can't be empty")
+            setPending(false);
+setError("Values can't be empty");
         }
     }
   
-    const dispatchLogin=  ({email,googleId,idToken})=>{
+const dispatchLogin = ({ email, googleId, idToken, name }) => {
    
         if(idToken){
             dispatch(logIn({email,idToken:idToken,isNative})).then(res=>{
                 checkResult(res,async payload=>{
-                router.push(Paths.home,"root","replace")
+                  //  router.push(Paths.home)
            
-
+    router.push(Paths.home,"forward","replace")
                     setPending(false)
                 },err=>{
 
-                    if(err.message=="Request failed with status code 401"){
-    setError("User Not Found. Apply Below")
-                    }else{
-                        setError(err.message)
-                    }
+               handleAuthError(err)
              
                     
                     setPending(false)
@@ -139,37 +160,41 @@ setError("User Not Found. Apply Below")
         
         dispatch(logIn({email,uId:googleId,isNative})).then(res=>{
             checkResult(res,payload=>{
-           router.push(Paths.home,"root","replace")
+    router.push(Paths.home,"forward","replace")
                 setPending(false)
             },err=>{
-               
-                if(err.message=="Request failed with status code 401"){
-setError("User Not Found. Apply Below")
-                }else{
-                    setError(err.message)
-                }
+               handleAuthError(err)
+            
          
                 
                 setPending(false)
             })
         })   
+    }else {
+  setError("Invalid login response");
+  setPending(false);
+}
     }
-    }
+  const handleAuthError = (err) => {
+  const message =
+    err?.status === 401
+      ? "User Not Found. Apply Below"
+      : err?.message || "Unknown error";
+
+  setError(message);
+};
     const handleForgotPasswordDialog=()=>{
-        let dia = {...dialog}
-        
-    
-    dia.onClose=()=>{
-       closeDialog()
-    }
-    dia.isOpen = true
-dia.title=null
-dia.agree=null
-dia.agreeText=null
-dia.disagreeText=("Close")
-dia.breakpoint=1
-dia.text=(<ForgotPasswordForm/>)
-openDialog(dia)
+       openDialog({
+  ...dialog,
+  isOpen: true,
+  title: null,
+  agree: null,
+  agreeText: null,
+  disagreeText: "Close",
+  breakpoint: 1,
+  text: <ForgotPasswordForm />,
+  onClose: closeDialog,
+});
     }
     return(
     //    
@@ -186,7 +211,7 @@ openDialog(dia)
     <input
       type="text"
       value={email}
-      onInput={(e) => setEmail(e.target.value)}
+    onChange={(e) => setEmail(e.target.value)}
       placeholder="example@email.com"
       className={INPUT}
     />
@@ -235,7 +260,7 @@ openDialog(dia)
         <div className='w-fit mx-auto'>
         <AppleSignInButton
         onUserSignIn={({idToken,email})=>{
-            dispatchLogin({email,idToken,isNative})
+        dispatchLogin({ email: email || null, idToken, isNative })
         }}
         />
         </div>
@@ -249,7 +274,7 @@ openDialog(dia)
         idToken,
      })=>{
         
-        dispatchLogin({email,googleId,isNative})
+       dispatchLogin({ email, googleId, name, isNative })
         }}
             
 
@@ -263,13 +288,11 @@ openDialog(dia)
       First time here?
     </p>
 
-    {pending && (
-  <IonLoading
+<IonLoading
   isOpen={pending}
-  message={"Loading your space..."}
+  message="Loading your space..."
   spinner="crescent"
 />
-    )}
 
     <p
       onClick={handleForgotPasswordDialog}

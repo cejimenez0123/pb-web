@@ -68,7 +68,7 @@ useLayoutEffect(() => {
   });
 
 
-    router.push(Paths.login());
+    router.push(Paths.login);
   }
 
 

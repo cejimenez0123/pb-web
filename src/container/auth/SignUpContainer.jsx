@@ -148,7 +148,7 @@ dispatch(uploadProfilePicture({ file:fileFind })).then(res => checkResult(res, p
           dispatch(signUp(params))
   .then(res => checkResult(res, payload => {
  if (payload.profile) {
-          router.push(Paths.login());
+          router.push(Paths.login);
         } else {
           setSuccess(null);
           setError(payload.error.status==409?"Username is not unique":payload.error.message || "Try reusing the link");
@@ -168,7 +168,7 @@ dispatch(uploadProfilePicture({ file:fileFind })).then(res => checkResult(res, p
        dispatch(signUp(params)).then(res => checkResult(res, payload => {
 
         if (payload.profile) {
-          router.push(Paths.login());
+          router.push(Paths.login);
         } else {
           setSuccess(null);
           setError(payload.error.status==409?"Username is not unique":payload.error.message || "Try reusing the link");

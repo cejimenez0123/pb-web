@@ -31,8 +31,14 @@ function MyProfileContainer() {
   const { setSeo  } = useContext(Context);
   const profile = useSelector((state) => state.users.currentProfile);
   const {myCollections:collectionsRaw}=useSelector(state=>state.books)
-  const pagesRaw = useSelector(state=>state.pages.myPages.filter(p=>p))
-  const communities  =collectionsRaw?.filter(col=>col?.childCollections>0??[])
+const pagesRaw = useSelector(state => state.pages.myPages ?? []);
+const communities = useMemo(
+  () =>
+    (collectionsRaw ?? []).filter(
+      (col) => (col?.childCollections?.length > 0) > 0
+    ),
+  [collectionsRaw]
+);
   const dispatch = useDispatch();
   const router = useIonRouter();
 const debouncedSearch = useMemo(
@@ -49,35 +55,59 @@ useEffect(() => {
   const [tab, setTab] = useState(TABS.POSTS);
   const [search, setSearch] = useState("");
   const [following, setFollowing] = useState(null);
-  //  
-  //  const collectionsRaw = myCollections||[]
-  
+ 
 useEffect(() => {
     if (profile) {
       dispatch(getMyCollections());
       dispatch(getMyStories());
     }
 
-  }, []);
+  }, [profile]);
 
 
   // ── Derived
-  const collections = useMemo(
-    () => collectionsRaw.filter(Boolean).filter((col) => (search ? col.childCollections==0 && col.title?.toLowerCase().includes(search.toLowerCase()) : true)),
-    [collectionsRaw, search]
+ const collections = useMemo(
+  () =>
+    (collectionsRaw ?? [])
+      .filter(Boolean)
+      .filter((col) =>
+        search
+          ? col.childCollections == 0 &&
+            col.title?.toLowerCase().includes(search.toLowerCase())
+          : true
+      ),
+  [collectionsRaw, search]
+
   );
-    const recentCollections = useMemo(
-    () => [...collectionsRaw].filter(Boolean).sort((a, b) => new Date(b.updated ?? b.created) - new Date(a.updated ?? a.created)).slice(0, 5),
-    [collectionsRaw]
-  );
-  const pages = useMemo(
-    () => pagesRaw.filter(Boolean).filter((page) => (search ? page.title?.toLowerCase().includes(search.toLowerCase()) : true)),
-    [pagesRaw, search]
-  );
+ const recentCollections = useMemo(
+  () =>
+    [...(collectionsRaw ?? [])]
+      .filter(Boolean)
+      .sort(
+        (a, b) =>
+          new Date(b.updated ?? b.created) -
+          new Date(a.updated ?? a.created)
+      )
+      .slice(0, 5),
+  [collectionsRaw]
+);
+const pages = useMemo(
+  () =>
+    (pagesRaw ?? [])
+      .filter(Boolean)
+      .filter((page) =>
+        search
+          ? page.title?.toLowerCase().includes(search.toLowerCase())
+          : true
+      ),
+  [pagesRaw, search]
+);
 
   const sortedPages = useMemo(() => {
-  return [...pagesRaw].sort(
-    (a, b) => new Date(b.updated ?? b.created) - new Date(a.updated ?? a.created)
+  return [...(pagesRaw ?? [])].sort(
+    (a, b) =>
+      new Date(b.updated ?? b.created) -
+      new Date(a.updated ?? a.created)
   );
 }, [pagesRaw]);
 
@@ -133,19 +163,19 @@ const StatChip = ({ value, label }) => (
 // ── Main Container ──────────────────────────────────
 
   // ── Follow logic
-  useEffect(() => {
-    if (!profile) return;
-    if (profile.id === profile.id) setFollowing(true);
-    else setFollowing(profile.followers?.find((f) => f.followerId === profile.id) ?? null);
-  }, [ profile]);
+  // useEffect(() => {
+  //   if (!profile) return;
+  //   setFollowing(profile.following ?? false);
+  //   else setFollowing(profile.followers?.find((f) => f.followerId === profile.id) ?? null);
+  // }, [ profile]);
 
   
   useEffect(() => {
     if (!profile) return;
     setSeo({
-      title: `${profile.username} on Plumbum`,
-      description: profile.bio || profile.selfStatement || `Read stories by ${profile.username}.`,
-      url: `${Enviroment.domain}/profile/${profile.id}`,
+      title: `${profile?.username} on Plumbum`,
+      description: profile?.bio || profile?.selfStatement || `Read stories by ${profile?.username}.`,
+      url: `${Enviroment.domain}/profile/${profile?.id}`,
       type: "profile",
     });
   }, [profile, setSeo]);
@@ -155,9 +185,7 @@ const StatChip = ({ value, label }) => (
  if (!profile) return <EmptyProfileState />;
   return (
 
-      <IonContent
-  fullscreen
-  scroll-y="true"
+      <IonContent fullscreen scrollY={true}
   style={{ "--background": Enviroment.palette.base.background}}
 >
       <ErrorBoundary>
@@ -175,15 +203,15 @@ className="bg-soft rounded-full p-2"><img src={settings} /></button>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <ProfileInfo profile={profile} compact />
-                    <h5 className="text-xl text-emerald-800">{profile?.username.toLowerCase()}</h5>
+                    <h5 className="text-xl text-emerald-800">{profile?.username?.toLowerCase()}</h5>
               </div>
          
             </div>
 
             <div className="flex justify-between text-center">
-            <StatChip value={profile["_count"]?.followers??""}
+            <StatChip value={profile?._count?.followers ?? ""}
                label="Followers" />
-              <StatChip value={profile["_count"]?.following??""} label="Following" />
+              <StatChip value={profile?._count?.following??""} label="Following" />
             </div>
 
             {(profile?.bio || profile?.selfStatement) && (
@@ -205,12 +233,18 @@ className="bg-soft rounded-full p-2"><img src={settings} /></button>
               <div className="space-y-2 px-4">
                 <p className="text-xs text-gray-400 uppercase">Communities</p>
                 <div className="flex flex-wrap gap-2 ">
-                  {communities.slice(0, 3).map((c) => <div >
-                    <Pill
-                   key={c.id} 
-                  baseClass="border-blue bg-base-bg"
-                  onClick={()=>router.push(Paths.collection.createRoute(c.id),"forward")}
-                  label={c.title} /></div>)}
+        {communities.slice(0, 3).map((c) => {
+  const path = Paths.collection.createRoute(c.id);
+
+  return (
+    <Pill
+      key={c.id}
+      baseClass="border-blue bg-base-bg"
+      onClick={() => router.push(path, "forward")}
+      label={c.title}
+    />
+  );
+})}
                 </div>
               </div>
             )}
@@ -267,18 +301,22 @@ className="bg-soft rounded-full p-2"><img src={settings} /></button>
             )}
 
             {tab === TABS.COLLECTIONS && (
-              collections.length > 0 ?<>
-                 {search.length==0 && recentPosts.length > 0 && (
-                  <section className="space-y-4">
-                    <SectionLabel>Recent</SectionLabel>
-                   <IndexList items={recentCollections} router={router}/>
-                   
-                  </section>
-                )}
-                <SectionLabel>All Collections</SectionLabel>
-                <PaginatedIndexList router={router} items={collections}/></> 
-              
-              : <EmptyState text="No collections yet." />
+              collections.length === 0 ? (
+  <EmptyState text={search ? "No matching collections." : "No collections yet."} />
+) : (
+  <>
+    {search.length === 0 && recentCollections.length > 0 && (
+      <section className="space-y-4">
+        <SectionLabel>Recent</SectionLabel>
+        <IndexList items={recentCollections} router={router} />
+      </section>
+    )}
+
+    <SectionLabel>All Collections</SectionLabel>
+    <PaginatedIndexList router={router} items={collections} />
+  </>
+)
+            
             )
           }
 
@@ -322,7 +360,7 @@ function EmptyProfileState() {
         </p>
 
         <div
-          onClick={() => router.push(Paths.login())}
+          onClick={() => router.push(Paths.login)}
           className="
             mx-auto w-fit px-6 py-3
             rounded-full

@@ -188,7 +188,7 @@ return(
         className="w-full text-left" 
         onClick={async () =>{ 
            await SocialLogin.logout({ provider: "google" });
-          dispatch(signOutAction({profile:currentProfile}).then(res=>router.push(Paths.login())))}}
+          dispatch(signOutAction({profile:currentProfile}).then(res=>router.push(Paths.login)))}}
       >
         Logout
       </button>
@@ -304,7 +304,7 @@ function ProfileButton({currentProfile,router}) {
     if (currentProfile) {
       router.push(Paths.myProfile, "root", "replace");
     } else {
-      router.push(Paths.login(), "forward");
+      router.push(Paths.login, "forward");
     }
   }
 
@@ -442,7 +442,7 @@ function MenuHorizontal({ pages, currentProfile }) {
       case "Workshop": 
         dispatch(setPageInView({ page: null }))
         router.push(Paths.workshop.reader(),"forward"); break
-      case "Log In": router.push(Paths.login(),"forward"); break
+      case "Log In": router.push(Paths.login,"forward"); break
       case "Join Now": router.push(Paths.apply(),"forward"); break
       case "Feedback": router.push(Paths.feedback(),"forward"); break
     }

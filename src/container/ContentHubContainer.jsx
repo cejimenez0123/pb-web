@@ -10,7 +10,6 @@ import {  sendGAEvent} from '../core/ga4.js';
 import Context from '../context.jsx';
 import Paths from '../core/paths.js';
 import useScrollTracking from '../core/useScrollTracking.jsx';
-import sortItems from '../core/sortItems.js';
 import {  IonContent, useIonRouter, useIonViewWillEnter } from '@ionic/react';
 
 import Enviroment from '../core/Enviroment.js';
@@ -96,8 +95,6 @@ function ContentHubContainer() {
 
 
 
-
-console.log("FDDF",{ workshops, stories, prompts })
 
   return (
   
@@ -195,7 +192,7 @@ export default ContentHubContainer
                 ? "bg-emerald-700 text-white"
                 : "text-emerald-700 bg-transparent"
             }`}
-            onClick={() => router.push(Paths.login())}
+            onClick={() => router.push(Paths.login)}
           >
            Log In
           </button>}

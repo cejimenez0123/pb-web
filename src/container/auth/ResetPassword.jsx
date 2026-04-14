@@ -26,7 +26,7 @@ function ResetPasswordContainer(props){
         authRepo.resetPassword({password,token}).then(data=>{
 
             if(data.profile){
-                router.push(Paths.login())
+                router.push(Paths.login)
             }else if(data.error){
                 setError(data.error.message)
             }else{

@@ -227,7 +227,7 @@ const openPages=()=>{
                   let archive = currentProfile.profileToCollections.find(pTc => pTc.type === "archive")?.collection || null;
                   setArchiveCol(archive);
                 }
-            
+            console.log("HOME COL",homeCol)
               }, [currentProfile]);
   const fetchWorkshops = async () => {
     if (!currentProfile) return;
@@ -500,7 +500,7 @@ scrollY: false,
     Write Something new +
   </h5>
 </div>
-            <div className="w-full px-4 grid gap-4 auto-rows-fr items-stretch">
+            <div className="w-full grid gap-4 auto-rows-fr items-stretch">
   <div className="relative min-h-[120px]">
 
   {/* EMPTY STATE */}

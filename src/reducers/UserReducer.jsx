@@ -108,6 +108,7 @@ state.notifications = payload
 
         state.currentProfile = payload.profile
     }).addCase(logIn.fulfilled, (state, { payload }) => {
+        console.log("LOGIN SUCCESS")
         if(payload&&payload.profile){
             state.currentProfile = payload.profile
              state.loading = false
@@ -117,6 +118,7 @@ state.notifications = payload
        
        
     }).addCase(logIn.rejected, (state,{payload}) => {
+          console.log("LOGIN REJECT")
         if(payload && payload.error){
             state.error = payload.error
         }

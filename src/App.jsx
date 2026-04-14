@@ -153,7 +153,7 @@ const showBottomNavbar = (isMobileOrTablet || isNative)  && import.meta.env.VITE
 <Alert />
 <div  >
     <IonRouterOutlet>   
-       <Route exact path={Paths.login()}
+       <Route exact path={Paths.login}
                   render={()=> 
       
         <PageWrapper presentHeader={false

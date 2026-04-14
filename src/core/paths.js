@@ -43,7 +43,7 @@ const Paths ={
         link:`/story/link/edit`,
         image:`/story/image/edit`  
     },
-    login:()=>{return `/login`},
+    login: `/login`,
     editPage:{route:`/story/:id/editor`,
         createRoute:(id)=>{return `/story/${id}/editor`}},
 
