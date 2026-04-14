@@ -49,37 +49,6 @@ const canUserEdit = (() => {
   );
 })();
 
-//   const header = () => (
-//     <div className="bg-cream flex flex-row rounded-xl justify-between shadow-sm p-4 mb-4">
-//       <div className=" w-[66%]">
-//       <div className="flex items-center justify-around gap-12">
-//        {page?.author && <ProfileCircle profile={page?.author} includeUsername={false} color="emerald-700" />}
-//         <h6
-//           className="text-emerald-800 text-md font-semibold truncate cursor-pointer"
-//           onClick={() => {
-//             router.push(Paths.page.createRoute(page.id));
-//           }}
-//         >
-//           {page?.title || ""}
-//         </h6>
-//       </div>
-//       {page?.description && (
-//         <div className="mt-2 text-left">
-//           {page.needsFeedback && <label className="text-emerald-700 font-medium">Feedback Request:</label>}
-//           <p className="text-emerald-800 mt-1">{page.description}</p>
-//         </div>
-//       )}
-//       </div>
-//             {canUserEdit && (
-//   <div
-//     onClick={() => router.push(Paths.editPage.createRoute(page.id), "forward")}
-//     className="rounded-full  btn bg-base-surface  text-emerald-800 hover:bg-emerald-300 transition"
-//   >
-//     ✏️ 
-//   </div>
-// )}
-  //   </div>
-  // );
 const header = () => (
   <div className="bg-cream rounded-xl shadow-sm p-4 mb-4 flex items-start justify-between gap-4">
     

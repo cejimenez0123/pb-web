@@ -20,7 +20,7 @@ const initialState = {
     groups:[],
     myCollections:[],
     collections:[],
-    // collectionsInView:[],
+
     books:[],
     libraries:[],
     collectionToCollectionsList:[],

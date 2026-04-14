@@ -59,7 +59,7 @@ const isDesktop = useMediaQuery({ query: '(min-width: 1024px)' });
   const router = useIonRouter()
   const dispatch = useDispatch();
    const collectionsRaw = useSelector(state => state.books.collections) ?? [];
-// const { columns, visibleCount } = useResponsiveGrid();
+
 const { columns, rows } = useResponsiveGrid();
 const visibleCount = columns * rows;
 console.log("VISTIBLE",visibleCount)
@@ -295,7 +295,7 @@ useEffect(()=>{
       user_id: currentProfile?.id || null, // optional, if you want to track
     });
   } catch (e) {
-    // console.warn("GA event failed", e);
+
   }
 
 openDialog({

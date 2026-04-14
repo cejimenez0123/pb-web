@@ -42,21 +42,21 @@ export default function PageViewContainer() {
 
 
 
-const canUserSee = (() => {
+const canUserSee = ((profile) => {
   if (!page) return false;
   
-  if(page?.authorId === currentProfile?.id ){
+  if(page?.authorId === profile?.id ){
     return true
   }
    if (!page.isPrivate) return true;
     if(page.betaReaders?.find(
-    (r) => r.profileId === currentProfile.id && roles.includes(r.role))){
+    (r) => r.profileId === profileid && roles.includes(r.role))){
       return true
     }
    if (!currentProfile) return false;
 
   
-})();
+})(currentProfile);
 
   const [pending, setPending] = useState(true);
   const [rootComments, setRootComments] = useState([]);

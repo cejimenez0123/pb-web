@@ -11,7 +11,7 @@ import { Capacitor } from "@capacitor/core";
 import Paths from "../../core/paths";
 import { PageType } from "../../core/constants";
 import { createStory, deleteStory, getStory, updateStory } from "../../actions/StoryActions";
-import { setEditingPage, setHtmlContent, setPageInView } from "../../actions/PageActions.jsx";
+import { setEditingPage, setHtmlContent, setPageInView, setPageType } from "../../actions/PageActions.jsx";
 import checkResult from "../../core/checkResult";
 import debounce from "../../core/debounce.js";
 import Context from "../../context";
@@ -20,22 +20,17 @@ import ErrorBoundary from "../../ErrorBoundary";
 
 
 import HashtagForm from "../../components/hashtag/HashtagForm";
-import RoleForm from "../../components/role/RoleForm";
 import FeedbackDialog from "../../components/page/FeedbackDialog";
 import { useDialog } from "../../domain/usecases/useDialog.jsx";
-import menu from "../../images/icons/menu.svg";
 
 import EditorDiv from "../../components/page/EditorDiv.jsx";
 import { motion, AnimatePresence } from "framer-motion";
 import Enviroment from "../../core/Enviroment.js";
-import { SocialLogin } from "@capgo/capacitor-social-login";
 import { Preferences } from "@capacitor/preferences";
 import axios from "axios";
 import TopBarDropdown from "../../components/page/TopBarDropdown.jsx";
-import { fetchProfiles } from "../../actions/ProfileActions.jsx";
-import { use } from "react";
-import { set } from "lodash";
 import { getCurrentProfile } from "../../actions/UserActions.jsx";
+import { set } from "lodash";
 
   const editorContainerBase = "mx-auto bg-white rounded-lg shadow-sm";
 const editorContainerSpacing = "mx-2 mb-12 p-4";
@@ -50,16 +45,21 @@ const { id, type: paramType } = useParams();
 
 //  console.log()
   const currentProfile = useSelector((state) => state.users.currentProfile);
-  const { editPage ,pageType:sliceType} = useSelector((state) => state.pages);
-   const type = sliceType || paramType
+  const { editPage ,pageInView,pageType:sliceType} = useSelector((state) => state.pages);
+  console.log("sliceType from store:", sliceType, "paramType from URL:", paramType);
+   const type = paramType || sliceType 
   const { setError, setSuccess,  } = useContext(Context);
   const [files,setFiles]=useState([])
   const isNative = Capacitor.isNativePlatform();
   const htmlContent = useSelector(state=>state.pages.editorHtmlContent)
   const hasInitialized = useRef(false);
+  const initialData =
+  editPage?.data ??
+  htmlContent ??
+  "";
      const [parameters, setParameters] = useState({
     isPrivate: true,
-    data: editPage?.data || htmlContent,
+    data: initialData,
     title: "",
     id: id ||editPage?.id || null,
     needsFeedback: false,
@@ -72,7 +72,7 @@ const { id, type: paramType } = useParams();
     type: type,
   });
 const effectiveId = parameters.id ||editPage?.id || id;
-console.log("Effective ID:", effectiveId, "Parameters ID:", parameters.id, "Edit Page ID:", editPage?.id, "URL ID:", id);
+// console.log("Effective ID:", effectiveId, "Parameters ID:", parameters.id, "Edit Page ID:", editPage?.id, "URL ID:", id);
     const isValid = !!effectiveId && effectiveId !== "new"
  
 
@@ -82,7 +82,7 @@ console.log("Effective ID:", effectiveId, "Parameters ID:", parameters.id, "Edit
   
  
 
-const [isSaved,setIsSaved]=useState(true)
+const [isSaved,setIsSaved]=useState(false)
 
 
  useEffect(() => {
@@ -109,7 +109,7 @@ const [isSaved,setIsSaved]=useState(true)
 
   useEffect(() => {
     if (id) fetchStory();
-  }, [type, id,dispatch]);
+  }, [id]);
 
 const lastSavedRef = useRef(null);
 
@@ -120,7 +120,7 @@ const debouncedSave = useRef(
 
     dispatch(updateStory(payload)).then(res =>
       checkResult(res,
-        () => setIsSaved(true),
+        () =>  setIsSaved(true) ,
         (err) => {
           console.log(err);
       
@@ -132,25 +132,25 @@ const debouncedSave = useRef(
 ).current;
 
 
-const updateStatus = (status) => {
-  setParameters((prev) => ({
-    ...prev,
-    status,
-  }));
-};
-const createPageAction = () => {
-  saveStory({
-    data: htmlContent,
+
+const createPageAction = async (data) => {
+  setIsSaved(false)
+  await saveStory({
+    data: data,
   });
+  setIsSaved(true)
+  return
 };
 useEffect(() => {
   if (!currentProfile?.id) return;
 
-  // prevent empty create
+  // 🚫 DO NOT create automatically
+  if (!parameters.id) return;
+
+  // ✅ only update existing stories
   if (!parameters.data?.trim()) return;
-
+  setIsSaved(false)
   saveStory(parameters);
-
 }, [
   parameters.data,
   parameters.title,
@@ -161,7 +161,9 @@ useEffect(() => {
   const setStory = (story) => {
     dispatch(setHtmlContent(story?.data ));
     dispatch(setPageInView({ page: story }));
+    dispatch(setPageType({type:story?.type ?? type ?? PageType.text}));
     setParameters((prev) => ({
+
       ...prev,
       id:id,
       data:htmlContent,
@@ -180,12 +182,12 @@ useEffect(() => {
     hasLoaded.current = true;
     return;
   }
-
+if (!currentProfile?.id) return;
 
   const payload = {
     ...parameters,
     id: effectiveId,
-    profileId: currentProfile.id,
+    profileId: currentProfile?.id,
   };
 
   const isSame =
@@ -214,9 +216,9 @@ setIsSaved(false);
       checkResult(
         res,
         (payload) => {
-  
+          
           setStory(payload.story);
-                  // handleChange("isSaved",true)
+                  
           setPending(false);
         },
         (err) => {
@@ -232,13 +234,13 @@ setIsSaved(false);
 const saveStory =async (incoming) => {
     if (!currentProfile?.id) return;
 
-    setIsSaved(false);
+
 
 
     const payload = {
       ...parameters,
       ...incoming,
-      profileId: currentProfile.id,
+      profileId: currentProfile?.id,
       type: type ?? PageType.text,
     };
 
@@ -252,7 +254,7 @@ const saveStory =async (incoming) => {
           const story = data.story;
 
           setIsSaved(true);
-
+          dispatch(setEditingPage({ page: story }));
           dispatch(setPageInView({ page: story }));
           dispatch(setHtmlContent(story.data));
 
@@ -264,7 +266,7 @@ const saveStory =async (incoming) => {
        window.history.replaceState(null, "", Paths.editPage.createRoute(story.id));
         },
         (err) => {
-          setIsSaved(false);
+          // setIsSaved(false);
           setError(err.message);
         }
       );
@@ -343,6 +345,7 @@ const [accessToken,setAccessToken]=useState(null)
     prev.type === type ? prev : { ...prev, type: type }
   );
 }, [type]);
+
     const onFilePicked = async (file) => {
     try {
       // const accessToken = (await Preferences.get({ key: "googledrivetoken" })).value;
@@ -410,11 +413,9 @@ const openGoogleDrive = async()=>{
 
 }
 const handleView =()=>{
-  setIsSaved(false)
-  dispatch(updateStory({...parameters,id})).then(res=>{
-    setIsSaved(true)
-    router.push(Paths.page.createRoute(id))
-  })
+ 
+    router.push(Paths.page.createRoute(effectiveId))
+
 }
 const handleChange = (key, value) => {
   setParameters((prev) => ({
@@ -431,8 +432,8 @@ const handleChange = (key, value) => {
     checkResult(
       res,
       (payload) => {
-        // optionally keep local state in sync if needed
-        saveStory(parameters); // retry pending save once profile exists ✨
+       
+        saveStory(parameters); 
       },
       (err) => {
         setError(err.message);
@@ -452,12 +453,12 @@ const handlePostPublic=(desc)=>{
     needsFeedback: true,
   };
 
-  setIsSaved(false);
+  // setIsSaved(false);
 
   dispatch(updateStory(payload)).then(res => {
     checkResult(res,
       () => {
-        setIsSaved(true);
+        // setIsSaved(true);
         resetDialog();
 
         router.push(
@@ -478,14 +479,14 @@ const handleFeedback = (feedbackDesc) => {
     needsFeedback: true,
   };
 
-  setIsSaved(false);
+
 
   dispatch(updateStory(payload)).then(res => {
     resetDialog();
 
     checkResult(res,
       () => {
-        setIsSaved(true);
+        
         router.push(
           Paths.workshop.createRoute(effectiveId),
           "forward"
@@ -523,8 +524,8 @@ const handleFeedback = (feedbackDesc) => {
   };
   const handleDelete = () => {
     dispatch(deleteStory(parameters)).then(() => {
-      router.push(Paths.myProfile, "root");
-      resetDialog();
+      router.push(Paths.home, "root");
+    closeDialog()
     });
   }
   
@@ -571,14 +572,14 @@ const STATUS_OPTIONS = [
     className="ion-padding"
   >
     {/* Top Bar with fade/slide */}
-<AnimatePresence mode="wait">
-  {!pending && (
+<AnimatePresence >
+    
     <motion.div
       key="topbar"
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
-      transition={{ duration: 0.3 }}
+      transition={{ duration: 0.05 }}
       // className="rounded-lg w-full sm:max-w-[50em] mx-auto p-2 bg-emerald-50 border border-emerald-200 flex flex-col gap-1"
     >
  {/* <div className={`mx-auto w-full max-w-3xl p-4 md:p-6 bg-emerald-50 rounded-lg border border-emerald-200 flex flex-col gap-2`}> */}
@@ -609,10 +610,11 @@ const STATUS_OPTIONS = [
       💾 Saving...
     </span>
   )}
-
+  <VisibilityBadge isPrivate={parameters.isPrivate} toggle={() => handleChange("isPrivate", !parameters.isPrivate)} />
   {/* Status Badge */}
 
 </div>
+
 {/* </div> */}
 </div>
       {/* Dropdown */}
@@ -620,14 +622,14 @@ const STATUS_OPTIONS = [
       router={router}
         id={id}
         handleView={handleView}
-        editPage={editPage}
+        editPage={pageInView}
         handleChange={handleChange}
         openFeedback={openFeedback}
         parameters={parameters}
         openGoogleDrive={openGoogleDrive}
         setOpenHashtag={setOpenHashtag}
         openHashtag={openHashtag}
-        // openRoleFormDialog={openRoleFormDialog}
+    
         openConfirmDeleteDialog={openConfirmDeleteDialog}
       />
 
@@ -651,21 +653,20 @@ const STATUS_OPTIONS = [
   </div>
 {/* </div> */}
     </motion.div>
-  )}
+  
 </AnimatePresence>
 
 {/* Editor / Skeleton with fade */}
-{/* <div className={`${editorContainerBase} ${editorContainerSpacing} ${editorContainerResponsive}`}> */}
-  <ErrorBoundary>
-    <AnimatePresence mode="wait">
-      {/* <div className="mx-2 md:w-page mb-12 mx-auto bg-white rounded-lg p-4 shadow-sm relative"> */}
-  <ErrorBoundary>
-    {/* EditorDiv always present */}
-    <motion.div
+
+
+    <AnimatePresence >
+     
+      <motion.div
       key="editor"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: pending ? 0 : 1 }}
-      transition={{ duration: 0.3 }}
+      initial={{ opacity: 0, y: -10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+      transition={{ duration: 0.05 }}
     >
       <div className={CONTAINER}>
 <div className="flex gap-1 bg-gray-100 p-1 rounded-full w-fit">
@@ -675,7 +676,7 @@ const STATUS_OPTIONS = [
   return (
     <button
       key={option.value}
-      onClick={() => updateStatus(option.value)}
+      onClick={() =>handleChange("status", option.value) }
       className={`px-3 py-1 text-xs font-semibold rounded-full transition-all duration-150
         ${
           isActive
@@ -689,27 +690,36 @@ const STATUS_OPTIONS = [
   );
 })}
 </div>
-      <EditorDiv page={editPage} handleChange={handleChange} parameters={parameters} type={type} createPageAction={createPageAction} />
+      <EditorDiv page={editPage} isSaved={isSaved} setIsSaved={setIsSaved} handleChange={handleChange} parameters={parameters} type={type} createPageAction={createPageAction} />
     </div>
     </motion.div>
 
-    {/* Skeleton overlays EditorDiv while pending */}
-    {pending && (
-      <motion.div
-        key="skeleton"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="absolute inset-0 skeleton bg-slate-100 rounded-lg animate-pulse"
-      />
-    )}
-  </ErrorBoundary>
+
+  
 {/* </div> */}
     </AnimatePresence>
-  </ErrorBoundary>
+ 
 {/* </div> */}
 
   </IonContent>
 </EditorContext.Provider>
 
+}
+function VisibilityBadge({ isPrivate,toggle}) {
+  const base =
+    "flex items-center gap-1 px-2 py-[2px] rounded-full text-xs font-semibold transition";
+
+  if (isPrivate) {
+    return (
+      <span onClick={toggle} className={`${base} bg-gray-100 text-gray-600`}>
+        🔒 Private
+      </span>
+    );
+  }
+
+  return (
+    <span  onClick={toggle} className={`${base} bg-emerald-100 text-emerald-700`}>
+      🌍 Public
+    </span>
+  );
 }

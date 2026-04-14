@@ -14,24 +14,7 @@ export default function PageViewButtonRow({ page, profile, setCommenting }) {
   const handleClickComment = () => setCommenting(true);
   const {openDialog,dialog,resetDialog}=useDialog()
   const handleBookmark = () => setBookmarked(!bookmarked);
-  // const [canUserEdit, setCanUserEdit] = useState(false);
-
-  // useEffect(()=>{
-
-  //     const roles = ["editor"];
-  //     console.log("Checking edit permissions for profile:", profile, "on page:", page);
-  //     if (profile && page) {
-  //       if (profile.id === page.authorId) {
-  //         // setCanUserEdit(true);
-  //         return;
-  //       }
-  //       if (page?.betaReaders) {
-  //         let found = page?.betaReaders?.find((rTc) => rTc.profileId === profile.id && roles.includes(rTc.role));
-  //         // setCanUserEdit(!!found);
-  //       }
-  //     }
-    
-  // },[page,profile])
+  
   const [archiveCol,setArchiveCol]=useState(null)
   useEffect(()=>{
     if(profile?.profileToCollections){

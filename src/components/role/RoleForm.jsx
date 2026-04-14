@@ -42,29 +42,6 @@ const handleUpdateRole = ({ role, profile }) => {
   );
 };
  
-// useEffect(() => {
-//   if (!item || !profiles) return;
-
-//   const sourceRoles = item.roles || item.betaReaders || [];
-
-//   const roleMap = new Map(
-//     sourceRoles.map((r) => [r.profile.id, r])
-//   );
-
-//   const list = profiles.map((profile) => {
-//     const existing = roleMap.get(profile.id);
-
-//     return new Role(
-//       existing?.id || null,
-//       profile,
-//       item,
-//       existing?.role || "none",
-//       existing?.created || null
-//     );
-//   });
-
-//   setRoles(list);
-// }, [item, profiles]);
 useEffect(() => {
   if (!item || !profiles) return;
 
@@ -89,27 +66,6 @@ useEffect(() => {
   setRoles(list);
 }, [item, profiles]);
 
-//   useEffect(() => {
-//     if (!item) return;
-
-//     const source = item.storyIdList?item.roles: item.betaReaders 
-      
-//     console.log("X SOURCE",source)
-//     const list = source.map(
-//       (role) =>
-//         new Role(
-//           role.id,
-//           role.profile,
-//           item,
-          
-//           role.role,
-//           role.created
-//         )
-//     );
-// console.log("X< ROLES",roles)
-//     setRoles(list);
-//   }, [item,dispatch]);
-
   const handlePatchRoles = () => {
     if (!currentProfile) return;
 
@@ -132,20 +88,7 @@ useEffect(() => {
     dispatch(fetchProfiles());
   }, [currentProfile,dispatch])
 
-//   const cycleRole = (profile) => {
 
-//     const roleTypes = Object.values(RoleType);
-//  console.log("Current L",roles)
-//     const current = roles.find((r) => r.profile.id === profile.id)
-
-//     const nextIndex =
-//       (roleTypes.indexOf(current) + 1) % roleTypes.length;
-// console.log("RR CUR",roleTypes[nextIndex])
-//     handleUpdateRole({
-//       role: roleTypes[nextIndex],
-//       profile,
-//     });
-//   };
 const cycleRole = (profile) => {
   const roleTypes = Object.values(RoleType);
   const current = roles.find((r) => r.profile.id === profile.id)?.role;
@@ -159,18 +102,7 @@ const cycleRole = (profile) => {
     profile,
   });
 };
-  //  const cycleRole = (profile) => {
-  //   const roleTypes = Object.values(RoleType);
-  //   const current = roles.find((r) => r.profile.id === profile.id)?.role;
 
-  //   const nextIndex =
-  //     (roleTypes.indexOf(current) + 1) % roleTypes.length;
-
-  //   handleUpdateRole({
-  //     role: roleTypes[nextIndex],
-  //     profile,
-  //   });
-  // };
  const filteredProfiles = useMemo(() => {
   if (!profiles?.length) return [];
 

@@ -128,12 +128,7 @@ const fetchData = async (url) => {
     );
   }
 const imageView = () => {
-  // const wrapperClass = "flex items-center mx-auto bg-transparent justify-center mb-2 sm:mx-4 w-[5em] h-[5em] rounded-full overflow-hidden bg-emerald-50";
-  // const imgClass = "object-cover min-h-[4rem]  min-w-[5.5rem] w-full h-full";\
-//   const wrapperClass =
-//   "max-w-[10em] my-auto sm:pb-2  max-h-[8em] sm:max-h-[8em] my-auto";
 
-// const imgClass = "  object-cover max-h-[6em] sm:h-[6rem]  sm:min-w-[6rem]";
 const wrapperClass = "flex-shrink-0 sm:w-[10em] rounded-xl overflow-hidden bg-transparent";
 
 const imgClass = "object-contain p-1 ";

@@ -336,7 +336,7 @@ function NavCreateDropdown({
     isOpenCollaboration: false,
   });
   const [submitting, setSubmitting] = useState(false);
-  // const [error, setError] = useState(null);
+
 useEffect(() => {
   const handleClickOutside = (event) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -351,26 +351,13 @@ useEffect(() => {
     document.removeEventListener("touchstart", handleClickOutside);
   };
 }, []);
-  // const ClickWriteAStory = debounce(()=>{
-     
-  //     sendGAEvent("Create","Create Button Click Nav","Click Nav Create")
-  //        dispatch(setPageType({type:PageType.text}))
-  //       dispatch(createStory({profileId:currentProfile.id,privacy:true,type:PageType.text,
-  //       title:"Unititled",commentable:true
-  //     })).then(res=>checkResult(res,data=>{
-      
-  //         dispatch(setPageInView({page:data.story}))
-  //         // dispatch(setEditingPage({page:data.story}))
-  //         router.push(Paths.editPage.createRoute(data.story.id),'forward', 'replace');
-  //     },e=>{
-  //       setError(e.message)
-  //     }))},10) 
+
 const menuItems = [
   {
     label:"Story",
     icon:CreateIcon,
     action:()=>{
-      dispatch(setMainLoading(true))
+     
       dispatch(setPageType({type:PageType.text}))
 
     router.push(Paths.editPage.createRoute("new"),'forward');
@@ -503,50 +490,33 @@ function CreateButton({router}) {
   const [isOpen,setIsOpen]=useState(false)
 const {currentProfile }= useSelector(state=>state.users)
 const {pageType}=useSelector(state=>state.pages)
-  // const ClickWriteAStory = () => {
-  //   dispatch(setMainLoading(true))
-  //   dispatch(setPageType({type:PageType.text}))
 
-  //   if (currentProfile?.id) {
-   
-     
-  //     dispatch(createStory({
-  //       profileId: currentProfile.id,
-  //       privacy: true,
-  //       type: PageType.text,
-  //       title: "Unititled",
-  //       commentable: true
-  //     })).then(res => checkResult(res, payload => {
-  //       if (payload.story) {
-  //       dispatch(setMainLoading(false))
-  //         dispatch(setPageInView({ page: payload.story }));
-  //       router.push(Paths.editPage.createRoute(payload.story.id),'forward');
-  //       }else{
-  //         window.alert("COULD NOT CREATE STORY")
-  //       }
-  //     },err=>{
-  //       setErrorLocal(err.message)
-  //     }));
-  //   }
-  // }
 
 
 const handleNavigate = (type) => {
   switch (type) {
     case "write":
       console.log("navigating to write");
-        dispatch(setMainLoading(true))
+      dispatch(setHtmlContent(""));
+      dispatch(setPageInView({ page: null }));
+               dispatch(setEditingPage({ page: null }));
       dispatch(setPageType({ type: PageType.text }));
       router.push(Paths.editPage.createRoute("new"), "forward");
     
       break;
 
     case "image":
+      dispatch(setHtmlContent(""));
+      dispatch(setPageInView({ page: null }));
+               dispatch(setEditingPage({ page: null }));
       dispatch(setPageType({ type: PageType.image }));
       router.push(Paths.editor.image, "forward");
       break;
 
     case "link":
+      dispatch(setHtmlContent(""));
+      dispatch(setPageInView({ page: null }));
+      dispatch(setEditingPage({ page: null }));
       dispatch(setPageType({ type: PageType.link }));
       router.push(Paths.editor.link, "forward");
       break;
@@ -597,7 +567,7 @@ const handleNavigate = (type) => {
         <button
           key={item}
           onClick={() => handleNavigate(item)}
-          className="w-full text-center mx-auto px-4 py-2 bg-base-bg text-sm text-soft hover:bg-blue-100 capitalize"
+          className="w-[100%] text-center mx-auto px-4 py-4 bg-base-bg text-sm text-soft hover:bg-blue-100 capitalize"
         >
           {item}
         </button>

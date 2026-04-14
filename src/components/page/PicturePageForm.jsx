@@ -16,7 +16,6 @@ import { setHtmlContent } from "../../actions/PageActions.jsx";
 import isValidUrl from "../../core/isValidUrl";
 import LinkPreview from "../LinkPreview";
 import Context from "../../context";
-import EditorContext from "../../container/page/EditorContext.jsx";
 import { uploadPicture } from "../../actions/ProfileActions.jsx";
 import { Camera, CameraResultType, CameraSource } from "@capacitor/camera";
 import { Capacitor } from "@capacitor/core";
@@ -24,21 +23,21 @@ import { Capacitor } from "@capacitor/core";
 
 
 
-export default function PicturePageForm({ handleChange,type, parameters,createPageAction }) {
+export default function PicturePageForm({ handleChange,type,isSaved, setIsSaved,parameters,createPageAction }) {
   const page = useSelector((state) => state.pages.editingPage);
   // const { parameters } = useContext(EditorContext);
   const { type: typeOrNull } = useParams();
-  console.log("FORM TYPE null",typeOrNull)
-  console.log("FORM TYPE",type)
+
   const pageType = typeOrNull || type
   const {setError}=useContext(Context)
   const dispatch = useDispatch();
   const [file,setFile]=useState(null)
    const [url,setUrl]=useState(null)
    const htmlContent = useSelector(state=>state.pages.editorHtmlContent)
-  const [localPreview, setLocalPreview] = useState(parameters.data); // file preview
-  const [uploading, setUploading] = useState(false);
-
+  const [localPreview, setLocalPreview] = useState(""); // file preview
+  // const [uploading, setUploading] = useState(false);
+    const [uploading, setUploading] = useState(false);
+    const [isUploaded, setIsUploaded] = useState(!!parameters.id); // Track if already uploaded (for pictures)
 const isNative = Capacitor.isNativePlatform()
 
 
@@ -104,14 +103,20 @@ dispatch(setHtmlContent(value))
   
 
 };
-
+useEffect(() => {
+  if (type === PageType.link || type === PageType.picture) {
+    handleChange("data", htmlContent);
+  }
+}, [htmlContent]);
 
 const handleCreate = async () => {
   setUploading(true)
+  setIsSaved(false)
   if (type === PageType.picture) {
-  
+    
     if (file && !parameters.data) {
       await uploadPictureFile();
+   
       return; // wait for next click OR auto-trigger (see below)
     }
 
@@ -120,9 +125,12 @@ const handleCreate = async () => {
       return;
     }
 
-    createPageAction(parameters.data);
+   await createPageAction(parameters.data);
   } else {
-    createPageAction(url);
+    setIsUploaded(false)
+  
+   await createPageAction(url);
+    setIsUploaded(true)
   }
   setUploading(false)
 };
@@ -131,15 +139,15 @@ const uploadPictureFile = async () => {
     setError("No File");
     return;
   }
-
+    setIsUploaded(false)
   setUploading(true);
   try {
     const { url } = await dispatch(uploadPicture({ file })).unwrap();
 
     handleChange("data", url);
     dispatch(setHtmlContent(url));
-    createPageAction(url)
-   
+    createPageAction(url);
+    setIsUploaded(true);
 
   } catch (err) {
     console.error("Upload failed", err);
@@ -147,17 +155,7 @@ const uploadPictureFile = async () => {
     setUploading(false);
   }
 };
-//   const handleFileChange = async (e) => {
-//     const file = e.target.files[0];
-//     if (!file) return;
-// setFile(file);
-//     // Show preview immediately
-//     const reader = new FileReader();
-//     reader.onload = () => setLocalPreview(reader.result);
-//     reader.readAsDataURL(file);
 
-//     setUploading(false);
-// }
    
 const handleFileChange = (e) => {
   const file = e.target.files?.[0];
@@ -177,11 +175,12 @@ const handleFileChange = (e) => {
   reader.readAsDataURL(file);
 };
   const renderPreview = () => {
- const previewSrc = localPreview || parameters.data;
+    console.log("Rendering preview with:", { htmlContent, parametersData: parameters.data, localPreview });
+const previewSrc = htmlContent || parameters.data || localPreview;
     if (!previewSrc) return null;
 
     if (type === PageType.link) {
-      return <LinkPreview url={parameters.data} />;
+      return <LinkPreview url={previewSrc} />;
     }
 
     if (type === PageType.picture) {
@@ -196,17 +195,27 @@ const handleFileChange = (e) => {
 
     return null;
   };
-console.log("HTML type",type==PageType.picture)
+const hasContent =
+  (type === PageType.link
+    ? isValidUrl(parameters.data) 
+    : type === PageType.picture
+    ? !!(file || parameters.data)
+    : !!htmlContent?.trim() && htmlContent.trim().length > 0) || false;
+console.log("parmeters id", parameters.id)
+console.log("parmeters isUploaded", isUploaded)
+const isCreated = parameters?.id
   return (
     <div className="flex flex-col w-full max-w-xl mx-auto">
       {/* Input */}
-      {(type === PageType.link || type === PageType.picture) && (
+       {
+       (!isUploaded||!hasContent)&&(typeOrNull==PageType.link || typeOrNull==PageType.picture) 
+       && (
         <>
           <IonLabel className="text-emerald-700 mb-1">
             {type === PageType.link ? "URL" : "Image URL / Upload"}
           </IonLabel>
 
-          <IonInput
+         { <IonInput
             value={htmlContent}
             onIonChange={handleInput}
             placeholder={
@@ -214,10 +223,12 @@ console.log("HTML type",type==PageType.picture)
             }
             className="border border-emerald-300 rounded-md px-2 mb-2"
             disabled={uploading}
-          />
+          />} </>
+       )}
+        <>
 
-
-{pageType === PageType.picture?(isNative ? (
+{/* (!isUploaded||!hasContent) && (typeOrNull == PageType.picture ||  typeOrNull == PageType.link) */}
+{(!isUploaded||!hasContent)&&pageType === PageType.picture?(isNative ? (
   <button
     onClick={pickImage}
     className="btn bg-emerald-600 text-white mt-2"
@@ -238,24 +249,32 @@ console.log("HTML type",type==PageType.picture)
               <IonText className="text-red-500 text-sm mt-1">Invalid URL</IonText>
             )}
         </>
-      )}
+    
 
-      {/* Button */}
+ 
       <div className="w-full mt-4">
-        {!parameters?.id? (
-          <button
-  onClick={handleCreate}
-  disabled={uploading}
-  className="w-full h-[3.5em] rounded-xl bg-emerald-600 text-white font-semibold active:scale-[0.98] disabled:opacity-50"
->
-  {uploading ? "Uploading..." : "Create"}
-</button>
-        ) : (
-          <div className="w-full h-[3.5em] rounded-xl bg-gray-100 text-gray-500 flex items-center justify-center text-sm">
-            {!parameters.isSaved? "Saved ✓" : "Saving..."}
-          </div>
-        )}
-      </div>
+
+  {!isUploaded && (
+    <div className="w-full h-[3.5em] rounded-xl bg-gray-100 text-gray-400 flex items-center justify-center text-sm">
+      Add {type === PageType.link ? "a valid URL" : "an image"} to continue
+    </div>
+  )}
+
+  {/* 🚀 Ready to create */}
+  {/* { true && ( */}
+  {/* !hasContent&&(typeOrNull==PageType.link || typeOrNull==PageType.picture)  */}
+    {(!isUploaded) && (typeOrNull == PageType.picture ||  typeOrNull == PageType.link) && <button
+      onClick={handleCreate}
+      disabled={uploading}
+      className="w-full h-[3.5em] rounded-xl bg-emerald-600 text-white font-semibold active:scale-[0.98] disabled:opacity-50 transition"
+    >
+      {uploading ? "Uploading..." : "Create"}
+    </button>
+  }
+
+
+</div>
+
 
       {/* Preview */}
       <div className="mt-4">{renderPreview()}</div>

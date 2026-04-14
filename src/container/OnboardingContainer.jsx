@@ -560,7 +560,7 @@ const Why = ({ handleTab, nav }) => {
             className={`tab-btn ${activeTab === `tab${tabNum}` ? 'tab-active' : ''} emerald-gradient-text-btn`}
             style={{
               margin: '0 0.2em',
-              // cursor: 'pointer',
+         
               padding: '0.5rem 0.75rem',
               userSelect: 'none',
               borderRadius: '9999px',

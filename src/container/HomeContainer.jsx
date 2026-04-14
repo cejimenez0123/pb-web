@@ -143,9 +143,9 @@ function HomeEmbed({workshops,stories,prompts,isGlobal,setIsGlobal}) {
 <div className={SCROLL_ROW}>
   {whatsHappeningList.length
     ? whatsHappeningList.map(story => (
-        // <div className="min-w-[75%]  sm:min-w-[16rem] lg:min-w-[18rem]">
+
           <StoryItem key={story.id} page={story} isGrid />
-        // </div>
+ 
       ))
     : [1,2,3].map(i => (
         <div
