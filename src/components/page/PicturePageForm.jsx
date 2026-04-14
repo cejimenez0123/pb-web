@@ -6,7 +6,7 @@ import {
   IonImg,
 
 } from "@ionic/react";
-
+import React, { memo } from "react";
 import { useState, useContext, useEffect } from "react";
 import { useParams } from "react-router";
 import { useSelector, useDispatch } from "react-redux";
@@ -19,6 +19,7 @@ import Context from "../../context";
 import { uploadPicture } from "../../actions/ProfileActions.jsx";
 import { Camera, CameraResultType, CameraSource } from "@capacitor/camera";
 import { Capacitor } from "@capacitor/core";
+import { set } from "lodash";
 
 
 
@@ -34,12 +35,17 @@ export default function PicturePageForm({ handleChange,type,isSaved, setIsSaved,
   const [file,setFile]=useState(null)
    const [url,setUrl]=useState(null)
    const htmlContent = useSelector(state=>state.pages.editorHtmlContent)
-  const [localPreview, setLocalPreview] = useState(""); // file preview
-  // const [uploading, setUploading] = useState(false);
+ 
+ 
     const [uploading, setUploading] = useState(false);
-    const [isUploaded, setIsUploaded] = useState(!!parameters.id); // Track if already uploaded (for pictures)
+    const [isUploaded, setIsUploaded] = useState(false); // Track if already uploaded (for pictures)
 const isNative = Capacitor.isNativePlatform()
-
+const [hasContent, setHasContent] = useState(() => {
+  return(type === PageType.link
+    ? isValidUrl(parameters.data) 
+    : type === PageType.picture
+    ? !!(file || parameters.data)
+    : !!htmlContent?.trim() && htmlContent.trim().length > 0) || false;})
 
 const pickImage = async () => {
   try {
@@ -67,7 +73,7 @@ const pickImage = async () => {
       return;
     }
 
-    setLocalPreview(image.webPath);
+    dispatch(setHtmlContent(image.webPath));
 
     if (isNative) {
       // ✅ Native → pass path
@@ -126,11 +132,15 @@ const handleCreate = async () => {
     }
 
    await createPageAction(parameters.data);
+   setHasContent(true)
+   setIsUploaded(true)
+  
   } else {
     setIsUploaded(false)
   
    await createPageAction(url);
     setIsUploaded(true)
+    setHasContent(true)
   }
   setUploading(false)
 };
@@ -171,36 +181,16 @@ const handleFileChange = (e) => {
   setFile(file);
 
   const reader = new FileReader();
-  reader.onload = () => setLocalPreview(reader.result);
+  reader.onload = () => {
+    dispatch(setHtmlContent(reader.result))
+    
+    setIsUploaded(true)
+  }
   reader.readAsDataURL(file);
 };
-  const renderPreview = () => {
-    console.log("Rendering preview with:", { htmlContent, parametersData: parameters.data, localPreview });
-const previewSrc = htmlContent || parameters.data || localPreview;
-    if (!previewSrc) return null;
-
-    if (type === PageType.link) {
-      return <LinkPreview url={previewSrc} />;
-    }
-
-    if (type === PageType.picture) {
-      if (!isValidUrl(previewSrc) && !localPreview) return null;
-
-      return (
-        <div className="mt-4 flex justify-center">
-          <IonImg src={previewSrc} className="rounded-xl max-h-[300px]" />
-        </div>
-      );
-    }
-
-    return null;
-  };
-const hasContent =
-  (type === PageType.link
-    ? isValidUrl(parameters.data) 
-    : type === PageType.picture
-    ? !!(file || parameters.data)
-    : !!htmlContent?.trim() && htmlContent.trim().length > 0) || false;
+console.log("htmlContent", htmlContent, "parameters data", parameters.data, "file",)
+// const hasContent =
+ 
 console.log("parmeters id", parameters.id)
 console.log("parmeters isUploaded", isUploaded)
 const isCreated = parameters?.id
@@ -208,7 +198,7 @@ const isCreated = parameters?.id
     <div className="flex flex-col w-full max-w-xl mx-auto">
       {/* Input */}
        {
-       (!isUploaded||!hasContent)&&(typeOrNull==PageType.link || typeOrNull==PageType.picture) 
+       (((!isUploaded)&&(typeOrNull==PageType.link || typeOrNull==PageType.picture))) 
        && (
         <>
           <IonLabel className="text-emerald-700 mb-1">
@@ -227,8 +217,8 @@ const isCreated = parameters?.id
        )}
         <>
 
-{/* (!isUploaded||!hasContent) && (typeOrNull == PageType.picture ||  typeOrNull == PageType.link) */}
-{(!isUploaded||!hasContent)&&pageType === PageType.picture?(isNative ? (
+
+{(!isUploaded) && pageType === PageType.picture?(isNative ? (
   <button
     onClick={pickImage}
     className="btn bg-emerald-600 text-white mt-2"
@@ -254,7 +244,7 @@ const isCreated = parameters?.id
  
       <div className="w-full mt-4">
 
-  {!isUploaded && (
+  {(!isUploaded&&!hasContent) && (
     <div className="w-full h-[3.5em] rounded-xl bg-gray-100 text-gray-400 flex items-center justify-center text-sm">
       Add {type === PageType.link ? "a valid URL" : "an image"} to continue
     </div>
@@ -263,7 +253,7 @@ const isCreated = parameters?.id
   {/* 🚀 Ready to create */}
   {/* { true && ( */}
   {/* !hasContent&&(typeOrNull==PageType.link || typeOrNull==PageType.picture)  */}
-    {(!isUploaded) && (typeOrNull == PageType.picture ||  typeOrNull == PageType.link) && <button
+    {(!hasContent) && (typeOrNull == PageType.picture ||  typeOrNull == PageType.link) && <button
       onClick={handleCreate}
       disabled={uploading}
       className="w-full h-[3.5em] rounded-xl bg-emerald-600 text-white font-semibold active:scale-[0.98] disabled:opacity-50 transition"
@@ -277,7 +267,28 @@ const isCreated = parameters?.id
 
 
       {/* Preview */}
-      <div className="mt-4">{renderPreview()}</div>
+      <div className="mt-4"><RenderPreview type={type}src={htmlContent || parameters.data} /></div>
     </div>
   );
 }
+
+
+const RenderPreview = memo(({ src, type }) => {
+
+
+  if (!src) return null;
+
+  if (type === PageType.link) {
+    return <LinkPreview url={src} />;
+  }
+
+  if (type === PageType.picture) {
+    return (
+      <div className="mt-4 flex justify-center">
+        <IonImg src={src} className="rounded-xl max-h-[300px]" />
+      </div>
+    );
+  }
+
+  return null;
+});

@@ -8,37 +8,41 @@ import { PageType } from "../../core/constants"
 
 import Enviroment from "../../core/Enviroment"
 import Paths from "../../core/paths"
+import { Capacitor } from "@capacitor/core"
 function DataElement({page,isGrid,book=null,html=null}){
 
-const initialImage = page?.type === PageType.picture
-  ? (isValidUrl(page?.data) ? page?.data : Enviroment.imageProxy(page?.data))
-  : null;
-  const [image, setImage] = useState(initialImage);
-useEffect(() => {
-  if(page?.type === PageType.picture && page?.data){
-    setImage(isValidUrl(page?.data) ? page?.data : Enviroment.imageProxy(page?.data))
-  }
-}, [page?.data])
+const initialImage =
+  page?.type === PageType.picture
+    ? resolveImageSrc(page?.data)
+    : null;
+  
+//   const [image, setImage] = useState(initialImage);
+// useEffect(() => {
+//   if(page?.type === PageType.picture && page?.data){
+//     setImage(isValidUrl(page?.data) ? page?.data : Enviroment.imageProxy(page?.data))
+//   }
+// }, [page?.data])
 
     const {isHorizPhone}=useContext(Context)
  const router = useIonRouter()
   
    
-    useEffect(()=>{
+    // useEffect(()=>{
         
-        if(page && page.type==PageType.picture){
-            if(isValidUrl(page.data)){
-                setImage(page.data)
-            }else{
+    //     if(page && page.type==PageType.picture){
+    //         if(isValidUrl(page.data)){
+    //             setImage(page.data)
+    //         }else{
              
-                setImage(Enviroment.imageProxy(page.data))
+    //             setImage(Enviroment.imageProxy(page.data))
             
-            }
+    //         }
     
-        }
-    },[page])
+    //     }
+    // },[page])
 
- function Element({page}){   
+ function Element({page,image}){   
+    console.log("rendering element with page", page, "and image", image)
 switch(page.type){
     case PageType.text:{
 
@@ -52,7 +56,7 @@ switch(page.type){
   ) }
   case PageType.picture:{
   
-    return(image?!isHorizPhone?<img  id="page-data-pic"  
+    return(<img  id="page-data-pic"  
 
         className=""
         onClick={()=>{
@@ -62,21 +66,22 @@ switch(page.type){
      
      }} 
      alt={page.title} src={image}
-    />:
-    <IonImg       id="page-data-pic"
-    className="w-full h-full object-contain w-[100%]"
+    />)
+//     :
+//     <IonImg       id="page-data-pic"
+//     className="w-full h-full object-contain w-[100%]"
 
-    onClick={()=>{
+//     onClick={()=>{
    
-   if(router.routeInfo.pathname!=Paths.page.createRoute(page.id)){
-   router.push(Paths.page.createRoute(page.id))}
+//    if(router.routeInfo.pathname!=Paths.page.createRoute(page.id)){
+//    router.push(Paths.page.createRoute(page.id))}
 
-}} 
-alt={page.title}
-    src={image}/>
+// }} 
+// alt={page.title}
+//     src={image}/>
     
-    :
-    <div className={`skeleton w-page-mobile`}/>)
+//     :
+//     <div className={`skeleton w-page-mobile`}/>)
 }
 case PageType.link:{
     return(
@@ -101,7 +106,25 @@ default:
 }
 if(!page) return null;
 
-return (<Element page={page}/>)
+return (<Element page={page} image={initialImage} />)
 }
 
 export default DataElement
+const resolveImageSrc = (data) => {
+  if (!data) return null;
+
+  // Firebase hosted URL (already usable)
+  const isFirebaseUrl =
+    data.includes("firebasestorage.googleapis.com");
+console.log("is firebase url?", isFirebaseUrl, "for data", data)
+  // Regular external URL
+//   const isExternalUrl =
+//     isValidUrl(data) && !data.startsWith("gs://");
+
+  if (isFirebaseUrl) {
+    return Enviroment.imageProxy(data);
+  }else{
+return data;
+    }
+
+};
