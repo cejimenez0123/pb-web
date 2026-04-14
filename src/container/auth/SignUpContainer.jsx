@@ -161,25 +161,12 @@ dispatch(uploadProfilePicture({ file:fileFind })).then(res => checkResult(res, p
       : err?.message || "Try reusing the link"
     );
   });
-//            dispatch(signUp(params)).then(res => checkResult(res, payload => {
-// console.log("GFDD")
-//         if (payload.profile) {
-//           router.push(Paths.login());
-//         } else {
-//           setSuccess(null);
-//           setError(payload.error.status==409?"Username is not unique":payload.error.message || "Try reusing the link");
-//         }
 
-//            },err=>{
-//             console.log("GERR")
-//              setSuccess(null);
-//       setError(err.status==409?"Username is not unique":err.message || "Try reusing the link");
-//            }))
         Preferences.set({key:"firstTime",value: payload.firstTime}).then(()=>{})
    },err=>{}))
       }else{
        dispatch(signUp(params)).then(res => checkResult(res, payload => {
-console.log("cddD")
+
         if (payload.profile) {
           router.push(Paths.login());
         } else {
@@ -190,7 +177,7 @@ console.log("cddD")
    
       }),err=>{
          setSuccess(null);
-         console.log("GffdDD")
+         
       setError(err.status==409?"Username is not unique":err.message || "Try reusing the link");
       })}
     

@@ -16,7 +16,7 @@ const Paths ={
     page:{ route: ()=>`/story/:id/view`,createRoute:(id)=>{return `/story/${id}/view`
     }},
     workshop:{
-        route:()=>"/workshop/page/:pageId",
+        route:()=>"/workshop/page/:storyId",
         reader:()=>"/workshop",
         createRoute:(pageId)=>{return "/workshop/page/"+pageId}
     },

@@ -34,6 +34,8 @@ import axios from "axios";
 import TopBarDropdown from "../../components/page/TopBarDropdown.jsx";
 import { fetchProfiles } from "../../actions/ProfileActions.jsx";
 import { use } from "react";
+import { set } from "lodash";
+import { getCurrentProfile } from "../../actions/UserActions.jsx";
 
   const editorContainerBase = "mx-auto bg-white rounded-lg shadow-sm";
 const editorContainerSpacing = "mx-2 mb-12 p-4";
@@ -53,16 +55,9 @@ const { id, type: paramType } = useParams();
   const { setError, setSuccess,  } = useContext(Context);
   const [files,setFiles]=useState([])
   const isNative = Capacitor.isNativePlatform();
-  const hasInitialized = useRef(false);
-    
-
-  const [openHashtag, setOpenHashtag] = useState(false);
-  const { openDialog, closeDialog, dialog, resetDialog } = useDialog();
-    const { isPhone } = useContext(Context);
   const htmlContent = useSelector(state=>state.pages.editorHtmlContent)
-
-const [isSaved,setIsSaved]=useState(true)
-  const [parameters, setParameters] = useState({
+  const hasInitialized = useRef(false);
+     const [parameters, setParameters] = useState({
     isPrivate: true,
     data: editPage?.data || htmlContent,
     title: "",
@@ -76,12 +71,20 @@ const [isSaved,setIsSaved]=useState(true)
     profileId: currentProfile ? currentProfile?.id : "",
     type: type,
   });
-  const effectiveId = parameters.id || editPage?.id;
+const effectiveId = parameters.id ||editPage?.id || id;
+console.log("Effective ID:", effectiveId, "Parameters ID:", parameters.id, "Edit Page ID:", editPage?.id, "URL ID:", id);
+    const isValid = !!effectiveId && effectiveId !== "new"
+ 
 
-const payload = {
-  ...parameters,
-  id: effectiveId,
-};
+  const [openHashtag, setOpenHashtag] = useState(false);
+  const { openDialog, closeDialog, dialog, resetDialog } = useDialog();
+    const { isPhone } = useContext(Context);
+  
+ 
+
+const [isSaved,setIsSaved]=useState(true)
+
+
  useEffect(() => {
   setParameters((prev) => ({
     ...prev,
@@ -111,20 +114,50 @@ const payload = {
 const lastSavedRef = useRef(null);
 
 
-  const debouncedSave = useRef(
+const debouncedSave = useRef(
   debounce((payload) => {
-    setIsSaved(false)
-    dispatch(updateStory(payload)).then(res=>checkResult(res,payload=>{
-setIsSaved(true)
-    },err=>{
-console.log(err)
-    setIsSaved(false)
-setError(err.message)
-    }))
+
+
+    dispatch(updateStory(payload)).then(res =>
+      checkResult(res,
+        () => setIsSaved(true),
+        (err) => {
+          console.log(err);
+      
+          setError(err.message);
+        }
+      )
+    );
   }, 500)
 ).current;
 
 
+const updateStatus = (status) => {
+  setParameters((prev) => ({
+    ...prev,
+    status,
+  }));
+};
+const createPageAction = () => {
+  saveStory({
+    data: htmlContent,
+  });
+};
+useEffect(() => {
+  if (!currentProfile?.id) return;
+
+  // prevent empty create
+  if (!parameters.data?.trim()) return;
+
+  saveStory(parameters);
+
+}, [
+  parameters.data,
+  parameters.title,
+  parameters.status,
+  parameters.isPrivate,
+  parameters.commentable,
+]);
   const setStory = (story) => {
     dispatch(setHtmlContent(story?.data ));
     dispatch(setPageInView({ page: story }));
@@ -148,12 +181,10 @@ useEffect(() => {
     return;
   }
 
-  const validId = parameters.id || editPage?.id;
-  if (!validId || !currentProfile?.id) return;
 
   const payload = {
     ...parameters,
-    id: validId,
+    id: effectiveId,
     profileId: currentProfile.id,
   };
 
@@ -163,8 +194,9 @@ useEffect(() => {
   if (isSame) return;
 
   lastSavedRef.current = payload;
-
-  debouncedSave({...payload,status: "draft",isPrivate:true});
+setIsSaved(false);
+  debouncedSave({...payload});
+  setIsSaved(true)
 }, [
   parameters.data,
   parameters.title,
@@ -194,41 +226,68 @@ useEffect(() => {
       )
     );
   };
-  const createPageAction = (dataOverride) => {
-  const dataToUse = dataOverride || htmlContent  // <- always take the latest local value
-  if (!currentProfile?.id) return;
 
-  const payload = {
-    title: parameters.title,
-    data: dataToUse, 
-    description: parameters.description??"",
-    needsFeedback: parameters.needsFeedback,
-    isPrivate: parameters.isPrivate,
-    isSaved:true,
-    status:"draft",
-    commentable: parameters?.commentable??false,
-    type: type??editPage?.type??PageType.text,
-    profileId: currentProfile.id,
-  };
 
-  dispatch(createStory(payload)).then((res) =>
-    checkResult(res, (payload) => {
-   
-     
-     setStory({...payload.story, isSaved: true});
 
-setTimeout(() => {
-  router.push(Paths.editPage.createRoute(payload.story.id, "forward", "replace"));
-}, 0);
-    }, (err) => setError(err.message))
-  );
-};
-const handleChange = (key, value) => {
-  setParameters((prev) => ({
-    ...prev,
-    [key]: value,
-  }));
-};
+const saveStory =async (incoming) => {
+    if (!currentProfile?.id) return;
+
+    setIsSaved(false);
+
+
+    const payload = {
+      ...parameters,
+      ...incoming,
+      profileId: currentProfile.id,
+      type: type ?? PageType.text,
+    };
+
+    // 🧠 CREATE
+    if (!isValid) {
+      const res = await dispatch(createStory(payload));
+
+      return checkResult(
+        res,
+        (data) => {
+          const story = data.story;
+
+          setIsSaved(true);
+
+          dispatch(setPageInView({ page: story }));
+          dispatch(setHtmlContent(story.data));
+
+          setParameters((prev) => ({
+            ...prev,
+            id: story.id,
+          }));
+
+       window.history.replaceState(null, "", Paths.editPage.createRoute(story.id));
+        },
+        (err) => {
+          setIsSaved(false);
+          setError(err.message);
+        }
+      );
+    }
+
+    // 🧠 UPDATE
+    const res = await dispatch(
+      updateStory({
+        ...payload,
+        id: effectiveId,
+      })
+    );
+
+    return checkResult(
+      res,
+      () => setIsSaved(true),
+      (err) => {
+        setIsSaved(false);
+        setError(err.message);
+      }
+    );
+}
+
  const driveTokenKey = "googledrivetoken";
    const TOKEN_EXPIRY_KEY = "googledrivetoken_expiry"; // 
 const [accessToken,setAccessToken]=useState(null)
@@ -357,7 +416,85 @@ const handleView =()=>{
     router.push(Paths.page.createRoute(id))
   })
 }
+const handleChange = (key, value) => {
+  setParameters((prev) => ({
+    ...prev,
+    [key]: value,
+  }));
+};
+  useEffect(() => {
+  // If profile already exists, do nothing
+  if (currentProfile?.id) return;
 
+  // Otherwise fetch it
+  dispatch(getCurrentProfile()).then((res) =>
+    checkResult(
+      res,
+      (payload) => {
+        // optionally keep local state in sync if needed
+        saveStory(parameters); // retry pending save once profile exists ✨
+      },
+      (err) => {
+        setError(err.message);
+      }
+    )
+  );
+}, [currentProfile?.id]);
+const handlePostPublic=(desc)=>{
+  const finalId = effectiveId;
+
+  const payload = {
+    ...parameters,
+    id: finalId,
+    description: desc,
+    isPrivate: false,
+    status: "finished",
+    needsFeedback: true,
+  };
+
+  setIsSaved(false);
+
+  dispatch(updateStory(payload)).then(res => {
+    checkResult(res,
+      () => {
+        setIsSaved(true);
+        resetDialog();
+
+        router.push(
+          Paths.page.createRoute(finalId),
+          "forward"
+        );
+      },
+      (err) => setError(err.message)
+    );
+  });
+}
+const handleFeedback = (feedbackDesc) => {
+  const payload = {
+    ...parameters,
+    id: effectiveId,
+    description: feedbackDesc,
+    status: "workshop",
+    needsFeedback: true,
+  };
+
+  setIsSaved(false);
+
+  dispatch(updateStory(payload)).then(res => {
+    resetDialog();
+
+    checkResult(res,
+      () => {
+        setIsSaved(true);
+        router.push(
+          Paths.workshop.createRoute(effectiveId),
+          "forward"
+        );
+      },
+      (err) => setError(err.message)
+    );
+  });
+}
   const openFeedback = (isFeedback) => {
     openDialog({
   
@@ -370,26 +507,11 @@ const handleView =()=>{
           page={editPage}
           isFeedback={isFeedback}
           handleChange={(e) => handleChange("description", e)}
-          handleFeedback={(feedbackDesc) => {
-            console.log("Handling feedback with description:", feedbackDesc);
-     
-            setIsSaved(false);
-            dispatch(updateStory({ ...parameters, description: feedbackDesc, status: "workshop", needsFeedback: true })).then(res => {
-              resetDialog();
-                     console.log("Feedback Desc:", feedbackDesc);
-                     router.push(Paths.workshop.createRoute(id), "forward");
-          //  router.push(router.push(Paths.editPage.createRoute(id)));
-            });
+                handleFeedback={(feedbackDesc) => {
+            handleFeedback(feedbackDesc);
           }}
           handlePostPublic={(desc) => {
-            handleChange("isPrivate", false);
-            handleChange("status","finished")
-              setIsSaved(false)
-            dispatch(updateStory({ ...parameters,id,description:desc, needsFeedback:true })).then(res=>{
-                setIsSaved(true)
-               editPage &&  router.push(Paths.page.createRoute(editPage.id), "forward");
-                       resetDialog();
-            })
+            handlePostPublic(desc);
          
          
            
@@ -399,12 +521,12 @@ const handleView =()=>{
       ),
     });
   };
-  const handleDelete = debounce(() => {
+  const handleDelete = () => {
     dispatch(deleteStory(parameters)).then(() => {
-     router.push(Paths.myProfile, "root", "replace");
-      resetDialog()
+      router.push(Paths.myProfile, "root");
+      resetDialog();
     });
-  }, 10);
+  }
   
   const openConfirmDeleteDialog = () => {
     let dia = {
@@ -433,6 +555,12 @@ useEffect(() => {
   }
 }, [type]);
 
+const STATUS_OPTIONS = [
+  { value: "draft", label: "Draft" },
+  { value: "fragment", label: "Fragment" },
+  { value: "workshop", label: "Workshop" },
+  { value: "finished", label: "Published" },
+];
 
   // ------------------ Render ------------------
   return<EditorContext.Provider value={{ page: editPage, parameters, setParameters }}>
@@ -469,6 +597,8 @@ useEffect(() => {
         placeholder="Untitled"
       />
          
+
+  
   <div className="flex items-center gap-2 mt-1">
   {isSaved ? (
     <span className="text-emerald-700 font-semibold flex items-center gap-1">
@@ -481,22 +611,9 @@ useEffect(() => {
   )}
 
   {/* Status Badge */}
-  <span
-    className={`text-xs px-2 py-1 rounded-full font-semibold capitalize
-      ${
-        parameters.status === "draft"
-          ? "bg-gray-200 text-gray-700"
-          : parameters.status === "workshop"
-          ? "bg-blue-100 text-blue-700"
-          : parameters.status === "finished"
-          ? "bg-emerald-100 text-emerald-700"
-          : "bg-gray-200 text-gray-700"
-      }
-    `}
-  >
-    {parameters.status || "draft"}
-  </span>
+
 </div>
+{/* </div> */}
 </div>
       {/* Dropdown */}
       <TopBarDropdown
@@ -527,7 +644,7 @@ useEffect(() => {
           transition={{ type: "spring", stiffness: 300, damping: 30 }}
           className="overflow-hidden w-full"
         >
-          <HashtagForm item={parameters.page} type="story" />
+          <HashtagForm item={editPage} type="story" />
         </motion.div>
       )}
     </AnimatePresence>
@@ -551,7 +668,27 @@ useEffect(() => {
       transition={{ duration: 0.3 }}
     >
       <div className={CONTAINER}>
+<div className="flex gap-1 bg-gray-100 p-1 rounded-full w-fit">
+{STATUS_OPTIONS.map((option) => {
+  const isActive = parameters.status === option.value;
 
+  return (
+    <button
+      key={option.value}
+      onClick={() => updateStatus(option.value)}
+      className={`px-3 py-1 text-xs font-semibold rounded-full transition-all duration-150
+        ${
+          isActive
+            ? "bg-soft text-white shadow-sm"
+            : "text-gray-500"
+        }
+      `}
+    >
+      {option.label}
+    </button>
+  );
+})}
+</div>
       <EditorDiv page={editPage} handleChange={handleChange} parameters={parameters} type={type} createPageAction={createPageAction} />
     </div>
     </motion.div>

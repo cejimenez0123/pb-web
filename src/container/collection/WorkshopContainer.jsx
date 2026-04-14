@@ -16,6 +16,7 @@ import GoogleMapSearch from "../collection/GoogleMapSearch";
 import ExploreList from '../../components/collection/ExploreList';
 import fetchCity from '../../core/fetchCity';
 import Enviroment from '../../core/Enviroment';
+import { getStory } from '../../actions/StoryActions';
 
 const DEFAULT_LOCATION = { latitude: 40.818622458906425, longitude: -73.8890363605602 };
 // ── Layout ──────────────────────────────────────
@@ -47,11 +48,13 @@ const SUBTLE = "text-sm text-gray-500";
 const WorkshopContainer = () => {
   const dispatch   = useDispatch();
   const router     = useIonRouter();
+  const { storyId } = useParams();
   // const pathParams = useParams();
   const isNative   = DeviceCheck();
 
   const { currentProfile } = useSelector(state => state.users);
-  const page                = useSelector(state => state.pages.pageInView);
+  const page = useSelector(state => state.pages.pageInView);
+  
   const { error, setError, setSuccess, setSeo } = useContext(Context);
   const [workshops,setWorkshops]=useState([])
   const [communities,setCommunities]=useState([])
@@ -61,7 +64,18 @@ const WorkshopContainer = () => {
   const [location, setLocation] = useState(DEFAULT_LOCATION);
 
   // ─── Location ────────────────────────────────────────────────────────────────
+useEffect(() => {
+  if (!storyId) return;
 
+  dispatch(getStory({ id: storyId })).then(res =>
+    checkResult(res,
+      (payload) => {
+        dispatch(setPagesInView({ page: payload.story }));
+      },
+      (err) => setError(err.message)
+    )
+  );
+}, [storyId]);
   const applyLocation = (coords) => {
 
     setLocation(coords);
@@ -118,19 +132,15 @@ const WorkshopContainer = () => {
   useEffect(() => {
     setLocation(DEFAULT_LOCATION);
   }, [isGlobal]);
-useIonViewWillEnter(() => {
+  useIonViewWillEnter(() => {
   setError(null);
-  // setSuccess(null);
 
-  setSeo({
-    title: "Plumbum (Workshop) - Your Writing, Your Community",
-    description: "Explore events, workshops, and writer meetups on Plumbum.",
-    name: "Plumbum",
-    type: ""
-  });
+  if (!currentProfile?.id) return;
 
-  if (currentProfile?.id) fetchWorkshops();
+  // wait for profile + optionally page hydration
+  fetchWorkshops();
 });
+
 
 const isMounted = useRef(true);
 useEffect(() => {
@@ -275,7 +285,7 @@ return<IonContent
       
       <div className={WRAP+""}>
       <div className={`${CARD}  bg-base-bg   ${CARD_INNER}`}>
-        <WorkshopContextCard page={page} />
+        {page?.id && <WorkshopContextCard page={page} />}
         {/* Header */}
    <div className={ROW_BETWEEN+"  "}>
        <h2 className={TITLE}>

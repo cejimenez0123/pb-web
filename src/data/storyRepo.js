@@ -108,6 +108,7 @@ class StoryRepo{
             description,
             approvalScore,
             title,
+            status,
             needsFeedback,
             commentable,
             type
@@ -119,6 +120,7 @@ class StoryRepo{
             data: data,
             isPrivate:isPrivate,
             page:page,
+            status,
             description,
             needsFeedback,
             approvalScore:approvalScore,

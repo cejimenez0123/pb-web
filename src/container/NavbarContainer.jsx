@@ -351,26 +351,30 @@ useEffect(() => {
     document.removeEventListener("touchstart", handleClickOutside);
   };
 }, []);
-  const ClickWriteAStory = debounce(()=>{
+  // const ClickWriteAStory = debounce(()=>{
      
-      sendGAEvent("Create","Create Button Click Nav","Click Nav Create")
-         dispatch(setPageType({type:PageType.text}))
-        dispatch(createStory({profileId:currentProfile.id,privacy:true,type:PageType.text,
-        title:"Unititled",commentable:true
-      })).then(res=>checkResult(res,data=>{
+  //     sendGAEvent("Create","Create Button Click Nav","Click Nav Create")
+  //        dispatch(setPageType({type:PageType.text}))
+  //       dispatch(createStory({profileId:currentProfile.id,privacy:true,type:PageType.text,
+  //       title:"Unititled",commentable:true
+  //     })).then(res=>checkResult(res,data=>{
       
-          dispatch(setPageInView({page:data.story}))
-          // dispatch(setEditingPage({page:data.story}))
-          router.push(Paths.editPage.createRoute(data.story.id),'forward', 'replace');
-      },e=>{
-        setError(e.message)
-      }))},10) 
+  //         dispatch(setPageInView({page:data.story}))
+  //         // dispatch(setEditingPage({page:data.story}))
+  //         router.push(Paths.editPage.createRoute(data.story.id),'forward', 'replace');
+  //     },e=>{
+  //       setError(e.message)
+  //     }))},10) 
 const menuItems = [
   {
     label:"Story",
     icon:CreateIcon,
-    action:ClickWriteAStory
-  },
+    action:()=>{
+      dispatch(setMainLoading(true))
+      dispatch(setPageType({type:PageType.text}))
+
+    router.push(Paths.editPage.createRoute("new"),'forward');
+  }},
   {
     label:"Pictures",
     icon:ImageIcon,
@@ -499,39 +503,42 @@ function CreateButton({router}) {
   const [isOpen,setIsOpen]=useState(false)
 const {currentProfile }= useSelector(state=>state.users)
 const {pageType}=useSelector(state=>state.pages)
-  const ClickWriteAStory = () => {
-    dispatch(setMainLoading(true))
-    dispatch(setPageType({type:PageType.text}))
+  // const ClickWriteAStory = () => {
+  //   dispatch(setMainLoading(true))
+  //   dispatch(setPageType({type:PageType.text}))
 
-    if (currentProfile?.id) {
+  //   if (currentProfile?.id) {
    
      
-      dispatch(createStory({
-        profileId: currentProfile.id,
-        privacy: true,
-        type: PageType.text,
-        title: "Unititled",
-        commentable: true
-      })).then(res => checkResult(res, payload => {
-        if (payload.story) {
-        dispatch(setMainLoading(false))
-          dispatch(setPageInView({ page: payload.story }));
-        router.push(Paths.editPage.createRoute(payload.story.id),'forward');
-        }else{
-          window.alert("COULD NOT CREATE STORY")
-        }
-      },err=>{
-        setErrorLocal(err.message)
-      }));
-    }
-  }
+  //     dispatch(createStory({
+  //       profileId: currentProfile.id,
+  //       privacy: true,
+  //       type: PageType.text,
+  //       title: "Unititled",
+  //       commentable: true
+  //     })).then(res => checkResult(res, payload => {
+  //       if (payload.story) {
+  //       dispatch(setMainLoading(false))
+  //         dispatch(setPageInView({ page: payload.story }));
+  //       router.push(Paths.editPage.createRoute(payload.story.id),'forward');
+  //       }else{
+  //         window.alert("COULD NOT CREATE STORY")
+  //       }
+  //     },err=>{
+  //       setErrorLocal(err.message)
+  //     }));
+  //   }
+  // }
 
 
 const handleNavigate = (type) => {
   switch (type) {
     case "write":
       console.log("navigating to write");
-      ClickWriteAStory();
+        dispatch(setMainLoading(true))
+      dispatch(setPageType({ type: PageType.text }));
+      router.push(Paths.editPage.createRoute("new"), "forward");
+    
       break;
 
     case "image":
