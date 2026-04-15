@@ -14,14 +14,12 @@ import CommunitiesPanel from "../components/profile/CommunitiesPanel";
 import AboutPanel from "../components/profile/AboutPanel";
 import debounce from "../core/debounce";
 import PageProfileList from "../components/page/PageProfileList";
-import PaginatedIndexList from "../components/PaginatedIndexList";
-import PaginatedPageList from "../components/page/PaginatedPageList";
+
 import EmptyState from "../components/EmptyState";
 import { getMyCollections } from "../actions/CollectionActions";
 import { getMyStories } from "../actions/StoryActions";
 import PaginatedList from "../components/page/PaginatedList";
-import PaginatedItem from "../components/page/PaginatediItem";
-import checkResult from "../core/checkResult";
+
 const TABS = {
   POSTS: "posts",
   COLLECTIONS: "collections",
@@ -33,30 +31,39 @@ const tabWrapper = "max-w-lg mx-auto px-4 pb-4"; // same for both containers
 function MyProfileContainer() {
   const { setSeo  } = useContext(Context);
   const profile = useSelector((state) => state.users.currentProfile);
-  const {myCollections:collectionsRaw}=useSelector(state=>state.books)
+
   const pageSize = 20;
-  const {
-  page,
-  setPage,
-  items:storyItems,
-  loading:pageLoading,
-  totalCount:storyTotalCount,
-  totalPages,
-} = usePaginatedStories({
-  profileId: profile?.id,
+const stories = usePaginatedResource({
+  key: "stories",
+  fetcher: getMyStories,
   pageSize: pageSize,
+  enabled: !!profile?.id,
+  select: (res) => ({
+    items: res.pageList,
+    totalCount: res.totalCount,
+  }),
+});
+const collections = usePaginatedResource({
+  key: "collections",
+  fetcher: getMyCollections,
+  pageSize: pageSize,
+  enabled: !!profile?.id,
+  select: (res) => ({
+    items: res.collections,
+    totalCount: res.totalCount,
+  }),
 });
 
-const pagesRaw = useSelector(state => state.pages.myPages ?? storyItems??[]);
 
-  const dispatch = useDispatch();
+
+
 
 const communities = useMemo(
   () =>
-    (collectionsRaw ?? []).filter(
-      (col) => (col?.childCollections?.length > 0) > 0
+    (collections.items ?? []).filter(
+      (col) => (col?.childCollections?.length ?? 0) > 0
     ),
-  [collectionsRaw]
+  [collections.items]
 );
 
   const router = useIonRouter();
@@ -73,28 +80,10 @@ useEffect(() => {
 
   const [tab, setTab] = useState(TABS.POSTS);
   const [search, setSearch] = useState("");
-  // const [following, setFollowing] = useState(null);
- 
 
-
-
-  // ── Derived
- const collections = useMemo(
+const recentCollections = useMemo(
   () =>
-    (collectionsRaw ?? [])
-      .filter(Boolean)
-      .filter((col) =>
-        search
-          ? col.childCollections == 0 &&
-            col.title?.toLowerCase().includes(search.toLowerCase())
-          : true
-      ),
-  [collectionsRaw, search]
-
-  );
- const recentCollections = useMemo(
-  () =>
-    [...(collectionsRaw ?? [])]
+    [...(collections.items ?? [])]
       .filter(Boolean)
       .sort(
         (a, b) =>
@@ -102,16 +91,16 @@ useEffect(() => {
           new Date(a.updated ?? a.created)
       )
       .slice(0, 5),
-  [collectionsRaw]
+  [collections.items]
 );
 
   const sortedPages = useMemo(() => {
-  return [...(pagesRaw ?? [])].sort(
+  return [...(stories.items ?? [])].sort(
     (a, b) =>
       new Date(b.updated ?? b.created) -
       new Date(a.updated ?? a.created)
   );
-}, [pagesRaw]);
+}, [stories.items]);
 
 const recentPosts = sortedPages.slice(0, 5);
 // ── Tabs constants ─────────────────────────────────────
@@ -229,7 +218,8 @@ className="bg-soft rounded-full p-2"><img src={settings} /></button>
                 <div className="flex flex-wrap gap-2 ">
         {communities.slice(0, 3).map((c) => {
   const path = Paths.collection.createRoute(c.id);
-
+  console.log("COLSOL",stories)
+console.log("COLEX",collections)
   return (
     <Pill
       key={c.id}
@@ -286,13 +276,12 @@ className="bg-soft rounded-full p-2"><img src={settings} /></button>
                   <section className="space-y-4">
                     <SectionLabel>All Posts</SectionLabel>
 <PaginatedList
-  items={storyItems}
-  page={page}
-  setPage={setPage}
-  pageSize={pageSize}
-  totalCount={storyTotalCount}
-  loading={pageLoading}
-  emptyState={<EmptyState text="No posts yet." />}
+  items={stories.items}
+  page={stories.page}
+  setPage={stories.setPage}
+  pageSize={20}
+  totalCount={stories.totalCount}
+  loading={stories.loading}
   renderItem={(page) => (
     <PageProfileList items={[page]} router={router} />
   )}
@@ -305,7 +294,7 @@ className="bg-soft rounded-full p-2"><img src={settings} /></button>
             
 
             {tab === TABS.COLLECTIONS && (
-              collections.length === 0 ? (
+              collections.items.length === 0 ? (
   <EmptyState text={search ? "No matching collections." : "No collections yet."} />
 ) : (
   <>
@@ -317,7 +306,26 @@ className="bg-soft rounded-full p-2"><img src={settings} /></button>
     )}
 
     <SectionLabel>All Collections</SectionLabel>
-    <PaginatedIndexList router={router} items={collections} />
+
+ <PaginatedList
+  items={collections.items}
+  page={collections.page}
+  setPage={collections.setPage}
+  pageSize={pageSize}
+  totalCount={collections.totalCount}
+  loading={collections.loading}
+  renderItem={(i) => (
+   <div
+        key={i.id}
+        onClick={() => router.push(Paths.collection.createRoute(i.id))}
+        className="p-3 rounded-full border border-purple border-1 bg-base-bg backdrop-blur-sm shadow-sm active:scale-[0.98] transition"
+      >
+        <span className="text-[0.95rem] font-medium text-gray-800">
+          {i.title ?? i.name ?? "Untitled"}
+        </span>
+      </div>
+  )}
+/>
   </>
 )
             
@@ -380,75 +388,80 @@ function EmptyProfileState() {
   );
 }
 
+
 // import { useEffect, useRef, useState } from "react";
 // import { useDispatch } from "react-redux";
-// import { getMyStories } from "../actions/StoryActions";
 
-function usePaginatedStories({
-  profileId,
+function usePaginatedResource({
+  key,                 // "stories" | "collections" | etc
+  fetcher,             // redux thunk (getMyStories, getMyCollections)
   pageSize = 20,
+  params = {},         // extra params if needed
+  enabled = true,
   prefetch = true,
+  select = (res) => res, // how to extract items
 }) {
   const dispatch = useDispatch();
 
   const [page, setPage] = useState(1);
-  const [pageCache, setPageCache] = useState({});
+  const [cache, setCache] = useState({});
   const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(false);
 
   const inFlight = useRef(new Set());
 
-  const currentItems = pageCache[page] || [];
+  const items = cache[page] || [];
   const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
 
   useEffect(() => {
-    if (!profileId) return;
+    if (!enabled) return;
 
     const fetchPage = async (p) => {
       const skip = (p - 1) * pageSize;
 
-      // 🧠 prevent duplicate requests
-      if (pageCache[p] || inFlight.current.has(p)) return;
+      // 🚫 prevent duplicate requests
+      if (cache[p] || inFlight.current.has(p)) return;
 
       inFlight.current.add(p);
       setLoading(true);
 
       try {
         const res = await dispatch(
-          getMyStories({ skip, take: pageSize })
+          fetcher({ skip, take: pageSize, ...params })
         ).unwrap();
 
-        setPageCache((prev) => ({
+        const parsed = select(res);
+
+        setCache((prev) => ({
           ...prev,
-          [p]: res.pageList,
+          [p]: parsed.items,
         }));
 
-        setTotalCount(res.totalCount);
+        setTotalCount(parsed.totalCount);
       } catch (err) {
-        console.error("pagination error", err);
+        console.error(`${key} pagination error:`, err);
       }
 
       inFlight.current.delete(p);
       setLoading(false);
     };
 
-    // 1. fetch current page
+    // 1. fetch current
     fetchPage(page);
 
-    // 2. prefetch next pages
+    // 2. prefetch next
     if (prefetch) {
       [page + 1, page + 2].forEach((p) => {
         if (p > totalPages) return;
-
         fetchPage(p);
       });
     }
-  }, [page, profileId]);
+  }, [page, enabled]);
 
   return {
     page,
     setPage,
-    items: currentItems,
+    items,
     loading,
     totalCount,
     totalPages,

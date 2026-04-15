@@ -27,10 +27,10 @@ function PaginatedList({
   }
 
   return (
-    <div className={`space-y-4 ${className}`}>
+    <div className={`space-y-4 min-h-[14rem] ${className}`}>
 
    
-      <div className="space-y-2 min-h-48 ">
+      <div className="space-y-2 ">
         {paginatedItems.map((item, index) => (
           <div key={item.id ?? index}>
             {renderItem(item, index)}

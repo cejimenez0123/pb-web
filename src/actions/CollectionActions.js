@@ -232,20 +232,35 @@ const fetchCollectionProtected = createAsyncThunk("collection/fetchCollectionPro
     
   })
 
-const getMyCollections = createAsyncThunk("collection/getMyCollections",async (
-    params,thunkApi
-)=>{
-    try{
-     let data = await collectionRepo.getMyCollections()
-  
+// const getMyCollections = createAsyncThunk("collection/getMyCollections",async (
+//     params,thunkApi
+// )=>{
+//     try{
+//      let data = await collectionRepo.getMyCollections()
+//   console.log("COL X L")
+//       return data
+//     }catch(err){
+//         console.log(err)
+//         throw err
+//     }
+// })
+const getMyCollections = createAsyncThunk(
+  "collections/getMyCollections",
+  async (params, thunkApi) => {
+    try {
+      const data = await collectionRepo.getMyCollections(params);
+
       return {
-        collections: data.collections
-      }
-    }catch(err){
-        console.log(err)
-        throw err
+        collections: data.collections,
+        totalCount: data.totalCount,
+      };
+    } catch (e) {
+      return thunkApi.rejectWithValue(
+        e?.response?.data || e.message
+      );
     }
-})
+  }
+);
 const getPublicProfileCollections = createAsyncThunk("collection/getPublicProfileCollections",async (
     params,thunkApi
 )=>{
