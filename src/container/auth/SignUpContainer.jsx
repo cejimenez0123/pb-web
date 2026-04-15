@@ -35,8 +35,8 @@ const ProfilePicture = React.memo(({ image }) => (
 ));
 export default function SignUpContainer(props) {
   const selectRef = useRef()
-const [referralTokenState, setReferralTokenState] = useState(null);
-const referralToken = referralTokenState;
+const [referralToken, setReferralTokenState] = useState(null);
+// const referralToken = referralTokenState;
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [username, setUsername] = useState("");
@@ -56,11 +56,16 @@ const searchParams = new URLSearchParams(router.routeInfo.search);
   const dispatch = useDispatch();
 
 useEffect(() => {
-  const params = new URLSearchParams(router.routeInfo.search);
-  const t = params.get("token");
+ 
 
+  const params = new URLSearchParams(router.routeInfo.search);
+  
+  const t = params.get("token");
+  if (t) {
+    Preferences.set({ key: "token", value: t }).then(res=>{});
+  }
   if (t) setReferralTokenState(t);
-}, [router.routeInfo.search]);
+}, []);
   const { setError, setSuccess, setSeo, seo } = useContext(Context);
 
   useEffect(() => {
@@ -70,16 +75,7 @@ useEffect(() => {
     });
   }, []);
 
-// useEffect(() => {
-//   const params = new URLSearchParams(router.routeInfo.search);
-//   const toke = params.get("token");
 
-//   if (!token && toke) setToken(toke);
-
-//   if (toke) {
-//     Preferences.set({ key: "token", value: toke });
-//   }
-// }, [router.routeInfo.search]);
 
 const handleProfilePicture = (e) => {
   const file = e.target.files[0];
@@ -135,14 +131,14 @@ const completeSignUp = async () => {
     const pictureParams = fileFind
       ? { file: fileFind }
       : { profilePicture: selectedImage };
-
+let {value:token }= await Preferences.get("token")
     // ✅ referral token from URL param state
-    const referralToken = token;
+    
 
     // ✅ MUST match backend exactly
 const params = {
   authToken: identityToken,
-  referralToken:referralToken,
+  referralToken:referralToken??token,
   email: email?.trim() || null,
   username:username.trim() || null,
   password,
