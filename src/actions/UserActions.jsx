@@ -175,7 +175,7 @@ const signUp = createAsyncThunk(
       });
 
       const profile = data.profile;
-
+      
       if (!privacy && profile) {
         try {
           await algoliaRepo.saveObject("profile", {
@@ -188,8 +188,9 @@ const signUp = createAsyncThunk(
           console.error("⚠️ Algolia index failed:", err);
         }
       }
+      await Preferences.set({key:"token",value:data.token})
 
-      return { profile };
+      return { profile,token:data.token };
 
     } catch (err) {
       console.error("⚠️ signUp error:", err);
