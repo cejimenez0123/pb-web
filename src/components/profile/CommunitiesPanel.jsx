@@ -4,9 +4,7 @@ import PaginationControls from "../PaginationControls";
 import EmptyState from "../EmptyState";
 
 const CommunitiesPanel = ({communities ,router}) => {
-//   const router = useIonRouter();
 
-  // const communities = profile?.communities ?? [];
 
   const [page, setPage] = useState(1);
   const limit = 6; // adjust based on feel

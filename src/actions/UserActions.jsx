@@ -10,11 +10,10 @@ const logIn = createAsyncThunk(
     async (params,thunkApi) => {
    
      
-try{        const {uId,email,password,idToken,isNative}=params
-
+try{      
+  
+        const {uId,email,password,idToken,isNative}=params
         const authData = await authRepo.startSession({uId:uId,email:email,password,identityToken:idToken})
-   
-        
         const {token}=authData  
  
          await Preferences.set({key:"token",value:token})
