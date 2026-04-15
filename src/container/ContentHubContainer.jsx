@@ -85,17 +85,17 @@ function ContentHubContainer() {
 
 
 
-  useEffect(() => {
-    fetchContentItems();
-  },[]);
+  // useEffect(() => {
+  //   fetchContentItems();
+  // },[]);
 
 
-  const fetchContentItems = () => {
-    dispatch(setPagesInView({ pages: [] }));
-    dispatch(setCollections({ collections: [] }));
-    dispatch(getPublicStories());
-    dispatch(getPublicCollections());
-  };
+  // // const fetchContentItems = () => {
+  // //   dispatch(setPagesInView({ pages: [] }));
+  // //   dispatch(setCollections({ collections: [] }));
+  // //   dispatch(getPublicStories());
+  // //   dispatch(getPublicCollections());
+  // // };
 
 
 

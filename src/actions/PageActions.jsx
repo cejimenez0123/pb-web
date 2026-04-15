@@ -34,10 +34,10 @@ const setHtmlContent = createAction(
 
 const getPublicProfilePages= createAsyncThunk(
   'pages/getPublicProfilePages',
-  async ({profile},thunkApi) => {
+  async (params,thunkApi) => {
     try{
 
-    let data= await storyRepo.getPublicProfileStories({profileId:profile.id})
+    let data= await storyRepo.getPublicProfileStories(params)
 
   return {
     pageList:data.stories
@@ -48,10 +48,10 @@ const getPublicProfilePages= createAsyncThunk(
 }})
 const getProtectedProfilePages= createAsyncThunk(
   'pages/getProtectedProfilePages',
-  async ({profile},thunkApi) => {
+  async (params,thunkApi) => {
     try{
 
-    let data= await storyRepo.getProtectedProfileStories({profileId:profile.id})
+    let data= await storyRepo.getProtectedProfileStories(params)
   
   return {
     pageList:data.stories}

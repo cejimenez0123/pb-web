@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState,useEffect, useRef } from 'react';
 import '../App.css';
 import { useSelector, useDispatch } from 'react-redux';
 import { createStory, getMyStories } from '../actions/StoryActions';
@@ -24,6 +24,8 @@ import StoryDashboardItem from '../components/StoryDashboardItem.jsx';
 import SectionHeader from '../components/SectionHeader.jsx';
 import { useMediaQuery } from 'react-responsive';
 import { useResponsiveGrid } from '../core/ResponsiveGrid.jsx';
+import usePaginatedResource from '../core/usePaginatedResource.jsx';
+import PaginatedList from '../components/page/PaginatedList.jsx';
 function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex = 0, role = "button" }) {
   return (
     <span
@@ -59,26 +61,61 @@ const isDesktop = useMediaQuery({ query: '(min-width: 1024px)' });
   const router = useIonRouter()
   const dispatch = useDispatch();
    const collectionsRaw = useSelector(state => state.books.collections) ?? [];
-
+const pageSize = 8
 const { columns, rows } = useResponsiveGrid();
 const visibleCount = columns * rows;
-console.log("VISTIBLE",visibleCount)
+
 const collections = collectionsRaw
   .slice() // safer than spread in this context
   .sort((a, b) => new Date(b.updated) - new Date(a.updated));
   const [results,setResults]=useState([])
   const [workshop,setWorkshop]=useState(null)
   const [saves,setSaved]=useState([])
-  const {openDialog,dialog,closeDialog,resetDialog}=useDialog()
+  const {openDialog,closeDialog,resetDialog}=useDialog()
   const isNative = Capacitor.isNativePlatform()
      const [homeCol,setHomeCol]=useState(null)
     const [archiveCol,setArchiveCol]=useState(null)
-const myStories = useSelector(state=>state.pages.myPages.filter(t=>t))
- const myCollections = useSelector(state=>state.books.myCollections.filter(t=>t))
+    
+const personalStories = usePaginatedResource({
+  key: "stories",
+  fetcher: getMyStories,
+  pageSize,
+  enabled: !!currentProfile?.id,
+  select: (res) => ({
+    items: res.pageList,
+    totalCount: res.totalCount,
+  }),
+});
+const myStories = personalStories.items
+const personalCollections = usePaginatedResource({
+  key: "collections",
+  fetcher: getMyCollections,
+  pageSize,
+  enabled: !!currentProfile?.id,
+  select: (res) => ({
+    items: res.collections,
+    totalCount: res.totalCount,
+  }),
+});
+ const myCollections = personalCollections.items
 useEffect(()=>{
  fetchWorkshops()
 },[])
+// inside your dialog state
+const [dialog, setDialog] = useState(null);
+const waitForCollections = async (timeout = 3000) => {
+  const start = Date.now();
 
+  while (Date.now() - start < timeout) {
+    if (personalCollections.items?.length > 0) {
+      return true;
+    }
+
+    await new Promise(r => setTimeout(r, 50));
+  }
+
+  return false;
+};
 useEffect(() => {
   try {
     if (results?.length > 1) {
@@ -95,123 +132,85 @@ useEffect(() => {
    
   
 }, [results]);
-const openYourWorkshops=()=>{
 
-    openDialog({
-    title: "Your Workshops",
-  scrollY: false,
-  breakpoint: 1,
-  height:90,
 
-    disagree:()=>resetDialog(),
-    text: (<div className=''>
+const openPages = () => {
+  openDialog({
+  title: "Pages",
+  height: 94,
+  text: (
+    <PaginatedList
+      fetcher={getMyStories}
+      pageSize={8}
+      renderItem={(story) => (
+        <div
+          onClick={() => {
+            router.push(Paths.page.createRoute(story.id));
+            resetDialog();
+          }}
+          className="p-4 border border-soft rounded-xl"
+        >
+          {story.title || "Untitled"}
+        </div>
+      )}
+    />
+  )})}
 
-      <div className={`bg-cream overflow-y-auto  px-4 ${isNative? "h-[36rem] w-[100%] sm:h-[40rem] md:h-[48rem] lg:h-[50rem]":"h-[30rem] w-[100%] sm:h-[40rem] md:h-[48rem] lg:h-[50rem]"}`}> 
-        <IonList 
-         style={{
-          backgroundColor: Enviroment.palette.cream,
-          paddingTop: "0.5em"
-        }}>
-           
-       
-        {results.map(workshop=>{
-          return<li className=' my-2 bg-cream' onClick={()=>{
-            router.push(Paths.collection.createRoute(workshop.id))
-            resetDialog()
-          }}><div className='p-4 w-[100%] border-1 border border-soft  rounded-xl'><h4 className='text-[.9rem]'>{workshop.title.length ? workshop.title : "Untitled"}</h4></div></li>
-        })}
-      
-        </IonList>
-</div>
-      
-    </div>
-    )})
-  
-}
-const openCollections=()=>{
- openDialog({
-    title: "Collections",
-  scrollY: false,
-  breakpoint: 1,
-  height:90,
+  const openCollections = () => {
+  openDialog({
+  title: "Collections",
+  height: 94,
+  text: (
+    <PaginatedList
+      fetcher={getMyCollections}
+      pageSize={8}
+      loadingState={true}
+      renderItem={(col) => (
+          <div
+            onClick={() => {
+              router.push(Paths.collection.createRoute(col.id));
+              resetDialog();
+            }}
+            className="p-4 border border-soft rounded-xl"
+          >
+            {col.title || "Untitled"}
+          </div>
+        )}
+     
+    
+    />
+  )})}
 
-    disagree:()=>resetDialog(),
-    text: (<div className=''>
-            {/* <div className={`bg-cream overflow-y-auto ${isNative? "h-[36rem]":"h-[30rem]"}`}>  */}
-        <IonList 
-         style={{
-          backgroundColor: Enviroment.palette.cream,
-         
-        }}>
-         
-        {myCollections.length==0?<div ><h3>No Collections</h3>
-        <h4 onClick={()=>router.push(Paths.discovery)}>Click Here</h4></div>:myCollections.map(story=>{
-          return<li className=' my-2 bg-cream' onClick={()=>{
-            router.push(Paths.collection.createRoute(story.id))
-            resetDialog()
-          }}><div className='p-4 w-[100%] border-1 border  border-soft rounded-xl'><h4 className='text-[.9rem]'>{story.title}</h4></div></li>
-        })}
-   
-        </IonList>
 
-          
-    </div>
-    )})}
-    const openCommunities=()=>{
-      console.log(myCollections)
-     const communities = myCollections?.filter(col=>col.type=="library")||[]
- openDialog({
+const openCommunities = () => {
+  openDialog({
     title: "Communities",
-  scrollY: false,
-  breakpoint: 1,
-  height:90,
-
-    disagree:()=>resetDialog(),
-    text: (<div className=''>
-    
-  
-        <IonList style={{backgroundColor:Enviroment.palette.cream}}>
-        
-        {communities.map(story=>{
-          return<li className=' my-2 bg-cream' onClick={()=>{
-            router.push(Paths.collection.createRoute(story.id))
-            resetDialog()
-          }}><div className='p-4 w-[100%] border-1 border border-soft rounded-xl'><h4 className='text-[.9rem]'>{story.title.length?story.title:
-        "Untitled"}</h4></div></li>
-        })||null}
-    
-        </IonList>
-    </div>
-      
-  
-    )})}
-const openPages=()=>{
-   openDialog({
-    title: "Pages",
-  scrollY: false,
-  height:90,
- 
-    text: (<div className=''>
-               
-        <IonList 
-         style={{
-          backgroundColor: Enviroment.palette.cream,
-         
-        }}>
-        {myStories.length==0?<div className='text-center p-8'><h2 >No Posts</h2>
-        <h2 onClick={()=>router.push(Paths.discovery)}>Click here</h2></div>:myStories.map(story=>{
-          return<li className=' my-2 bg-cream' onClick={()=>{
-            router.push(Paths.page.createRoute(story.id))
-            resetDialog()
-          }}><div className='p-4 w-[100%] border-11 border border-soft rounded-xl'><h4 className='text-[.9rem]'>{story?.title?.length>0?story.title:"Untitled"}</h4></div></li>
-        })}
-        
-        </IonList>
-
-      
-    </div>
-    )})}
- 
+    scrollY: false,
+    breakpoint: 1,
+    height: 90,
+    disagree: () => resetDialog(),
+    text: (
+      <PaginatedList
+        fetcher={getMyCollections}
+        pageSize={8}
+        params={{ type: "library" }} // ✅ THIS NOW WORKS
+        renderItem={(story) => (
+          <div
+            onClick={() => {
+              router.push(Paths.collection.createRoute(story.id));
+              resetDialog();
+            }}
+            className="p-4 border border-soft rounded-xl"
+          >
+            <h4 className="text-[.9rem]">
+              {story.title || "Untitled"}
+            </h4>
+          </div>
+        )}
+      />
+    ),
+  });
+};
               useEffect(() => {
             
                 if (currentProfile?.profileToCollections) {
@@ -294,7 +293,7 @@ useEffect(()=>{
   }
 
 openDialog({
-...dialog,
+// ...dialog,
 disagree:null,
 scrollY: false,
   text: <CreateCollectionForm onClose={resetDialog} />,
@@ -499,7 +498,7 @@ scrollY: false,
   <div className="relative min-h-[120px]">
 
   {/* EMPTY STATE */}
-  <div
+  {/* <div
     className={`
       transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]
       ${myStories.length === 0
@@ -511,8 +510,8 @@ scrollY: false,
       <div className="px-4 text-soft text-sm">
         This is a beginning. Start writing
       </div>
-    )}
-  </div>
+    )} */}
+  {/* </div> */}
 
   {/* STORIES LIST */}
   <div

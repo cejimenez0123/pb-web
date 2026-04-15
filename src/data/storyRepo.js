@@ -16,12 +16,17 @@ class StoryRepo{
       Authorization: `Bearer ${value}`,
     };
   }
-    async getPublicStories(){
-        let res = await  axios.get(this.url+"/",{headers:{'Access-Control-Allow-Origin': "*",
-        "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept"}})
-        return res.data
+  
+    async getPublicStories({ skip = 0, take = 20 } = {}) {
+  const res = await axios.get(this.url + "/", {
+    params: {
+      skip,
+      take,
+    },
+  });
 
-    }
+  return res.data;
+}
     async getPublicProfileStories({profileId}){
    
         let res = await axios.get(this.url+"/profile/"+profileId+"/public")
@@ -39,14 +44,30 @@ class StoryRepo{
    }
              
     }
-    async getProtectedProfileStories({profileId}){
-        let headers = await this.getAuthHeaders()
-        let res = await axios.get(this.url+"/profile/"+profileId+"/protected",{
-            headers:{...headers}
-        })
-  
-        return res.data
+    async getProtectedProfileStories({ profileId, skip = 0, take = 20 } = {}) {
+  const headers = await this.getAuthHeaders();
+
+  const res = await axios.get(
+    this.url + `/profile/${profileId}/protected`,
+    {
+      headers: { ...headers },
+      params: {
+        skip,
+        take,
+      },
     }
+  );
+
+  return res.data;
+}
+    // async getProtectedProfileStories({profileId}){
+    //     let headers = await this.getAuthHeaders()
+    //     let res = await axios.get(this.url+"/profile/"+profileId+"/protected",{
+    //         headers:{...headers}
+    //     })
+  
+    //     return res.data
+    // }
     async recommendations(){
            let headers = await this.getAuthHeaders()
         let res = await axios.get(this.url+"/recommendations",{headers

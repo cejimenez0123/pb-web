@@ -42,6 +42,8 @@ import PageProfileList from '../../components/page/PageProfileList';
 import FollowButton from '../../components/profile/FollowButton';
 import CommunitiesPanel from '../../components/profile/CommunitiesPanel';
 import AboutPanel from '../../components/profile/AboutPanel';
+import PaginatedList from '../../components/page/PaginatedList';
+import usePaginatedResource from '../../core/usePaginatedResource';
 const TABS = {
   POSTS: "posts",
   COLLECTIONS: "collections",
@@ -109,15 +111,7 @@ useEffect(() => {
 }, [profile]);
   // ── Derived
 
-// ── Tabs constants ─────────────────────────────────────
 
-useEffect(()=>{
-   if(profile){
-      dispatch(getPublicProfilePages({profile}))
-      dispatch(getPublicProfileCollections({profile}))
-   }
-},[profile])
-// ── Pill Component ─────────────────────────────────────
 const Pill = ({ label,onClick }) => (
   <span onClick={onClick} className="text-xs px-3 py-1 rounded-full bg-gray-100 text-gray-700">
     {label}
@@ -159,52 +153,6 @@ useIonViewDidLeave(() => {
 
 
 
-
-// const AboutPanel = ({ profile:prof,city}) => {
-
-
-//   const hashTags = prof?.hashtags ?? [];
-//   if (!prof) return null;
-
-
-//   return (
-//     <div className="space-y-6">
-//     {/* <div>
-//         <p className="text-sm text-gray-700 leading-relaxed">
-//           {  prof.selfStatement}
-//         </p>
-//         </div> */}
-//             <div className="space-y-6 px-4">
-//       {(profile.bio || profile.selfStatement) && (
-//         <p className="text-sm text-gray-700 leading-relaxed">
-//           {profile.bio ?? profile.selfStatement}
-//         </p>
-//       )}
-
-  
-//   <p className="text-xs text-gray-400 uppercase">Location</p>
-// { isPendingLocation ? (
-//         <div className="mt-1 h-4 w-32 bg-gray-200 skeleton rounded animate-pulse shadow-sm" />
-//       ) : (
-//         <p className="text-sm text-gray-700 mt-1">{locationName}</p>
-//       )}
-//         {/* {!isPendingLocation &&locationName.length>0 ? (
-//           <p className="text-sm text-gray-700 mt-1">{locationName}</p>
-//         ) : (
-//           <div className="mt-1 h-4 w-32 bg-gray-200 rounded animate-pulse shadow-sm" />
-//         )} */}
-//       {hashTags.length > 0 && (
-//         <div>
-//           <p className="text-xs text-gray-400 uppercase mb-2">Interests</p>
-//           <div className="flex flex-wrap gap-2">
-//             {hashTags.slice(0, 5).map((tag, i) => (
-//               <Pill key={i} onClick={()=>router.push(Paths.hashtag.createRoute(tag.id))}label={`#${tag.name }`} />
-//             ))}
-//           </div>
-//         </div>
-         
-//       )}</div></div>)
-//     }
 
 
 {/* // ── Minimal Empty State ────────────────────────────── */}
@@ -440,20 +388,48 @@ useEffect(() => {
                   </section>
                 )}
 
-                {pages.length > 0 && (
+             
                   <section className="space-y-4">
                     <SectionLabel>All Posts</SectionLabel>
-              
-                    <PaginatedPageList items={pages} router={router}/>
+                    <PaginatedList
+  fetcher={getPublicProfilePages}
+  params={{ profileId: id  }}   // 👈 consistent with collections
+  pageSize={8}
+  renderItem={(p) => (
+    <div
+      key={p.id}
+      onClick={() => router.push(Paths.page.createRoute(p.id))}
+      className="px-3 py-3 rounded-full border border-purple border-1 bg-base-bg backdrop-blur-sm shadow-sm active:scale-[0.98] transition"
+    >
+      <span className="text-[0.95rem] min-h-10 font-medium text-gray-800">
+        {p?.title?.length > 0 ? p.title : "Untitled"}
+      </span>
+    </div>
+  )}
+/>
+                    {/* <PaginatedPageList items={pages} router={router}/> */}
                   </section>
-                )}
+                {/* )} */}
 
                 {pages.length === 0 && <EmptyState text="No posts yet." />}
               </>
             )}
 
             {tab === TABS.COLLECTIONS && (
-              collections.length > 0 ? <div className='pt-8'><IndexList items={collections} router={router}/></div> : <EmptyState text="No collections yet." />
+              <div className='pt-8'>   
+                   <PaginatedList
+  fetcher={getPublicProfileCollections}
+  params={{ profileId: id  }}
+  pageSize={8}
+  renderItem={(p) => (
+    <div
+      onClick={() => router.push(Paths.collection.createRoute(p.id))}
+      className="px-3 py-3 rounded-full border border-purple bg-base-bg"
+    >
+      {p.title}
+    </div>
+  )}
+/></div> 
             )}
 
             {tab === TABS.COMMUNITIES && <CommunitiesPanel communities={communities} router={router} />}

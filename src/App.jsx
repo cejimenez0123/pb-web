@@ -159,10 +159,11 @@ const showBottomNavbar = (isMobileOrTablet || isNative)  && import.meta.env.VITE
         <PageWrapper presentHeader={false
         
         } showBackbutton={false} >
-      <PrivateRoute>
+      <LoggedRoute>
+
             <LogInContainer  currentProfile={currentProfile} logIn={props.logIn}/>
-             </PrivateRoute>
-                      </PageWrapper>
+          </LoggedRoute>
+                     </PageWrapper>
          
 
        }

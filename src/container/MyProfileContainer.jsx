@@ -19,6 +19,7 @@ import EmptyState from "../components/EmptyState";
 import { getMyCollections } from "../actions/CollectionActions";
 import { getMyStories } from "../actions/StoryActions";
 import PaginatedList from "../components/page/PaginatedList";
+import usePaginatedResource from "../core/usePaginatedResource";
 
 const TABS = {
   POSTS: "posts",
@@ -275,17 +276,22 @@ console.log("COLEX",collections)
               
                   <section className="space-y-4">
                     <SectionLabel>All Posts</SectionLabel>
-<PaginatedList
-  items={stories.items}
-  page={stories.page}
-  setPage={stories.setPage}
-  pageSize={20}
-  totalCount={stories.totalCount}
-  loading={stories.loading}
-  renderItem={(page) => (
-    <PageProfileList items={[page]} router={router} />
-  )}
-/>
+                      <PaginatedList
+                          fetcher={getMyStories}
+                          pageSize={8}
+                          renderItem={(p) => (
+                            <div
+        key={p.id}
+        onClick={() => router.push(Paths.page.createRoute(p.id))}
+      className="px-3 py-3 rounded-full border border-purple border-1 bg-base-bg backdrop-blur-sm shadow-sm active:scale-[0.98] transition"
+      >
+        <span className="text-[0.95rem] min-h-10  font-medium text-gray-800">
+        {p?.title?.length > 0 ? p.title : "Untitled"}
+        </span>
+      </div>
+                          )}
+                        />
+
          </section>     
          </>
             )}    
@@ -307,15 +313,12 @@ console.log("COLEX",collections)
 
     <SectionLabel>All Collections</SectionLabel>
 
- <PaginatedList
-  items={collections.items}
-  page={collections.page}
-  setPage={collections.setPage}
-  pageSize={pageSize}
-  totalCount={collections.totalCount}
-  loading={collections.loading}
-  renderItem={(i) => (
-   <div
+       <PaginatedList
+         fetcher={getMyCollections}
+         pageSize={8}
+         params={{ type: "book" }} // ✅ THIS NOW WORKS
+         renderItem={(i) => (
+            <div
         key={i.id}
         onClick={() => router.push(Paths.collection.createRoute(i.id))}
         className="p-3 rounded-full border border-purple border-1 bg-base-bg backdrop-blur-sm shadow-sm active:scale-[0.98] transition"
@@ -323,9 +326,11 @@ console.log("COLEX",collections)
         <span className="text-[0.95rem] font-medium text-gray-800">
           {i.title ?? i.name ?? "Untitled"}
         </span>
-      </div>
-  )}
-/>
+      </div>)}
+       />
+  
+  {/* )} */}
+{/* /> */}
   </>
 )
             
@@ -391,79 +396,3 @@ function EmptyProfileState() {
 
 // import { useEffect, useRef, useState } from "react";
 // import { useDispatch } from "react-redux";
-
-function usePaginatedResource({
-  key,                 // "stories" | "collections" | etc
-  fetcher,             // redux thunk (getMyStories, getMyCollections)
-  pageSize = 20,
-  params = {},         // extra params if needed
-  enabled = true,
-  prefetch = true,
-  select = (res) => res, // how to extract items
-}) {
-  const dispatch = useDispatch();
-
-  const [page, setPage] = useState(1);
-  const [cache, setCache] = useState({});
-  const [totalCount, setTotalCount] = useState(0);
-  const [loading, setLoading] = useState(false);
-
-  const inFlight = useRef(new Set());
-
-  const items = cache[page] || [];
-  const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
-
-  useEffect(() => {
-    if (!enabled) return;
-
-    const fetchPage = async (p) => {
-      const skip = (p - 1) * pageSize;
-
-      // 🚫 prevent duplicate requests
-      if (cache[p] || inFlight.current.has(p)) return;
-
-      inFlight.current.add(p);
-      setLoading(true);
-
-      try {
-        const res = await dispatch(
-          fetcher({ skip, take: pageSize, ...params })
-        ).unwrap();
-
-        const parsed = select(res);
-
-        setCache((prev) => ({
-          ...prev,
-          [p]: parsed.items,
-        }));
-
-        setTotalCount(parsed.totalCount);
-      } catch (err) {
-        console.error(`${key} pagination error:`, err);
-      }
-
-      inFlight.current.delete(p);
-      setLoading(false);
-    };
-
-    // 1. fetch current
-    fetchPage(page);
-
-    // 2. prefetch next
-    if (prefetch) {
-      [page + 1, page + 2].forEach((p) => {
-        if (p > totalPages) return;
-        fetchPage(p);
-      });
-    }
-  }, [page, enabled]);
-
-  return {
-    page,
-    setPage,
-    items,
-    loading,
-    totalCount,
-    totalPages,
-  };
-}

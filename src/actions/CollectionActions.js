@@ -248,6 +248,7 @@ const getMyCollections = createAsyncThunk(
   "collections/getMyCollections",
   async (params, thunkApi) => {
     try {
+        console.log("PARMCOL",params)
       const data = await collectionRepo.getMyCollections(params);
 
       return {
@@ -261,26 +262,46 @@ const getMyCollections = createAsyncThunk(
     }
   }
 );
-const getPublicProfileCollections = createAsyncThunk("collection/getPublicProfileCollections",async (
-    params,thunkApi
-)=>{
 
-     let data = await collectionRepo.getPublicProfileCollections({id:params["profile"].id})
-
-      return {
-      collections:data.collections
-      }
-})
-const getProtectedProfileCollections = createAsyncThunk("collection/getProtectedProfileCollections",async (
-    params,thunkApi
-)=>{
-
-     let data = await collectionRepo.getProtectedProfileCollections({id:params["profile"].id})
+const getPublicProfileCollections = createAsyncThunk(
+  "collection/getPublicProfileCollections",
+  async (params, thunkApi) => {
+    try {
+      const data = await collectionRepo.getPublicProfileCollections({
+        id: params.profileId,
+        skip: params.skip,
+        take: params.take,
+      });
 
       return {
-        collections:data.collections
-      }
-})
+        collections: data.collections,
+        totalCount: data.totalCount,
+      };
+    } catch (err) {
+      return thunkApi.rejectWithValue(err?.response?.data || err.message);
+    }
+  }
+);
+
+const getProtectedProfileCollections = createAsyncThunk(
+  "collection/getProtectedProfileCollections",
+  async (params, thunkApi) => {
+    try {
+      const data = await collectionRepo.getProtectedProfileCollections({
+        id: params.profileId,
+        skip: params.skip,
+        take: params.take,
+      });
+
+      return {
+        collections: data.collections,
+        totalCount: data.totalCount,
+      };
+    } catch (err) {
+      return thunkApi.rejectWithValue(err?.response?.data || err.message);
+    }
+  }
+);
 
 
 const getProtectCollectionStories = createAsyncThunk("collection/getProtectCollectionStories",async(
