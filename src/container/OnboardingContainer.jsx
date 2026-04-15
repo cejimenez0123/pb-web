@@ -881,7 +881,7 @@ export default function OnboardingContainer() {
 
     return (
       <StepTransition step="tab1">
-        <div className="p-4 space-y-4 bg-cream min-h-screen">
+        <div className="p-4 flex-col space-y-4 bg-cream min-h-screen">
 
           <img src={logo} className="w-20 mx-auto mb-4" />
 
@@ -937,7 +937,7 @@ export default function OnboardingContainer() {
 
     return (
       <StepTransition step="tab2">
-        <div className="p-4 space-y-6 bg-cream">
+        <div className="p-4f flex-col space-y-6 bg-cream">
 
           {/* QUESTION ABOVE INPUT ALWAYS */}
           <div className={card}>
@@ -1003,7 +1003,7 @@ export default function OnboardingContainer() {
 
     return (
       <StepTransition step="tab3">
-        <div className="p-4 space-y-4 bg-cream">
+        <div className="p-4 flex-col space-y-4 bg-cream">
 
           <div className={card}>
             <label className={question}>Genres</label>
@@ -1093,8 +1093,8 @@ export default function OnboardingContainer() {
 ========================= */
 
   return (
-    <IonContent style={{ "--background": "#f4f4e0" }} fullscreen>
-      <div className="max-w-xl mx-auto pt-6 pb-10">
+    <IonContent style={{ "--background": "#f4f4e0" ,"--padding-bottom":"10em"}} fullscreen>
+      <div className="max-w-xl mx-auto pt-6 pb-20">
 
         {activeTab === "tab1" && <Step1 />}
         {activeTab === "tab2" && <Step2 />}
