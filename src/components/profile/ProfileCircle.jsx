@@ -3,9 +3,31 @@ import Paths from "../../core/paths";
 import Enviroment from "../../core/Enviroment";
 import {  sendGAEvent } from "../../core/ga4";
 import { IonText, useIonRouter } from "@ionic/react";
+import { useEffect, useState } from "react";
 function ProfileCircle({profile, color="white", fontSize="", includeUsername=true, isGrid=false}) {
   const router = useIonRouter()
+    const [pictureUrl,setPictureUrl]=useState(Enviroment.blankProfile)
+  async function fetchImage() {
+            if(!profile?.profilePic)return null
+            if(isValidUrl(profile?.profilePic)){
+                setPictureUrl(profile?.profilePic)
+         
+            }else{
+             const src = Enviroment.imageProxy(profile.profilePic)
 
+                    setPictureUrl(src)
+            }
+              
+            }
+        useEffect(() => {
+    let isMounted = true;
+ 
+    
+
+
+    fetchImage();
+    return () => (isMounted = false);
+  }, [profile]);
   const handleNavigate = () => {
     sendGAEvent(
       "Navigate",
@@ -26,9 +48,7 @@ function ProfileCircle({profile, color="white", fontSize="", includeUsername=tru
   }
 
   // ✅ compute once, no state, no effect
-  const profilePic = isValidUrl(profile.profilePic)
-    ? profile.profilePic
-    : Enviroment.imageProxy(profile.profilePic)
+  // const profilePic = resolveSrc(profile.profilePic)
 
   return (
     <span className="flex flex-row bg-transparent">
@@ -38,7 +58,7 @@ function ProfileCircle({profile, color="white", fontSize="", includeUsername=tru
           className="overflow-hidden bg-emerald-700 rounded-full max-w-8 min-w-8 min-h-8 max-h-8 border-2 border-white"
         >
           <img
-            src={profilePic}
+            src={pictureUrl}
             className="object-cover w-full h-full"
             alt="profile"
           />

@@ -120,8 +120,8 @@ function LogInCard({setLogInError}){
                   
                     if(payload && payload.profile && payload.profile.id){
 
-                   
-                    router.push(Paths.home,"forward","replace")
+                  
+                    router.push(Paths.home)
                      }else{
                         setError("Error with Profile")
                      }
@@ -144,8 +144,8 @@ const dispatchLogin = ({ email, googleId, idToken, name }) => {
             dispatch(logIn({email,idToken:idToken,isNative})).then(res=>{
                 checkResult(res,async payload=>{
                   //  router.push(Paths.home)
-           
-    router.push(Paths.home,"forward","replace")
+           console.log("idTOken")
+    router.push(Paths.home,"forward")
                     setPending(false)
                 },err=>{
 
@@ -157,10 +157,11 @@ const dispatchLogin = ({ email, googleId, idToken, name }) => {
             })   
         }else if(googleId){
 
-        
+           console.log("goog")
         dispatch(logIn({email,uId:googleId,isNative})).then(res=>{
             checkResult(res,payload=>{
-    router.push(Paths.home,"forward","replace")
+              console.log("googleid")
+    router.push(Paths.home,"forward")
                 setPending(false)
             },err=>{
                handleAuthError(err)

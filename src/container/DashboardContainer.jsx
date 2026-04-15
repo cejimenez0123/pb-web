@@ -78,13 +78,7 @@ const myStories = useSelector(state=>state.pages.myPages.filter(t=>t))
 useEffect(()=>{
  fetchWorkshops()
 },[])
-useEffect(()=>{
-  if(currentProfile){
-  dispatch(getMyCollections())
-  dispatch(getMyStories())
-  }
 
-},[currentProfile])
 useEffect(() => {
   try {
     if (results?.length > 1) {
@@ -219,15 +213,16 @@ const openPages=()=>{
     )})}
  
               useEffect(() => {
-                
+            
                 if (currentProfile?.profileToCollections) {
                   let home = currentProfile.profileToCollections.find(pTc => pTc.type === "home")?.collection || null;
+                     console.log("HOME COL",home)
                   setHomeCol(home);
-            
+                
                   let archive = currentProfile.profileToCollections.find(pTc => pTc.type === "archive")?.collection || null;
                   setArchiveCol(archive);
                 }
-            console.log("HOME COL",homeCol)
+     
               }, [currentProfile]);
   const fetchWorkshops = async () => {
     if (!currentProfile) return;
@@ -349,7 +344,7 @@ scrollY: false,
 <SectionHeader title={"Saves"}/>
            
 
-              <img src={arrowToRight} onClick={()=>homeCol && router.push(Paths.collection.createRoute(homeCol.id))}className='max-w-8 mt-auto mb-4 max-h-8 mx-4' />
+              <img src={arrowToRight} onClick={()=>homeCol && router.push(Paths.collection.createRoute(homeCol?.id))}className='max-w-8 mt-auto mb-4 max-h-8 mx-4' />
               </div>
               <div className='flex mx-4 flex-col gap-4'>
                {saves.length==0?<div><h2>Bookmark things you want to see often</h2></div>:saves.map(item=>{ 

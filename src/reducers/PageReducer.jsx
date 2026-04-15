@@ -15,6 +15,7 @@ import {
           getPublicStories,
           setPagesInView,
           setPageType,
+          appendToMyStories,
        
         } from "../actions/PageActions.jsx"
         
@@ -54,6 +55,15 @@ const pageSlice = createSlice({
         state.pagesInView=[]
         state.storyToCollectionList = []
       }
+    }).addCase(appendToMyStories,(state,{payload})=>{
+if (action.meta.arg?.skip === 0) {
+  state.myPages = payload.pages
+} else {
+  state.myPages = [
+    ...state.myPages,
+    ...payload.pages
+  ];
+}
     }).addCase(fetchRecommendedStories.fulfilled,(state,{payload})=>{
      state.loading=false
       state.recommendedStories = payload.stories
@@ -101,6 +111,7 @@ const pageSlice = createSlice({
           state.pageInView = payload.story
         
         }).addCase(getMyStories.fulfilled,(state,{payload})=>{
+          console.log("PAGE MY ",payload)
           if(payload.pageList){
             state.myPages =    payload.pageList
           }

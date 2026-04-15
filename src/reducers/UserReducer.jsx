@@ -108,12 +108,12 @@ state.notifications = payload
 
         state.currentProfile = payload.profile
     }).addCase(logIn.fulfilled, (state, { payload }) => {
-        console.log("LOGIN SUCCESS")
-        if(payload&&payload.profile){
-            state.currentProfile = payload.profile
+        
+        // if(payload&&payload.profile){
+            state.currentProfile = payload?.profile
              state.loading = false
         state.signedIn = true
-            }
+            // }
 
        
        
@@ -148,18 +148,11 @@ state.notifications = payload
     }).addCase(getCurrentProfile.pending,(state,data)=>{
 
         
-    }).addCase(getCurrentProfile.fulfilled,(state, data) => {
-
-    try{
-    state.currentProfile = data.payload.profile
-       state.loading = false
-    }catch(err){
-        console.log(
-        
-            "getCurrentProfile",err
-        )
-    }
-    })
+    }).addCase(getCurrentProfile.fulfilled, (state, action) => {
+        console.log("GET CURRENT PROFILE FULFILLED",action.payload)
+  state.currentProfile = action?.payload?.profile
+  state.loading = false;
+})
  
     .addCase(fetchProfile.pending,(state)=>{
         // state.loading=true

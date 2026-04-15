@@ -4,7 +4,7 @@ import '../styles/Discovery.css';
 import '../Dashboard.css';
 import ErrorBoundary from '../ErrorBoundary.jsx';
 import { getPublicStories, setPagesInView } from '../actions/PageActions.jsx';
-import { getPublicCollections, setCollections } from '../actions/CollectionActions.js';
+import { getMyCollections, getPublicCollections, setCollections } from '../actions/CollectionActions.js';
 import { AnimatePresence, motion } from "framer-motion";
 import {  sendGAEvent} from '../core/ga4.js';
 import Context from '../context.jsx';
@@ -16,12 +16,17 @@ import Enviroment from '../core/Enviroment.js';
 import useProfileDependentEffects from '../core/useProfileDependentEffects.jsx';
 import HomeEmbed from './HomeContainer.jsx';
 import DashboardEmbed from './DashboardContainer.jsx';
+import { getCurrentProfile } from '../actions/UserActions.jsx';
+import { getMyStories } from '../actions/StoryActions.jsx';
 
 function ContentHubContainer() {
   const { seo,setSeo } = useContext(Context);
   const  currentProfile = useSelector(state=>state.users.currentProfile)
+  // const dispatch = useDispatch();
+    const dispatch = useDispatch();
+  const router = useIonRouter();
 
-  const dispatch = useDispatch();
+
     const [tab, setTab] = useState("dash");
   const cols = useSelector(state => state.books.collections);
   const [isGlobal,setIsGlobal]=useState(true)
@@ -79,11 +84,12 @@ function ContentHubContainer() {
 
 
 
- 
-  useIonViewWillEnter(()=>{
-    fetchContentItems()
-  })
- 
+
+  useEffect(() => {
+    fetchContentItems();
+  },[]);
+
+
   const fetchContentItems = () => {
     dispatch(setPagesInView({ pages: [] }));
     dispatch(setCollections({ collections: [] }));

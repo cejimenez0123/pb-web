@@ -423,24 +423,24 @@ const handleChange = (key, value) => {
     [key]: value,
   }));
 };
-  useEffect(() => {
-  // If profile already exists, do nothing
-  if (currentProfile?.id) return;
+//   useEffect(() => {
+//   // If profile already exists, do nothing
+//   if (currentProfile?.id) return;
 
-  // Otherwise fetch it
-  dispatch(getCurrentProfile()).then((res) =>
-    checkResult(
-      res,
-      (payload) => {
+//   // Otherwise fetch it
+//   dispatch(getCurrentProfile()).then((res) =>
+//     checkResult(
+//       res,
+//       (payload) => {
        
-        saveStory(parameters); 
-      },
-      (err) => {
-        setError(err.message);
-      }
-    )
-  );
-}, [currentProfile?.id]);
+//         saveStory(parameters); 
+//       },
+//       (err) => {
+//         setError(err.message);
+//       }
+//     )
+//   );
+// }, [currentProfile?.id]);
 const handlePostPublic=(desc)=>{
   const finalId = effectiveId;
 
@@ -646,7 +646,7 @@ const STATUS_OPTIONS = [
           transition={{ type: "spring", stiffness: 300, damping: 30 }}
           className="overflow-hidden w-full"
         >
-          <HashtagForm item={editPage} type="story" />
+          <HashtagForm item={pageInView} type="story" />
         </motion.div>
       )}
     </AnimatePresence>

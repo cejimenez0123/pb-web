@@ -51,13 +51,7 @@ export default function AddToCollectionContainer() {
 
 
   const isOwner = currentProfile && colInView && currentProfile.id === colInView.authorId;
-useEffect(() => {
-    if (currentProfile) {
-      dispatch(getMyCollections());
-      dispatch(getMyStories());
-    }
 
-  }, [currentProfile, dispatch]);
 useEffect(()=>{
       dispatch(fetchCollectionProtected({id}))
 },[id])

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo,useRef, useState } from "react";
 import { IonContent, useIonRouter } from "@ionic/react";
 import { useSelector, useDispatch } from "react-redux";
 import Context from "../context";
@@ -19,6 +19,9 @@ import PaginatedPageList from "../components/page/PaginatedPageList";
 import EmptyState from "../components/EmptyState";
 import { getMyCollections } from "../actions/CollectionActions";
 import { getMyStories } from "../actions/StoryActions";
+import PaginatedList from "../components/page/PaginatedList";
+import PaginatedItem from "../components/page/PaginatediItem";
+import checkResult from "../core/checkResult";
 const TABS = {
   POSTS: "posts",
   COLLECTIONS: "collections",
@@ -31,7 +34,23 @@ function MyProfileContainer() {
   const { setSeo  } = useContext(Context);
   const profile = useSelector((state) => state.users.currentProfile);
   const {myCollections:collectionsRaw}=useSelector(state=>state.books)
-const pagesRaw = useSelector(state => state.pages.myPages ?? []);
+  const pageSize = 20;
+  const {
+  page,
+  setPage,
+  items:storyItems,
+  loading:pageLoading,
+  totalCount:storyTotalCount,
+  totalPages,
+} = usePaginatedStories({
+  profileId: profile?.id,
+  pageSize: pageSize,
+});
+
+const pagesRaw = useSelector(state => state.pages.myPages ?? storyItems??[]);
+
+  const dispatch = useDispatch();
+
 const communities = useMemo(
   () =>
     (collectionsRaw ?? []).filter(
@@ -39,7 +58,7 @@ const communities = useMemo(
     ),
   [collectionsRaw]
 );
-  const dispatch = useDispatch();
+
   const router = useIonRouter();
 const debouncedSearch = useMemo(
   () => debounce((value) => setSearch(value), 250),
@@ -54,15 +73,9 @@ useEffect(() => {
 
   const [tab, setTab] = useState(TABS.POSTS);
   const [search, setSearch] = useState("");
-  const [following, setFollowing] = useState(null);
+  // const [following, setFollowing] = useState(null);
  
-useEffect(() => {
-    if (profile) {
-      dispatch(getMyCollections());
-      dispatch(getMyStories());
-    }
 
-  }, [profile]);
 
 
   // ── Derived
@@ -90,17 +103,6 @@ useEffect(() => {
       )
       .slice(0, 5),
   [collectionsRaw]
-);
-const pages = useMemo(
-  () =>
-    (pagesRaw ?? [])
-      .filter(Boolean)
-      .filter((page) =>
-        search
-          ? page.title?.toLowerCase().includes(search.toLowerCase())
-          : true
-      ),
-  [pagesRaw, search]
 );
 
   const sortedPages = useMemo(() => {
@@ -160,14 +162,6 @@ const StatChip = ({ value, label }) => (
   </div>
 );
 
-// ── Main Container ──────────────────────────────────
-
-  // ── Follow logic
-  // useEffect(() => {
-  //   if (!profile) return;
-  //   setFollowing(profile.following ?? false);
-  //   else setFollowing(profile.followers?.find((f) => f.followerId === profile.id) ?? null);
-  // }, [ profile]);
 
   
   useEffect(() => {
@@ -288,17 +282,27 @@ className="bg-soft rounded-full p-2"><img src={settings} /></button>
                   </section>
                 )}
 
-                {pages.length > 0 && (
+              
                   <section className="space-y-4">
                     <SectionLabel>All Posts</SectionLabel>
-                  
-                    <PaginatedPageList items={pages} router={router} />
-                  </section>
-                )}
+<PaginatedList
+  items={storyItems}
+  page={page}
+  setPage={setPage}
+  pageSize={pageSize}
+  totalCount={storyTotalCount}
+  loading={pageLoading}
+  emptyState={<EmptyState text="No posts yet." />}
+  renderItem={(page) => (
+    <PageProfileList items={[page]} router={router} />
+  )}
+/>
+         </section>     
+         </>
+            )}    
+        
 
-                {pages.length === 0 && <EmptyState text="No posts yet." />}
-              </>
-            )}
+            
 
             {tab === TABS.COLLECTIONS && (
               collections.length === 0 ? (
@@ -374,4 +378,79 @@ function EmptyProfileState() {
       </div>
     </IonContent>
   );
+}
+
+// import { useEffect, useRef, useState } from "react";
+// import { useDispatch } from "react-redux";
+// import { getMyStories } from "../actions/StoryActions";
+
+function usePaginatedStories({
+  profileId,
+  pageSize = 20,
+  prefetch = true,
+}) {
+  const dispatch = useDispatch();
+
+  const [page, setPage] = useState(1);
+  const [pageCache, setPageCache] = useState({});
+  const [totalCount, setTotalCount] = useState(0);
+  const [loading, setLoading] = useState(false);
+
+  const inFlight = useRef(new Set());
+
+  const currentItems = pageCache[page] || [];
+  const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
+
+  useEffect(() => {
+    if (!profileId) return;
+
+    const fetchPage = async (p) => {
+      const skip = (p - 1) * pageSize;
+
+      // 🧠 prevent duplicate requests
+      if (pageCache[p] || inFlight.current.has(p)) return;
+
+      inFlight.current.add(p);
+      setLoading(true);
+
+      try {
+        const res = await dispatch(
+          getMyStories({ skip, take: pageSize })
+        ).unwrap();
+
+        setPageCache((prev) => ({
+          ...prev,
+          [p]: res.pageList,
+        }));
+
+        setTotalCount(res.totalCount);
+      } catch (err) {
+        console.error("pagination error", err);
+      }
+
+      inFlight.current.delete(p);
+      setLoading(false);
+    };
+
+    // 1. fetch current page
+    fetchPage(page);
+
+    // 2. prefetch next pages
+    if (prefetch) {
+      [page + 1, page + 2].forEach((p) => {
+        if (p > totalPages) return;
+
+        fetchPage(p);
+      });
+    }
+  }, [page, profileId]);
+
+  return {
+    page,
+    setPage,
+    items: currentItems,
+    loading,
+    totalCount,
+    totalPages,
+  };
 }

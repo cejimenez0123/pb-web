@@ -1,4 +1,6 @@
+import truncate from "html-truncate";
 import Paths from "../core/paths";
+import { PageType } from "../core/constants";
 export default function StoryDashboardItem({ story, router }) {
   return (
     <div
@@ -30,7 +32,14 @@ export default function StoryDashboardItem({ story, router }) {
         ">
           {story.title?.length > 0 ? story.title : "Untitled"}
         </h4>
-
+        <h5 className="
+          text-sm
+          text-text-soft
+          opacity-80
+          line-clamp-3
+        ">
+       {story.type == PageType.text? story.description.length>0 ? <div dangerouslySetInnerHTML={truncate(story?.data,50,{})}/> : null:null}
+        </h5>
         <h6 className="
           text-xs
           text-text-soft

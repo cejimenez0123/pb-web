@@ -60,19 +60,6 @@ const [pendingStories, setPendingStories] = useState(true);
       });
   }, [rawCollections, item, search]);
 
-  // Load collections & stories
- useEffect(() => {
-  if (currentProfile) {
-    setPendingStories(true);
-
-    Promise.all([
-      dispatch(getMyCollections()),
-      dispatch(getMyStories()),
-    ]).finally(() => {
-      setPendingStories(false);
-    });
-  }
-}, [currentProfile, dispatch]);
 
   // Optional: load token
   useLayoutEffect(() => {

@@ -149,7 +149,7 @@ const showBottomNavbar = (isMobileOrTablet || isNative)  && import.meta.env.VITE
     
        
        <Dialog dialog={dialog} presentingElement={presentingEl} />
-       <IonLoading isOpen={loading} message="Loading..." />
+       {/* <IonLoading isOpen={loading} message="Loading..." /> */}
 <Alert />
 <div  >
     <IonRouterOutlet>   

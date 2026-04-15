@@ -142,7 +142,9 @@ const canUserSee = ((profile) => {
       });
     }
   }, [page]);
-
+  const handleRefresh =()=>{
+     window.location.reload();
+  }
   const handleBack = () => {
     sendGAEvent("story_exit_back", {
       story_id: page?.id,
@@ -194,10 +196,12 @@ const canUserSee = ((profile) => {
 {!pending && errorStatus === 403 && (<div>
   <h1 className={`${CENTER} ${SECTION} text-emerald-800`}>🚫 You don’t have permission to view this story.</h1>
      <h1 className={`${CENTER} ${SECTION}`}>Took a wrong turn</h1>
+      <button  onClick={handleRefresh} className="btn">Refresh</button>
   </div>)}
   {!pending && !errorStatus && !canUserSee && (
   <h1 className={`${CENTER} ${SECTION}`}>
     🚫 You can’t view this story
+    <button  onClick={handleRefresh} className="btn">Refresh</button>
   </h1>
 )}
 

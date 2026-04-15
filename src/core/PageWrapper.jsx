@@ -12,7 +12,8 @@ import {
   IonImg,
   IonText,
   IonButton,
-  IonList
+  IonList,
+  IonLoading
 } from '@ionic/react';
 import { useEffect, useRef, useContext, useState } from 'react';
 import Context from '../context';
@@ -30,6 +31,8 @@ import { getMyCollections } from '../actions/CollectionActions';
 import { IonContent } from '@ionic/react';
 import ReferralForm from '../components/auth/ReferralForm';
 import { setPageInView } from '../actions/PageActions';
+import checkResult from './checkResult';
+import { Preferences } from '@capacitor/preferences';
 // import { IonContext } from '@ionic/react/dist/types/contexts/IonContext';
 // spacing rules (mentally or constants)
 const SPACING = {
@@ -58,7 +61,7 @@ const PageWrapper = ({
 const isNativePlatform = Capacitor.isNativePlatform();
 
 const isNative = (isDev || isNativePlatform)
-const {currentProfile,loading,signedIn}=useSelector(state=>state.users)
+const {currentProfile}=useSelector(state=>state.users)
   const isAuthed = !!currentProfile?.id;
 const myCollections=useSelector(state=>state.books.myCollections.filter(t=>t))
 const myStories=useSelector(state=>state.pages.myPages.filter(t=>t))
@@ -68,15 +71,54 @@ const isDesktop = useMediaQuery({ query: '(min-width: 60.1em)' }) // 768px
 // const isMobileOrTablet = useMediaQuery({ query: '(max-width: 60em)' })
 const [homeCol, setHomeCol] = useState(null);
 const dispatch = useDispatch()
+const [token,setToken]=useState(null)
     const [archiveCol, setArchiveCol] = useState(null);
     const { openDialog, dialog,resetDialog } = useDialog()
+    useEffect(()=>{
+      Preferences.get({key:"token"}).then(toke=>setToken(toke.value))
+    },[])
     useEffect(() => {
-    
-    
-       dispatch(getMyCollections());
-    dispatch(getMyStories());
-    }, []);
-  
+      console.log("if token",token)
+  if (token) {
+    dispatch(getCurrentProfile()).then(res => {
+      checkResult(
+        res,
+        payload => {
+          console.log("STORIE PAYLOAD PROFILE", payload);
+        },
+        err => {
+          console.log("STORIE err PROFILE", err);
+        }
+      );
+    });
+  }
+}, [currentProfile?.id,token]);
+//     useEffect(() => {
+
+//    !currentProfile?.id && dispatch(getCurrentProfile()).then(res=>{
+//       checkResult(res,payload=>{
+//       console.log("STORIE PAYLOAD PROFILE",payload)
+//       },err=>{
+//   console.log("STORIE err PROFILE",err)
+//       })
+//     })
+
+// }, [children,currentProfile]);
+// const hasLoadedRef = useRef(false);
+
+// const hasLoadedRef = useRef(false);
+
+// const prevTokenRef = useRef(null);
+
+// useEffect(() => {
+//   if (!token || prevTokenRef.current === token) return;
+
+//   prevTokenRef.current = token;
+
+//   dispatch(getMyStories())
+//   dispatch(getMyCollections());
+
+// }, [token, dispatch]);
        useEffect(() => {
                     
                     if (currentProfile?.profileToCollections) {
@@ -88,21 +130,7 @@ const dispatch = useDispatch()
                     }
                 
       }, [currentProfile]);
- useEffect(() => {
-  const checkUser = async () => {
-  
-try{
 
-  dispatch(getCurrentProfile());
-
-}catch(err){
-console.log("APP GET CURRENT PROFILE",err)
-}
-  
-  };
-
-checkUser() 
-}, []);
   
 
   const openYourWorkshops=()=>{
@@ -385,9 +413,7 @@ if (!isOnline) {
     </IonPage>
   );
 }
-  if (!currentProfile?.id&&loading) {
-  return <IonContent />;
-}
+
   return (
     <IonPage
       ref={pageRef}

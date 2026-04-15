@@ -10,12 +10,12 @@ const getStory = createAsyncThunk("story/getStory",async ({id},thunkApi)=>{
 
     let token =(await Preferences.get({key:"token"})).value
     if(token){
-         console.log("GO")
+      
      let data = await storyRepo.getStoryProtected({id:id})
      return {story:data.story}
 
     }else{
-      console.log("STOP")
+  
           let data = await storyRepo.getStoryPublic({id:id})
         return {story:data.story}
 
@@ -70,19 +70,31 @@ try{
       return {error}
     }
   })
-const getMyStories= createAsyncThunk(
-    'pages/getMyStories',
-    async (params,thunkApi) => {
-      try{
-      let data = await storyRepo.getMyStories(params)
- 
-    return {
-      pageList:data.stories
+const getMyStories = createAsyncThunk(
+  'pages/getMyStories',
+  async (params, thunkApi) => {
+    try {
+          
+      const data = await storyRepo.getMyStories(params);
+console.log("APGEX",data)
+
+
+      return {
+        totalCount:data.totalCount,
+        hasMore:data.hasMore,
+        skip:data.skip,
+        take:data.take,
+        pageList: data.stories,
+      };
+    } catch (e) {
+      console.log("GET MY STORIES ERROR:", e);
+
+      return thunkApi.rejectWithValue(
+        e?.response?.data || e.message
+      );
     }
-    }catch(e){
-  
-    return {error:`get my stories ${e.message}`}
-  }})
+  }
+);
 const createStory = createAsyncThunk("pages/createStory",async (params,thunkApi)=>{
   try{
 

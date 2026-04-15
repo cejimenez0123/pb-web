@@ -6,9 +6,7 @@ import { Preferences } from "@capacitor/preferences";
 
 class StoryRepo{
     headers= {
-        'Access-Control-Allow-Origin': "*",
-         "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept"
-    }
+          }
     url= Enviroment.url+"/story"
     
   async getAuthHeaders() {
@@ -44,7 +42,7 @@ class StoryRepo{
     async getProtectedProfileStories({profileId}){
         let headers = await this.getAuthHeaders()
         let res = await axios.get(this.url+"/profile/"+profileId+"/protected",{
-            headers:headers
+            headers:{...headers}
         })
   
         return res.data
@@ -60,7 +58,7 @@ class StoryRepo{
     async getStoryProtected({id}){
          let headers = await this.getAuthHeaders()
         let res = await axios.get(this.url+"/"+id+"/protected",{
-            headers:headers
+            headers
         })
        console.log(res)
         return res.data
@@ -70,15 +68,48 @@ class StoryRepo{
       
         return res.data
     }
-    async getMyStories(){
-         let headers =await this.getAuthHeaders()
-   
-        let res = await axios.get(this.url+"/profile/protected/",{
-            headers:headers
-        })
-     
-        return res.data
-    }
+// async getMyStories() {
+//   try {
+//     const headers = await this.getAuthHeaders();
+//     console.log(headers)
+// console.log("GETMYHEADER",headers)
+//     const res = await axios.get(
+//       this.url + "/profile/protected",
+//       { headers:{
+//         ...headers
+//       } }
+//     );
+// console.log("GET MY STORIES",res)
+//     return res.data;
+//   } catch (e) {
+//     console.error("getMyStories failed:", e);
+//     throw e; // IMPORTANT so thunk rejects properly
+//   }
+// }
+     async getMyStories({ skip = 0, take = 50 } = {}) {
+  try {
+    const headers = await this.getAuthHeaders();
+
+    console.log("GETMYHEADER", headers);
+    console.log("PAGINATION PARAMS", { skip, take });
+
+    const res = await axios.get(
+      this.url + "/profile/protected",
+      {
+        headers,
+        params: { skip, take }, // 🔥 THIS is the key
+      }
+    );
+
+    console.log("GET MY STORIES", res);
+
+    return res.data;
+  } catch (e) {
+    console.error("getMyStories failed:", e);
+    throw e;
+  }
+}
+    
     async getPublicProfileStories({profileId}){
         let res = await axios.get(this.url+"/profile/"+profileId+"/public")
         return res.data

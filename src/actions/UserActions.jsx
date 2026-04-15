@@ -182,17 +182,21 @@ const updateSubscription= createAsyncThunk("users/updateSubscription", async (pa
 
   return data
 })
-const getCurrentProfile = createAsyncThunk('users/getCurrentProfile',
-async (params,thunkApi) => {
-  try{
-    const {profile}= await profileRepo.getMyProfiles()
-    
-   return {profile}
- 
-    }catch(error){    
-      console.log(error) 
-      return {error}
-    }});
+const getCurrentProfile = createAsyncThunk(
+  'users/getCurrentProfile',
+  async (params, thunkApi) => {
+    try {
+      const data = await profileRepo.getMyProfiles();
+      console.log("GET CURRENT", data);
+      return data; // ✅ return clean payload
+    } catch (error) {
+      console.log(error);
+      return thunkApi.rejectWithValue(
+        error?.response?.data || error.message
+      );
+    }
+  }
+);
 
 const updateProfile = createAsyncThunk("users/updateProfile",
                     async (params,thunkApi)=>{

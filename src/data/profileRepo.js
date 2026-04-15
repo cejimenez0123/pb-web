@@ -9,39 +9,49 @@ class ProfileRepo {
         return res.data
     }
      headers= {
-        'Access-Control-Allow-Origin': "*"
+        
     }
-    async getAuthHeaders() {
+
+token = null;
+
+async getAuthHeaders() {
+  if (!this.token) {
     const { value } = await Preferences.get({ key: "token" });
-
     if (!value) throw new Error("No token found");
-  
-    return {
-      ...this.headers,
-      Authorization: `Bearer ${value}`,
-    };
+    this.token = value;
   }
-    async getMyProfiles(){
-        const headers = await this.getAuthHeaders()
 
-  try{
-       const res = await axios.get(this.url+"/protected",{headers})
-      
-      return res.data
-    }catch(e){
-        console.log("GET PROP",e)
-        return e
-    }
-    }
+  return {
+    Authorization: `Bearer ${this.token}`,
+  };
+}
+
+async getMyProfiles() {
+  const headers = await this.getAuthHeaders();
+console.log("HEADERS GETCURRENTPROFILE",headers)
+  try {
+    const res = await axios.get(this.url + "/protected", { headers });
+    console.log("GETCURRENTPROFILE",res)
+    
+    return res.data;
+  } catch (e) {
+  console.log("ERROR", e);
+  throw e;
+}
+}
     async create({email,token,password,username,profilePicture,selfStatement,privacy}){
         let headers = await this.getAuthHeaders()
-
-        let res = await axios.post(this.url,
+try{     
+       let res = await axios.post(this.url,
         {email,token,password,username,profilePicture,selfStatement,privacy},{
-            headers:headers
+            headers
         })
 
         return res.data
+    }catch (e) {
+  console.log("ERROR", e);
+  throw e;
+}
     }
     async notifications({token,profile}){
     let headers = await this.getAuthHeaders()
@@ -86,13 +96,22 @@ class ProfileRepo {
     
         return res.data
     }
-    async getProfileBookmarkCollection({profileId}){
-        let res = await axios.get(this.url+"/"+id+"/collection")
-        return res.data
-    }
+  async getProfileBookmarkCollection({ profileId }) {
+  let res = await axios.get(this.url + "/" + profileId + "/collection");
+  return res.data;
+}
     async createBookmark({profile,collection}){
-        let res = await axios.post(this.url+"/"+profile.id+"/collection/"+collection.id)
-        return res.data
+             const headers = await this.getAuthHeaders();
+
+let res = await axios.post(
+  this.url + "/" + profile.id + "/collection/" + collection.id,
+  {},
+  { headers })
+ return res.data
+    // }
+
+        // let res = await axios.post(this.url+"/"+profile.id+"/collection/"+collection.id)
+        // return res.data
     }
 }
 
