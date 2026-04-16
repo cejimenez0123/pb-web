@@ -79,7 +79,7 @@ const [search, setSearch] = useState("");
   // const { id } = useParams();
 
   const [tab, setTab] = useState(TABS.POSTS);
-  // const [search, setSearch] = useState("");
+
 
 const recentCollections = useMemo(
   () =>

@@ -312,13 +312,9 @@ useEffect(() => {
       {(communities?.length ?? 0) > 0 && (
               <div className="space-y-2">
                 <p className="text-xs text-gray-400 uppercase">Communities</p>
-                <div className="flex flex-wrap gap-2 ">
-            {communities.slice(0, 3).map((c) => <div >
-                    <Pill
-                   key={c.id} 
-                  baseClass="border-blue bg-base-bg"
-                  onClick={()=>router.push(Paths.collection.createRoute(c.id),"forward")}
-                  label={c.title} /></div>)}
+                <div className="flex space-1 flex-wrap gap-2 ">
+            {communities.slice(0, 3).map((c,i) => <div >
+                  <Pill key={i} label={c.title} onClick={()=>router.push(Paths.collection.createRoute(c.id))}/></div>)}
                 </div>
               </div>
             )}

@@ -153,9 +153,9 @@ return<IonContent style={{ "--background": Enviroment.palette.base.background }}
   </motion.div>
 </HorizontalScroll>
 </div>
-    {/* </HorizontalScroll> */}
+    
 </div>
-    {/* Collections */}
+  
     <div className={SECTION}>
  <div className='px-4 max-w-[50em] mx-auto'>
     <SectionHeader title="Collections" />

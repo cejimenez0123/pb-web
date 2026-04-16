@@ -21,11 +21,11 @@ export function HashtagForm({item,type="story"}){
 
 
     const handleInputChange = (e) => {
-      setInputValue(e.target.value);
+      setInputValue(e.target.value.trim());
     };
 
 const fetchHashtags=(item)=>{
-  // if(item){
+
         if(!isStory){
           dispatch(fetchCollectionHashtags({profile:currentProfile,colId:item.id})).then(res=>{
                 checkResult(res,payload=>{

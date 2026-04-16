@@ -188,7 +188,7 @@ const showBottomNavbar = (isMobileOrTablet || isNative)  && import.meta.env.VITE
 
 
    
-      <Route path={Paths.onboard} render={()=><PageWrapper showBackbutton={false} presentHeader={false}><OnboardingContainer/></PageWrapper>}/>
+      <Route path={Paths.onboard} render={()=><PageWrapper showBackbutton={false} showHeader={false} presentHeader={false}><OnboardingContainer/></PageWrapper>}/>
 
 
             <Route exact path={Paths.notifications()}
