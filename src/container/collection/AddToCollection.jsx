@@ -293,6 +293,8 @@ if (!canSee) {
           <div className="bg-cream rounded-2xl p-3 pb-24 shadow-sm">
             <StoryCollectionTabs tab={tab} setTab={setTab} storyList={()=>
                <PaginatedList
+                 cacheKey="stories"
+                    key={"getMyStories"}
                           fetcher={getMyStories}
                           pageSize={8}
                           renderItem={(story) => {
@@ -301,7 +303,7 @@ if (!canSee) {
           if (col?.id === colInView.id) return null;})
                const added =
             newCollections.some((c) => c.id === story.id) ||
-            colInView?.storyIdList?.some((j) => j.storyId=== story.id);
+            colInView?.storyIdList?.some((j) => j.storyId === story.id);
 //        
           return (
             <div
@@ -330,6 +332,8 @@ if (!canSee) {
                    
             colList={()=> (
       <PaginatedList
+       cacheKey="collections"
+    key={"getMyCollections"}
         fetcher={getMyCollections}
         pageSize={8}
         params={{ type: "library" }} // ✅ THIS NOW WORKS

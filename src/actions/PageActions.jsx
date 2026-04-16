@@ -199,6 +199,32 @@ return err
 }}
 
 )
+
+const setCurrentPage = createAction(
+  "pages/setCurrentPage",
+  function prepare({ key, page }) {
+    return {
+      payload: { key, page },
+    };
+  }
+);
+
+
+const setPaginationLoading = createAction("pagination/setLoading");
+ const initKey = createAction("pagination/initKey");
+const setPageData = createAction(
+  "pagination/setPageData",
+  function prepare({ key, page, items, totalCount }) {
+    return {
+      payload: {
+        key,
+        page,
+        items,
+        totalCount,
+      },
+    };
+  }
+);
 const deleteComment = createAsyncThunk("pages/deleteComment",async (params,thunkApi)=>{
   const { comment}= params
 
@@ -259,6 +285,31 @@ try{
     }
   })
 
+ const fetchPage = createAsyncThunk(
+  "pages/fetchPage",
+  async ({ key, fetcher, page, pageSize, params, select }, thunkApi) => {
+    try {
+      const res = await thunkApi.dispatch(
+        fetcher({
+          skip: (page - 1) * pageSize,
+          take: pageSize,
+          ...params,
+        })
+      ).unwrap();
+
+      const parsed = select ? select(res) : res;
+
+      return {
+        key,
+        page,
+        items: parsed.items,
+        totalCount: parsed.totalCount,
+      };
+    } catch (err) {
+      return thunkApi.rejectWithValue(err);
+    }
+  }
+);
   export {
           pagesLoading,
           setHtmlContent,
@@ -285,5 +336,11 @@ try{
           getPublicStories,
          appendToPagesInView,
          setComments,
-         appendToMyStories
+         appendToMyStories,
+         setPaginationLoading,
+        //  setCurrentPage,
+   fetchPage,
+       setPageData,
+         setCurrentPage,
+         initKey
         } 

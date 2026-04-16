@@ -392,6 +392,8 @@ useEffect(() => {
                   <section className="space-y-4">
                     <SectionLabel>All Posts</SectionLabel>
                     <PaginatedList
+                      cacheKey="stories"
+                        key={"getPublicProfilePages"}
   fetcher={getPublicProfilePages}
   params={{ profileId: id  }}   // 👈 consistent with collections
   pageSize={8}
@@ -418,6 +420,8 @@ useEffect(() => {
             {tab === TABS.COLLECTIONS && (
               <div className='pt-8'>   
                    <PaginatedList
+
+                    cacheKey="collections"
   fetcher={getPublicProfileCollections}
   params={{ profileId: id  }}
   pageSize={8}

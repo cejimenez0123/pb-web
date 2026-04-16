@@ -139,10 +139,12 @@ const openPages = () => {
   title: "Pages",
   height: 94,
   text: (
-    <PaginatedList
-      fetcher={getMyStories}
-      pageSize={8}
-      renderItem={(story) => (
+   <PaginatedList
+   
+  cacheKey="stories"
+  fetcher={getMyStories}
+  pageSize={8}
+  renderItem={(story) => (
         <div
           onClick={() => {
             router.push(Paths.page.createRoute(story.id));
@@ -162,6 +164,7 @@ const openPages = () => {
   height: 94,
   text: (
     <PaginatedList
+      cacheKey="collections"
       fetcher={getMyCollections}
       pageSize={8}
       loadingState={true}
@@ -191,6 +194,7 @@ const openCommunities = () => {
     disagree: () => resetDialog(),
     text: (
       <PaginatedList
+       cacheKey="collections:type=library"
         fetcher={getMyCollections}
         pageSize={8}
         params={{ type: "library" }} // ✅ THIS NOW WORKS

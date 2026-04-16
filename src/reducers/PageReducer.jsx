@@ -5,7 +5,8 @@ import {
           getPublicProfilePages,
           appendToPagesInView,
           setPageInView,
-        
+        setPageData,
+        setCurrentPage,
           setPagesToBeAdded,
           clearPagesInView,
   
@@ -27,6 +28,12 @@ import { PageType } from "../core/constants.js"
 
 const initialState = {pagesInView:[],
   myPages:[],
+    pagination: {
+    skip: 0,
+    take: 20,
+    totalCount: 0,
+    hasMore: false,
+  },
   pageType:PageType.text,
                       storyToCollectionList:[],
                       recommendedStories:[],
@@ -110,22 +117,54 @@ if (action.meta.arg?.skip === 0) {
           state.loading = false
           state.pageInView = payload.story
         
-        }).addCase(getMyStories.fulfilled,(state,{payload})=>{
-          console.log("PAGE MY ",payload)
-          if(payload.pageList){
-            state.myPages =    payload.pageList
-          }
+        })
+        // .addCase(getMyStories.fulfilled,(state,{payload})=>{
+        //   console.log("PAGE MY ",payload)
+        //   if(payload.pageList){
+        //     state.myPages =    payload.pageList
+        //   }
      
-          state.loading=false
-        }).addCase(getMyStories.pending,(state)=>{
-          state.loading=true
-        }).addCase(getMyStories.rejected,(state,{payload})=>{
-          if(payload&&payload.error){
-            state.error= payload.error
+        //   state.loading=false
+        // }).addCase(getMyStories.pending,(state)=>{
+        //   state.loading=true
+        // }).addCase(getMyStories.rejected,(state,{payload})=>{
+        //   if(payload&&payload.error){
+        //     state.error= payload.error
        
-          }
-          state.loading = false
-        }).addCase(getPublicStories.fulfilled,(state,{payload})=>{
+        //   }
+        //   state.loading = false
+        // })
+            .addCase(getMyStories.pending, (state) => {
+        state.loading = true;
+      })
+
+      .addCase(getMyStories.fulfilled, (state, action) => {
+        const { pageList, totalCount, hasMore, skip, take } = action.payload;
+
+        state.loading = false;
+
+        // 🔥 IMPORTANT: pagination merge logic
+        if (skip === 0) {
+          // first page → reset
+          state.myPages = pageList;
+        } else {
+          // next pages → append
+          state.myPages = [...state.myPages, ...pageList];
+        }
+
+        state.pagination = {
+          skip,
+          take,
+          totalCount,
+          hasMore,
+        };
+      })
+
+      .addCase(getMyStories.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+        .addCase(getPublicStories.fulfilled,(state,{payload})=>{
           if(payload.stories){
             state.pagesInView = payload.stories
           }
@@ -202,3 +241,37 @@ if (action.meta.arg?.skip === 0) {
   })
     
 export {pageSlice}
+
+
+// import { createSlice } from "@reduxjs/toolkit";
+// import { getMyStories } from "./storyThunks";
+
+// const initialState = {
+//   myPages: [],
+//   pagination: {
+//     skip: 0,
+//     take: 20,
+//     totalCount: 0,
+//     hasMore: false,
+//   },
+//   loading: false,
+//   error: null,
+// };
+
+// const storySlice = createSlice({
+//   name: "pages",
+//   initialState,
+//   reducers: {
+//     clearStories: (state) => {
+//       state.myPages = [];
+//       state.pagination = initialState.pagination;
+//     },
+//   },
+//   extraReducers: (builder) => {
+//     builder
+  
+//   },
+// });
+
+// export const { clearStories } = storySlice.actions;
+// export default storySlice.reducer;

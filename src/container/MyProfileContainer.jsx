@@ -37,7 +37,7 @@ function MyProfileContainer() {
 const stories = usePaginatedResource({
   key: "stories",
   fetcher: getMyStories,
-  pageSize: pageSize,
+  pageSize,
   enabled: !!profile?.id,
   select: (res) => ({
     items: res.pageList,
@@ -277,9 +277,10 @@ console.log("COLEX",collections)
                   <section className="space-y-4">
                     <SectionLabel>All Posts</SectionLabel>
                       <PaginatedList
-                          fetcher={getMyStories}
-                          pageSize={8}
-                          renderItem={(p) => (
+  cacheKey="stories"
+  fetcher={getMyStories}
+  pageSize={8}
+  renderItem={(p) => (
                             <div
         key={p.id}
         onClick={() => router.push(Paths.page.createRoute(p.id))}
@@ -312,9 +313,24 @@ console.log("COLEX",collections)
     )}
 
     <SectionLabel>All Collections</SectionLabel>
-
+{/* <PaginatedList
+  cacheKey="collections"
+  fetcher={getMyCollections}
+  pageSize={8}
+  renderItem={(col) => (
+    <div
+      onClick={() => router.push(Paths.collection.createRoute(col.id))}
+      className="p-4 border rounded-xl"
+    >
+      {col.title}
+    </div>
+  )}
+/> */}
        <PaginatedList
-         fetcher={getMyCollections}
+        cacheKey="collections"
+         key={"getMyCollections"}
+          // cacheKey="collections"
+  fetcher={getMyCollections}
          pageSize={8}
          params={{ type: "book" }} // ✅ THIS NOW WORKS
          renderItem={(i) => (
