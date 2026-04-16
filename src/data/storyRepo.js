@@ -107,7 +107,7 @@ class StoryRepo{
 //     throw e; // IMPORTANT so thunk rejects properly
 //   }
 // }
-     async getMyStories({ skip = 0, take = 50 } = {}) {
+     async getMyStories({ skip = 0, take = 50 ,search=""} = {}) {
   try {
     const headers = await this.getAuthHeaders();
 
@@ -118,7 +118,7 @@ class StoryRepo{
       this.url + "/profile/protected",
       {
         headers,
-        params: { skip, take }, // 🔥 THIS is the key
+        params: { skip, take,search}, // 🔥 THIS is the key
       }
     );
 

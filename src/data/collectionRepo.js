@@ -27,12 +27,13 @@ import { Preferences } from "@capacitor/preferences";
         let res = await axios.get(this.url+"/public/library",this.headers)
         return res.data
     }
-    async getMyCollections({ skip = 0, take = 20, type } = {}) {
+    async getMyCollections({ skip = 0, take = 20, type,search="" } = {}) {
   const headers = await this.getAuthHeaders();
 
   const res = await axios.get(this.url + "/profile/protected", {
     headers,
     params: {
+      search,
       skip,
       take,
       type, // 👈 add this

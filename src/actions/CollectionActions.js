@@ -248,7 +248,7 @@ const getMyCollections = createAsyncThunk(
   "collections/getMyCollections",
   async (params, thunkApi) => {
     try {
-        console.log("PARMCOL",params)
+        
       const data = await collectionRepo.getMyCollections(params);
 
       return {

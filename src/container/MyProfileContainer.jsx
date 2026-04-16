@@ -68,19 +68,18 @@ const communities = useMemo(
 );
 
   const router = useIonRouter();
-const debouncedSearch = useMemo(
-  () => debounce((value) => setSearch(value), 250),
-  []
-);
+const [searchInput, setSearchInput] = useState("");
+const [search, setSearch] = useState("");
 
-useEffect(() => {
-  return () => debouncedSearch.cancel?.();
-}, [debouncedSearch]);
+
+
+
+
  
   // const { id } = useParams();
 
   const [tab, setTab] = useState(TABS.POSTS);
-  const [search, setSearch] = useState("");
+  // const [search, setSearch] = useState("");
 
 const recentCollections = useMemo(
   () =>
@@ -240,9 +239,14 @@ console.log("COLEX",collections)
 
     <div className="max-w-xl mx-auto">
                     <div className="w-full">
-    <input
-      value={search}
-      onChange={(e) => debouncedSearch(e.target.value)}
+ 
+<input
+  value={searchInput}
+  onChange={(e) => {
+    const val = e.target.value;
+    setSearchInput(val);
+    setSearch(val); // immediate or controlled elsewhere
+  }}
       placeholder="Search"
       className="
   
@@ -275,9 +279,11 @@ console.log("COLEX",collections)
 
               
                   <section className="space-y-4">
-                    <SectionLabel>All Posts</SectionLabel>
+                    <SectionLabel>All Pages</SectionLabel>
                       <PaginatedList
-  cacheKey="stories"
+   ccacheKey="stories"
+params={{ search }}
+search={search}
   fetcher={getMyStories}
   pageSize={8}
   renderItem={(p) => (
@@ -313,26 +319,15 @@ console.log("COLEX",collections)
     )}
 
     <SectionLabel>All Collections</SectionLabel>
-{/* <PaginatedList
-  cacheKey="collections"
+
+       <PaginatedList
+      cacheKey="collections"
+  params={{ type: "book", search }}
   fetcher={getMyCollections}
   pageSize={8}
-  renderItem={(col) => (
-    <div
-      onClick={() => router.push(Paths.collection.createRoute(col.id))}
-      className="p-4 border rounded-xl"
-    >
-      {col.title}
-    </div>
-  )}
-/> */}
-       <PaginatedList
-        cacheKey="collections"
-         key={"getMyCollections"}
-          // cacheKey="collections"
-  fetcher={getMyCollections}
-         pageSize={8}
-         params={{ type: "book" }} // ✅ THIS NOW WORKS
+  search={search}
+
+    
          renderItem={(i) => (
             <div
         key={i.id}
@@ -345,8 +340,7 @@ console.log("COLEX",collections)
       </div>)}
        />
   
-  {/* )} */}
-{/* /> */}
+  
   </>
 )
             
