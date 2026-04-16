@@ -60,7 +60,7 @@ useEffect(()=>{
       </div>
       <ul
         tabIndex={0}
-        className="dropdown-content menu bg-white rounded-box shadow-lg z-[10] p-2"
+        className="dropdown-content menu bg-base-surface rounded-box shadow-lg z-[10] p-2"
         style={{ minWidth: "12rem" }}
       >
         <li

@@ -664,7 +664,7 @@ const STATUS_OPTIONS = [
         ${
           isActive
             ? "bg-soft text-white shadow-sm"
-            : "text-gray-500"
+            : "text-soft bg-base-bg "
         }
       `}
     >

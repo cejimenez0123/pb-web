@@ -58,7 +58,6 @@ const EditCollectionContainer = () => {
      const params = useParams()
        const { id } = params;
   const [pending,setPending]=useState(true)
-  const isNative = Capacitor.isNativePlatform()
   const [isOpen, setIsOpen] = useState(false);
    const colInView = useSelector((state) => state.books.collectionInView);
  const [newPages, setNewPages] = useState([]);
@@ -74,6 +73,7 @@ const EditCollectionContainer = () => {
    const [isPrivate, setIsPrivate] = useState(true)
 
    const {canSee,canAdd,canEdit,role} = computePermissions(colInView,currentProfile, {
+    
   getAccessList: (c) => c.roles,
   getAccessRole: (r) => r.role,
   isPrivate: (c) => c.isPrivate,

@@ -394,7 +394,7 @@ if (!isOnline) {
   style={{ '--color': Enviroment.palette.text.inverse }}
 />
               </IonButtons>):(<IonButtons onClick={()=>router.push(Paths.discovery)}slot="start">
-                <p className='azkin flex-1 min-w-[4rem] px-2 text-[4em]'>Pb</p>
+                <h2 className='azkin flex-1 min-w-[4rem] px-2 pt-1 text-[1.5rem]'>Pb</h2>
               </IonButtons>)}
               {showSearchButton && (<SearchButton onClick={() => router.push("/search")} />)}
     

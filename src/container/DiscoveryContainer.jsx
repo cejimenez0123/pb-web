@@ -31,7 +31,7 @@ const SECTION = "space-y-4";
 
 const SECTION_HEADER = "px-0 sm:px-0"; // keep headers aligned with content
 
-const H_SCROLL_WRAP = "px-0 sm:px-0 -mx-4 sm:mx-0";
+const H_SCROLL_WRAP = "pl-4 sm:px-0 -mx-4 sm:mx-0";
 
 const H_SCROLL_ROW = "flex flex-row gap-4";
 function DiscoveryContainer() {
