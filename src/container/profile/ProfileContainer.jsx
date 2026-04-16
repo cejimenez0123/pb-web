@@ -45,7 +45,7 @@ import AboutPanel from '../../components/profile/AboutPanel';
 import PaginatedList from '../../components/page/PaginatedList';
 import usePaginatedResource from '../../core/usePaginatedResource';
 const TABS = {
-  POSTS: "posts",
+  POSTS: "pages",
   COLLECTIONS: "collections",
   COMMUNITIES: "communities",
   ABOUT: "about",
@@ -230,7 +230,7 @@ setFollowingCount(profile["_count"]?.following)
     });
   }, [profile, setSeo]);
 const tabs = [
-  { key: TABS.POSTS, label: "Posts" },
+  { key: TABS.POSTS, label: "Pages" },
   { key: TABS.COLLECTIONS, label: "Collections" },
   { key: TABS.COMMUNITIES, label: "Communities" },
   { key: TABS.ABOUT, label: "About" },

@@ -423,24 +423,7 @@ const handleChange = (key, value) => {
     [key]: value,
   }));
 };
-//   useEffect(() => {
-//   // If profile already exists, do nothing
-//   if (currentProfile?.id) return;
 
-//   // Otherwise fetch it
-//   dispatch(getCurrentProfile()).then((res) =>
-//     checkResult(
-//       res,
-//       (payload) => {
-       
-//         saveStory(parameters); 
-//       },
-//       (err) => {
-//         setError(err.message);
-//       }
-//     )
-//   );
-// }, [currentProfile?.id]);
 const handlePostPublic=(desc)=>{
   const finalId = effectiveId;
 

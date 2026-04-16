@@ -77,48 +77,8 @@ const [token,setToken]=useState(null)
     useEffect(()=>{
       Preferences.get({key:"token"}).then(toke=>setToken(toke.value))
     },[])
-    useEffect(() => {
-      console.log("if token",token)
-  if (token) {
-    dispatch(getCurrentProfile()).then(res => {
-      checkResult(
-        res,
-        payload => {
-          console.log("STORIE PAYLOAD PROFILE", payload);
-        },
-        err => {
-          console.log("STORIE err PROFILE", err);
-        }
-      );
-    });
-  }
-}, [currentProfile?.id,token]);
-//     useEffect(() => {
 
-//    !currentProfile?.id && dispatch(getCurrentProfile()).then(res=>{
-//       checkResult(res,payload=>{
-//       console.log("STORIE PAYLOAD PROFILE",payload)
-//       },err=>{
-//   console.log("STORIE err PROFILE",err)
-//       })
-//     })
-
-// }, [children,currentProfile]);
-// const hasLoadedRef = useRef(false);
-
-// const hasLoadedRef = useRef(false);
-
-// const prevTokenRef = useRef(null);
-
-// useEffect(() => {
-//   if (!token || prevTokenRef.current === token) return;
-
-//   prevTokenRef.current = token;
-
-//   dispatch(getMyStories())
-//   dispatch(getMyCollections());
-
-// }, [token, dispatch]);
+ 
        useEffect(() => {
                     
                     if (currentProfile?.profileToCollections) {

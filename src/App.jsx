@@ -1,6 +1,6 @@
 import './App.css';
 import { useDispatch,connect,useSelector} from "react-redux"
-import {  useEffect, useLayoutEffect, useState } from 'react';
+import {  useEffect, useLayoutEffect, useRef, useState } from 'react';
 import {  getPublicStories } from './actions/PageActions.jsx';
 import LogInContainer from './container/auth/LogInContainer';
 import NavbarContainer from './container/NavbarContainer';
@@ -14,6 +14,7 @@ import PrivacyNoticeContrainer from './container/PrivacyNoticeContainer.jsx';
 import {  
           setSignedInTrue,
           setSignedInFalse,
+          getCurrentProfile,
       
       } from './actions/UserActions'
       import { IonApp, setupIonicReact, IonRouterOutlet,  useIonRouter, IonFooter, useIonViewWillEnter, IonLoading} from '@ionic/react';
@@ -87,7 +88,20 @@ const [token,setToken]=useState(null)
 const [chuecking,setChecking]=useState(null)
   const {dialog,loading:userLoading} = useSelector(state=>state.users)
 
-
+const hasFetchedProfile = useRef(false);
+useEffect(()=>{
+  const loadToken = async ()=>{
+ const {value:token}= await Preferences.get({key:"token"})
+ setToken(token)
+  }
+loadToken()
+},[])
+useEffect(() => {
+  if (token && !hasFetchedProfile.current) {
+    hasFetchedProfile.current = true;
+    dispatch(getCurrentProfile());
+  }
+}, [token]);
 
 
 useIonViewWillEnter(() => {
@@ -153,21 +167,7 @@ const showBottomNavbar = (isMobileOrTablet || isNative)  && import.meta.env.VITE
 <Alert />
 <div  >
     <IonRouterOutlet>   
-       <Route exact path={Paths.login}
-                  render={()=> 
-      
-        <PageWrapper presentHeader={false
-        
-        } showBackbutton={false} >
-      <LoggedRoute>
-
-            <LogInContainer  currentProfile={currentProfile} logIn={props.logIn}/>
-          </LoggedRoute>
-                     </PageWrapper>
-         
-
-       }
-     />
+       
  
      <Route exact path="/" render={() => 
          <PageWrapper>{
@@ -194,6 +194,21 @@ const showBottomNavbar = (isMobileOrTablet || isNative)  && import.meta.env.VITE
             <Route exact path={Paths.notifications()}
             render={()=><PageWrapper><PrivateRoute >
               <NotificationContainer currentProfile={currentProfile}/></PrivateRoute></PageWrapper>}/>
+              <Route exact path={Paths.login}
+                  render={()=> 
+      
+        <PageWrapper presentHeader={false
+        
+        } showBackbutton={false} >
+      <LoggedRoute>
+
+            <LogInContainer  currentProfile={currentProfile} logIn={props.logIn}/>
+          </LoggedRoute>
+                     </PageWrapper>
+         
+
+       }
+     />
     <Route
   path={Paths.home}
   render={() =>

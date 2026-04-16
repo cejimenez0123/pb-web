@@ -22,7 +22,7 @@ import PaginatedList from "../components/page/PaginatedList";
 import usePaginatedResource from "../core/usePaginatedResource";
 
 const TABS = {
-  POSTS: "posts",
+  POSTS: "pages",
   COLLECTIONS: "collections",
   COMMUNITIES: "communities",
   ABOUT: "about",
@@ -113,7 +113,7 @@ const SectionLabel = ({ children }) => (
 
 
 const tabs = [
-  { key: TABS.POSTS, label: "Posts" },
+  { key: TABS.POSTS, label: "Pages" },
   { key: TABS.COLLECTIONS, label: "Collections" },
   { key: TABS.COMMUNITIES, label: "Communities" },
   { key: TABS.ABOUT, label: "About" },
@@ -286,7 +286,7 @@ console.log("COLEX",collections)
       className="px-3 py-3 rounded-full border border-purple border-1 bg-base-bg backdrop-blur-sm shadow-sm active:scale-[0.98] transition"
       >
         <span className="text-[0.95rem] min-h-10  font-medium text-gray-800">
-        {p?.title?.length > 0 ? p.title : "Untitled"}
+        {p?.title?.length > 30 ? p.title.slice(0,30)+" ..." : p.title.length ==0?"Untitled":p.title}
         </span>
       </div>
                           )}
@@ -324,7 +324,7 @@ console.log("COLEX",collections)
         className="p-3 rounded-full border border-purple border-1 bg-base-bg backdrop-blur-sm shadow-sm active:scale-[0.98] transition"
       >
         <span className="text-[0.95rem] font-medium text-gray-800">
-          {i.title ?? i.name ?? "Untitled"}
+          {i.title?? "Untitled"}
         </span>
       </div>)}
        />
