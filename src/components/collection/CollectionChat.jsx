@@ -42,7 +42,7 @@ const Chat = ({ collectionId = null }) => {
   }, [collectionId]);
 
   return (
-    <div className="w-full max-w-md mx-auto p-4 bg-white shadow-xl rounded-lg">
+    <div className="w-full max-w-md mx-auto p-4 bg-base-bg shadow-xl rounded-lg">
       <h2 className="text-lg font-bold mb-2 text-emerald-600">
         {collectionId ? "Collection Chat" : "Global Chat"}
       </h2>

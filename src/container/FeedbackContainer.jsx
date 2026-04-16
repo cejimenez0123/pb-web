@@ -43,7 +43,7 @@ export default function FeedbackContainer() {
       isOpen: true,
       title: null,
       text: (
-        <div className="bg-white rounded-2xl px-8 py-10 text-center max-w-sm mx-auto">
+        <div className="bg-base-bg rounded-2xl px-8 py-10 text-center max-w-sm mx-auto">
           <h2 className="text-xl font-semibold text-gray-900 mb-3">
             {title}
           </h2>

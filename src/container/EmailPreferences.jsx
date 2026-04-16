@@ -91,7 +91,7 @@ setError(err.message)
             </a>
             </div>
           </>
-        ) :( <div className="card my-4 md:my-8  max-h-[40em] mx-2 md:mx-auto w-full max-w-md p-6 bg-white shadow-lg rounded-2xl">
+        ) :( <div className="card my-4 md:my-8  max-h-[40em] mx-2 md:mx-auto w-full max-w-md p-6 bg-base-bg shadow-lg rounded-2xl">
         <h2 className="text-2xl font-bold text-center text-emerald-700 mb-4">
           Manage Email Preferences
         </h2>
@@ -103,7 +103,7 @@ setError(err.message)
             Email Frequency
           </label>
           <select
-            className="w-full bg-white select text-emerald-700 mont-medium select-bordered "
+            className="w-full bg-base-bg select text-emerald-700 mont-medium select-bordered "
             value={frequency}
             ref={selectRef}
             onChange={(e) => setFrequency(e.target.value)}

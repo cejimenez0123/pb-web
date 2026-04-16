@@ -265,7 +265,7 @@ if (!canSee) {
   {/* <div className="max-w-lg mx-auto px-4 pb-28 pt-6 space-y-6"> */}
 <div className={`${maxContainerWidth} mx-auto ${containerPadding} ${gapBetweenCards}`}>
   {/* TITLE */}
-  <div className={`bg-white ${cardRadius} ${cardPadding} ${cardShadow}`}>
+  <div className={`bg-base-bg ${cardRadius} ${cardPadding} ${cardShadow}`}>
     <p className="text-xs text-soft mb-1">Title</p>
   <input
   className={`${inputTextClass} ${inputResponsiveClass} w-[100%] font-semibold`}
@@ -277,7 +277,7 @@ if (!canSee) {
   </div>
 
   {/* DESCRIPTION */}
-  <div className={`bg-white ${cardRadius} ${cardPadding} ${cardShadow}`}>
+  <div className={`bg-base-bg ${cardRadius} ${cardPadding} ${cardShadow}`}>
     <p className="text-xs text-soft mb-2">Description</p>
     <textarea
       value={purpose}
@@ -288,9 +288,9 @@ if (!canSee) {
   </div>
 
   {/* SETTINGS */}
-  <div className={`bg-white ${cardRadius} ${cardPadding} ${cardShadow} space-y-3`}>
+  <div className={`bg-base-bg ${cardRadius} ${cardPadding} ${cardShadow} space-y-3`}>
     <div className="flex flex-wrap gap-2">
-   <div className="bg-white rounded-2xl p-4 shadow-sm space-y-3">
+   <div className="bg-base-bg rounded-2xl p-4 shadow-sm space-y-3">
 
       <div className="flex flex-wrap gap-2">
         <Pill
@@ -363,7 +363,7 @@ if (!canSee) {
 
 
     {/* DESCRIPTION */}
-    <div className="bg-white rounded-2xl p-4 shadow-sm">
+    <div className="bg-base-bg rounded-2xl p-4 shadow-sm">
       <p className="text-xs text-soft mb-2">Description</p>
       <textarea
         value={purpose}
@@ -387,7 +387,7 @@ if (!canSee) {
 </div>
     {/* TABS */}
     {/* SEARCH */}
-<div className="bg-white rounded-2xl p-3 shadow-sm flex items-center gap-2">
+<div className="bg-base-bg rounded-2xl p-3 shadow-sm flex items-center gap-2">
   <input
     type="text"
     value={search}
@@ -460,7 +460,7 @@ function FollowersDropdown({ followersAre, setFollowersAre }) {
         tabIndex={0}
         role="button"
         onClick={() => setOpen((prev) => !prev)}
-        className="w-full flex items-center justify-center rounded-full px-6 py-3 border border-emerald-400 bg-white text-emerald-700 font-medium shadow-sm hover:bg-emerald-50 cursor-pointer transition-all"
+        className="w-full flex items-center justify-center rounded-full px-6 py-3 border border-emerald-400 bg-base-bg text-emerald-700 font-medium shadow-sm hover:bg-emerald-50 cursor-pointer transition-all"
       >
         Followers are&nbsp;
         <span className="font-semibold">{followersAre}s</span>
@@ -472,7 +472,7 @@ function FollowersDropdown({ followersAre, setFollowersAre }) {
 
       {/* Dropdown Menu */}
       <ul
-        className={`absolute z-10 mt-2 w-full bg-white border border-emerald-200 rounded-lg shadow-md text-emerald-800 text-sm font-medium transform transition-all duration-300 origin-top ${
+        className={`absolute z-10 mt-2 w-full bg-base-bg border border-emerald-200 rounded-lg shadow-md text-emerald-800 text-sm font-medium transform transition-all duration-300 origin-top ${
           open
             ? "opacity-100 scale-100 translate-y-0"
             : "opacity-0 scale-95 -translate-y-2 pointer-events-none"
@@ -503,7 +503,7 @@ const editCollectionSkeleton = () => (
   <div className="ion-padding sm:max-w-[50em] mx-auto animate-pulse">
     
     {/* Title Input Skeleton */}
-    <div className="rounded-xl mb-3 border border-emerald-100 p-4 shadow-sm bg-white">
+    <div className="rounded-xl mb-3 border border-emerald-100 p-4 shadow-sm bg-base-bg">
       <div className="h-3 w-20 bg-emerald-200 rounded mb-3 shadow" />
       <div className="h-8 w-full bg-gray-200 rounded shadow" />
     </div>
@@ -535,7 +535,7 @@ const editCollectionSkeleton = () => (
       {[...Array(3)].map((_, i) => (
         <div
           key={i}
-          className="flex justify-between items-center p-4 rounded-full bg-white border border-gray-200 shadow-sm"
+          className="flex justify-between items-center p-4 rounded-full bg-base-bg border border-gray-200 shadow-sm"
         >
           <div className="h-4 w-32 bg-gray-200 rounded shadow" />
           <div className="w-8 h-8 bg-gray-300 rounded-full shadow" />

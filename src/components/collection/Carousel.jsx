@@ -42,8 +42,8 @@ export default function Carousel({ book }) {
 
           return (
             <swiper-slide key={stc.id} className="!w-auto rounded-xl overflow-hidden">
-              <div className="w-full  rounded-xl overflow-hidden bg-white border border-[#bae6fe]/40 shadow-sm">
-              {/* <div className="w-full h-full rounded-xl overflow-hidden bg-white border border-[#bae6fe]/40 shadow-sm"> */}
+              <div className="w-full  rounded-xl overflow-hidden bg-base-bg border border-[#bae6fe]/40 shadow-sm">
+              {/* <div className="w-full h-full rounded-xl overflow-hidden bg-base-bg border border-[#bae6fe]/40 shadow-sm"> */}
                 <div className="flex flex-col h-full">
                   {/* Title */}
                   <h5 className="px-3 pt-2 text-sm font-semibold text-[#003b44] truncate">

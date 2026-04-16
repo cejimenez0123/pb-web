@@ -32,7 +32,7 @@ import TopBarDropdown from "../../components/page/TopBarDropdown.jsx";
 import { getCurrentProfile } from "../../actions/UserActions.jsx";
 import { set } from "lodash";
 
-  const editorContainerBase = "mx-auto bg-white rounded-lg shadow-sm";
+  const editorContainerBase = "mx-auto bg-base-bg rounded-lg shadow-sm";
 const editorContainerSpacing = "mx-2 mb-12 p-4";
 const editorContainerResponsive = "md:w-page";
 // Shared container for editor and top bar
@@ -393,7 +393,7 @@ const openGoogleDrive = async()=>{
       <button
         key={file.id}
         onClick={() => onFilePicked(file)}
-        className="flex flex-col justify-center items-center px-3 py-3 bg-white rounded-xl shadow-md border border-blueSea border-opacity-20 hover:border-blueSea hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-emerald-300 transition-all duration-150"
+        className="flex flex-col justify-center items-center px-3 py-3 bg-base-bg rounded-xl shadow-md border border-blueSea border-opacity-20 hover:border-blueSea hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-emerald-300 transition-all duration-150"
       >
         <img
           src={file.iconLink}

@@ -390,7 +390,7 @@ const showBottomNavbar = (isMobileOrTablet || isNative)  && import.meta.env.VITE
 
        {showBottomNavbar&&
           <IonFooter>
-   <div className=" bg-white">
+   <div className=" bg-cream">
   <NavbarContainer isDesktop={isDesktop} currentProfile={currentProfile} />
 </div>
 </IonFooter>

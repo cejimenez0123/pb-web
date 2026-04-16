@@ -149,7 +149,7 @@ return (
     >
       {/* Scroll Container */}
       <div className="p-4 flex justify-center">
-        <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl w-full max-w-xl p-6 mx-auto shadow-xl pb-32">
+        <div className="bg-base-bg/10 backdrop-blur-xl border border-white/20 rounded-3xl w-full max-w-xl p-6 mx-auto shadow-xl pb-32">
           
           <h2 className="text-white text-center text-3xl mont-medium mb-6">
             Complete Sign Up
@@ -162,7 +162,7 @@ return (
               placeholder="example@x.com"
             value={email}
             onIonInput={(e) => setEmail(e.target.value)}
-            className="mb-4 bg-white/80 text-emerald-800 rounded-xl px-3"
+            className="mb-4 bg-base-bg/80 text-emerald-800 rounded-xl px-3"
           /> */}
      <TextInput
       label="Email"
@@ -237,7 +237,7 @@ return (
       placeholder="*****"
       value={password}
       onIonInput={(e) => setPassword(e.target.value.trim())}
-      className="bg-white/80 text-emerald-800 rounded-xl px-3 pr-12"
+      className="bg-base-bg/80 text-emerald-800 rounded-xl px-3 pr-12"
     />
     <button
       type="button"
@@ -308,7 +308,7 @@ return (
             placeholder="What are you about?"
             value={selfStatement}
             onIonInput={(e) => setSelfStatement(e.target.value)}
-            className="mb-6 bg-white/80 text-emerald-800 rounded-xl px-3"
+            className="mb-6 bg-base-bg/80 text-emerald-800 rounded-xl px-3"
           />
                 {/* <div className="fixed bottom-0 left-0 w-full px-4 pt-2 pb-[calc(env(safe-area-inset-bottom)+12px)] bg-gradient-to-t from-emerald-900/95 to-transparent backdrop-blur-md z-50"> */}
         <button
@@ -359,7 +359,7 @@ function EmailSettings({ frequency, setFrequency }) {
             className={`py-2 rounded-xl border transition ${
               frequency === opt.value
                 ? "bg-emerald-500 text-white border-emerald-500"
-                : "bg-white/80 text-emerald-700 border-emerald-200"
+                : "bg-base-bg/80 text-emerald-700 border-emerald-200"
             }`}
           >
             {opt.label}
@@ -386,7 +386,7 @@ function TextInput({
         value={value}
         placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full bg-white/80 text-emerald-800 rounded-xl px-3 py-3 outline-none focus:ring-2 focus:ring-emerald-400 transition"
+        className="w-full bg-base-bg/80 text-emerald-800 rounded-xl px-3 py-3 outline-none focus:ring-2 focus:ring-emerald-400 transition"
       />
     </div>
   );
@@ -411,7 +411,7 @@ function PasswordInput({
           value={value}
           placeholder="*****"
           onChange={(e) => onChange(e.target.value)}
-          className="w-full bg-white/80 text-emerald-800 rounded-xl px-3 py-3 pr-14 outline-none focus:ring-2 focus:ring-emerald-400 transition"
+          className="w-full bg-base-bg/80 text-emerald-800 rounded-xl px-3 py-3 pr-14 outline-none focus:ring-2 focus:ring-emerald-400 transition"
         />
 
         {!confirm && <button

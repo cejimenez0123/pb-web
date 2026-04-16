@@ -268,7 +268,7 @@ if (!canSee) {
             <select
               onChange={(e) => setFilterType(e.target.value)}
               value={filterType}
-              className="select w-full sm:w-32 rounded-full border border-emerald-300 bg-white px-3 py-1 text-emerald-800 shadow-sm focus:outline-none"
+              className="select w-full sm:w-32 rounded-full border border-emerald-300 bg-base-bg px-3 py-1 text-emerald-800 shadow-sm focus:outline-none"
             >
               {Object.entries(filterTypes).map(([, val]) => (
                 <option key={val} value={val}>
@@ -276,7 +276,7 @@ if (!canSee) {
                 </option>
               ))}
             </select>
-            <div className="flex-1 rounded-full border border-emerald-300 flex items-center px-4 py-2 bg-white shadow-sm">
+            <div className="flex-1 rounded-full border border-emerald-300 flex items-center px-4 py-2 bg-base-bg shadow-sm">
               <IonText className="text-emerald-700 font-medium mr-2 text-sm">Search:</IonText>
               <input
                 type="text"
@@ -308,7 +308,7 @@ if (!canSee) {
           return (
             <div
               key={story.id}
-              className="bg-white rounded-2xl px-4 py-3 shadow-sm flex items-center justify-between"
+              className="bg-base-bg rounded-2xl px-4 py-3 shadow-sm flex items-center justify-between"
             >
               <div
                 onClick={() => router.push(Paths.page.createRoute(story.id))}
@@ -346,7 +346,7 @@ if (!canSee) {
             colInView?.childCollections?.some((j) => j.childCollectionId === col.id);
                return<div
               key={col.id}
-              className="bg-white rounded-2xl px-4 py-3 shadow-sm flex items-center justify-between"
+              className="bg-base-bg rounded-2xl px-4 py-3 shadow-sm flex items-center justify-between"
             >
               <div
                 onClick={() => router.push(Paths.collection.createRoute(col.id))}
@@ -431,7 +431,7 @@ const NoPermissionUI = () => {
   //         return (
             // <div
             //   key={col.id}
-            //   className="bg-white rounded-2xl px-4 py-3 shadow-sm flex items-center justify-between"
+            //   className="bg-base-bg rounded-2xl px-4 py-3 shadow-sm flex items-center justify-between"
             // >
             //   <div
             //     onClick={() => router.push(Paths.collection.createRoute(col.id))}

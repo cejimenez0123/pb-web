@@ -797,7 +797,7 @@ function CollectionTabs({ tab, setTab, pages, members, about }) {
 }
 function CollectionContainerShadow() {
   return (
-    <div className="animate-pulse bg-white rounded-xl shadow-lg p-6 flex flex-col gap-6 max-w-[50em] mx-auto">
+    <div className="animate-pulse bg-base-bg rounded-xl shadow-lg p-6 flex flex-col gap-6 max-w-[50em] mx-auto">
       
       {/* Title */}
       <div className="h-8 w-1/2 bg-gray-300 rounded-md mb-4"></div>

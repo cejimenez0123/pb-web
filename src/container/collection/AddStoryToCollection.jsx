@@ -23,11 +23,11 @@ const WRAP         = "max-w-2xl mx-auto px-4";
 const PAGE_Y       = "py-6";
 const PAGE_STACK   = "space-y-6";
 const FADE_IN = "transition-all duration-500 ease-out";
-const CARD         = "bg-white rounded-2xl p-4 shadow-sm";
+const CARD         = "bg-base-bg rounded-2xl p-4 shadow-sm";
 const SECTION_STACK = "space-y-2";
 
 const LABEL        = "text-xs text-gray-500";
-const INPUT_WRAP   = "bg-white rounded-2xl px-4 py-2 shadow-sm border border-soft";
+const INPUT_WRAP   = "bg-base-bg rounded-2xl px-4 py-2 shadow-sm border border-soft";
 export default function AddToCollectionsContainer() {
   const { setError, seo, setSeo } = useContext(Context);
   const { currentProfile } = useSelector((state) => state.users);
@@ -137,7 +137,7 @@ const [pendingStories, setPendingStories] = useState(true);
           </div>
 
           {/* Item Card */}
-          <div className="bg-white rounded-2xl p-4 shadow-sm space-y-2">
+          <div className="bg-base-bg rounded-2xl p-4 shadow-sm space-y-2">
             <p className="text-xs text-soft opacity-70">Adding</p>
             <h2 className="text-lg font-semibold">{item.title}</h2>
             {item.type === PageType.text && item.data && (

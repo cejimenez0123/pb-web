@@ -17,7 +17,7 @@
 //   };
 
 //   return (
-//     <div className="flex items-center justify-between px-3 py-2 rounded-2xl bg-white/60 backdrop-blur-md border border-gray-200 shadow-sm">
+//     <div className="flex items-center justify-between px-3 py-2 rounded-2xl bg-base-bg/60 backdrop-blur-md border border-gray-200 shadow-sm">
       
 //       {/* Prev */}
 //       <button
@@ -89,7 +89,7 @@ const PaginationControls = ({
   };
 
   return (
-    <div className={`flex items-center justify-between px-3 py-2 rounded-2xl bg-white/60 backdrop-blur-md border border-gray-200 shadow-sm ${className}`}>
+    <div className={`flex items-center justify-between px-3 py-2 rounded-2xl bg-base-bg/60 backdrop-blur-md border border-gray-200 shadow-sm ${className}`}>
       
       {/* Prev */}
       <button

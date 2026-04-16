@@ -406,7 +406,7 @@ console.log(data)
               <select
                 ref={selectRef}
                 name="frequency"
-                className="bg-white text-emerald-700 select select-bordered"
+                className="bg-base-bg text-emerald-700 select select-bordered"
                 value={formData.frequency}
                 onChange={(e) => handleChange("frequency", Number(e.target.value))}
               >

@@ -27,7 +27,7 @@ const containerSpacing = "px-3 md:px-4 pb-16 pt-2";
 const sectionSpacing = "mb-6";
 
 // Cards / items
-const itemBase = "bg-white rounded-xl border border-gray-200 shadow-sm";
+const itemBase = "bg-base-bg rounded-xl border border-gray-200 shadow-sm";
 const itemPadding = "p-4";
 const itemSpacing = "space-y-3";
 

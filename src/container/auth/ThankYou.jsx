@@ -14,7 +14,7 @@ export default function ThankYou({ user }) {
     >
       <div
   id="welcome"
-  className="p-8 text-left leading-relaxed text-emerald-700 max-w-xl mx-auto rounded-2xl shadow-md bg-white/70 backdrop-blur-sm"
+  className="p-8 text-left leading-relaxed text-emerald-700 max-w-xl mx-auto rounded-2xl shadow-md bg-base-bg/70 backdrop-blur-sm"
 >
   <p className="text-2xl font-semibold mb-4">
     Welcome aboard, {user.preferredName}! 🌿

@@ -101,7 +101,7 @@ function BookDashboardItem({ book, isGrid }) {
           className="
             absolute top-3 right-3
             p-2 rounded-full
-            bg-white/80 backdrop-blur
+            bg-base-bg/80 backdrop-blur
             shadow-sm
             active:scale-90
             transition

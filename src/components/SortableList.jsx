@@ -67,7 +67,7 @@ export default function SortableList({ items, type, onOrderChange, onDelete }) {
                       className={`
                         flex items-center justify-between p-4 
                         rounded-2xl shadow-lg 
-                        bg-white hover:shadow-xl 
+                        bg-base-bg hover:shadow-xl 
                         transition-shadow duration-150
                         border border-gray-200
                         ${snapshot.isDragging ? "bg-gray-50 shadow-2xl" : ""}

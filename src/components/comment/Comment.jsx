@@ -127,7 +127,7 @@ const handleOpenCommentInput = () => {
   }}
 >
       {/* Comment card */}
-   <div className="bg-white rounded-2xl shadow-lg p-5 flex flex-col gap-4 relative border border-gray-100">
+   <div className="bg-base-bg rounded-2xl shadow-lg p-5 flex flex-col gap-4 relative border border-gray-100">
     {/* Header: profile + dropdown */}
     <div className="flex justify-between items-center">
         {/* <div className="flex flex-row justify-between"> */}

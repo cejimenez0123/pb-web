@@ -109,7 +109,7 @@ export default function LinkPreview({ url,compact }) {
   return (
     <div
       onClick={handleClick}
-      className="rounded-xl border border-gray-200 bg-white shadow-sm overflow-hidden cursor-pointer active:scale-[0.98]"
+      className="rounded-xl border border-gray-200 bg-base-bg shadow-sm overflow-hidden cursor-pointer active:scale-[0.98]"
     >
       {previewData.image && (
         <IonImg

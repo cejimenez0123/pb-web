@@ -132,7 +132,7 @@ export default function AddToItem({ col }) {
   }
 
   return (
-    <div className="bg-white rounded-2xl px-4 py-3 shadow-sm flex items-center justify-between">
+    <div className="bg-base-bg rounded-2xl px-4 py-3 shadow-sm flex items-center justify-between">
 
       {/* LEFT: TITLE */}
       <div

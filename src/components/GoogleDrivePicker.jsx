@@ -161,7 +161,7 @@ const fetchFiles = async () => {
     rounded-xl border-2 overflow-hidden
     ${accessToken 
       ? "bg-emerald-600 border-emerald-600 text-white" 
-      : " bg-white border-cream text-emerald-800"
+      : " bg-base-bg border-cream text-emerald-800"
     } 
     hover:bg-emerald-500 transition-all
   `}

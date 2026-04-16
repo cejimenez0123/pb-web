@@ -350,11 +350,11 @@ return<IonContent
     <div>
 </div>
     </div>
-
+<div className='flex flex-col space-y-4 pb-24'>
         <ExploreList label={"Communities"} collection={communities} />
      
-      <div className='min-h-[28rem]'>
-        <ExploreList collection={workshops} />
+   
+        <ExploreList label={"Workshops"}collection={workshops} />
       </div>
    </div>
   )}

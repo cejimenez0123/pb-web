@@ -69,7 +69,7 @@ export default function ExploreList({ label="Explore",collection }) {
             {[...Array(4)].map((_, i) => (
               <div
                 key={i}
-                className="min-w-[12rem] h-[12rem] bg-white rounded-xl shadow-md flex flex-col justify-between p-3"
+                className="min-w-[12rem] h-[12rem] bg-base-bg rounded-xl shadow-md flex flex-col justify-between p-3"
               >
                 <div className="h-4 w-3/4 bg-emerald-100 rounded" />
                 <div className="space-y-2 mt-4">
