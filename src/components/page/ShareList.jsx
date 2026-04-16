@@ -14,6 +14,7 @@ import Enviroment from "../../core/Enviroment";
 import Paths from "../../core/paths";
 import { Preferences } from "@capacitor/preferences";
 import { useDialog } from "../../domain/usecases/useDialog";
+import computePermissions from "../../core/compusePermissions";
 export default function ShareList({ page, profile, archive,setArchive, bookmark, setBookmarked }) {
   // const [localBookmark, setLocalBookmark] = useState(bookmark);
   const {setSuccess,setError}=useContext(Context)
@@ -35,19 +36,15 @@ const [loadingBookmarkId, setLoadingBookmarkId] = useState(null);
   return "unknown";
 };
 
-  function soCanUserEdit() {
-    const roles = [RoleType.editor];
-    if (currentProfile && page) {
-      if (currentProfile.id === page.authorId) {
-        setCanUserEdit(true);
-        return;
-      }
-      if (page?.betaReaders) {
-        let found = page?.betaReaders?.find((rTc) => rTc.profileId === currentProfile.id && roles.includes(rTc.role));
-        setCanUserEdit(found);
-      }
-    }
-  }
+const {canSee,canAdd,canEdit,role}= computePermissions(page,currentProfile, {
+  getAccessList: (s) => s.betaReaders,
+  getAccessRole: (r) => r.permission,
+  isPrivate: (s) => s.isPrivate,
+  isOpen: () => false, // stories usually not open collab
+  canWriteRoles: ["commenter", "editor"],
+  canEditRoles: ["editor"],
+});
+ 
     const onBookmarkPage = () => {
     setLoading(true);
     if (currentProfile && currentProfile.profileToCollections) {
@@ -77,10 +74,10 @@ const [loadingBookmarkId, setLoadingBookmarkId] = useState(null);
       setLoading(false);
     }
   };
-    useLayoutEffect(() => {
+  //   useLayoutEffect(() => {
 
-    soCanUserEdit();
-  }, [page, currentProfile]);
+  //   soCanUserEdit();
+  // }, [page, currentProfile]);
   const dispatch = useDispatch()
     const copyShareLink = () => {
     openDialog({...dialog,isOpen:false})

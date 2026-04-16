@@ -17,19 +17,23 @@ import checkResult from "../../core/checkResult.js";
 export default function IndexItem({item,type}) {
   let collectionStr ="collection"
   const {openDialog,resetDialog,dialog,closeDialog}=useDialog()
-    const [canUserAdd,setCanUserAdd]=useState(false)
+ 
     useLayoutEffect(()=>{
       initGA()
     },[])
     const {currentProfile} =useSelector(state=>state.users)
      const dispatch = useDispatch()
     const router = useIonRouter()
-   
+   const {canSee,canAdd,canEdit,role}= computePermissions(item,currentProfile, {
+  getAccessList: (s) => s.betaReaders,
+  getAccessRole: (r) => r.permission,
+  isPrivate: (s) => s.isPrivate,
+  isOpen: () => false, // stories usually not open collab
+  canWriteRoles: ["commenter", "editor"],
+  canEditRoles: ["editor"],
+});
     const [canUserEdit,setCanUserEdit]=useState(false)
-    useLayoutEffect(()=>{
-      soCanUserEdit()
-      soCanUserAdd()
-    },[currentProfile])
+
     const copyShareLink=()=>{
       if(item && item.storyIdList){
         sendGAEvent("Copy Share Link",`Share Link Collection:${item?.title}`)
@@ -74,43 +78,8 @@ export default function IndexItem({item,type}) {
     }
 
 
-   const soCanUserAdd=()=>{
-    let arr=[RoleType.editor,RoleType.writer]
-    let found = item && item.roles?item.roles.find(role=>currentProfile && role.profileId==currentProfile.id):null
-    if(currentProfile && item){
-      if(currentProfile.id==item.authorId){
-        setCanUserAdd(true)
-        return
-      }
-      if(currentProfile.id==item.profileId){
-        setCanUserAdd(true)
-        return
-      }
-      if(found && arr.includes(found.role)){
-        setCanUserAdd(true)
-        return
-      }
-    }
-    setCanUserAdd(false)
-   }
-const soCanUserEdit = () => {
-  // 1. Guard clause: if we don't have the data, they can't edit.
-  if (!currentProfile || !item) {
-    setCanUserEdit(false);
-    return;
-  }
-
-  
-  const isOwner = currentProfile.id === item.authorId || currentProfile.id === item.profileId;
 
 
-  const hasEditorRole = item.roles?.some(
-    (role) => role.profileId === currentProfile.id && role.role === RoleType.editor
-  );
-
-  setCanUserEdit(isOwner || hasEditorRole);
-
-};
 
     const handleAddToClick = ()=>{
  
@@ -187,7 +156,7 @@ closeDialog()
 </div>
 
            
-              { canUserEdit?(
+              {canEdit?(
        
        <div className="dropdown  absolute my-auto relative w-fit z-40 dropdown-left">
   <div  tabIndex={0} role="button" className=" m-1 p-2 rounded-full w-[4rem]  border-2 hover:bg-emerald-600 border border-soft h-[4rem]  "> <IonImg className="  my-auto mx-auto  " style={{width:"3rem", height:"3rem",padding:"0.5em"}} src={edit}/></div>
@@ -195,12 +164,12 @@ closeDialog()
   <li className="bg-base-bg  hover:bg-sky-100" onClick={
         ()=>handleEditClick(item)}><a className="bg-base-bg  hover:bg-sky-100 text-soft ">Edit</a></li>
        {item.author?<li className=" bg-base-bg  hover:bg-sky-100 text-soft" onClick={handleFeedback}><a className=" "><IonText>Get Feedback</IonText></a></li>:null}
-       {canUserAdd?<li className=" no-underline bg-base-bg  hover:bg-sky-100 text-soft" onClick={handleAddToClick}><a className="no-underline bg-base-bg  hover:bg-sky-100 text-soft"><IonText>{item && item.storyIdList!=null?`Add items to ${item?.title}`:"Add to Collection" }</IonText></a></li>:null}
+       {canAdd?<li className=" no-underline bg-base-bg  hover:bg-sky-100 text-soft" onClick={handleAddToClick}><a className="no-underline bg-base-bg  hover:bg-sky-100 text-soft"><IonText>{item && item.storyIdList!=null?`Add items to ${item?.title}`:"Add to Collection" }</IonText></a></li>:null}
          </ul>
   </div>
        
   )
-  : !canUserEdit?(
+  : !canEdit?(
   
    <div className="dropdown my-auto relative w-fit dropdown-left">
    <div tabIndex={0} role="button" className=" m-1 p-2 rounded-full bg-emerald-800 "> <IonImg classname="my-auto mx-auto  " style={{height:"3em",width:"3em"}} src={addBox}/></div>
@@ -208,7 +177,7 @@ closeDialog()
   {!item.isPrivate && type==collectionStr&&
         <li className="no-underline "  onClick={handleAddToLibrary}><a className="no-underline"> Add Collection to Library</a></li>}
        
-        {canUserAdd&&
+        {canAdd&&
         <li className="no-underline"  onClick={handleAddToClick}><a className="no-underline ">{item && item.storyIdList!=null?`Add items to ${item?.title}`:"Add to Collection" }</a></li>}
          {/* {updated} */}
          <li  onClick={copyShareLink}><a className=" no-underline" >Share</a></li>

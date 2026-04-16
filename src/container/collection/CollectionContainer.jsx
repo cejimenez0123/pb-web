@@ -43,6 +43,7 @@ import Enviroment from "../../core/Enviroment.js";
 import CollectionActions from "../../components/collection/CollecitonActions.jsx";
 import {motion} from 'framer-motion'
 import SectionHeader from "../../components/SectionHeader.jsx";
+import computePermissions from "../../core/compusePermissions.jsx";
 const containerVariants = {
   hidden: { opacity: 0 },
   show: {
@@ -96,13 +97,15 @@ export default function CollectionContainer() {
 
    const writeArr = [RoleType.editor, RoleType.writer];
    const {id}=useParams()
-const permissions = computePermissions(collection,currentProfile)??{canSee:false,
-    canAdd:false,
-    canEdit:false,
-    role:null}
- const  {canSee,
-    canAdd,
-    canEdit,role}  = permissions
+   const {canSee,canAdd,canEdit,role} = computePermissions(collection,currentProfile, {
+  getAccessList: (c) => c.roles??[],
+  getAccessRole: (r) => r.role,
+  isPrivate: (c) => c.isPrivate,
+  isOpen: (c) => c.isOpenCollaboration,
+  canWriteRoles: [RoleType.writer, RoleType.editor],
+  canEditRoles: [RoleType.editor],
+});
+
 
   const collections = useSelector(state => state.books.collections);
 
@@ -152,85 +155,85 @@ useEffect(() => {
   setBookmarkLoading(false);
 }, [collection, homeCol, archiveCol]);
 
-function computePermissions(collection, profile) {
-  // Default state
-  let canSee = false;
-  let canAdd = false;
-  let canEdit = false;
-  let role = null;
+// function computePermissions(collection, profile) {
+//   // Default state
+//   let canSee = false;
+//   let canAdd = false;
+//   let canEdit = false;
+//   let role = null;
 
-  if (!collection) {
-    return { canSee, canAdd, canEdit, role };
-  }
-  if(collection && !profile&& collection.isPrivate==true){
-    canSee=false
-    router.goBack()
-    return
-  }
-  // ------------------ OWNER ------------------
-  if (profile && collection.profileId === profile.id) {
-    role = new Role("owner", profile, collection, RoleType.editor, new Date());
+//   if (!collection) {
+//     return { canSee, canAdd, canEdit, role };
+//   }
+//   if(collection && !profile&& collection.isPrivate==true){
+//     canSee=false
+//     router.goBack()
+//     return
+//   }
+//   // ------------------ OWNER ------------------
+//   if (profile && collection.profileId === profile.id) {
+//     role = new Role("owner", profile, collection, RoleType.editor, new Date());
 
-    return {
-      canSee: true,
-      canAdd: true,
-      canEdit: true,
-      role,
-    };
-  }
+//     return {
+//       canSee: true,
+//       canAdd: true,
+//       canEdit: true,
+//       role,
+//     };
+//   }
 
-  // ------------------ ROLE-BASED ------------------
-  let foundRole = null;
+//   // ------------------ ROLE-BASED ------------------
+//   let foundRole = null;
 
-  if (profile && collection.roles?.length) {
-    foundRole = collection.roles.find(
-      (r) => r?.profileId === profile.id
-    );
+//   if (profile && collection.roles?.length) {
+//     foundRole = collection.roles.find(
+//       (r) => r?.profileId === profile.id
+//     );
 
-    if (foundRole) {
-      role = new Role(
-        foundRole.id,
-        profile,
-        collection,
-        foundRole.role,
-        foundRole.created
-      );
+//     if (foundRole) {
+//       role = new Role(
+//         foundRole.id,
+//         profile,
+//         collection,
+//         foundRole.role,
+//         foundRole.created
+//       );
 
-      // Can always see if they have a role
-      canSee = true;
+//       // Can always see if they have a role
+//       canSee = true;
 
-      // Write permissions
-      if (writeArr.includes(foundRole.role)||collection.isOpenCollaboration) {
-        canAdd = true;
-      }
+//       // Write permissions
+//       if (writeArr.includes(foundRole.role)||collection.isOpenCollaboration) {
+//         canAdd = true;
+//       }
 
-      // Edit permissions
-      if (foundRole.role === RoleType.editor) {
-        canEdit = true;
-      }
+//       // Edit permissions
+//       if (foundRole.role === RoleType.editor) {
+//         canEdit = true;
+//       }
 
-      return { canSee, canAdd, canEdit, role };
-    }
-  }
+//       return { canSee, canAdd, canEdit, role };
+//     }
+//   }
 
-  // ------------------ OPEN COLLAB ------------------
-  if (collection.isOpenCollaboration) {
-    canAdd = true;
-  }
+//   // ------------------ OPEN COLLAB ------------------
+//   if (collection.isOpenCollaboration) {
+//     canAdd = true;
+//   }
 
-  // ------------------ PUBLIC ACCESS ------------------
-  if (!collection.isPrivate) {
-    canSee = true;
-  }
+//   // ------------------ PUBLIC ACCESS ------------------
+//   if (!collection.isPrivate) {
+//     canSee = true;
+//   }
 
-  // ------------------ FINAL RETURN ------------------
-  return {
-    canSee,
-    canAdd,
-    canEdit,
-    role,
-  };
-}
+//   // ------------------ FINAL RETURN ------------------
+//   return {
+//     canSee,
+//     canAdd,
+//     canEdit,
+//     role,
+//   };
+// }
 
   useLayoutEffect(() => {
     if (currentProfile?.profileToCollections) {
@@ -328,7 +331,7 @@ const getCol = async (id) => {
                
               setLoading(false);
      
-              computePermissions(payload.collection,currentProfile)
+              // computePermissions(payload.collection,currentProfile)
               dispatch(setPagesInView({pages:payload.collection?.storyIdList.map(str=>str.story)}))
             
              
@@ -518,14 +521,7 @@ return
     
     
         
-          const handleBack = (e) => {
-    e.preventDefault();
-    if (window.history.length > 1) {
-       router.goBack()
-    } else {
-      router.push(Paths.discovery,"back");
-    }
-  };
+  
   
  const isReady = collection !== null;
 
@@ -619,8 +615,8 @@ return (
          </div>   
           </div>
 
-  <div className={BLOCK}>
-  <button
+ {canAdd && <div className={BLOCK}>
+   <button
 
 
    onClick={()=>router.push(Paths.addToCollection.createRoute(collection.id))}
@@ -630,7 +626,7 @@ className={BUTTON_FULL+"btn transition w-[100%] border-blue bg-blue text-cream h
       Add to Collection
     </button>
           </div>
-
+}
           {/* Tabs */}
        <div className={SECTION}>
             <CollectionTabs
@@ -741,10 +737,7 @@ const MemberTab = ({ collection }) => {
   return (
     <>
     <div className={`${WRAP} ${SECTION}`}>
-       {/* <h2 className="text-[1.4rem] my-8 lora-bold text-soft ">
-      
-         Contributors
-        </h2> */}
+    
 <SectionHeader title={"Contributors"}/>
         {
           <IonList style={{ backgroundColor: Enviroment.palette.base.surface}}>
@@ -845,42 +838,7 @@ const AboutTab = ({ collection}) => {
 }
 
 
-// // // Tabs
-// function CollectionTabs({ tab, setTab, pages, members, about }) {
-//   return (
-//    <div className={`bg-base-surface ${TAB_WRAP}`}>
-//       <div className="flex justify-center lg:justify-start  mb-4">
-//       <div className="flex rounded-full border overflow-hidden w-full sm:w-auto border-emerald-600">
-//           {["pages", "members", "about"].map((t) => (
-//             <button
-//               key={t}
-//               className={`flex-1 py-2 px-4 font-semibold text-sm transition-colors ${
-//                 tab === t ? "bg-emerald-700 text-white" : "bg-transparent text-emerald-700 hover:bg-emerald-50"
-//               }`}
-//               onClick={() => setTab(t)}
-//             >
-//               {t.charAt(0).toUpperCase() + t.slice(1)}
-//             </button>
-//           ))}
-//         </div>
-//       </div>
-//       <div className="relative overflow-hidden ">
-//         <motion.div
-//           key={tab}
-//           initial={{ opacity: 0 }}
-//           animate={{ opacity: 1 }}
-//           exit={{ opacity: 0 }}
-//           transition={{ duration: 0.2 }}
-//           // className="w-full"
-//         >
-//           {tab === "pages" && pages}
-//           {tab === "members" && members}
-//           {tab === "about" && about}
-//         </motion.div>
-//       </div>
-//     </div>
-//   );
-// }
+
 function CollectionTabs({ tab, setTab, pages, members, about }) {
   return (
     <div className={`bg-base-surface ${TAB_WRAP}`}>

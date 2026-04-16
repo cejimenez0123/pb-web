@@ -14,7 +14,8 @@ import {
   addStoryListToCollection,
   fetchCollectionProtected,
   getMyCollections,
-  setCollections,
+  // getMyCollections,
+  // setCollections,
 } from "../../actions/CollectionActions";
 import StoryCollectionTabs from "../../components/page/StoryCollectionTabs.jsx";
 import { useParams } from "react-router";
@@ -22,6 +23,9 @@ import Enviroment from "../../core/Enviroment.js";
 import { setPagesInView } from "../../actions/PageActions.jsx";
 import Pill from "../../components/Pill.jsx";
 import { getMyStories } from "../../actions/StoryActions.jsx";
+import computePermissions from "../../core/compusePermissions.jsx";
+import { RoleType } from "../../core/constants.js";
+import PaginatedList from "../../components/page/PaginatedList.jsx";
 
 const filterTypes = {
   filter: "Filter",
@@ -48,7 +52,14 @@ export default function AddToCollectionContainer() {
   const stories = useSelector((state) => state.pages.myPages);
   const [pending,setPending]=useState(false)
   const storyIdList = colInView?.storyIdList || [];
-
+     const {canSee,canAdd,canEdit,role} = computePermissions(colInView,currentProfile, {
+  getAccessList: (c) => c.roles??[],
+  getAccessRole: (r) => r.role,
+  isPrivate: (c) => c.isPrivate,
+  isOpen: (c) => c.isOpenCollaboration,
+  canWriteRoles: [RoleType.writer, RoleType.editor],
+  canEditRoles: [RoleType.editor],
+});
 
   const isOwner = currentProfile && colInView && currentProfile.id === colInView.authorId;
 
@@ -176,35 +187,10 @@ useEffect(()=>{
 
     return (
       <div className="space-y-2">
-        {filteredSortedStories.map((story) => {
-          const added = newStories.some((s) => s.id === story.id);
-          return (
-            <div
-              key={story.id}
-              className="bg-white rounded-2xl px-4 py-3 shadow-sm flex items-center justify-between"
-            >
-              <div
-                onClick={() => router.push(Paths.page.createRoute(story.id))}
-                className="flex-1 pr-3 cursor-pointer"
-              >
-                <p className="text-sm font-medium truncate">{story.title.length>20?story.title.slice(0,20)+"..." : story.title || "Untitled"}</p>
-              </div>
-              <Pill
-                label={added ? "Added ✓" : "Add"}
-                onClick={() =>
-                  setNewStories((prev) =>
-                    added ? prev.filter((s) => s.id !== story.id) : [...prev, story]
-                  )
-                }
-                variant={added ? "secondary" : "primary"}
-                color={added ? "softBlue" : "soft"}
-              />
-            </div>
-          );
-        })}
+        
       </div>
     );
-  };
+  }
 
   const colList = () => {
     if (pending) {
@@ -219,63 +205,11 @@ useEffect(()=>{
           ))}
         </div>
       );
-    }
+    }}
+if (!canSee) {
+  return <NoPermissionUI />;
 
-    if (!filteredSortedCollections.length) {
-      return (
-        <div className="py-8 text-center text-gray-500">
-          {isOwner ? (
-            <div>
-              <p>No collections available.</p>
-              <button
-                onClick={() => router.push(Paths.addToCollection.createRoute(colInView.id))}
-                className="mt-4 px-4 py-2 bg-emerald-600 text-white rounded-full shadow hover:bg-emerald-700"
-              >
-                Add Your First Collection
-              </button>
-            </div>
-          ) : (
-            <p>No collections available.</p>
-          )}
-        </div>
-      );
-    }
-
-    return (
-      <div className="space-y-2">
-        {filteredSortedCollections.map((col) => {
-          if (col?.id === colInView.id) return null;
-          const added =
-            newCollections.some((c) => c.id === col.id) ||
-            colInView?.childCollections?.some((j) => j.childCollectionId === col.id);
-
-          return (
-            <div
-              key={col.id}
-              className="bg-white rounded-2xl px-4 py-3 shadow-sm flex items-center justify-between"
-            >
-              <div
-                onClick={() => router.push(Paths.collection.createRoute(col.id))}
-                className="flex-1 pr-3 cursor-pointer"
-              >
-                <p className="text-sm font-medium truncate">{col?.title?.length>20?col.title.slice(0,20)+"...":col.title.length>0?col.title:"Untitled"}</p>
-              </div>
-              <Pill
-                label={added ? "Added ✓" : "Add"}
-                onClick={() =>
-                  setNewCollections((prev) =>
-                    added ? prev.filter((c) => c.id !== col.id) : [...prev, col]
-                  )
-                }
-                variant={added ? "secondary" : "primary"}
-                color={added ? "softBlue" : "soft"}
-              />
-            </div>
-          );
-        })}
-      </div>
-    );
-  };
+}
 
   if (!colInView) {
     return (
@@ -357,7 +291,79 @@ useEffect(()=>{
 
           {/* List container */}
           <div className="bg-cream rounded-2xl p-3 pb-24 shadow-sm">
-            <StoryCollectionTabs tab={tab} setTab={setTab} storyList={storyList} colList={colList} />
+            <StoryCollectionTabs tab={tab} setTab={setTab} storyList={()=>
+               <PaginatedList
+                          fetcher={getMyStories}
+                          pageSize={8}
+                          renderItem={(story) => {
+                              filteredSortedStories.map((col) => {
+
+          if (col?.id === colInView.id) return null;})
+               const added =
+            newCollections.some((c) => c.id === story.id) ||
+            colInView?.storyIdList?.some((j) => j.storyId=== story.id);
+//        
+          return (
+            <div
+              key={story.id}
+              className="bg-white rounded-2xl px-4 py-3 shadow-sm flex items-center justify-between"
+            >
+              <div
+                onClick={() => router.push(Paths.page.createRoute(story.id))}
+                className="flex-1 pr-3 cursor-pointer"
+              >
+                <p className="text-sm font-medium truncate">{story.title.length>20?story.title.slice(0,20)+"..." : story.title || "Untitled"}</p>
+              </div>
+              <Pill
+                label={added ? "Added ✓" : "Add"}
+                onClick={() =>
+                  setNewStories((prev) =>
+                    added ? prev.filter((s) => s.id !== story.id) : [...prev, story]
+                  )
+                }
+                variant={added ? "secondary" : "primary"}
+                color={added ? "softBlue" : "soft"}
+              />
+            </div>
+          );}}/>}
+        
+                   
+            colList={()=> (
+      <PaginatedList
+        fetcher={getMyCollections}
+        pageSize={8}
+        params={{ type: "library" }} // ✅ THIS NOW WORKS
+        renderItem={(col) => {
+          filteredSortedCollections.map((col) => {
+
+          if (col?.id === colInView.id) return null;})
+               const added =
+            newCollections.some((c) => c.id === col.id) ||
+            colInView?.childCollections?.some((j) => j.childCollectionId === col.id);
+               return<div
+              key={col.id}
+              className="bg-white rounded-2xl px-4 py-3 shadow-sm flex items-center justify-between"
+            >
+              <div
+                onClick={() => router.push(Paths.collection.createRoute(col.id))}
+                className="flex-1 pr-3 cursor-pointer"
+              >
+                <p className="text-sm font-medium truncate">{col?.title?.length>20?col.title.slice(0,20)+"...":col.title.length>0?col.title:"Untitled"}</p>
+              </div>
+              <Pill
+                label={added ? "Added ✓" : "Add"}
+                onClick={() =>
+                  setNewCollections((prev) =>
+                    added ? prev.filter((c) => c.id !== col.id) : [...prev, col]
+                  )
+                }
+                variant={added ? "secondary" : "primary"}
+                color={added ? "softBlue" : "soft"}
+              />
+            </div>
+        }}
+      />
+    )} />
           </div>
 
         </div>
@@ -365,3 +371,84 @@ useEffect(()=>{
     </IonContent>
   );
 }
+
+
+const NoPermissionUI = () => {
+  const router = useIonRouter();
+
+  return (
+    <IonContent
+      fullscreen
+      style={{ "--background": Enviroment.palette.cream }}
+    >
+      <div className="h-full flex flex-col items-center justify-center px-6 text-center">
+
+        {/* Icon */}
+        <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-4">
+          <span className="text-2xl">🚫</span>
+        </div>
+
+        {/* Title */}
+        <h2 className="text-lg font-semibold text-soft">
+          No permission
+        </h2>
+
+        {/* Description */}
+        <p className="text-sm text-gray-500 mt-2 max-w-xs">
+          You can’t add to this collection.
+        </p>
+
+        {/* Actions */}
+        <div className="mt-6 flex gap-3">
+          <Pill
+            label="Go Back"
+            onClick={() => router.goBack()}
+            baseClass="bg-gray-200 text-gray-700"
+          />
+
+          <Pill
+            label="Refresh"
+            onClick={() => window.location.reload()}
+            baseClass="bg-blueSea text-white"
+          />
+        </div>
+      </div>
+    </IonContent>
+  );
+};
+  //   return (
+  //     <div className="space-y-2">
+  //       {filteredSortedCollections.map((col) => {
+  //         if (col?.id === colInView.id) return null;
+  //         const added =
+  //           newCollections.some((c) => c.id === col.id) ||
+  //           colInView?.childCollections?.some((j) => j.childCollectionId === col.id);
+
+  //         return (
+            // <div
+            //   key={col.id}
+            //   className="bg-white rounded-2xl px-4 py-3 shadow-sm flex items-center justify-between"
+            // >
+            //   <div
+            //     onClick={() => router.push(Paths.collection.createRoute(col.id))}
+            //     className="flex-1 pr-3 cursor-pointer"
+            //   >
+            //     <p className="text-sm font-medium truncate">{col?.title?.length>20?col.title.slice(0,20)+"...":col.title.length>0?col.title:"Untitled"}</p>
+            //   </div>
+            //   <Pill
+            //     label={added ? "Added ✓" : "Add"}
+            //     onClick={() =>
+            //       setNewCollections((prev) =>
+            //         added ? prev.filter((c) => c.id !== col.id) : [...prev, col]
+            //       )
+            //     }
+            //     variant={added ? "secondary" : "primary"}
+            //     color={added ? "softBlue" : "soft"}
+            //   />
+            // </div>
+  //         );
+  //       })}
+  //     </div>
+  //   );
+  // };
+  // }

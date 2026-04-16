@@ -27,6 +27,7 @@ import { sendGAEvent } from '../../core/ga4';
 import ShareList from './ShareList';
 import { useParams } from 'react-router';
 import { useDialog } from '../../domain/usecases/useDialog';
+import computePermissions from '../../core/compusePermissions';
 function DashboardItem({ page, book, isGrid }) {
   const { isPhone, isHorizPhone, setSuccess, setError} = useContext(Context);
   const currentProfile = useSelector(state=>state.users.currentProfile)
@@ -35,8 +36,15 @@ function DashboardItem({ page, book, isGrid }) {
   const dialog = useSelector(state=>state.users.dialog)
     const router = useIonRouter()
   const pathParams = useParams()
-
-  const [canUserEdit, setCanUserEdit] = useState(false);
+const {canSee,canAdd,canEdit,role}= computePermissions(page,currentProfile, {
+  getAccessList: (s) => s.betaReaders??[],
+  getAccessRole: (r) => r.permission,
+  isPrivate: (s) => s.isPrivate,
+  isOpen: () => false, // stories usually not open collab
+  canWriteRoles: ["commenter", "editor"],
+  canEditRoles: ["editor"],
+});
+  
   const pagesInView = useSelector((state) => state.pages.pagesInView);
   const colInView = useSelector((state) => state.books.collectionInView);
   const [likeFound, setLikeFound] = useState(false);
@@ -89,12 +97,7 @@ const {openDialog,closeDialog}=useDialog()
     }
   };
 
-  const soCanUserEdit = () => {
-    if (currentProfile && currentProfile.id && page && page.authorId === currentProfile.id) {
-      setCanUserEdit(true);
-      return;
-    }
-  };
+
 
   const checkLike = (profile) => {
     if ( profile &&profile.id && page) {
@@ -222,9 +225,7 @@ openDialog({
 };
 
 
-  useLayoutEffect(() => {
-    soCanUserEdit();
-  }, [page]);
+
 
   const onBookmarkPage = () => {
     if (currentProfile && currentProfile.profileToCollections) {

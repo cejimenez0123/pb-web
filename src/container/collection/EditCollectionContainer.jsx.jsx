@@ -28,6 +28,7 @@ import { useDialog } from "../../domain/usecases/useDialog";
 import Pill from "../../components/Pill";
 import Enviroment from "../../core/Enviroment";
 import TabBar from "../../components/TabBar";
+import computePermissions from "../../core/compusePermissions";
 // Layout & spacing
 const containerPadding = "px-4 pb-28 pt-6"; // consistent padding
 const cardPadding = "p-4"; // inner card padding
@@ -62,7 +63,6 @@ const EditCollectionContainer = () => {
    const colInView = useSelector((state) => state.books.collectionInView);
  const [newPages, setNewPages] = useState([]);
  const [followersAre,setFollowersAre]=useState(RoleType.commenter)
-const [canUserEdit,setCanUserEdit]=useState(false)
  const [title,setTitle]=useState("")
  const [openHashtag,setOpenHashtag]=useState(false)
  
@@ -72,7 +72,16 @@ const [canUserEdit,setCanUserEdit]=useState(false)
   const [collection, setCollection] = useState(null);
   const [loading, setLoading] = useState(true);
    const [isPrivate, setIsPrivate] = useState(true)
-// const dialog = useSelector(state=>state.users.dialog)
+
+   const {canSee,canAdd,canEdit,role} = computePermissions(colInView,currentProfile, {
+  getAccessList: (c) => c.roles,
+  getAccessRole: (r) => r.role,
+  isPrivate: (c) => c.isPrivate,
+  isOpen: (c) => c.isOpenCollaboration,
+  canWriteRoles: [RoleType.writer, RoleType.editor],
+  canEditRoles: [RoleType.editor],
+});
+
 const {dialog,openDialog,closeDialog,resetDialog}=useDialog()
 
   useEffect(() => {
@@ -88,22 +97,7 @@ const {dialog,openDialog,closeDialog,resetDialog}=useDialog()
  const handleStoryOrderChange = (newOrder) => {
     setNewPages(newOrder.map((stc, i) => new StoryToCollection(stc.id, i, stc.collection, stc.story, currentProfile)));
   };
-    function soUserCanEdit() {
-      if (!currentProfile || !colInView) {
-        setCanUserEdit(null);
-        return;
-      }
-
-      if (colInView.roles) {
-        let found = colInView.roles.find(colRole => colRole && colRole.profileId === currentProfile.id);
-      
-        if (found && (found.role === RoleType.editor)||colInView.profileId==currentProfile.id) {
-          setCanUserEdit(found);
-          return;
-        }
-      }
-  
-    }
+    // 
 const tabs = [
   { key: "pages", label: "Pages" },
   { key: "collections", label: "Collections" },
@@ -115,7 +109,7 @@ const [activeTab, setActiveTab] = useState("pages");
 ;
   const [search, setSearch] = useState("");
 
-// Memoized filtered lists
+
 const filteredPages = useMemo(() => {
   if (!search.trim()) return newPages;
   const lower = search.toLowerCase();
@@ -210,7 +204,7 @@ const cycleFollowersRole = () => {
       .then(() => setSuccess("Successful Update"))
       .catch((err) => setError(err.message));
   };
-  useEffect(soUserCanEdit,[currentProfile,colInView])
+  
   useEffect(() => {
     if (colInView) {
       setInfo(colInView);
@@ -258,6 +252,13 @@ const cycleFollowersRole = () => {
     );
   openDialog(dia)
   };
+if (loading || !colInView) {
+  return editCollectionSkeleton();
+}
+
+if (!canSee) {
+  return <CollectionNoAccess />;
+}
 
   if(loading||!colInView){return editCollectionSkeleton()}
     return<IonContent fullscreen style={{ "--background": Enviroment.palette.base.background }}>
@@ -545,3 +546,46 @@ const editCollectionSkeleton = () => (
   </div>
   </IonContent>
 ) 
+const CollectionNoAccess = () => {
+  const router = useIonRouter();
+
+  return (
+    <IonContent
+      fullscreen
+      style={{ "--background": Enviroment.palette.base.background }}
+    >
+      <div className="h-full flex flex-col items-center justify-center px-6 text-center">
+
+        {/* Icon */}
+        <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-4">
+          <span className="text-2xl">🔒</span>
+        </div>
+
+        {/* Title */}
+        <h2 className="text-lg font-semibold text-gray-800">
+          This collection is private
+        </h2>
+
+        {/* Description */}
+        <p className="text-sm text-gray-500 mt-2 max-w-xs">
+          You don’t have permission to view or edit this collection.
+        </p>
+
+        {/* Actions */}
+        <div className="mt-6 flex gap-3">
+          <Pill
+            label="Go Back"
+            onClick={() => router.goBack()}
+            baseClass="bg-gray-200 text-gray-700"
+          />
+
+          <Pill
+            label="Regresh"
+            onClick={() => window.location.reload()}
+            baseClass="bg-blueSea text-white"
+          />
+        </div>
+      </div>
+    </IonContent>
+  );
+};
