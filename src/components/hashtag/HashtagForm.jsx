@@ -126,7 +126,7 @@ try{
           placeholder="Type a hashtag and press Enter"
           rows={4}
           cols={12}
-          className=" my-1 w-[90%] md:w-[48em] bg-base-bg mx-auto border-1 border-emerald-600 text-emerald-800"
+          className=" my-1 w-[90%] p-2 rounded-xl md:w-[48em] bg-base-bg mx-auto border-1 border-emerald-600 text-emerald-800"
         />
       <button type="submit"  className="hidden">Submit</button>
       <div className="text-left my-1">
