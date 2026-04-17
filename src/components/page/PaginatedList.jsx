@@ -186,7 +186,7 @@ export default function PaginatedList({
   }
 
   return (
-    <div className={`space-y-4 ${className}`}>
+    <div className={`space-y-2 ${className}`}>
       {(cache[page] || items).map((item, index) => (
         <div key={item.id ?? index}>{renderItem(item, index)}</div>
       ))}

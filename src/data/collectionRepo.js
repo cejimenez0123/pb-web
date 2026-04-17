@@ -36,7 +36,7 @@ import { Preferences } from "@capacitor/preferences";
       search,
       skip,
       take,
-      type, // 👈 add this
+      type, 
     },
   });
 

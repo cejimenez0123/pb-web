@@ -232,18 +232,7 @@ const fetchCollectionProtected = createAsyncThunk("collection/fetchCollectionPro
     
   })
 
-// const getMyCollections = createAsyncThunk("collection/getMyCollections",async (
-//     params,thunkApi
-// )=>{
-//     try{
-//      let data = await collectionRepo.getMyCollections()
-//   console.log("COL X L")
-//       return data
-//     }catch(err){
-//         console.log(err)
-//         throw err
-//     }
-// })
+
 const getMyCollections = createAsyncThunk(
   "collections/getMyCollections",
   async (params, thunkApi) => {

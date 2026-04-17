@@ -157,10 +157,10 @@ const dispatchLogin = ({ email, googleId, idToken, name }) => {
             })   
         }else if(googleId){
 
-           console.log("goog")
+      
         dispatch(logIn({email,uId:googleId,isNative})).then(res=>{
             checkResult(res,payload=>{
-              console.log("googleid")
+            
     router.push(Paths.home,"forward")
                 setPending(false)
             },err=>{

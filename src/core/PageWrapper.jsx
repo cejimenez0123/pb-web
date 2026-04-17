@@ -57,10 +57,10 @@ const PageWrapper = ({
   const pageRef = useRef(null);
   const router = useIonRouter();
   const { setPresentingEl } = useContext(Context);
-   const isDev = import.meta.env.VITE_NODE_ENV=="dev"
+  //  const isDev = import.meta.env.VITE_NODE_ENV=="dev"
 const isNativePlatform = Capacitor.isNativePlatform();
 
-const isNative = (isDev || isNativePlatform)
+const isNative = isNativePlatform
 const {currentProfile}=useSelector(state=>state.users)
   const isAuthed = !!currentProfile?.id;
 const myCollections=useSelector(state=>state.books.myCollections.filter(t=>t))

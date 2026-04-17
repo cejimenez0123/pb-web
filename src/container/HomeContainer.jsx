@@ -53,7 +53,7 @@ const WorkshopItem = ({ item, router }) => {
   <div onClick={() => router.push(Paths.collection.createRoute(item.id))} className={`${CARD} ${CARD_PAD}  w-[100%]`}>
       <IonLabel>
         <h2 className="text-md font-semibold text-emerald-800 truncate">
-          {item.title}
+          {shortName(item.title,30)}
         </h2>
 
         <p className="text-sm text-gray-600 line-clamp-3">

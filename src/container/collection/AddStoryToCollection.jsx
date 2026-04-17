@@ -18,6 +18,7 @@ import { PageType } from "../../core/constants";
 import truncate from "html-truncate";
 import Enviroment from "../../core/Enviroment";
 import Pill from "../../components/Pill";
+import shortName from "../../core/shortName";
 // ── Layout tokens ──────────────────────────────────────
 const WRAP         = "max-w-2xl mx-auto px-4";
 const PAGE_Y       = "py-6";
@@ -139,7 +140,7 @@ const [pendingStories, setPendingStories] = useState(true);
           {/* Item Card */}
           <div className="bg-base-bg rounded-2xl p-4 shadow-sm space-y-2">
             <p className="text-xs text-soft opacity-70">Adding</p>
-            <h2 className="text-lg font-semibold">{item.title}</h2>
+            <h2 className="text-lg font-semibold">   {shortName(item.title,30)}</h2>
             {item.type === PageType.text && item.data && (
               <div
                 className="text-sm text-gray-600 line-clamp-3"

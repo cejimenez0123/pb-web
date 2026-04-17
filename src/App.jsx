@@ -50,7 +50,7 @@ import Dialog from './components/Dialog.jsx';
 import { Capacitor } from '@capacitor/core';
 import { IonReactRouter} from "@ionic/react-router"
 import ErrorBoundary from './ErrorBoundary.jsx';
-import { Redirect, Route } from 'react-router-dom'
+import { Redirect, Route, useLocation } from 'react-router-dom'
 import AboutContainer from './container/AboutContainer.jsx';
 import PageWrapper from './core/PageWrapper.jsx';
 import DashboardContainer from './container/DashboardContainer.jsx';
@@ -138,7 +138,13 @@ const isDesktop = useMediaQuery({ query: '(min-width: 60.1em)' }) // 768px
 const isMobileOrTablet = useMediaQuery({ query: '(max-width: 60em)' })
 
 const showTopNavbar = isDesktop && !isNative
-const showBottomNavbar = (isMobileOrTablet || isNative)  && import.meta.env.VITE_NODE_ENV=="prod"
+
+const location = ionRouter?.routeInfo?.pathname
+
+const hiddenPaths = ["/onboard", "/apply", "/login"];
+
+const showBottomNavbar =
+  (isNative && !hiddenPaths.includes(location)); 
 
  return (
 
@@ -188,7 +194,7 @@ const showBottomNavbar = (isMobileOrTablet || isNative)  && import.meta.env.VITE
 
 
    
-      <Route path={Paths.onboard} render={()=><PageWrapper showBackbutton={false} showHeader={false} presentHeader={false}><OnboardingContainer/></PageWrapper>}/>
+      <Route path={Paths.onboard} render={()=><PageWrapper showBackbutton={false}  presentHeader={false}><OnboardingContainer/></PageWrapper>}/>
 
 
             <Route exact path={Paths.notifications()}
@@ -199,7 +205,7 @@ const showBottomNavbar = (isMobileOrTablet || isNative)  && import.meta.env.VITE
       
         <PageWrapper presentHeader={false
         
-        } showBackbutton={false} >
+        } >
       <LoggedRoute>
 
             <LogInContainer  currentProfile={currentProfile} logIn={props.logIn}/>

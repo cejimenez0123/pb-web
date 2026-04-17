@@ -26,6 +26,7 @@ import { useMediaQuery } from 'react-responsive';
 import { useResponsiveGrid } from '../core/ResponsiveGrid.jsx';
 import usePaginatedResource from '../core/usePaginatedResource.jsx';
 import PaginatedList from '../components/page/PaginatedList.jsx';
+import shortName from '../core/shortName.jsx';
 function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex = 0, role = "button" }) {
   return (
     <span
@@ -360,16 +361,18 @@ scrollY: false,
         : router.push(Paths.collection.createRoute(item.id), "forward");
     }}
   
-    className={`border shadow-md border-1 rounded-full border-purple bg-base-bg  p-4`}
+    className={`border shadow-md border-1  rounded-full border-purple bg-base-bg  p-4`}
   >
     
     {/* {Enviroment.palette.accent.} */}
     {item ? (
       // ✅ REAL CONTENT
-      <div className="flex flex-row gap-4 px-4 items-center">
-        <h6 className='text-text-primary'>{item.type} ·</h6>
+      <div className="flex flex-row gap-4 bg-base-bg px-4 items-center">
+        <h6 className='text-soft'>{item.type} ·</h6>
         {/* {Enviroment.palette.base.} */}
-        <h5 className="text-[1.2em] text-text-primary" >{item.title}</h5>
+        <h5 className="text-[1.2em] text-soft" >
+          {shortName(item.title,35)}
+         </h5>
       </div>
     ) : (
       // ✅ SKELETON STATE

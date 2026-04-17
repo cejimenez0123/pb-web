@@ -26,7 +26,7 @@ onUserSignIn({idToken:result.idToken,email:result.profile.email})
 
    return <div onClick={handleAppleSignIn}  color="dark" 
 className='bg-black btn flex flex-row rounded-full flex mx-auto h-[4rem] text-white w-[10rem] mt-8'>
-     <IonImg src={applelogo} className='max-h-5 max-w-5'/> <IonText class='text-small'>Sign in</IonText>
+     <IonImg src={applelogo} className='max-h-5  mb-2 max-w-5'/> <IonText class='text-small'>Sign in</IonText>
     </div>
 
 }

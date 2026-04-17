@@ -20,6 +20,8 @@ import { getMyCollections } from "../actions/CollectionActions";
 import { getMyStories } from "../actions/StoryActions";
 import PaginatedList from "../components/page/PaginatedList";
 import usePaginatedResource from "../core/usePaginatedResource";
+import ListPill from "../components/page/ListPill";
+import SectionHeader from "../components/SectionHeader";
 
 const TABS = {
   POSTS: "pages",
@@ -62,7 +64,7 @@ const collections = usePaginatedResource({
 const communities = useMemo(
   () =>
     (collections.items ?? []).filter(
-      (col) => (col?.childCollections?.length ?? 0) > 0
+      (col) => (![...profile.profileToCollections.map(ptc=>ptc.collection.id)].includes(col.id))&&(col?.childCollections?.length ?? 0) > 0
     ),
   [collections.items]
 );
@@ -130,20 +132,12 @@ const tabs = [
 const IndexList = ({ items, router }) => (
   <div className="space-y-2">
     {items.map((i) => (
-      <div
-        key={i.id}
-        onClick={() => router.push(Paths.collection.createRoute(i.id))}
-        className="p-3 rounded-full border border-purple border-1 bg-base-bg backdrop-blur-sm shadow-sm active:scale-[0.98] transition"
-      >
-        <span className="text-[0.95rem] font-medium text-gray-800">
-          {i.title ?? i.name ?? "Untitled"}
-        </span>
-      </div>
+      <ListPill item={i}  onClick={()=>router.push(Paths.collection.createRoute(i.id))}
+   />
     ))}
   </div>
 )
 
-// const ExploreList = () => <div className="text-center text-gray-400 py-4">Explore placeholder</div>;
 const StatChip = ({ value, label }) => (
   <div className="flex flex-col text-center">
     <span className="font-bold">{value}</span>
@@ -218,8 +212,7 @@ className="bg-soft rounded-full p-2"><img src={settings} /></button>
                 <div className="flex flex-wrap gap-2 ">
         {communities.slice(0, 3).map((c) => {
   const path = Paths.collection.createRoute(c.id);
-  console.log("COLSOL",stories)
-console.log("COLEX",collections)
+
   return (
     <Pill
       key={c.id}
@@ -272,14 +265,17 @@ console.log("COLEX",collections)
               <>
                 {search.length==0 && recentPosts.length > 0 && (
                   <section className="space-y-4">
-                    <SectionLabel>Recent</SectionLabel>
-                    <PageProfileList items={recentPosts}  router={router}/>
+         
+                    <SectionHeader title={"Recent"}/>
+                    <PageProfileList items={recentPosts} type={"story"}  router={router}/>
                   </section>
                 )}
 
               
                   <section className="space-y-4">
-                    <SectionLabel>All Pages</SectionLabel>
+
+                    <SectionHeader title={"All Pages"}/>
+                    {/* <SectionLabel>All Pages</SectionLabel> */}
                       <PaginatedList
    ccacheKey="stories"
 params={{ search }}
@@ -287,15 +283,8 @@ search={search}
   fetcher={getMyStories}
   pageSize={8}
   renderItem={(p) => (
-                            <div
-        key={p.id}
-        onClick={() => router.push(Paths.page.createRoute(p.id))}
-      className="px-3 py-3 rounded-full border border-purple border-1 bg-base-bg backdrop-blur-sm shadow-sm active:scale-[0.98] transition"
-      >
-        <span className="text-[0.95rem] min-h-10  font-medium text-gray-800">
-        {p?.title?.length > 30 ? p.title.slice(0,30)+" ..." : p.title.length ==0?"Untitled":p.title}
-        </span>
-      </div>
+    <ListPill item={p} onClick={()=>router.push(Paths.page.createRoute(p.id))}  router={router}/>
+ 
                           )}
                         />
 
@@ -313,13 +302,14 @@ search={search}
   <>
     {search.length === 0 && recentCollections.length > 0 && (
       <section className="space-y-4">
-        <SectionLabel>Recent</SectionLabel>
+    
+        <SectionHeader title={"Recent"}/>
         <IndexList items={recentCollections} router={router} />
       </section>
     )}
 
-    <SectionLabel>All Collections</SectionLabel>
 
+<SectionHeader title={"All Collections"}/>
        <PaginatedList
       cacheKey="collections"
   params={{ type: "book", search }}
@@ -329,15 +319,8 @@ search={search}
 
     
          renderItem={(i) => (
-            <div
-        key={i.id}
-        onClick={() => router.push(Paths.collection.createRoute(i.id))}
-        className="p-3 rounded-full border border-purple border-1 bg-base-bg backdrop-blur-sm shadow-sm active:scale-[0.98] transition"
-      >
-        <span className="text-[0.95rem] font-medium text-gray-800">
-          {i.title?? "Untitled"}
-        </span>
-      </div>)}
+      <ListPill item={i} router={router} onClick={()=>{router.push(Paths.collection.createRoute(i.id))}}/>
+      )}
        />
   
   

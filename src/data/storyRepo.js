@@ -89,30 +89,12 @@ class StoryRepo{
       
         return res.data
     }
-// async getMyStories() {
-//   try {
-//     const headers = await this.getAuthHeaders();
-//     console.log(headers)
-// console.log("GETMYHEADER",headers)
-//     const res = await axios.get(
-//       this.url + "/profile/protected",
-//       { headers:{
-//         ...headers
-//       } }
-//     );
-// console.log("GET MY STORIES",res)
-//     return res.data;
-//   } catch (e) {
-//     console.error("getMyStories failed:", e);
-//     throw e; // IMPORTANT so thunk rejects properly
-//   }
-// }
+
      async getMyStories({ skip = 0, take = 50 ,search=""} = {}) {
   try {
     const headers = await this.getAuthHeaders();
 
-    console.log("GETMYHEADER", headers);
-    console.log("PAGINATION PARAMS", { skip, take });
+
 
     const res = await axios.get(
       this.url + "/profile/protected",
