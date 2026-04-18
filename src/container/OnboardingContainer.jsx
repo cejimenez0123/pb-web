@@ -720,7 +720,7 @@ const Step4 = () => {
 
 if (user) {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-cream p-6">
+    <div className="min-h-screen flex overflow-y-scoll pb-20 items-center justify-center bg-cream pt-6 px-6">
       <ThankYou user={user} />
     </div>
   );
