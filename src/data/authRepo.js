@@ -67,13 +67,30 @@ class AuthRepo{
      
       return res.data
     }
-    async startSession({uId,email,password,identityToken}){
-const headers = await this.getAuthHeaders()
-        const res = await axios.post(Enviroment.url+"/auth/session",{uId,email,password,identityToken},
-            {headers:headers})
+//     async startSession({uId,email,password,identityToken}){
+// const headers = await this.getAuthHeaders()
+//         const res = await axios.post(Enviroment.url+"/auth/session",{uId,email,password,identityToken},
+//             {headers:headers})
 
-        return res.data
-    }
+//         return res.data
+//     }
+async startSession({ uId, email, password, identityToken }) {
+  const headers = await this.getAuthHeaders();
+
+//   const API_BASE = import.meta.env.VITE_API_URL;
+
+//   if (!API_BASE) {
+//     throw new Error("VITE_API_URL not set");
+//   }
+
+  const res = await axios.post(
+    `${Enviroment.url}/auth/session`,
+    { uId, email, password, identityToken },
+    { headers }
+  );
+
+  return res.data;
+}
     async updateSubscription({token,frequency}){
         
         const res = await axios.put(Enviroment.url+"/auth/subscription",{

@@ -106,49 +106,113 @@ function LogInCard({setLogInError}){
 setError("Values can't be empty");
         }
     }
-  
-const dispatchLogin = ({ email, googleId, idToken, name }) => {
+  useEffect(()=>{
+  dispatch(signOutAction())
+  },[])
+// const dispatchLogin = ({ email, googleId, idToken, name }) => {
+ 
+//         if(idToken){
+//             dispatch(logIn({email,idToken:idToken,isNative})).then(res=>{
+//                 checkResult(res,async payload=>{
+//                   //  router.push(Paths.home)
    
-        if(idToken){
-            dispatch(logIn({email,idToken:idToken,isNative})).then(res=>{
-                checkResult(res,async payload=>{
-                  //  router.push(Paths.home)
-   
-    router.push(Paths.home,"forward")
-                    setPending(false)
-                },err=>{
+//     router.push(Paths.home,"forward")
+//                     setPending(false)
+//                 },err=>{
 
-               handleAuthError(err)
+//                handleAuthError(err)
              
                     
-                    setPending(false)
-                })
-            })   
-        }else if(googleId){
+//                     setPending(false)
+//                 })
+//             })   
+//         }else if(googleId){
 
           
-        dispatch(logIn({email,uId:googleId,isNative})).then(res=>{
-            checkResult(res,payload=>{
-            if(payload.profile){
- router.push(Paths.home,"forward")
-                setPending(false)
-            }else{
-              handleAuthError("No Profile")
-            }
+//         dispatch(logIn({email,uId:googleId,isNative})).then(res=>{
+//             checkResult(res,payload=>{
+//             if(payload.profile){
+//  router.push(Paths.home,"forward")
+//                 setPending(false)
+//             }else{
+//               handleAuthError("No Profile")
+//               setError("No Profile")
+//             }
    
-            },err=>{
-               handleAuthError(err)
-            
+//             },err=>{
+//                handleAuthError(err)
+//             setError(err.message)
          
                 
-                setPending(false)
-            })
-        })   
-    }else {
-  setError("Invalid login response");
-  setPending(false);
-}
-    }
+//                 setPending(false)
+//             })
+//         })   
+//     }else {
+//   setError("Invalid login response");
+//   setPending(false);
+// }
+//     }
+const dispatchLogin = ({ email, googleId, idToken, name }) => {
+  if (!idToken && !googleId) {
+    setError("Google login failed: missing credentials");
+    return;
+  }
+
+  setPending(true);
+
+  dispatch(
+    logIn({
+      email: email || null,
+      uId: googleId || null,
+      idToken: idToken || null,
+      isNative,
+    })
+  ).then(res => {
+    checkResult(
+      res,
+      payload => {
+        if (payload?.profile?.id) {
+          router.push(Paths.home, "forward");
+        } else {
+          setError("No profile found");
+        }
+        setPending(false);
+      },
+      err => {
+        handleAuthError(err);
+        setPending(false);
+      }
+    );
+  });
+};
+// const dispatchLogin = ({ email, googleId, idToken, name }) => {
+//   setPending(true);
+
+//   dispatch(
+//     logIn({
+//       email: email || null,
+//       uId: googleId || null,
+//       idToken: idToken || null,
+//       isNative,
+//     })
+//   ).then(res => {
+//     checkResult(
+//       res,
+//       payload => {
+//         if (payload?.profile?.id) {
+//           router.push(Paths.home, "forward");
+//         } else {
+//           setError("No profile found");
+//         }
+//         setPending(false);
+//       },
+//       err => {
+//         handleAuthError(err);
+//         setPending(false);
+//       }
+//     );
+//   });
+// };
   const handleAuthError = (err) => {
   const message =
     err?.status === 401

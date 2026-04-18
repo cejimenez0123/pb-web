@@ -5,6 +5,7 @@ import authRepo from "../data/authRepo";
 import profileRepo from "../data/profileRepo";
 import { Preferences } from "@capacitor/preferences";
 import algoliaRepo from "../data/algoliaRepo";
+import { SocialLogin } from "@capgo/capacitor-social-login";
 const logIn = createAsyncThunk(
     'users/logIn',
     async (params,thunkApi) => {
@@ -33,7 +34,8 @@ const referSomeone =createAsyncThunk('users/referral',async (params,thunkApi)=>{
 const signOutAction = createAsyncThunk('users/signOut',async (params,thunkApi)=>{
     try{
        await Preferences.clear()
-   await signOut(auth)
+       await SocialLogin.logout()
+  //  await signOut(auth)
    return 
     }catch(err){
       

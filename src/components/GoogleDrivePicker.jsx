@@ -22,9 +22,9 @@ export default function GoogleDrivePicker({ onFilePicked, onReauthenticateNeeded
 
   // Initialize Social Login
   useLayoutEffect(() => {
-    SocialLogin.initialize({
+   SocialLogin.initialize({
       google: {
-        webClientId: CLIENT_ID,
+          webClientId: CLIENT_ID,
           iOSClientId: IOS_CLIENT_ID,
           iOSServerClientId: CLIENT_ID,
         mode: 'online',

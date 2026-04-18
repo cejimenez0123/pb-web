@@ -60,6 +60,8 @@ import DiscoveryContainer from './container/DiscoveryContainer.jsx';
 import { SplashScreen } from '@capacitor/splash-screen';
 import OAuthCallback from './container/page/OauthCallback.jsx';
 // import '@ionic/react/css/palettes/dark.always.css';
+
+import initSocialLogin from './components/initSocialLogin.jsx';
 setupIonicReact()
 
 const libraries = ["places"];
@@ -75,6 +77,10 @@ const {loading}=useSelector(state=>state.users)
   const [formerPage, setFormerPage] = useState(null);
 
 
+const CLIENT_ID = import.meta.env.VITE_OAUTH2_CLIENT_ID;
+const IOS_CLIENT_ID = import.meta.env.VITE_IOS_CLIENT_ID;
+
+initSocialLogin(CLIENT_ID, IOS_CLIENT_ID);
 
 
 const ionRouter = useIonRouter();

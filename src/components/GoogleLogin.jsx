@@ -31,7 +31,7 @@ function GoogleLoginInner({ drive, onUserSignIn }) {
 
   const CLIENT_ID = import.meta.env.VITE_OAUTH2_CLIENT_ID;
   const IOS_CLIENT_ID = import.meta.env.VITE_IOS_CLIENT_ID;
-
+console.log("CLIENT"+CLIENT_ID,"ios"+IOS_CLIENT_ID)
   const driveTokenKey = "googledrivetoken";
 
   // ---------------------------
@@ -115,69 +115,116 @@ function GoogleLoginInner({ drive, onUserSignIn }) {
   // ---------------------------
   // 4️⃣ Native login (FIXED)
   // ---------------------------
-  const nativeGoogleSignIn = async () => {
-    if (pending) return;
+  // const nativeGoogleSignIn = async () => {
+  //   if (pending) return;
 
-    setPending(true);
-    setLoginError(null);
+  //   setPending(true);
+  //   setLoginError(null);
 
-    sendGAEvent("login_start", {
-      method: "google",
-      platform: "native",
-      drive: !!drive,
+  //   sendGAEvent("login_start", {
+  //     method: "google",
+  //     platform: "native",
+  //     drive: !!drive,
+  //   });
+
+  //   try {
+  //     const user = await SocialLogin.login({
+  //       provider: "google",
+  //       options: {
+  //         scopes: [
+  //           "email",
+  //           "profile",
+  //           "https://www.googleapis.com/auth/drive.readonly",
+  //         ],
+  //       },
+  //     });
+
+  //     if (!user.result) throw new Error("No user data returned");
+
+  //     const { accessToken, idToken, profile } = user.result;
+
+  //     const tokenValue = accessToken?.token || accessToken;
+  //     const expiry = Date.now() + 3600 * 1000;
+
+  //     await Promise.all([
+  //       Preferences.set({ key: "userEmail", value: profile.email }),
+  //       Preferences.set({ key: "userName", value: profile.name }),
+  //       Preferences.set({ key: "googleId", value: profile.id }),
+  //       Preferences.set({ key: "googleIdToken", value: idToken || "" }),
+  //       Preferences.set({ key: driveTokenKey, value: tokenValue || "" }),
+  //       Preferences.set({
+  //         key: "googledrivetoken_expiry",
+  //         value: expiry.toString(),
+  //       }),
+  //     ]);
+
+  //     setAccessToken(tokenValue);
+  //     setIdToken(idToken);
+  //     setSignedIn(true);
+
+  //     onUserSignIn?.({
+  //       email: profile.email,
+  //       name: profile.name,
+  //       googleId: profile.id,
+  //       driveAccessToken: tokenValue,
+  //       idToken,
+  //     });
+  //   } catch (err) {
+  //     console.error(err);
+
+  //     setLoginError("Google Sign-In failed.");
+  //   } finally {
+  //     setPending(false);
+  //   }
+  // };
+const nativeGoogleSignIn = async () => {
+  if (pending) return;
+
+  setPending(true);
+  setLoginError(null);
+
+  try {
+    const user = await SocialLogin.login({
+      provider: "google",
+      options: {
+        scopes: [
+          "email",
+          "profile",
+          "https://www.googleapis.com/auth/drive.readonly",
+        ],
+      },
     });
 
-    try {
-      const user = await SocialLogin.login({
-        provider: "google",
-        options: {
-          scopes: [
-            "email",
-            "profile",
-            "https://www.googleapis.com/auth/drive.readonly",
-          ],
-        },
-      });
+    const result = user?.result;
 
-      if (!user.result) throw new Error("No user data returned");
+    if (!result) throw new Error("No Google result returned");
 
-      const { accessToken, idToken, profile } = user.result;
+    const profile = result.profile || {};
+    const idToken = result.idToken || result.authentication?.idToken;
+    const accessToken = result.accessToken?.token || result.accessToken;
 
-      const tokenValue = accessToken?.token || accessToken;
-      const expiry = Date.now() + 3600 * 1000;
-
-      await Promise.all([
-        Preferences.set({ key: "userEmail", value: profile.email }),
-        Preferences.set({ key: "userName", value: profile.name }),
-        Preferences.set({ key: "googleId", value: profile.id }),
-        Preferences.set({ key: "googleIdToken", value: idToken || "" }),
-        Preferences.set({ key: driveTokenKey, value: tokenValue || "" }),
-        Preferences.set({
-          key: "googledrivetoken_expiry",
-          value: expiry.toString(),
-        }),
-      ]);
-
-      setAccessToken(tokenValue);
-      setIdToken(idToken);
-      setSignedIn(true);
-
-      onUserSignIn?.({
-        email: profile.email,
-        name: profile.name,
-        googleId: profile.id,
-        driveAccessToken: tokenValue,
-        idToken,
-      });
-    } catch (err) {
-      console.error(err);
-
-      setLoginError("Google Sign-In failed.");
-    } finally {
-      setPending(false);
+    if (!idToken) {
+      throw new Error("Missing Google ID token (required for login)");
     }
-  };
 
+    const payload = {
+      email: profile.email,
+      name: profile.name,
+      googleId: profile.id,
+      idToken,
+      driveAccessToken: accessToken,
+    };
+
+    await onUserSignIn?.(payload);
+
+    setSignedIn(true);
+  } catch (err) {
+    console.error("GOOGLE NATIVE LOGIN ERROR:", err);
+    setLoginError(err.message || "Google Sign-In failed.");
+  } finally {
+    setPending(false);
+  }
+};
   // ---------------------------
   // 5️⃣ Web login
   // ---------------------------
@@ -203,78 +250,117 @@ function GoogleLoginInner({ drive, onUserSignIn }) {
   // ---------------------------
   // 6️⃣ Web credential (FIXED race)
   // ---------------------------
-  const handleCredentialResponse = async (response) => {
-    if (pending) return;
-    setPending(true);
+  // const handleCredentialResponse = async (response) => {
+  //   if (pending) return;
+  //   setPending(true);
 
-    try {
-      const decoded = JSON.parse(atob(response.credential.split(".")[1]));
+  //   try {
+  //     const decoded = JSON.parse(atob(response.credential.split(".")[1]));
 
-      const info = {
-        email: decoded.email,
-        name: decoded.name || decoded.given_name,
-        googleId: decoded.sub,
-      };
+  //     const info = {
+  //       email: decoded.email,
+  //       name: decoded.name || decoded.given_name,
+  //       googleId: decoded.sub,
+  //     };
 
-      await Promise.all([
-        Preferences.set({ key: "userEmail", value: info.email }),
-        Preferences.set({ key: "userName", value: info.name }),
-        Preferences.set({ key: "googleId", value: info.googleId }),
-        Preferences.set({
-          key: "googleIdToken",
-          value: response.credential,
-        }),
-      ]);
+  //     await Promise.all([
+  //       Preferences.set({ key: "userEmail", value: info.email }),
+  //       Preferences.set({ key: "userName", value: info.name }),
+  //       Preferences.set({ key: "googleId", value: info.googleId }),
+  //       Preferences.set({
+  //         key: "googleIdToken",
+  //         value: response.credential,
+  //       }),
+  //     ]);
 
-      setIdToken(response.credential);
-      setSignedIn(true);
+  //     setIdToken(response.credential);
+  //     setSignedIn(true);
 
-      if (window.google?.accounts?.oauth2) {
-        const tokenClient = window.google.accounts.oauth2.initTokenClient({
-          client_id: CLIENT_ID,
-          scope: "https://www.googleapis.com/auth/drive.readonly",
-          callback: async (tokenResponse) => {
-            if (!tokenResponse.access_token) {
-              setLoginError("Failed to get Drive token");
-              return;
-            }
+  //     if (window.google?.accounts?.oauth2) {
+  //       const tokenClient = window.google.accounts.oauth2.initTokenClient({
+  //         client_id: CLIENT_ID,
+  //         scope: "https://www.googleapis.com/auth/drive.readonly",
+  //         callback: async (tokenResponse) => {
+  //           if (!tokenResponse.access_token) {
+  //             setLoginError("Failed to get Drive token");
+  //             return;
+  //           }
 
-            const expiryMs =
-              Date.now() + tokenResponse.expires_in * 1000;
+  //           const expiryMs =
+  //             Date.now() + tokenResponse.expires_in * 1000;
 
-            await Promise.all([
-              Preferences.set({
-                key: driveTokenKey,
-                value: tokenResponse.access_token,
-              }),
-              Preferences.set({
-                key: "googledrivetoken_expiry",
-                value: expiryMs.toString(),
-              }),
-            ]);
+  //           await Promise.all([
+  //             Preferences.set({
+  //               key: driveTokenKey,
+  //               value: tokenResponse.access_token,
+  //             }),
+  //             Preferences.set({
+  //               key: "googledrivetoken_expiry",
+  //               value: expiryMs.toString(),
+  //             }),
+  //           ]);
 
-            setAccessToken(tokenResponse.access_token);
+  //           setAccessToken(tokenResponse.access_token);
 
-            setSignedIn(true); // ✅ FIXED PLACE
+  //           setSignedIn(true); // ✅ FIXED PLACE
 
-            onUserSignIn?.({
-              ...info,
-              driveAccessToken: tokenResponse.access_token,
-              idToken: response.credential,
-            });
-          },
-        });
+  //           onUserSignIn?.({
+  //             ...info,
+  //             driveAccessToken: tokenResponse.access_token,
+  //             idToken: response.credential,
+  //           });
+  //         },
+  //       });
 
-        tokenClient.requestAccessToken();
-      }
-    } catch (e) {
-      console.error(e);
-      setLoginError("Login failed");
-    } finally {
-      setPending(false);
+  //       tokenClient.requestAccessToken();
+  //     }
+  //   } catch (e) {
+  //     console.error(e);
+  //     setLoginError("Login failed");
+  //   } finally {
+  //     setPending(false);
+  //   }
+  // };
+const handleCredentialResponse = async (response) => {
+  if (pending) return;
+  setPending(true);
+
+  try {
+    if (!response?.credential) {
+      throw new Error("Missing Google credential");
     }
-  };
 
+    const idToken = response.credential;
+
+    // safer decode (guarded)
+    let decoded = null;
+    try {
+      decoded = JSON.parse(atob(idToken.split(".")[1]));
+    } catch (e) {
+      throw new Error("Invalid Google token format");
+    }
+
+    const payload = {
+      email: decoded?.email,
+      name: decoded?.name || decoded?.given_name,
+      googleId: decoded?.sub,
+      idToken,
+    };
+
+    if (!payload.email || !payload.googleId) {
+      throw new Error("Invalid Google user data");
+    }
+
+    await onUserSignIn?.(payload);
+
+    setSignedIn(true);
+  } catch (err) {
+    console.error("GOOGLE WEB LOGIN ERROR:", err);
+    setLoginError(err.message || "Login failed");
+  } finally {
+    setPending(false);
+  }
+};
   // ---------------------------
   // 7️⃣ UI
   // ---------------------------
@@ -316,3 +402,20 @@ export default function GoogleLogin(props) {
     </ErrorBoundary>
   );
 }
+
+
+
+const initSocialLogin = (CLIENT_ID, IOS_CLIENT_ID) => {
+
+
+  SocialLogin.initialize({
+    google: {
+      webClientId: CLIENT_ID,
+      iOSClientId: IOS_CLIENT_ID,
+      iOSServerClientId: CLIENT_ID,
+      mode: "online",
+    },
+  }).catch(err => {
+    console.error("SocialLogin init failed:", err);
+  });
+};
