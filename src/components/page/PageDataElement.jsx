@@ -90,17 +90,7 @@ export default function PageDataElement({
     }
   }
 
-  if (!page) {
-    return (
-      <div className="flex justify-center py-6">
-        <IonLoading
-  isOpen={!page}
-  message={"Loading your space..."}
-  spinner="crescent"
-/>
-      </div>
-    );
-  }
+
 
   return <Element page={page} />;
 }

@@ -95,13 +95,7 @@ case PageType.link:{
        )
 }
 default:
-    return(<div        className={`skeleton `}>
-   <IonLoading
-  isOpen={!page}
-  message={"Loading your space..."}
-  spinner="crescent"
-/>
-</div>)
+    return(null)
 }
 }
 if(!page) return null;

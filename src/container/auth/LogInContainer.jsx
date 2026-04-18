@@ -1,6 +1,6 @@
 import {useContext,useEffect,useState} from 'react'
 import "../../App.css"
-import { logIn, } from '../../actions/UserActions';
+import { logIn, signOutAction, } from '../../actions/UserActions';
 import {useDispatch} from 'react-redux';
 import loadingGif from "../../images/loading.gif"
 import Paths from '../../core/paths';
@@ -113,7 +113,7 @@ const dispatchLogin = ({ email, googleId, idToken, name }) => {
             dispatch(logIn({email,idToken:idToken,isNative})).then(res=>{
                 checkResult(res,async payload=>{
                   //  router.push(Paths.home)
-           console.log("idTOken")
+   
     router.push(Paths.home,"forward")
                     setPending(false)
                 },err=>{
@@ -126,12 +126,16 @@ const dispatchLogin = ({ email, googleId, idToken, name }) => {
             })   
         }else if(googleId){
 
-      
+          
         dispatch(logIn({email,uId:googleId,isNative})).then(res=>{
             checkResult(res,payload=>{
-            
-    router.push(Paths.home,"forward")
+            if(payload.profile){
+ router.push(Paths.home,"forward")
                 setPending(false)
+            }else{
+              handleAuthError("No Profile")
+            }
+   
             },err=>{
                handleAuthError(err)
             

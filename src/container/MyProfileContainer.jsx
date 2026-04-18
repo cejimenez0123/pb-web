@@ -64,7 +64,7 @@ const collections = usePaginatedResource({
 const communities = useMemo(
   () =>
     (collections.items ?? []).filter(
-      (col) => (![...profile.profileToCollections.map(ptc=>ptc.collection.id)].includes(col.id))&&(col?.childCollections?.length ?? 0) > 0
+      (col) => (![...profile?.profileToCollections.map(ptc=>ptc?.collection?.id)].includes(col?.id))&&(col?.childCollections?.length ?? 0) > 0
     ),
   [collections.items]
 );

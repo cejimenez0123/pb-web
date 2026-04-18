@@ -169,7 +169,7 @@ const showBottomNavbar =
     
        
        <Dialog dialog={dialog} presentingElement={presentingEl} />
-       {/* <IonLoading isOpen={loading} message="Loading..." /> */}
+      
 <Alert />
 <div  >
     <IonRouterOutlet>   
@@ -206,10 +206,10 @@ const showBottomNavbar =
         <PageWrapper presentHeader={false
         
         } >
-      <LoggedRoute>
+      {/* <LoggedRoute> */}
 
             <LogInContainer  currentProfile={currentProfile} logIn={props.logIn}/>
-          </LoggedRoute>
+          {/* </LoggedRoute> */}
                      </PageWrapper>
          
 

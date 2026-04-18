@@ -29,8 +29,8 @@ export default function ExploreList({ label="Explore",collection }) {
 
       if (currentProfile) {
         await dispatch(getRecommendedCollectionsProfile());
-      } else if (collection) {
-        await dispatch(getRecommendedCollections({ colId: collection.id }));
+      } else if (collection && collection.id) {
+        await dispatch(getRecommendedCollections({ colId: collection?.id }));
       }
 
       if (!mounted) return;

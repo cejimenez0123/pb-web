@@ -132,19 +132,17 @@ useEffect(() => {
   useEffect(() => {
     setLocation(DEFAULT_LOCATION);
   }, [isGlobal]);
-  useIonViewWillEnter(() => {
-  setError(null);
-
-  if (!currentProfile?.id) return;
-
-  // wait for profile + optionally page hydration
-  fetchWorkshops();
-});
+useEffect(() => {
+  if (currentProfile?.id) {
+    fetchWorkshops();
+  }
+}, [currentProfile, isGlobal]);
 
 
 const isMounted = useRef(true);
 useEffect(() => {
-  return () => { isMounted.current = false; };
+ if (!isMounted.current) return;
+setLoading(false);
 }, []);
 
 
@@ -152,15 +150,16 @@ useEffect(() => {
    
     try {
       const res = await dispatch(findWorkshopGroups({
-        location: currentProfile?.location,
+       location: isGlobal ? null : location,
         radius: 50,
         global: isGlobal
       }));
       checkResult(res, ({ groups }) => {
          if (!isMounted.current) return;
          let sort = [...groups].sort((a,b)=>new Date(b.updated)-new Date(a.updated))
-        setWorkshops(prev => ({ ...prev, workshops: sort|| [] }));
-      });
+        setWorkshops(sort || []);
+        setLoading(false);
+});
     } catch (err) {
       console.error("Failed fetching workshops:", err);
     }
@@ -199,7 +198,7 @@ async function activeUser(params) {
   
   activeUser()
     // }
-  }, [currentProfile]);
+}, [currentProfile, page, location]);
 
 
 
@@ -247,23 +246,20 @@ const handleGroupClick = () => {
     location,
     radius
   })).then(res => {
-    checkResult(
-      res,
-      payload => {
-        if (payload?.collection) {
-          // Navigate directly using Ionic router
-          router.push(Paths.collection.createRoute(payload.collection.id), 'forward', 'push');
-        }
-        if (payload?.error) {
-          setError(payload.error.message);
-          // setSuccess(null);
-        }
-      },
-      err => setError(err.message)
-    ).finally(() => setLoading(false));
-  });
-};
+  checkResult(
+    res,
+    payload => {
+      if (payload?.collection) {
+        router.push(Paths.collection.createRoute(payload.collection.id), 'forward', 'push');
+      }
+    },
+    err => setError(err.message)
+  );
 
+  setLoading(false);
+});
+};
+const isInitialLoading = !currentProfile;
 
   const isLocationReady = isGlobal || (location?.latitude && location?.longitude);
 return<IonContent
@@ -275,7 +271,7 @@ return<IonContent
     // Loading State
    <div className="flex items-center justify-center h-full">
       <IonLoading
-  isOpen={!currentProfile}
+  isOpen={isInitialLoading}
   message={"Loading your space..."}
   spinner="crescent"
 />
@@ -337,15 +333,13 @@ return<IonContent
         </button>
 
         {/* Loading Indicator */}
-        {loading && (
-         <div className="flex justify-center pt-2">
-            <IonLoading
-  isOpen={loading}
-  message={"Loading your space..."}
-  spinner="crescent"
-/>
-          </div>
-        )}
+    {loading && (
+  <IonLoading
+    isOpen={loading}
+    message={"Loading your space..."}
+    spinner="crescent"
+  />
+)}
       </div>
     <div>
 </div>

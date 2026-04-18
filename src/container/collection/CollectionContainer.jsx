@@ -684,20 +684,24 @@ const MemberTab = ({ collection }) => {
 
 const AboutTab = ({ collection}) => {
   const [locationName,setLocationName]=useState("")
-  useEffect(()=>{
-    
-  async function city(){
-     let address 
-    
-   if( collection?.location && collection?.location?.city?.length==0){
-    address = await fetchCity(prof.location)
-      setLocationName(address)
-   }
-  
-  
-  }
-  city()
-  },[collection])
+useEffect(() => {
+  if (!currentProfile || !location?.latitude) return;
+
+  let cancelled = false;
+
+  (async () => {
+    const city = await fetchCity(location);
+    if (!cancelled) {
+      registerUser(currentProfile.id, {
+        longitude: location.longitude,
+        latitude: location.latitude,
+        city
+      });
+    }
+  })();
+
+  return () => { cancelled = true };
+}, [location?.latitude]); // 👈 only trigger when actually meaningful
 
   // const hashTags = prof?.hashtags ?? [];
   if (!collection) return null;
