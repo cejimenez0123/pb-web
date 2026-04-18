@@ -1,87 +1,197 @@
+// import { IonText, useIonRouter } from '@ionic/react';
+// import Paths from '../../core/paths';
+// import { Capacitor } from '@capacitor/core';
+
+// export default function ThankYou({ user }) {
+//   const router = useIonRouter()
+
+//   const buttonClassNames = "bg-emerald-600 rounded-full px-6 py-2 cursor-pointer select-none";
+
+//   return (
+//     <div
+//       id="welcome"
+//       className="p-8 text-left leading-[1.5em] text-emerald-600 overflow-scroll max-w-xl mx-auto"
+//     >
+//       <div
+//   id="welcome"
+//   className="p-8 text-left leading-relaxed text-emerald-700 max-w-xl mx-auto rounded-2xl shadow-md bg-white/70 backdrop-blur-sm"
+// >
+//   <p className="text-2xl font-semibold mb-4">
+//     Welcome aboard, {user.preferredName}! 🌿
+//   </p>
+
+//   <p className="text-lg mb-6">
+//     You’re officially part of the <span className="font-medium text-emerald-800">Plumbum beta</span> — a growing community of writers who believe in creating with honesty, sharing with courage, and growing together.
+//   </p>
+
+//   <p className="text-lg mb-6">
+//     Plumbum isn’t just an app — it’s a shared space for discovery. Here, you’ll help us shape what writing can feel like when connection, curiosity, and care come first.
+//   </p>
+
+  
+
+//   <p className="text-lg mb-6">
+//     Stay tuned for updates through our Instagram
+//     {' '}
+//     <a
+//       href="https://www.instagram.com/plumbumapp?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+//       target="_blank"
+//       rel="noopener noreferrer"
+//       className="underline text-emerald-800 hover:text-emerald-600"
+//     >
+//       @plumbumapp
+//     </a>
+//     {' '}
+//     or our partners at
+//     {' '}
+//     <a
+//       href="https://www.instagram.com/bxwriters?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+//       target="_blank"
+//       rel="noopener noreferrer"
+//       className="underline text-emerald-800 hover:text-emerald-600"
+//     >
+//       @bxwriters
+//     </a>.
+//   </p>
+
+//   <p className="text-lg mb-6">
+//     We’re so grateful you’re here — your ideas, feedback, and voice will help us build something that truly belongs to its writers.
+//   </p>
+
+//   <p className="text-lg font-medium mb-8">
+//     Let’s take our time, build something lasting, and make our story — together.
+//   </p>
+
+//   <div className="text-right mt-8 border-t border-emerald-200 pt-4">
+//     <p className="font-semibold text-emerald-800">— Sol Emilio Christian</p>
+//     <p className="text-sm text-emerald-600">Founder, Plumbum</p>
+//   </div>
+// </div>
+//       <div className="flex flex-row justify-between mt-6 gap-4">
+//         {!Capacitor.isNativePlatform()? <IonText
+//           onClick={() => router.push(Paths.about())}
+//           className={buttonClassNames}
+//           style={{ width: '8em', margin:"auto",textAlign:"center", color: 'white', userSelect: 'none' }}
+//         >
+//           Go to About
+//         </IonText>:null}
+//         <IonText
+//           onClick={() => router.push(Paths.discovery)}
+//           className={buttonClassNames}
+//           style={{ width: '8em', textAlign: 'center', color: 'white', userSelect: 'none' }}
+//         >
+//           Go to Discover
+//         </IonText>
+//       </div>
+//     </div>
+//   );
+// }
+
 import { IonText, useIonRouter } from '@ionic/react';
 import Paths from '../../core/paths';
 import { Capacitor } from '@capacitor/core';
 
 export default function ThankYou({ user }) {
-  const router = useIonRouter()
+  const router = useIonRouter();
 
-  const buttonClassNames = "bg-emerald-600 rounded-full px-6 py-2 cursor-pointer select-none";
+  const buttonClassNames =
+    "bg-emerald-600 text-white rounded-full px-6 py-3 font-medium active:scale-[0.98] transition select-none";
 
   return (
-    <div
-      id="welcome"
-      className="p-8 text-left leading-[1.5em] text-emerald-600 overflow-scroll max-w-xl mx-auto"
-    >
+    <div className="min-h-screen oveflow-y-scroll flex items-center justify-center bg-cream px-4 py-10">
+
       <div
-  id="welcome"
-  className="p-8 text-left leading-relaxed text-emerald-700 max-w-xl mx-auto rounded-2xl shadow-md bg-white/70 backdrop-blur-sm"
->
-  <p className="text-2xl font-semibold mb-4">
-    Welcome aboard, {user.preferredName}! 🌿
-  </p>
+        className="
+          w-full max-w-2xl
+          bg-white/70 backdrop-blur-sm
+          rounded-3xl shadow-lg
+          border border-emerald-100
+          p-6 sm:p-8 md:p-10
+          text-emerald-700
+          
+        "
+      >
 
-  <p className="text-lg mb-6">
-    You’re officially part of the <span className="font-medium text-emerald-800">Plumbum beta</span> — a growing community of writers who believe in creating with honesty, sharing with courage, and growing together.
-  </p>
+        {/* HEADER */}
+        <p className="text-2xl sm:text-3xl font-semibold text-emerald-800 mb-4">
+          Welcome, {user?.preferredName || "friend"} 🌿
+        </p>
 
-  <p className="text-lg mb-6">
-    Plumbum isn’t just an app — it’s a shared space for discovery. Here, you’ll help us shape what writing can feel like when connection, curiosity, and care come first.
-  </p>
+        {/* CORE MESSAGE */}
+        <p className="text-base sm:text-lg leading-relaxed mb-5">
+          You’re in.
+         </p>
 
+        <p className="text-base sm:text-lg leading-relaxed mb-5">
+          We’re creating for creatives to thrive in community.
+          <span className="font-medium text-emerald-800"> trust each other with it</span>.
+          Where expression is handle with care, seen as clarity, and the needed honesty to be our full selves.
+</p>
+        {/* HEALING + TRUST CORE */}
   
 
-  <p className="text-lg mb-6">
-    Stay tuned for updates through our Instagram
-    {' '}
-    <a
-      href="https://www.instagram.com/plumbumapp?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
-      target="_blank"
-      rel="noopener noreferrer"
-      className="underline text-emerald-800 hover:text-emerald-600"
-    >
-      @plumbumapp
-    </a>
-    {' '}
-    or our partners at
-    {' '}
-    <a
-      href="https://www.instagram.com/bxwriters?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
-      target="_blank"
-      rel="noopener noreferrer"
-      className="underline text-emerald-800 hover:text-emerald-600"
-    >
-      @bxwriters
-    </a>.
-  </p>
+        {/* COMMUNITY ROLE */}
+        <p className="text-base sm:text-lg leading-relaxed mb-5">
+          As a beta member, your role is simple:
+          show up honestly, share when you can, and help shape what this becomes.
+          Nothing here is finished — and that’s intentional.
+        </p>
 
-  <p className="text-lg mb-6">
-    We’re so grateful you’re here — your ideas, feedback, and voice will help us build something that truly belongs to its writers.
-  </p>
+        {/* CONNECTION */}
+        <p className="text-base sm:text-lg leading-relaxed mb-6">
+          We’re listening closely through workshops, writing spaces, and conversations —
+          especially through
+          {' '}
+          <a
+            href="https://www.instagram.com/plumbumapp"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline text-emerald-700 hover:text-emerald-600"
+          >
+            @plumbumapp
+          </a>
+         
+  
+        </p>
 
-  <p className="text-lg font-medium mb-8">
-    Let’s take our time, build something lasting, and make our story — together.
-  </p>
+        {/* CLOSING */}
+        <p className="text-base sm:text-lg font-medium mb-8 text-emerald-800">
+          We’re not rushing this, we're building that can last.
+        </p>
 
-  <div className="text-right mt-8 border-t border-emerald-200 pt-4">
-    <p className="font-semibold text-emerald-800">— Sol Emilio Christian</p>
-    <p className="text-sm text-emerald-600">Founder, Plumbum</p>
-  </div>
-</div>
-      <div className="flex flex-row justify-between mt-6 gap-4">
-        {!Capacitor.isNativePlatform()? <IonText
-          onClick={() => router.push(Paths.about())}
-          className={buttonClassNames}
-          style={{ width: '8em', margin:"auto",textAlign:"center", color: 'white', userSelect: 'none' }}
-        >
-          Go to About
-        </IonText>:null}
-        <IonText
-          onClick={() => router.push(Paths.discovery)}
-          className={buttonClassNames}
-          style={{ width: '8em', textAlign: 'center', color: 'white', userSelect: 'none' }}
-        >
-          Go to Discover
-        </IonText>
+        {/* SIGNATURE */}
+        <div className="border-t border-emerald-200 pt-4 mb-6 text-right">
+          <p className="font-semibold text-emerald-800">
+            — Sol Emilio Christian
+          </p>
+          <p className="text-sm text-emerald-600">
+            Founder, Plumbum
+          </p>
+        </div>
+
+        {/* BUTTONS */}
+        <div className="flex flex-col sm:flex-row gap-3 sm:justify-between">
+
+          {!Capacitor.isNativePlatform() && (
+            <IonText
+              onClick={() => router.push(Paths.about())}
+              className={buttonClassNames}
+              style={{ textAlign: "center" }}
+            >
+              About Plumbum
+            </IonText>
+          )}
+
+          <IonText
+            onClick={() => router.push(Paths.discovery)}
+            className={buttonClassNames}
+            style={{ textAlign: "center" }}
+          >
+            Explore Writing
+          </IonText>
+
+        </div>
+
       </div>
     </div>
   );
