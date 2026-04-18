@@ -44,6 +44,7 @@ import CommunitiesPanel from '../../components/profile/CommunitiesPanel';
 import AboutPanel from '../../components/profile/AboutPanel';
 import PaginatedList from '../../components/page/PaginatedList';
 import usePaginatedResource from '../../core/usePaginatedResource';
+import SectionHeader from '../../components/SectionHeader';
 const TABS = {
   POSTS: "pages",
   COLLECTIONS: "collections",
@@ -379,14 +380,16 @@ useEffect(() => {
               <>
                 {search.length==0 && recentPosts.length > 0 && (
                   <section className="space-y-4">
-                    <SectionLabel>Recent</SectionLabel>
+                    {/* <SectionLabel>Recent</SectionLabel>
+                     */}
+                     <SectionHeader title={"Recent"}/>
                     <PageProfileList items={recentPosts} router={router} />
                   </section>
                 )}
 
              
                   <section className="space-y-4">
-                    <SectionLabel>All Posts</SectionLabel>
+                    <SectionHeader title={"All Pages"}/>
                     <PaginatedList
                       cacheKey="stories"
                         key={"getPublicProfilePages"}

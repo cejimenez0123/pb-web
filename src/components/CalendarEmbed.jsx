@@ -7,6 +7,7 @@ import calendar from "../images/icons/calendar_add_blue.svg";
 import { IonImg, IonInput, IonList, IonLoading, IonText } from "@ionic/react";
 import { useDialog } from "../domain/usecases/useDialog";
 import Enviroment from "../core/Enviroment";
+import SectionHeader from "./SectionHeader";
 const WRAP = "max-w-[42rem] mx-auto px-4";
 const PAGE_Y = "pt-16 pb-10";
 const STACK_LG = "space-y-8";
@@ -40,7 +41,24 @@ const paginatedEvents = events.slice(
   const searchRef = useRef(null);
   const ogEvents = useSelector((state) => state.users.events);
 
-  const areas = ["Downtown", "Uptown", "Virtual", "Queens"];
+ const areas = [
+
+  {
+    label: "Downtown",
+    emoji: "🏙️"
+  },
+  {
+    label: "Uptown",
+    emoji: "🚆"
+  },
+   {
+    label: "Queens",
+    emoji: "👑"
+  },
+   {
+    label: "Virtual",
+    emoji: "💻"
+  }];
 
   useScrollTracking({ name: "Calendar Embed" });
 
@@ -175,31 +193,31 @@ return {
     <div
       key={i}
       onClick={() => handleDialogOpen(event)}
-      className="bg-base-bg  p-4 shadow-sm border-soft border-b border-1 active:scale-[0.98]"
+      className="bg-base-bg  p-4 shadow-sm border-soft dark:border-soft border-b border-1 active:scale-[0.98]"
     >
    
       <div className="flex justify-between gap-3">
         <div className="flex flex-col flex-1 min-w-0">
-          <span className="font-semibold  text-text-primary truncate">{event.summary}</span>
+          <span className="font-semibold  text-text-primary dark:text-emerald-100 truncate">{event.summary}</span>
 
           <span
             onClick={(e) => {
               e.stopPropagation();
               openGooglemaps(event);
             }}
-            className="text-sm text-gray-500 mt-1"
+            className="text-sm text-text-primary dark:text-primary-text mt-1"
           >
             {event.location}
           </span>
 
-          <span className="text-xs text-gray-400 mt-1">{event.area}</span>
+          <span className="text-xs text-text-primary dark:text-emerald-100 mt-1">{event.area}</span>
 
           {/* HASHTAGS */}
           <div className="flex gap-2 flex-wrap mt-2">
             {event.hashtags.slice(0, 4).map((tag, idx) => (
               <span
                 key={idx}
-                className="text-xs bg-sky-100 px-2 py-1 rounded-full text-soft"
+                className="text-xs bg-sky-100  px-2 py-1 rounded-full text-text-primary dark:bg-emerald-100"
               >
                 #{tag}
               </span>
@@ -209,7 +227,7 @@ return {
 
         <div className="flex flex-col items-end">
           <IonText
-            className="text-xs text-gray-600"
+            className="text-xs dark:text-emerald-100 text-gray-600"
             dangerouslySetInnerHTML={{ __html: event.startTime }}
           />
 
@@ -238,8 +256,8 @@ return {
     <div className="px-4 pb-3">
       <div className="flex gap-3 overflow-x-auto pb-1 -mx-1 px-1">
         {/* // <div className="flex items-center gap-2 mb-2"> */}
-          <IonText className="font-semibold text-sm">Events from Pb</IonText>
-         
+          
+         <SectionHeader title={"Events from Pb"}/>
         </div>
 
         <div className="flex gap-3 overflow-x-auto">
@@ -249,15 +267,15 @@ return {
               onClick={() => handleDialogOpen(event)}
               className="min-w-[220px] bg-base-bg rounded-xl p-4 border-soft border border-1  shadow-sm"
             >
-              <p className="font-semibold text-sm">{event.summary}</p>
-              <p className="text-xs text-gray-500">{event.location}</p>
+              <p className="font-semibold text-sm dark:text-emerald-100">{event.summary}</p>
+              <p className="text-xs text-gray-500 dark:text-emerald-100">{event.location}</p>
      <IonText
-            className="text-xs text-gray-600"
+            className="text-xs text-gray-600 dark:text-emerald-100"
             dangerouslySetInnerHTML={{ __html: event.startTime }}
           />
               <div className="flex gap-1 mt-2 flex-wrap">
                 {event.hashtags.slice(0, 2).map((tag, idx) => (
-                  <span key={idx} className="text-[10px] bg-gray-100 px-2 py-1 rounded-full">
+                  <span key={idx} className="text-[10px] dark:bg-base-bg dark:text-emerald-100 px-2 py-1 rounded-full">
                  
                     #{tag}
                   </span>
@@ -278,26 +296,28 @@ return {
        <IonLoading isOpen={loading} message="Loading events..." />
     
  
-    (<div><div className="space-y-3">
+    (<div><div className="space-y-3 pb-4">
         <div className="flex gap-2 justify-center overflow-x-auto">
           <button onClick={() => setSelectedArea("")} className={`pill px-4 ${selectedArea==""?"bg-soft text-white":"bg-purple text-white"}`}>
             All
           </button>
 
           {areas.map((area) => (
-           
-            <button key={area} onClick={() => setSelectedArea(area)} className={`pill px-2 mx-1 ${selectedArea==area?"bg-soft hover:bg-card-highlight text-white":"bg-purple hover:bg-card-highlight text-white"}`}>
-              {area}
+             
+            <button key={area.label} onClick={() => setSelectedArea(area.label)} className={` px-2 mx-1 ${selectedArea==area.label?"bg-soft text-sm hover:bg-card-highlight  broder-xl text-white":"bg-purple hover:bg-card-highlight text-white"}`}>
+              {area.label}<br className="h-2"/>
+              {area.emoji}
             </button>
+          
           ))}
         </div>
 
-        <div className="mt-3 max-w-[50em] bg-base-bg rounded-full px-4   px-4 mx-auto">
+        <div className="mt-3 max-w-[50em] bg-base-bg mb-4 brounded-full px-4    mx-auto">
           <IonInput
             value={searchTerm}
             onIonInput={handleSearchInputChange}
             placeholder="Search events"
-            className="text-soft  bg-base-bg  py-2"
+            className="text-soft dark:text-emerald-200 max-w-[94%] mx-auto bg-base-bg  py-2"
           />
         </div>
       </div>

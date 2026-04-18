@@ -19,6 +19,9 @@ const PAGE_Y = "pt-16 pb-10";
 const STACK_LG = "space-y-8";
 const STACK_MD = "space-y-4";
 const STACK_SM = "space-y-2";
+const SectionLabel = ({ children }) => (
+  <p className="text-xs text-gray-400 uppercase tracking-wide">{children}</p>
+);
 export default function CalendarContainer(){
 
   const {seo,setSeo}=useContext(Context)
@@ -47,21 +50,10 @@ export default function CalendarContainer(){
     <IonContent f        style={{ "--background": Enviroment.palette.base.background}} fullscreen={true}  className="">
    <div className={`${WRAP} ${PAGE_Y} ${STACK_LG} text-center`}>
  
-      {/* <h1 className="lora-bold text-emerald-800 text-opacity-70 mb-4">Plumbum Calendar</h1>
-  
-     {!currentProfile &&<div className={STACK_MD}><p className="mb-4 mx-auto  text-sm mont-medium text-emerald-600">
-        Get weekly writing events in your inbox, or go deeper:<br/> apply to become a user and share your own writing and feedback on our site.
-      </p>
-    <div><IonText className="text-xl text-emerald-700" onClick={()=>router.push(Paths.newsletter())}>Join the Newsletter</IonText></div>
-     <IonText>or</IonText>
-     <div>
-    <IonText onClick={()=>{router.push("/onboard")}} className="text-xl text-emerald-700">Apply to be a user</IonText> 
-     </div>
-      </div>} */}
 <div className={STACK_SM}>
-  <h1 className="lora-bold text-emerald-800 text-opacity-70">
-    Plumbum Calendar
-  </h1>
+  {/* <h1 className="lora-bold text-emerald-800 text-opacity-70"> */}
+  <SectionLabel>  Plumbum Calendar</SectionLabel>
+  {/* </h1> */}
 
   {!currentProfile && (
     <div className={STACK_SM}>
@@ -71,14 +63,14 @@ export default function CalendarContainer(){
       </p>
 
       <div className="flex flex-col items-center gap-2">
-        <IonText
+        {/* <IonText
           className="text-lg text-emerald-700"
           onClick={() => router.push(Paths.newsletter())}
         >
           Join the Newsletter
-        </IonText>
+        </IonText> */}
 
-        <IonText className="text-xs text-gray-400">or</IonText>
+        {/* <IonText className="text-xs text-gray-400">or</IonText> */}
 
         <IonText
           onClick={() => router.push("/onboard")}

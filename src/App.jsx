@@ -59,7 +59,7 @@ import ContentHubContainer from './container/ContentHubContainer.jsx';
 import DiscoveryContainer from './container/DiscoveryContainer.jsx';
 import { SplashScreen } from '@capacitor/splash-screen';
 import OAuthCallback from './container/page/OauthCallback.jsx';
-
+// import '@ionic/react/css/palettes/dark.always.css';
 setupIonicReact()
 
 const libraries = ["places"];
@@ -103,7 +103,7 @@ useEffect(() => {
   }
 }, [token]);
 
-
+document.documentElement.classList.add('dark');
 useIonViewWillEnter(() => {
   const checkFirstLaunch = async () => {
         if (isNative) {
@@ -144,7 +144,7 @@ const location = ionRouter?.routeInfo?.pathname
 const hiddenPaths = ["/onboard", "/apply", "/login"];
 
 const showBottomNavbar =
-  (isNative && !hiddenPaths.includes(location)); 
+  ((isNative && !hiddenPaths.includes(location))||import.meta.env.VITE_NODE_ENV=="dev"); 
 
  return (
 

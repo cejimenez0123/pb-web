@@ -10,7 +10,7 @@ export default {
     "./src/**/*.{html,js,jsx}",
   ],
 
-  darkMode: 'class',
+  
   theme: {
   
     // maxWidth:{
@@ -32,10 +32,7 @@ export default {
     colors:{
       ...colors,
       "cream":"#f4f4e0",
-      // "#f8f6f1"
-      // "#f8f6f1",
-            // "cream":"#f4f4e0",
-            // "soft":"#40906f",
+      
     "base": {
       "bg":"#f8f6f1", // App background (main canvas, warm cream)
       "surface": "#f4f4e0", // Cards, modals, sheets (elevated surfaces)

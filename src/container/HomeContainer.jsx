@@ -17,6 +17,7 @@ import StoryItem from '../components/page/StoryItem.jsx';
 import Enviroment from '../core/Enviroment.js';
 import PageList from '../components/page/PageList.jsx';
 import SectionHeader from '../components/SectionHeader.jsx';
+import shortName from '../core/shortName.jsx';
 
 // ── Layout ──────────────────────────────────────
 const WRAP = "max-w-[72rem] mx-auto sm:px-6 lg:px-8";

@@ -288,7 +288,7 @@ return<IonContent
         {page?.id && <WorkshopContextCard page={page} />}
         {/* Header */}
    <div className={ROW_BETWEEN+"  "}>
-       <h2 className={TITLE}>
+       <h2 className={TITLE+" dark:text-emerald-100"}>
   {currentProfile.username.toLowerCase()}
 </h2>
 
@@ -299,7 +299,7 @@ return<IonContent
 
         {/* Global / Local Toggle using DaisyUI */}
        <div className={ROW_BETWEEN}>
-          <span className="text-lg font-medium">{isGlobal ? "Global" : "Local"}</span>
+          <span className="text-lg dark:text-emerald-200 font-medium">{isGlobal ? "Global" : "Local"}</span>
           <input
             type="checkbox"
             className="toggle toggle-success"

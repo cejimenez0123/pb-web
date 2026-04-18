@@ -1,6 +1,7 @@
 import truncate from "html-truncate";
 import Paths from "../core/paths";
 import { PageType } from "../core/constants";
+import shortName from "../core/shortName";
 export default function StoryDashboardItem({ story, router }) {
   return (
     <div
@@ -26,14 +27,16 @@ export default function StoryDashboardItem({ story, router }) {
 
         <h4 className="
           text-[1.05rem]
+          dark:text-emerald-200
           text-text-soft
           break-words
           line-clamp-2
         ">
-          {story.title?.length > 0 ? story.title : "Untitled"}
+          {shortName(story.title,30)}
         </h4>
         <h5 className="
           text-sm
+          dark:text-emerald-200
           text-text-soft
           opacity-80
           line-clamp-3
@@ -42,6 +45,7 @@ export default function StoryDashboardItem({ story, router }) {
         </h5>
         <h6 className="
           text-xs
+          dark:text-emerald-200
           text-text-soft
           opacity-70
         ">

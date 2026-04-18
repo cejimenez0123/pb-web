@@ -22,7 +22,7 @@ const CENTER = "flex flex-col items-center justify-center";
 
 // ── Inputs / Buttons ─────────────────────────
 const INPUT =
-  "w-[100%] rounded-full px-4 py-2 text-emerald-800 bg-base-bg text-sm focus:outline-none focus:ring-1 focus:ring-gray-300";
+  "w-[100%] rounded-full px-4 py-2 text-emerald-800 bg-base-bg dark:text-emerald-100 text-sm focus:outline-none focus:ring-1 focus:ring-gray-300";
 
 const BUTTON_PRIMARY =
   "bg-soft rounded-full w-[90%] mx-auto py-3 mt-2 text-white text-lg";
@@ -43,36 +43,6 @@ useEffect(() => {
 }, [setSeo]);
 
   
-//     const dispatchLogin=  ({email,googleId,idToken})=>{
-   
-//         if(idToken){
-//             dispatch(logIn({email,idToken:idToken,isNative})).then(res=>{
-//                 checkResult(res,async payload=>{
-//                   router.push(Paths.home)
-           
-
-//                     setPending(false)
-//                 },err=>{
-// handleAuthError(err)
-                    
-//                     setPending(false)
-//                 })
-//             })   
-//         }else if(googleId){
-
-        
-//         dispatch(logIn({email,uId:googleId,isNative})).then(res=>{
-//             checkResult(res,payload=>{
-//        router.push(Paths.home)
-//                 setPending(false)
-//             },err=>{
-               
-// handleAuthError(err)
-//                 setPending(false)
-//             })
-//         })   
-//     }
-//     }
     return (
         <IonContent fullscreen={true}>
             <div className='py-10'>
@@ -116,8 +86,7 @@ function LogInCard({setLogInError}){
             const params ={email:email.toLowerCase(),password:password,isNative:isNative}
             dispatch(logIn(params)).then(res=>{
                 checkResult(res,payload=>{
-                    setPending(false)
-                  console.log(":PAY",payload)
+                 console.log("FDDFFD",payload)
                     if(payload && payload.profile && payload.profile.id){
 
                   

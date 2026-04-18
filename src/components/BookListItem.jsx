@@ -7,6 +7,7 @@ import { initGA, sendGAEvent } from "../core/ga4.js";
 import { useIonRouter } from "@ionic/react";
 import { IonSkeletonText } from "@ionic/react";
 import Enviroment from "../core/Enviroment.js";
+import shortName from "../core/shortName.jsx";
 
 function BookListItem({ book }) {
   const dispatch = useDispatch();
@@ -34,16 +35,16 @@ function BookListItem({ book }) {
     <div
       onClick={navigateToBook}
       // {Enviroment.palette.accent.}
-      className="min-h-[10rem] min-w-[16rem] flex flex-col justify-between rounded-xl bg-base-bg  text-emerald-900  border-purple border-1 border cursor-pointer shadow-md mx-2 transition-shadow duration-300 p-4 space-y-3"
+      className="min-h-[10rem] min-w-[16rem] flex flex-col justify-between rounded-xl bg-base-bg  text-emerald-900  border-purple border-1 borde  cursor-pointer shadow-md mx-2 transition-shadow duration-300 p-4 space-y-3"
     >
       {/* Title */}
-      <h3 className="font-bold text-lg truncate">
-        {book?.title?.slice(0, 30) || "Untitled"}
-        {book?.title?.length > 30 && "..."}
+      <h3 className="font-bold dark:text-emerald-200 text-emerald-800  text-lg truncate">
+        {shortName(book.title,30)}
+       
       </h3>
 
       {/* Description */}
-      <p className="text-sm text-emerald-800 line-clamp-3">
+      <p className="text-sm  dark:text-emerald-200 text-emerald-800 line-clamp-3">
         {book?.purpose?.length <= 65
           ? book.purpose
           : book.purpose.slice(0, 65) + "..."}

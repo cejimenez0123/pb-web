@@ -108,9 +108,7 @@ const recentPosts = sortedPages.slice(0, 5);
 // ── Tabs constants ─────────────────────────────────────
 
 // ── Section Label ─────────────────────────────────────
-const SectionLabel = ({ children }) => (
-  <p className="text-xs text-gray-400 uppercase tracking-wide">{children}</p>
-);
+
 
 
 const tabs = [
@@ -275,7 +273,7 @@ className="bg-soft rounded-full p-2"><img src={settings} /></button>
                   <section className="space-y-4">
 
                     <SectionHeader title={"All Pages"}/>
-                    {/* <SectionLabel>All Pages</SectionLabel> */}
+                   
                       <PaginatedList
    ccacheKey="stories"
 params={{ search }}

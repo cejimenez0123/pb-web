@@ -27,6 +27,7 @@ import { useResponsiveGrid } from '../core/ResponsiveGrid.jsx';
 import usePaginatedResource from '../core/usePaginatedResource.jsx';
 import PaginatedList from '../components/page/PaginatedList.jsx';
 import shortName from '../core/shortName.jsx';
+import ListPill from '../components/page/ListPill.jsx';
 function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex = 0, role = "button" }) {
   return (
     <span
@@ -69,7 +70,7 @@ const visibleCount = columns * rows;
 const collections = collectionsRaw
   .slice() // safer than spread in this context
   .sort((a, b) => new Date(b.updated) - new Date(a.updated));
-  const [results,setResults]=useState([])
+  
   const [workshop,setWorkshop]=useState(null)
   const [saves,setSaved]=useState([])
   const {openDialog,closeDialog,resetDialog}=useDialog()
@@ -98,25 +99,14 @@ const personalCollections = usePaginatedResource({
     totalCount: res.totalCount,
   }),
 });
+const [results,setResults]=useState(personalCollections.items)
  const myCollections = personalCollections.items
+
 useEffect(()=>{
  fetchWorkshops()
 },[])
 // inside your dialog state
-const [dialog, setDialog] = useState(null);
-const waitForCollections = async (timeout = 3000) => {
-  const start = Date.now();
 
-  while (Date.now() - start < timeout) {
-    if (personalCollections.items?.length > 0) {
-      return true;
-    }
-
-    await new Promise(r => setTimeout(r, 50));
-  }
-
-  return false;
-};
 useEffect(() => {
   try {
     if (results?.length > 1) {
@@ -185,6 +175,29 @@ const openPages = () => {
     />
   )})}
 
+const openYourWorkshops = () => {
+  
+
+  openDialog({
+    title: "Communities",
+    scrollY: false,
+    breakpoint: 1,
+    height: 90,
+    disagree: () => resetDialog(),
+    text: (
+      <PaginatedList
+       cacheKey="collections:type=library"
+        fetcher={getMyCollections}
+        pageSize={8}
+        params={{ type: "feedback" }} // ✅ THIS NOW WORKS
+        renderItem={(c) => (
+          <ListPill item={c} onClick={()=>router.push(Paths.collection.createRoute(c.id))}/>
+     
+        )}
+      />
+    ),
+  });
+};
 
 const openCommunities = () => {
   openDialog({
@@ -217,7 +230,7 @@ const openCommunities = () => {
   });
 };
               useEffect(() => {
-            
+            fetchWorkshops()
                 if (currentProfile?.profileToCollections) {
                   let home = currentProfile.profileToCollections.find(pTc => pTc.type === "home")?.collection || null;
                      console.log("HOME COL",home)
@@ -228,6 +241,8 @@ const openCommunities = () => {
                 }
      
               }, [currentProfile]);
+           
+              
   const fetchWorkshops = async () => {
     if (!currentProfile) return;
     try {
@@ -368,15 +383,15 @@ scrollY: false,
     {item ? (
       // ✅ REAL CONTENT
       <div className="flex flex-row gap-4 bg-base-bg px-4 items-center">
-        <h6 className='text-soft'>{item.type} ·</h6>
+        <h6 className='text-soft dark:text-emerald-200'>{item.type} ·</h6>
         {/* {Enviroment.palette.base.} */}
-        <h5 className="text-[1.2em] text-soft" >
-          {shortName(item.title,35)}
+        <h5 className="text-[1.2em] dark:text-emerald-200 text-soft" >
+          {shortName(item.title,20)}
          </h5>
       </div>
     ) : (
       // ✅ SKELETON STATE
-      <div className="flex flex-row gap-4 items-center animate-pulse">
+      <div className="flex flex-row gap-4  bg-base-bg  items-center animate-pulse">
         <div className="h-4 w-16 bg-gray-300 rounded-md" />
         <div className="h-5 w-40 bg-gray-300 rounded-md" />
       </div>
@@ -422,7 +437,7 @@ scrollY: false,
           aspect-square                
           rounded-2xl
           border border-soft
-          
+          dark:border-base-bg
           bg-base-bg
   bg-button
           backdrop-blur-sm
@@ -436,10 +451,10 @@ scrollY: false,
 
            <h4 className={`
           absolute top-3 left-3
-       
-          text-[1.4em] text-[${Enviroment.palette.text.brand}]
+            dark:border-
+          text-[1.4em] text-soft dark:text-emerald-200
         `}>
-    {/* {Enviroment.palette.text.inverse} */}
+    
           {item.label}
         </h4>
       </div>
@@ -505,20 +520,7 @@ scrollY: false,
   <div className="relative min-h-[120px]">
 
   {/* EMPTY STATE */}
-  {/* <div
-    className={`
-      transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]
-      ${myStories.length === 0
-        ? "opacity-100 translate-y-0"
-        : "opacity-0 -translate-y-2 pointer-events-none absolute inset-0"}
-    `}
-  >
-    {myStories.length === 0 && (
-      <div className="px-4 text-soft text-sm">
-        This is a beginning. Start writing
-      </div>
-    )} */}
-  {/* </div> */}
+
 
   {/* STORIES LIST */}
   <div
