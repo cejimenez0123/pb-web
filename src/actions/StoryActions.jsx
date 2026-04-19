@@ -95,6 +95,27 @@ console.log("APGEX",data)
     }
   }
 );
+// const getMyStories = createAsyncThunk(
+//   "pages/getMyStories",
+//   async (params, thunkApi) => {
+//     try {
+//       const data = await storyRepo.getMyStories(params);
+
+//       return {
+//         pageList: data.items,
+//         nextCursor: data.nextCursor,
+//         hasMore: data.hasMore,
+//       };
+//     } catch (e) {
+//       console.log("GET MY STORIES ERROR:", e);
+
+//       return thunkApi.rejectWithValue(
+//         e?.response?.data || e.message
+//       );
+//     }
+//   }
+// );
+
 const createStory = createAsyncThunk("pages/createStory",async (params,thunkApi)=>{
   try{
 

@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { initKey, setPageData, setPaginationLoading } from "../../actions/PageActions";
+import PaginationControls from "../PaginationControls";
 
 // import PaginationControls from "../PaginationControls";
 // import { initKey, setPageData, setPaginationLoading } from "../../actions/PageActions";
@@ -181,15 +182,22 @@ export default function PaginatedList({
     fetchPage(page);
   }, [page, search, JSON.stringify(params)]); // ok now (no cacheKey explosion)
 
-  if (!items.length && !cache[page]) {
-    return emptyState || <div className="p-4 text-gray-400">Loading...</div>;
-  }
+  // if (!) {
+  //   return 
+  // }
 
   return (
-    <div className={`space-y-2 ${className}`}>
-      {(cache[page] || items).map((item, index) => (
+    <div className={`space-y-4 ${className}`}>
+      {!items.length && !cache[page]?emptyState || <div className="p-4 text-gray-400">Loading...</div>:(cache[page] || items).map((item, index) => (
         <div key={item.id ?? index}>{renderItem(item, index)}</div>
       ))}
+      <PaginationControls 
+        page={page}
+  totalPages={totalPages}
+  setPage={setPage}
+  className = ""
+      
+      />
     </div>
   );
 }

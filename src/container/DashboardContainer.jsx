@@ -126,6 +126,7 @@ useEffect(() => {
 
 
 const openPages = () => {
+  
   openDialog({
   title: "Pages",
   height: 94,
@@ -135,6 +136,7 @@ const openPages = () => {
   cacheKey="stories"
   fetcher={getMyStories}
   pageSize={8}
+  enableInternalSearch={true}
   renderItem={(story) => (
         <div
           onClick={() => {

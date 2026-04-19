@@ -233,6 +233,25 @@ const fetchCollectionProtected = createAsyncThunk("collection/fetchCollectionPro
   })
 
 
+// const getMyCollections = createAsyncThunk(
+//   "collections/getMyCollections",
+//   async (params, thunkApi) => {
+//     try {
+        
+//       const data = await collectionRepo.getMyCollections(params);
+
+   
+//       return {
+//         items: data.collections,
+//         totalCount: data.totalCount,
+//       };
+//     } catch (e) {
+//       return thunkApi.rejectWithValue(
+//         e?.response?.data || e.message
+//       );
+//     }
+//   }
+// );
 const getMyCollections = createAsyncThunk(
   "collections/getMyCollections",
   async (params, thunkApi) => {
@@ -251,7 +270,23 @@ const getMyCollections = createAsyncThunk(
     }
   }
 );
+// const getMyCollections = createAsyncThunk(
+//   "collections/getMyCollections",
+//   async (params, thunkApi) => {
+//     try {
+//       const data = await collectionRepo.getMyCollections(params);
 
+//       return {
+//         items: data.items,
+//         totalCount: data.totalCount,
+//         skip: data.skip,
+//         take: data.take,
+//       };
+//     } catch (e) {
+//       return thunkApi.rejectWithValue(e?.response?.data || e.message);
+//     }
+//   }
+// );
 const getPublicProfileCollections = createAsyncThunk(
   "collection/getPublicProfileCollections",
   async (params, thunkApi) => {

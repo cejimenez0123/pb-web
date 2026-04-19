@@ -212,10 +212,10 @@ const showBottomNavbar =
         <PageWrapper presentHeader={false
         
         } >
-      {/* <LoggedRoute> */}
+      <LoggedRoute>
 
             <LogInContainer  currentProfile={currentProfile} logIn={props.logIn}/>
-          {/* </LoggedRoute> */}
+          </LoggedRoute>
                      </PageWrapper>
          
 

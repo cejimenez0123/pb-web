@@ -35,7 +35,8 @@ function MyProfileContainer() {
   const { setSeo  } = useContext(Context);
   const profile = useSelector((state) => state.users.currentProfile);
 
-  const pageSize = 20;
+  
+const pageSize = 20;
 const stories = usePaginatedResource({
   key: "stories",
   fetcher: getMyStories,
@@ -56,7 +57,6 @@ const collections = usePaginatedResource({
     totalCount: res.totalCount,
   }),
 });
-
 
 
 
@@ -273,18 +273,26 @@ className="bg-soft rounded-full p-2"><img src={settings} /></button>
                   <section className="space-y-4">
 
                     <SectionHeader title={"All Pages"}/>
-                   
-                      <PaginatedList
-   ccacheKey="stories"
-params={{ search }}
-search={search}
+
+<PaginatedList
+  cacheKey="stories"
   fetcher={getMyStories}
   pageSize={8}
+  emptyState={   Array.from({ length: pageSize }).map((_, i) => (
+                   <div
+        key={i}
+   className="px-3 py-5 rounded-full skeleton  border border-purple border-1 bg-base-bg backdrop-blur-sm shadow-sm active:scale-[0.98] transition"
+      >
+       <span className="min-h-14 "></span>
+      </div>
+      ))}
+  search={search}
   renderItem={(p) => (
-    <ListPill item={p} onClick={()=>router.push(Paths.page.createRoute(p.id))}  router={router}/>
- 
-                          )}
-                        />
+    <ListPill item={p}  onClick={()=>router.push(Paths.page.createRoute(p.id))}/>
+  )}
+/>
+
+
 
          </section>     
          </>
@@ -317,9 +325,12 @@ search={search}
 
     
          renderItem={(i) => (
-      <ListPill item={i} router={router} onClick={()=>{router.push(Paths.collection.createRoute(i.id))}}/>
-      )}
+          <ListPill item={i} onClick={()=>router.push(Paths.collection.createRoute(i.id))}/>)}
        />
+  
+  
+  
+
   
   
   </>

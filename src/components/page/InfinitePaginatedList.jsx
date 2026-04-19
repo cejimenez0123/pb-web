@@ -137,20 +137,3 @@ function InfinitePaginatedList({
 }
 
 export default InfinitePaginatedList;
-
-{/* <InfinitePaginatedList
-  cacheKey="stories"
-  fetcher={getMyStories}
-  pageSize={8}
-  renderItem={(story) => (
-    <div
-      onClick={() => {
-        router.push(Paths.page.createRoute(story.id));
-        resetDialog();
-      }}
-      className="p-4 border border-soft rounded-xl"
-    >
-      {story.title || "Untitled"}
-    </div>
-  )}
-/> */}

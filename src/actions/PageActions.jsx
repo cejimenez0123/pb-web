@@ -209,7 +209,6 @@ const setCurrentPage = createAction(
   }
 );
 
-
 const setPaginationLoading = createAction("pagination/setLoading");
  const initKey = createAction("pagination/initKey");
 const setPageData = createAction(
@@ -225,6 +224,21 @@ const setPageData = createAction(
     };
   }
 );
+// const setLoading = createAction("pagination/setLoading");
+//  const initKey = createAction("pagination/initKey");
+// const setPageData = createAction(
+//   "pagination/setPageData",
+//   function prepare({ key, page, items, totalCount }) {
+//     return {
+//       payload: {
+//         key,
+//         page,
+//         items,
+//         totalCount,
+//       },
+//     };
+//   }
+// );
 const deleteComment = createAsyncThunk("pages/deleteComment",async (params,thunkApi)=>{
   const { comment}= params
 

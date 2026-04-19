@@ -106,9 +106,7 @@ function LogInCard({setLogInError}){
 setError("Values can't be empty");
         }
     }
-  useEffect(()=>{
-  dispatch(signOutAction())
-  },[])
+ 
 // const dispatchLogin = ({ email, googleId, idToken, name }) => {
  
 //         if(idToken){
