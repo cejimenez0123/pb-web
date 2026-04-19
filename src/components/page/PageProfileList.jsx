@@ -4,7 +4,7 @@ import ListPill from "./ListPill";
 const PageProfileList = ({ items,type, router }) => (
     <div className="space-y-2">
     {items.map((p) => (
-      <ListPill item={p} router={router} type={type}/>
+      <ListPill item={p} onClick={()=>router.push(Paths.page.createRoute(p.id))} type={type}/>
 
     ))}
   </div>
