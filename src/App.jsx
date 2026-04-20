@@ -113,7 +113,7 @@ useEffect(()=>{
 if(currentProfile){
   dispatch(fetchNotifcations({profile:currentProfile,seen:false}))
 }
-},[currentProfile])
+},[])
 document.documentElement.classList.add('dark');
 useIonViewWillEnter(() => {
   const checkFirstLaunch = async () => {

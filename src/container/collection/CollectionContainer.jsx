@@ -44,6 +44,7 @@ import CollectionActions from "../../components/collection/CollecitonActions.jsx
 import {motion} from 'framer-motion'
 import SectionHeader from "../../components/SectionHeader.jsx";
 import computePermissions from "../../core/compusePermissions.jsx";
+import { postCollectionHistory } from "../../actions/HistoryActions.js";
 const containerVariants = {
   hidden: { opacity: 0 },
   show: {
@@ -89,7 +90,7 @@ export default function CollectionContainer() {
 
 
   const { setError, setSuccess, setSeo, seo } = useContext(Context);
-  
+  const [sentHistory,setSentHistory]=useState(false)
   const currentProfile = useSelector(state => state.users.currentProfile);
     const collection = useSelector(state => state.books.collectionInView);
   const dispatch = useDispatch();
@@ -105,7 +106,18 @@ export default function CollectionContainer() {
   canWriteRoles: [RoleType.writer, RoleType.editor],
   canEditRoles: [RoleType.editor],
 });
+useEffect(() => {
+  if (!sentHistory && currentProfile?.id && collection?.id) {
+    setSentHistory(true);
 
+    dispatch(
+      postCollectionHistory({
+        profile: currentProfile,
+        collection,
+      })
+    );
+  }
+}, [currentProfile?.id, collection?.id]);
 
   const collections = useSelector(state => state.books.collections);
 
@@ -126,17 +138,17 @@ export default function CollectionContainer() {
   enableCompletion: false,
 });
   const [tab,setTab]=useState("pages")
-  useEffect(() => {
-  if (!collection || !canSee) return;
+ useEffect(() => {
+  if (!collection?.id || !canSee) return;
 
-  setSeo({
-    ...seo,
+  setSeo((prev) => ({
+    ...prev,
     title: `${collection.title} — Collection`,
     description:
       collection.purpose ||
-      `A curated collection by ${collection.profile?.displayName || "a creator"}`,
-  });
-}, [collection]);
+      `A curated collection by ${collection.profile?.username || "a creator"}`,
+  }));
+}, [collection?.id, canSee]);
 useEffect(() => {
   if (!collection || !homeCol || !archiveCol) return;
 
@@ -166,9 +178,9 @@ useEffect(() => {
 
   }, [currentProfile]);
 useEffect(() => {
+  if (!id) return;
   getCol(id);
-  
-}, [id,currentProfile]); 
+}, [id, currentProfile?.id]);
 
 
   
@@ -229,15 +241,15 @@ const handleFollow = async () => {
   }
 };
 
-useEffect(()=>{
+useEffect(() => {
+  if (!collection?.storyIdList?.length || !canSee) return;
 
-
-canSee&& getContent()
-},[collection])
-useEffect(()=>{
-    dispatch(setCollections({collections:[]}))
-  dispatch(setPagesInView({pages:[]}))
-},[])
+  getContent();
+}, [collection?.id, canSee]);
+useEffect(() => {
+  dispatch(setCollections({ collections: [] }));
+  dispatch(setPagesInView({ pages: [] }));
+}, [id]);
 const getCol = async (id) => {
  
   try {

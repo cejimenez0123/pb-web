@@ -19,7 +19,7 @@ try{
  
          await Preferences.set({key:"token",value:token})
   
-        return {token:token,profile:authData.profile}
+        return {token:token,profile:authData.profile,user:authData.user}
 }catch(error){
   console.log(error)
 }

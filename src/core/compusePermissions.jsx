@@ -39,7 +39,7 @@ function computePermissions(resource, profile, config = {}) {
   if (profile) {
     const accessList = getAccessList(resource);
 
-    found = accessList.find((entry) => entry?.profileId === profile.id);
+    found = accessList?.find((entry) => entry?.profileId === profile.id);
 
     if (found) {
       const userRole = getAccessRole(found);

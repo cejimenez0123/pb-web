@@ -33,6 +33,7 @@ import { Preferences } from "@capacitor/preferences"
 
 const initialState = {
     signedIn: false,
+    user:null,
     currentProfile: null,
     homeCollection: null,
     loading:false,
@@ -109,11 +110,12 @@ state.notifications = payload
         state.currentProfile = payload.profile
     }).addCase(logIn.fulfilled, (state, { payload }) => {
         
-        // if(payload&&payload.profile){
-            state.currentProfile = payload?.profile
+        
+          state.currentProfile = payload?.profile
+       
              state.loading = false
         state.signedIn = true
-            // }
+          
 
        
        

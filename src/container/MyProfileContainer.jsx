@@ -47,17 +47,17 @@ const stories = usePaginatedResource({
     totalCount: res.totalCount,
   }),
 });
-// const collections = usePaginatedResource({
-//   key: "collections",
-//   fetcher: getMyCollections,
-//   pageSize: pageSize,
-//   enabled: !!profile?.id,
-//   select: (res) => ({
-//     items: res.collections,
-//     totalCount: res.totalCount,
-//   }),
-// });
-// console.log("FIRST",collections)
+ usePaginatedResource({
+  key: "collections",
+  fetcher: getMyCollections,
+  pageSize: pageSize,
+  enabled: !!profile?.id,
+  select: (res) => ({
+    items: res.collections,
+    totalCount: res.totalCount,
+  }),
+});
+
 const key = "collections";
 
 const { pages = {}, totalCount = 0, loading } = useSelector(
@@ -67,9 +67,8 @@ const { pages = {}, totalCount = 0, loading } = useSelector(
 const [page, setPage] = useState(1);
 
 const collections = pages[page] || [];
-console.log("COlX",collections)
 // const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
-
+const dispatch = useDispatch()
 
 const communities = useMemo(
   () =>
@@ -82,13 +81,6 @@ const communities = useMemo(
   const router = useIonRouter();
 const [searchInput, setSearchInput] = useState("");
 const [search, setSearch] = useState("");
-
-
-
-
-
- 
-  // const { id } = useParams();
 
   const [tab, setTab] = useState(TABS.POSTS);
 
@@ -132,10 +124,10 @@ const tabs = [
 
 
 
-const IndexList = ({ items, router }) => (
+const IndexList = ({ items, profile,router }) => (
   <div className="space-y-2">
     {items.map((i) => (
-      <ListPill item={i}  onClick={()=>router.push(Paths.collection.createRoute(i.id))}
+      <ListPill item={i} profile={profile} onClick={()=>router.push(Paths.collection.createRoute(i.id))}
    />
     ))}
   </div>
@@ -293,7 +285,7 @@ className="bg-soft rounded-full p-2"><img src={settings} /></button>
       ))}
   search={search}
   renderItem={(p) => (
-    <ListPill item={p}  onClick={()=>router.push(Paths.page.createRoute(p.id))}/>
+    <ListPill item={p} profile={profile} onClick={()=>router.push(Paths.page.createRoute(p.id))}/>
   )}
 />
 
@@ -315,7 +307,7 @@ className="bg-soft rounded-full p-2"><img src={settings} /></button>
       <section className="space-y-4">
     
         <SectionHeader title={"Recent"}/>
-        <IndexList items={recentCollections} router={router} />
+        <IndexList items={recentCollections} profile={profile} router={router} />
       </section>
     )}
 
@@ -330,7 +322,7 @@ className="bg-soft rounded-full p-2"><img src={settings} /></button>
 
     
          renderItem={(i) => (
-          <ListPill item={i} onClick={()=>router.push(Paths.collection.createRoute(i.id))}/>)}
+          <ListPill item={i} profile={profile} onClick={()=>router.push(Paths.collection.createRoute(i.id))}/>)}
        />
   
   

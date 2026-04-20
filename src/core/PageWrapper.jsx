@@ -80,10 +80,10 @@ const [token,setToken]=useState(null)
        useEffect(() => {
                     
                     if (currentProfile?.profileToCollections) {
-                      let home = currentProfile.profileToCollections.find(pTc => pTc.type === "home")?.collection || null;
+                      let home = currentProfile?.profileToCollections.find(pTc => pTc.type === "home")?.collection || null;
                       setHomeCol(home);
                 
-                      let archive = currentProfile.profileToCollections.find(pTc => pTc.type === "archive")?.collection || null;
+                      let archive = currentProfile?.profileToCollections.find(pTc => pTc.type === "archive")?.collection || null;
                       setArchiveCol(archive);
                     }
                 

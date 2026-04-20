@@ -204,7 +204,9 @@ const cycleFollowersRole = () => {
       .then(() => setSuccess("Successful Update"))
       .catch((err) => setError(err.message));
   };
-  
+  function openRoleForm(){
+   openDialog({...dialog,text:<RoleForm item={ colInView} />})
+  }
   useEffect(() => {
     if (colInView) {
       setInfo(colInView);
@@ -356,7 +358,11 @@ if (!canSee) {
         }
         baseClass="bg-soft text-white"
       />
-
+<Pill
+  label="Manage Access"
+  onClick={() => openRoleForm()}
+  baseClass="bg-emerald-600 text-white"
+/>
   </div>
 </div>
     {/* TITLE */}

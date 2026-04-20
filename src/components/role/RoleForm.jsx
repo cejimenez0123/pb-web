@@ -3,7 +3,7 @@ import { useContext, useEffect,  useMemo, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchProfiles } from "../../actions/ProfileActions";
 import { patchRoles } from "../../actions/RoleActions";
-import { patchCollectionRoles } from "../../actions/CollectionActions";
+import { fetchCollection, patchCollectionRoles } from "../../actions/CollectionActions";
 import { RoleType } from "../../core/constants";
 import Role from "../../domain/models/role";
 import checkResult from "../../core/checkResult";
@@ -78,7 +78,7 @@ useEffect(() => {
         res,
         () => {
           
-          dispatch(getStory({ id: item.id }))
+          item.data?dispatch(getStory({ id: item.id })):dispatch(fetchCollection({id:item.id}))
           setSuccess("Saved")},
         () => setError("Error saving")
       )
