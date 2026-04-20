@@ -47,26 +47,36 @@ const stories = usePaginatedResource({
     totalCount: res.totalCount,
   }),
 });
-const collections = usePaginatedResource({
-  key: "collections",
-  fetcher: getMyCollections,
-  pageSize: pageSize,
-  enabled: !!profile?.id,
-  select: (res) => ({
-    items: res.collections,
-    totalCount: res.totalCount,
-  }),
-});
+// const collections = usePaginatedResource({
+//   key: "collections",
+//   fetcher: getMyCollections,
+//   pageSize: pageSize,
+//   enabled: !!profile?.id,
+//   select: (res) => ({
+//     items: res.collections,
+//     totalCount: res.totalCount,
+//   }),
+// });
+// console.log("FIRST",collections)
+const key = "collections";
 
+const { pages = {}, totalCount = 0, loading } = useSelector(
+  (state) => state.pagination.byKey?.[key] || {}
+);
 
+const [page, setPage] = useState(1);
+
+const collections = pages[page] || [];
+console.log("COlX",collections)
+// const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
 
 
 const communities = useMemo(
   () =>
-    (collections.items ?? []).filter(
+    (collections ?? []).filter(
       (col) => (![...profile?.profileToCollections.map(ptc=>ptc?.collection?.id)].includes(col?.id))&&(col?.childCollections?.length ?? 0) > 0
     ),
-  [collections.items]
+  [collections]
 );
 
   const router = useIonRouter();
@@ -85,15 +95,10 @@ const [search, setSearch] = useState("");
 
 const recentCollections = useMemo(
   () =>
-    [...(collections.items ?? [])]
-      .filter(Boolean)
-      .sort(
-        (a, b) =>
-          new Date(b.updated ?? b.created) -
-          new Date(a.updated ?? a.created)
-      )
+    [...(collections ?? [])]
+
       .slice(0, 5),
-  [collections.items]
+  [collections]
 );
 
   const sortedPages = useMemo(() => {
@@ -302,7 +307,7 @@ className="bg-soft rounded-full p-2"><img src={settings} /></button>
             
 
             {tab === TABS.COLLECTIONS && (
-              collections.items.length === 0 ? (
+              collections.length === 0 ? (
   <EmptyState text={search ? "No matching collections." : "No collections yet."} />
 ) : (
   <>

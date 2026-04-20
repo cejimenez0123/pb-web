@@ -15,7 +15,7 @@ export default function NotificationContainer({ currentProfile }) {
 
   useEffect(() => {
     if (currentProfile) {
-      dispatch(fetchNotifcations({ profile: currentProfile }));
+      dispatch(fetchNotifcations({ profile: currentProfile, seen:true}));
     }
   }, [currentProfile]);
 

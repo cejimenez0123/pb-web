@@ -554,7 +554,7 @@ className={BUTTON_FULL+"btn transition w-[100%] border-blue bg-blue text-cream h
               setTab={setTab}
               pages={<PageTab collections={collections}  />}
               members={<MemberTab collection={collection} />}
-              about={<AboutTab collection={collection} />}
+              about={<AboutTab collection={collection} currentProfile={currentProfile} />}
             />
           </div>
         </div>
@@ -682,7 +682,7 @@ const MemberTab = ({ collection }) => {
   );
 };
 
-const AboutTab = ({ collection}) => {
+const AboutTab = ({ collection,currentProfile}) => {
   const [locationName,setLocationName]=useState("")
 useEffect(() => {
   if (!currentProfile || !location?.latitude) return;

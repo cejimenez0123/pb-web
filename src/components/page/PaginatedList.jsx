@@ -39,8 +39,11 @@ export default function PaginatedList({
     dispatch(initKey({ key: cacheKey }));
     setPage(1);
   }, [search, cacheKey]);
+const fetchPage = async (p) => {
+  if (!enabled) return;
+  if (cache[p]) return; 
 
-  const fetchPage = async (p) => {
+  dispatch(setPaginationLoading({ key: cacheKey, loading: true }));
     if (!enabled) return;
 
     dispatch(setPaginationLoading({ key: cacheKey, loading: true }));
@@ -70,12 +73,8 @@ export default function PaginatedList({
 
   useEffect(() => {
     fetchPage(page);
-  }, [page, search, JSON.stringify(params)]); // ok now (no cacheKey explosion)
-
-  // if (!) {
-  //   return 
-  // }
-
+  }, [page, search]); 
+ 
   return (
     <div className={`space-y-2 ${className}`}>
       {!items.length && !cache[page]?emptyState || <div className="p-4 text-gray-400">Loading...</div>:(cache[page] || items).map((item, index) => (

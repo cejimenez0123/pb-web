@@ -27,7 +27,7 @@ import { Preferences } from "@capacitor/preferences";
         let res = await axios.get(this.url+"/public/library",this.headers)
         return res.data
     }
-   async getMyCollections({ skip = 0, take = 20, type,search="" } = {}) {
+   async getMyCollections({ skip = 0, take = 20, type,search="",isWorkshop=false } = {}) {
   const headers = await this.getAuthHeaders();
 
   const res = await axios.get(this.url + "/profile/protected", {
@@ -37,42 +37,15 @@ import { Preferences } from "@capacitor/preferences";
       skip,
       take,
       type, // 👈 add this
+      isWorkshop
     },
   });
 
   return res.data;
 }
-//     async getMyCollections({ skip = 0, take = 20, type,search="" } = {}) {
-//   const headers = await this.getAuthHeaders();
 
-//   const res = await axios.get(this.url + "/profile/protected", {
-//     headers,
-//     params: {
-//       search,
-//       skip,
-//       take,
-//       type, 
-//     },
-//   });
 
-//   return res.data;
-// }
-//   async getMyCollections({ skip = 0, take = 20 } = {}) {
-//   const headers = await this.getAuthHeaders();
 
-//   const res = await axios.get(
-//     this.url + "/profile/protected",
-//     {
-//       headers,
-//       params: {
-//         skip,
-//         take,
-//       },
-//     }
-//   );
-
-//   return res.data;
-// }
 async getPublicProfileCollections({ id, skip = 0, take = 20 }) {
   const res = await axios.get(this.url + `/profile/${id}/public`, {
     params: { skip, take },

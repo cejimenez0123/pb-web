@@ -53,14 +53,13 @@ try{
   throw e;
 }
     }
-    async notifications({token,profile}){
+    async notifications({seen,profile}){
     let headers = await this.getAuthHeaders()
 
-
-
-
-        let res = await axios.get(this.url+"/"+profile.id+"/alert",{headers:headers})
-        console.log(res)
+        let res = await axios.get(this.url+"/"+profile.id+"/alert",{headers:headers,params:{
+seen:seen
+        }})
+     
      return res.data
 
     }

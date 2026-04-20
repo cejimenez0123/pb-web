@@ -62,6 +62,7 @@ import OAuthCallback from './container/page/OauthCallback.jsx';
 // import '@ionic/react/css/palettes/dark.always.css';
 
 import initSocialLogin from './components/initSocialLogin.jsx';
+import { fetchNotifcations } from './actions/ProfileActions.jsx';
 setupIonicReact()
 
 const libraries = ["places"];
@@ -105,10 +106,14 @@ loadToken()
 useEffect(() => {
   if (token && !hasFetchedProfile.current) {
     hasFetchedProfile.current = true;
-    dispatch(getCurrentProfile());
+    dispatch(getCurrentProfile())
   }
 }, [token]);
-
+useEffect(()=>{
+if(currentProfile){
+  dispatch(fetchNotifcations({profile:currentProfile,seen:false}))
+}
+},[currentProfile])
 document.documentElement.classList.add('dark');
 useIonViewWillEnter(() => {
   const checkFirstLaunch = async () => {

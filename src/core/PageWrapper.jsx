@@ -23,11 +23,9 @@ import SearchButton from '../components/SearchButton'; // import memoized compon
 import menu from "../images/icons/menu.svg"
 import { Capacitor } from '@capacitor/core';
 import { useSelector } from 'react-redux';
-import { getCurrentProfile } from '../actions/UserActions';
+
 import { useDispatch } from 'react-redux';
 import Enviroment from './Enviroment';
-import { getMyStories } from '../actions/StoryActions';
-import { getMyCollections } from '../actions/CollectionActions';
 import { IonContent } from '@ionic/react';
 import ReferralForm from '../components/auth/ReferralForm';
 import { setPageInView } from '../actions/PageActions';
