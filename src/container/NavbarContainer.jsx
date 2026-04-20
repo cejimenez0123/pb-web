@@ -302,7 +302,7 @@ function ProfileButton({currentProfile,router}) {
 
   const handle = ()=>{
     if (currentProfile) {
-      router.push(Paths.myProfile, "root", "replace");
+      router.push(Paths.myProfile, "root");
     } else {
       router.push(Paths.login, "forward");
     }

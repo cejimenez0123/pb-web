@@ -29,12 +29,14 @@ import shortName from "../../core/shortName";
 // )} </div>)
 // }
 export default function ListPill({ item, onClick, profile }) {
-  const lastSeen = new Date().getTime() - 24 * 60 * 60 * 1000;
+  const lastSeen = new Date(profile?.lastNotified)??new Date().getTime() - 24 * 60 * 60 * 1000;
 
-  const isNew =
+  let isNew =
     item?.updated &&
     new Date(item.updated).getTime() > lastSeen;
-
+  if(item.userHistory.length>0){
+    isNew=false
+  }
   console.log({
     title: item,
     updated: item?.updated,
@@ -53,7 +55,7 @@ export default function ListPill({ item, onClick, profile }) {
       </span>
 
       {isNew && (
-        <div className="bg-soft min-h-4 min-w-4 my-auto max-w-4 max-h-4 rounded-full" />
+        <div className="bg-purple min-h-4 min-w-4 my-auto max-w-4 max-h-4 rounded-full" />
       )}
     </div>
   );

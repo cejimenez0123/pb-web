@@ -90,26 +90,6 @@ class StoryRepo{
         return res.data
     }
 
-//      async getMyStories({ skip = 0, take = 50 ,search=""} = {}) {
-//   try {
-//     const headers = await this.getAuthHeaders();
-
-
-
-//     const res = await axios.get(
-//       this.url + "/profile/protected",
-//       {
-//      headers:headers,
-//         params: { skip, take,search}, // 🔥 THIS is the key
-//       }
-//     );
-//  console.log("GETMY",res)
-//     return res.data;
-//   } catch (e) {
-//     console.error("getMyStories failed:", e);
-//     throw e;
-//   }
-// }
      async getMyStories({ skip = 0, take = 50 ,search=""} = {}) {
   try {
     const headers = await this.getAuthHeaders();
