@@ -126,15 +126,14 @@ try{
           placeholder="Type a hashtag and press Enter"
           rows={4}
           cols={12}
-          className=" my-1 w-[90%] p-2 rounded-xl md:w-[48em] bg-base-bg mx-auto border-1 border-emerald-600 text-emerald-800"
-        />
+         className="my-1 w-[90%] p-2 rounded-xl md:w-[48em] bg-base-bg mx-auto border border-soft text-soft placeholder:text-soft/50 focus:outline-none focus:ring-2 focus:ring-button-secondary-bg"  />
       <button type="submit"  className="hidden">Submit</button>
       <div className="text-left my-1">
-        <IonLabel className="text-emerald-800">Hashtags:</IonLabel>
+        <IonLabel className="text-soft text-sm">Hashtags:</IonLabel>
         <ul className="flex flex-wrap p-4">
           {hashtags.map((hash, index) => (
   
-            <li  className=" p-1 flex flex-row m-1 text-sm rounded-lg text-white bg-emerald-800 "key={index}>
+            <li  className="p-1 flex flex-row m-1 text-sm rounded-lg bg-button-secondary-bg text-white" key={index}>
               <h6 className="my-auto mx-2">#{hash.hashtag.name}</h6><IonImg 
             className=" my-auto" 
             onClick={()=>deleteHashtag(hash)}

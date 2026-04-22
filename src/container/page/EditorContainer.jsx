@@ -29,8 +29,8 @@ import Enviroment from "../../core/Enviroment.js";
 import { Preferences } from "@capacitor/preferences";
 import axios from "axios";
 import TopBarDropdown from "../../components/page/TopBarDropdown.jsx";
-import { getCurrentProfile } from "../../actions/UserActions.jsx";
-import { set } from "lodash";
+import EditorFooter from "../../components/page/EditorFooter.jsx";
+
 
   const editorContainerBase = "mx-auto bg-base-bg rounded-lg shadow-sm";
 const editorContainerSpacing = "mx-2 mb-12 p-4";
@@ -148,7 +148,7 @@ useEffect(() => {
   if (!parameters.id) return;
 
   // ✅ only update existing stories
-  if (!parameters.data?.trim()) return;
+  if (!parameters.data?.trim()&&!parameters.title?.trim()) return;
   setIsSaved(false)
   saveStory(parameters);
 }, [
@@ -596,6 +596,15 @@ const STATUS_OPTIONS = [
   <VisibilityBadge isPrivate={parameters.isPrivate} toggle={() => handleChange("isPrivate", !parameters.isPrivate)} />
   {/* Status Badge */}
 
+  {effectiveId && effectiveId !== "new" && (
+    <button
+      onClick={handleView}
+      className="inline-flex items-center gap-1 px-2 py-[3px] rounded-full text-xs font-medium bg-transparent border border-emerald-300 dark:border-emerald-600 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 transition-colors"
+    >
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+      View
+    </button>
+  )}
 </div>
 
 {/* </div> */}
@@ -620,19 +629,7 @@ const STATUS_OPTIONS = [
     </div>
 
     {/* Hashtag Form (slide down) */}
-    <AnimatePresence>
-      {openHashtag && (
-        <motion.div
-          initial={{ height: 0, opacity: 0 }}
-          animate={{ height: "auto", opacity: 1 }}
-          exit={{ height: 0, opacity: 0 }}
-          transition={{ type: "spring", stiffness: 300, damping: 30 }}
-          className="overflow-hidden w-full"
-        >
-          <HashtagForm item={pageInView} type="story" />
-        </motion.div>
-      )}
-    </AnimatePresence>
+ 
   </div>
 {/* </div> */}
     </motion.div>
@@ -675,10 +672,14 @@ const STATUS_OPTIONS = [
 </div>
       <EditorDiv page={editPage} isSaved={isSaved} setIsSaved={setIsSaved} handleChange={handleChange} parameters={parameters} type={type} createPageAction={createPageAction} />
     </div>
+    {/* Hashtag pills in negative space */}
+
+
+
     </motion.div>
-
-
-  
+<div className="pt-8">
+<EditorFooter  pageInView={pageInView} effectiveId={effectiveId} openConfirmDeleteDialog={openConfirmDeleteDialog}/>
+ </div>
 {/* </div> */}
     </AnimatePresence>
  

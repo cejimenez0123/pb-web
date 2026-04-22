@@ -1,6 +1,7 @@
 
 import truncate from "html-truncate"
 import ProfileCircle from "../profile/ProfileCircle"
+import { PageType } from "../../core/constants"
 function WorkshopItem({workshop,router}){
   return( <div onClick={()=>{router.push(Paths.collection.createRoute(workshop.group.id),"forward")}}
 className={`border rounded-xl bg-base-soft dark:bg-text-primary hover:bg-card-highlight dark:hover:bg-button-primary-hover shadow-md border border-blue dark:border-info-blue p-4 cursor-pointer transition-colors duration-200`}>

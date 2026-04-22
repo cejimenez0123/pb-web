@@ -62,19 +62,20 @@ function ContentHubContainer() {
   return (
 <IonContent 
   fullscreen 
+
   style={{
     "--background": Enviroment.palette.base.bg,  // use base.bg not cream, they differ slightly
-    "--padding-bottom": "10em"                    // use ionic var not paddingBottom
+                // use ionic var not paddingBottom
   }} 
   scrollY={true}
 >
         
       <ErrorBoundary>
-
+{/* <div className='ion-padding'>  */}
   <DiscDashTabs tab={tab} setTab={setTab} disc={() =><HomeEmbed workshops={workshops} stories={stories}
   prompts={prompts} isGlobal={isGlobal} setIsGlobal={setIsGlobal}/>} dash={()=><DashboardEmbed />} />
 
-
+{/* </div> */}
  
       </ErrorBoundary>
 </IonContent>

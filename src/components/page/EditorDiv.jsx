@@ -1,8 +1,8 @@
-import { useSelector } from "react-redux";
+
 import { PageType } from "../../core/constants";
 import RichEditor from "./RichEditor";
 import PicturePageForm from "./PicturePageForm";
-import { set } from "lodash";
+
 
 export default function EditorDiv({page, handleChange,isSaved,setIsSaved,parameters, type, createPageAction }) {
 

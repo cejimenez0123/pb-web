@@ -120,7 +120,7 @@ const {canSee,canAdd,canEdit} = computePermissions(page, currentProfile, storyCo
  useEffect(() => {
   dispatch(setComments({comments:[]}));
   fetchStory();
-}, [id]);
+}, []);
   useEffect(() => {
     if (comments?.length) {
       setRootComments(comments.filter((c) => c && !c.parentId));
@@ -156,7 +156,7 @@ const {canSee,canAdd,canEdit} = computePermissions(page, currentProfile, storyCo
       <IonContent
         fullscreen
         className="ion-padding-bottom"
-        style={{ "--background":Enviroment.palette.cream,"--padding-bottom":"15em" }}
+        style={{ "--background":Enviroment.palette.cream, }}
       >
         <div className="relative">
   {pending && <PageViewSkeleton />}
