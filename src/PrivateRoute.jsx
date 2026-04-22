@@ -21,7 +21,7 @@ const PrivateRoute = ({ children }) => {
     }
 
     // Redirect logged-out users to login
-    if (!currentProfile && loggedOutPaths.includes(pathName)) {
+    if (!loading && !currentProfile && loggedOutPaths.includes(pathName)) {
       router.push(Paths.login, "root");
       return;
     }

@@ -34,7 +34,7 @@ const LINK =
 const INPUT_WRAP = "max-w-md mx-auto";
 export default function LogInContainer({currentProfile}) {
     const {setError,seo,setSeo}=useContext(Context)
-
+const router = useIonRouter()
 useEffect(() => {
   setSeo((prev) => ({
     ...prev,
@@ -42,7 +42,16 @@ useEffect(() => {
   }));
 }, [setSeo]);
 
-  
+   useEffect(() => {
+    // If user is logged in → redirect away from login
+    if (currentProfile?.id) {
+      router.push(Paths.myProfile, "root");
+      return;
+    }
+
+    // No need for async storage check anymore
+    // setIsLoading(false);
+  }, [currentProfile, router]);
     return (
         <IonContent fullscreen={true}>
             <div className='py-10'>

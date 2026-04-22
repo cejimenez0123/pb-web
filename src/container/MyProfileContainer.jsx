@@ -22,6 +22,7 @@ import PaginatedList from "../components/page/PaginatedList";
 import usePaginatedResource from "../core/usePaginatedResource";
 import ListPill from "../components/page/ListPill";
 import SectionHeader from "../components/SectionHeader";
+import useDebounce from "../core/useDebounce";
 
 const TABS = {
   POSTS: "pages",
@@ -57,9 +58,19 @@ const stories = usePaginatedResource({
     totalCount: res.totalCount,
   }),
 });
-
+ const communities = usePaginatedResource({
+  key: "libraries",
+  fetcher: getMyCollections,
+  pageSize: pageSize,
+  type:"library",
+  enabled: !!profile?.id,
+  select: (res) => ({
+    items: res.collections,
+    totalCount: res.totalCount,
+  }),
+});
 const key = "collections";
-
+console.log("COMBOM",communities.items)
 const { pages = {}, totalCount = 0, loading } = useSelector(
   (state) => state.pagination.byKey?.[key] || {}
 );
@@ -67,16 +78,9 @@ const { pages = {}, totalCount = 0, loading } = useSelector(
 const [page, setPage] = useState(1);
 
 const collections = pages[page] || [];
-// const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
-const dispatch = useDispatch()
 
-const communities = useMemo(
-  () =>
-    (collections ?? []).filter(
-      (col) => (![...profile?.profileToCollections.map(ptc=>ptc?.collection?.id)].includes(col?.id))&&(col?.childCollections?.length ?? 0) > 0
-    ),
-  [collections]
-);
+
+
 
   const router = useIonRouter();
 const [searchInput, setSearchInput] = useState("");
@@ -152,7 +156,9 @@ const StatChip = ({ value, label }) => (
     });
   }, [profile, setSeo]);
 
+// const [search, setSearch] = useState("");
 
+const debouncedSearch = useDebounce(search, 300);
  
  if (!profile) return <EmptyProfileState />;
   return (
@@ -201,11 +207,11 @@ className="bg-soft rounded-full p-2"><img src={settings} /></button>
               </div>
             )}
 
-            {(communities?.length ?? 0) > 0 && (
+            {(communities.items?.length ?? 0) > 0 && (
               <div className="space-y-2 px-4">
                 <p className="text-xs text-gray-400 uppercase">Communities</p>
                 <div className="flex flex-wrap gap-2 ">
-        {communities.slice(0, 3).map((c) => {
+        {communities?.items?.slice(0, 3).map((c) => {
   const path = Paths.collection.createRoute(c.id);
 
   return (
@@ -275,6 +281,8 @@ className="bg-soft rounded-full p-2"><img src={settings} /></button>
   cacheKey="stories"
   fetcher={getMyStories}
   pageSize={8}
+  search={debouncedSearch}
+  params={{search:debouncedSearch}}
   emptyState={   Array.from({ length: pageSize }).map((_, i) => (
                    <div
         key={i}
@@ -283,7 +291,7 @@ className="bg-soft rounded-full p-2"><img src={settings} /></button>
        <span className="min-h-14 "></span>
       </div>
       ))}
-  search={search}
+
   renderItem={(p) => (
     <ListPill item={p} profile={profile} onClick={()=>router.push(Paths.page.createRoute(p.id))}/>
   )}
@@ -315,10 +323,11 @@ className="bg-soft rounded-full p-2"><img src={settings} /></button>
 <SectionHeader title={"All Collections"}/>
        <PaginatedList
       cacheKey="collections"
-  params={{ type: "book", search }}
+  params={{ type: "book", search:debouncedSearch }}
   fetcher={getMyCollections}
   pageSize={8}
-  search={search}
+  
+  search={debouncedSearch}
 
     
          renderItem={(i) => (
@@ -336,7 +345,7 @@ className="bg-soft rounded-full p-2"><img src={settings} /></button>
             )
           }
 
-            {tab === TABS.COMMUNITIES && <CommunitiesPanel router={router} communities={communities} />}
+            {tab === TABS.COMMUNITIES && <CommunitiesPanel router={router} communities={communities.items} />}
             {tab === TABS.ABOUT && <AboutPanel router={router} profile={profile}  />}
           </div>
 </div>

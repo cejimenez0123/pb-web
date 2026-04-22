@@ -95,7 +95,7 @@ useEffect(()=>{
       }
     }
 
-    if (search.trim()) {
+    if (search?.trim()) {
       const lower = search.toLowerCase();
       result = result.filter((s) => s.title?.toLowerCase().includes(lower));
     }
@@ -127,7 +127,7 @@ useEffect(()=>{
         break;
     }
 
-    if (search.trim()?.length > 0) {
+    if (search?.trim()?.length > 0) {
       const lowerSearch = search.toLowerCase();
       result = result.filter((c) => c?.title?.toLowerCase().includes(lowerSearch));
     }

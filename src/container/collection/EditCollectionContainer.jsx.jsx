@@ -111,13 +111,13 @@ const [activeTab, setActiveTab] = useState("pages");
 
 
 const filteredPages = useMemo(() => {
-  if (!search.trim()) return newPages;
+  if (!search?.trim()) return newPages;
   const lower = search.toLowerCase();
   return newPages.filter((s) => s.story?.title?.toLowerCase().includes(lower));
 }, [newPages, search]);
 
 const filteredCollections = useMemo(() => {
-  if (!search.trim()) return newCollections;
+  if (!search?.trim()) return newCollections;
   const lower = search.toLowerCase();
   return newCollections.filter((c) => c.childCollection?.title?.toLowerCase().includes(lower));
 }, [newCollections, search]);

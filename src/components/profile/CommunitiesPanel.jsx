@@ -13,7 +13,7 @@ const CommunitiesPanel = ({communities ,router}) => {
 
   const paginatedCommunities = useMemo(() => {
     const start = (page - 1) * limit;
-    return communities.slice(start, start + limit);
+    return communities?.slice(start, start + limit);
   }, [communities, page]);
 
   if (!communities.length) {

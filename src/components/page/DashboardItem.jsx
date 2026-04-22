@@ -28,6 +28,69 @@ import ShareList from './ShareList';
 import { useParams } from 'react-router';
 import { useDialog } from '../../domain/usecases/useDialog';
 import computePermissions from '../../core/compusePermissions';
+// THEME HELPERS (light + dark ready)
+const theme = {
+  card: `
+    bg-base-bg 
+    dark:bg-base-surface
+    border border-border-default 
+    dark:border-border-soft
+    shadow-sm
+  `,
+
+  headerText: `
+    text-text-primary 
+    dark:text-text-inverse
+  `,
+
+  subText: `
+    text-text-secondary 
+    dark:text-text-secondary
+  `,
+
+  contentText: `
+    text-text-primary/80 
+    dark:text-text-inverse/80
+  `,
+
+  softBg: `
+    bg-softBlue/40 
+    dark:bg-base-soft/20
+  `,
+
+  softBgHover: `
+    bg-softBlue/60 
+    dark:bg-base-soft/30
+  `,
+
+  primaryBtn: (active) => `
+    px-3 py-1.5 rounded-full text-sm font-medium
+    transition active:scale-95
+    ${
+      active
+        ? "bg-button-secondary-bg text-button-secondary-text"
+        : "bg-softBlue/40 text-text-primary dark:text-text-inverse"
+    }
+  `,
+
+  iconBtn: `
+    px-3 py-1.5 rounded-full text-sm
+    bg-softBlue/30 
+    dark:bg-base-soft/20
+    text-text-primary 
+    dark:text-text-inverse
+    transition active:scale-95
+  `,
+
+  bookmarkBtn: `
+    p-2 rounded-full 
+    bg-softBlue/30 
+    dark:bg-base-soft/20
+    active:bg-softBlue/60 
+    dark:active:bg-base-soft/30
+    transition
+  `,
+};
 function DashboardItem({ page, book, isGrid }) {
   const { isPhone, isHorizPhone, setSuccess, setError} = useContext(Context);
   const currentProfile = useSelector(state=>state.users.currentProfile)
@@ -319,7 +382,7 @@ openDialog({
 
 
 return (
-  <div className="mt-3 mx-auto bg-base-bg rounded-2xl border border-blue shadow-sm">
+<div className={`mt-3 mx-auto rounded-2xl ${theme.card}`}>
 
     {/* Header */}
     <IonCardHeader className="pb-2">
@@ -329,10 +392,10 @@ return (
         </div>
 
         <div className="flex flex-col">
-          <IonText className="text-sm font-semibold text-[#003b44]">
+          <IonText className={`text-sm font-semibold ${theme.headerText}`}>
             {page.author?.username}
           </IonText>
-          <IonText className="text-xs text-[#0097b2]/70">
+          <IonText className={`text-xs ${theme.subText}`}>
             {page.title}
           </IonText>
         </div>
@@ -342,12 +405,11 @@ return (
     {/* Content */}
     <IonCardContent className="pt-0">
       {page.description && (
-        <IonText className="text-sm text-[#003b44]/80 leading-relaxed line-clamp-3">
+     <IonText className={`text-sm ${theme.contentText} leading-relaxed line-clamp-3`}>
           {page.description}
         </IonText>
       )}
-
-      <div className="mt-3 rounded-xl overflow-hidden border border-[#bae6fe]/30">
+<div className={`mt-3 rounded-2xl overflow-hidden border ${theme.softBg}`}>
         <PageDataElement truncateNumber={200}isGrid={isGrid} page={page} />
       </div>
     </IonCardContent>
@@ -359,14 +421,8 @@ return (
     {/* Like */}
     <button
       onClick={handleApprovalClick}
-      className={`
-        px-3 py-1.5 rounded-full text-sm font-medium
-        transition active:scale-95
-        ${likeFound 
-          ? "bg-[#0097b2] text-white" 
-          : "bg-[#bae6fe]/40 text-[#003b44]"
-        }
-      `}
+    className={theme.primaryBtn(likeFound)}
+  
     >
       Yea
     </button>
@@ -374,11 +430,7 @@ return (
     {/* Comment */}
     <button
       onClick={handleClickComment}
-      className="
-        px-3 py-1.5 rounded-full text-sm
-        bg-[#bae6fe]/30 text-[#003b44]
-        transition active:scale-95
-      "
+   className={theme.iconBtn}
     >
       💬
     </button>
@@ -386,11 +438,7 @@ return (
     {/* Share */}
     <button
       onClick={onClickShare}
-      className="
-        px-3 py-1.5 rounded-full text-sm
-        bg-[#bae6fe]/30 text-[#003b44]
-        transition active:scale-95
-      "
+    className={theme.iconBtn}
     >
       ⤴
     </button>
@@ -399,12 +447,7 @@ return (
   {/* Bookmark */}
   <button
     onClick={handleBookmark}
-    className="
-      p-2 rounded-full 
-      bg-[#bae6fe]/30 
-      active:bg-[#bae6fe]/60 
-      transition
-    "
+  className={theme.bookmarkBtn}
   >
     <IonImg
       className="w-5 h-5"

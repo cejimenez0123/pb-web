@@ -19,10 +19,14 @@ function useProfileDependentEffects(currentProfile, isGlobal) {
   const fetchPrompts = async () => {
     try {
       const res = await dispatch(getPrompts());
-      checkResult(res, ({ prompts }) => {
-   
-        const sorted = [...prompts].sort((a,b)=>new Date(b.updated)-new Date(a.updated));
+      checkResult(res, payload => {
+        
+
+        const sorted = [...payload?.prompts].sort((a,b)=>new Date(b.updated)-new Date(a.updated));
         setResults(prev => ({ ...prev, prompts: sorted }));
+    console.log("FUCL",sorted)
+      },err=>{
+           console.log("STOP PROMPTING ME err",err)
       });
     } catch (err) { console.error("Failed fetching prompts:", err); }
   };

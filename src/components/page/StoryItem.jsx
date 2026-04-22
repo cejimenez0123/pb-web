@@ -8,7 +8,7 @@ import Context from "../../context";
 import { PageType } from "../../core/constants";
 // ── Card Layout ─────────────────────────────
 const CARD =
-  "bg-softBlue shadow-sm hover:shadow-md rounded-xl transition-shadow duration-200 cursor-pointer";
+  "bg-softBlue shadow-sm hover:shadow-md max-h-56 rounded-xl transition-shadow duration-200 cursor-pointer";
 
 const CARD_INNER = "p-4 flex flex-col h-full";
 
@@ -18,7 +18,7 @@ const STACK_MD = "space-y-3";
 
 // ── Content Blocks ──────────────────────────
 const TITLE =
-  "text-base font-semibold text-emerald-800 truncate";
+  "text-base dark:text-border-soft font-semibold text-emerald-800 truncate";
 
 const MEDIA =
   "w-full h-44 object-cover rounded-lg";
@@ -27,7 +27,7 @@ const TEXT =
   "text-sm text-gray-800 line-clamp-5 break-words";
 
 const DESCRIPTION =
-  "text-sm text-gray-600 line-clamp-3 break-words";
+  "text-sm text-soft dark:text-border-soft line-clamp-3 break-words";
 
 // ── Width Behavior (important for HomeEmbed)
 const CARD_WIDTH =

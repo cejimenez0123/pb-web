@@ -9,12 +9,10 @@ import Paths from '../core/paths';
 import checkResult from '../core/checkResult';
 import { PageType } from '../core/constants';
 import Context from '../context';
-import { IonText,  IonSpinner, IonItem, IonLabel, IonToggle, useIonRouter, useIonViewWillEnter } from '@ionic/react';
-
+import { IonText,  IonSpinner, IonLabel, IonToggle, useIonRouter, useIonViewWillEnter } from '@ionic/react';
 import { debounce } from 'lodash';
 import ErrorBoundary from '../ErrorBoundary.jsx';
 import StoryItem from '../components/page/StoryItem.jsx';
-import Enviroment from '../core/Enviroment.js';
 import PageList from '../components/page/PageList.jsx';
 import SectionHeader from '../components/SectionHeader.jsx';
 import shortName from '../core/shortName.jsx';
@@ -35,7 +33,7 @@ const STACK_MD = "space-y-6";
 const SECTION = "space-y-4";
 
 // horizontal scroll that feels native
-const SCROLL_ROW = "flex gap-4 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0";
+const SCROLL_ROW = "flex gap-4 overflow-x-auto pb-2 min-h-fit -mx-4 px-4 sm:mx-0 sm:px-0";
 
 // responsive grid
 const GRID = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4";
@@ -90,10 +88,11 @@ function HomeEmbed({workshops,stories,prompts,isGlobal,setIsGlobal}) {
 
   const [whatsHappeningList, setWhatsHappeningList] = useState([]);
 
-  const sortedWorkshops = useMemo(() => [...workshops].sort((a,b) => a.title.localeCompare(b.title)), [workshops]);
-  const filteredPrompts = useMemo(() => prompts?.filter(p => p?.story?.data) || [], [prompts]);
-
-
+  const sortedWorkshops = useMemo(() => [...workshops]?.sort((a,b) => a?.title.localeCompare(b?.title)), [workshops]);
+  const filteredPrompts =prompts
+  //  useMemo(() => prompts?.filter(p => p?.data) || [], [prompts]);
+console.log("filteredPromptsx",prompts)
+console.log("filteredPrompts",filteredPrompts)
   useEffect(() => {
     if (stories?.length) {
       const sorted = [...stories].sort((a,b)=>new Date(b.updated)-new Date(a.updated));
@@ -125,13 +124,13 @@ function HomeEmbed({workshops,stories,prompts,isGlobal,setIsGlobal}) {
     })).then(res => checkResult(res, payload => {
       if (!payload.story) return window.alert("COULD NOT CREATE STORY");
       // dispatch(setEditingPage({ page: payload.story }));
-      dispatch(setPageInView({ page: payload.story }));
-      router.push(Paths.editPage.createRoute(payload.story.id), 'forward', 'push');
+      dispatch(setPageInView({ page: payload?.story }));
+      router.push(Paths.editPage.createRoute(payload?.story?.id), 'forward', 'push');
     }));
   }, 5);
 
   if (!currentProfile) return <div className="flex justify-center mt-12"><IonSpinner /></div>;
-
+ 
   return (
     <ErrorBoundary>
 
@@ -141,11 +140,11 @@ function HomeEmbed({workshops,stories,prompts,isGlobal,setIsGlobal}) {
           <SectionHeader title="What's happening in your communities" />
       
 
-<div className={SCROLL_ROW}>
+<div className={SCROLL_ROW+" overflow-y-hidden"}>
   {whatsHappeningList.length
     ? whatsHappeningList.map(story => (
 
-          <StoryItem key={story.id} page={story} isGrid />
+          <StoryItem key={story?.id} page={story} html={story?.data} isGrid />
  
       ))
     : [1,2,3].map(i => (
@@ -175,7 +174,7 @@ function HomeEmbed({workshops,stories,prompts,isGlobal,setIsGlobal}) {
   <div className="grid gap-4 sm:grid-cols-2  lg:grid-cols-2">
             {sortedWorkshops?.length
   ? sortedWorkshops.map(workshop => (
-      <WorkshopItem key={workshop.id} item={workshop} router={router} />
+      <WorkshopItem key={workshop?.id} item={workshop} router={router} />
     ))
   : [1,2,3].map(i => (
       <WorkshopItem key={i} item={null} router={router} />
@@ -187,15 +186,16 @@ function HomeEmbed({workshops,stories,prompts,isGlobal,setIsGlobal}) {
         
      <div className={SECTION}>
           {/* Prompts */}
-          <SectionHeader title="Writing Prompts for you" />
+          {/* {filteredPrompts.length? */}
+          <><SectionHeader title="Writing Prompts for you" />
        {/* <div className='px-4'> */}
           <div className={`${GRID} `}>
 
-            {filteredPrompts.length
-              ? filteredPrompts.map(({ story }) => <StoryItem key={story.id} page={story} />)
-              : [1,2,3,4].map(i => <div key={i} className="skeleton min-w-[20em] min-h-[20em]" />)
-            }
-            </div>
+           
+              {  filteredPrompts.map(( story ) =>{ return<StoryItem key={story?.id} page={story} html={story.html} />})}
+              {/* // : [1,2,3,4].map(i => <div key={i} className="skeleton min-w-[20em] min-h-[20em]" />)} */}
+            </div></> 
+            {/* :null } */}
           </div>
           {/* </div> */}
        <div className={SECTION}>

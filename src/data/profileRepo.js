@@ -28,11 +28,10 @@ async getAuthHeaders() {
 
 async getMyProfiles() {
   const headers = await this.getAuthHeaders();
-console.log("HEADERS GETCURRENTPROFILE",headers)
+
   try {
     const res = await axios.get(this.url + "/protected", { headers });
-    console.log("GETCURRENTPROFILE",res)
-    
+  
     return res.data;
   } catch (e) {
   console.log("ERROR", e);

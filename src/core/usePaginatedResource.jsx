@@ -7,6 +7,7 @@ function usePaginatedResource({
   key,
   fetcher,
   pageSize,
+  type,
   enabled,
   select,
 }) {
@@ -28,6 +29,7 @@ function usePaginatedResource({
       fetcher({
         skip: (p - 1) * pageSize,
         take: pageSize,
+        type
       })
     ).unwrap();
 

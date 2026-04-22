@@ -6,7 +6,7 @@ import ExploreList from '../components/collection/ExploreList.jsx';
 import arrowToRight from '../images/icons/arrowToRight.svg'
 import checkResult from '../core/checkResult.js';
 import ErrorBoundary from '../ErrorBoundary.jsx';
-import {IonText, useIonRouter,  IonList} from '@ionic/react';
+import {IonText, useIonRouter,  IonList, IonSearchbar} from '@ionic/react';
 import { fetchYourWorkshops } from '../actions/WorkshopActions.jsx';
 import ProfileCircle from '../components/profile/ProfileCircle.jsx';
 import truncate from 'html-truncate';
@@ -28,6 +28,7 @@ import usePaginatedResource from '../core/usePaginatedResource.jsx';
 import PaginatedList from '../components/page/PaginatedList.jsx';
 import shortName from '../core/shortName.jsx';
 import ListPill from '../components/page/ListPill.jsx';
+import useDebounce from '../core/useDebounce.jsx';
 function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex = 0, role = "button" }) {
   return (
     <span
@@ -109,46 +110,54 @@ useEffect(()=>{
 
 useEffect(() => {
   try {
-    if (results?.length > 1) {
-      const group = results[1]; // same as skipping first
-      const story = [...group.storyIdList]
-        .filter(a => a?.story?.type === PageType.text)
+    console.log("FCSXL",results)
+    if (results?.length > 0) {
+      const group = results[0];
+      // console.log("FCKSXLCC",group)
+      const stories = group.storyIdList?.filter(a => a?.story?.type === PageType.text)
         .sort((a, b) => a?.story?.updated - b?.story?.updated)
-      setWorkshop({ group, story });
+      
+      setWorkshop({ group, story:stories[0]});
+     
     }
   } catch (err) {
     console.log(err);
   }
- 
-   
+
   
 }, [results]);
 
-
+  const [search, setSearch] = useState("");
+const debouncedSearch = useDebounce(search, 300);
 const openPages = () => {
-  
+
+
   openDialog({
   title: "Pages",
   height: 94,
   text: (
+    <div>
+
+  
    <PaginatedList
    
   cacheKey="stories"
   fetcher={getMyStories}
   pageSize={8}
+  search={search}
   enableInternalSearch={true}
   renderItem={(story) => (
         <div
           onClick={() => {
-            router.push(Paths.page.createRoute(story.id));
+            router.push(Paths.page.createRoute(story?.id));
             resetDialog();
           }}
           className="p-4 border border-soft rounded-xl"
         >
-          {story.title || "Untitled"}
+          {shortName(story?.title,40) || "Untitled"}
         </div>
       )}
-    />
+    />  </div>
   )})}
 
   const openCollections = () => {
@@ -270,7 +279,7 @@ const openCommunities = () => {
         if (payload.story) {
           // dispatch(setEditingPage({ page: payload.story }));
           dispatch(setPageInView({ page: payload.story }));
-        router.push(Paths.editPage.createRoute(payload.story.id),'forward', 'push');
+        router.push(Paths.editPage.createRoute(payload?.story?.id),'forward', 'push');
         }else{
           window.alert("COULD NOT CREATE STORY")
         }
@@ -287,12 +296,12 @@ function WorkshopItem({workshop}){
 
                   <h1 className='text-[1.4em] py-2 text-text-inverse '>{workshop.group.title}</h1>
                   <h6 className='text-soft  text-text-inverse py-2'>Most Recent</h6>
-                  {workshop.story && <div className='py-2  text-text-inverse'>{workshop?.story?.title}</div>}
-                  {workshop.story && workshop.story.type==PageType.text && <div  className=" text-text-inversep-2 rounded-xl"dangerouslySetInnerHTML={{__html:truncate(workshop.story.data,100,{})}}/>
+                  {workshop?.story && <div className='py-2  text-text-inverse'>{workshop?.story?.title}</div>}
+                  {workshop?.story && workshop?.story?.type==PageType.text && <div  className=" text-text-inversep-2 rounded-xl"dangerouslySetInnerHTML={{__html:truncate(workshop.story.data,100,{})}}/>
                     }
                     {/* {<div dangerouslySetInnerHTML={{__html:truncate(workshop.story.data,20,{})/>}</div> */}
                   <div className='flex flex-row  text-text-inverse py-4 '>{
-                    workshop.group.roles.map(role=><ProfileCircle profile={role.profile} includeUsername={false}/>)
+                    workshop?.group?.roles?.map(role=><ProfileCircle profile={role.profile} includeUsername={false}/>)
 }</div>
                 </div>)
 }
@@ -476,18 +485,39 @@ scrollY: false,
              
 </div>
              <div className="relative min-h-[120px]">
+                 {workshop?     
+        // <div className="relative min-h-[120px]">
+
   <div
     className={`
       transition-all duration-300 ease-out
       ${workshop ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2 pointer-events-none absolute inset-0"}
     `}
   >
-    {workshop && (
       <div className="px-4">
         <WorkshopItem workshop={workshop} />
       </div>
-    )}
-  </div>
+    
+ </div>
+
+  :
+      <div className="px-4">
+        <h2 className="text-lg text-soft">
+          Click Join a Workshop or Studio below
+        </h2>
+      </div>}
+  {/* <div
+    className={`
+      transition-all duration-300 ease-out
+      ${workshop ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2 pointer-events-none absolute inset-0"}
+    `}
+  > */}
+    {/* {workshop && (
+      <div className="px-4">
+        <WorkshopItem workshop={workshop} />
+      </div>
+    )} */}
+  {/* </div> */}
 
   <div
     className={`
@@ -495,13 +525,13 @@ scrollY: false,
       ${!workshop ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2 pointer-events-none absolute inset-0"}
     `}
   >
-    {!workshop && (
+    {/* {!workshop && (
       <div className="px-4">
         <h2 className="text-lg text-soft">
           Click Join a Workshop or Studio below
         </h2>
       </div>
-    )}
+    )} */}
   </div>
 </div>
             </div>
@@ -545,7 +575,7 @@ scrollY: false,
       .slice(0, visibleCount)
       .map((story, index) => (
         <div
-          key={story.id}
+          key={story?.id}
          className="transition-all duration-300"
           style={{
             transitionDelay: `${index * 60}ms`

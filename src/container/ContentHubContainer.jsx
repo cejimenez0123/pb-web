@@ -16,8 +16,7 @@ import Enviroment from '../core/Enviroment.js';
 import useProfileDependentEffects from '../core/useProfileDependentEffects.jsx';
 import HomeEmbed from './HomeContainer.jsx';
 import DashboardEmbed from './DashboardContainer.jsx';
-import { getCurrentProfile } from '../actions/UserActions.jsx';
-import { getMyStories } from '../actions/StoryActions.jsx';
+
 
 function ContentHubContainer() {
   const { seo,setSeo } = useContext(Context);
@@ -99,7 +98,7 @@ function ContentHubContainer() {
 
 
 
-
+console.log("FUCLX",prompts)
 
 
   return (
@@ -109,7 +108,7 @@ function ContentHubContainer() {
       <ErrorBoundary>
 
   <DiscDashTabs tab={tab} setTab={setTab} disc={() =><HomeEmbed workshops={workshops} stories={stories}
-  prompts={prompts||[]} isGlobal={isGlobal} setIsGlobal={setIsGlobal}/>} dash={()=><DashboardEmbed />} />
+  prompts={prompts} isGlobal={isGlobal} setIsGlobal={setIsGlobal}/>} dash={()=><DashboardEmbed />} />
 
 
  

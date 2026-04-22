@@ -38,7 +38,7 @@ export default function PageDataElement({
         return (
           <div className="w-[100%] px-4">
             <div
-              className="text-[15px] w-[100%]  max-h-[30em] leading-7 text-[#003b44] space-y-3"
+              className="text-[15px] w-[100%]  max-h-[30em] leading-7 text-soft dark:text-button-primary-text space-y-3"
               dangerouslySetInnerHTML={{
                 __html: truncate(t, truncateNumber, {})
               }}

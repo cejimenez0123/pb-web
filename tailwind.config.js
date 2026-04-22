@@ -40,6 +40,7 @@ export default {
     },
 
     "text": {
+      "dark":"#ffffff",
       "primary": "#1f2937", // Main readable text (titles, body)
       "secondary": "#6b7280", // Subtext, metadata, timestamps
       "inverse": "#ffffff", // Text on dark buttons/backgrounds

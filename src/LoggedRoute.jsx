@@ -11,7 +11,7 @@ const LoggedRoute = ({ children }) => {
   useEffect(() => {
     // If user is logged in → redirect away from login
     if (currentProfile?.id) {
-      router.push(Paths.myProfile, "root", "replace");
+      router.push(Paths.myProfile, "root");
       return;
     }
 

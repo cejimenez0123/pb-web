@@ -34,7 +34,7 @@ export default function ListPill({ item, onClick, profile }) {
   let isNew =
     item?.updated &&
     new Date(item.updated).getTime() > lastSeen;
-  if(item.userHistory.length>0){
+  if(item?.userHistory?.length>0){
     isNew=false
   }
   console.log({

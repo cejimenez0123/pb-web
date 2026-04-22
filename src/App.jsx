@@ -150,12 +150,12 @@ const isMobileOrTablet = useMediaQuery({ query: '(max-width: 60em)' })
 
 const showTopNavbar = isDesktop && !isNative
 
-const location = ionRouter?.routeInfo?.pathname
+const location = window.location.pathname
 
 const hiddenPaths = ["/onboard", "/apply", "/login"];
-
+console.log("LOCATION",location)
 const showBottomNavbar =
-  ((isNative && !hiddenPaths.includes(location))||import.meta.env.VITE_NODE_ENV=="dev"); 
+  ( !hiddenPaths.includes(location)); 
 
  return (
 
@@ -217,10 +217,10 @@ const showBottomNavbar =
         <PageWrapper presentHeader={false
         
         } >
-      <LoggedRoute>
+
 
             <LogInContainer  currentProfile={currentProfile} logIn={props.logIn}/>
-          </LoggedRoute>
+ 
                      </PageWrapper>
          
 
@@ -263,7 +263,7 @@ const showBottomNavbar =
     />
           <Route exact path="/discovery" 
                 render={()=>
-                   <PageWrapper showBackbutton={false} presentHeader={false} showSearchButton={true}> 
+                   <PageWrapper showBackbutton={false}  showSearchButton={true}> 
                     <DiscoveryContainer/>
                      </PageWrapper>
                       
@@ -277,9 +277,7 @@ const showBottomNavbar =
       <Route exact path={Paths.calendar()}
      render={()=><PageWrapper showBackbutton={false} ><CalendarContainer/></PageWrapper>}/>
           <Route exact path={Paths.newsletter() }
-     render={()=><LoggedRoute 
- currentProfile={currentProfile}
-     ><PageWrapper><NewsletterContainer/></PageWrapper></LoggedRoute>}/>
+     render={()=><PageWrapper><NewsletterContainer/></PageWrapper>}/>
      <Route exact path={'/reset-password' }
      render={()=><PageWrapper><ResetPasswordContainer/></PageWrapper>}/>
      <Route path={Paths.collection.route()}
@@ -290,9 +288,8 @@ const showBottomNavbar =
                               <SignUpContainer/></PageWrapper>
                         }/>
       <Route path={'/register'}
-                render={()=><LoggedRoute 
-                    currentProfile={currentProfile}><PageWrapper>
-                        <UserReferralContainer/></PageWrapper></LoggedRoute>}/>
+                render={()=><PageWrapper>
+                        <UserReferralContainer/></PageWrapper>}/>
        <Route path={Paths.feedback()}
             render={()=><PageWrapper><FeedbackContainer/></PageWrapper>}/>
      <Route path={Paths.addToCollection.route}

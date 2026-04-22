@@ -11,63 +11,79 @@ export default function LinkPreview({ url,compact }) {
   const [previewData, setPreviewData] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const normalizeUrl = (url) => {
-    if (!url) return "";
-    return url.startsWith("http") ? url : `https://${url}`;
-  };
+ const normalizeUrl = (url) => {
+  if (!url) return "";
+
+  try {
+    const fixed = url.startsWith("http") ? url : `https://${url}`;
+    return new URL(fixed).href;
+  } catch {
+    return "";
+  }
+};
 
   const normalizedUrl = normalizeUrl(url);
 
   const isSpotify = normalizedUrl.includes("open.spotify.com");
+   const isSoundCloud= normalizedUrl.includes("soundcloud.com");
   const isYouTube =
     normalizedUrl.includes("youtube.com") ||
     normalizedUrl.includes("youtu.be");
 
-  useEffect(() => {
-    if (!normalizedUrl) return;
+useEffect(() => {
+  if (!normalizedUrl) return;
 
-    setLoading(true);
+  if (isSpotify) {
+    setPreviewData({ type: "spotify" });
+    return;
+  }
 
-    if (isSpotify) {
-      setPreviewData({ type: "spotify" });
-      setLoading(false);
-      return;
-    }
+  if (isSoundCloud) {
+    setPreviewData({ type: "soundcloud" });
+    return;
+  }
 
-    if (isYouTube) {
-      setPreviewData({ type: "youtube" });
-      setLoading(false);
-      return;
-    }
+  if (isYouTube) {
+    setPreviewData({ type: "youtube" });
+    return;
+  }
 
-    fetchPreview(normalizedUrl);
-  }, [normalizedUrl]);
+  fetchPreview(normalizedUrl);
+}, [normalizedUrl]);
 
-  const fetchPreview = async (url) => {
+const fetchPreview = async (url) => {
+  try {
+    const res = await axios.get(
+      `${Enviroment.proxyUrl}/preview?url=${encodeURIComponent(url)}`,
+      { timeout: 8000 }
+    );
+
+    setPreviewData({
+      title: res.data?.title || url,
+      description: res.data?.description || "",
+      image: res.data?.image || null,
+    });
+  } catch (err) {
+    console.error("PREVIEW ERROR:", {
+      message: err.message,
+      url,
+      response: err.response?.data,
+    });
+
+    let domain = url;
     try {
-      const res = await axios.get(
-        `${Enviroment.proxyUrl}/preview?url=${encodeURIComponent(url)}`,
-        { timeout: 5000 }
-      );
+      domain = new URL(url).hostname;
+    } catch {}
 
-      setPreviewData({
-        title: res.data?.title || url,
-        description: res.data?.description || "",
-        image: res.data?.image || null,
-      });
-    } catch (err) {
-      console.error(err);
-
-      // ✅ strong fallback
-      setPreviewData({
-        title: url,
-        description: "Tap to open link",
-        image: `https://www.google.com/s2/favicons?domain=${url}`,
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+    setPreviewData({
+      title: domain,
+      description: "Tap to open link",
+      image: `https://www.google.com/s2/favicons?domain=${domain}`,
+    });
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleClick = () => {
     window.open(normalizedUrl, "_blank");
@@ -136,3 +152,21 @@ export default function LinkPreview({ url,compact }) {
     </div>
   );
 }
+
+const SoundCloudEmbed = ({ url, compact }) => {
+  const embedUrl = `https://w.soundcloud.com/player/?url=${encodeURIComponent(
+    url
+  )}&color=%230097b2&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false`;
+
+  return (
+    <iframe
+      width="100%"
+      height={compact ? "120" : "166"}
+      scrolling="no"
+      frameBorder="no"
+      allow="autoplay"
+      src={embedUrl}
+      className="rounded-xl"
+    />
+  );
+};

@@ -138,9 +138,7 @@ state.notifications = payload
  
     }).addCase(getCurrentProfile.rejected,(state,data)=>{ 
 
-        if(data){
-        
-        }
+     state.loading = false
     }).addCase(postStoryHistory.fulfilled,(state,{payload})=>{
         state.currentProfile = payload.profile
     }).addCase(postCollectionHistory.fulfilled,(state,{payload})=>{
@@ -148,10 +146,10 @@ state.notifications = payload
     }).addCase(setCurrentProfile.type,(state,{payload})=>{
         state.currentProfile = payload
     }).addCase(getCurrentProfile.pending,(state,data)=>{
-
+state.loading = true
         
     }).addCase(getCurrentProfile.fulfilled, (state, action) => {
-        console.log("GET CURRENT PROFILE FULFILLED",action.payload)
+
   state.currentProfile = action?.payload?.profile
   state.loading = false;
 })

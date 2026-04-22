@@ -52,9 +52,17 @@ export default function OnboardingContainer(props) {
     "Historical Fiction", "Satire/Humor", "Experimental/Hybrid Forms", "Other"
   ];
   
-  useEffect(()=>{
-      currentProfile &&currentProfile.id && router.push(Paths.home,"root")
-  },[currentProfile])
+  // useEffect(()=>{
+  //     currentProfile &&currentProfile.id && router.push(Paths.home,"root")
+  // },[currentProfile])
+     useEffect(() => {
+    // If user is logged in → redirect away from login
+    if (currentProfile?.id) {
+      router.push(Paths.home, "root");
+      return;
+    }
+
+  }, [currentProfile, router]);
   const [activeTab, setActiveTab] = useState('tab0');
   const [formData, setFormData] = useState({
     idToken:"",

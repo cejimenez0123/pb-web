@@ -16,6 +16,7 @@ name: 'hashtags',
 initialState,
 extraReducers(builder) {
 builder
+// .addCase()
     .addCase(getHashtags.fulfilled,(state,{payload})=>{
       state.hashtags = payload.hashtags  
     }).addCase(getHashtags.rejected,(state,{payload})=>{

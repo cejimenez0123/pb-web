@@ -159,7 +159,24 @@ const fetchStoryHashtags = createAsyncThunk("hashtags/fetchStoryHashtags",async 
     return {hashtags:[],error}
 }   
 
+
 })
+ const followHashtag = createAsyncThunk(
+  "hashtags/follow",
+  async ({ hashtagId }, { rejectWithValue }) => {
+    try {
+    
+
+
+
+      return res.data.follow;
+    } catch (err) {
+      return rejectWithValue(
+        err.response?.data?.error || err.message
+      );
+    }
+  }
+);
 export {
         createHashtag,
         createHashtagComment,

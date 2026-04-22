@@ -41,7 +41,7 @@ export default function StoryDashboardItem({ story, router }) {
           opacity-80
           line-clamp-3
         ">
-       {story.type == PageType.text? story.description.length>0 ? <div dangerouslySetInnerHTML={truncate(story?.data,50,{})}/> : null:null}
+       {story.type == PageType.text? story.description.length>0 ? <div dangerouslySetInnerHTML={{_html:truncate(story?.data,50,{})}}/> : null:null}
         </h5>
         <h6 className="
           text-xs
