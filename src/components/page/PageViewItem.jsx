@@ -11,7 +11,7 @@ import DataElement from "./DataElement";
 import { initGA, sendGAEvent } from "../../core/ga4";
 import { useDialog } from "../../domain/usecases/useDialog";
 
-export default function PageViewItem({ page }) {
+export default function PageViewItem({ page,canEdit }) {
   const router = useIonRouter();
   const currentProfile = useSelector((state) => state.users.currentProfile);
   const [commenting, setCommenting] = useState(false);
@@ -39,15 +39,15 @@ const handleOpenCommentInput = () => {
     disagree: null
   });
 };
-const canUserEdit = (() => {
-  if (!currentProfile || !page) return false;
-  if (currentProfile.id === page.authorId) return true; // author can edit
-  // check beta readers
-  const roles = ["editor"];
-  return !!page.betaReaders?.find(
-    (r) => r.profileId === currentProfile.id && roles.includes(r.role)
-  );
-})();
+// const canUserEdit = (() => {
+//   if (!currentProfile || !page) return false;
+//   if (currentProfile.id === page.authorId) return true; // author can edit
+//   // check beta readers
+//   const roles = ["editor"];
+//   return !!page.betaReaders?.find(
+//     (r) => r.profileId === currentProfile.id && roles.includes(r.role)
+//   );
+// })();
 
 const header = () => (
   <div className="bg-cream rounded-xl shadow-sm p-4 mb-4 flex items-start justify-between gap-4">
@@ -89,7 +89,7 @@ const header = () => (
     </div>
 
     {/* Edit button */}
-    {canUserEdit && (
+    { canEdit&& (
       <button
         onClick={() =>
           router.push(Paths.editPage.createRoute(page.id), "forward")

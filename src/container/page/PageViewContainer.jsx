@@ -15,6 +15,7 @@ import useScrollTracking from "../../core/useScrollTracking.jsx";
 import checkResult from "../../core/checkResult.js";
 import { initGA, sendGAEvent } from "../../core/ga4.js";
 import Enviroment from "../../core/Enviroment.js";
+import computePermissions from "../../core/compusePermissions.jsx";
 
 // Layout
 const WRAP = "max-w-[50em] mx-auto px-4";
@@ -38,25 +39,23 @@ export default function PageViewContainer() {
   const currentProfile = useSelector((state) => state.users.currentProfile);
   const page = useSelector((state) => state.pages.pageInView);
   const comments = useSelector((state) => state.comments.comments);
+const storyConfig = {
+  getOwnerId: (r) => r.authorId,          // stories use authorId not profileId
+  getAccessList: (r) => r.betaReaders ?? [],
+  getAccessRole: (entry) => entry.role,
+  isPrivate: (r) => r.isPrivate,
+  isOpen: (_r) => false,                  // stories don't have open collaboration
+  canWriteRoles: [],                       // beta readers can only see, not add
+  canEditRoles: [],
+};
+
+const {canSee,canAdd,canEdit} = computePermissions(page, currentProfile, storyConfig);
 
 
 
-
-const canUserSee = ((profile) => {
-  if (!page) return false;
-  
-  if(page?.authorId === profile?.id ){
-    return true
-  }
-   if (!page.isPrivate) return true;
-    if(page.betaReaders?.find(
-    (r) => r.profileId === profileid && roles.includes(r.role))){
-      return true
-    }
-   if (!currentProfile) return false;
 
   
-})(currentProfile);
+// })(currentProfile);
 
   const [pending, setPending] = useState(true);
   const [rootComments, setRootComments] = useState([]);
@@ -68,7 +67,7 @@ const canUserSee = ((profile) => {
     contentType: "story",
     contentId: page?.id,
     authorId: page?.authorId,
-    enableCompletion: canUserSee,
+    enableCompletion: canSee,
     completionEvent: "story_read_complete",
   });
 
@@ -118,11 +117,10 @@ const canUserSee = ((profile) => {
     }
   };
 
-  useEffect(() => {
-    fetchStory();
-    dispatch(setComments({comments:[]}))
-  }, [id]);
-
+ useEffect(() => {
+  dispatch(setComments({comments:[]}));
+  fetchStory();
+}, [id]);
   useEffect(() => {
     if (comments?.length) {
       setRootComments(comments.filter((c) => c && !c.parentId));
@@ -165,10 +163,10 @@ const canUserSee = ((profile) => {
 
  <div className={`${FADE} ${pending ? "opacity-0" : "opacity-100"}`}
   >
-  {!pending && !errorStatus && canUserSee && (
+  {(canSee || page?.authorId == currentProfile?.id) && (
       <div className={`${WRAP}`}>
   <div className={`${CARD} ${BLOCK}`}>
-        <PageViewItem page={page}  currentProfile={currentProfile} />
+        <PageViewItem page={page}  canEdit={canEdit} currentProfile={currentProfile} />
        <div className={SECTION}>
   <h6 className={HEADING}>Responses</h6>
 </div>
@@ -198,7 +196,7 @@ const canUserSee = ((profile) => {
      <h1 className={`${CENTER} ${SECTION}`}>Took a wrong turn</h1>
       <button  onClick={handleRefresh} className="btn">Refresh</button>
   </div>)}
-  {!pending && !errorStatus && !canUserSee && (
+  {!pending && !errorStatus && !canSee && (
   <h1 className={`${CENTER} ${SECTION}`}>
     🚫 You can’t view this story
     <button  onClick={handleRefresh} className="btn">Refresh</button>

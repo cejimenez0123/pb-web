@@ -9,7 +9,6 @@ import ShareList from "./ShareList";
 export default function PageViewButtonRow({ page, profile, setCommenting }) {
   const [likeFound, setLikeFound] = useState(false);
   const [bookmarked, setBookmarked] = useState(false);
-  const router = useIonRouter();
   const handleApprovalClick = () => setLikeFound(!likeFound);
   const handleClickComment = () => setCommenting(true);
   const {openDialog,dialog,resetDialog}=useDialog()

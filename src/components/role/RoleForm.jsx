@@ -89,20 +89,31 @@ useEffect(() => {
   }, [currentProfile,dispatch])
 
 
+// const cycleRole = (profile) => {
+//   const roleTypes = Object.values(RoleType);
+//   const current = roles.find((r) => r.profile.id === profile.id)?.role;
+
+//   const currentIndex = roleTypes.indexOf(current);
+//   const nextIndex =
+//     currentIndex === -1 ? 0 : (currentIndex + 1) % roleTypes.length;
+
+//   handleUpdateRole({
+//     role: roleTypes[nextIndex],
+//     profile,
+//   });
+// };
 const cycleRole = (profile) => {
   const roleTypes = Object.values(RoleType);
-  const current = roles.find((r) => r.profile.id === profile.id)?.role;
+  const current = roles.find((r) => r.profile.id === profile.id)?.role ?? "none";
 
   const currentIndex = roleTypes.indexOf(current);
-  const nextIndex =
-    currentIndex === -1 ? 0 : (currentIndex + 1) % roleTypes.length;
+  const nextIndex = currentIndex === -1 ? 0 : (currentIndex + 1) % roleTypes.length;
 
   handleUpdateRole({
     role: roleTypes[nextIndex],
     profile,
   });
 };
-
  const filteredProfiles = useMemo(() => {
   if (!profiles?.length) return [];
 
@@ -155,15 +166,15 @@ console.log("Filtered Profiles:", filteredProfiles.slice(0,5), "Search:", search
     <div className="bg-base-surface  ">
 
       {/* TITLE */}
-   
-      <div className="mb-6">
-        <h1 className="text-2xl font-serif text-gray-900 leading-tight">
-          {item?.title || "Untitled"}
-        </h1>
-        <p className="text-sm text-gray-500 mt-1">
-          Who is in conversation with this piece
-        </p>
-      </div>
+   <div className="mb-6">
+  <h1 className="text-2xl font-serif text-text-primary dark:text-base-surface leading-tight">
+    {item?.title || "Untitled"}
+  </h1>
+  <p className="text-sm text-text-secondary dark:text-text-secondary mt-1">
+    Who is in conversation with this piece
+  </p>
+</div>
+ 
       <div className="flex flex-row justify-center gap-6 mb-4">
                 <Pill
           label="Reset All Roles"
@@ -179,18 +190,7 @@ console.log("Filtered Profiles:", filteredProfiles.slice(0,5), "Search:", search
           variant="primary"
         baseClass="bg-soft text-white"
         />
-     {/* <button
-    onClick={handleResetAllRoles}
-    className="text-sm  hover:text-red-700 underline underline-offset-4"
-  >
-    Reset All Roles
-  </button>
-   <button
-    onClick={handlePatchRoles}
-    className="text-sm text-gray-700 hover:text-black underline underline-offset-4"
-  >
-    Save changes
-  </button> */}
+
   
   </div>
   {(error || success) && (
@@ -217,23 +217,39 @@ console.log("Filtered Profiles:", filteredProfiles.slice(0,5), "Search:", search
  
           const role = roles.find((r) => r.profile.id === profile.id);
           return (
-                      <div
-              key={profile.id}
-              className="flex items-center bg-base-bg py-2 justify-between border-b  border-gray-200 px-2 rounded-full"
-            >
-              <div className="flex items-center gap-3">
-                <ProfileCircle profile={profile} includeUsername={false} />
-                <span className="text-sm text-gray-800">{profile.username}</span>
-              </div>
-
-            <button
-                onClick={() => cycleRole(profile)}
-                className="text-sm text-gray-500 italic hover:text-gray-800 transition"
-              >
-                {role?.role}
-              </button>
-            </div>
-         
+//             <div
+//   key={profile.id}
+//   className="flex items-center bg-base-bg dark:bg-text-primary py-2 justify-between border-b border-border-default dark:border-border-soft px-2 rounded-full"
+// >
+//   <div className="flex items-center gap-3">
+//     <ProfileCircle profile={profile} includeUsername={false} />
+//     <span className="text-sm text-text-primary dark:text-base-surface">{profile.username}</span>
+//   </div>
+// <button onClick={() => cycleRole(profile)}
+//     className="text-sm text-text-primary dark:text-base-surface italic hover:text-text-primary dark:hover:text-text-inverse transition"
+//   >
+// {role?.role ?? "none"}
+// </button>
+// </div>
+  <div
+  key={profile.id}
+  className="flex items-center bg-base-bg dark:bg-text-primary py-3 justify-between border-b border-border-default dark:border-border-soft px-3 rounded-2xl"
+>
+  <div className="flex items-center gap-3">
+    <ProfileCircle profile={profile} includeUsername={false} />
+    <span className="text-sm text-text-primary dark:text-base-surface">{profile.username}</span>
+  </div>
+  <button
+    onClick={() => cycleRole(profile)}
+    className="min-w-[5.5rem] text-center px-3 py-2 rounded-full text-xs font-semibold transition-colors duration-150 cursor-pointer
+      bg-base-surface dark:bg-text-primary
+      text-text-brand dark:text-base-surface
+      border border-border-focus dark:border-border-soft
+      active:scale-95 active:bg-button-primary-bg active:text-text-inverse"
+  >
+    {role?.role ?? "none"}
+  </button>
+</div>
           );
         })}
       </div>

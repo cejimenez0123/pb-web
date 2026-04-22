@@ -58,52 +58,16 @@ function ContentHubContainer() {
 }, [tab, setSeo]);
 
 
- useLayoutEffect(() => {
-  if (tab === "home") {
-    setSeo({
-      title: "Plumbum — Discover Writing, Events & Workshops",
-      description:
-        "Explore fresh writing, collections, events, and workshops on Plumbum.",
-      name: "Plumbum",
-      type: "website",
-    });
-  }
-
-  if (tab === "dash") {
-    setSeo({
-      title: "Plumbum — Your Writing Dashboard",
-      description:
-        "Manage your writing, collections, and reading activity on Plumbum.",
-      name: "Plumbum",
-      type: "profile",
-    });
-  }
-}, [tab, setSeo]);
-
-
-
-
-
-  // useEffect(() => {
-  //   fetchContentItems();
-  // },[]);
-
-
-  // // const fetchContentItems = () => {
-  // //   dispatch(setPagesInView({ pages: [] }));
-  // //   dispatch(setCollections({ collections: [] }));
-  // //   dispatch(getPublicStories());
-  // //   dispatch(getPublicCollections());
-  // // };
-
-
-
-console.log("FUCLX",prompts)
-
 
   return (
-  <IonContent fullscreen style={{"--background":Enviroment.palette.cream,paddingTop:"10em",paddingBottom:"10em"}} scrollY={true}>
-   
+<IonContent 
+  fullscreen 
+  style={{
+    "--background": Enviroment.palette.base.bg,  // use base.bg not cream, they differ slightly
+    "--padding-bottom": "10em"                    // use ionic var not paddingBottom
+  }} 
+  scrollY={true}
+>
         
       <ErrorBoundary>
 

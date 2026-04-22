@@ -15,6 +15,7 @@ import {
           setSignedInTrue,
           setSignedInFalse,
           getCurrentProfile,
+          setCurrentProfile,
       
       } from './actions/UserActions'
       import { IonApp, setupIonicReact, IonRouterOutlet,  useIonRouter, IonFooter, useIonViewWillEnter, IonLoading} from '@ionic/react';
@@ -103,10 +104,29 @@ useEffect(()=>{
   }
 loadToken()
 },[])
+// useEffect(() => {
+//   if (token && !hasFetchedProfile.current) {
+//     hasFetchedProfile.current = true;
+//     dispatch(getCurrentProfile())
+//   }
+// }, [token]);
 useEffect(() => {
   if (token && !hasFetchedProfile.current) {
     hasFetchedProfile.current = true;
-    dispatch(getCurrentProfile())
+    
+    Preferences.get({ key: 'currentProfile' }).then(({ value }) => {
+      if (value) {
+        dispatch(setCurrentProfile(JSON.parse(value)));
+      }
+      dispatch(getCurrentProfile()).then((res) => {
+        if (res?.payload) {
+          Preferences.set({
+            key: 'currentProfile',
+            value: JSON.stringify(res.payload),
+          });
+        }
+      });
+    });
   }
 }, [token]);
 useEffect(()=>{

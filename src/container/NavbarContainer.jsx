@@ -562,17 +562,18 @@ const handleNavigate = (type) => {
   </button>
 
   {isOpen && (
-    <div className="absolute bottom-full  bg-base-bg mb-2 w-36 bbg-base-bg text-soft rounded-xl shadow-lg py-2 z-50">
-      {["write", "image", "link", "collection"].map((item) => (
-        <button
-          key={item}
-          onClick={() => handleNavigate(item)}
-          className="w-[100%] text-center mx-auto px-4 py-4 bg-base-bg text-sm text-soft hover:bg-blue-100 capitalize"
-        >
-          {item}
-        </button>
-      ))}
-    </div>
+    <div className="absolute bottom-full bg-base-bg dark:bg-text-primary mb-2 w-36 text-soft dark:text-base-surface rounded-xl shadow-lg py-2 z-50">
+  {["write", "image", "link", "collection"].map((item) => (
+    <button
+      key={item}
+      onClick={() => handleNavigate(item)}
+      className="w-[100%] text-center mx-auto px-4 py-4 bg-base-bg dark:bg-text-primary text-sm text-soft dark:text-base-surface hover:bg-card-border dark:hover:bg-button-primary-hover capitalize transition-colors duration-150"
+    >
+      {item}
+    </button>
+  ))}
+</div>
+
   )}
 </div>
   );

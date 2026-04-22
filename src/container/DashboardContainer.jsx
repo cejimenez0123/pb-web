@@ -6,7 +6,7 @@ import ExploreList from '../components/collection/ExploreList.jsx';
 import arrowToRight from '../images/icons/arrowToRight.svg'
 import checkResult from '../core/checkResult.js';
 import ErrorBoundary from '../ErrorBoundary.jsx';
-import {IonText, useIonRouter,  IonList, IonSearchbar} from '@ionic/react';
+import {IonText, useIonRouter, } from '@ionic/react';
 import { fetchYourWorkshops } from '../actions/WorkshopActions.jsx';
 import ProfileCircle from '../components/profile/ProfileCircle.jsx';
 import truncate from 'html-truncate';
@@ -28,7 +28,8 @@ import usePaginatedResource from '../core/usePaginatedResource.jsx';
 import PaginatedList from '../components/page/PaginatedList.jsx';
 import shortName from '../core/shortName.jsx';
 import ListPill from '../components/page/ListPill.jsx';
-import useDebounce from '../core/useDebounce.jsx';
+import WorkshopItem from '../components/page/WorkshopItem.jsx';
+
 function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex = 0, role = "button" }) {
   return (
     <span
@@ -53,7 +54,7 @@ const SECTION_GAP = "pt-10";  // applied to each section's root div
 const SECTION_HEADING = "text-xl lora-medium";          // text style only
 const SECTION_HEADER_ROW = "flex items-center justify-between py-4"; // row layout
 const LIST_WRAP = "flex flex-col gap-4";  // Saves
-// Recent Pages grid already has px-4 — move it to the section wrapper
+
 const TILE = "w-36 md:w-44 flex-shrink-0";
 const ACTION_ROW = "flex flex-col items-center gap-4 w-full";
 function DashboardEmbed() {
@@ -64,7 +65,7 @@ const isDesktop = useMediaQuery({ query: '(min-width: 1024px)' });
   const router = useIonRouter()
   const dispatch = useDispatch();
    const collectionsRaw = useSelector(state => state.books.collections) ?? [];
-const pageSize = 8
+const pageSize = 3
 const { columns, rows } = useResponsiveGrid();
 const visibleCount = columns * rows;
 
@@ -127,8 +128,7 @@ useEffect(() => {
   
 }, [results]);
 
-  const [search, setSearch] = useState("");
-const debouncedSearch = useDebounce(search, 300);
+  
 const openPages = () => {
 
 
@@ -144,7 +144,7 @@ const openPages = () => {
   cacheKey="stories"
   fetcher={getMyStories}
   pageSize={8}
-  search={search}
+  // search={search}
   enableInternalSearch={true}
   renderItem={(story) => (
         <div
@@ -170,6 +170,7 @@ const openPages = () => {
       fetcher={getMyCollections}
       pageSize={8}
       loadingState={true}
+      enableInternalSearch={true}
       renderItem={(col) => (
           <div
             onClick={() => {
@@ -199,6 +200,7 @@ const openYourWorkshops = () => {
       <PaginatedList
        cacheKey="collections:type=library"
         fetcher={getMyCollections}
+        enableInternalSearch={true}
         pageSize={8}
         params={{ type: "feedback" }} // ✅ THIS NOW WORKS
         renderItem={(c) => (
@@ -222,6 +224,7 @@ const openCommunities = () => {
        cacheKey="collections:type=library"
         fetcher={getMyCollections}
         pageSize={8}
+        enableInternalSearch={true}
         params={{ type: "library" }} // ✅ THIS NOW WORKS
         renderItem={(story) => (
           <div
@@ -288,23 +291,26 @@ const openCommunities = () => {
       }));
     }
   }, 5);
-function WorkshopItem({workshop}){
+// function WorkshopItem({workshop}){
 
-  return( <div onClick={()=>{router.push(Paths.collection.createRoute(workshop.group.id),"forward")}}
+//   return( <div onClick={()=>{router.push(Paths.collection.createRoute(workshop.group.id),"forward")}}
 
-  className={`border rounded-xl  bg-base-soft  hover:bg-card-highlight shadow-md  border-1 p-4 border-blue `}>
+//   className={`border rounded-xl  bg-base-soft  hover:bg-card-highlight shadow-md  border-1 p-4 border-blue `}>
 
-                  <h1 className='text-[1.4em] py-2 text-text-inverse '>{workshop.group.title}</h1>
-                  <h6 className='text-soft  text-text-inverse py-2'>Most Recent</h6>
-                  {workshop?.story && <div className='py-2  text-text-inverse'>{workshop?.story?.title}</div>}
-                  {workshop?.story && workshop?.story?.type==PageType.text && <div  className=" text-text-inversep-2 rounded-xl"dangerouslySetInnerHTML={{__html:truncate(workshop.story.data,100,{})}}/>
-                    }
-                    {/* {<div dangerouslySetInnerHTML={{__html:truncate(workshop.story.data,20,{})/>}</div> */}
-                  <div className='flex flex-row  text-text-inverse py-4 '>{
-                    workshop?.group?.roles?.map(role=><ProfileCircle profile={role.profile} includeUsername={false}/>)
-}</div>
-                </div>)
-}
+//                   <h1 className='text-[1.4em] py-2 text-text-inverse '>{workshop.group.title}</h1>
+//                   <h6 className='text-soft  text-text-inverse py-2'>Most Recent</h6>
+//                   {workshop?.story && <div className='py-2  text-text-inverse'>{workshop?.story?.title}</div>}
+//                   {workshop?.story && workshop?.story?.type==PageType.text && <div  className=" text-text-inversep-2 rounded-xl"
+//                   dangerouslySetInnerHTML={{ __html: truncate(workshop?.story?.data ?? "", 100, {}) }}/>
+//                     }
+//                     {/* {<div dangerouslySetInnerHTML={{__html:truncate(workshop.story.data,20,{})/>}</div> */}
+//                   <div className='flex flex-row  text-text-inverse py-4 '>{
+// workshop?.group?.roles?.map((role, i) =>
+//   <ProfileCircle key={role?.profile?.id ?? i} profile={role?.profile} includeUsername={false}/>
+// )
+// }</div>
+//                 </div>)
+// }
   
 useEffect(()=>{
   if(homeCol){
@@ -377,9 +383,9 @@ scrollY: false,
               <img src={arrowToRight} onClick={()=>homeCol && router.push(Paths.collection.createRoute(homeCol?.id))}className='max-w-8 mt-auto mb-4 max-h-8 mx-4' />
               </div>
               <div className='flex mx-4 flex-col gap-4'>
-               {saves.length==0?<div><h2>Bookmark things you want to see often</h2></div>:saves.map(item=>{ 
-                return (
-  <div
+               {saves?.length==0?<div><h2>Bookmark things you want to see often</h2></div>:saves?.map((item, i) => { 
+  return (
+    <div key={item?.id ?? i}
     onClick={() => {
       if (!item) return;
       item?.data
@@ -421,122 +427,48 @@ scrollY: false,
             
                 <div className={`${WRAP} ${SECTION_GAP}`}>
   <div className={SECTION_HEADER_ROW}>
-    {/* <h4 className={SECTION_HEADING}>Your Spaces</h4> */}
-<SectionHeader title="Your Spaces"/>
-</div>
-  {/* content */}
-{/* </div>
-  <h4 className='text-xl lora-medium mx-4 pb-4 pt-8'></h4> */}
 
-  <div className='flex flex-row px-4 gap-4 overflow-x-auto'>
-    
-    {[
-      { label: "Pages", onClick: openPages },
-      { label: "Collections", onClick: openCollections },
-      { label: "Archive", onClick: () => archiveCol && router.push(Paths.collection.createRoute(archiveCol.id) )},
-      { label: "Communities", onClick: openCommunities }
-    ].map((item) => (
-      
-      <div
-      // {Enviroment.palette.accent.blue}
-        key={item.label}
-        onClick={item.onClick}
-        className={`
-          flex-shrink-0
-          
-          min-w-36 sm:w-36 md:w-44 lg:w-44 
-          aspect-square                
-          rounded-2xl
-          border border-soft
-          dark:border-base-bg
-          bg-base-bg
-  bg-button
-          backdrop-blur-sm
-         shadow-md 
-          active:scale-95
-          transition-all
-          flex items-end
-          p-3 relative
-        `}
-      >
-
-           <h4 className={`
-          absolute top-3 left-3
-            dark:border-
-          text-[1.4em] text-soft dark:text-emerald-200
-        `}>
-    
-          {item.label}
-        </h4>
-      </div>
-
-    ))}
+</div> 
 </div>
-</div>
- 
+
              
             </div>
-            
-                           <div className={`${WRAP} ${SECTION_GAP}`}>
+          
+<div className={`${WRAP} ${SECTION_GAP}`}>
   <div className={SECTION_HEADER_ROW}>
-
-              <div  onClick={()=>{openYourWorkshops()}} ><SectionHeader title={"Workshops"} right={ <img  onClick={()=>{openYourWorkshops()}} src={arrowToRight} className='max-w-8 max-h-8 ' />}/></div>
-          
-             
-</div>
-             <div className="relative min-h-[120px]">
-                 {workshop?     
-        // <div className="relative min-h-[120px]">
-
-  <div
-    className={`
-      transition-all duration-300 ease-out
-      ${workshop ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2 pointer-events-none absolute inset-0"}
-    `}
-  >
-      <div className="px-4">
-        <WorkshopItem workshop={workshop} />
-      </div>
-    
- </div>
-
-  :
-      <div className="px-4">
-        <h2 className="text-lg text-soft">
-          Click Join a Workshop or Studio below
-        </h2>
-      </div>}
-  {/* <div
-    className={`
-      transition-all duration-300 ease-out
-      ${workshop ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2 pointer-events-none absolute inset-0"}
-    `}
-  > */}
-    {/* {workshop && (
-      <div className="px-4">
-        <WorkshopItem workshop={workshop} />
-      </div>
-    )} */}
-  {/* </div> */}
-
-  <div
-    className={`
-      transition-all duration-300 ease-out
-      ${!workshop ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2 pointer-events-none absolute inset-0"}
-    `}
-  >
-    {/* {!workshop && (
-      <div className="px-4">
-        <h2 className="text-lg text-soft">
-          Click Join a Workshop or Studio below
-        </h2>
-      </div>
-    )} */}
+    <div onClick={() => openYourWorkshops()}>
+      <SectionHeader
+        title="Workshops"
+        right={
+          <img
+            onClick={() => openYourWorkshops()}
+            src={arrowToRight}
+            className="max-w-8 max-h-8"
+          />
+        }
+      />
+    </div>
   </div>
-</div>
-            </div>
+
+  <div className="px-4">
+    {workshop ? (
+      <WorkshopItem workshop={workshop} router={router} />
+    ) : (
+      <h2 className="text-lg text-soft">
+        Click Join a Workshop or Studio below
+      </h2>
+    )}
+    </div>
+  </div>
+
+
+
+
+
+            
         
                <div className={` ${SECTION_GAP}`}>
+                
   <div className={SECTION_HEADER_ROW}>
 <SectionHeader title={"Recent Pages"}/>
          
