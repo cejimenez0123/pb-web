@@ -333,7 +333,13 @@ let signedInMenu = [
   };
 if (!isOnline) {
   return (
-    <IonPage>
+ <IonPage
+  ref={pageRef}
+  style={{ 
+    height: '100%', 
+    paddingTop: isDesktop ? '4rem' : '0',
+  }}
+>
       <IonContent fullscreen className="ion-padding">
         <div className="flex flex-col items-center justify-center h-full text-center px-6">
           
@@ -373,11 +379,16 @@ if (!isOnline) {
 }
 
   return (
-    <IonPage
-      ref={pageRef}
-       style={{ height: '100%', paddingTop: isDesktop ? '5em' : '0', }}
+  <IonPage
+  ref={pageRef}
+  style={{ 
+    height: '100%', 
+    paddingTop: isDesktop ? '8em' : '0',
+  }}
+
+     
     >
-      {presentHeader && (
+      {presentHeader && !isDesktop && (
         <IonHeader >
           <div >
           <IonToolbar style={{
@@ -450,10 +461,10 @@ overflow-y-auto pb-20
         {/* <div className='pt-12'> */}
           <div className="flex items-center gap-3 pb-6 pt-10 overflow-y-scroll border-b border-soft">
     <div>
-      <p className="text-xs text-gray-500">Welcome back</p>
-      <p className="text-base font-semibold text-emerald-800">
-        {currentProfile?.username || "Guest"}
-      </p>
+    <p className="text-xs text-soft opacity-60">Welcome back</p>
+<p className="text-base font-semibold text-soft">
+  {currentProfile?.username || "Guest"}
+</p>
     </div>
   </div>
       {/* </div> */}

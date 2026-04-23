@@ -432,44 +432,7 @@ console.log(data)
           </form>
 
           {/* SUCCESS / ERROR DIALOG */}
-          {/* <Dialog
-            open={!!user}
-            onClose={handleClose}
-            text={
-              <div className="p-6">
-                {!user ? (
-                  <p>Error. Try again later.</p>
-                ) : user.message ? (
-                  <div className="text-center lora-medium">
-                    <p>User already applied</p>
-                    <br />
-                    <p>
-                      Message{" "}
-                      <a href="https://www.instagram.com/plumbumapp" target="_blank">
-                        @plumbumapp
-                      </a>
-                      {" "}or email plumbumapp@gmail.com
-                    </p>
-                    <br />
-                    <p>Subject: I want to be an alpha user!</p>
-                  </div>
-                ) : (
-                  <div className="lora-medium leading-relaxed">
-                    <p>Thank You {user.preferredName}! You’re In—Welcome to the Journey!</p>
-                    <br />
-                    <p>
-                      You’re officially on board as a beta user for Plumbum. This is more than
-                      an app—we’re building a community where stories grow and writers rise.
-                    </p>
-                    <br />
-                    <p>Let’s make our story, together.</p>
-                    <br />
-                    <p>- Sol Emilio Christian, Founder of Plumbum</p>
-                  </div>
-                )}
-              </div>
-            }
-          /> */}
+
         </div>
       </ErrorBoundary>
  </IonContent>

@@ -188,61 +188,126 @@ return {
   // ---------------------------
   // EVENT CARD
   // ---------------------------
+const renderEvent = (event, i) => (
+  <div
+    key={i}
+    onClick={() => handleDialogOpen(event)}
+    className="bg-base-bg px-4 pb-3 pt-4 border-b border-soft  active:scale-[0.98] transition-transform"
+    style={{ WebkitTapHighlightColor: "transparent" }}
+  >
+    <div className="flex justify-between gap-3">
 
-  const renderEvent = (event, i) => (
-    <div
-      key={i}
-      onClick={() => handleDialogOpen(event)}
-      className="bg-base-bg  p-4 shadow-sm border-soft dark:border-soft border-b border-1 active:scale-[0.98]"
-    >
-   
-      <div className="flex justify-between gap-3">
-        <div className="flex flex-col flex-1 min-w-0">
-          <span className="font-semibold  text-text-primary dark:text-emerald-100 truncate">{event.summary}</span>
+      {/* Left: main info */}
+      <div className="flex flex-col flex-1 min-w-0">
+        <span className="font-semibold text-soft dark:text-cream min-h-10 truncate">{event.summary}</span>
 
-          <span
-            onClick={(e) => {
-              e.stopPropagation();
-              openGooglemaps(event);
-            }}
-            className="text-sm text-text-primary dark:text-primary-text mt-1"
+        {/* Location with pin icon */}
+        {event.location && (
+          <button
+            onClick={(e) => { e.stopPropagation(); openGooglemaps(event); }}
+            className="flex items-center gap-1 mt-1 text-left w-fit"
+            style={{ WebkitTapHighlightColor: "transparent" }}
           >
-            {event.location}
-          </span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-soft dark:text-cream flex-shrink-0">
+              <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/>
+              <circle cx="12" cy="10" r="3"/>
+            </svg>
+            <span className="text-xs text-soft dark:text-cream underline underline-offset-2">{event.location}</span>
+          </button>
+        )}
 
-          <span className="text-xs text-text-primary dark:text-emerald-100 mt-1">{event.area}</span>
+        {event.area && (
+          <span className="text-xs text-soft dark:text-cream mt-0.5 opacity-70">{event.area}</span>
+        )}
 
-          {/* HASHTAGS */}
-          <div className="flex gap-2 flex-wrap mt-2">
+        {/* Hashtags */}
+        {event.hashtags?.length > 0 && (
+          <div className="flex gap-1.5 flex-wrap mt-2">
             {event.hashtags.slice(0, 4).map((tag, idx) => (
               <span
                 key={idx}
-                className="text-xs bg-sky-100  px-2 py-1 rounded-full text-text-primary dark:bg-emerald-100"
+                className="text-xs bg-base-soft border border-soft text-cream px-2 py-0.5 rounded-full"
               >
                 #{tag}
               </span>
             ))}
           </div>
-        </div>
-
-        <div className="flex flex-col items-end">
-          <IonText
-            className="text-xs dark:text-emerald-100 text-gray-600"
-            dangerouslySetInnerHTML={{ __html: event.startTime }}
-          />
-
-          <IonImg
-            onClick={(e) => {
-              e.stopPropagation();
-              window.open(event.googleLink);
-            }}
-            className="w-10 h-10 mt-2"
-            src={calendar}
-          />
-        </div>
+        )}
       </div>
+
+      {/* Right: time + calendar */}
+      <div className="flex flex-col items-end justify-between gap-2 flex-shrink-0">
+        <IonText
+          className="text-xs text-soft dark:text-cream"
+          dangerouslySetInnerHTML={{ __html: event.startTime }}
+        />
+        <button
+          onClick={(e) => { e.stopPropagation(); window.open(event.googleLink); }}
+          className="flex flex-col items-center gap-0.5 active:scale-95 transition-transform"
+          // style={{ WebkitTapHighlightColor: "transparent" }}
+        >
+          <IonImg className="w-9 h-9" src={calendar} />
+          <span className="text-[10px] text-soft dark:text-cream opacity-60">Add</span>
+        </button>
+      </div>
+
     </div>
-  );
+  </div>
+);
+  // const renderEvent = (event, i) => (
+  //   <div
+  //     key={i}
+  //     onClick={() => handleDialogOpen(event)}
+  //     className="bg-base-bg  p-4 shadow-sm border-soft dark:border-soft border-b border-1 active:scale-[0.98]"
+  //   >
+   
+  //     <div className="flex justify-between gap-3">
+  //       <div className="flex flex-col flex-1 min-w-0">
+  //         <span className="font-semibold  text-text-primary dark:text-emerald-100 truncate">{event.summary}</span>
+
+  //         <span
+  //           onClick={(e) => {
+  //             e.stopPropagation();
+  //             openGooglemaps(event);
+  //           }}
+  //           className="text-sm text-text-primary dark:text-primary-text mt-1"
+  //         >
+  //           {event.location}
+  //         </span>
+
+  //         <span className="text-xs text-text-primary dark:text-emerald-100 mt-1">{event.area}</span>
+
+  //         {/* HASHTAGS */}
+  //         <div className="flex gap-2 flex-wrap mt-2">
+  //           {event.hashtags.slice(0, 4).map((tag, idx) => (
+  //             <span
+  //               key={idx}
+  //               className="text-xs bg-sky-100  px-2 py-1 rounded-full text-text-primary dark:bg-emerald-100"
+  //             >
+  //               #{tag}
+  //             </span>
+  //           ))}
+  //         </div>
+  //       </div>
+
+  //       <div className="flex flex-col items-end">
+  //         <IonText
+  //           className="text-xs dark:text-emerald-100 text-gray-600"
+  //           dangerouslySetInnerHTML={{ __html: event.startTime }}
+  //         />
+
+  //         <IonImg
+  //           onClick={(e) => {
+  //             e.stopPropagation();
+  //             window.open(event.googleLink);
+  //           }}
+  //           className="w-10 h-10 mt-2"
+  //           src={calendar}
+  //         />
+  //       </div>
+  //     </div>
+  //   </div>
+  // );
 
   // ---------------------------
   // HORIZONTAL LIST (PB EVENTS)
@@ -250,18 +315,58 @@ return {
 
   const HorizontalScroll = () => {
     if (!solEvents.length) return null;
+    const renderEvent=(event)=>(<div
+  
+  onClick={() => handleDialogOpen(event)}
+  className="w-[220px] min-h-56 max-h-56 bg-base-bg rounded-xl p-4 border border-soft shadow-sm active:scale-[0.98] transition-transform"
+  style={{ WebkitTapHighlightColor: "transparent" }}
+>
+  <p className="font-semibold text-sm text-soft dark:text-cream truncate">{event.summary}</p>
 
+  {/* Location with pin */}
+  {event.location && (
+    <button
+      onClick={(e) => { e.stopPropagation(); openGooglemaps(event); }}
+      className="flex items-center gap-1 mt-1 w-fit"
+      style={{ WebkitTapHighlightColor: "transparent" }}
+    >
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-soft dark:text-cream flex-shrink-0">
+        <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/>
+        <circle cx="12" cy="10" r="3"/>
+      </svg>
+      <span className="text-xs text-soft dark:text-cream underline underline-offset-2">{event.location}</span>
+    </button>
+  )}
+
+  <IonText
+    className="text-xs text-soft dark:text-cream opacity-70 mt-1 block"
+    dangerouslySetInnerHTML={{ __html: event.startTime }}
+  />
+
+  {event.hashtags?.length > 0 && (
+    <div className="flex gap-1 mt-2 flex-wrap">
+      {event.hashtags.slice(0, 2).map((tag, idx) => (
+        <span key={idx} className="text-[10px] bg-base-soft border border-soft text-cream px-2 py-0.5 rounded-full">
+          #{tag}
+        </span>
+      ))}
+    </div>
+  )}
+</div>)
     return (
       <div>
-    <div className="px-4 pb-3">
+    <div className="pb-3">
       <div className="flex gap-3 overflow-x-auto pb-1 -mx-1 px-1">
         {/* // <div className="flex items-center gap-2 mb-2"> */}
           
          <SectionHeader title={"Events from Pb"}/>
         </div>
 
-        <div className="flex gap-3 overflow-x-auto">
-          {solEvents.map((event, i) => (
+        <div className="flex gap-3 px-4 overflow-x-auto">
+          {solEvents.map((event, i) => (<div key={i}>
+            {renderEvent(event)}
+          </div>   ))}
+          {/* {solEvents.map((event, i) => (
             <div
               key={i}
               onClick={() => handleDialogOpen(event)}
@@ -282,7 +387,7 @@ return {
                 ))}
               </div>
             </div>
-          ))}
+          ))} */}
         </div>
         </div>
         
@@ -292,32 +397,42 @@ return {
 
   return (
   <div className="space-y-6">
-      {/* FILTERS */}
+
        <IonLoading isOpen={loading} message="Loading events..." />
     
  
-    (<div><div className="space-y-3 pb-4">
-        <div className="flex gap-2 justify-center overflow-x-auto">
-          <button onClick={() => setSelectedArea("")} className={`pill px-4 ${selectedArea==""?"bg-soft text-white":"bg-purple text-white"}`}>
-            All
-          </button>
-
-          {areas.map((area) => (
-             
-            <button key={area.label} onClick={() => setSelectedArea(area.label)} className={` px-2 mx-1 ${selectedArea==area.label?"bg-soft text-sm hover:bg-card-highlight  broder-xl text-white":"bg-purple hover:bg-card-highlight text-white"}`}>
-              {area.label}<br className="h-2"/>
-              {area.emoji}
-            </button>
-          
-          ))}
-        </div>
+    <div><div className="space-y-3 pb-4">
+      <div className="flex gap-2 justify-center overflow-x-auto px-4 pb-1">
+  <button
+    onClick={() => setSelectedArea("")}
+    className={`px-4 py-2 ml-8 rounded-full text-sm font-medium transition-all active:scale-95 flex-shrink-0 ${
+      selectedArea === "" ? "bg-purple  text-cream" : "bg-soft text-cream border border-soft"
+    }`}
+    style={{ WebkitTapHighlightColor: "transparent" }}
+  >
+   <span className="text-cream">   All</span>
+  </button>
+  {areas.map((area) => (
+    <button
+      key={area.label}
+      onClick={() => setSelectedArea(area.label)}
+      className={`px-4 py-2 rounded-full text-sm font-medium transition-all active:scale-95 flex-shrink-0 flex flex-col items-center leading-tight ${
+        selectedArea === area.label ?  "bg-purple  text-cream" : "bg-soft border border-soft"
+      }`}
+      style={{ WebkitTapHighlightColor: "transparent" }}
+    >
+      <span className="text-cream">{area.label}</span>
+      <span className="text-xs">{area.emoji}</span>
+    </button>
+  ))}
+</div>
 
         <div className="mt-3 max-w-[50em] bg-base-bg mb-4 brounded-full px-4    mx-auto">
           <IonInput
             value={searchTerm}
             onIonInput={handleSearchInputChange}
             placeholder="Search events"
-            className="text-soft dark:text-emerald-200 max-w-[94%] mx-auto bg-base-bg  py-2"
+            className="text-soft dark:text-cream dark:text-cream max-w-[94%] mx-auto bg-base-bg  py-2"
           />
         </div>
       </div>
@@ -331,13 +446,13 @@ return {
 >
   <HorizontalScroll />
 </div>
-      {/* HORIZONTAL PB EVENTS */}
+   
 
   <IonList style={{ "--background": Enviroment.palette.cream }}>
   
         {paginatedEvents.map(renderEvent)}
       </IonList>
-      {/* </div> */}
+
       {totalPages > 1 && (
   <div className="flex items-center justify-between px-4 py-4">
 
@@ -378,7 +493,7 @@ return {
       Next
     </button>
   </div>
-)}</div>)
+)}</div>
     </div>
   );
 }

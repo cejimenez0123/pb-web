@@ -86,14 +86,13 @@ export default ContentHubContainer
 
 
 
+function DiscDashTabs({ tab, setTab, disc, dash}) {
+  const currentProfile = useSelector(state=>state.users.currentProfile)
+  const router = useIonRouter()
 
- function DiscDashTabs({ tab, setTab, disc, dash}) {
-
-    const currentProfile = useSelector(state=>state.users.currentProfile)
-    const router = useIonRouter()
   const variants = {
     enter: (direction) => ({
-      x: direction > 0 ? 20 : -20, // smaller distance for tighter slide
+      x: direction > 0 ? 20 : -20,
       opacity: 0,
       position: "absolute",
       width: "100vw",
@@ -112,84 +111,181 @@ export default ContentHubContainer
     }),
   };
 
+  return (
+    <IonContent fullscreen>
+      <div className="pt-12 bg-base-bg">
+        <div className="flex justify-center lg:justify-start lg:mx-12 mb-2">
+          <div className="flex rounded-full mx-auto  border overflow-clip min-h-12 sm:w-[40em] lg:w-[30em] border-soft">
+            <button
+              className={`px-4 py-2 transition-colors w-[45vw] sm:w-[20em] lg:w-[15em] ${
+                tab === "home" ? "bg-soft text-white" : "text-soft bg-transparent"
+              }`}
+              onClick={() => {
+                sendGAEvent("tab_select", {
+                  tab: "discovery",
+                  intent: "explore_new_content",
+                  surface: "discovery_dashboard",
+                  logged_in: Boolean(currentProfile),
+                });
+                setTab("home");
+              }}
+            >
+              Home
+            </button>
 
-    
-   return <IonContent fullscreen><div className="pt-12  bg-cream">
-      {/* Tabs */}
-      <div className="flex justify-center lg:justify-start lg:mx-12 mb-2">
-        <div className="flex rounded-full border overflow-clip min-h-12 sm:w-[40em] lg:w-[30em] border-emerald-600">
-          <button
-            className={`px-4 py-2 transition-colors w-[45vw]  sm:w-[20em] lg:w-[15em]  ${
-              tab === "home"
-                ? "bg-soft text-white"
-                : "text-soft bg-transparent"
-            }`}
-          onClick={() => {
-  sendGAEvent("tab_select", {
-    tab: "discovery",
-    intent: "explore_new_content",
-    surface: "discovery_dashboard",
-    logged_in: Boolean(currentProfile),
-  });
-  setTab("home");
-}}
+            {currentProfile?.id ? (
+              <button
+                className={`px-4 py-2 transition-colors w-[45vw] sm:w-[20em] lg:w-[15em] ${
+                  tab === "dash" ? "bg-soft text-white" : "text-soft bg-transparent"
+                }`}
+                onClick={() => {
+                  sendGAEvent("tab_select", {
+                    tab: "dashboard",
+                    intent: "manage_own_content",
+                    surface: "discovery_dashboard",
+                    logged_in: true,
+                  });
+                  setTab("dash");
+                }}
+              >
+                Dashboard
+              </button>
+            ) : (
+              <button
+                className={`px-4 py-2 transition-colors w-[45vw] sm:w-[20em] lg:w-[15em] ${
+                  tab === "dash" ? "bg-soft text-white" : "text-soft bg-transparent"
+                }`}
+                onClick={() => router.push(Paths.login)}
+              >
+                Log In
+              </button>
+            )}
+          </div>
+        </div>
 
-          >
-           Home
-          </button>
-           {currentProfile&&currentProfile.id?<button
-            className={`px-4 py-2 transition-colors w-[45vw]   sm:w-[20em] lg:w-[15em] ${
-              tab === "dash"
-                ? "bg-emerald-700 text-white"
-                : "text-emerald-700 bg-transparent"
-            }`}
-            onClick={() => {
-  sendGAEvent("tab_select", {
-    tab: "dashboard",
-    intent: "manage_own_content",
-    surface: "discovery_dashboard",
-    logged_in: true,
-  });
-  setTab("dash");
-}}
-
-        
-          >
-            Dashboard
-          </button>:<button
-            className={`px-4 py-2 transition-colors w-[45vw]  sm:w-[20em] lg:w-[15em] ${
-              tab === "dash"
-                ? "bg-emerald-700 text-white"
-                : "text-emerald-700 bg-transparent"
-            }`}
-            onClick={() => router.push(Paths.login)}
-          >
-           Log In
-          </button>}
+        <div className="bg-base-bg">
+          <AnimatePresence custom={tab === "collection" ? 1 : -1} mode="wait">
+            <motion.div
+              key={tab}
+              custom={tab === "collection" ? 1 : -1}
+              variants={variants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{ duration: 0.26, ease: "easeOut" }}
+              className="w-full text-soft"
+            >
+              {tab === "home" ? disc() : dash()}
+            </motion.div>
+          </AnimatePresence>
         </div>
       </div>
-      <div className='bg-cream'>
-        <AnimatePresence custom={tab === "collection" ? 1 : -1} mode="wait">
-          <motion.div
-            key={tab}
-            custom={tab === "collection" ? 1 : -1}
-            variants={variants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            transition={{
-              duration: 0.26, // faster
-              ease: "easeOut", // more responsive
-            }}
-           
-            className="w-full text-soft"
-          >
-            {tab === "home" ? disc() :dash()}
-          </motion.div>
-        </AnimatePresence>
-      </div>
-      </div>
-
-  </IonContent>
+    </IonContent>
+  );
 }
+//  function DiscDashTabs({ tab, setTab, disc, dash}) {
+
+//     const currentProfile = useSelector(state=>state.users.currentProfile)
+//     const router = useIonRouter()
+//   const variants = {
+//     enter: (direction) => ({
+//       x: direction > 0 ? 20 : -20, // smaller distance for tighter slide
+//       opacity: 0,
+//       position: "absolute",
+//       width: "100vw",
+//     }),
+//     center: {
+//       x: 0,
+//       opacity: 1,
+//       position: "relative",
+//       width: "100vw",
+//     },
+//     exit: (direction) => ({
+//       x: direction > 0 ? -20 : 20,
+//       opacity: 0,
+//       position: "absolute",
+//       width: "100vw",
+//     }),
+//   };
+
+
+    
+//    return <IonContent fullscreen><div className="pt-12  bg-cream">
+//       {/* Tabs */}
+//       <div className="flex justify-center lg:justify-start lg:mx-12 mb-2">
+//         <div className="flex rounded-full border overflow-clip min-h-12 sm:w-[40em] lg:w-[30em] border-emerald-600">
+//           <button
+//             className={`px-4 py-2 transition-colors w-[45vw]  sm:w-[20em] lg:w-[15em]  ${
+//               tab === "home"
+//                 ? "bg-soft text-white"
+//                 : "text-soft bg-transparent"
+//             }`}
+//           onClick={() => {
+//   sendGAEvent("tab_select", {
+//     tab: "discovery",
+//     intent: "explore_new_content",
+//     surface: "discovery_dashboard",
+//     logged_in: Boolean(currentProfile),
+//   });
+//   setTab("home");
+// }}
+
+//           >
+//            Home
+//           </button>
+//            {currentProfile&&currentProfile.id?<button
+//             className={`px-4 py-2 transition-colors w-[45vw]   sm:w-[20em] lg:w-[15em] ${
+//               tab === "dash"
+//                 ? "bg-emerald-700 text-white"
+//                 : "text-emerald-700 bg-transparent"
+//             }`}
+//             onClick={() => {
+//   sendGAEvent("tab_select", {
+//     tab: "dashboard",
+//     intent: "manage_own_content",
+//     surface: "discovery_dashboard",
+//     logged_in: true,
+//   });
+//   setTab("dash");
+// }}
+
+        
+//           >
+//             Dashboard
+//           </button>:<button
+//             className={`px-4 py-2 transition-colors w-[45vw]  sm:w-[20em] lg:w-[15em] ${
+//               tab === "dash"
+//                 ? "bg-emerald-700 text-white"
+//                 : "text-emerald-700 bg-transparent"
+//             }`}
+//             onClick={() => router.push(Paths.login)}
+//           >
+//            Log In
+//           </button>}
+//         </div>
+//       </div>
+//       <div className='bg-cream'>
+//         <AnimatePresence custom={tab === "collection" ? 1 : -1} mode="wait">
+//           <motion.div
+//             key={tab}
+//             custom={tab === "collection" ? 1 : -1}
+//             variants={variants}
+//             initial="enter"
+//             animate="center"
+//             exit="exit"
+//             transition={{
+//               duration: 0.26, // faster
+//               ease: "easeOut", // more responsive
+//             }}
+           
+//             className="w-full text-soft"
+//           >
+//             {tab === "home" ? disc() :dash()}
+//           </motion.div>
+//         </AnimatePresence>
+//       </div>
+//       </div>
+
+//   </IonContent>
+// }
 

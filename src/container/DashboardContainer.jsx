@@ -50,7 +50,7 @@ function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex
   );
 }
 const WRAP = "max-w-2xl mx-auto ";
-const SECTION_GAP = "pt-8";  // applied to each section's root div
+const SECTION_GAP = "pt-4";  // applied to each section's root div
 const SECTION_HEADING = "text-xl lora-medium";          // text style only
 const SECTION_HEADER_ROW = "flex items-center justify-between px-4 py-4"; // row layout
 const LIST_WRAP = "flex flex-col gap-4";  // Saves
@@ -346,8 +346,37 @@ scrollY: false,
  return (
         <ErrorBoundary>
 
-          
-            
+          <div className="flex flex-col items-center gap-3 my-4 w-full md:max-w-[40em] mx-auto px-4">
+
+  {/* Primary: Write — full width, most prominent */}
+  <ButtonWrapper
+    onClick={ClickWriteAStory}
+    className="hover:bg-button-secondary-hover  dark:bg-transparent dark:border-button-secondary-hover text-white rounded-2xl h-[3.2rem] w-full w-[88%] sm:w-[21rem] font-bold"
+    style={{ WebkitTapHighlightColor: "transparent" }}
+  >
+    <IonText className="text-[1.2em] text-cream font-bold">Write Something</IonText>
+  </ButtonWrapper>
+<div className='flex flex-row gap-4'>
+  {/* Secondary: Join a Workshop — full width, distinct color */}
+  <ButtonWrapper
+    onClick={() => router.push(Paths.workshop.reader(), "forward")}
+    className="bg-button-primary-bg dark:bg-transparent dark:border-purple  hover:bg-opacity-70 text-button-primary-text rounded-full h-[3rem] w-full sm:w-[21rem] font-bold"
+    style={{ WebkitTapHighlightColor: "transparent" }}
+  >
+    <IonText className="text-cream text-[1.1em]">Join a Workshop</IonText>
+  </ButtonWrapper>
+
+  {/* Tertiary: Create Collection — smaller, understated */}
+  <ButtonWrapper
+    onClick={ClickCreateACollection}
+    className="bg-transparent border border-soft dark:border-purple text-soft rounded-full h-[2.6rem] w-full sm:w-[21rem]"
+    style={{ WebkitTapHighlightColor: "transparent" }}
+  >
+    <IonText className="text-[1em] text-soft dark:text-cream">+ Create Collection</IonText>
+  </ButtonWrapper>
+</div>
+</div>
+{/*             
                       <div className="flex flex-row mx-auto  md:max-w-[40em] flex-wrap my-4 justify-center gap-4">
         <ButtonWrapper
           onClick={ClickWriteAStory}
@@ -361,10 +390,10 @@ scrollY: false,
         >
           <IonText className="text-white text-[1.2em]"><span className='pb-2'>Create</span><span> Collection</span></IonText>
         </ButtonWrapper>
-      </div>
+      </div> */}
 
       {/* Row 2: Join a Workshop */}
-      <div className="flex justify-center md:justify-start w-full">
+      {/* <div className="flex justify-center md:justify-start w-full">
 
         <ButtonWrapper
        onClick={() => router.push(Paths.workshop.reader(), "forward")}
@@ -372,7 +401,7 @@ scrollY: false,
         >
           <IonText className="text-button-primary-text text-[1.2em]">Join a Workshop</IonText>
         </ButtonWrapper>
-      </div>
+      </div> */}
       <div>
      <div className={`${WRAP} ${SECTION_GAP}`}>
   <div className={SECTION_HEADER_ROW}>
@@ -449,7 +478,7 @@ scrollY: false,
           aspect-square                
           rounded-2xl
           border border-soft
-          
+          dark:border-cream
           bg-base-bg
   bg-button
           backdrop-blur-sm
@@ -464,9 +493,9 @@ scrollY: false,
            <h4 className={`
           absolute top-3 left-3
        
-          text-[1.4em] text-[${Enviroment.palette.text.brand}]
+          text-[1.4em] text-soft dark:text-cream
         `}>
-    {/* {Enviroment.palette.text.inverse} */}
+   
           {item.label}
         </h4>
       </div>

@@ -424,7 +424,7 @@ const showBottomNavbar =
 
        {showBottomNavbar&&
           <IonFooter>
-   <div className=" bg-cream">
+   <div className=" bg-base-bg">
   <NavbarContainer isDesktop={isDesktop} currentProfile={currentProfile} />
 </div>
 </IonFooter>

@@ -565,9 +565,7 @@ const STATUS_OPTIONS = [
       transition={{ duration: 0.05 }}
       // className="rounded-lg w-full sm:max-w-[50em] mx-auto p-2 bg-emerald-50 border border-emerald-200 flex flex-col gap-1"
     >
- {/* <div className={`mx-auto w-full max-w-3xl p-4 md:p-6 bg-emerald-50 rounded-lg border border-emerald-200 flex flex-col gap-2`}> */}
-{/* <TopBar isSaved={isSaved} change={handleChange}/> */}
-<div className="rounded-lg my-1 w-full max-w-3xl  mx-auto p-2 bg-emerald-50 border border-emerald-200 flex flex-col gap-1">
+ <div className="rounded-lg my-1 w-full max-w-3xl  mx-auto p-2 bg-emerald-50 border border-emerald-200 flex flex-col gap-1">
     {/* Top row: input + dropdown */}
     <div className="flex flex-row gap-2 items-center w-full">
       {/* Title Input */}
@@ -575,7 +573,7 @@ const STATUS_OPTIONS = [
 
       <input
         type="text"
-        className="p-2 flex-grow bg-base-bg text-emerald-800 text-[1rem] rounded-md border border-emerald-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-bold"
+        className="p-2 flex-grow bg-base-bg dark:text-cream text-emerald-800 text-[1rem] rounded-md border border-emerald-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-bold"
         value={parameters.title}
         onChange={(e) => handleChange("title", e.target.value)}
         placeholder="Untitled"
@@ -661,7 +659,7 @@ const STATUS_OPTIONS = [
         ${
           isActive
             ? "bg-soft text-white shadow-sm"
-            : "text-soft bg-base-bg "
+            : "text-soft dark:text-cream bg-base-bg "
         }
       `}
     >

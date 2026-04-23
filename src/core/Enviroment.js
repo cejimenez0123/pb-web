@@ -22,18 +22,22 @@ const Enviroment = {
     blankProfile:"https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png",
      "palette": {
         "cream":"#f4f4e0","soft":"#40906f",
-    "base": {
-      "background": "#f4f4e0", // App background (main canvas, warm cream)
-      "surface": "#ffffff", // Cards, modals, sheets (elevated surfaces)
-      "soft": "#40906f" // Brand base tone (used for highlights, accents)
-    },
+  "base": {
+  "background": "#f4f4e0",
+  "backgroundDark": "#1c1f1a",  // warm dark, complements cream
+  "surfaceDark": "#252922",      // cards/modals on dark
+  "surface": "#ffffff",
+  "soft": "#40906f"
+},
 
-    "text": {
-      "primary": "#1f2937", // Main readable text (titles, body)
-      "secondary": "#6b7280", // Subtext, metadata, timestamps
-      "inverse": "#ffffff", // Text on dark buttons/backgrounds
-      "brand": "#40906f" // Links, emphasized brand text
-    },
+"text": {
+  "primary": "#1f2937",
+  "secondary": "#6b7280",
+  "inverse": "#ffffff",
+  "brand": "#40906f",
+  "primaryDark": "#e8e8d0",   // warm off-white, echoes the cream
+  "secondaryDark": "#9aab9a", // muted green-gray for subtext
+},
 
     "button": {
       "primary": {
