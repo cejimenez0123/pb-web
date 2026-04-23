@@ -132,23 +132,21 @@ const createComment = createAsyncThunk("pages/createComment", async function({
   text,
   storyId,
   parentCommentId,
-  },thunkApi){
-  try{
-
-
- let data = await commentRepo.create({profile:profile,storyId:storyId,text,parentId:parentCommentId})
-return {comment:data.comment}
-
-  
-  }catch(error){
-   
-    return {
-      error: new Error(`Error: Create Comment ${error.message}`)
-    }
+  anchorText,        // ← add
+}, thunkApi) {
+  try {
+    let data = await commentRepo.create({
+      profile,
+      storyId,
+      text,
+      parentId:   parentCommentId,
+      anchorText: anchorText ?? "",  // ← add
+    });
+    return { comment: data.comment };
+  } catch(error) {
+    return { error: new Error(`Error: Create Comment ${error.message}`) };
   }
-
-
-})
+});
 const appendComment = createAction("pages/appendComment", (params)=> {
 
   const {comment} = params
@@ -165,40 +163,51 @@ const setComments = createAction("pages/setComments", (params)=> {
     
   
 })
-const fetchCommentsOfPagePublic = createAsyncThunk("comments/fetchCommentsOfPagePublic",async (params,thunkApi)=>{
-  try{
+const fetchCommentsOfPage = createAsyncThunk(
+  "comments/fetchCommentsOfPage",
+  async ({ id, isPublic = false }, thunkAPI) => {
+    try {
+      const data = await commentRepo.fetchByStory({ storyId: id }); // ✅ bound + correct key
+      return { comments: data.comments };
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.response?.data ?? err.message);
+    }
+  }
+);
+// const fetchCommentsOfPagePublic = createAsyncThunk("comments/fetchCommentsOfPagePublic",async (params,thunkApi)=>{
+//   try{
   
-      let data = await storyRepo.fetchCommentsOfPagePublic({pageId:params.id})
-      return {
+//       let data = await storyRepo.fetchCommentsOfPagePublic({pageId:params.id})
+//       return {
 
-        comments: data.comments
-      }
+//         comments: data.comments
+//       }
 
-}catch(err){
+// }catch(err){
 
-return err
+// return err
 
-}}
+// }}
 
-)
-const fetchCommentsOfPageProtected = createAsyncThunk("comments/fetchCommentsOfPages",async (params,thunkApi)=>{
-  try{
+// )
+// const fetchCommentsOfPageProtected = createAsyncThunk("comments/fetchCommentsOfPages",async (params,thunkApi)=>{
+//   try{
    
    
 
-      let data = await storyRepo.fetchCommentsOfPageProtected({pageId:params.id})
-      return {
+//       let data = await storyRepo.fetchCommentsOfPageProtected({pageId:params.id})
+//       return {
 
-        comments: data.comments
-      }
+//         comments: data.comments
+//       }
 
-}catch(err){
+// }catch(err){
 
-return err
+// return err
 
-}}
+// }}
 
-)
+// )
 
 const setCurrentPage = createAction(
   "pages/setCurrentPage",
@@ -335,8 +344,7 @@ try{
           clearPagesInView,
        
           createComment,
-          fetchCommentsOfPageProtected,
-          fetchCommentsOfPagePublic,
+          fetchCommentsOfPage,
           deleteComment,
           clearEditingPage,
           appendComment,

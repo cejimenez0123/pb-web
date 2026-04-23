@@ -60,14 +60,7 @@ class StoryRepo{
 
   return res.data;
 }
-    // async getProtectedProfileStories({profileId}){
-    //     let headers = await this.getAuthHeaders()
-    //     let res = await axios.get(this.url+"/profile/"+profileId+"/protected",{
-    //         headers:{...headers}
-    //     })
-  
-    //     return res.data
-    // }
+
     async recommendations(){
            let headers = await this.getAuthHeaders()
         let res = await axios.get(this.url+"/recommendations",{headers

@@ -3,45 +3,41 @@ import { PageType } from "../../core/constants";
 import RichEditor from "./RichEditor";
 import PicturePageForm from "./PicturePageForm";
 
+export default function EditorDiv({ page, handleChange, isSaved, setIsSaved, parameters, type, createPageAction }) {
+  const pageType = type;
 
-export default function EditorDiv({page, handleChange,isSaved,setIsSaved,parameters, type, createPageAction }) {
-
-  
-
-let pageType = type
-
-  
-if(pageType==PageType.link){
+  if (pageType === PageType.link) {
     return (
       <PicturePageForm
-      type={pageType}
-  parameters={parameters}
-  isSaved={isSaved}
-  setIsSaved={setIsSaved}
-        key={`link-${page?.id ?? "new"}`} // <-- forces remount on type/id change
+        type={pageType}
+        parameters={parameters}
+        isSaved={isSaved}
+        setIsSaved={setIsSaved}
+        key={`link-${page?.id ?? "new"}`}
         handleChange={handleChange}
         createPageAction={createPageAction}
       />
     );
-  }else if(pageType==PageType.picture){
-    return (
-      <PicturePageForm
-      parameters={parameters}
-      type={pageType}
-       isSaved={isSaved}
-  setIsSaved={setIsSaved}
-        key={`picture-${page?.id ?? "new"}`} // <-- new key resets editor
-        handleChange={handleChange}
-        createPageAction={createPageAction}
-      />
-    );
-  
-    }else{
-    
-     return (
-        <RichEditor
-          handleChange={(content) => handleChange("data", content)}
-        />
-      );
   }
+
+  if (pageType === PageType.picture) {
+    return (
+      <PicturePageForm
+        parameters={parameters}
+        type={pageType}
+        isSaved={isSaved}
+        setIsSaved={setIsSaved}
+        key={`picture-${page?.id ?? "new"}`}
+        handleChange={handleChange}
+        createPageAction={createPageAction}
+      />
+    );
+  }
+
+  return (
+    <RichEditor
+      key={`editor-${page?.id ?? "new"}`}  // ← forces remount when page changes
+      handleChange={(content) => handleChange("data", content)}
+    />
+  );
 }

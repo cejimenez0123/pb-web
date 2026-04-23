@@ -124,28 +124,12 @@ ion-textarea textarea {
   font-size: 0.8rem !important;
 }
 
-p,div,span,h6  {
-    font-family: -apple-system, BlinkMacSystemFont, sans-serif!important;
+p:not(.comment-popover *),
+div:not(.comment-popover):not(.annotation-container .comment-popover),
+span:not(.annotation-mark *),
+h6 {
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif !important;
 }
-
-/* .mont-medium {
-  font-family: "Montserrat", serif;
-  font-optical-sizing: auto;
-  font-weight: 500;
-  font-style: normal;
-}
-.mont-medium {
-  font-family: "Montserrat", serif;
-  font-optical-sizing: auto;
-  font-weight: 500;
-  font-style: normal;
-}
-.mont-bold {
-  font-family: "Montserrat", serif;
-  font-optical-sizing: auto;
-  font-weight: 700;
-  font-style: normal;
-} */
 
 
                 
@@ -986,3 +970,38 @@ textarea.sc-ion-textarea {
   --checkmark-color: transparent; 
   --background-checked: var(--ion-color-success, green);
 } */
+
+/* ─── Annotation / inline comment ─────────────────────────────────────────── */
+
+/*
+  Ionic sets user-select: none on ion-content and all children.
+  These rules force text selection back on inside annotated content.
+*/
+/* ─── Add these to the bottom of App.css ──────────────────────────────────── */
+
+/* 
+  Ionic 6/7 exposes the scroll element as a CSS part.
+  This is the most reliable way to re-enable text selection.
+*/
+
+
+/* The annotation container itself — redundant but explicit */
+.annotation-container,
+.annotation-container * {
+  -webkit-user-select: text !important;
+  user-select: text !important;
+  -webkit-touch-callout: default !important; /* iOS: show copy menu */
+  touch-action: auto !important;
+}
+/* Annotation mark pulse — fires when user clicks quote in popover */
+@keyframes annotation-pulse {
+  0%   { background: #a7f3d0cc; }
+  30%  { background: #10b981cc; }
+  70%  { background: #10b981cc; }
+  100% { background: #a7f3d0cc; }
+}
+
+.annotation-mark--pulse {
+  animation: annotation-pulse 1.5s ease-in-out;
+  border-radius: 2px;
+}

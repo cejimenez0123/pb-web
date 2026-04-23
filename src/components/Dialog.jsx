@@ -177,7 +177,7 @@ const Dialog = () => {
               {/* Content */}
               <div className="mt-4 px-2 flex-1 overflow-y-auto pb-4">
                 <div className="text-[1.4rem] leading-relaxed text-soft">
-                  {dialog.text}
+                {typeof dialog.text === 'function' ? dialog.text() : dialog.text}
                 </div>
               </div>
 

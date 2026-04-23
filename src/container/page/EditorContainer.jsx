@@ -166,7 +166,7 @@ useEffect(() => {
 
       ...prev,
       id:id,
-      data:htmlContent,
+      data:story.data,
       commentable: story?.commentable??false,
       page: story,
       isPrivate: story?.isPrivate??true,
@@ -190,15 +190,13 @@ if (!currentProfile?.id) return;
     profileId: currentProfile?.id,
   };
 
-  const isSame =
-    JSON.stringify(payload) === JSON.stringify(lastSavedRef.current);
-
-  if (isSame) return;
-
-  lastSavedRef.current = payload;
+ const isSame =
+  JSON.stringify(payload) === JSON.stringify(lastSavedRef.current);
+if (isSame) return;
+lastSavedRef.current = payload;
 setIsSaved(false);
-  debouncedSave({...payload});
-  setIsSaved(true)
+debouncedSave({...payload});
+setIsSaved(true)
 }, [
   parameters.data,
   parameters.title,
@@ -526,7 +524,7 @@ const handleFeedback = (feedbackDesc) => {
     openDialog(dia);
   };
 useEffect(() => {
-  if (!id) {
+  if (!id && type) {   // only clear if type is actually defined
     dispatch(setPageInView({ page: null }));
     dispatch(setHtmlContent(""));
     

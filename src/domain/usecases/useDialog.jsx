@@ -1,49 +1,3 @@
-// import { useDispatch, useSelector } from 'react-redux';
-// import { setDialog } from '../../actions/UserActions.jsx'
-
-// export const useDialog = () => {
-//   const dispatch = useDispatch();
-//   const dialog = useSelector(state=>state.users.dialog)
-
-//   // Open a modal with any content
-//   const openDialog = (data) => {
-//     dispatch(setDialog({
-//       isOpen: true,
-//       scrollY:false,
-//       title: data.title ?? null,
-//       text: data.text ?? null,
-//       height: data.height ?? "80",
-//       agree: data.agree ?? null,
-//       agreeText: data.agreeText ?? null,
-//       disagree:data.disagree??closeDialog,
-//       disagreeText: data.disagreeText ?? "Close",
-//       onClose: data.onClose ?? null,
-//       breakpoint: data.breakpoint ?? 0.25,
-//     }));
-//   };
-
-//   // Close the modal (keeps content for a moment if needed)
-// const closeDialog = () => {
-//   // Only close if actually open
-//   dispatch(setDialog(prev => prev.isOpen ? { ...prev, isOpen: false } : prev));
-// };
-//   // Fully reset modal after dismiss
-//   const resetDialog = () => {
-//     dispatch(setDialog({
-//       isOpen: false,
-//       title: null,
-//       text: null,
-//       agree: null,
-//       agreeText: null,
-//       disagree:null,
-//       disagreeText: null,
-//       onClose: null,
-//       breakpoint: 0.25,
-//     }));
-//   };
-
-//   return { dialog, openDialog, closeDialog, resetDialog };
-// };
 
 import { useDispatch, useSelector } from "react-redux";
 import { setDialog } from "../../actions/UserActions.jsx";
@@ -64,7 +18,7 @@ export const useDialog = () => {
         render: data.render ?? null,
 
         // fallback for old usage
-        text: data.text ?? null,
+        text: typeof data.text === 'function' ? data.text : () => data.text,
 
         height: data.height ?? "80",
         agree: data.agree ?? null,
@@ -80,13 +34,9 @@ export const useDialog = () => {
   };
 
   // Close modal (soft close)
-  const closeDialog = () => {
-    dispatch(
-      setDialog((prev) =>
-        prev?.isOpen ? { ...prev, isOpen: false } : prev
-      )
-    );
-  };
+const closeDialog = () => {
+  dispatch(setDialog({ isOpen: false }));
+};
 
   // Reset modal (hard reset)
   const resetDialog = () => {

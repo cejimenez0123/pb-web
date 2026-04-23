@@ -142,18 +142,28 @@ return {
 
     setEvents(filtered);
   }, [selectedArea, searchTerm, list]);
+function handleSearchInputChange(e) {
+  const value = e.target.value ?? "";
+  setSearchTerm(value);
 
-  function handleSearchInputChange(e) {
-    const value = e.target.value;
-    setSearchTerm(value);
+  const filtered = hashtagSuggestions.filter((tag) =>
+    tag.toLowerCase().includes(value.toLowerCase())
+  );
 
-    const filtered = hashtagSuggestions.filter((tag) =>
-      tag.toLowerCase().includes(value.toLowerCase())
-    );
+  setFilteredSuggestions(filtered);
+  setShowSuggestions(true);
+}
+  // function handleSearchInputChange(e) {
+  //   const value = e.target.value;
+  //   setSearchTerm(value);
 
-    setFilteredSuggestions(filtered);
-    setShowSuggestions(true);
-  }
+  //   const filtered = hashtagSuggestions.filter((tag) =>
+  //     tag.toLowerCase().includes(value.toLowerCase())
+  //   );
+
+  //   setFilteredSuggestions(filtered);
+  //   setShowSuggestions(true);
+  // }
 
   const openGooglemaps = (event) => {
     const encoded = encodeURIComponent(event.rawLocation);
@@ -254,60 +264,6 @@ const renderEvent = (event, i) => (
     </div>
   </div>
 );
-  // const renderEvent = (event, i) => (
-  //   <div
-  //     key={i}
-  //     onClick={() => handleDialogOpen(event)}
-  //     className="bg-base-bg  p-4 shadow-sm border-soft dark:border-soft border-b border-1 active:scale-[0.98]"
-  //   >
-   
-  //     <div className="flex justify-between gap-3">
-  //       <div className="flex flex-col flex-1 min-w-0">
-  //         <span className="font-semibold  text-text-primary dark:text-emerald-100 truncate">{event.summary}</span>
-
-  //         <span
-  //           onClick={(e) => {
-  //             e.stopPropagation();
-  //             openGooglemaps(event);
-  //           }}
-  //           className="text-sm text-text-primary dark:text-primary-text mt-1"
-  //         >
-  //           {event.location}
-  //         </span>
-
-  //         <span className="text-xs text-text-primary dark:text-emerald-100 mt-1">{event.area}</span>
-
-  //         {/* HASHTAGS */}
-  //         <div className="flex gap-2 flex-wrap mt-2">
-  //           {event.hashtags.slice(0, 4).map((tag, idx) => (
-  //             <span
-  //               key={idx}
-  //               className="text-xs bg-sky-100  px-2 py-1 rounded-full text-text-primary dark:bg-emerald-100"
-  //             >
-  //               #{tag}
-  //             </span>
-  //           ))}
-  //         </div>
-  //       </div>
-
-  //       <div className="flex flex-col items-end">
-  //         <IonText
-  //           className="text-xs dark:text-emerald-100 text-gray-600"
-  //           dangerouslySetInnerHTML={{ __html: event.startTime }}
-  //         />
-
-  //         <IonImg
-  //           onClick={(e) => {
-  //             e.stopPropagation();
-  //             window.open(event.googleLink);
-  //           }}
-  //           className="w-10 h-10 mt-2"
-  //           src={calendar}
-  //         />
-  //       </div>
-  //     </div>
-  //   </div>
-  // );
 
   // ---------------------------
   // HORIZONTAL LIST (PB EVENTS)
@@ -428,18 +384,18 @@ const renderEvent = (event, i) => (
 </div>
 
         <div className="mt-3 max-w-[50em] bg-base-bg mb-4 brounded-full px-4    mx-auto">
-          <IonInput
+          <input type="text"
             value={searchTerm}
-            onIonInput={handleSearchInputChange}
+            onChange={handleSearchInputChange}
             placeholder="Search events"
-            className="text-soft dark:text-cream dark:text-cream max-w-[94%] mx-auto bg-base-bg  py-2"
+            className="text-soft input dark:text-cream dark:text-cream max-w-[94%] mx-auto bg-base-bg  py-2"
           />
         </div>
       </div>
 <div
   className={`
     overflow-hidden transition-all duration-300 ease-in-out
-    ${selectedArea === ""
+    ${selectedArea === ""&&searchTerm.length==0
       ? "max-h-[800px] opacity-100 translate-y-0"
       : "max-h-0 opacity-0 -translate-y-2"}
   `}

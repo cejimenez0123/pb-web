@@ -106,17 +106,27 @@ async fetchStoryHashtagsPublic({id}){
         let res = await axios.delete(this.url+"/collection/"+colId+"/hash/"+hashId,{headers:headers})
         return res.data
     }
-    async followHashtag({hashtagId}){
-              const res = await axios.post(
-        `${this.url}/follow`,
-        { hashtagId },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+    async followHashtag({ hashtagId }) {
+ const headers = await this.getAuthHeaders()
+  const res = await axios.post(
+    `${this.url}/follow`,
+    { hashtagId },
+    { headers: headers}
+  );
+  return res.data.follow;
+}
+
+async unfollowHashtag({ hashtagId }) {
+ const headers = await this.getAuthHeaders()
+  const res = await axios.delete(
+    `${this.url}/follow`,
+    {
+      data: { hashtagId },
+      headers: headers
     }
+  );
+  return res.data;
+}
     }
 
 export default new HashtagRepo()

@@ -161,19 +161,41 @@ const fetchStoryHashtags = createAsyncThunk("hashtags/fetchStoryHashtags",async 
 
 
 })
+//  const followHashtag = createAsyncThunk(
+//   "hashtags/follow",
+//   async ({ hashtagId }, { rejectWithValue }) => {
+//     try {
+    
+//         const res = await hashtagRepo.followHashtag({hashtagId})
+
+
+//       return res.data.follow;
+//     } catch (err) {
+//       return rejectWithValue(
+//         err.response?.data?.error || err.message
+//       );
+//     }
+//   }
+// );
  const followHashtag = createAsyncThunk(
   "hashtags/follow",
   async ({ hashtagId }, { rejectWithValue }) => {
     try {
-    
-
-
-
-      return res.data.follow;
+      const res = await hashtagRepo.followHashtag({ hashtagId });
+      return res;
     } catch (err) {
-      return rejectWithValue(
-        err.response?.data?.error || err.message
-      );
+      return rejectWithValue(err.response?.data?.error || err.message);
+    }
+  }
+);
+ const unfollowHashtag = createAsyncThunk(
+  "hashtags/unfollow",
+  async ({ hashtagId }, { rejectWithValue }) => {
+    try {
+      const res = await hashtagRepo.unfollowHashtag({ hashtagId });
+      return res;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.error || err.message);
     }
   }
 );
@@ -191,7 +213,9 @@ export {
         getProfileHashtagCommentUse,
         deleteHashtagComment,
         fetchStoryHashtags,
+        followHashtag,
         deleteHashtagCollection,
-        createHashtagCollection
+        createHashtagCollection,
+        unfollowHashtag
 }
 
