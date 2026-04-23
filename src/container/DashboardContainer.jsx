@@ -50,9 +50,9 @@ function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex
   );
 }
 const WRAP = "max-w-2xl mx-auto ";
-const SECTION_GAP = "pt-10";  // applied to each section's root div
+const SECTION_GAP = "pt-8";  // applied to each section's root div
 const SECTION_HEADING = "text-xl lora-medium";          // text style only
-const SECTION_HEADER_ROW = "flex items-center justify-between py-4"; // row layout
+const SECTION_HEADER_ROW = "flex items-center justify-between px-4 py-4"; // row layout
 const LIST_WRAP = "flex flex-col gap-4";  // Saves
 
 const TILE = "w-36 md:w-44 flex-shrink-0";
@@ -376,11 +376,12 @@ scrollY: false,
       <div>
      <div className={`${WRAP} ${SECTION_GAP}`}>
   <div className={SECTION_HEADER_ROW}>
-    {/* <h4 className={SECTION_HEADING}>Saves</h4> */}
+ <div>
 <SectionHeader title={"Saves"}/>
-           
-
-              <img src={arrowToRight} onClick={()=>homeCol && router.push(Paths.collection.createRoute(homeCol?.id))}className='max-w-8 mt-auto mb-4 max-h-8 mx-4' />
+              </div>
+              <img src={arrowToRight} onClick={()=>homeCol && router.push(Paths.collection.createRoute(homeCol?.id))}
+                className="max-w-8 max-h-8"
+              />
               </div>
               <div className='flex mx-4 flex-col gap-4'>
                {saves?.length==0?<div><h2>Bookmark things you want to see often</h2></div>:saves?.map((item, i) => { 
@@ -421,9 +422,63 @@ scrollY: false,
   </div>
 </div>
 
-              
-              {/* <h4 className='text-xl lora-medium mx-4 py-4'>Your Spaces</h4> */}
-              {/* <div> */}
+                            <div className={`${WRAP} ${SECTION_GAP}`}>
+  <div className={SECTION_HEADER_ROW}>
+  
+<SectionHeader title="Your Spaces"/>
+</div>
+ 
+
+  <div className='flex flex-row px-4 gap-4 overflow-x-auto'>
+    
+    {[
+      { label: "Pages", onClick: openPages },
+      { label: "Collections", onClick: openCollections },
+      { label: "Archive", onClick: () => archiveCol && router.push(Paths.collection.createRoute(archiveCol.id) )},
+      { label: "Communities", onClick: openCommunities }
+    ].map((item) => (
+      
+      <div
+      // {Enviroment.palette.accent.blue}
+        key={item.label}
+        onClick={item.onClick}
+        className={`
+          flex-shrink-0
+          
+          min-w-36 sm:w-36 md:w-44 lg:w-44 
+          aspect-square                
+          rounded-2xl
+          border border-soft
+          
+          bg-base-bg
+  bg-button
+          backdrop-blur-sm
+         shadow-md 
+          active:scale-95
+          transition-all
+          flex items-end
+          p-3 relative
+        `}
+      >
+
+           <h4 className={`
+          absolute top-3 left-3
+       
+          text-[1.4em] text-[${Enviroment.palette.text.brand}]
+        `}>
+    {/* {Enviroment.palette.text.inverse} */}
+          {item.label}
+        </h4>
+      </div>
+
+    ))}
+</div>
+</div>
+ 
+             
+       
+            
+
             
                 <div className={`${WRAP} ${SECTION_GAP}`}>
   <div className={SECTION_HEADER_ROW}>
@@ -439,15 +494,14 @@ scrollY: false,
     <div onClick={() => openYourWorkshops()}>
       <SectionHeader
         title="Workshops"
-        right={
-          <img
+       
+      />
+    </div>
+      <img
             onClick={() => openYourWorkshops()}
             src={arrowToRight}
             className="max-w-8 max-h-8"
           />
-        }
-      />
-    </div>
   </div>
 
   <div className="px-4">

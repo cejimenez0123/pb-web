@@ -133,7 +133,7 @@ try{
         <ul className="flex flex-wrap p-4">
           {hashtags.map((hash, index) => (
   
-            <li  className="p-1 flex flex-row m-1 text-sm rounded-lg bg-button-secondary-bg text-white" key={index}>
+            <li  className="p-1 flex flex-row m-1 text-sm rounded-lg bg-button-secondary-bg text-white dark:bg-button-secondary-bg dark:text-white" key={index}>
               <h6 className="my-auto mx-2">#{hash.hashtag.name}</h6><IonImg 
             className=" my-auto" 
             onClick={()=>deleteHashtag(hash)}

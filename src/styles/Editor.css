@@ -178,5 +178,8 @@
  .ql-editor em{
   font-style: italic!important;
  }
+ .ql-container .ql-editor {
+  min-height: 25dvh;
+ }
 
 

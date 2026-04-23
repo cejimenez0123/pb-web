@@ -124,8 +124,7 @@ teal:"#007c92",
       "info-blue": "#598ec8", // Informational tags
       "purple": "#a9a1d4", // Creative categories
       "earth": "#c28558" // Grounded, neutral tags
-      // "cream":"#f8f6f1"
-      // "#f4f4e0"
+      
     },
 
     height:{
