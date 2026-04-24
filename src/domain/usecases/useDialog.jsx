@@ -24,7 +24,7 @@ export const useDialog = () => {
         agree: data.agree ?? null,
         agreeText: data.agreeText ?? null,
 
-        disagree: data.disagree ?? closeDialog,
+        disagree: data.disagree ,
         disagreeText: data.disagreeText ?? "Close",
 
         onClose: data.onClose ?? null,
@@ -35,7 +35,7 @@ export const useDialog = () => {
 
   // Close modal (soft close)
 const closeDialog = () => {
-  dispatch(setDialog({ isOpen: false }));
+  dispatch(setDialog({ isOpen: false}));
 };
 
   // Reset modal (hard reset)

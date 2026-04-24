@@ -8,7 +8,7 @@ import { getPublicCollections, } from '../actions/CollectionActions.js';
 import { getPublicLibraries } from '../actions/LibraryActions.jsx';
 import checkResult from '../core/checkResult.js';
 import { useMediaQuery } from 'react-responsive';
-import {BookListItem} from '../components/BookListItem.jsx';
+import {BookListItem} from '../components/collection/BookListItem.jsx';
 import { initGA} from '../core/ga4.js';
 import ScrollDownButton from '../components/ScrollDownButton.jsx';
 import Context from '../context.jsx';

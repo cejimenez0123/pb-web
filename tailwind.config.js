@@ -34,6 +34,8 @@ export default {
       "cream":"#f4f4e0",
       
     "base": {
+      "bgDark": "#1c1f1a",  // warm dark, complements cream
+  "surfaceDark": "#252922",   
       "bg":"#f8f6f1", // App background (main canvas, warm cream)
       "surface": "#f4f4e0", // Cards, modals, sheets (elevated surfaces)
       "soft": "#40906f" // Brand base tone (used for highlights, accents)
@@ -120,7 +122,7 @@ teal:"#007c92",
       "purple": "#9b67b6", // Depth, hierarchy, creative elements
       "pink": "#e96fbd", // Emotional highlights, reactions
       "orange": "#f85e30" ,// Energy, alerts, strong emphasis
-        "green": "#7ed957", // Positive tags, growth, success
+        "vert": "#7ed957", // Positive tags, growth, success
       "info-blue": "#598ec8", // Informational tags
       "purple": "#a9a1d4", // Creative categories
       "earth": "#c28558" // Grounded, neutral tags

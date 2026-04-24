@@ -183,6 +183,7 @@ const updateSubscription= createAsyncThunk("users/updateSubscription", async (pa
 
   return data
 })
+const setAuthResolved = createAction("users/setAuthResolved");
 const getCurrentProfile = createAsyncThunk(
   'users/getCurrentProfile',
   async (params, thunkApi) => {
@@ -330,5 +331,6 @@ export {logIn,
         deletePicture,
         updateSubscription,
         getIosInfo,
+        setAuthResolved,
         setUserLoading,setCurrentProfile,referSomeone,setMainLoading
     }

@@ -16,6 +16,7 @@ import {
           setSignedInFalse,
           getCurrentProfile,
           setCurrentProfile,
+          setAuthResolved,
       
       } from './actions/UserActions'
       import { IonApp, setupIonicReact, IonRouterOutlet,  useIonRouter, IonFooter, useIonViewWillEnter, IonLoading} from '@ionic/react';
@@ -64,6 +65,7 @@ import OAuthCallback from './container/page/OauthCallback.jsx';
 
 import initSocialLogin from './components/initSocialLogin.jsx';
 import { fetchNotifcations } from './actions/ProfileActions.jsx';
+import usePersistentCurrentProfile from './domain/usecases/usePersistentCurrentProfile.jsx';
 setupIonicReact()
 
 const libraries = ["places"];
@@ -97,38 +99,19 @@ const [chuecking,setChecking]=useState(null)
   const {dialog,loading:userLoading} = useSelector(state=>state.users)
 
 const hasFetchedProfile = useRef(false);
-useEffect(()=>{
-  const loadToken = async ()=>{
- const {value:token}= await Preferences.get({key:"token"})
- setToken(token)
-  }
-loadToken()
-},[])
-// useEffect(() => {
-//   if (token && !hasFetchedProfile.current) {
-//     hasFetchedProfile.current = true;
-//     dispatch(getCurrentProfile())
-//   }
-// }, [token]);
+
+
 useEffect(() => {
-  if (token && !hasFetchedProfile.current) {
-    hasFetchedProfile.current = true;
-    
-    Preferences.get({ key: 'currentProfile' }).then(({ value }) => {
-      if (value) {
-        dispatch(setCurrentProfile(JSON.parse(value)));
-      }
-      dispatch(getCurrentProfile()).then((res) => {
-        if (res?.payload) {
-          Preferences.set({
-            key: 'currentProfile',
-            value: JSON.stringify(res.payload),
-          });
-        }
-      });
-    });
-  }
-}, [token]);
+  const init = async () => {
+    const { value: token } = await Preferences.get({ key: "token" });
+    if (token && token !== "undefined" && token !== "null") {
+      dispatch(getCurrentProfile());
+    } else {
+      dispatch(setAuthResolved(true));
+    }
+  };
+  init();
+}, []);
 useEffect(()=>{
 if(currentProfile){
   dispatch(fetchNotifcations({profile:currentProfile,seen:false}))

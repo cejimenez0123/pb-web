@@ -142,7 +142,7 @@ const createComment = createAsyncThunk("pages/createComment", async function({
       parentId:   parentCommentId,
       anchorText: anchorText ?? "",  // ← add
     });
-    return { comment: data.comment };
+   return { comment: { ...data.comment, storyId } };
   } catch(error) {
     return { error: new Error(`Error: Create Comment ${error.message}`) };
   }
@@ -295,7 +295,7 @@ const pagesLoading = createAction("PAGES_LOADING", function prepare(){
    
 try{
       const data = await likeRepo.storyDelete(params)
-      // const token = (await Preferences.get({key:"token"})).value
+    
       let profileData = await profileRepo.getMyProfiles()
 
       return {

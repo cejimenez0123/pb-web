@@ -76,7 +76,7 @@ const getMyStories = createAsyncThunk(
     try {
           
       const data = await storyRepo.getMyStories(params);
-console.log("APGEX",data)
+
 
 
       return {
@@ -160,7 +160,7 @@ const getCollectionStoriesPublic = createAsyncThunk("pages/getCollectionStoriesP
 const getPrompts = createAsyncThunk("pages/getPrompts",async (params,thunkApi)=>{
   try{
      let data = await storyRepo.getPrompts()
-     console.log("RPRPR",data)
+ 
      return {
       prompts:data.prompts
      }

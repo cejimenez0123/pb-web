@@ -37,7 +37,7 @@ const createProfile= createAsyncThunk("users/createProfile",async (params,thunkA
  
         // const {profile}=params
         let items =[]
-      //  const token =(await Preferences.get({key:"token"})).value
+    
 
              let data = await profileRepo.notifications(params)
           

@@ -72,9 +72,7 @@ const dispatch = useDispatch()
 const [token,setToken]=useState(null)
     const [archiveCol, setArchiveCol] = useState(null);
     const { openDialog, dialog,resetDialog } = useDialog()
-    useEffect(()=>{
-      Preferences.get({key:"token"}).then(toke=>setToken(toke.value))
-    },[])
+   
 
  
        useEffect(() => {

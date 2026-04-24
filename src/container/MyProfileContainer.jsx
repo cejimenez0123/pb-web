@@ -23,6 +23,7 @@ import usePaginatedResource from "../core/usePaginatedResource";
 import ListPill from "../components/page/ListPill";
 import SectionHeader from "../components/SectionHeader";
 import useDebounce from "../core/useDebounce";
+import { setPageData } from "../actions/PageActions";
 
 const TABS = {
   POSTS: "pages",
@@ -33,51 +34,45 @@ const TABS = {
 const WRAP = "w-[100%] max-w-[50em] px-4 mx-auto ";
 const tabWrapper = "max-w-lg mx-auto px-4 pb-4"; // same for both containers
 function MyProfileContainer() {
+  const dispatch = useDispatch()
   const { setSeo  } = useContext(Context);
   const profile = useSelector((state) => state.users.currentProfile);
+const storiesCache = useSelector((state) => state.pagination.byKey?.["stories:all"]?.pages?.[1] ?? []);
+const collectionsCache = useSelector((state) => state.pagination.byKey?.["collections:all"]?.pages?.[1] ?? []);
+const librariesCache = useSelector((state) => state.pagination.byKey?.["libraries:all"]?.pages?.[1] ?? []);
+const recentPosts = storiesCache.slice(0, 5);
+const recentCollections = collectionsCache.slice(0, 5);
+const communities = { items: librariesCache };
+   const pageSize = 10;
 
-  
-const pageSize = 20;
-const stories = usePaginatedResource({
-  key: "stories",
-  fetcher: getMyStories,
-  pageSize,
-  enabled: !!profile?.id,
-  select: (res) => ({
-    items: res.pageList,
-    totalCount: res.totalCount,
-  }),
-});
- usePaginatedResource({
-  key: "collections",
-  fetcher: getMyCollections,
-  pageSize: pageSize,
-  enabled: !!profile?.id,
-  select: (res) => ({
-    items: res.collections,
-    totalCount: res.totalCount,
-  }),
-});
- const communities = usePaginatedResource({
-  key: "libraries",
-  fetcher: getMyCollections,
-  pageSize: pageSize,
-  type:"library",
-  enabled: !!profile?.id,
-  select: (res) => ({
-    items: res.collections,
-    totalCount: res.totalCount,
-  }),
-});
-const key = "collections";
-console.log("COMBOM",communities.items)
-const { pages = {}, totalCount = 0, loading } = useSelector(
-  (state) => state.pagination.byKey?.[key] || {}
-);
+useEffect(() => {
+  console.log("PROFILE CHANGED", profile);
+}, [profile]);
+
 
 const [page, setPage] = useState(1);
+useEffect(() => {
+  if (!profile?.id) return; // don't preload until we actually have a profile
 
-const collections = pages[page] || [];
+  const preload = async () => {
+    const shared = { skip: 0, take: pageSize };
+    try {
+      const [storiesRes, collectionsRes, librariesRes] = await Promise.all([
+        dispatch(getMyStories({ ...shared })).unwrap(),
+        dispatch(getMyCollections({ ...shared, type: "book" })).unwrap(),
+        dispatch(getMyCollections({ ...shared, type: "library" })).unwrap(),
+      ]);
+      if (storiesRes) dispatch(setPageData({ key: "stories:all", page: 1, items: storiesRes.pageList, totalCount: storiesRes.totalCount }));
+      if (collectionsRes) dispatch(setPageData({ key: "collections:all", page: 1, items: collectionsRes.collections, totalCount: collectionsRes.totalCount }));
+      if (librariesRes) dispatch(setPageData({ key: "libraries:all", page: 1, items: librariesRes.collections, totalCount: librariesRes.totalCount }));
+    } catch (e) {
+      console.error("Preload failed", e);
+    }
+  };
+
+  // preload();
+}, [profile?.id]);
+
 
 
 
@@ -85,30 +80,12 @@ const collections = pages[page] || [];
   const router = useIonRouter();
 const [searchInput, setSearchInput] = useState("");
 const [search, setSearch] = useState("");
-
+const debouncedSearch = useDebounce(search, 300);
+ 
   const [tab, setTab] = useState(TABS.POSTS);
 
 
-const recentCollections = useMemo(
-  () =>
-    [...(collections ?? [])]
 
-      .slice(0, 5),
-  [collections]
-);
-
-  const sortedPages = useMemo(() => {
-  return [...(stories.items ?? [])].sort(
-    (a, b) =>
-      new Date(b.updated ?? b.created) -
-      new Date(a.updated ?? a.created)
-  );
-}, [stories.items]);
-
-const recentPosts = sortedPages.slice(0, 5);
-// ── Tabs constants ─────────────────────────────────────
-
-// ── Section Label ─────────────────────────────────────
 
 
 
@@ -139,8 +116,8 @@ const IndexList = ({ items, profile,router }) => (
 
 const StatChip = ({ value, label }) => (
   <div className="flex flex-col text-center">
-    <span className="font-bold">{value}</span>
-    <span className="text-xs text-gray-400">{label}</span>
+    <span className="font-bold dark:text-cream">{value}</span>
+    <span className="text-xs dark:text-cream text-gray-400">{label}</span>
   </div>
 );
 
@@ -158,13 +135,26 @@ const StatChip = ({ value, label }) => (
 
 // const [search, setSearch] = useState("");
 
-const debouncedSearch = useDebounce(search, 300);
- 
- if (!profile) return <EmptyProfileState />;
+// const profile = useSelector((state) => state.users.currentProfile);or however your slice tracks it
+const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+const authResolved = useSelector((state) => state.users.authResolved);
+
+
+if (!authResolved) return <IonContent fullscreen />;// blank while auth checks
+if (!profile) return <EmptyProfileState />; // only show this when truly logged out;
   return (
 
       <IonContent fullscreen scrollY={true}
-  style={{ "--background": Enviroment.palette.base.background}}
+
+  style={{ "--background": 
+    prefersDark ?
+     Enviroment.palette.base.backgroundDark 
+    ?? Enviroment.palette.base.bg : 
+    Enviroment.palette.base.background
+
+  }}
+
 >
       <ErrorBoundary>
         <div className=" pb-24   space-y-8">
@@ -181,7 +171,7 @@ className="bg-soft rounded-full p-2"><img src={settings} /></button>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <ProfileInfo profile={profile} compact />
-                    <h5 className="text-xl text-emerald-800">{profile?.username?.toLowerCase()}</h5>
+                    <h5 className="text-xl dark:text-cream text-emerald-800">{profile?.username?.toLowerCase()}</h5>
               </div>
          
             </div>
@@ -193,18 +183,23 @@ className="bg-soft rounded-full p-2"><img src={settings} /></button>
             </div>
 
             {(profile?.bio || profile?.selfStatement) && (
-              <p className="text-sm text-gray-700 leading-relaxed">
+              <p className="text-sm text-gray-700 dark:text-cream leading-relaxed">
                 {profile.bio ?? profile.selfStatement}
               </p>
             )}
 
-            {(profile?.hashtags ?? profile?.tags)?.length > 0 && (
+            {profile?.hashtag?.length > 0 && (<div className="space-y-2 px-4">
+              <p className="text-xs text-gray-400 uppercase">❤️ Hashtags</p>
+        
               <div className="flex flex-wrap gap-2">
-                {(profile.hashtags ?? profile.tags).slice(0, 5).map((tag, i) => (
-                  <Pill key={i} onClick={()=>router.push(Paths.hashtag.createRoute(tag.id))}
-                  label={`#${typeof tag === "string" ? tag : tag.name ?? tag.tag}`} />
-                ))}
+                 
+                {[...profile.hashtag].slice(0, 5).map((tag, i) => {
+                  
+                  return<Pill key={i} onClick={()=>router.push(Paths.hashtag.createRoute(tag.id))}
+                  label={`#${tag.hashtag.name ?? tag.tag}`} />
+})}
               </div>
+                  </div>
             )}
 
             {(communities.items?.length ?? 0) > 0 && (
@@ -277,7 +272,7 @@ className="bg-soft rounded-full p-2"><img src={settings} /></button>
 
                     <SectionHeader title={"All Pages"}/>
 
-<PaginatedList
+ <PaginatedList
   cacheKey="stories"
   fetcher={getMyStories}
   pageSize={8}
@@ -286,7 +281,7 @@ className="bg-soft rounded-full p-2"><img src={settings} /></button>
   emptyState={   Array.from({ length: pageSize }).map((_, i) => (
                    <div
         key={i}
-   className="px-3 py-5 rounded-full skeleton  border border-purple border-1 bg-base-bg backdrop-blur-sm shadow-sm active:scale-[0.98] transition"
+   className="px-3 py-5 rounded-full skeleton  border border-blue border-1 bg-base-bg backdrop-blur-sm shadow-sm active:scale-[0.98] transition"
       >
        <span className="min-h-14 "></span>
       </div>
@@ -306,43 +301,30 @@ className="bg-soft rounded-full p-2"><img src={settings} /></button>
 
             
 
-            {tab === TABS.COLLECTIONS && (
-              collections.length === 0 ? (
-  <EmptyState text={search ? "No matching collections." : "No collections yet."} />
-) : (
+           {tab === TABS.COLLECTIONS && (
   <>
     {search.length === 0 && recentCollections.length > 0 && (
       <section className="space-y-4">
-    
-        <SectionHeader title={"Recent"}/>
+        <SectionHeader title="Recent" />
         <IndexList items={recentCollections} profile={profile} router={router} />
       </section>
     )}
 
-
-<SectionHeader title={"All Collections"}/>
-       <PaginatedList
+    <SectionHeader title="All Collections" />
+    <PaginatedList
       cacheKey="collections"
-  params={{ type: "book", search:debouncedSearch }}
-  fetcher={getMyCollections}
-  pageSize={8}
-  
-  search={debouncedSearch}
+      params={{ type: "book", search: debouncedSearch }}
+      fetcher={getMyCollections}
+      pageSize={8}
+      search={debouncedSearch}
+      emptyState={<EmptyState text={search ? "No matching collections." : "No collections yet."} />}
+      renderItem={(i) => (
+        <ListPill item={i} profile={profile} onClick={() => router.push(Paths.collection.createRoute(i.id))} />
+      )}
+    />
+  </>)
 
-    
-         renderItem={(i) => (
-          <ListPill item={i} profile={profile} onClick={()=>router.push(Paths.collection.createRoute(i.id))}/>)}
-       />
-  
-  
-  
 
-  
-  
-  </>
-)
-            
-            )
           }
 
             {tab === TABS.COMMUNITIES && <CommunitiesPanel router={router} communities={communities.items} />}
@@ -402,5 +384,3 @@ function EmptyProfileState() {
 }
 
 
-// import { useEffect, useRef, useState } from "react";
-// import { useDispatch } from "react-redux";

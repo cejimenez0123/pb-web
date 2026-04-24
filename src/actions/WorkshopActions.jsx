@@ -114,6 +114,7 @@ function mergeSmallArrays(input) {
 
 const fetchWorkshopGroups = createAsyncThunk("books/fetchWorkshopGroups",    async ({radius=50},thunkApi) => {
     try {
+
         const response = await axios.get(Enviroment.url+`/workshop/groups?radius=${radius}`,{
           headers:{
             Authorization:"Bearer "+(await Preferences.get({key:"token"})).value

@@ -40,9 +40,7 @@ builder.addCase(patchCollectionRoles.fulfilled,(state,{payload})=>{
     if(payload.collection){
         state.collectionInView = payload.collection
     }
-    if(payload.roles){
-        state.roles = payload.collection
-    }
+  
 }).addCase(getProtectedProfileCollections.fulfilled,(state,{payload})=>{
   if(payload.collections && payload.collections.length){
      state.collections= payload.collections
@@ -115,7 +113,7 @@ state.loading = true
    let list = state.collections.filter(col=>col)
   
     const index = list.findIndex(col=>col.id==payload.collection.id)
-    if(index>0){
+if (index >= 0) {
         list[index]=payload.collection
         state.collections = list
     }
@@ -157,25 +155,11 @@ state.collectionInView = payload.collection
 .addCase(saveRoleToCollection.rejected,(state,{payload})=>{
     state.loading = false
     state.error = "Error Saving Role"
-}).addCase(getMyCollections.fulfilled,(state,{payload})=>{
-    let cols = state.collections
- 
-    if( payload.collections){
-      let collections =  payload.collections
-    
-
-    const list = cols.map(col=>{
-        return collections.find(colx=>{
-           return col && col.id && colx && colx.id && col.id==colx.id}
-        )
-    })
-    const filtered = collections.filter(col=>{
-       return !state.collections.filter(colx=>colx&&colx.id).find(colx=>col.id==colx.id)
-    })
-    state.myCollections =[...list,...filtered]
-    state.loading =false
-}
-
+}).addCase(getMyCollections.fulfilled, (state, { payload }) => {
+    if (payload.collections) {
+        state.myCollections = payload.collections;
+    }
+    state.loading = false;
 }).addCase(getMyCollections.pending,(state,payload)=>{
     state.loading = true
 })
@@ -197,8 +181,8 @@ state.collectionInView = payload.collection
 
 
     state.loading = false
-}).addCase(fetchCollectionProtected.pending,(state)=>{
-    state.loading=false
+}).addCase(fetchCollectionProtected.pending, (state) => {
+    state.loading = true// ← should be true
 }).addCase(fetchCollectionProtected.fulfilled,(state,{payload})=>{
     state.collectionInView = payload.collection
 

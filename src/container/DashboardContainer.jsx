@@ -58,14 +58,14 @@ const LIST_WRAP = "flex flex-col gap-4";  // Saves
 const TILE = "w-36 md:w-44 flex-shrink-0";
 const ACTION_ROW = "flex flex-col items-center gap-4 w-full";
 function DashboardEmbed() {
-
+const pageSize = 7
   const currentProfile = useSelector(state=>state.users.currentProfile)
  const isTablet = useMediaQuery({ query: '(min-width: 768px)' });
 const isDesktop = useMediaQuery({ query: '(min-width: 1024px)' });
   const router = useIonRouter()
   const dispatch = useDispatch();
    const collectionsRaw = useSelector(state => state.books.collections) ?? [];
-const pageSize = 3
+
 const { columns, rows } = useResponsiveGrid();
 const visibleCount = columns * rows;
 
@@ -75,7 +75,7 @@ const collections = collectionsRaw
   
   const [workshop,setWorkshop]=useState(null)
   const [saves,setSaved]=useState([])
-  const {openDialog,closeDialog,resetDialog}=useDialog()
+
   const isNative = Capacitor.isNativePlatform()
      const [homeCol,setHomeCol]=useState(null)
     const [archiveCol,setArchiveCol]=useState(null)
@@ -90,6 +90,7 @@ const personalStories = usePaginatedResource({
     totalCount: res.totalCount,
   }),
 });
+
 const myStories = personalStories.items
 const personalCollections = usePaginatedResource({
   key: "collections",
@@ -111,7 +112,7 @@ useEffect(()=>{
 
 useEffect(() => {
   try {
-    console.log("FCSXL",results)
+
     if (results?.length > 0) {
       const group = results[0];
       // console.log("FCKSXLCC",group)
@@ -128,31 +129,31 @@ useEffect(() => {
   
 }, [results]);
 
-  
+    const {openDialog,closeDialog,resetDialog}=useDialog()
 const openPages = () => {
 
 
   openDialog({
   title: "Pages",
   height: 94,
+  disagree:closeDialog,
   text: (
     <div>
-
-  
    <PaginatedList
    
   cacheKey="stories"
   fetcher={getMyStories}
-  pageSize={8}
+  pageSize={pageSize}
   // search={search}
   enableInternalSearch={true}
   renderItem={(story) => (
         <div
+          key={story.id}
           onClick={() => {
             router.push(Paths.page.createRoute(story?.id));
             resetDialog();
           }}
-          className="p-4 border border-soft rounded-xl"
+          className="p-4 border border-blue dark:text-cream border-1 rounded-xl"
         >
           {shortName(story?.title,40) || "Untitled"}
         </div>
@@ -164,20 +165,22 @@ const openPages = () => {
   openDialog({
   title: "Collections",
   height: 94,
+  disagree:closeDialog,
   text: (
     <PaginatedList
       cacheKey="collections"
       fetcher={getMyCollections}
-      pageSize={8}
+      pageSize={pageSize}
       loadingState={true}
       enableInternalSearch={true}
       renderItem={(col) => (
           <div
+          ket={col.id}
             onClick={() => {
               router.push(Paths.collection.createRoute(col.id));
               resetDialog();
             }}
-            className="p-4 border border-soft rounded-xl"
+            className="p-4 border text-soft dark:text-cream dark:bg-transparent border-purple rounded-xl"
           >
             {col.title || "Untitled"}
           </div>
@@ -195,13 +198,13 @@ const openYourWorkshops = () => {
     scrollY: false,
     breakpoint: 1,
     height: 90,
-    disagree: () => resetDialog(),
+    disagree:closeDialog,
     text: (
       <PaginatedList
        cacheKey="collections:type=library"
         fetcher={getMyCollections}
         enableInternalSearch={true}
-        pageSize={8}
+        pageSize={pageSize}
         params={{ type: "feedback" }} // ✅ THIS NOW WORKS
         renderItem={(c) => (
           <ListPill item={c} onClick={()=>router.push(Paths.collection.createRoute(c.id))}/>
@@ -218,12 +221,12 @@ const openCommunities = () => {
     scrollY: false,
     breakpoint: 1,
     height: 90,
-    disagree: () => resetDialog(),
+    disagree: closeDialog,
     text: (
       <PaginatedList
        cacheKey="collections:type=library"
         fetcher={getMyCollections}
-        pageSize={8}
+        pageSize={pageSize}
         enableInternalSearch={true}
         params={{ type: "library" }} // ✅ THIS NOW WORKS
         renderItem={(story) => (
@@ -232,7 +235,7 @@ const openCommunities = () => {
               router.push(Paths.collection.createRoute(story.id));
               resetDialog();
             }}
-            className="p-4 border border-soft rounded-xl"
+            className="p-4 border border-purple rounded-xl"
           >
             <h4 className="text-[.9rem]">
               {story.title || "Untitled"}
@@ -291,27 +294,7 @@ const openCommunities = () => {
       }));
     }
   }, 5);
-// function WorkshopItem({workshop}){
 
-//   return( <div onClick={()=>{router.push(Paths.collection.createRoute(workshop.group.id),"forward")}}
-
-//   className={`border rounded-xl  bg-base-soft  hover:bg-card-highlight shadow-md  border-1 p-4 border-blue `}>
-
-//                   <h1 className='text-[1.4em] py-2 text-text-inverse '>{workshop.group.title}</h1>
-//                   <h6 className='text-soft  text-text-inverse py-2'>Most Recent</h6>
-//                   {workshop?.story && <div className='py-2  text-text-inverse'>{workshop?.story?.title}</div>}
-//                   {workshop?.story && workshop?.story?.type==PageType.text && <div  className=" text-text-inversep-2 rounded-xl"
-//                   dangerouslySetInnerHTML={{ __html: truncate(workshop?.story?.data ?? "", 100, {}) }}/>
-//                     }
-//                     {/* {<div dangerouslySetInnerHTML={{__html:truncate(workshop.story.data,20,{})/>}</div> */}
-//                   <div className='flex flex-row  text-text-inverse py-4 '>{
-// workshop?.group?.roles?.map((role, i) =>
-//   <ProfileCircle key={role?.profile?.id ?? i} profile={role?.profile} includeUsername={false}/>
-// )
-// }</div>
-//                 </div>)
-// }
-  
 useEffect(()=>{
   if(homeCol){
  let save = [...homeCol?.childCollections.map(c=>c.childCollection),...homeCol?.storyIdList.map(s=>s.story)].slice(0,4)
@@ -340,8 +323,7 @@ scrollY: false,
 });
 
   };
-//  const columns = isDesktop ? 3 : isTablet ? 2 : 1;
-// const visibleCount = columns * 2; 
+
 
  return (
         <ErrorBoundary>
@@ -351,7 +333,7 @@ scrollY: false,
   {/* Primary: Write — full width, most prominent */}
   <ButtonWrapper
     onClick={ClickWriteAStory}
-    className="hover:bg-button-secondary-hover  dark:bg-transparent dark:border-button-secondary-hover text-white rounded-2xl h-[3.2rem] w-full w-[88%] sm:w-[21rem] font-bold"
+    className="hover:bg-button-secondary-hover  bg-blue  dark:bg-transparent dark:border-button-secondary-hover text-white rounded-2xl h-[3.2rem] w-full w-[88%] sm:w-[21rem] font-bold"
     style={{ WebkitTapHighlightColor: "transparent" }}
   >
     <IonText className="text-[1.2em] text-cream font-bold">Write Something</IonText>
@@ -376,32 +358,7 @@ scrollY: false,
   </ButtonWrapper>
 </div>
 </div>
-{/*             
-                      <div className="flex flex-row mx-auto  md:max-w-[40em] flex-wrap my-4 justify-center gap-4">
-        <ButtonWrapper
-          onClick={ClickWriteAStory}
-          className="bg-button-secondary-bg hover:bg-button-secondary-hover  border-button-secondary-bg  border-opacity-80 text-white rounded-xl h-[3rem] w-[8.5rem]"
-        >
-          <IonText className='text-[1.2em]'><span className='pb-2'>Write</span><span> Something</span></IonText>
-        </ButtonWrapper>
-        <ButtonWrapper
-          onClick={ClickCreateACollection}
-          className="bg-button-secondary-bg hover:bg-button-secondary-hover  border-button-secondary-bg  text-white rounded-xl h-[3rem] w-[8.5rem]"
-        >
-          <IonText className="text-white text-[1.2em]"><span className='pb-2'>Create</span><span> Collection</span></IonText>
-        </ButtonWrapper>
-      </div> */}
 
-      {/* Row 2: Join a Workshop */}
-      {/* <div className="flex justify-center md:justify-start w-full">
-
-        <ButtonWrapper
-       onClick={() => router.push(Paths.workshop.reader(), "forward")}
-          className="font-bold mx-auto bg-button-primary-bg hover:bg-opacity-70 border-blueSea border-opacity-80 mx-4 rounded-full h-[3rem] w-[90vw] sm:w-[21rem]"
-        >
-          <IonText className="text-button-primary-text text-[1.2em]">Join a Workshop</IonText>
-        </ButtonWrapper>
-      </div> */}
       <div>
      <div className={`${WRAP} ${SECTION_GAP}`}>
   <div className={SECTION_HEADER_ROW}>
@@ -425,8 +382,7 @@ scrollY: false,
   
     className={`border shadow-md border-1  rounded-full border-purple bg-base-bg  p-4`}
   >
-    
-    {/* {Enviroment.palette.accent.} */}
+   
     {item ? (
       // ✅ REAL CONTENT
       <div className="flex flex-row gap-4 bg-base-bg px-4 items-center">
@@ -557,7 +513,7 @@ scrollY: false,
          
 
   <h5
-    className="text-[1rem] text-soft cursor-pointer mt-4 pr-4 hover:opacity-70 transition"
+    className="text-[1rem] text-soft cursor-pointer pr-4 hover:opacity-70 transition"
     onClick={ClickWriteAStory}
   >
     Write Something new +

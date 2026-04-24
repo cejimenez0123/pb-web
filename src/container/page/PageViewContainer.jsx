@@ -163,10 +163,10 @@ const { canSee, canAdd, canEdit } = useMemo(
       <IonContent
         fullscreen
         className="ion-padding-bottom"
-        style={{ "--background": Enviroment.palette.cream }}
+        style={{ "--background": Enviroment.palette.cream}}
       >
         <div
-          className="relative min-h-screen bg-[#f4f4e0] dark:bg-slate-950 transition-colors duration-300"
+          className="relative pb-32 min-h-screen bg-[#f4f4e0] dark:bg-slate-950 transition-colors duration-300"
           style={{ WebkitUserSelect: "text", userSelect: "text" }}
         >
           {pending && <PageViewSkeleton />}

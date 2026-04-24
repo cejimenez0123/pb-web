@@ -19,7 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import PageList from "../../components/page/PageList";
 import ErrorBoundary from "../../ErrorBoundary";
-import {BookListItem,BookListItemShadow} from "../../components/BookListItem";
+import {BookListItem,BookListItemShadow} from "../../components/collection/BookListItem";
 import ExploreList from "../../components/collection/ExploreList.jsx";
 import {
   addCollectionListToCollection,
