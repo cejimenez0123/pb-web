@@ -22,7 +22,7 @@ import getBackground from '../../core/getbackground';
 const DEFAULT_LOCATION = { latitude: 40.818622458906425, longitude: -73.8890363605602 };
 
 const WRAP = "max-w-[50em]  mx-auto px-4";
-const WRAPB = "mx-auto w-[100%]";
+const WRAPB = "mx-auto bg-cream dark:bg-base-bgDark w-[100%]";
 const PAGE_Y = "pt-16 pb-10";
 const STACK_LG = "space-y-8";
 const STACK_MD = "space-y-6";
@@ -272,17 +272,34 @@ const WorkshopContainer = () => {
 
 export default WorkshopContainer;
 
+// const WorkshopContextCard = ({ page }) => {
+//   if (!page) return null;
+//   return (
+//     <div className={`${CARD} ${CARD_INNER} border-l-4 border-emerald-500`}>
+//       <span className="text-xs uppercase tracking-wide text-gray-400">Workshop Context</span>
+//       <h3 className="text-lg font-semibold text-gray-900 leading-snug">
+//         {page.title.length > 40 ? page.title.slice(0, 47) + "..." : page.title.length > 0 ? page.title : "Untitled Story"}
+//       </h3>
+//       <div className="flex items-center justify-between pt-2">
+//         <span className="text-xs text-gray-400">Bring your voice into this space</span>
+//         <span className="text-xs font-medium text-emerald-600">Active Workshop</span>
+//       </div>
+//     </div>
+//   );
+// };
 const WorkshopContextCard = ({ page }) => {
   if (!page) return null;
   return (
-    <div className={`${CARD} ${CARD_INNER} border-l-4 border-emerald-500`}>
-      <span className="text-xs uppercase tracking-wide text-gray-400">Workshop Context</span>
-      <h3 className="text-lg font-semibold text-gray-900 leading-snug">
+    <div className={`${CARD} ${CARD_INNER} border-l-4 border-base-soft`}>
+      <span className="text-xs uppercase tracking-wide text-text-secondary">
+        Workshop Context
+      </span>
+      <h3 className="text-lg font-semibold text-text-primary leading-snug">
         {page.title.length > 40 ? page.title.slice(0, 47) + "..." : page.title.length > 0 ? page.title : "Untitled Story"}
       </h3>
       <div className="flex items-center justify-between pt-2">
-        <span className="text-xs text-gray-400">Bring your voice into this space</span>
-        <span className="text-xs font-medium text-emerald-600">Active Workshop</span>
+        <span className="text-xs text-text-secondary">Bring your voice into this space</span>
+        <span className="text-xs font-medium text-text-brand">Active Workshop</span>
       </div>
     </div>
   );

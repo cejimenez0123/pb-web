@@ -62,7 +62,7 @@ import DiscoveryContainer from './container/DiscoveryContainer.jsx';
 import { SplashScreen } from '@capacitor/splash-screen';
 import OAuthCallback from './container/page/OauthCallback.jsx';
 // import '@ionic/react/css/palettes/dark.always.css';
-
+import { watchBackground } from './core/getbackground.jsx';
 import initSocialLogin from './components/initSocialLogin.jsx';
 import { fetchNotifcations } from './actions/ProfileActions.jsx';
 import usePersistentCurrentProfile from './domain/usecases/usePersistentCurrentProfile.jsx';
@@ -73,7 +73,7 @@ function App(props) {
   const {currentProfile} =props
 const isHorizPhone = useMediaQuery({ query: '(min-width: 800px)' });
 const {loading}=useSelector(state=>state.users)
-
+watchBackground()
   const isNative = Capacitor.isNativePlatform()
 
   const [isFirstLaunch, setIsFirstLaunch] = useState(true);
