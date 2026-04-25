@@ -1,17 +1,83 @@
 
-import { IonInfiniteScroll, IonInfiniteScrollContent, IonList } from "@ionic/react";
+// import { IonInfiniteScroll, IonInfiniteScrollContent, IonList } from "@ionic/react";
+// import DashboardItem from "./DashboardItem";
+// import BookDashboardItem from "../collection/BookDashboardItem";
+// import {motion} from "framer-motion"
+// const PageList = ({ items = [], forFeedback, getMore = () => {}, hasMore = true, isGrid }) => {
+
+// const containerVariants = {
+//   hidden: { opacity: 0 },
+//   show: {
+//     opacity: 1,
+//     transition: {
+//       staggerChildren: 0.08, // 🔥 key for smooth loading
+//     },
+//   },
+// };
+
+// const itemVariants = {
+//   hidden: { opacity: 0, y: 20, scale: 0.98 },
+//   show: {
+//     opacity: 1,
+//     y: 0,
+//     scale: 1,
+//     transition: { duration: 0.3, ease: "easeOut" },
+//   },
+// };
+//   return (
+//     <div className="bg-base-surface dark:bg-base-bgDark">
+//   {/* // <IonList style={{"--background":Enviroment.palette.base.background}}> */}
+//     <motion.div
+//   variants={containerVariants}
+//   initial="hidden"
+//   animate="show"
+// >
+//       {items.map((item, i) =>( <motion.div key={item.id} variants={itemVariants}>
+    
+//         <div className="my-[0.5rem]" >{
+//         item.authorId?   <DashboardItem
+//           key={i}
+//           item={item}
+//           index={i}
+//           forFeedback={forFeedback}
+//           isGrid={isGrid}
+//           page={item}
+//         />
+//       :<BookDashboardItem  book={item}/>}</div> </motion.div>))}
+     
+// </motion.div>
+//       <IonInfiniteScroll
+//         threshold="200px"
+//         disabled={!hasMore}
+//         onIonInfinite={async (e) => {
+//           await getMore();
+//           e.target.complete();
+//         }}
+//       >
+//         <IonInfiniteScrollContent
+//           loadingSpinner="bubbles"
+//           loadingText="Loading more..."
+//         />
+//       </IonInfiniteScroll>
+//   </div>
+//   );
+// };
+
+// export default PageList;
+
+
+import { IonInfiniteScroll, IonInfiniteScrollContent } from "@ionic/react";
 import DashboardItem from "./DashboardItem";
 import BookDashboardItem from "../collection/BookDashboardItem";
-import {motion} from "framer-motion"
-const PageList = ({ items = [], forFeedback, getMore = () => {}, hasMore = true, isGrid }) => {
+import { motion } from "framer-motion";
+import Paths from "../../core/paths";
+import { useIonRouter } from "@ionic/react";
 
 const containerVariants = {
   hidden: { opacity: 0 },
   show: {
     opacity: 1,
-    transition: {
-      staggerChildren: 0.08, // 🔥 key for smooth loading
-    },
+    transition: { staggerChildren: 0.08 },
   },
 };
 
@@ -24,28 +90,73 @@ const itemVariants = {
     transition: { duration: 0.3, ease: "easeOut" },
   },
 };
+
+const PageList = ({
+  items = [],
+  forFeedback,
+  getMore = () => {},
+  hasMore = true,
+  isGrid,
+  styleVariant = "default",
+}) => {
+  const router = useIonRouter();
+
   return (
     <div className="bg-base-surface dark:bg-base-bgDark">
-  {/* // <IonList style={{"--background":Enviroment.palette.base.background}}> */}
-    <motion.div
-  variants={containerVariants}
-  initial="hidden"
-  animate="show"
->
-      {items.map((item, i) =>( <motion.div key={item.id} variants={itemVariants}>
-    
-        <div className="my-[0.5rem]" >{
-        item.authorId?   <DashboardItem
-          key={i}
-          item={item}
-          index={i}
-          forFeedback={forFeedback}
-          isGrid={isGrid}
-          page={item}
-        />
-      :<BookDashboardItem  book={item}/>}</div> </motion.div>))}
-     
-</motion.div>
+      <motion.div variants={containerVariants} initial="hidden" animate="show">
+        {items.map((item, i) => {
+          const isCollection = !!item?.storyIdList;
+
+          if (styleVariant === "pill") {
+            return (
+              <motion.div key={item.id} variants={itemVariants}>
+                <div
+                  onClick={() =>
+                    isCollection
+                      ? router.push(Paths.collection.createRoute(item.id), "forward")
+                      : router.push(Paths.page.createRoute(item.id), "forward")
+                  }
+                  className={`
+                    border rounded-full px-4 py-3 my-2
+                    bg-base-bg dark:bg-base-bgDark
+                    shadow-sm active:scale-[0.98] transition cursor-pointer
+                    ${isCollection ? "border-purple" : "border-blue"}
+                  `}
+                >
+                  <div className="flex flex-row gap-3 items-center">
+                    <h6 className={`text-[0.75rem] ${isCollection ? "text-purple" : "text-blue"}`}>
+                      {isCollection ? "collection" : "page"} ·
+                    </h6>
+                    <h5 className="text-[0.95rem] text-soft dark:text-cream font-medium truncate">
+                      {item.title || "Untitled"}
+                    </h5>
+                  </div>
+                </div>
+              </motion.div>
+            );
+          }
+
+          return (
+            <motion.div key={item.id} variants={itemVariants}>
+              <div className="my-2">
+                {item.authorId ? (
+                  <DashboardItem
+                    key={i}
+                    item={item}
+                    index={i}
+                    forFeedback={forFeedback}
+                    isGrid={isGrid}
+                    page={item}
+                  />
+                ) : (
+                  <BookDashboardItem book={item} />
+                )}
+              </div>
+            </motion.div>
+          );
+        })}
+      </motion.div>
+
       <IonInfiniteScroll
         threshold="200px"
         disabled={!hasMore}
@@ -59,9 +170,8 @@ const itemVariants = {
           loadingText="Loading more..."
         />
       </IonInfiniteScroll>
-  </div>
+    </div>
   );
 };
 
 export default PageList;
-
