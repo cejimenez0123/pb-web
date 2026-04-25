@@ -60,32 +60,7 @@ export default function PaginatedList({
   }, [key]);
 
 
-// const fetchPage = useCallback(async (p) => {
-//   if (!enabled) return;
-//   if (cache[p] !== undefined) return; // ← use live cache from selector, not stale ref
-  
-//   dispatch(setPaginationLoading({ key, loading: true }));
-//   try {
-//     const res = await dispatch(
-//       fetcher({
-//         skip: (p - 1) * pageSize,
-//         take: pageSize,
-//         ...stableParams,
-//         search: activeSearch,
-//       })
-//     ).unwrap();
-//     dispatch(
-//       setPageData({
-//         key,
-//         page: p,
-//         items: res.pageList || res.items || res.collections || [],
-//         totalCount: res.totalCount,
-//       })
-//     );
-//   } finally {
-//     dispatch(setPaginationLoading({ key, loading: false }));
-//   }
-// }, [key, stableParams, enabled, activeSearch, cache]);
+
 const fetchPage = useCallback(async (p) => {
     if (!enabled) return;
     dispatch(setPaginationLoading({ key, loading: true }));
@@ -123,17 +98,17 @@ useEffect(() => {
             value={internalQuery}
             onChange={handleSearchChange}
             placeholder="Search..."
-            className="w-full px-4 py-2 rounded-xl border border-soft bg-base-bg text-soft focus:outline-none focus:ring-1 focus:ring-purple"
+            className="w-full px-4 dark:text-cream py-2 input rounded-xl border border-soft bg-base-bg text-soft focus:outline-none focus:ring-1 focus:ring-purple"
           />
         </div>
       )}
 
       {isLoading && (
-        emptyState || <div className="p-4 text-gray-400 animate-pulse">Loading...</div>
+        emptyState || <div className="p-4 text-gray-400 dark:text-cream animate-pulse">Loading...</div>
       )}
 
       {!isLoading && showEmpty && (
-        <div className="p-4 text-gray-400">
+        <div className="p-4 text-gray-400 dark:text-cream">
           {enableInternalSearch && debouncedQuery
             ? `No results for "${debouncedQuery}"`
             : "Nothing here yet"}

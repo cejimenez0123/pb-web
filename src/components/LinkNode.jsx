@@ -1,192 +1,333 @@
-import { useState, useLayoutEffect,useContext } from 'react';
+// import { useState, useLayoutEffect,useContext } from 'react';
+// import Enviroment from '../core/Enviroment';
+// import "../App.css"
+// import ErrorBoundary from '../ErrorBoundary';
+// import { initGA,sendGAEvent } from '../core/ga4';
+// import SpotifyEmbed from './SpotifyEmbed';
+// import { IonImg } from '@ionic/react';
+// import Context from '../context';
+// function LinkNode({ url,name,image,description,title,isGrid}) {
+
+//   const [previewData, setPreviewData] = useState(null);
+//   const [loading, setLoading] = useState(true);
+//   const {isTablet}=useContext(Context)
+//   useLayoutEffect(() => {
+
+//     if(!url.includes("plumbum")&&!url.includes('https://open.spotify.com/')){  
+//     fetchData(url).then(data=>{
+
+//     })
+//     return 
+// }else{
+//   setLoading(false);
+// }}, [url]);
+// useLayoutEffect(()=>{
+//   initGA()
+// },[])
+// const fetchData = async (url) => {
+//   try {
+//     const headers = {
+//       "Access-Control-Allow-Origin": "*",
+//       "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+//       "Access-Control-Allow-Headers": "Content-Type",
+//     };
+
+//     const response = await fetch(`${Enviroment.proxyUrl}/preview?url=${encodeURIComponent(url)`)} {
+//       headers: headers,
+
+//     }
+//     )
+//     ;
+    
+//     const data = await response.text();
+    
+//     const isYouTubeVideo = isYouTubeURL(url);
+//     if (isYouTubeVideo) {
+//       const videoId = extractYouTubeVideoId(url);
+//       const videoThumbnail = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+
+//       setPreviewData({
+//         videoId,
+//         videoThumbnail,
+//       });
+//       setLoading(false);
+//     } else {
+//       const parser = new DOMParser();
+      
+//       const doc = parser.parseFromString(data, 'text/html');
+      
+//       let title = doc.querySelector('title')?.textContent || '';
+//       const description = doc.querySelector('meta[name="description"]')?.getAttribute('content') || '';
+//       let image = doc.querySelector('meta[property="og:image"]')?.getAttribute('content') || '';
+     
+//       if (!image) {
+//         if(!image){
+//         const imgElement = doc.querySelector('img');
+
+//         if (imgElement) {
+//           image = imgElement.getAttribute('src') || '';
+//         }
+
+//       }
+//       }
+    
+//       setPreviewData({
+//           title,
+//           description,
+//           image,
+//       });
+ 
+    
+//       setLoading(false);
+//     }
+//   } catch (error) {
+//     setLoading(false);
+//   }
+// };
+//   const handleClick = () => {
+//     sendGAEvent("outbound_click", {
+//     destination: name?? url,
+//     link_title: title,
+//     link_type: isYouTubeURL(url)
+//       ? "youtube"
+//       : url.includes("spotify")
+//       ? "spotify"
+//       : "external",
+//     source: "link_node",
+//     layout: isGrid ? "grid" : "list",
+//   });
+//     window.open(url, '_blank');
+//   };
+//   const isYouTubeURL = (url) => {
+//     return url.includes('youtube.com') || url.includes('youtu.be');
+//   };
+
+//   const extractYouTubeVideoId = (url) => {
+//     const videoIdRegex = /(?:\/embed\/|\/watch\?v=|\/(?:embed\/|v\/|watch\?.*v=|youtu\.be\/|embed\/|v=))([^&?#]+)/;
+//     const match = url.match(videoIdRegex);
+//     return match ? match[1] : '';
+//   };
+
+ 
+//   if (loading) {
+//     return <div className='skeleton min-h-[8em] w-[96vw] md:min-w-[30em] md:w-[100%] my-8 bg-emerald-50 h-[10em] md:h-[10em] rounded-full'/>
+//   }
+
+//   if (!previewData&&!url.includes("plumbum")&&!url.lengths==0) {
+//     return <p>Failed to fetch link preview.</p>;
+//   }
+
+ 
+
+//   if (previewData && previewData.videoId) {
+//     return (
+    
+//         <IonImg onClick={handleClick} style={{ cursor: 'pointer' }} className=" md:w-[20em]
+//        "src={previewData.videoThumbnail} alt="Video Thumbnail" />
+
+//     );
+//   }
+// const imageView = () => {
+
+// const wrapperClass = "flex-shrink-0 sm:w-[10em] rounded-xl overflow-hidden bg-transparent";
+
+// const imgClass = "object-contain p-1 ";
+
+// let css= {"height":"6em","margin":"auto"}
+//   if (previewData && previewData.title === "Spotify") {
+//     return <SpotifyEmbed url={url} />;
+//   } else if (image) {
+//     return (
+//       <div className={wrapperClass}>
+//         <IonImg className={imgClass} style={css} src={image} />
+//       </div>
+//     );
+//   } else if (previewData && previewData.image) {
+//     return (
+//       <div className={wrapperClass}>
+//         <IonImg className={imgClass} src={previewData.image} alt="Link Preview" />
+//       </div>
+//     );
+//   } else {
+//     return null;
+//   }
+// };
+
+
+
+//   return (
+//   <ErrorBoundary>
+//     <div
+//       className={`
+//         rounded-[2em] overflow-hidden my-4
+//         w-full shadow-md 
+//         bg-emerald-100 p-4
+//         h-[25em]  sm:h-[12em]
+//         flex flex-col sm:flex-row 
+//         gap-4
+//       `}
+//       onClick={handleClick}
+//       style={{ cursor: "pointer" }}
+//     >
+
+
+//       <div className="flex-shrink-0 w-full sm:w-auto flex justify-center">
+//         {imageView()}
+//       </div>
+// <div>
+//       {/* TEXT */}
+//       <div className="flex flex-col justify-center text-left px-1 text-emerald-800 open-sans-medium">
+//         <h4 className="text-[0.9rem] font-semibold">{title}</h4>
+//         <h6 className="text-[0.8rem] md:text-md leading-snug mt-1">
+//           {description}
+//         </h6>
+//       </div>
+//       </div>
+//     </div>
+//   </ErrorBoundary>
+// );
+
+// }
+
+// export default LinkNode;
+import { useState, useLayoutEffect, useContext } from 'react';
 import Enviroment from '../core/Enviroment';
 import "../App.css"
 import ErrorBoundary from '../ErrorBoundary';
-import { initGA,sendGAEvent } from '../core/ga4';
+import { initGA, sendGAEvent } from '../core/ga4';
 import SpotifyEmbed from './SpotifyEmbed';
 import { IonImg } from '@ionic/react';
 import Context from '../context';
-function LinkNode({ url,name,image,description,title,isGrid}) {
 
+function isYouTubeURL(url) {
+  return url.includes('youtube.com') || url.includes('youtu.be');
+}
+
+function extractYouTubeVideoId(url) {
+  const match = url.match(
+    /(?:\/embed\/|\/watch\?v=|\/(?:embed\/|v\/|watch\?.*v=|youtu\.be\/|embed\/|v=))([^&?#]+)/
+  );
+  return match ? match[1] : '';
+}
+
+function LinkNode({ url, name, image, description, title, isGrid }) {
   const [previewData, setPreviewData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const {isTablet}=useContext(Context)
+  const { isTablet } = useContext(Context);
+
   useLayoutEffect(() => {
+    initGA();
+  }, []);
 
-    if(!url.includes("plumbum")&&!url.includes('https://open.spotify.com/')){  
-    fetchData(url).then(data=>{
-
-    })
-    return 
-}else{
-  setLoading(false);
-}}, [url]);
-useLayoutEffect(()=>{
-  initGA()
-},[])
-const fetchData = async (url) => {
-  try {
-    const headers = {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type",
-    };
-
-    const response = await fetch(`${Enviroment.proxyUrl}${url}`, {
-      headers: headers,
-
-    }
-    )
-    ;
-    
-    const data = await response.text();
-    
-    const isYouTubeVideo = isYouTubeURL(url);
-    if (isYouTubeVideo) {
-      const videoId = extractYouTubeVideoId(url);
-      const videoThumbnail = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
-
-      setPreviewData({
-        videoId,
-        videoThumbnail,
-      });
+  useLayoutEffect(() => {
+    if (url.includes('plumbum') || url.includes('https://open.spotify.com/')) {
       setLoading(false);
-    } else {
-      const parser = new DOMParser();
-      
-      const doc = parser.parseFromString(data, 'text/html');
-      
-      let title = doc.querySelector('title')?.textContent || '';
-      const description = doc.querySelector('meta[name="description"]')?.getAttribute('content') || '';
-      let image = doc.querySelector('meta[property="og:image"]')?.getAttribute('content') || '';
-     
-      if (!image) {
-        if(!image){
-        const imgElement = doc.querySelector('img');
+      return;
+    }
+    fetchData(url);
+  }, [url]);
 
-        if (imgElement) {
-          image = imgElement.getAttribute('src') || '';
-        }
+  const fetchData = async (url) => {
+    try {
+      const response = await fetch(
+        `${Enviroment.proxyUrl}/preview?url=${encodeURIComponent(url)}`
+      );
+      const data = await response.json();
 
+      if (isYouTubeURL(url)) {
+        const videoId = extractYouTubeVideoId(url);
+        setPreviewData({
+          videoId,
+          videoThumbnail: `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`,
+        });
+      } else {
+        setPreviewData({
+          title: data.title || '',
+          description: data.description || '',
+          image: data.image || '',
+        });
       }
-      }
-    
-      setPreviewData({
-          title,
-          description,
-          image,
-      });
- 
-    
+    } catch (error) {
+      // silent fail
+    } finally {
       setLoading(false);
     }
-  } catch (error) {
-    setLoading(false);
-  }
-};
+  };
+
   const handleClick = () => {
     sendGAEvent("outbound_click", {
-    destination: name?? url,
-    link_title: title,
-    link_type: isYouTubeURL(url)
-      ? "youtube"
-      : url.includes("spotify")
-      ? "spotify"
-      : "external",
-    source: "link_node",
-    layout: isGrid ? "grid" : "list",
-  });
+      destination: name ?? url,
+      link_title: title,
+      link_type: isYouTubeURL(url)
+        ? "youtube"
+        : url.includes("spotify")
+        ? "spotify"
+        : "external",
+      source: "link_node",
+      layout: isGrid ? "grid" : "list",
+    });
     window.open(url, '_blank');
   };
-  const isYouTubeURL = (url) => {
-    return url.includes('youtube.com') || url.includes('youtu.be');
-  };
 
-  const extractYouTubeVideoId = (url) => {
-    const videoIdRegex = /(?:\/embed\/|\/watch\?v=|\/(?:embed\/|v\/|watch\?.*v=|youtu\.be\/|embed\/|v=))([^&?#]+)/;
-    const match = url.match(videoIdRegex);
-    return match ? match[1] : '';
-  };
-
- 
   if (loading) {
-    return <div className='skeleton min-h-[8em] w-[96vw] md:min-w-[30em] md:w-[100%] my-8 bg-emerald-50 h-[10em] md:h-[10em] rounded-full'/>
-  }
-
-  if (!previewData&&!url.includes("plumbum")&&!url.lengths==0) {
-    return <p>Failed to fetch link preview.</p>;
-  }
-
- 
-
-  if (previewData && previewData.videoId) {
     return (
-    
-        <IonImg onClick={handleClick} style={{ cursor: 'pointer' }} className=" md:w-[20em]
-       "src={previewData.videoThumbnail} alt="Video Thumbnail" />
-
+      <div className="skeleton min-h-[8em] w-[96vw] md:min-w-[30em] md:w-full my-8 h-[10em] rounded-full" />
     );
   }
-const imageView = () => {
 
-const wrapperClass = "flex-shrink-0 sm:w-[10em] rounded-xl overflow-hidden bg-transparent";
+  if (!previewData && !url.includes('plumbum')) {
+    return <p className="text-soft dark:text-cream text-sm">Failed to load preview.</p>;
+  }
 
-const imgClass = "object-contain p-1 ";
+  if (previewData?.videoId) {
+    return (
+      <IonImg
+        onClick={handleClick}
+        style={{ cursor: 'pointer' }}
+        className="md:w-[20em]"
+        src={previewData.videoThumbnail}
+        alt="Video Thumbnail"
+      />
+    );
+  }
 
-let css= {"height":"6em","margin":"auto"}
-  if (previewData && previewData.title === "Spotify") {
+  if (url.includes('open.spotify.com')) {
     return <SpotifyEmbed url={url} />;
-  } else if (image) {
-    return (
-      <div className={wrapperClass}>
-        <IonImg className={imgClass} style={css} src={image} />
-      </div>
-    );
-  } else if (previewData && previewData.image) {
-    return (
-      <div className={wrapperClass}>
-        <IonImg className={imgClass} src={previewData.image} alt="Link Preview" />
-      </div>
-    );
-  } else {
-    return null;
   }
-};
 
-
+  const displayImage = image || previewData?.image;
 
   return (
-  <ErrorBoundary>
-    <div
-      className={`
-        rounded-[2em] overflow-hidden my-4
-        w-full shadow-md 
-        bg-emerald-100 p-4
-        h-[25em]  sm:h-[12em]
-        flex flex-col sm:flex-row 
-        gap-4
-      `}
-      onClick={handleClick}
-      style={{ cursor: "pointer" }}
-    >
+    <ErrorBoundary>
+      <div
+        onClick={handleClick}
+        style={{ cursor: 'pointer' }}
+        className="rounded-[2em] overflow-hidden my-4 w-full shadow-md bg-base-surface dark:bg-base-bgDark border border-soft p-4 h-[25em] sm:h-[12em] flex flex-col sm:flex-row gap-4"
+      >
+        {displayImage && (
+          <div className="flex-shrink-0 w-full sm:w-auto flex justify-center">
+            <div className="flex-shrink-0 sm:w-[10em] rounded-xl overflow-hidden">
+              <IonImg
+                className="object-contain p-1"
+                style={{ height: '6em', margin: 'auto' }}
+                src={displayImage}
+                alt="Link Preview"
+              />
+            </div>
+          </div>
+        )}
 
-
-      <div className="flex-shrink-0 w-full sm:w-auto flex justify-center">
-        {imageView()}
+        <div className="flex flex-col justify-center text-left px-1">
+          <h4 className="text-[0.9rem] font-medium text-soft dark:text-cream">
+            {title || previewData?.title}
+          </h4>
+          <h6 className="text-[0.8rem] leading-snug mt-1 text-soft dark:text-cream opacity-70">
+            {description || previewData?.description}
+          </h6>
+        </div>
       </div>
-<div>
-      {/* TEXT */}
-      <div className="flex flex-col justify-center text-left px-1 text-emerald-800 open-sans-medium">
-        <h4 className="text-[0.9rem] font-semibold">{title}</h4>
-        <h6 className="text-[0.8rem] md:text-md leading-snug mt-1">
-          {description}
-        </h6>
-      </div>
-      </div>
-    </div>
-  </ErrorBoundary>
-);
-
+    </ErrorBoundary>
+  );
 }
 
 export default LinkNode;

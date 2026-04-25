@@ -45,6 +45,7 @@ import {motion} from 'framer-motion'
 import SectionHeader from "../../components/SectionHeader.jsx";
 import computePermissions from "../../core/compusePermissions.jsx";
 import { postCollectionHistory } from "../../actions/HistoryActions.js";
+import getBackground from "../../core/getbackground.jsx";
 const containerVariants = {
   hidden: { opacity: 0 },
   show: {
@@ -65,14 +66,18 @@ const itemVariants = {
   },
 };
 // Layout system
-const WRAP = "w-full max-w-5xl md:max-w-[52em] mx-auto px-4 sm:px-6 lg:px-8";    // main horizontal alignment
+// const WRAP = "w-full max-w-5xl md:max-w-[52em] mx-auto px-4 sm:px-6 lg:px-8";    // main horizontal alignment
 const SECTION = "pt-8 sm:pt-10 lg:pt-12 "; // sections
 const BLOCK = "py-4 sm:py-5";             // inner blocks
 const GAP = "gap-4 sm:gap-6";             // flex/grid gaps// vertical spacing between sections
-const HEADER = "flex items-center justify-between mb-4"; 
-const TITLE = "lora-bold text-[1.5rem] sm:text-2xl lg:text-3xl";
-const SUBTEXT = "text-gray-600 text-sm sm:text-base";
-
+// const HEADER = "flex items-center justify-between mb-4"; 
+// const TITLE = "lora-bold text-[1.5rem] sm:text-2xl lg:text-3xl dark:text-cream";
+// const SUBTEXT = "text-gray-600 text-sm sm:text-base";
+const WRAP  = "w-full overflow-y-auto max-w-5xl bg-base-surface dark:bg-base-bgDark md:max-w-[52em] mx-auto";
+const TITLE = "lora-bold text-[1.5rem] sm:text-2xl lg:text-3xl text-text-primary dark:text-cream";
+const SUBTEXT = "text-text-secondary dark:text-gray-400 text-sm sm:text-base";
+const CARD  = "bg-base-bg dark:bg-base-surfaceDark rounded-2xl p-4 shadow-sm border border-border-default dark:border-white/10";
+const TAB_WRAP = "pt-6 sm:pt-12 md:max-w-[48em] bg-base-surface dark:bg-base-bgDark mx-auto";
 // Actions
 const ACTION_ROW = "flex flex-col sm:flex-row items-stretch sm:items-center gap-3";
 const BUTTON_FULL = "h-12 rounded-full btn transition";
@@ -82,10 +87,7 @@ const LIST = "flex flex-col gap-4";
 const H_SCROLL = "flex gap-4 overflow-x-auto lg:grid lg:grid-cols-3 lg:overflow-visible";
 
 // Tabs
-const TAB_WRAP = "pt-6 sm:pt-12 md:max-w-[48em] mx-auto";
-
-// Inner spacing (ONLY for cards/content blocks)
-// const BLOCK = "py-4";
+// const TAB_WRAP = "pt-6 sm:pt-12 md:max-w-[48em] bg-base-surface dark:bg-base-bgDark mx-auto";
 export default function CollectionContainer() {
 
 
@@ -225,7 +227,7 @@ const handleFollow = async () => {
       checkResult(
         res,
         (payload) => {
-        console.log("handleFollow",payload)
+     
           setSuccess("You are now following this collection");
         },
         (err) => {
@@ -246,10 +248,14 @@ useEffect(() => {
 
   getContent();
 }, [collection?.id, canSee]);
+// useEffect(() => {
+//   dispatch(setCollections({ collections: [] }));
+//   dispatch(setPagesInView({ pages: [] }));
+// }, [id]);
 useEffect(() => {
   dispatch(setCollections({ collections: [] }));
   dispatch(setPagesInView({ pages: [] }));
-}, [id]);
+}, []);
 const getCol = async (id) => {
  
   try {
@@ -456,11 +462,17 @@ return
   
   
  const isReady = collection !== null;
-
+const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
    const baseClasses = "w-full sm:w-auto flex-1 sm:flex-none py-3 rounded-full btn h-12 flex items-center justify-center transition";
   if (!canSee) {
   return (
-    <IonContent fullscreen>
+    <IonContent  style={{ "--background": 
+    prefersDark ?
+     Enviroment.palette.base.backgroundDark 
+    ?? Enviroment.palette.base.bg : 
+    Enviroment.palette.base.background
+
+  }} fullscreen>
       <IonHeader>
         <IonToolbar>
           <IonTitle>Access Denied</IonTitle>
@@ -478,7 +490,13 @@ return
 return (
   <ErrorBoundary>
     <IonContent
-      style={{ "--background": Enviroment.palette.base.background }}
+       style={{ "--background": 
+    prefersDark ?
+     Enviroment.palette.base.backgroundDark 
+    ?? Enviroment.palette.base.bg : 
+    Enviroment.palette.base.background
+
+  }}
       scrollY={true}
       fullscreen
       className="pb-24 pt-12"
@@ -490,10 +508,10 @@ return (
   >
   <div>
     {collection &&
-      <div className={`${WRAP}`}>
+      <div className={`${WRAP} bg-base-surface  dark:bg-base-bgDark `}>
 <div>
-      
-        <div className={`${SECTION} `}>
+      <div className="px-4">
+        <div className={`${SECTION} bg-base-surface  dark:bg-base-bgDark  `}>
            <IonText className="lora-bold">
 <h1 className={TITLE}>
     {collection && collection.title ? collection.title:(
@@ -504,32 +522,32 @@ return (
           </div>
 
           {/* Collection Purpose */}
-            <div className={BLOCK}>
+            <div className={BLOCK+" bg-base-surface dark:bg-base-bgDark "}>
           {collection?.purpose? (
-            <p className="text-gray-600 text-sm min-h-8 sm:text-base">
+            <p className="text-soft dark:text-cream text-sm min-h-8 sm:text-base">
               {collection.purpose}
             </p>
-          ): <p className="text-gray-600 min-h-8 text-sm ">
+          ): <p className="text-soft dark:text-cream min-h-8 text-sm ">
               {""}
             </p>}
 </div>
           {/* Action Buttons */}
-         <div className={`${SECTION}  ${ACTION_ROW}`}>
+         <div className={`${SECTION}  bg-base-surface dark:bg-base-bgDark  ${ACTION_ROW}`}>
 
             
             <div className={`my-4 flex-1  ${GAP} min-w-[10rem] h-12 rounded-full  flex items-center justify-center transition`}>
            
-        <button
+        <div
       className={`${baseClasses} btn  ${
         role
-          ? "bg-soft text-white hover:bg-blue-500"
-          : "bg-blue text-white hover:bg-sky-400"
+          ? "bg-soft border border-2 border-soft dark:bg-base-surfaceDark text-cream hover:bg-blue-500"
+          : "bg-blue border border-1 border-blue dark:bg-base-surfaceDark text-cream hover:bg-sky-400"
       }`}
       onClick={()=>role ? deleteFollow(role) : handleFollow()}
  
     >
       {role ? "Following" : "Follow"}
-    </button>
+    </div>
 
 
 <CollectionActions handleArchive={handleArchive} 
@@ -548,17 +566,18 @@ return (
           </div>
 
  {canAdd && <div className={BLOCK}>
-   <button
+   <div
 
 
    onClick={()=>router.push(Paths.addToCollection.createRoute(collection.id))}
-className={BUTTON_FULL+"btn transition w-[100%] border-blue bg-blue text-cream hover:bg-teal"}
+className={BUTTON_FULL+" transition w-[100%] border-blue border-1 text-cream border  dark:bg-base-surfaceDark  bg-base-surface dark:bg-base-bgDark  bg-blue dark:text-cream hover:bg-teal"}
     
     >
       Add to Collection
-    </button>
+    </div>
           </div>
 }
+       </div>
           {/* Tabs */}
        <div className={SECTION}>
             <CollectionTabs
@@ -596,11 +615,11 @@ const PageTab = ({ collections }) => {
   const hasAnthologies = collections?.length > 0;
 
   return (
-    <div className="bg-base-surface">
+    <div className="bg-base-surface dark:bg-base-bgDark">
    
 <SectionHeader title={"Anthologies"} />
       {hasAnthologies ? (
-        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 grid-cols-1 overflow-x-auto sm:grid-cols-2 lg:grid-cols-3">
           <motion.div
             className="flex flex-row"
             variants={containerVariants}
@@ -617,23 +636,23 @@ const PageTab = ({ collections }) => {
           </motion.div>
         </div>
       ) : (
-        <div className="flex flex-col items-center mx-auto justify-center bg-base-surface rounded-lg p-4 text-center py-6">
-          <p className="mb-2 text-gray-700">No anthologies yet.</p>
+        <div className="flex flex-col items-center mx-auto justify-center bg-base-surface dark:bg-transparent rounded-lg p-4 text-center py-6">
+          <p className="mb-2 dark:text-cream text-gray-700">No anthologies yet.</p>
           {(isOwner || collection.isOpenCollaboration) && (
-            <button
+            <div
               onClick={() => router.push(Paths.addToCollection.createRoute(collection?.id))}
-              className="px-4 py-2 btn bg-softBlue rounded-full text-emerald-800"
+              className="px-4 py-2 btn bg-softBlue dark:bg-transparent border-softBlue border-1 border rounded-full dark:text-cream text-emerald-800"
             >
               Add Your First Anthology
-            </button>
+            </div>
           )}
         </div>
       )}
 
-      
+      <div className={SECTION}>
       <SectionHeader title={"Pages"}/>
       {pagesInView?.length > 0 ? (
-        <div className="w-full">
+        <div className="w-full px-4">
           <PageList
             items={pagesInView}
             isGrid={false}
@@ -643,22 +662,23 @@ const PageTab = ({ collections }) => {
           />
         </div>
       ) : (
-        <div className="py-8 text-center text-gray-500">
+        <div className="py-8 text-center px-4 text-gray-500">
           {(isOwner || collection.isOpenCollaboration) ? (
             <div>
-              <p>No pages yet.</p>
-              <button
+              <p className={"text-soft dark:text-cream"}>No pages yet.</p>
+              <div
                 onClick={() => router.push(Paths.addToCollection.createRoute(collection.id))}
-                className="mt-4 px-4 py-2 bg-emerald-600 text-white rounded-full shadow hover:bg-emerald-700"
+                className="mt-4 px-4 py-2 bg-soft text-cream dark:bg-transparent border border-soft border-1 rounded-full shadow hover:bg-emerald-700"
               >
                 Add Your First Page
-              </button>
+              </div>
             </div>
           ) : (
             <p>This collection has no pages yet.</p>
           )}
         </div>
       )}
+      </div>
     </div>
   );
 };
@@ -668,24 +688,24 @@ const MemberTab = ({ collection }) => {
   const roles = [...collection?.roles?.filter(role=>role.profile.id!=collection.profile.id), collection.profile ? { role: "owner", profile: collection.profile } : null].filter(r => r).sort((a, b) => a.role.localeCompare(b.role))
   return (
     <>
-    <div className={`${WRAP} ${SECTION}`}>
+    <div style={{...getBackground()}}className={`${WRAP} px-4 ${SECTION}`}>
     
 <SectionHeader title={"Contributors"}/>
         {
-          <IonList style={{ backgroundColor: Enviroment.palette.base.surface}}>
-            <div className="flex flex-col bg-base-surface pt-4 min-h-[14rem]">
+          // <IonList style={{...getBackground()}}>
+            <div style={{...getBackground()}}className="flex flex-col  pt-4 px-4 min-h-[14rem]">
               {
           
                 roles.map((role, i) => {
            
                return<div key={i} onClick={()=>router.push(Paths.profile.createRoute(role.profile.id))} className="  w-[100%] my-1 rounded-full border px-4 border-1 bg-base-bg border-soft">
                   <div className="flex flex-row justify-between  w-[100%]">
-                  <div className="py-4 "><ProfileCircle profile={role.profile}/></div><div className="my-auto">{role.role}</div>
+                  <div className="py-4 pr-4 "><ProfileCircle profile={role.profile} includeUsername={true}/></div><div className="my-auto dark:text-cream">{role.role}</div>
                   </div>
                 </div>
 })}
             </div>
-          </IonList>
+          // </IonList>
         }
 
  </div>
@@ -715,16 +735,16 @@ useEffect(() => {
   return () => { cancelled = true };
 }, [location?.latitude]); // 👈 only trigger when actually meaningful
 
-  // const hashTags = prof?.hashtags ?? [];
+  
   if (!collection) return null;
 
 
   return (
-<div className={`${WRAP} ${SECTION}`}>
+<div className={`${WRAP} px-4 ${SECTION}`}>
    
     <SectionHeader title={"Purpose"}/>
-    {/* <h5 className="text-gray-400 uppercase font-medium text-[1.4rem]">Purpose</h5> */}
-<p className="text-sm text-gray-700leading-relaxed mt-4 font-sans">
+
+<p className="text-sm text-gray-700 dark:text-cream leading-relaxed mt-4 font-sans">
   {collection.purpose}
 </p>
 
@@ -777,7 +797,7 @@ useEffect(() => {
 
 function CollectionTabs({ tab, setTab, pages, members, about }) {
   return (
-    <div className={`bg-base-surface ${TAB_WRAP}`}>
+    <div className={` ${TAB_WRAP}`}>
       <div className="flex justify-center lg:justify-start mb-4 overflow-x-auto">
         <div className="inline-flex rounded-full border border-emerald-600">
           {["pages", "members", "about"].map((t) => (

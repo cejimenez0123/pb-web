@@ -113,7 +113,7 @@ function DiscDashTabs({ tab, setTab, disc, dash}) {
 
   return (
     <IonContent fullscreen>
-      <div className="pt-12 bg-base-bg">
+      <div className="pt-12 dark:bg-base-bgDark bg-base-surface">
         <div className="flex justify-center lg:justify-start lg:mx-12 mb-2">
           <div className="flex rounded-full mx-auto  border overflow-clip min-h-12 sm:w-[40em] lg:w-[30em] border-soft">
             <button

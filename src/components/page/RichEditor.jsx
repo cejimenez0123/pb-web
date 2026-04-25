@@ -166,20 +166,7 @@ useEffect(() => {
   );
 
   // ── Size ──
-  // const applySize = useCallback(
-  //   (size) => {
-  //     // execCommand fontSize only takes 1-7; we use a span workaround
-  //     editorRef.current?.focus();
-  //     const sel = window.getSelection();
-  //     if (!sel || sel.isCollapsed) return;
-  //     const range = sel.getRangeAt(0);
-  //     const span = document.createElement("span");
-  //     span.style.fontSize = size;
-  //     range.surroundContents(span);
-  //     emitChange();
-  //   },
-  //   [emitChange]
-  // );
+
 const applySize = useCallback((size) => {
   editorRef.current?.focus();
   const sel = window.getSelection();
@@ -412,9 +399,9 @@ const applySize = useCallback((size) => {
           onPaste={handlePaste}
           className={[
             "rich-editor__body",
-            "min-h-[220px] px-5 py-4",
-            "text-sky-900 dark:text-sky-100",
-            "bg-emerald-50 dark:bg-slate-900",
+            "min-h-[220px] dark:text-cream px-5 py-4",
+            "text-sky-900 dark:text-cream",
+            "bg-emerald-50 dark:text-cream dark:bg-slate-900",
             "focus:outline-none",
             "prose prose-sm sm:prose-base max-w-none",
             // Prose overrides for our palette

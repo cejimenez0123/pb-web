@@ -19,12 +19,14 @@ import {
 import StoryCollectionTabs from "../../components/page/StoryCollectionTabs.jsx";
 import { useParams } from "react-router";
 import Enviroment from "../../core/Enviroment.js";
-import { setPagesInView } from "../../actions/PageActions.jsx";
+
 import Pill from "../../components/Pill.jsx";
 import { getMyStories } from "../../actions/StoryActions.jsx";
 import computePermissions from "../../core/compusePermissions.jsx";
 import { RoleType } from "../../core/constants.js";
 import PaginatedList from "../../components/page/PaginatedList.jsx";
+import shortName from "../../core/shortName.jsx";
+import getBackground from "../../core/getbackground.jsx";
 
 const filterTypes = {
   filter: "Filter",
@@ -190,7 +192,7 @@ useEffect(()=>{
       </div>
     );
   }
-
+const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
   const colList = () => {
     if (pending) {
       return (
@@ -212,7 +214,8 @@ if (!canSee) {
 
   if (!colInView) {
     return (
-      <IonContent style={{ "--background": Enviroment.palette.cream }} className="ion-padding">
+      <IonContent style={{...getBackground()
+  }} >
         {pending ? (
           <>
             <IonSkeletonText
@@ -227,7 +230,7 @@ if (!canSee) {
         ) : (
           <div className="ion-text-center ion-padding">
             <IonText color="medium">
-              <h5>Collection Not Found</h5>
+              <h5 className=" text-soft dark:text-cream">Collection Not Found</h5>
             </IonText>
           </div>
         )}
@@ -236,13 +239,15 @@ if (!canSee) {
   }
 
   return (
-    <IonContent fullscreen style={{ "--background": Enviroment.palette.cream }} className="ion-padding">
+    <IonContent fullscreen style={{...getBackground()
+
+  }} >
       <ErrorBoundary>
-        <div className="max-w-[50em] mx-auto py-4">
+        <div className="max-w-[50em] px-4  pb-26 dark:bg-base-bgDark bg-base-surface mx-auto pt-4">
           {/* Header */}
-          <div className="mb-4 space-y-2">
-            <h2 className="text-xl font-semibold text-soft">Add to {colInView?.title||"Collection"}</h2>
-            <p className="text-sm text-gray-500">Select stories or collections to include</p>
+          <div className="mb-4 space-y-2 bg-base-surface dark:bg-base-bgDark ">
+            <h2 className="text-xl font-semibold bg-base-surface dark:bg-base-bgDark  dark:text-cream text-soft">Add to {colInView?.title||"Collection"}</h2>
+            <p className="text-sm text-gray-500 dark:text-cream">Select stories or collections to include</p>
             <div className="flex items-center justify-between mt-3">
                
               {/* <span className="text-sm text-soft">{newStories.length + newCollections.length} selected</span> */}
@@ -250,27 +255,27 @@ if (!canSee) {
                 label="View"
                 onClick={() => router.push(Paths.collection.createRoute(colInView.id))}
                 variant="secondary"
-               baseClass="bg-blueSea text-white"
+               baseClass="bg-blueSea border-blueSea border border-1 dark:bg-base-surfaceDark text-cream"
               />
                   <Pill
                 label={`Save (${newStories.length + newCollections.length})`}
                 onClick={save}
                 variant="primary"
-               baseClass="bg-blueSea text-white"
-                className="w-full justify-center text-base py-4 shadow-lg"
+               baseClass="bg-blueSea border border-blueSea border-1 dark:bg-base-surfaceDark text-cream"
+               
               />
             </div>
           </div>
 
           {/* Filter + Search */}
-          <div className="flex justify-between max-w-[100vw] items-center mb-4 space-x-3">
+          <div className="flex justify-between  dark:bg-base-bgDark bg-base-surface max-w-[100vw] items-center mb-4 space-x-3">
             <select
               onChange={(e) => setFilterType(e.target.value)}
               value={filterType}
-              className="select w-full sm:w-32 rounded-full border border-emerald-300 bg-base-bg px-3 py-1 text-emerald-800 shadow-sm focus:outline-none"
+              className="select w-full sm:w-32 dark:text-cream rounded-full border border-emerald-300 bg-base-bg px-3 py-1 text-emerald-800 shadow-sm focus:outline-none"
             >
               {Object.entries(filterTypes).map(([, val]) => (
-                <option key={val} value={val}>
+                <option className="dark:text-cream " key={val} value={val}>
                   {val}
                 </option>
               ))}
@@ -282,38 +287,39 @@ if (!canSee) {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="...title"
-                className="bg-transparent w-[100%] py-1 focus:outline-none text-emerald-800 text-sm"
+                className="bg-transparent  w-[100%] dark:text-cream py-2 focus:outline-none dark:text-cream text-emerald-800 text-sm"
               />
             </div>
 
           </div>
 
           {/* List container */}
-          <div className="bg-cream rounded-2xl p-3 pb-24 shadow-sm">
+          <div className=" dark:bg-base-bgDark bg-base-surface  rounded-2xl p-3 pb-24 shadow-sm">
             <StoryCollectionTabs tab={tab} setTab={setTab} storyList={()=>
                <PaginatedList
                  cacheKey="stories"
-                    key={"getMyStories"}
+                    // key={"getMyStories"}
                           fetcher={getMyStories}
                           pageSize={8}
+                            className="bg-base-surface dark:bg-base-bgDark "
                           renderItem={(story) => {
                               filteredSortedStories.map((col) => {
 
           if (col?.id === colInView.id) return null;})
-               const added =
-            newCollections.some((c) => c.id === story.id) ||
-            colInView?.storyIdList?.some((j) => j.storyId === story.id);
-//        
+         const added =
+  newStories.some((s) => s.id === story.id) ||
+  colInView?.storyIdList?.some((j) => j.storyId === story.id);
+        
           return (
             <div
               key={story.id}
-              className="bg-base-bg rounded-2xl px-4 py-3 shadow-sm flex items-center justify-between"
+              className="bg-base-bg dark:bg-transparent rounded-full border-blue border-1 border px-4 py-3 shadow-sm flex items-center justify-between"
             >
               <div
                 onClick={() => router.push(Paths.page.createRoute(story.id))}
                 className="flex-1 pr-3 cursor-pointer"
               >
-                <p className="text-sm font-medium truncate">{story.title.length>20?story.title.slice(0,20)+"..." : story.title || "Untitled"}</p>
+                <p className="text-sm text-soft dark:text-cream font-medium truncate">{story.title.length>20?story.title.slice(0,20)+"..." : story.title || "Untitled"}</p>
               </div>
               <Pill
                 label={added ? "Added ✓" : "Add"}
@@ -332,10 +338,11 @@ if (!canSee) {
             colList={()=> (
       <PaginatedList
        cacheKey="collections"
-    key={"getMyCollections"}
+
         fetcher={getMyCollections}
         pageSize={8}
-        params={{ type: "library" }} // ✅ THIS NOW WORKS
+       
+          className="bg-base-surface dark:bg-base-bgDark "
         renderItem={(col) => {
           filteredSortedCollections.map((col) => {
 
@@ -345,13 +352,13 @@ if (!canSee) {
             colInView?.childCollections?.some((j) => j.childCollectionId === col.id);
                return<div
               key={col.id}
-              className="bg-base-bg rounded-2xl px-4 py-3 shadow-sm flex items-center justify-between"
+              className="bg-base-bg border border-1 border-purple dark:bg-base-surfaceDark rounded-full px-4 py-3 shadow-sm flex items-center justify-between"
             >
               <div
                 onClick={() => router.push(Paths.collection.createRoute(col.id))}
                 className="flex-1 pr-3 cursor-pointer"
               >
-                <p className="text-sm font-medium truncate">{col?.title?.length>20?col.title.slice(0,20)+"...":col.title.length>0?col.title:"Untitled"}</p>
+                <p className="text-sm dark:text-cream font-medium truncate">{col?.title?.length>20?shortName(col.title,20):col.title.length>0?col.title:"Untitled"}</p>
               </div>
               <Pill
                 label={added ? "Added ✓" : "Add"}
@@ -360,6 +367,7 @@ if (!canSee) {
                     added ? prev.filter((c) => c.id !== col.id) : [...prev, col]
                   )
                 }
+               baseClass="bg-blueSea border border-blueSea border-1 dark:bg-surfaceDark dark:text-cream text-white"
                 variant={added ? "secondary" : "primary"}
                 color={added ? "softBlue" : "soft"}
               />
@@ -419,39 +427,3 @@ const NoPermissionUI = () => {
     </IonContent>
   );
 };
-  //   return (
-  //     <div className="space-y-2">
-  //       {filteredSortedCollections.map((col) => {
-  //         if (col?.id === colInView.id) return null;
-  //         const added =
-  //           newCollections.some((c) => c.id === col.id) ||
-  //           colInView?.childCollections?.some((j) => j.childCollectionId === col.id);
-
-  //         return (
-            // <div
-            //   key={col.id}
-            //   className="bg-base-bg rounded-2xl px-4 py-3 shadow-sm flex items-center justify-between"
-            // >
-            //   <div
-            //     onClick={() => router.push(Paths.collection.createRoute(col.id))}
-            //     className="flex-1 pr-3 cursor-pointer"
-            //   >
-            //     <p className="text-sm font-medium truncate">{col?.title?.length>20?col.title.slice(0,20)+"...":col.title.length>0?col.title:"Untitled"}</p>
-            //   </div>
-            //   <Pill
-            //     label={added ? "Added ✓" : "Add"}
-            //     onClick={() =>
-            //       setNewCollections((prev) =>
-            //         added ? prev.filter((c) => c.id !== col.id) : [...prev, col]
-            //       )
-            //     }
-            //     variant={added ? "secondary" : "primary"}
-            //     color={added ? "softBlue" : "soft"}
-            //   />
-            // </div>
-  //         );
-  //       })}
-  //     </div>
-  //   );
-  // };
-  // }

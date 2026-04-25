@@ -4,7 +4,8 @@ import Enviroment from "../../core/Enviroment";
 import {  sendGAEvent } from "../../core/ga4";
 import { IonText, useIonRouter } from "@ionic/react";
 import { useEffect, useState } from "react";
-function ProfileCircle({profile, color="white", fontSize="", includeUsername=true, isGrid=false}) {
+import shortName from "../../core/shortName";
+function ProfileCircle({profile, className="white", fontSize="", includeUsername=true, isGrid=false}) {
   const router = useIonRouter()
     const [pictureUrl,setPictureUrl]=useState(Enviroment.blankProfile)
   async function fetchImage() {
@@ -52,7 +53,7 @@ function ProfileCircle({profile, color="white", fontSize="", includeUsername=tru
 
   return (
     <span className="flex flex-row bg-transparent">
-      <span className="flex flex-row bg-transparent">
+      <span className="flex flex-row ">
         <div
           onClick={handleNavigate}
           className="overflow-hidden bg-emerald-700 rounded-full max-w-8 min-w-8 min-h-8 max-h-8 border-2 border-white"
@@ -64,13 +65,9 @@ function ProfileCircle({profile, color="white", fontSize="", includeUsername=tru
           />
         </div>
 
-        <IonText className={`my-auto px-2 text-soft ${fontSize}`}>
-          {!includeUsername
-            ? null
-            : profile.username.length > 9
-              ? profile.username.toLowerCase().slice(0, 9) + "..."
-              : profile.username.toLowerCase()}
-        </IonText>
+        <p className={`my-auto px-2 text-soft dark:text-cream ${fontSize}`}>
+          {includeUsername
+            && shortName(profile.username,13)}</p>
       </span>
     </span>
   )

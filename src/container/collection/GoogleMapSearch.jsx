@@ -76,7 +76,7 @@ function PlacesSearchMap({ initLocationName, onLocationSelected }) {
           onChange={handleInput}
           disabled={!ready}
           placeholder="Search a place"
-          className="input bg-base-bg w-[100%] border border-1 border-earth input-bordered "
+          className="input bg-base-bg dark:text-cream w-[100%] border border-1 border-earth input-bordered "
         />
 
 

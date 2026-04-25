@@ -174,40 +174,7 @@ const fetchCommentsOfPage = createAsyncThunk(
     }
   }
 );
-// const fetchCommentsOfPagePublic = createAsyncThunk("comments/fetchCommentsOfPagePublic",async (params,thunkApi)=>{
-//   try{
-  
-//       let data = await storyRepo.fetchCommentsOfPagePublic({pageId:params.id})
-//       return {
 
-//         comments: data.comments
-//       }
-
-// }catch(err){
-
-// return err
-
-// }}
-
-// )
-// const fetchCommentsOfPageProtected = createAsyncThunk("comments/fetchCommentsOfPages",async (params,thunkApi)=>{
-//   try{
-   
-   
-
-//       let data = await storyRepo.fetchCommentsOfPageProtected({pageId:params.id})
-//       return {
-
-//         comments: data.comments
-//       }
-
-// }catch(err){
-
-// return err
-
-// }}
-
-// )
 
 const setCurrentPage = createAction(
   "pages/setCurrentPage",
@@ -217,7 +184,7 @@ const setCurrentPage = createAction(
     };
   }
 );
-
+const removeFromPaginatedKey = createAction("pagination/removeFromKey");
 const setPaginationLoading = createAction("pagination/setLoading");
  const initKey = createAction("pagination/initKey");
 const setPageData = createAction(
@@ -360,7 +327,8 @@ try{
          setComments,
          appendToMyStories,
          setPaginationLoading,
-        //  setCurrentPage,
+         removeFromPaginatedKey,
+      
    fetchPage,
        setPageData,
          setCurrentPage,

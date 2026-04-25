@@ -161,22 +161,7 @@ const fetchStoryHashtags = createAsyncThunk("hashtags/fetchStoryHashtags",async 
 
 
 })
-//  const followHashtag = createAsyncThunk(
-//   "hashtags/follow",
-//   async ({ hashtagId }, { rejectWithValue }) => {
-//     try {
-    
-//         const res = await hashtagRepo.followHashtag({hashtagId})
 
-
-//       return res.data.follow;
-//     } catch (err) {
-//       return rejectWithValue(
-//         err.response?.data?.error || err.message
-//       );
-//     }
-//   }
-// );
  const followHashtag = createAsyncThunk(
   "hashtags/follow",
   async ({ hashtagId }, { rejectWithValue }) => {
@@ -205,7 +190,7 @@ export {
         createHashtagPage,
         getHashtags,
         deleteHashtagStory,
-        // getHashtagComments,
+       
         fetchHashtag,
         clearHashComments,
         clearHashPages,
@@ -216,6 +201,6 @@ export {
         followHashtag,
         deleteHashtagCollection,
         createHashtagCollection,
-        unfollowHashtag
+        unfollowHashtag 
 }
 

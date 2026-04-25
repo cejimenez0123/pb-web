@@ -25,7 +25,7 @@ const itemVariants = {
   },
 };
   return (
-    <div className="bg-base-surface">
+    <div className="bg-base-surface dark:bg-base-bgDark">
   {/* // <IonList style={{"--background":Enviroment.palette.base.background}}> */}
     <motion.div
   variants={containerVariants}

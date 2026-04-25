@@ -18,7 +18,7 @@ import SectionHeader from '../components/SectionHeader.jsx';
 import shortName from '../core/shortName.jsx';
 
 // ── Layout ──────────────────────────────────────
-const WRAP = "max-w-[72rem] mx-auto sm:px-6 lg:px-8";
+const WRAP = "max-w-[72rem] dark:bg-base-bgDark bg-base-surface mx-auto sm:px-6 lg:px-8";
 
 
 // ── Sections ────────────────────────────────────
@@ -39,7 +39,7 @@ const SCROLL_ROW = "flex gap-4 overflow-x-auto pb-2 min-h-fit -mx-4 px-4 sm:mx-0
 const GRID = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4";
 
 // ── Cards ───────────────────────────────────────
-const CARD = "bg-base-bg rounded-2xl shadow-sm w-full";
+const CARD = "bg-base-bg border-base-bg dark:border-purple border-1 border bg-base-surfaceDark rounded-2xl shadow-sm w-full";
 const CARD_PAD = "p-4 sm:p-5";
 
 // ── Skeleton ────────────────────────────────────
@@ -51,19 +51,19 @@ const WorkshopItem = ({ item, router }) => {
 
   <div onClick={() => router.push(Paths.collection.createRoute(item.id))} className={`${CARD} ${CARD_PAD}  w-[100%]`}>
       <IonLabel>
-        <h2 className="text-md font-semibold text-emerald-800 truncate">
+        <h2 className="text-md font-semibold dark:text-cream text-emerald-800 truncate">
           {shortName(item.title,30)}
         </h2>
 
-        <p className="text-sm text-gray-600 line-clamp-3">
-          {item.description || "No description available."}
+        <p className="text-sm text-gray-600 dark:text-cream line-clamp-3">
+          {shortName(item.description,40) || "No description available."}
         </p>
 
-        <div className="flex justify-between text-xs text-gray-500 mt-1">
+        <div className="flex justify-between text-xs dark:text-cream text-gray-500 mt-1">
           <span>{item?.location?.city || "Online / TBD"}</span>
 
           {item.participants ? (
-            <span className="font-bold text-emerald-600">
+            <span className="font-bold dark:text-cream text-soft">
               {item.participants} participants
             </span>
           ) : null}
@@ -163,7 +163,7 @@ console.log("filteredPrompts",filteredPrompts)
             title="Workshops near you"
             right={
               <div className="flex items-center  gap-2">
-                <IonText className="text-sm">{isGlobal ? "Global" : "Local"}</IonText>
+                <IonText className="text-sm dark:text-cream">{isGlobal ? "Global" : "Local"}</IonText>
                 <IonToggle checked={isGlobal} onIonChange={handleGlobal} />
               </div>
             }
@@ -181,8 +181,7 @@ console.log("filteredPrompts",filteredPrompts)
     ))
 }
  </div>
-{/* </div>
-            </div> */}
+
         
      <div className={SECTION}>
           {/* Prompts */}
@@ -201,7 +200,7 @@ console.log("filteredPrompts",filteredPrompts)
        <div className={SECTION}>
            <SectionHeader title="What's new" />
               {/* <div className='px-4'> */}
-          <PageList  items={recommendedStories}/>
+          <PageList  items={recommendedStories.slice(0,4)}/>
           {/* </div> */}
           </div>
         </div>

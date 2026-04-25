@@ -196,36 +196,3 @@ const pageSlice = createSlice({
     
 export {pageSlice}
 
-
-// import { createSlice } from "@reduxjs/toolkit";
-// import { getMyStories } from "./storyThunks";
-
-// const initialState = {
-//   myPages: [],
-//   pagination: {
-//     skip: 0,
-//     take: 20,
-//     totalCount: 0,
-//     hasMore: false,
-//   },
-//   loading: false,
-//   error: null,
-// };
-
-// const storySlice = createSlice({
-//   name: "pages",
-//   initialState,
-//   reducers: {
-//     clearStories: (state) => {
-//       state.myPages = [];
-//       state.pagination = initialState.pagination;
-//     },
-//   },
-//   extraReducers: (builder) => {
-//     builder
-  
-//   },
-// });
-
-// export const { clearStories } = storySlice.actions;
-// export default storySlice.reducer;

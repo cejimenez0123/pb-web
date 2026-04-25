@@ -6,12 +6,13 @@ import AddToItem from "../../components/collection/AddToItem";
 import checkResult from "../../core/checkResult";
 import Context from "../../context";
 import ErrorBoundary from "../../ErrorBoundary";
-import { getMyStories, getStory } from "../../actions/StoryActions";
+import {  getStory } from "../../actions/StoryActions";
 import {
   fetchCollectionProtected,
   getMyCollections,
   setCollections,
 } from "../../actions/CollectionActions";
+import PaginatedList from "../../components/page/PaginatedList"
 import { useParams } from "react-router";
 import { useDialog } from "../../domain/usecases/useDialog";
 import { PageType } from "../../core/constants";
@@ -19,6 +20,7 @@ import truncate from "html-truncate";
 import Enviroment from "../../core/Enviroment";
 import Pill from "../../components/Pill";
 import shortName from "../../core/shortName";
+import getBackground from "../../core/getbackground";
 // ── Layout tokens ──────────────────────────────────────
 const WRAP         = "max-w-2xl mx-auto px-4";
 const PAGE_Y       = "py-6";
@@ -33,14 +35,13 @@ export default function AddToCollectionsContainer() {
   const { setError, seo, setSeo } = useContext(Context);
   const { currentProfile } = useSelector((state) => state.users);
   const { dialog, openDialog, closeDialog, resetDialog } = useDialog();
-const [pendingStories, setPendingStories] = useState(true);
+
   const { id, type } = useParams(); // id = item to add, type = "story" | "collection"
   const dispatch = useDispatch();
 
-  const [search, setSearch] = useState("");
   const collectionInView = useSelector((state) => state.books.collectionInView);
   const pageInView = useSelector((state) => state.pages.pageInView);
-  const rawCollections = useSelector((state) => state.books.myCollections) || [];
+
 
   const [item, setItem] = useState(
     type === "collection" ? collectionInView : pageInView
@@ -50,16 +51,7 @@ const [pendingStories, setPendingStories] = useState(true);
   useEffect(() => closeDialog(), []);
 
   // Filter collections for adding
-  const collections = useMemo(() => {
-    return rawCollections
-      .filter((c) => c && c.type && c.type !== "feedback")
-      .filter((c) => {
-        if (!c) return false;
-        if (item && item.id === c.id) return false; // cannot add to itself
-        if (search) return c.title.toLowerCase().includes(search.toLowerCase());
-        return true;
-      });
-  }, [rawCollections, item, search]);
+
 
 
   // Optional: load token
@@ -110,12 +102,12 @@ const [pendingStories, setPendingStories] = useState(true);
       disagreeText: "Close",
     };
     openDialog(dia);
-  };
+  }
 
   // Loading state
   if (!item) {
     return (
-      <IonContent fullscreen style={{ "--background": Enviroment.palette.cream }}>
+      <IonContent fullscreen style={{...getBackground()}}>
        <div className={`${WRAP} ${PAGE_Y} ${PAGE_STACK} animate-pulse`}>
           <div className="h-6 w-40 bg-gray-200 rounded" />
           <div className="h-24 bg-gray-200 rounded-2xl" />
@@ -128,9 +120,9 @@ const [pendingStories, setPendingStories] = useState(true);
 
   return (
     <ErrorBoundary>
-      <IonContent fullscreen style={{ "--background": Enviroment.palette.cream }}>
-        {/* <div className="max-w-[42em] mx-auto px-4 py-6 space-y-6"> */}
-<div className={`${WRAP} ${PAGE_Y} ${PAGE_STACK}`}>
+      <IonContent fullscreen style={{...getBackground()}}>
+    
+<div className={`${WRAP}  bg-base-surface pb-26 dark:bg-base-bgDark ${PAGE_Y} ${PAGE_STACK}`}>
           {/* Header */}
           <div>
             <h1 className="text-xl font-semibold text-soft">Add to Collection</h1>
@@ -138,9 +130,9 @@ const [pendingStories, setPendingStories] = useState(true);
           </div>
 
           {/* Item Card */}
-          <div className="bg-base-bg rounded-2xl p-4 shadow-sm space-y-2">
-            <p className="text-xs text-soft opacity-70">Adding</p>
-            <h2 className="text-lg font-semibold">   {shortName(item.title,30)}</h2>
+          <div className="bg-base-bg dark:bg-base-surfaceDark rounded-2xl p-4 shadow-sm space-y-2">
+            <p className="text-xs text-soft opacity-70 dark:text-cream">Adding</p>
+            <h2 className="text-lg font-semibold dark:text-cream">   {shortName(item.title,30)}</h2>
             {item.type === PageType.text && item.data && (
               <div
                 className="text-sm text-gray-600 line-clamp-3"
@@ -155,42 +147,30 @@ const [pendingStories, setPendingStories] = useState(true);
           </div>
 
           {/* Search */}
-       <div className={INPUT_WRAP}>
-            <input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search collections"
-              className="w-[100%] bg-transparent outline-none text-sm"
-            />
-          </div>
+ 
+          <p className={LABEL+" "}>Your Collections</p>
 
-          {/* List Label */}
-          <p className={LABEL}>Your Collections</p>
 
-          {/* List */}
-         <div
-  className={`${SECTION_STACK} ${FADE_IN} ${
-    pendingStories ? "opacity-0 translate-y-2" : "opacity-100 translate-y-0"
-  }`}
->
-  {pendingStories ? (
-  <CollectionsSkeleton />
-) : collections.length === 0 ? (
-  <EmptyCollections />
-) : (
   <div
-    className={`${SECTION_STACK} ${FADE_IN} opacity-100 translate-y-0`}
+    className={`${SECTION_STACK} ${FADE_IN} bg-base-surface dark:bg-base-bgDark  opacity-100 translate-y-0`}
   >
-    {collections.map((col, i) => (
-      <AddToItem key={col.id || i} col={col} item={item} />
-    ))}
+<PaginatedList
+  cacheKey="collections"
+  fetcher={getMyCollections}
+  pageSize={10}
+  enableInternalSearch={true}
+  className="bg-base-surface dark:bg-base-bgDark "
+  renderItem={(col) => {
+    if(item.id==col.id)return
+   return <AddToItem key={col.id ?? col.title} col={col} item={item} />
+  }}
+/>
+    
+  
   </div>
-)}
-            {/* {collections.map((col, i) => (
-              <AddToItem key={col.id || i} col={col} item={item} /> // Pass `item` for both story or collection
-            ))} */}
+
           </div>
-        </div>
+       
       </IonContent>
     </ErrorBoundary>
   );

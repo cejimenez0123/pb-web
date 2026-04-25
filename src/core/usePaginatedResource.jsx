@@ -43,10 +43,11 @@ function usePaginatedResource({
     }));
   };
 
-  useEffect(() => {
+ 
+ 
+ useEffect(() => {
     fetchPage(page);
-  }, [page, key, enabled]);
-
+  }, [page]);
   const setPage = (p) => {
     dispatch(setCurrentPage({ key, page: p }));
   };

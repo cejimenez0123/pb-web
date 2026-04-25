@@ -32,7 +32,7 @@ const STORY_CONFIG = {
 const WRAP    = "max-w-[50em] mx-auto px-4";
 const SECTION = "pt-8 sm:pt-10 lg:pt-12";
 const BLOCK   = "py-4";
-const HEADING = "text-[1em] font-bold text-emerald-800 dark:text-emerald-300";
+const HEADING = "text-[1em] font-bold dark:text-cream  text-emerald-800 ";
 const CARD    = ["bg-[#f4f4e0] dark:bg-slate-900", "rounded-xl shadow-sm", "transition-colors duration-300"].join(" ");
 const FADE    = "transition-opacity duration-500";
 const CENTER  = "text-center mx-auto";
@@ -177,7 +177,7 @@ const { canSee, canAdd, canEdit } = useMemo(
                 <div className={`${CARD} ${BLOCK}`}>
                   <PageViewItem page={page} canEdit={canEdit}  currentProfile={currentProfile} />
                   <div className={SECTION}>
-                    <h6 className={HEADING}>Responses</h6>
+                    <h6 className={HEADING+" px-4"}>Responses</h6>
                   </div>
                   <CommentThread page={page} comments={rootComments} rawComments={comments} />
                 </div>

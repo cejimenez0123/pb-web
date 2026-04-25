@@ -37,7 +37,6 @@ const SECTION = "space-y-4 bg-base-surface";
 const STACK_SM = "space-y-2";
 const STACK_MD = "space-y-4";
 // ── Layout ───────────────────────────────
-// const WRAP = "max-w-2xl mx-auto px-4";
 const STACK = "space-y-5";
 // const STACK_SM = "space-y-3";
 

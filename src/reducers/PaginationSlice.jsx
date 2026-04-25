@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { setPaginationLoading, initKey, setPageData } from "../actions/PageActions";
+import { setPaginationLoading, initKey, setPageData,removeFromPaginatedKey } from "../actions/PageActions";
 
 const initialState = {
     byKey: {},
@@ -38,7 +38,17 @@ const paginationSlice = createSlice({
             const { key, loading } = action.payload;
             ensureKey(state, key);
             state.byKey[key].loading = loading;
-        })
+        }).addCase(removeFromPaginatedKey, (state, action) => {
+  const { key, id } = action.payload;
+  if (!state.byKey[key]) return;
+  const pages = state.byKey[key].pages;
+  for (const p in pages) {
+    pages[p] = pages[p].filter((item) => item.id !== id);
+  }
+  if (typeof state.byKey[key].totalCount === "number") {
+    state.byKey[key].totalCount -= 1;
+  }
+})
     },
 });
 

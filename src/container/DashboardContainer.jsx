@@ -49,10 +49,10 @@ function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex
     </span>
   );
 }
-const WRAP = "max-w-2xl mx-auto ";
-const SECTION_GAP = "pt-4";  // applied to each section's root div
+const WRAP = "max-w-2xl mx-auto dark:bg-base-bgDark bg-base-surface ";
+const SECTION_GAP = "dark:bg-base-bgDark bg-base-surface ";  // applied to each section's root div
 const SECTION_HEADING = "text-xl lora-medium";          // text style only
-const SECTION_HEADER_ROW = "flex items-center justify-between px-4 py-4"; // row layout
+const SECTION_HEADER_ROW = "flex items-center justify-between px-4"; // row layout
 const LIST_WRAP = "flex flex-col gap-4";  // Saves
 
 const TILE = "w-36 md:w-44 flex-shrink-0";
@@ -328,7 +328,7 @@ scrollY: false,
  return (
         <ErrorBoundary>
 
-          <div className="flex flex-col items-center gap-3 my-4 w-full md:max-w-[40em] mx-auto px-4">
+          <div className="flex flex-col items-center gap-3  w-full dark:bg-base-bgDark bg-base-surface md:max-w-[40em] mx-auto px-4">
 
   {/* Primary: Write — full width, most prominent */}
   <ButtonWrapper
@@ -386,9 +386,9 @@ scrollY: false,
     {item ? (
       // ✅ REAL CONTENT
       <div className="flex flex-row gap-4 bg-base-bg px-4 items-center">
-        <h6 className='text-soft dark:text-emerald-200'>{item.type} ·</h6>
+        <h6 className='text-soft dark:text-cream '>{item.type} ·</h6>
         {/* {Enviroment.palette.base.} */}
-        <h5 className="text-[1.2em] dark:text-emerald-200 text-soft" >
+        <h5 className="text-[1.2em] dark:text-cream text-soft" >
           {shortName(item.title,20)}
          </h5>
       </div>
@@ -506,14 +506,14 @@ scrollY: false,
 
             
         
-               <div className={` ${SECTION_GAP}`}>
+               <div className={`  ${SECTION_GAP}`}>
                 
   <div className={SECTION_HEADER_ROW}>
 <SectionHeader title={"Recent Pages"}/>
          
 
   <h5
-    className="text-[1rem] text-soft cursor-pointer pr-4 hover:opacity-70 transition"
+    className="text-[1rem] text-soft dark:text-cream cursor-pointer pr-4 hover:opacity-70 transition"
     onClick={ClickWriteAStory}
   >
     Write Something new +

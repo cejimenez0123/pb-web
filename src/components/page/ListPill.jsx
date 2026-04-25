@@ -20,12 +20,12 @@ export default function ListPill({ item, onClick, profile }) {
     lastSeen,
     isNew,
   });
-
+  let bordercolor = item.data?"border-blue":"border-purple"
   return (
     <div
       key={item?.id}
       onClick={onClick}
-      className="px-3 flex flex-row justify-between rounded-full border border-purple bg-base-bg backdrop-blur-sm shadow-sm active:scale-[0.98] transition"
+      className={`px-3 flex flex-row justify-between rounded-full border ${bordercolor} bg-base-bg backdrop-blur-sm shadow-sm active:scale-[0.98] transition`}
     >
       <span className="text-[0.95rem] my-auto py-3 font-medium text-soft dark:text-emerald-200">
         {shortName(item?.title ?? "", 30)}

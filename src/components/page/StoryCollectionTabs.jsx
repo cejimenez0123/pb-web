@@ -32,7 +32,7 @@ export default function StoryCollectionTabs({ tab, setTab, storyList, colList })
   };
 
   return (
-    <div style={{"--background":Enviroment.palette.cream} }className="flex h-full flex-col  sm:w-full">
+    <div className="flex h-full  dark:bg-base-bgDark bg-base-surface flex-col  sm:w-full">
       {/* Tabs */}
       <div className="flex justify-center mb-2">
         <div className="flex rounded-full border border-emerald-600 w-[90vw] sm:w-[40rem] justify-center overflow-hidden">
@@ -60,7 +60,7 @@ export default function StoryCollectionTabs({ tab, setTab, storyList, colList })
       </div>
 
       {/* Animated, Swipeable Content */}
-      <div className="relative overflow-hidden w-full">
+      <div className="relative dark:bg-base-bgDark bg-base-surface overflow-hidden w-full">
         <AnimatePresence custom={tab === "collection" ? 1 : -1} mode="wait">
           <motion.div
             key={tab}

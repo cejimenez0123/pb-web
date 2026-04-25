@@ -8,9 +8,9 @@ import {
 } from "../../actions/CollectionActions";
 import SectionHeader from "../SectionHeader";
 
-const SECTION_GAP = "mt-4";
-const SECTION_HEADER_ROW = "flex items-center justify-between py-4";
-const WRAP = "w-[100%] mx-auto";
+const SECTION_GAP = "pt-4";
+const SECTION_HEADER_ROW = "flex items-center justify-between ";
+const WRAP = "w-[100%]  mx-auto";
 
 export default function ExploreList({ label = "Explore", collection }) {
   const items = useSelector((state) => state.books.recommendedCols);

@@ -166,7 +166,7 @@ export default function Comment({ page, comment, level = 0 }) {
       <div className="bg-base-bg rounded-2xl shadow-lg p-5 flex flex-col gap-4 relative border border-gray-100">
         {/* Header */}
         <div className="flex justify-between items-center">
-          <ProfileCircle profile={comment.profile} color="emerald-700" />
+          <ProfileCircle profile={comment.profile} color="emerald-700 dark:text-cream" />
           {isSelf && <CommentDropdown />}
         </div>
 
@@ -190,7 +190,7 @@ export default function Comment({ page, comment, level = 0 }) {
 
         {/* Body */}
         <div className="flex items-start justify-between">
-          <p className="text-emerald-800 text-sm text-left sm:text-base break-words">
+          <p className="text-emerald-800 dark:text-cream text-sm text-left sm:text-base break-words">
             {comment.content}
           </p>
         </div>

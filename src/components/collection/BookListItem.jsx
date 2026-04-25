@@ -34,7 +34,7 @@ function BookListItem({ book }) {
   return (
     <div
       onClick={navigateToBook}
-      className="min-h-[10rem] min-w-[16rem] flex flex-col justify-between rounded-xl border-purple bg-base-bg dark:bg-base-bgDark border  dark:border-purple cursor-pointer shadow-md mx-2 transition-shadow duration-300 p-4 space-y-3 active:scale-[0.98]"
+      className="min-h-[10rem] min-w-[16rem] shadow-md flex flex-col justify-between rounded-xl border-purple bg-base-bg dark:bg-base-bgDark border  dark:border-purple cursor-pointer shadow-md mx-2 transition-shadow duration-300 p-4 space-y-3 active:scale-[0.98]"
       style={{ WebkitTapHighlightColor: "transparent" }}
     >
       <h3 className="font-bold text-soft dark:text-cream text-lg truncate">

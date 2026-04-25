@@ -75,22 +75,22 @@ const Dialog = () => {
                 {dialog.disagree && (
                   <div
                     onClick={() => { dialog.disagree() }}
-                    className="px-5 h-[3rem] rounded-full btn border border-soft border-1 bg-soft text-cream dark:bg-base-bgDark active:scale-95 transition"
+                    className="px-5 h-[3rem] flex rounded-full btn border border-soft border-1 bg-soft text-cream dark:bg-base-bgDark active:scale-95 transition"
                   
 
                   >
-                    {dialog.disagreeText}
+                    <p claassName="my-auto">{dialog.disagreeText}</p>
                   </div>
                 )}
-                {dialog.agree && (
-                  <div
-                    onClick={() => { dialog.agree(); handleClose(); }}
-                    className="px-5 h-[3rem] rounded-full bg-button-secondary-bg text-white active:scale-95 transition"
-                    style={{ WebkitTapHighlightColor: "transparent" }}
-                  >
-                    {dialog.agreeText}
-                  </div>
-                )}
+            {dialog.agree && (
+  <div
+  onClick={() => { dialog.agree(); handleClose(); }}
+  className="px-5 h-[3rem] flex items-center justify-center rounded-full bg-button-secondary-bg text-white active:scale-95 transition"
+  style={{ WebkitTapHighlightColor: "transparent" }}
+>
+  <p>{dialog.agreeText}</p>
+</div>
+)}
               </div>
             </div>
           </motion.div>

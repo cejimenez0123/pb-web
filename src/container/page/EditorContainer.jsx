@@ -11,7 +11,7 @@ import { Capacitor } from "@capacitor/core";
 import Paths from "../../core/paths";
 import { PageType } from "../../core/constants";
 import { createStory, deleteStory, getStory, updateStory } from "../../actions/StoryActions";
-import { setEditingPage, setHtmlContent, setPageInView, setPageType } from "../../actions/PageActions.jsx";
+import { setEditingPage, setHtmlContent, setPageInView,removeFromPaginatedKey, setPageType } from "../../actions/PageActions.jsx";
 import checkResult from "../../core/checkResult";
 import debounce from "../../core/debounce.js";
 import Context from "../../context";
@@ -504,22 +504,24 @@ const handleFeedback = (feedbackDesc) => {
     });
   };
   const handleDelete = () => {
-    dispatch(deleteStory(parameters)).then(() => {
-      router.push(Paths.home, "root");
-    closeDialog()
-    });
-  }
+  dispatch(deleteStory(parameters)).then(() => {
+    dispatch(removeFromPaginatedKey({ key: "stories", id: parameters.id }));
+    router.push(Paths.home, "root");
+    closeDialog();
+  });
+};
+
   
   const openConfirmDeleteDialog = () => {
     let dia = {
-      isOpen: true,
+
       title: "Are you sure you want to delete this page?",
-      text: "",
-      onClose: () => dispatch({ type: "SET_DIALOG", payload: { isOpen: false } }),
+      text: `${parameters?.title}`,
+      onClose: () => closeDialog(),
       agreeText: "Delete",
       agree: () => handleDelete(),
       disagreeText: "Close",
-      disagree: () => dispatch({ type: "SET_DIALOG", payload: { isOpen: false } }),
+      disagree: () => closeDialog(),
     };
     openDialog(dia);
   };
