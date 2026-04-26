@@ -31,6 +31,7 @@ import ReferralForm from '../components/auth/ReferralForm';
 import { setPageInView } from '../actions/PageActions';
 import checkResult from './checkResult';
 import { Preferences } from '@capacitor/preferences';
+import getBackground from './getbackground';
 // import { IonContext } from '@ionic/react/dist/types/contexts/IonContext';
 // spacing rules (mentally or constants)
 const SPACING = {
@@ -334,6 +335,7 @@ if (!isOnline) {
  <IonPage
   ref={pageRef}
   style={{ 
+    ...getBackground(),
     height: '100%', 
     paddingTop: isDesktop ? '4rem' : '0',
   }}
@@ -380,8 +382,9 @@ if (!isOnline) {
   <IonPage
   ref={pageRef}
   style={{ 
+    ...getBackground(),
     height: '100%', 
-    paddingTop: isDesktop ? '8em' : '0',
+    paddingTop: isDesktop ? '8em' : '0.5em',
   }}
 
      

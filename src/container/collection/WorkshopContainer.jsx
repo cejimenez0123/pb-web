@@ -197,7 +197,10 @@ const WorkshopContainer = () => {
 
   return (
     <IonContent
-      style={{...getBackground()}}
+       style={{
+   ...getBackground(), // use base.bg not cream, they differ slightly
+    "--min-height":"100%"       // use ionic var not paddingBottom
+  }} 
       fullscreen
       className="flex flex-col items-center pb-8"
     >

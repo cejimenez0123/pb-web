@@ -16,6 +16,7 @@ import Enviroment from '../core/Enviroment.js';
 import useProfileDependentEffects from '../core/useProfileDependentEffects.jsx';
 import HomeEmbed from './HomeContainer.jsx';
 import DashboardEmbed from './DashboardContainer.jsx';
+import getBackground from '../core/getbackground.jsx';
 
 
 function ContentHubContainer() {
@@ -64,8 +65,8 @@ function ContentHubContainer() {
   fullscreen 
 
   style={{
-    "--background": Enviroment.palette.base.bg,  // use base.bg not cream, they differ slightly
-                // use ionic var not paddingBottom
+   ...getBackground(), // use base.bg not cream, they differ slightly
+    "--min-height":"100%"       // use ionic var not paddingBottom
   }} 
   scrollY={true}
 >

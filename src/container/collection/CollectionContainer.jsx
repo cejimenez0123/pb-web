@@ -466,13 +466,7 @@ const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
    const baseClasses = "w-full sm:w-auto flex-1 sm:flex-none py-3 rounded-full btn h-12 flex items-center justify-center transition";
   if (!canSee) {
   return (
-    <IonContent  style={{ "--background": 
-    prefersDark ?
-     Enviroment.palette.base.backgroundDark 
-    ?? Enviroment.palette.base.bg : 
-    Enviroment.palette.base.background
-
-  }} fullscreen>
+    <IonContent  style={{...getBackground(),"--padding-bottom":"10em"}} fullscreen>
       <IonHeader>
         <IonToolbar>
           <IonTitle>Access Denied</IonTitle>
@@ -490,11 +484,10 @@ const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 return (
   <ErrorBoundary>
     <IonContent
-       style={{...getBackground()
-  }}
+style={{...getBackground(),"--padding-bottom":"10em"}}
       scrollY={true}
       fullscreen
-      className="pb-24 pt-12"
+      className="pb-26 pt-12"
     >
        <div
     className={` bg-cream pb-26 dark:bg-base-bgDark transition-opacity duration-300 ${
@@ -667,7 +660,7 @@ const PageTab = ({ collections }) => {
                 onClick={() => router.push(Paths.addToCollection.createRoute(collection.id))}
                 className="mt-4 px-4 py-2 bg-soft text-cream dark:bg-transparent border border-soft border-1 rounded-full shadow hover:bg-emerald-700"
               >
-                Add Your First Page
+                Add a First Page
               </div>
             </div>
           ) : (
