@@ -19,11 +19,12 @@ import checkResult from '../core/checkResult';
 import Context from '../context';
 import getBackground from '../core/getbackground';
 import Enviroment from '../core/Enviroment';
+import { ErrorBoundary } from '@sentry/react';
 
 // ── Tokens ───────────────────────────────
 const T = {
-  wrap:        "max-w-2xl mx-auto px-4 bg-cream dark:bg-base-bgDark ",
-  surface:     "bg-cream dark:bg-base-bgDark",
+  wrap:        "max-w-2xl sm:max-w-[100%] mx-auto px-4 bg-cream dark:bg-base-bgDark ",
+  surface:     "",
   card:        "bg-cream dark:bg-base-bgDark shadow-sm",
   header:      "flex items-center gap-3 px-4 pt-12 pb-2",
   searchWrap:  "flex-1 bg-base-surface dark:bg-base-surfaceDark rounded-full px-2",
@@ -32,7 +33,7 @@ const T = {
   filterBase:  "px-3 py-1.5 rounded-full text-xs border transition-all duration-150 cursor-pointer",
   filterOn:    "bg-soft text-white border-soft border-2 dark:bg-base-surfaceDark dark:text-cream",
   filterOff:   "bg-base-bg dark:bg-base-surfaceDark text-text-secondary dark:text-cream border border-soft",
-  list:        "divide-y divide-border-soft",
+  list:        "divide-y divide-border-soft ",
   listItem:    "py-3 px-4 flex items-center justify-between rounded-lg transition hover:bg-base-bg dark:hover:bg-base-surfaceDark cursor-pointer",
   itemTitle:   "text-sm text-text-primary dark:text-cream",
   empty:       "py-16 text-center text-xs text-text-secondary dark:text-cream/50",
@@ -136,10 +137,11 @@ const SearchDialog = ({ presentingElement }) => {
   const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
   return (
-    <IonContent fullscreen style={{...getBackground(),"--padding-botttom":"10em","--height":"100vh"}} className={T.surface}>
-
+    <IonContent fullscreen style={{...getBackground(),"--min-height":"100vh"}} className={T.surface}>
+      <ErrorBoundary>
+<div className='bg-cream dark:bg-base-bgDark overglow-y-auto minm-h-[100vh]  '>
       {/* Header + Search */}
-      <div className={`${T.header} ${T.surface}`}>
+      <div className={`${T.header} bg-cream dark:bg-base-bgDark ${T.surface}`}>
         <div className={T.searchWrap}>
           <IonSearchbar
             value={searchText}
@@ -156,7 +158,7 @@ const SearchDialog = ({ presentingElement }) => {
       </div>
 
       {/* Filters */}
-      <div className={`${T.filterRow} ${T.surface}`}>
+      <div className={`${T.filterRow}  ${T.surface}`}>
         {filters.map((genre, i) => (
           <div
             key={genre ?? i}
@@ -169,7 +171,8 @@ const SearchDialog = ({ presentingElement }) => {
       </div>
 
       {/* Results */}
-      <div className={`${T.wrap} min-h-[100%] pb-40 ${T.surface}`}>
+      <div className='max-w-2xl  pb-36 dark:bg-base-bgDark bg-cream mx-auto'>
+      <div className={`${T.wrap} min-h-[100%] ${T.surface}`}>
         <IonList className={T.card}>
           <div className={T.list}>
             {filteredContent.length ? (
@@ -191,8 +194,10 @@ const SearchDialog = ({ presentingElement }) => {
             )}
           </div>
         </IonList>
+        </div>
       </div>
-
+</div>
+</ErrorBoundary>
     </IonContent>
   );
 };

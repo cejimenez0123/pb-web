@@ -428,12 +428,12 @@ if (!canSee) {
     )}
 
     {/* DELETE */}
-    <div className="pt-4">
+    <div className="pt-4 max-w-10 max-h-10">
       <Pill
         label="Delete Collection"
         icon={deleteIcon}
         onClick={handleDelete}
-        baseClass="bg-golden text-white"
+        baseClass="bg-golden roundee-full  text-white"
       />
     </div>
 

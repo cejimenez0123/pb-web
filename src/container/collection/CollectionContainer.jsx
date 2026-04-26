@@ -484,13 +484,13 @@ const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 return (
   <ErrorBoundary>
     <IonContent
-style={{...getBackground(),"--padding-bottom":"10em"}}
-      scrollY={true}
+ style={{...getBackground(),"--min-height":"100%"}}
+   
       fullscreen
-      className="pb-26 pt-12"
+  
     >
        <div
-    className={` bg-cream pb-26 dark:bg-base-bgDark transition-opacity duration-300 ${
+    className={` bg-cream ppb-26 pt-12 dark:bg-base-bgDark transition-opacity duration-300 ${
       collection ? "opacity-100" : "opacity-0"
     }`}
   >
@@ -580,7 +580,7 @@ className={BUTTON_FULL+" transition w-[100%] border-blue border-1 text-cream bor
            </div>
    }</div>
    </div>
-   <div className='min-h-[28rem]'>
+   <div className='min-h-[28rem] pb-24'>
   <ExploreList collection={collection} />
 </div>
       
@@ -606,38 +606,43 @@ const PageTab = ({ collections }) => {
     <div className="bg-base-surface dark:bg-base-bgDark">
    
 
-      {(!hasAnthologies && currentProfile.id==collection.profileId)?null:(hasAnthologies ? (<>
+ {/* Hide entirely if private and not the owner */}
+{(collection.isPrivate && !isOwner) ? null : (
+  hasAnthologies ? (
+    <>
       <SectionHeader title={"Anthologies"} />
-        <div className="grid gap-4 grid-cols-1 overflow-x-auto sm:grid-cols-2 lg:grid-cols-3">
-          <motion.div
-            className="flex flex-row"
-            variants={containerVariants}
-            initial="hidden"
-            animate="show"
-
-          >
-            {collections.filter(col => col).map(col => (
-              <motion.div key={col.id} variants={itemVariants}>
-                <div className="w-64 sm:w-72 lg:w-80">
-                  <BookListItem book={col} />
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div></>
-      ) : (
-        <div className="flex flex-col items-center mx-auto justify-center bg-base-surface dark:bg-transparent rounded-lg p-4 text-center py-6">
-          <p className="mb-2 dark:text-cream text-gray-700">No anthologies yet.</p>
-          {(isOwner || collection.isOpenCollaboration) && (
-            <div
-              onClick={() => router.push(Paths.addToCollection.createRoute(collection?.id))}
-              className="px-4 py-2 btn bg-softBlue dark:bg-transparent border-softBlue border-1 border rounded-full dark:text-cream text-emerald-800"
-            >
-              Add Your First Anthology
-            </div>
-          )}
+      <div className="grid gap-4 grid-cols-1 overflow-x-auto sm:grid-cols-2 lg:grid-cols-3">
+        <motion.div
+          className="flex flex-row"
+          variants={containerVariants}
+          initial="hidden"
+          animate="show"
+        >
+          {collections.filter(Boolean).map(col => (
+            <motion.div key={col.id} variants={itemVariants}>
+              <div className="w-64 sm:w-72 lg:w-80">
+                <BookListItem book={col} />
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
+      </div>
+    </>
+  ) : (
+    // Only show empty state to owner or open-collab members
+    (isOwner || collection.isOpenCollaboration) && (
+      <div className="flex flex-col items-center mx-auto justify-center bg-base-surface dark:bg-transparent rounded-lg p-4 text-center py-6">
+        <p className="mb-2 dark:text-cream text-gray-700">No anthologies yet.</p>
+        <div
+          onClick={() => router.push(Paths.addToCollection.createRoute(collection?.id))}
+          className="px-4 py-2 btn bg-softBlue dark:bg-transparent border-softBlue border-1 border rounded-full dark:text-cream text-emerald-800"
+        >
+          Add Your First Anthology
         </div>
-      ))}
+      </div>
+    )
+  )
+)}
 
       <div className={SECTION}>
       <SectionHeader title={"Pages"}/>

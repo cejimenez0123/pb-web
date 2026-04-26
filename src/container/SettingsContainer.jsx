@@ -311,150 +311,268 @@ dispatch(updateProfile({
       </IonContent>
     );
   }
-// console.log("Current profile in settings:", form.location)
   return (
+  <IonContent fullscreen>
+    <div className="min-h-screen px-4 bg-cream dark:bg-base-bgDark flex justify-center pt-20 pb-32">
+      <div className="card w-96 sm:max-w-xl p-6 space-y-6">
 
-    <IonContent fullscreen>
-      
-      <div className="min-h-screen  px-4 bg-base-surface flex justify-center pt-20 pb-32">
+        <h2 className="text-2xl font-bold text-center text-soft dark:text-cream">
+          Profile Settings
+        </h2>
 
-        <div className="card w-96  sm:max-w-xl p-6 space-y-6">
-
-          <h2 className="text-2xl font-bold text-center text-emerald-700">
-            Profile Settings
-          </h2>
-          <div  onClick={async ()=>{
-             await SocialLogin.logout({ provider: "google" });
-            dispatch(signOutAction({profile:currentProfile})).then(res=>
-          
-          checkResult(res,(data)=>{
-            console.log("sign out",data)
-            router.push(Paths.login)},err=>{
-setError(err.message)
-          }))}}
-
-         className="btn mx-4 bg-base-bg btn-error flex btn-outline w-full">
-            <h4 className="mx-auto my-auto">Log Out</h4>
-          </div>
-          {/* Username */}
-
-          <div className="form-control">
-
-            <label className="label">
-              <span className="label-text">Username</span>
-            </label>
-
-            <input
-              type="text"
-              className="input bg-base-bg text-soft input-bordered"
-              value={form.username}
-              onChange={(e)=>handleChange("username",e.target.value)}
-            />
-
-          </div>
-
-          {/* Profile Image */}
-
-          <div className="flex flex-col items-center gap-4">
-
-            <div className="avatar">
-
-              <div className="w-24 rounded-xl">
-
-                <img src={pictureUrl} />
-
-              </div>
-
-            </div>
-
-            <input
-              type="file"
-              accept="image/*"
-              className="file-input bg-base-bg text-soft file-input-bordered w-full"
-              onChange={handleImage}
-            />
-
-          </div>
-          <span className="w-fit mx-auto">
-<GoogleMapSearch
-  initLocationName={form.location?.city}
-  onLocationSelected={(coordinates)=>{
-    console.log("Selected location from GoogleMapSearch:", coordinates);
-     handleChange("location", coordinates);
-  }}
-
-/>
-</span>
-<button
-  className="btn btn-outline btn-sm mt-2"
-  onClick={handleUseCurrentLocation}
-  disabled={loading}
->
-  {loading ? "Fetching..." : "Use Current Location"}
-</button>
-          {/* Self Statement */}
-
-          <div className="form-control">
-
-            <label className="label">
-              <span className="label-text">
-                Self Statement
-              </span>
-            </label>
-
-            <textarea
-              className="textarea bg-base-bg text-soft textarea-bordered h-32"
-              value={form.selfStatement}
-              onChange={(e)=>{
-                if(e.target.value.length <= 120){
-                  handleChange("selfStatement",e.target.value)
-                }
-              }}
-            />
-
-          </div>
-
-          {/* Privacy */}
-
-          <div className="form-control">
-
-            <label className="cursor-pointer label">
-
-              <span className="label-text">
-                Private Profile
-              </span>
-
-              <input
-                type="checkbox"
-                className="toggle bg-base-bg text-soft toggle-primary"
-                checked={form.isPrivate}
-                onChange={()=>handleChange("isPrivate",!form.isPrivate)}
-              />
-
-            </label>
-
-          </div>
-
-          {/* Buttons */}
-
-          <button
-            className="btn btn-primary w-full"
-            onClick={handleSubmit}
-          >
-            Update Profile
-          </button>
-
-          <button
-            className="btn btn-error btn-outline w-full"
-            onClick={handleDelete}
-          >
-            Delete Account
-          </button>
-
+        {/* Log Out */}
+        <div
+          onClick={async () => {
+            await SocialLogin.logout({ provider: "google" });
+            dispatch(signOutAction({ profile: currentProfile })).then(res =>
+              checkResult(res, (data) => {
+                router.push(Paths.login);
+              }, err => setError(err.message))
+            );
+          }}
+          className="btn mx-4 bg-base-bg dark:bg-base-surfaceDark border border-soft/20 dark:text-cream text-soft flex w-full"
+        >
+          <h4 className="mx-auto my-auto">Log Out</h4>
         </div>
 
-      </div>
+        {/* Username */}
+        <div className="form-control">
+          <label className="label">
+            <span className="label-text dark:text-cream">Username</span>
+          </label>
+          <input
+            type="text"
+            className="input bg-base-bg dark:bg-base-surfaceDark dark:text-cream text-soft input-bordered border-soft/20"
+            value={form.username}
+            onChange={(e) => handleChange("username", e.target.value)}
+          />
+        </div>
 
-    </IonContent>
-  );
+        {/* Profile Image */}
+        <div className="flex flex-col items-center gap-4">
+          <div className="avatar">
+            <div className="w-24 rounded-xl ring-2 ring-soft/20">
+              <img src={pictureUrl} />
+            </div>
+          </div>
+          <input
+            type="file"
+            accept="image/*"
+            className="file-input bg-base-bg dark:bg-base-surfaceDark dark:text-cream text-soft file-input-bordered border-soft/20 w-full"
+            onChange={handleImage}
+          />
+        </div>
+
+        {/* Location */}
+        <span className="w-fit mx-auto">
+          <GoogleMapSearch
+            initLocationName={form.location?.city}
+            onLocationSelected={(coordinates) => {
+              handleChange("location", coordinates);
+            }}
+          />
+        </span>
+        <button
+          className="btn btn-outline btn-sm mt-2 dark:text-cream dark:border-cream/30 border-soft/30"
+          onClick={handleUseCurrentLocation}
+          disabled={loading}
+        >
+          {loading ? "Fetching..." : "Use Current Location"}
+        </button>
+
+        {/* Self Statement */}
+        <div className="form-control">
+          <label className="label">
+            <span className="label-text dark:text-cream">Self Statement</span>
+          </label>
+          <textarea
+            className="textarea bg-base-bg dark:bg-base-surfaceDark dark:text-cream text-soft textarea-bordered border-soft/20 h-32"
+            value={form.selfStatement}
+            onChange={(e) => {
+              if (e.target.value.length <= 120) {
+                handleChange("selfStatement", e.target.value);
+              }
+            }}
+          />
+        </div>
+
+        {/* Privacy */}
+        <div className="form-control">
+          <label className="cursor-pointer label">
+            <span className="label-text dark:text-cream">Private Profile</span>
+            <input
+              type="checkbox"
+              className="toggle toggle-primary"
+              checked={form.isPrivate}
+              onChange={() => handleChange("isPrivate", !form.isPrivate)}
+            />
+          </label>
+        </div>
+
+        {/* Save */}
+        <button
+          className="btn bg-soft text-white hover:bg-soft/90 w-full border-none"
+          onClick={handleSubmit}
+        >
+          Update Profile
+        </button>
+
+        {/* Delete */}
+        <button
+          className="btn btn-outline border-golden text-golden hover:bg-golden hover:text-white w-full"
+          onClick={handleDelete}
+        >
+          Delete Account
+        </button>
+
+      </div>
+    </div>
+  </IonContent>
+);
+// console.log("Current profile in settings:", form.location)
+//   return (
+
+//     <IonContent fullscreen>
+      
+//       <div className="min-h-screen  px-4 bg-base-surface flex justify-center pt-20 pb-32">
+
+//         <div className="card w-96  sm:max-w-xl p-6 space-y-6">
+
+//           <h2 className="text-2xl font-bold text-center text-emerald-700">
+//             Profile Settings
+//           </h2>
+//           <div  onClick={async ()=>{
+//              await SocialLogin.logout({ provider: "google" });
+//             dispatch(signOutAction({profile:currentProfile})).then(res=>
+          
+//           checkResult(res,(data)=>{
+//             console.log("sign out",data)
+//             router.push(Paths.login)},err=>{
+// setError(err.message)
+//           }))}}
+
+//          className="btn mx-4 bg-base-bg btn-error flex btn-outline w-full">
+//             <h4 className="mx-auto my-auto">Log Out</h4>
+//           </div>
+//           {/* Username */}
+
+//           <div className="form-control">
+
+//             <label className="label">
+//               <span className="label-text">Username</span>
+//             </label>
+
+//             <input
+//               type="text"
+//               className="input bg-base-bg text-soft input-bordered"
+//               value={form.username}
+//               onChange={(e)=>handleChange("username",e.target.value)}
+//             />
+
+//           </div>
+
+//           {/* Profile Image */}
+
+//           <div className="flex flex-col items-center gap-4">
+
+//             <div className="avatar">
+
+//               <div className="w-24 rounded-xl">
+
+//                 <img src={pictureUrl} />
+
+//               </div>
+
+//             </div>
+
+//             <input
+//               type="file"
+//               accept="image/*"
+//               className="file-input bg-base-bg text-soft file-input-bordered w-full"
+//               onChange={handleImage}
+//             />
+
+//           </div>
+//           <span className="w-fit mx-auto">
+// <GoogleMapSearch
+//   initLocationName={form.location?.city}
+//   onLocationSelected={(coordinates)=>{
+//     console.log("Selected location from GoogleMapSearch:", coordinates);
+//      handleChange("location", coordinates);
+//   }}
+
+// />
+// </span>
+// <button
+//   className="btn btn-outline btn-sm mt-2"
+//   onClick={handleUseCurrentLocation}
+//   disabled={loading}
+// >
+//   {loading ? "Fetching..." : "Use Current Location"}
+// </button>
+//           {/* Self Statement */}
+
+//           <div className="form-control">
+
+//             <label className="label">
+//               <span className="label-text">
+//                 Self Statement
+//               </span>
+//             </label>
+
+//             <textarea
+//               className="textarea bg-base-bg text-soft textarea-bordered h-32"
+//               value={form.selfStatement}
+//               onChange={(e)=>{
+//                 if(e.target.value.length <= 120){
+//                   handleChange("selfStatement",e.target.value)
+//                 }
+//               }}
+//             />
+
+//           </div>
+
+//           {/* Privacy */}
+
+//           <div className="form-control">
+
+//             <label className="cursor-pointer label">
+
+//               <span className="label-text">
+//                 Private Profile
+//               </span>
+
+//               <input
+//                 type="checkbox"
+//                 className="toggle bg-base-bg text-soft toggle-primary"
+//                 checked={form.isPrivate}
+//                 onChange={()=>handleChange("isPrivate",!form.isPrivate)}
+//               />
+
+//             </label>
+
+//           </div>
+
+//           {/* Buttons */}
+
+//           <button
+//             className="btn btn-primary w-full"
+//             onClick={handleSubmit}
+//           >
+//             Update Profile
+//           </button>
+
+//           <button
+//             className="btn btn-error btn-outline w-full"
+//             onClick={handleDelete}
+//           >
+//             Delete Account
+//           </button>
+
+//         </div>
+
+//       </div>
+
+//     </IonContent>
+//   );
 }

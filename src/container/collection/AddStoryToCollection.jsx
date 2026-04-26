@@ -107,7 +107,7 @@ export default function AddToCollectionsContainer() {
   // Loading state
   if (!item) {
     return (
-      <IonContent fullscreen style={{...getBackground()}}>
+      <IonContent fullscreen style={{...getBackground(),"--min-height":"100%"}}>
        <div className={`${WRAP} ${PAGE_Y} ${PAGE_STACK} animate-pulse`}>
           <div className="h-6 w-40 bg-gray-200 rounded" />
           <div className="h-24 bg-gray-200 rounded-2xl" />
@@ -120,7 +120,7 @@ export default function AddToCollectionsContainer() {
 
   return (
     <ErrorBoundary>
-      <IonContent fullscreen style={{...getBackground()}}>
+      <IonContent fullscreen style={{...getBackground(),"--min-height":"100%"}}>
     
 <div className={`${WRAP}  bg-base-surface pb-26 dark:bg-base-bgDark ${PAGE_Y} ${PAGE_STACK}`}>
           {/* Header */}

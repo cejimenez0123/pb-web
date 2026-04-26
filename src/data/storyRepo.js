@@ -83,18 +83,17 @@ class StoryRepo{
         return res.data
     }
 
-     async getMyStories({ skip = 0, take = 50 ,search=""} = {}) {
+     async getMyStories({ skip = 0,status, take = 50 ,search=""} = {}) {
   try {
     const headers = await this.getAuthHeaders();
 
-    console.log("GETMYHEADER", headers);
-    console.log("PAGINATION PARAMS", { skip, take });
+
 
     const res = await axios.get(
       this.url + "/profile/protected",
       {
         headers,
-        params: { skip, take,search}, // 🔥 THIS is the key
+        params: { status, skip, take,search}, // 🔥 THIS is the key
       }
     );
 
@@ -107,41 +106,7 @@ class StoryRepo{
   }
 }
     
-// async getMyStories({ skip = 0, take = 20, search = "" } = {}) {
-//   const headers = await this.getAuthHeaders();
 
-//   const res = await axios.get(this.url + "/profile/protected", {
-//     headers,
-//     params: { skip, take, search },
-//   });
-
-//   return {
-//     items: res.data.items,
-//     totalCount: res.data.totalCount,
-//     hasMore: res.data.hasMore,
-//   };
-// }
-// async getMyStories({ cursor = null, take = 50, search = "" } = {}) {
-//   try {
-//     const headers = await this.getAuthHeaders();
-
-//     const res = await axios.get(this.url + "/profile/protected", {
-//       headers,
-//       params: {
-//         cursor,
-//         take,
-//         search,
-//       },
-//     });
-
-//     console.log("GETMY", res.data);
-
-//     return res.data;
-//   } catch (e) {
-//     console.error("getMyStories failed:", e);
-//     throw e;
-//   }
-// }
     async getPublicProfileStories({profileId}){
         let res = await axios.get(this.url+"/profile/"+profileId+"/public")
         return res.data

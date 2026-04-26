@@ -214,7 +214,7 @@ if (!canSee) {
 
   if (!colInView) {
     return (
-      <IonContent style={{...getBackground()
+      <IonContent style={{...getBackground(),"--min-height":"100%"
   }} >
         {pending ? (
           <>
@@ -239,7 +239,7 @@ if (!canSee) {
   }
 
   return (
-    <IonContent fullscreen style={{...getBackground()
+    <IonContent fullscreen style={{...getBackground(),"--min-height":"100%"
 
   }} >
       <ErrorBoundary>

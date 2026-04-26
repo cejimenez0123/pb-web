@@ -24,6 +24,7 @@ import ListPill from "../components/page/ListPill";
 import SectionHeader from "../components/SectionHeader";
 import useDebounce from "../core/useDebounce";
 import { setPageData } from "../actions/PageActions";
+import getBackground from "../core/getbackground";
 
 const TABS = {
   POSTS: "pages",
@@ -145,19 +146,12 @@ if (!authResolved) return <IonContent fullscreen />;// blank while auth checks
 if (!profile) return <EmptyProfileState />; // only show this when truly logged out;
   return (
 
-      <IonContent fullscreen scrollY={true}
-
-  style={{ "--background": 
-    prefersDark ?
-     Enviroment.palette.base.backgroundDark 
-    ?? Enviroment.palette.base.bg : 
-    Enviroment.palette.base.background
-
-  }}
+      <IonContent fullscreen 
+  style={{...getBackground(),"--min-height":"100%"}}
 
 >
       <ErrorBoundary>
-        <div className=" pb-24   space-y-8">
+        <div className="  overflow-y-auto bg-cream pb-10 dark:bg-base-bgDark space-y-8">
 <div className='flex sm:pt-16 flex-col justify-center'>
 <div className=" p-4 ">
   {/* {Enviroment.palette.button.} */}
@@ -176,11 +170,11 @@ className="bg-soft rounded-full p-2"><img src={settings} /></button>
          
             </div>
 
-            <div className="flex justify-between text-center">
+            {/* <div className="flex justify-between text-center">
             <StatChip value={profile?._count?.followers ?? ""}
                label="Followers" />
               <StatChip value={profile?._count?.following??""} label="Following" />
-            </div>
+            </div> */}
 
             {(profile?.bio || profile?.selfStatement) && (
               <p className="text-sm text-gray-700 dark:text-cream leading-relaxed">
@@ -195,7 +189,7 @@ className="bg-soft rounded-full p-2"><img src={settings} /></button>
                  
                 {[...profile.hashtag].slice(0, 5).map((tag, i) => {
                   
-                  return<Pill key={i} onClick={()=>router.push(Paths.hashtag.createRoute(tag.id))}
+                  return<Pill key={i} onClick={()=>router.push(Paths.hashtag.createRoute(tag.hashtag.id))}
                   label={`#${tag.hashtag.name ?? tag.tag}`} />
 })}
               </div>
@@ -242,7 +236,11 @@ className="bg-soft rounded-full p-2"><img src={settings} /></button>
       border-soft border rounded-full
         w-full px-4 py-2
         mx-4
-  bg-cream
+          bg-cream
+        dark:bg-base-bgDark 
+        dark:border-cream
+        
+
         text-sm text-soft
         placeholder-gray-400
         focus:outline-none focus:ring-1 focus:ring-gray-300
@@ -332,12 +330,13 @@ className="bg-soft rounded-full p-2"><img src={settings} /></button>
           </div>
 </div>
 </div>
-   </div>
-          {/* Explore */}
-     <div className='min-h-[28rem]'>
+     <div className='min-h-[28rem] bg-cream pb-24'>
             <ExploreList/>
           </div>
      
+   </div>
+          {/* Explore */}
+
            </ErrorBoundary>
       </IonContent>
  

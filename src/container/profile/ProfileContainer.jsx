@@ -257,78 +257,51 @@ useEffect(() => {
   }
   profile?.location?.city?setLocationName(prof.location.city):profile?.location&& city()
   },[])
-    
-  return (
-    <ErrorBoundary>
-      
-<IonContent style={{...getBackground()}} fullscreen>
-  {/* <div className="relative max-w-2xl mx-auto px-4 pb-24 pt-safe"> */}
-<div className={`${WRAP} ${PAGE_PADDING_Y}`}> 
+    return (
+  <ErrorBoundary>
+    <IonContent style={{...getBackground()}} fullscreen>
+      <div className={`${WRAP} ${PAGE_PADDING_Y} bg-cream dark:bg-base-bgDark`}>
 
-    <div
-      className={`
-        absolute inset-0 transition-opacity duration-300
-        ${isLoading ? "opacity-100" : "opacity-0 pointer-events-none"}
-      `}
-    >
-      
-      <ProfileSkeleton />
-    </div>
+        {/* Skeleton */}
+        <div className={`absolute inset-0 transition-opacity duration-300 ${isLoading ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
+          <ProfileSkeleton />
+        </div>
 
-    {/* 🔹 Real Content */}
-    <div
-      className={`
-        transition-opacity duration-300
-        ${isReady ? "opacity-100" : "opacity-0"}
-      `}
-    >
-     
-
+        {/* Real Content */}
+        <div className={`transition-opacity duration-300 ${isReady ? "opacity-100" : "opacity-0"}`}>
 
           {/* Header */}
-         <div className={`${HEADER_PADDING} ${HEADER_STACK}`}>
-            {/* <div className="flex items-center justify-between">
+          <div className={`${HEADER_PADDING} ${HEADER_STACK}`}>
+
+            <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <ProfileInfo profile={profile} compact />
+                <div className="flex flex-col leading-tight">
+                  <h6 className="text-[1rem] text-soft dark:text-cream">@{profile?.username?.toLowerCase()}</h6>
+                </div>
               </div>
-              </div> */}
-<div className="flex items-center justify-between">
-  <div className="flex items-center gap-4">
+            </div>
 
-    {/* Avatar (inside ProfileInfo) */}
-    <ProfileInfo profile={profile} compact />
-
-    {/* Name + Username */}
-    <div className="flex flex-col  leading-tight">
-      {/* <span className="font-semibold text-base text-gray-900">
-        {profile.displayName || "Unnamed"}
-      </span> */}
-
-      <span className=" ">
-       <h6 className='text-[1rem] text-soft'>@{profile?.username?.toLowerCase()}</h6> 
-      </span>
-    </div>
-
-  </div>
-  
-</div>
-      {(communities?.length ?? 0) > 0 && (
+            {(communities?.length ?? 0) > 0 && (
               <div className="space-y-2">
-                <p className="text-xs text-gray-400 uppercase">Communities</p>
-                <div className="flex space-2 flex-wrap gap-2 ">
-            {communities.slice(0, 3).map((c,i) => <div className='m-1'>
-                  <Pill key={i} label={c.title} onClick={()=>router.push(Paths.collection.createRoute(c.id))}/></div>)}
+                <p className="text-xs text-gray-400 dark:text-cream/50 uppercase">Communities</p>
+                <div className="flex flex-wrap gap-2">
+                  {communities.slice(0, 3).map((c, i) => (
+                    <div className="m-1" key={i}>
+                      <Pill label={c.title} onClick={() => router.push(Paths.collection.createRoute(c.id))} />
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
-        <div className={STATS_GAP}>
-             
+
+            <div className={STATS_GAP}>
               <StatChip value={followerCount} label="Followers" />
               <StatChip value={followingCount} label="Following" />
             </div>
 
             {(profile?.bio || profile?.selfStatement) && (
-              <p className="text-sm text-gray-700 leading-relaxed">
+              <p className="text-sm text-gray-700 dark:text-cream leading-relaxed">
                 {profile.bio ?? profile.selfStatement}
               </p>
             )}
@@ -336,120 +309,304 @@ useEffect(() => {
             {(profile?.hashtags ?? profile?.tags)?.length > 0 && (
               <div className="flex flex-wrap gap-2">
                 {(profile.hashtags ?? profile.tags).slice(0, 5).map((tag, i) => (
-                  <Pill key={i} onClick={()=>router.push(Paths.collection.createRoute(tag.id))} label={`#${typeof tag === "string" ? tag : tag.name ?? tag.tag}`} />
+                  <Pill
+                    key={i}
+                    onClick={() => router.push(Paths.collection.createRoute(tag.id))}
+                    label={`#${typeof tag === "string" ? tag : tag.name ?? tag.tag}`}
+                  />
                 ))}
               </div>
             )}
 
             {(profile?.communities?.length ?? 0) > 0 && (
               <div className="space-y-2">
-                <p className="text-xs text-gray-400 uppercase">Communities</p>
+                <p className="text-xs text-gray-400 dark:text-cream/50 uppercase">Communities</p>
                 <div className="flex flex-wrap gap-2">
-                  {profile.communities.slice(0, 3).map((c) => <Pill onClick={()=>router.push(Paths.collection.createRoute(c.id))} key={c.id} label={c.name} />)}
+                  {profile.communities.slice(0, 3).map((c) => (
+                    <Pill onClick={() => router.push(Paths.collection.createRoute(c.id))} key={c.id} label={c.name} />
+                  ))}
                 </div>
               </div>
             )}
           </div>
 
-          {/* Search + Tabs */}
-          {/* <div className={`${SEARCH_ROW}`}> */}
-              {/* <div className="w-full flex-row flex"> */}
-              <div className={`${SEARCH_ROW}`}>
-    <input
-      value={search}
-      onChange={(e) => setSearch(e.target.value)}
-      placeholder="Search"
-      className="
-      border-soft border rounded-full
-        w-full px-4 py-2
-  bg-cream
-        text-sm text-soft
-        placeholder-gray-400
-        focus:outline-none focus:ring-1 focus:ring-gray-300
-      "
-    />
-    <FollowButton isSelf={isSelf} prof={profile} onClick={onClickFollow}follow={following} current={currentProfile}  />
-        </div>
-  </div>
-  <div className={tabWrapper}>
+          {/* Search + Follow */}
+          <div className={SEARCH_ROW}>
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search"
+              className="border-soft border rounded-full w-full px-4 py-2 bg-cream dark:bg-base-bgDark dark:border-cream/30 dark:text-cream text-sm text-soft placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-300"
+            />
+            <FollowButton isSelf={isSelf} prof={profile} onClick={onClickFollow} follow={following} current={currentProfile} />
+          </div>
+
+          {/* Tabs */}
+          <div className={tabWrapper}>
             <TabBar tabs={tabs} active={tab} onChange={setTab} />
-            </div>
-           
-{/* <div> */}
-      
+          </div>
+
+          {/* Tab Content */}
           <div className={`${WRAP} space-y-10 min-h-[40rem]`}>
+
             {tab === TABS.POSTS && (
               <>
-                {search.length==0 && recentPosts.length > 0 && (
+                {search.length === 0 && recentPosts.length > 0 && (
                   <section className="space-y-4">
-                    {/* <SectionLabel>Recent</SectionLabel>
-                     */}
-                     <SectionHeader title={"Recent"}/>
+                    <SectionHeader title="Recent" />
                     <PageProfileList items={recentPosts} router={router} />
                   </section>
                 )}
-
-             
-                  <section className="space-y-4">
-                    <SectionHeader title={"All Pages"}/>
-                    <PaginatedList
-                      cacheKey="stories"
-                        key={"getPublicProfilePages"}
-  fetcher={getPublicProfilePages}
-  params={{ profileId: id  }}   // 👈 consistent with collections
-  pageSize={8}
-  renderItem={(p) => (
-    <div
-      key={p.id}
-      onClick={() => router.push(Paths.page.createRoute(p.id))}
-      className="px-3 py-3 rounded-full border border-purple border-1 bg-base-bg backdrop-blur-sm shadow-sm active:scale-[0.98] transition"
-    >
-      <span className="text-[0.95rem] min-h-10 dark:text-cream font-medium text-gray-800">
-        {p?.title?.length > 0 ? p.title : "Untitled"}
-      </span>
-    </div>
-  )}
-/>
-                    {/* <PaginatedPageList items={pages} router={router}/> */}
-                  </section>
-                {/* )} */}
-
+                <section className="space-y-4">
+                  <SectionHeader title="All Pages" />
+                  <PaginatedList
+                    cacheKey="stories"
+                    key="getPublicProfilePages"
+                    fetcher={getPublicProfilePages}
+                    params={{ profileId: id }}
+                    pageSize={8}
+                    renderItem={(p) => (
+                      <div
+                        key={p.id}
+                        onClick={() => router.push(Paths.page.createRoute(p.id))}
+                        className="px-3 py-3 rounded-full border border-blue border-1 bg-base-bg dark:bg-base-surfaceDark backdrop-blur-sm shadow-sm active:scale-[0.98] transition"
+                      >
+                        <span className="text-[0.95rem] dark:text-cream font-medium text-gray-800">
+                          {p?.title?.length > 0 ? p.title : "Untitled"}
+                        </span>
+                      </div>
+                    )}
+                  />
+                </section>
                 {pages.length === 0 && <EmptyState text="No posts yet." />}
               </>
             )}
 
             {tab === TABS.COLLECTIONS && (
-              <div className='pt-8'>   
-                   <PaginatedList
-
-                    cacheKey="collections"
-  fetcher={getPublicProfileCollections}
-  params={{ profileId: id  }}
-  pageSize={8}
-  renderItem={(p) => (
-    <div
-      onClick={() => router.push(Paths.collection.createRoute(p.id))}
-      className="px-3 py-3 rounded-full dark:text-cream border border-purple bg-base-bg"
-    >
-      {p.title}
-    </div>
-  )}
-/></div> 
+              <div className="pt-8">
+                <PaginatedList
+                  cacheKey="collections"
+                  fetcher={getPublicProfileCollections}
+                  params={{ profileId: id }}
+                  pageSize={8}
+                  renderItem={(p) => (
+                    <div
+                      onClick={() => router.push(Paths.collection.createRoute(p.id))}
+                      className="px-3 py-3 rounded-full border border-purple bg-base-bg dark:bg-base-surfaceDark dark:text-cream"
+                    >
+                      {p.title}
+                    </div>
+                  )}
+                />
+              </div>
             )}
 
             {tab === TABS.COMMUNITIES && <CommunitiesPanel communities={communities} router={router} />}
-            {tab === TABS.ABOUT && <AboutPanel router={router} profile={profile}  />}
+            {tab === TABS.ABOUT && <AboutPanel router={router} profile={profile} />}
           </div>
 
           {/* Explore */}
-          <div className='min-h-[28rem]'>
+          <div className="min-h-[28rem]">
             <ExploreList />
           </div>
+
         </div>
+      </div>
+    </IonContent>
+  </ErrorBoundary>
+);
+//   return (
+//     <ErrorBoundary>
+      
+// <IonContent style={{...getBackground()}} fullscreen>
+//   {/* <div className="relative max-w-2xl mx-auto px-4 pb-24 pt-safe"> */}
+// <div className={`${WRAP} ${PAGE_PADDING_Y}`}> 
+
+//     <div
+//       className={`
+//         absolute inset-0 transition-opacity duration-300
+//         ${isLoading ? "opacity-100" : "opacity-0 pointer-events-none"}
+//       `}
+//     >
+      
+//       <ProfileSkeleton />
+//     </div>
+
+//     {/* 🔹 Real Content */}
+//     <div
+//       className={`
+//         transition-opacity duration-300
+//         ${isReady ? "opacity-100" : "opacity-0"}
+//       `}
+//     >
+     
+
+
+//           {/* Header */}
+//          <div className={`${HEADER_PADDING} ${HEADER_STACK}`}>
+//             {/* <div className="flex items-center justify-between">
+//               <div className="flex items-center gap-4">
+//                 <ProfileInfo profile={profile} compact />
+//               </div>
+//               </div> */}
+// <div className="flex items-center justify-between">
+//   <div className="flex items-center gap-4">
+
+//     {/* Avatar (inside ProfileInfo) */}
+//     <ProfileInfo profile={profile} compact />
+
+//     {/* Name + Username */}
+//     <div className="flex flex-col  leading-tight">
+//       {/* <span className="font-semibold text-base text-gray-900">
+//         {profile.displayName || "Unnamed"}
+//       </span> */}
+
+//       <span className=" ">
+//        <h6 className='text-[1rem] text-soft'>@{profile?.username?.toLowerCase()}</h6> 
+//       </span>
+//     </div>
+
+//   </div>
+  
+// </div>
+//       {(communities?.length ?? 0) > 0 && (
+//               <div className="space-y-2">
+//                 <p className="text-xs text-gray-400 uppercase">Communities</p>
+//                 <div className="flex space-2 flex-wrap gap-2 ">
+//             {communities.slice(0, 3).map((c,i) => <div className='m-1'>
+//                   <Pill key={i} label={c.title} onClick={()=>router.push(Paths.collection.createRoute(c.id))}/></div>)}
+//                 </div>
+//               </div>
+//             )}
+//         <div className={STATS_GAP}>
+             
+//               <StatChip value={followerCount} label="Followers" />
+//               <StatChip value={followingCount} label="Following" />
+//             </div>
+
+//             {(profile?.bio || profile?.selfStatement) && (
+//               <p className="text-sm text-gray-700 leading-relaxed">
+//                 {profile.bio ?? profile.selfStatement}
+//               </p>
+//             )}
+
+//             {(profile?.hashtags ?? profile?.tags)?.length > 0 && (
+//               <div className="flex flex-wrap gap-2">
+//                 {(profile.hashtags ?? profile.tags).slice(0, 5).map((tag, i) => (
+//                   <Pill key={i} onClick={()=>router.push(Paths.collection.createRoute(tag.id))} label={`#${typeof tag === "string" ? tag : tag.name ?? tag.tag}`} />
+//                 ))}
+//               </div>
+//             )}
+
+//             {(profile?.communities?.length ?? 0) > 0 && (
+//               <div className="space-y-2">
+//                 <p className="text-xs text-gray-400 uppercase">Communities</p>
+//                 <div className="flex flex-wrap gap-2">
+//                   {profile.communities.slice(0, 3).map((c) => <Pill onClick={()=>router.push(Paths.collection.createRoute(c.id))} key={c.id} label={c.name} />)}
+//                 </div>
+//               </div>
+//             )}
+//           </div>
+
+//           {/* Search + Tabs */}
+//           {/* <div className={`${SEARCH_ROW}`}> */}
+//               {/* <div className="w-full flex-row flex"> */}
+//               <div className={`${SEARCH_ROW}`}>
+//     <input
+//       value={search}
+//       onChange={(e) => setSearch(e.target.value)}
+//       placeholder="Search"
+//       className="
+//       border-soft border rounded-full
+//         w-full px-4 py-2
+//   bg-cream
+//         text-sm text-soft
+//         placeholder-gray-400
+//         focus:outline-none focus:ring-1 focus:ring-gray-300
+//       "
+//     />
+//     <FollowButton isSelf={isSelf} prof={profile} onClick={onClickFollow}follow={following} current={currentProfile}  />
+//         </div>
+//   </div>
+//   <div className={tabWrapper}>
+//             <TabBar tabs={tabs} active={tab} onChange={setTab} />
+//             </div>
+           
+// {/* <div> */}
+      
+//           <div className={`${WRAP} space-y-10 min-h-[40rem]`}>
+//             {tab === TABS.POSTS && (
+//               <>
+//                 {search.length==0 && recentPosts.length > 0 && (
+//                   <section className="space-y-4">
+//                     {/* <SectionLabel>Recent</SectionLabel>
+//                      */}
+//                      <SectionHeader title={"Recent"}/>
+//                     <PageProfileList items={recentPosts} router={router} />
+//                   </section>
+//                 )}
+
+             
+//                   <section className="space-y-4">
+//                     <SectionHeader title={"All Pages"}/>
+//                     <PaginatedList
+//                       cacheKey="stories"
+//                         key={"getPublicProfilePages"}
+//   fetcher={getPublicProfilePages}
+//   params={{ profileId: id  }}   // 👈 consistent with collections
+//   pageSize={8}
+//   renderItem={(p) => (
+//     <div
+//       key={p.id}
+//       onClick={() => router.push(Paths.page.createRoute(p.id))}
+//       className="px-3 py-3 rounded-full border border-purple border-1 bg-base-bg backdrop-blur-sm shadow-sm active:scale-[0.98] transition"
+//     >
+//       <span className="text-[0.95rem] min-h-10 dark:text-cream font-medium text-gray-800">
+//         {p?.title?.length > 0 ? p.title : "Untitled"}
+//       </span>
+//     </div>
+//   )}
+// />
+//                     {/* <PaginatedPageList items={pages} router={router}/> */}
+//                   </section>
+//                 {/* )} */}
+
+//                 {pages.length === 0 && <EmptyState text="No posts yet." />}
+//               </>
+//             )}
+
+//             {tab === TABS.COLLECTIONS && (
+//               <div className='pt-8'>   
+//                    <PaginatedList
+
+//                     cacheKey="collections"
+//   fetcher={getPublicProfileCollections}
+//   params={{ profileId: id  }}
+//   pageSize={8}
+//   renderItem={(p) => (
+//     <div
+//       onClick={() => router.push(Paths.collection.createRoute(p.id))}
+//       className="px-3 py-3 rounded-full dark:text-cream border border-purple bg-base-bg"
+//     >
+//       {p.title}
+//     </div>
+//   )}
+// /></div> 
+//             )}
+
+//             {tab === TABS.COMMUNITIES && <CommunitiesPanel communities={communities} router={router} />}
+//             {tab === TABS.ABOUT && <AboutPanel router={router} profile={profile}  />}
+//           </div>
+
+//           {/* Explore */}
+//           <div className='min-h-[28rem]'>
+//             <ExploreList />
+//           </div>
+//         </div>
     
-      </IonContent>
-    </ErrorBoundary>
-  );
+//       </IonContent>
+//     </ErrorBoundary>
+//   );
 }
 
 export default ProfileContainer;

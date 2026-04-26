@@ -32,6 +32,9 @@ import { setPageInView } from '../actions/PageActions';
 import checkResult from './checkResult';
 import { Preferences } from '@capacitor/preferences';
 import getBackground from './getbackground';
+import { getMyStories } from '../actions/StoryActions';
+import PaginatedList from '../components/page/PaginatedList';
+import shortName from './shortName';
 // import { IonContext } from '@ionic/react/dist/types/contexts/IonContext';
 // spacing rules (mentally or constants)
 const SPACING = {
@@ -58,7 +61,7 @@ const PageWrapper = ({
   const { setPresentingEl } = useContext(Context);
   //  const isDev = import.meta.env.VITE_NODE_ENV=="dev"
 const isNativePlatform = Capacitor.isNativePlatform();
-
+const pageSize = 6
 const isNative = isNativePlatform
 const {currentProfile}=useSelector(state=>state.users)
   const isAuthed = !!currentProfile?.id;
@@ -105,7 +108,7 @@ const [token,setToken]=useState(null)
           <IonList
            style={{
             backgroundColor: Enviroment.palette.cream,
-            paddingTop: "0.5em"
+           
           }}>
              
          
@@ -196,38 +199,33 @@ let signedInMenu = [
   openDialog({
     title: "Drafts",
     scrollY: false,
-    breakpoint: 1,
-
+    // breakpoint: 1,
+    height:90,
     disagree: () => resetDialog(),
 
     text: (
       <div className="h-[80vh] flex flex-col bg-cream">
 
       
-        <div className="flex-1 overflow-y-auto px-4 pb-6">
-
-          <IonList
-            style={{
-              backgroundColor: Enviroment.palette.cream,
-            }}
-          >
-            {myStories.filter(s=>s.status=="draft"||s.status=="fragment").map((story) => (
-              <li
-                key={story.id}
-                className="my-2"
-                onClick={() => {
-                  router.push(Paths.page.createRoute(story.id));
-                  resetDialog();
-                }}
-              >
-                <div className="p-4 w-full border border-soft rounded-xl bg-cream">
-                  <h6>{story.title.length>0?story.title:"Untitled"}</h6>
-                </div>
-              </li>
-            ))}
-          </IonList>
-
-        </div>
+          <PaginatedList
+  cacheKey="stories"
+  fetcher={getMyStories}
+  pageSize={pageSize}
+  params={{ status: "draft" }}
+  enableInternalSearch={true}
+  renderItem={(story) => (
+    <div
+      key={story.id}
+      onClick={() => {
+        router.push(Paths.page.createRoute(story?.id));
+        resetDialog();
+      }}
+      className="p-4 border border-blue dark:text-cream border-1 rounded-xl"
+    >
+      {shortName(story?.title, 40) || "Untitled"}
+    </div>
+  )}
+/>
       </div>
     ),
   });
@@ -244,17 +242,26 @@ let signedInMenu = [
       text: (<div className=''>
           <div className={`bg-cream overflow-y-scroll ${isNative? "h-[35rem]":"h-[30rem]"}`}> 
     
-          <IonList style={{backgroundColor:Enviroment.palette.cream}}>
-          
-          {communities.map(story=>{
-            return<li className=' my-2 bg-cream' onClick={()=>{
-              router.push(Paths.collection.createRoute(story.id))
-              resetDialog()
-            }}><div className='p-4 w-[100%] border-1 border border-soft rounded-xl'><h6>{story.title.length?story.title:
-          "Untitled"}</h6></div></li>
-          })||null}
-      
-          </IonList>
+           <PaginatedList
+       cacheKey="collections:type=library"
+        fetcher={getMyCollections}
+        pageSize={pageSize}
+        enableInternalSearch={true}
+        params={{ type: "library" }} // ✅ THIS NOW WORKS
+        renderItem={(y) => (
+          <div
+            onClick={() => {
+              router.push(Paths.collection.createRoute(story.id));
+              resetDialog();
+            }}
+            className="p-4 border border-purple rounded-xl"
+          >
+            <h4 className="text-[.9rem]">
+              {y.title || "Untitled"}
+            </h4>
+          </div>
+        )}
+      />
       </div>
         
       </div>
@@ -268,30 +275,27 @@ let signedInMenu = [
   <div className="flex flex-col h-full">
     
     <div className="bg-cream overflow-y-auto flex-1">
-      <IonList
-        style={{
-          backgroundColor: Enviroment.palette.cream,
-        }}
-      >
-        {myStories.map((story) => {
-          return (
-            <li
-              key={story.id}
-              className="my-2 bg-cream"
-              onClick={() => {
-                router.push(Paths.page.createRoute(story.id));
-                resetDialog();
-              }}
-            >
-              <div className="p-4 w-full border border-soft rounded-xl active:scale-[0.98] transition">
-                <h6>
-                  {story?.title?.length > 0 ? story.title : "Untitled"}
-                </h6>
-              </div>
-            </li>
-          );
-        })}
-      </IonList>
+       <div>
+   <PaginatedList
+   
+  cacheKey="stories"
+  fetcher={getMyStories}
+  pageSize={pageSize}
+ 
+  enableInternalSearch={true}
+  renderItem={(story) => (
+        <div
+          key={story.id}
+          onClick={() => {
+            router.push(Paths.page.createRoute(story?.id));
+            resetDialog();
+          }}
+          className="p-4 border border-blue dark:text-cream border-1 rounded-xl"
+        >
+          {shortName(story?.title,40) || "Untitled"}
+        </div>
+      )}
+    />  </div>
     </div>
 
   </div>
@@ -337,7 +341,7 @@ if (!isOnline) {
   style={{ 
     ...getBackground(),
     height: '100%', 
-    paddingTop: isDesktop ? '4rem' : '0',
+
   }}
 >
       <IonContent fullscreen className="ion-padding">
@@ -384,7 +388,7 @@ if (!isOnline) {
   style={{ 
     ...getBackground(),
     height: '100%', 
-    paddingTop: isDesktop ? '8em' : '0.5em',
+    paddingTop: isDesktop ? '8em' : '0.0em',
   }}
 
      
