@@ -10,7 +10,7 @@ import SectionHeader from "../SectionHeader";
 
 const SECTION_GAP = "pt-4";
 const SECTION_HEADER_ROW = "flex items-center justify-between ";
-const WRAP = "w-[100%]  mx-auto";
+const WRAP = "w-[100%]   bg-cream dark:bg-base-bgDark mx-auto";
 
 export default function ExploreList({ label = "Explore", collection }) {
   const items = useSelector((state) => state.books.recommendedCols);
@@ -40,7 +40,7 @@ export default function ExploreList({ label = "Explore", collection }) {
   }, [collection]);
 
   return (
-    <div>
+    // <div>
       <div className={`${WRAP} ${SECTION_GAP}`}>
         <div>
           <div className={SECTION_HEADER_ROW}>
@@ -94,6 +94,6 @@ export default function ExploreList({ label = "Explore", collection }) {
           </div>
         </div>
       </div>
-    </div>
+    // </div>
   );
 }

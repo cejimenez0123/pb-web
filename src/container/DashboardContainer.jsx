@@ -565,7 +565,7 @@ scrollY: false,
      
           
        </div>
-      <div className='min-h-[28rem]'>
+      <div className='min-h-[28rem]  bg-cream dark:bg-base-bgDark'>
         <ExploreList items={collections} />
  </div>
       </ErrorBoundary>

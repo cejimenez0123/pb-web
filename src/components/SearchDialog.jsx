@@ -255,13 +255,7 @@ const searchAction = useCallback(() => {
 
 
   return (
-    // <IonContent
-    //   fullscreen
-    //   scrollY={true}
-    //   className="ion-padding"
 
-    //   style={{'--padding-top':isPhone?"4em":"10em", '--background': Enviroment.palette.cream  }}
-    // >
     <IonContent fullscreen scrollY className={SURFACE}>
   <div className={`${WRAP} ${SECTION}`}>
     {/* <div className={`${WRAP} ${SECTION}`}> */}

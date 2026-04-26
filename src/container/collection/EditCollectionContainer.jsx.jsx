@@ -29,6 +29,7 @@ import Pill from "../../components/Pill";
 import Enviroment from "../../core/Enviroment";
 import TabBar from "../../components/TabBar";
 import computePermissions from "../../core/compusePermissions";
+import getBackground from "../../core/getbackground";
 // Layout & spacing
 const containerPadding = "px-4 pb-28 pt-6"; // consistent padding
 const cardPadding = "p-4"; // inner card padding
@@ -42,8 +43,8 @@ const tabWrapper = "max-w-lg mx-auto px-4"; // same for both containers
 // Example for container width
 const containerResponsive = "w-full sm:max-w-md md:max-w-lg lg:max-w-xl mx-auto";
 // Breakpoints
-const maxContainerWidth = "max-w-lg"; // desktop limit
-const inputTextClass = "bg-transparent outline-none"; // text inputs and textarea
+const maxContainerWidth = "max-w-lg bg-cream dark:bg-base-bgDark "; // desktop limit
+const inputTextClass = "bg-transparent dark:text-cream outline-none"; // text inputs and textarea
 
 // Tab bar
 const tabBarBase = "flex flex-wrap gap-1 bg-gray-100 rounded-xl p-1 px-2 sm:px-4";
@@ -263,7 +264,7 @@ if (!canSee) {
 }
 
   if(loading||!colInView){return editCollectionSkeleton()}
-    return<IonContent fullscreen style={{ "--background": Enviroment.palette.base.background }}>
+    return<IonContent fullscreen style={{...getBackground()}}>
   {/* <div className="max-w-lg mx-auto px-4 pb-28 pt-6 space-y-6"> */}
 <div className={`${maxContainerWidth} mx-auto ${containerPadding} ${gapBetweenCards}`}>
   {/* TITLE */}
@@ -370,12 +371,12 @@ if (!canSee) {
 
     {/* DESCRIPTION */}
     <div className="bg-base-bg rounded-2xl p-4 shadow-sm">
-      <p className="text-xs text-soft mb-2">Description</p>
+      <p className="text-xs text-soft mb-2 dark:text-cream" >Description</p>
       <textarea
         value={purpose}
         onChange={(e) => setPurpose(e.target.value)}
         placeholder="Describe your collection"
-        className="w-[100%] text-sm bg-transparent outline-none min-h-[120px]"
+        className="w-[100%] text-sm dark:text-cream bg-transparent outline-none min-h-[120px]"
       />
     </div>
 
@@ -466,7 +467,7 @@ function FollowersDropdown({ followersAre, setFollowersAre }) {
         tabIndex={0}
         role="button"
         onClick={() => setOpen((prev) => !prev)}
-        className="w-full flex items-center justify-center rounded-full px-6 py-3 border border-emerald-400 bg-base-bg text-emerald-700 font-medium shadow-sm hover:bg-emerald-50 cursor-pointer transition-all"
+        className="w-full flex items-center justify-center rounded-full px-6 py-3 border border-emerald-400 bg-base-bg  dark:bg-transparent dark:text-cream text-emerald-700 font-medium shadow-sm hover:bg-emerald-50 cursor-pointer transition-all"
       >
         Followers are&nbsp;
         <span className="font-semibold">{followersAre}s</span>

@@ -344,11 +344,11 @@ export default function ShareList({ page, profile, archive, setArchive, bookmark
     });
   };
 
-  const LI = "py-3 border-b bg-base-bg dark:bg-base-bgDark";
-  const TEXT = "text-[1rem] text-soft dark:text-cream px-4";
+  const LI = "py-3 border-b  bg-cream dark:bg-base-bgDark";
+  const TEXT = "text-[1rem] text-soft  bg-cream dark:bg-base-bgDark dark:text-cream px-4";
 
   return (
-    <div className="flex flex-col bg-base-bg dark:bg-base-bgDark overflow-hidden">
+    <div className="flex flex-col  bg-cream dark:bg-base-bgDark overflow-hidden">
 
       <li className={LI}>
         <div
@@ -363,7 +363,7 @@ export default function ShareList({ page, profile, archive, setArchive, bookmark
             }
           }}
         >
-          <IonText className={TEXT}>Add to Collection</IonText>
+          <h5 className={TEXT}>Add to Collection</h5>
         </div>
       </li>
 
@@ -377,14 +377,14 @@ export default function ShareList({ page, profile, archive, setArchive, bookmark
               router.push(Paths.editPage.createRoute(page.id));
             }}
           >
-            <IonText className={TEXT}>Edit</IonText>
+            <h5 className={TEXT}>Edit</h5>
           </div>
         </li>
       )}
 
       <li className={LI}>
         <div className="py-3" onClick={copyShareLink}>
-          <IonText className={TEXT}>Copy Share Link</IonText>
+          <h5 className={TEXT}>Copy Share Link</h5>
         </div>
       </li>
 

@@ -212,7 +212,7 @@ const handleFollow = async () => {
     if (currentProfile && collection) {
       let type = collection.followersAre ?? RoleType.commenter;
 
-      if (currentProfile.id === collection.profileId) {
+      if (currentProfile?.id === collection?.profileId) {
         type = RoleType.editor;
       }
 
@@ -344,7 +344,7 @@ const getCol = async (id) => {
 
 
   const deleteFollow = () => {
-    if(currentProfile.id == collection.profile.id){
+    if(currentProfile?.id == collection.profile?.id){
 setError("This is yours, delete it silly")
 return
     }
@@ -490,19 +490,14 @@ const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 return (
   <ErrorBoundary>
     <IonContent
-       style={{ "--background": 
-    prefersDark ?
-     Enviroment.palette.base.backgroundDark 
-    ?? Enviroment.palette.base.bg : 
-    Enviroment.palette.base.background
-
+       style={{...getBackground()
   }}
       scrollY={true}
       fullscreen
       className="pb-24 pt-12"
     >
        <div
-    className={`transition-opacity duration-300 ${
+    className={` bg-cream pb-26 dark:bg-base-bgDark transition-opacity duration-300 ${
       collection ? "opacity-100" : "opacity-0"
     }`}
   >
@@ -612,19 +607,21 @@ const PageTab = ({ collections }) => {
   const isOwner = collection?.profileId === currentProfile?.id;
   const router = useIonRouter();
 
-  const hasAnthologies = collections?.length > 0;
+  const hasAnthologies = collections?.length > 0 ;
 
   return (
     <div className="bg-base-surface dark:bg-base-bgDark">
    
-<SectionHeader title={"Anthologies"} />
-      {hasAnthologies ? (
+
+      {(!hasAnthologies && currentProfile.id==collection.profileId)?null:(hasAnthologies ? (<>
+      <SectionHeader title={"Anthologies"} />
         <div className="grid gap-4 grid-cols-1 overflow-x-auto sm:grid-cols-2 lg:grid-cols-3">
           <motion.div
             className="flex flex-row"
             variants={containerVariants}
             initial="hidden"
             animate="show"
+
           >
             {collections.filter(col => col).map(col => (
               <motion.div key={col.id} variants={itemVariants}>
@@ -634,7 +631,7 @@ const PageTab = ({ collections }) => {
               </motion.div>
             ))}
           </motion.div>
-        </div>
+        </div></>
       ) : (
         <div className="flex flex-col items-center mx-auto justify-center bg-base-surface dark:bg-transparent rounded-lg p-4 text-center py-6">
           <p className="mb-2 dark:text-cream text-gray-700">No anthologies yet.</p>
@@ -647,7 +644,7 @@ const PageTab = ({ collections }) => {
             </div>
           )}
         </div>
-      )}
+      ))}
 
       <div className={SECTION}>
       <SectionHeader title={"Pages"}/>
@@ -692,7 +689,7 @@ const MemberTab = ({ collection }) => {
     
 <SectionHeader title={"Contributors"}/>
         {
-          // <IonList style={{...getBackground()}}>
+   
             <div style={{...getBackground()}}className="flex flex-col  pt-4 px-4 min-h-[14rem]">
               {
           
@@ -705,7 +702,7 @@ const MemberTab = ({ collection }) => {
                 </div>
 })}
             </div>
-          // </IonList>
+     
         }
 
  </div>

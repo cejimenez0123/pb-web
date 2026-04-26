@@ -55,7 +55,7 @@ const Dialog = () => {
           >
             <div
               style={{ height: `${dialog.height ?? 90}vh` }}
-              className="bg-base-bg dark:bg-base-bgDark rounded-t-3xl shadow-xl px-4 pt-3 pb-8 flex flex-col"
+              className=" bg-cream dark:bg-base-bgDark rounded-t-3xl shadow-xl px-4 pt-3 pb-8 flex flex-col"
             >
               {/* Grabber */}
               <div className="w-10 h-1.5 bg-soft opacity-30 rounded-full mx-auto mb-4" />

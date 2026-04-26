@@ -163,7 +163,7 @@ const sortedResult = [...result].sort((a, b) => {
 }, [profiles, search,dispatch]);
 console.log("Filtered Profiles:", filteredProfiles.slice(0,5), "Search:", search, "Roles:", roles);
   return (
-    <div className="bg-base-surface  ">
+    <div className="dark:bg-base-bgDark bg-cream ">
 
       {/* TITLE */}
    <div className="mb-6">
@@ -180,7 +180,8 @@ console.log("Filtered Profiles:", filteredProfiles.slice(0,5), "Search:", search
           label="Reset All Roles"
            onClick={handleResetAllRoles}
           variant="secondary"
-          baseClass={"bg-button-primary"}
+      
+          baseClass={"bg-button-primary dark:text-cream dark:bg-transparent dark:border dark:border-1 dark:border-button-primary"}
         />
     
  
@@ -212,38 +213,25 @@ console.log("Filtered Profiles:", filteredProfiles.slice(0,5), "Search:", search
       </div>
 
       {/* LIST */}
-      <div className="space-y-4 bg-base-surface overflow-y-auto min-w-[20em] w-[100%] mb-4 max-h-[30rem]">
+      <div className="space-y-4 dark:bg-base-bgDark bg-cream  min-w-[20em] w-[100%] mb-4 max-h-[30rem]">
         {filteredProfiles.map((profile) => {
  
           const role = roles.find((r) => r.profile.id === profile.id);
           return (
-//             <div
-//   key={profile.id}
-//   className="flex items-center bg-base-bg dark:bg-text-primary py-2 justify-between border-b border-border-default dark:border-border-soft px-2 rounded-full"
-// >
-//   <div className="flex items-center gap-3">
-//     <ProfileCircle profile={profile} includeUsername={false} />
-//     <span className="text-sm text-text-primary dark:text-base-surface">{profile.username}</span>
-//   </div>
-// <button onClick={() => cycleRole(profile)}
-//     className="text-sm text-text-primary dark:text-base-surface italic hover:text-text-primary dark:hover:text-text-inverse transition"
-//   >
-// {role?.role ?? "none"}
-// </button>
-// </div>
+
   <div
   key={profile.id}
-  className="flex items-center bg-base-bg dark:bg-text-primary py-3 justify-between border-b border-border-default dark:border-border-soft px-3 rounded-2xl"
+  className="flex items-center bg-base-bg dark:bg-base-surfaceDark py-3 justify-between   dark:border-border-soft px-4 rounded-full"
 >
   <div className="flex items-center gap-3">
-    <ProfileCircle profile={profile} includeUsername={false} />
-    <span className="text-sm text-text-primary dark:text-base-surface">{profile.username}</span>
+    <ProfileCircle profile={profile} includeUsername={true} />
+    {/* <span className="text-sm text-text-primary dark:text-base-surface">{profile.username}</span> */}
   </div>
   <button
     onClick={() => cycleRole(profile)}
     className="min-w-[5.5rem] text-center px-3 py-2 rounded-full text-xs font-semibold transition-colors duration-150 cursor-pointer
-      bg-base-surface dark:bg-text-primary
-      text-text-brand dark:text-base-surface
+      bg-base-surface dark:bg-base-bgDark
+      text-text-brand dark:text-cream
       border border-border-focus dark:border-border-soft
       active:scale-95 active:bg-button-primary-bg active:text-text-inverse"
   >
