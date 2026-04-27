@@ -36,7 +36,7 @@ const TABS = {
 const WRAP = "w-[100%] max-w-[50em] px-4 mx-auto ";
 const tabWrapper = "max-w-lg mx-auto px-4 pb-4"; // same for both containers
 function MyProfileContainer() {
-  usePushNotificationListener()
+
   const dispatch = useDispatch()
   const { setSeo  } = useContext(Context);
   const profile = useSelector((state) => state.users.currentProfile);

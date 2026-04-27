@@ -25,7 +25,6 @@ function ContentHubContainer() {
   const  currentProfile = useSelector(state=>state.users.currentProfile)
 
 
-usePushNotificationListener()
     const [tab, setTab] = useState("dash");
   const [isGlobal,setIsGlobal]=useState(true)
 
