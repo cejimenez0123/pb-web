@@ -43,7 +43,7 @@ const {story,profile,location}=params
   )
 const fetchYourWorkshops = createAsyncThunk("books/findYourWorkshops",async (params,thunkApi)=>{
    let data =await workshopRepo.findYourWorkshops()
-   console.log
+  
    return data
 })
   const findWorkshopGroup = createAsyncThunk(
@@ -59,16 +59,33 @@ const fetchYourWorkshops = createAsyncThunk("books/findYourWorkshops",async (par
   }
 );
 
-const findWorkshopGroups = createAsyncThunk("books/findWorkshopGroups",async ({radius=50,global=false,location},thunkApi)=>{
-    try {
-      let data = await workshopRepo.findWorkshops({radius,global,location})
-      console.log("Fetched workshop groups:", data);
-      return data
-    } catch (error) {
-      console.error('Error fetching workshop groups:', error);
-      return {groups:[]}
-    }
-  })
+// const findWorkshopGroups = createAsyncThunk("books/findWorkshopGroups",async ({radius=50,global=false,location},thunkApi)=>{
+//     try {
+//       let data = await workshopRepo.findWorkshops({radius,global,location})
+//       console.log("Fetched workshop groups:", data);
+//       return data
+//     } catch (error) {
+//       console.error('Error fetching workshop groups:', error);
+//       return {groups:[]}
+//     }
+//   })
+const findWorkshopGroups = createAsyncThunk("books/findWorkshopGroups", async ({
+  radius = 50,
+  global = false,
+  location,
+  type,
+  skip = 0,
+  take = 10
+}, thunkApi) => {
+  try {
+    let data = await workshopRepo.findWorkshops({ radius, global, location, type, skip, take });
+    console.log("Fetched workshop groups:", data);
+    return data;
+  } catch (error) {
+    console.error('Error fetching workshop groups:', error);
+    return { groups: [], totalCount: 0 };
+  }
+});
 function mergeSmallArrays(input) {
   // Flatten the input array to separate items and small arrays
   let result = [];

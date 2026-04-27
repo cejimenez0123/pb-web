@@ -67,31 +67,50 @@ return {pages:data.pages}
       
     }
 )
-
 const getRecommendedCollections = createAsyncThunk(
-    'collections/recommendedCollections',
-    async (params,thunkApi) => {
+  'collections/recommendedCollections',
+  async ({ colId, type, skip = 0, take = 10 }, thunkApi) => {
+    try {
+      const { collections, totalCount } = await collectionRepo.recommendedColCollections({ 
+        colId, type, skip, take 
+      });
+      if (collections) {
+        return { collections, totalCount };
+      }
+      return { collections: [], totalCount: 0 };
+    } catch (error) {
+      return {
+        collections: [],
+        totalCount: 0,
+        error: new Error(`getRecommendedCollections ${error.message}`)
+      };
+    }
+  }
+);
+// const getRecommendedCollections = createAsyncThunk(
+//     'collections/recommendedCollections',
+//     async (params,thunkApi) => {
     
-        try{
+//         try{
      
-          const {collections}= await collectionRepo.recommendedColCollections(params)
-          if(collections){
-          return {collections:collections}
-          }
-            return{
-                collections:[]
-            }
+//           const {collections}= await collectionRepo.recommendedColCollections(params)
+//           if(collections){
+//           return {collections:collections}
+//           }
+//             return{
+//                 collections:[]
+//             }
        
 
-}catch (error) {
-    return{
-        collections:[],
-        error: new Error(`getRecommendedCollections ${error.message}`)
-    }
-}
+// }catch (error) {
+//     return{
+//         collections:[],
+//         error: new Error(`getRecommendedCollections ${error.message}`)
+//     }
+// }
       
-    }
-)
+//     }
+// )
 const getRecommendedCollectionsProfile = createAsyncThunk(
     'collections/recommendedCollections',
     async (params,thunkApi) => {
@@ -336,6 +355,29 @@ const patchCollectionContent=createAsyncThunk("collection/patchCollectionContent
     }
 
 )
+const getCollectionRecommendations = createAsyncThunk(
+    'collections/getCollectionRecommendations',
+    async ({ colId, skip = 0, take = 10, type }, thunkApi) => {
+        try {
+            const data = await collectionRepo.getCollectionRecommendations({ colId, skip, take, type });
+            return { groups: data.groups, totalCount: data.totalCount };
+        } catch (error) {
+            return thunkApi.rejectWithValue(error?.response?.data || error.message);
+        }
+    }
+);
+
+const getProfileRecommendations = createAsyncThunk(
+    'collections/getProfileRecommendations',
+    async ({ skip = 0, take = 10, type } = {}, thunkApi) => {
+        try {
+            const data = await collectionRepo.getProfileRecommendations({ skip, take, type });
+            return { groups: data.groups, totalCount: data.totalCount };
+        } catch (error) {
+            return thunkApi.rejectWithValue(error?.response?.data || error.message);
+        }
+    }
+);
 const clearCollections = createAction("collection/clearCollections")
 export {
     getPublicBooks,
@@ -347,7 +389,8 @@ export {
     getProtectedProfileCollections,
     getPublicProfileCollections,
     getProtectCollectionStories,
-
+    getCollectionRecommendations,
+    getProfileRecommendations,
 
     fetchCollection,
     fetchCollectionProtected,

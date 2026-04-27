@@ -205,11 +205,17 @@ console.log(res.data)
         return res.data
 
     }
-    async recommendedColCollections({colId}){
-        const res = await axios.get(this.url+"/"+colId+"/recommendations",)
+    // async recommendedColCollections({colId}){
+    //     const res = await axios.get(this.url+"/"+colId+"/recommendations",)
 
-        return res.data
-    }
+    //     return res.data
+    // }
+    async recommendedColCollections({ colId, skip = 0, take = 10, type } = {}) {
+  const res = await axios.get(`${this.url}/${colId}/recommendations`, {
+    params: { skip, take, ...(type && { type }) }
+  });
+  return res.data;
+}
     async recommendations(){
         const res = await axios.get(this.url+"/recommendations",{headers:{
             Authorization:"Bearer "+(await Preferences.get({key:"token"})).value
@@ -229,5 +235,20 @@ console.log(res.data)
        
         return res.data
     }
+    async getCollectionRecommendations({ colId, skip = 0, take = 10, type } = {}) {
+    const res = await axios.get(`${this.url}/recommendations/collection/${colId}`, {
+        params: { skip, take, ...(type && { type }) }
+    });
+    return res.data;
+}
+
+async getProfileRecommendations({ skip = 0, take = 10, type } = {}) {
+    const headers = await this.getAuthHeaders();
+    const res = await axios.get(`${this.url}/recommendations/profile`, {
+        headers,
+        params: { skip, take, ...(type && { type }) }
+    });
+    return res.data;
+}
 }
 export default new CollectionRepo()

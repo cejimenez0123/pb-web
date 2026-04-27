@@ -81,7 +81,7 @@ const collections = collectionsRaw
     const [archiveCol,setArchiveCol]=useState(null)
     
 const personalStories = usePaginatedResource({
-  key: "stories",
+  cacheKey: "stories",
   fetcher: getMyStories,
   pageSize,
   enabled: !!currentProfile?.id,
@@ -93,7 +93,7 @@ const personalStories = usePaginatedResource({
 
 const myStories = personalStories.items
 const personalCollections = usePaginatedResource({
-  key: "collections",
+  cacheKey: "collections",
   fetcher: getMyCollections,
   pageSize,
   enabled: !!currentProfile?.id,

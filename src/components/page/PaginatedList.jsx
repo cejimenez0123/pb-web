@@ -78,14 +78,20 @@ const fetchPage = useCallback(async (p) => {
         dispatch(setPaginationLoading({ key, loading: false }));
     }
 }, [key, stableParams, enabled, activeSearch]); // ← removed cache
+// Prefetch next page
+useEffect(() => {
+    if (!enabled) return;
+    const nextPage = page + 1;
+    const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
+    if (nextPage > totalPages) return;         // no next page
+    if (cache[nextPage] !== undefined) return; // already cached
+    fetchPage(nextPage);
+}, [fetchPage, page, totalCount, cache]);
 useEffect(() => {
     if (cache[page] !== undefined) return; // guard here, not inside callback
     fetchPage(page);
 }, [fetchPage, page]); // cache intentionally omitted — checked inline
 
-  // useEffect(() => {
-  //   fetchPage(page);
-  // }, [fetchPage, page]);
 
   const showEmpty = !isLoading && cache[page] && items.length === 0;
 

@@ -2,10 +2,6 @@ import UIKit
 import Capacitor
 import FirebaseCore
 import GoogleSignIn
-import UIKit
-import Capacitor
-import FirebaseCore
-import GoogleSignIn
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -25,6 +21,29 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
       NotificationCenter.default.post(name: .capacitorDidFailToRegisterForRemoteNotifications, object: error)
+    }
+    func application(_ application: UIApplication,
+                     didReceiveRemoteNotification userInfo: [AnyHashable: Any],
+                     fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        
+        let content = UNMutableNotificationContent()
+        content.title = userInfo["title"] as? String ?? "New Update"
+        content.body = userInfo["body"] as? String ?? "Something new is available"
+        content.sound = .default
+        
+        let request = UNNotificationRequest(
+            identifier: UUID().uuidString,
+            content: content,
+            trigger: nil // nil = deliver immediately
+        )
+        
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                print("Local notification error: \(error)")
+            }
+        }
+        
+        completionHandler(.newData)
     }
     func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.

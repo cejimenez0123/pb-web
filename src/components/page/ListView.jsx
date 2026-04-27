@@ -36,7 +36,6 @@ const router = useIonRouter()
     setPage(2);
   }, [sortedItems]);
 
-  // Load more items for infinite scroll
   const loadMore = (ev) => {
     const startIndex = (page - 1) * itemsPerPage;
     const nextItems = sortedItems.slice(startIndex, startIndex + itemsPerPage);

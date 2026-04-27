@@ -187,6 +187,9 @@ const setCurrentPage = createAction(
 const removeFromPaginatedKey = createAction("pagination/removeFromKey");
 const setPaginationLoading = createAction("pagination/setLoading");
  const initKey = createAction("pagination/initKey");
+ const resetKey = createAction("pagination/resetKey");
+
+
 const setPageData = createAction(
   "pagination/setPageData",
   function prepare({ key, page, items, totalCount }) {
@@ -328,7 +331,7 @@ try{
          appendToMyStories,
          setPaginationLoading,
          removeFromPaginatedKey,
-      
+      resetKey,
    fetchPage,
        setPageData,
          setCurrentPage,

@@ -20,7 +20,7 @@ return(<AnimatePresence><motion.div
       active:scale-95
       ${openHashtag
         ? "bg-button-secondary-bg border-button-secondary-bg text-white"
-        : "bg-base-bg border-soft text-soft hover:border-button-secondary-bg hover:text-button-secondary-bg"
+        : "bg-base-bg border-soft text-soft dark:text-cream hover:border-button-secondary-bg hover:text-button-secondary-bg"
       }
     `}
     style={{ WebkitTapHighlightColor: "transparent" }}

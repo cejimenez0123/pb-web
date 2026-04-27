@@ -5,8 +5,7 @@ import {
           getPublicProfilePages,
           appendToPagesInView,
           setPageInView,
-        setPageData,
-        setCurrentPage,
+       
           setPagesToBeAdded,
           clearPagesInView,
   
@@ -130,7 +129,9 @@ const pageSlice = createSlice({
         state.loading = false
         state.error = payload.error
       })
-   
+
+
+
       .addCase(setHtmlContent.type,(state,{payload})=>{
         state.editorHtmlContent = payload.html
       }).addCase(getPublicProfilePages.fulfilled,(state,{payload})=>{

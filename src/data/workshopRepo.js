@@ -13,12 +13,20 @@ class WorkshopRepo{
       Authorization: `Bearer ${value}`,
     };
   }
-  async findWorkshops({radius=50,location,global=false}){
-    const headers = await this.getAuthHeaders()
-      const query = new URLSearchParams({ radius, global: global });
-    let res = await axios.post(this.url+`/look?${query.toString()}`,{location},{headers:headers})
-   return res.data
-  }
+  // async findWorkshops({radius=50,location,global=false}){
+  //   const headers = await this.getAuthHeaders()
+  //     const query = new URLSearchParams({ radius, global: global });
+  //   let res = await axios.post(this.url+`/look?${query.toString()}`,{location},{headers:headers})
+  //  return res.data
+  // }
+async findWorkshops({ radius = 50, global = true, location, type, skip, take }) {
+    const headers = await this.getAuthHeaders();
+    return axios.post(
+        `${this.url}/look`,
+        { location },                              // body — only location
+        { params: { radius, global, type, skip, take }, headers }  // config — params + headers
+    ).then(res => res.data);
+}
 async joinWorkshop({ profile, story, location, radius = 50, isGlobal = false }) {
  
   const headers = await this.getAuthHeaders();

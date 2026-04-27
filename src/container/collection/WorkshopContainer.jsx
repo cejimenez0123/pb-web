@@ -9,8 +9,8 @@ import check from "../../images/icons/check.svg";
 import { Geolocation } from '@capacitor/geolocation';
 import DeviceCheck from '../../components/DeviceCheck';
 import { IonContent, IonLoading, useIonRouter } from '@ionic/react';
-import { setPagesInView } from '../../actions/PageActions';
-import { setCollections } from '../../actions/CollectionActions';
+import { setCurrentPage, setPagesInView } from '../../actions/PageActions';
+import { getProfileRecommendations, setCollections } from '../../actions/CollectionActions';
 import { useParams } from 'react-router';
 import GoogleMapSearch from "../collection/GoogleMapSearch";
 import ExploreList from '../../components/collection/ExploreList';
@@ -18,6 +18,7 @@ import fetchCity from '../../core/fetchCity';
 import Enviroment from '../../core/Enviroment';
 import { getStory } from '../../actions/StoryActions';
 import getBackground from '../../core/getbackground';
+import usePaginatedResource from '../../core/usePaginatedResource';
 
 const DEFAULT_LOCATION = { latitude: 40.818622458906425, longitude: -73.8890363605602 };
 
@@ -41,17 +42,45 @@ const WorkshopContainer = () => {
   const { storyId } = useParams();
   const isNative = DeviceCheck();
   const isMounted = useRef(true);
-
-  const { currentProfile } = useSelector(state => state.users);
-  const page = useSelector(state => state.pages.pageInView);
-
-  const { error, setError, setSuccess, setSeo } = useContext(Context);
-  const [workshops, setWorkshops] = useState([]);
-  const [communities, setCommunities] = useState([]);
-  const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
   const [radius, setRadius] = useState(50);
   const [isGlobal, setIsGlobal] = useState(true);
   const [location, setLocation] = useState(DEFAULT_LOCATION);
+    const { currentProfile } = useSelector(state => state.users);
+  const page = useSelector(state => state.pages.pageInView);
+  // Public — viewing a collection
+
+
+// Protected — for logged in user
+const { items: communities, page: communityPage, setPage: setCommunityPage, totalCount: communityTotal } = usePaginatedResource({
+    cacheKey: "profile-recommendations",
+    fetcher: getProfileRecommendations,
+    pageSize: 10,
+    enabled: !!currentProfile?.id,
+    select: (res) => ({ items: res.groups, totalCount: res.totalCount }),
+});
+const { items: workshops, page: workshopPage, setPage: setWorkshopPage, totalCount: workshopTotal } = usePaginatedResource({
+    cacheKey: "workshops",
+    fetcher: findWorkshopGroups,
+    pageSize: 10,
+    enabled: !!currentProfile?.id,
+    params: { 
+        type: "feedback", 
+        location: isGlobal ? null : location, 
+        global: isGlobal, 
+        radius 
+    },
+    select: (res) => ({ items: res.groups, totalCount: res.totalCount }),
+});
+
+
+
+console.log("COMMEN",communities)
+console.log("WOROK",workshops)
+
+  const { error, setError, setSuccess, setSeo } = useContext(Context);
+ 
+
 
   // ── unmount cleanup ──
   useEffect(() => {
@@ -70,13 +99,13 @@ const WorkshopContainer = () => {
   }, [storyId]);
 
   // ── fetch workshops on mount and when isGlobal changes ──
-  useEffect(() => {
-    dispatch(fetchWorkshopGroups());
-  }, []);
+  // useEffect(() => {
+  //   dispatch(fetchWorkshopGroups());
+  // }, []);
 
-  useEffect(() => {
-    if (currentProfile?.id) fetchWorkshops();
-  }, [currentProfile?.id, isGlobal]);
+  // useEffect(() => {
+  //   if (currentProfile?.id) fetchWorkshops();
+  // }, [currentProfile?.id, isGlobal]);
 
   // ── reset location when toggling global ──
   useEffect(() => {
@@ -100,23 +129,23 @@ const WorkshopContainer = () => {
     register();
   }, [location]);
 
-  const fetchWorkshops = async () => {
-    try {
-      const res = await dispatch(findWorkshopGroups({
-        location: isGlobal ? null : location,
-        radius: 50,
-        global: isGlobal
-      }));
-      checkResult(res, ({ groups }) => {
-        if (!isMounted.current) return;
-        const sort = [...groups].sort((a, b) => new Date(b.updated) - new Date(a.updated));
-        setWorkshops(sort || []);
-        setLoading(false);
-      });
-    } catch (err) {
-      console.error("Failed fetching workshops:", err);
-    }
-  };
+  // const fetchWorkshops = async () => {
+  //   try {
+  //     const res = await dispatch(findWorkshopGroups({
+  //       location: isGlobal ? null : location,
+  //       radius: 50,
+  //       global: isGlobal
+  //     }));
+  //     checkResult(res, ({ groups }) => {
+  //       if (!isMounted.current) return;
+  //       const sort = [...groups].sort((a, b) => new Date(b.updated) - new Date(a.updated));
+   
+  //       setLoading(false);
+  //     });
+  //   } catch (err) {
+  //     console.error("Failed fetching workshops:", err);
+  //   }
+  // };
 
   const applyLocation = (coords) => {
     setLocation(coords);
@@ -192,7 +221,10 @@ const WorkshopContainer = () => {
       setLoading(false);
     });
   };
-
+useEffect(() => {
+  dispatch(setCurrentPage({ key: "workshops", page: 1 }));
+  dispatch(setCurrentPage({ key: "communities", page: 1 }));
+}, [isGlobal, location, radius]);
   const isLocationReady = isGlobal || (location?.latitude && location?.longitude);
 
   return (
@@ -264,8 +296,24 @@ const WorkshopContainer = () => {
           </div>
 
           <div className="flex flex-col space-y-4 pb-24">
-            <ExploreList label={"Communities"} collection={communities} />
-            <ExploreList label={"Workshops"} collection={workshops} />
+        <div className="flex flex-col space-y-4 pb-24">
+  <ExploreList 
+    label={"Communities"} 
+    items={communities}
+    page={communityPage}
+    setPage={setCommunityPage}
+    totalCount={communityTotal}
+    pageSize={10}
+  />
+  <ExploreList 
+    label={"Workshops"} 
+    items={workshops}
+    page={workshopPage}
+    setPage={setWorkshopPage}
+    totalCount={workshopTotal}
+    pageSize={10}
+  />
+</div>
           </div>
         </div>
       )}
@@ -275,21 +323,7 @@ const WorkshopContainer = () => {
 
 export default WorkshopContainer;
 
-// const WorkshopContextCard = ({ page }) => {
-//   if (!page) return null;
-//   return (
-//     <div className={`${CARD} ${CARD_INNER} border-l-4 border-emerald-500`}>
-//       <span className="text-xs uppercase tracking-wide text-gray-400">Workshop Context</span>
-//       <h3 className="text-lg font-semibold text-gray-900 leading-snug">
-//         {page.title.length > 40 ? page.title.slice(0, 47) + "..." : page.title.length > 0 ? page.title : "Untitled Story"}
-//       </h3>
-//       <div className="flex items-center justify-between pt-2">
-//         <span className="text-xs text-gray-400">Bring your voice into this space</span>
-//         <span className="text-xs font-medium text-emerald-600">Active Workshop</span>
-//       </div>
-//     </div>
-//   );
-// };
+
 const WorkshopContextCard = ({ page }) => {
   if (!page) return null;
   return (

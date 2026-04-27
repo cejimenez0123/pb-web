@@ -66,6 +66,7 @@ import { watchBackground } from './core/getbackground.jsx';
 import initSocialLogin from './components/initSocialLogin.jsx';
 import { fetchNotifcations } from './actions/ProfileActions.jsx';
 import usePersistentCurrentProfile from './domain/usecases/usePersistentCurrentProfile.jsx';
+import usePushNotificationListener from './domain/usecases/usePushNotificationListener.jsx';
 setupIonicReact()
 
 const libraries = ["places"];
@@ -90,7 +91,7 @@ initSocialLogin(CLIENT_ID, IOS_CLIENT_ID);
 const ionRouter = useIonRouter();
 
   const [seo,setSeo]=useState({title:"Plumbum",heading:"Plumbum" ,image:Enviroment.logoChem,description:"Your writing, Your community", name:"Plumbum", type:"website",url:"https://plumbum.app"})
-
+usePushNotificationListener()
 const [presentingEl, setPresentingEl] = useState(null);
   const [success,setSuccess]=useState(null)
   const [error,setError]=useState(null)

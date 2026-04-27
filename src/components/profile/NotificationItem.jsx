@@ -9,7 +9,7 @@ export default function NotificationItem({ item, lastNotified }) {
 
   if (item === Enviroment.blankPage) {
     return (
-      <div className="w-full text-center py-2 y-2 bg-base-surface text-emerald-800 text-opacity-60 font-bold">
+      <div className="w-full text-center py-2 y-2 dark:text-cream text-soft text-opacity-60 font-bold">
         Older than today
       </div>
     );
@@ -21,14 +21,14 @@ export default function NotificationItem({ item, lastNotified }) {
   const renderHeader = (profile, rightText) => (
     <div className="flex flex-row items-center justify-between gap-4 w-full">
       <ProfileCircle profile={profile} color="emerald-700" />
-      <span className="text-right text-sm text-emerald-700 truncate ml-2">
+      <span className="text-right text-sm dark:text-cream text-soft truncate ml-2">
         {rightText}
       </span>
     </div>
   );
 
   const renderTitle = (title) => (
-    <h5 className="open-sans-medium mt-2 text-[0.95rem] text-emerald-800 truncate">
+    <h5 className="open-sans-medium mt-2 text-[0.95rem] text-soft dark:text-cream truncate">
       {title}
     </h5>
   );
@@ -99,15 +99,15 @@ export default function NotificationItem({ item, lastNotified }) {
           <div className="flex flex-row bg-base-bg items-center justify-between gap-3 w-full">
             <div className="flex items-center gap-2 truncate">
               <ProfileCircle profile={comment.profile} color="emerald-700" />
-              <span className="text-emerald-700 text-[0.75rem] open-sans-medium truncate">
+              <span className="text-soft dark:text-cream text-[0.75rem] open-sans-medium truncate">
                 <span className="font-semibold truncate">{comment.story.title}</span>
               </span>
             </div>
-            <span className="text-right text-sm text-emerald-700 truncate">
+            <span className="text-right text-sm dark:text-cream text-soft truncate">
               {getTimePast(comment.created)}
             </span>
           </div>
-          <div className="open-sans-medium mt-2 text-[0.93rem] text-emerald-800 truncate overflow-hidden max-h-[4rem]">
+          <div className="open-sans-medium mt-2 text-[0.93rem] dark:text-cream text-soft truncate overflow-hidden max-h-[4rem]">
             {comment.content}
           </div>
         </div>

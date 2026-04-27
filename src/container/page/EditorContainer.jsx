@@ -30,6 +30,7 @@ import { Preferences } from "@capacitor/preferences";
 import axios from "axios";
 import TopBarDropdown from "../../components/page/TopBarDropdown.jsx";
 import EditorFooter from "../../components/page/EditorFooter.jsx";
+import getBackground from "../../core/getbackground.jsx";
 
 
   const editorContainerBase = "mx-auto bg-base-bg rounded-lg shadow-sm";
@@ -550,11 +551,12 @@ const STATUS_OPTIONS = [
   return<EditorContext.Provider value={{ page: editPage, parameters, setParameters }}>
   <IonContent
     fullscreen
-    scrollY
-    style={{ "--background": Enviroment.palette.cream, "--padding-bottom": "30em", "--padding-top": isNative ? "0.3rem" : "6em" }}
-    className="ion-padding"
+  
+    style={{...getBackground()}}
+    
   >
     {/* Top Bar with fade/slide */}
+    <div className="bg-cream flex flex-col min-h-[100dvh] overflow-y-auto dark:bg-base-bgDark">
 <AnimatePresence >
     
     <motion.div
@@ -565,7 +567,7 @@ const STATUS_OPTIONS = [
       transition={{ duration: 0.05 }}
       // className="rounded-lg w-full sm:max-w-[50em] mx-auto p-2 bg-emerald-50 border border-emerald-200 flex flex-col gap-1"
     >
- <div className="rounded-lg my-1 w-full max-w-3xl  mx-auto p-2 bg-emerald-50 border border-emerald-200 flex flex-col gap-1">
+ <div className="rounded-lg my-1 w-full max-w-3xl  dark:bg-base-bgDark bg-cream min-h-[100%] mx-auto p-2 bg-emerald-50 border border-emerald-200 flex flex-col gap-1">
     {/* Top row: input + dropdown */}
     <div className="flex flex-row gap-2 items-center w-full">
       {/* Title Input */}
@@ -647,7 +649,7 @@ const STATUS_OPTIONS = [
       transition={{ duration: 0.05 }}
     >
       <div className={CONTAINER}>
-<div className="flex gap-1 bg-gray-100 p-1 rounded-full w-fit">
+<div className="flex gap-1 bg-gray-100 justify-around dark:bg-base-surfaceDark p-1 rounded-full w-fit">
 {STATUS_OPTIONS.map((option) => {
   const isActive = parameters.status === option.value;
 
@@ -659,7 +661,7 @@ const STATUS_OPTIONS = [
         ${
           isActive
             ? "bg-soft text-white shadow-sm"
-            : "text-soft dark:text-cream bg-base-bg "
+            : "text-soft dark:text-cream dark:bg-base-bgDark bg-base-bg "
         }
       `}
     >
@@ -670,20 +672,20 @@ const STATUS_OPTIONS = [
 </div>
       <EditorDiv page={editPage} isSaved={isSaved} setIsSaved={setIsSaved} handleChange={handleChange} parameters={parameters} type={type} createPageAction={createPageAction} />
     </div>
-    {/* Hashtag pills in negative space */}
 
 
 
     </motion.div>
-<div className="pt-8">
+<div className="pt-8 px-4 bg-cream dark:bg-base-bgDark">
 <EditorFooter  pageInView={pageInView} effectiveId={effectiveId} openConfirmDeleteDialog={openConfirmDeleteDialog}/>
  </div>
 {/* </div> */}
     </AnimatePresence>
  
 {/* </div> */}
-
+</div>
   </IonContent>
+  
 </EditorContext.Provider>
 
 }
