@@ -4,7 +4,7 @@ import '../App.css'
 import "../styles/Navbar.css"
 import person from "../images/icons/person.png"
 import addCircle from "../images/icons/plus.app.svg"
-import { setMainLoading, signOutAction} from "../actions/UserActions"
+import {  signOutAction} from "../actions/UserActions"
 import calendar from "../images/icons/calendar.svg"
 import home from "../images/icons/home.svg"
 import library from "../images/icons/book.svg"
@@ -13,20 +13,15 @@ import LinkIcon from '../images/icons/link.svg';
 import CreateIcon from '../images/icons/ink_pen.svg'
 import ImageIcon from '../images/icons/image.svg'
 import Paths from '../core/paths'
-import { createStory } from '../actions/StoryActions'
-import checkResult from '../core/checkResult'
 import CreateCollectionForm from '../components/collection/CreateCollectionForm'
 import { setEditingPage, setHtmlContent, setPageInView,  setPageType } from '../actions/PageActions.jsx'
 import isValidUrl from '../core/isValidUrl'
 import Enviroment from '../core/Enviroment'
-import debounce from '../core/debounce.js'
-import {sendGAEvent } from '../core/ga4.js'
 import {IonImg, useIonRouter,} from '@ionic/react';
 import { useSelector } from 'react-redux'
 import { PageType } from '../core/constants.js'
 import { useDialog } from '../domain/usecases/useDialog.jsx'
 import submitCollection from '../core/submitCollection'
-import DeviceCheck from '../components/DeviceCheck.jsx'
 import { Capacitor } from '@capacitor/core'
 import { Preferences } from '@capacitor/preferences'
 import { SocialLogin } from '@capgo/capacitor-social-login'
@@ -73,6 +68,7 @@ function NavbarContainer({ isDesktop}) {
 export default NavbarContainer
 
 function DesktopNavbar({currentProfile}){
+ 
 return(
 <div className="navbar bg-emerald-800">
   <div className="navbar-start">
@@ -119,7 +115,7 @@ function NavProfileDropdown({currentProfile}){
   const [profilePic,setProfilePic]=useState(Enviroment.blankProfile)
   const dispatch = useDispatch()
   const router = useIonRouter()
-
+const isNative = Capacitor.isNativePlatform()
   useEffect(()=>{
     if(currentProfile){
       if(isValidUrl(currentProfile.profilePic)){
@@ -153,7 +149,7 @@ function NavProfileDropdown({currentProfile}){
             className="w-full text-left"
             onClick={async () => {
               console.log("LOGOUT CLICKED");
-              await SocialLogin.logout({ provider: "google" });
+            isNative &&  await SocialLogin.logout({ provider: "google" });
               dispatch(signOutAction({ profile: currentProfile })).then(res => router.push(Paths.login));
             }}
           >
