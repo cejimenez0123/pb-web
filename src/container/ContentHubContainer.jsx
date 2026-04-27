@@ -17,20 +17,18 @@ import useProfileDependentEffects from '../core/useProfileDependentEffects.jsx';
 import HomeEmbed from './HomeContainer.jsx';
 import DashboardEmbed from './DashboardContainer.jsx';
 import getBackground from '../core/getbackground.jsx';
+import usePushNotificationListener from '../domain/usecases/usePushNotificationListener.jsx';
 
 
 function ContentHubContainer() {
   const { seo,setSeo } = useContext(Context);
   const  currentProfile = useSelector(state=>state.users.currentProfile)
-  // const dispatch = useDispatch();
-    const dispatch = useDispatch();
-  const router = useIonRouter();
 
 
+usePushNotificationListener()
     const [tab, setTab] = useState("dash");
-  const cols = useSelector(state => state.books.collections);
   const [isGlobal,setIsGlobal]=useState(true)
-  const pagesInView = useSelector(state => state.pages.pagesInView);
+
   const { workshops, stories, prompts } = useProfileDependentEffects(currentProfile,isGlobal);
 
 

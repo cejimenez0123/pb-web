@@ -95,7 +95,7 @@ function LogInCard({setLogInError}){
             const params ={email:email.toLowerCase(),password:password,isNative:isNative}
             dispatch(logIn(params)).then(res=>{
                 checkResult(res,payload=>{
-                 console.log("FDDFFD",payload)
+              
                     if(payload && payload.profile && payload.profile.id){
 
                   
@@ -266,11 +266,6 @@ const dispatchLogin = ({ email, googleId, idToken, name }) => {
       First time here?
     </p>
 
-<IonLoading
-  isOpen={pending}
-  message="Loading your space..."
-  spinner="crescent"
-/>
 
     <p
       onClick={handleForgotPasswordDialog}

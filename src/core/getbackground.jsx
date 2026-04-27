@@ -12,12 +12,23 @@ const getBackground = () => {
       :Enviroment.palette.cream
   );
 };
-export default getBackground
-const watchBackground = () => {
-  getBackground(); // apply immediately
-  window
-    .matchMedia('(prefers-color-scheme: dark)')
-    .addEventListener('change', getBackground);
+const applyTheme = () => {
+  if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+    document.documentElement.classList.add("dark");
+  } else {
+    document.documentElement.classList.remove("dark");
+  }
 };
+
+const watchBackground = () => {
+  applyTheme();
+  window
+    .matchMedia("(prefers-color-scheme: dark)")
+    .addEventListener("change", applyTheme);
+};
+
+
+export default getBackground
+
 
 export {watchBackground };
