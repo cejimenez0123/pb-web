@@ -135,6 +135,7 @@ const createComment = createAsyncThunk("pages/createComment", async function({
   anchorText,        // ← add
 }, thunkApi) {
   try {
+    console.log(parentCommentId)
     let data = await commentRepo.create({
       profile,
       storyId,

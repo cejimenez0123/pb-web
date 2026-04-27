@@ -11,6 +11,7 @@ export default function usePushNotificationListener() {
     useEffect(() => {
         // 1. Request permissions + register
         PushNotifications.requestPermissions().then((permission) => {
+            console.log("DEVICE CHECK")
             if (permission.receive === 'granted') {
                 PushNotifications.register();
             }
@@ -19,6 +20,7 @@ export default function usePushNotificationListener() {
         // 2. Save device token to backend
         PushNotifications.addListener('registration', async (deviceToken) => {
             try {
+                     console.log("DEVICE CHECK REGISTER")
                 const authToken = (await Preferences.get({ key: "token" })).value;
                 await fetch(`${Environment.url}/profile/device-token`, {
                     method: 'POST',

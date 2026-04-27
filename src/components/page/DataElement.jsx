@@ -374,7 +374,9 @@ const handleAnnotateConfirm = useCallback(() => {
 
   // ── Reply from popover ──────────────────────────────────────────────────
   const handleReply = useCallback(({ text, parentId }) => {
+    
     if (!currentProfile) return;
+    console.log("PARENTID",parentId)
     dispatch(createComment({
       profile:         currentProfile,
       text,

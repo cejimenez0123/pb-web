@@ -68,6 +68,10 @@ import { fetchNotifcations } from './actions/ProfileActions.jsx';
 import usePersistentCurrentProfile from './domain/usecases/usePersistentCurrentProfile.jsx';
 import usePushNotificationListener from './domain/usecases/usePushNotificationListener.jsx';
 setupIonicReact()
+function PushNotificationHandler() {
+    usePushNotificationListener()
+    return null
+}
 
 const libraries = ["places"];
 function App(props) {
@@ -80,7 +84,7 @@ watchBackground()
   const [isFirstLaunch, setIsFirstLaunch] = useState(true);
   const dispatch = useDispatch()
   const [formerPage, setFormerPage] = useState(null);
-
+ 
 
 const CLIENT_ID = import.meta.env.VITE_OAUTH2_CLIENT_ID;
 const IOS_CLIENT_ID = import.meta.env.VITE_IOS_CLIENT_ID;
@@ -165,7 +169,7 @@ const showBottomNavbar =
 
     <ErrorBoundary>
         <Context.Provider value={{setPresentingEl,isDesktop,isTablet:isMobileOrTablet,isPhone:isMobileOrTablet,isNotPhone:!isMobileOrTablet,isHorizPhone,seo,setSeo,formerPage,setFormerPage,setError,setSuccess,success}}>
-
+{isNative && currentProfile && <PushNotificationHandler />}
     <LoadScript
       googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
       libraries={libraries}

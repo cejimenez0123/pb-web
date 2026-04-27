@@ -1,13 +1,3 @@
-// import { createSlice} from "@reduxjs/toolkit"
-// import {  setComments } from "../actions/PageActions.jsx"
-
-// import { createComment,appendComment,updateComment,deleteComment } from "../actions/PageActions.jsx"
-
-// const initialState = {
-//     comments:[],
-//     userCritique:[],
-//     loading:false,
-//     error:"",
 
 
 import { createSlice } from "@reduxjs/toolkit";
