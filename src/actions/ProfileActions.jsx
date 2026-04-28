@@ -33,6 +33,17 @@ const createProfile= createAsyncThunk("users/createProfile",async (params,thunkA
     }
     return data
  })
+ const markNotificationsRead = createAsyncThunk(
+  "notifications/markRead",
+  async (_, { getState, rejectWithValue }) => {
+    try {
+      const data = await profileRepo.markNotificationsRead();
+      return data;
+    } catch (e) {
+      return rejectWithValue(e.response?.data ?? e.message);
+    }
+  }
+);
  const fetchNotifcations = createAsyncThunk("users/fetchNotifications",async (params,thunkApi)=>{
  
         // const {profile}=params
@@ -185,5 +196,6 @@ const fetchProfiles = createAsyncThunk("users/fetchProfiles",async (params,thunk
     uploadProfilePicture,
     fetchProfiles,
     fetchNotifcations,
-    addNotification
+    addNotification,
+    markNotificationsRead
 }

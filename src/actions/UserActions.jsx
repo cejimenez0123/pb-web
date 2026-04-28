@@ -34,7 +34,7 @@ const referSomeone =createAsyncThunk('users/referral',async (params,thunkApi)=>{
 const signOutAction = createAsyncThunk('users/signOut',async (params,thunkApi)=>{
     try{
        await Preferences.clear()
-       await SocialLogin.logout()
+    
   //  await signOut(auth)
    return 
     }catch(err){

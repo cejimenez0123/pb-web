@@ -1,7 +1,7 @@
 
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchNotifcations } from "../../actions/ProfileActions";
+import { fetchNotifcations, markNotificationsRead } from "../../actions/ProfileActions";
 import NotificationItem from "../../components/profile/NotificationItem";
 import { IonList, IonContent } from "@ionic/react";
 import SectionHeader from "../../components/SectionHeader";
@@ -17,6 +17,7 @@ export default function NotificationContainer({ currentProfile }) {
   useEffect(() => {
     if (currentProfile) {
       dispatch(fetchNotifcations({ profile: currentProfile, seen: true }));
+      dispatch(markNotificationsRead())
     }
   }, [currentProfile]);
 

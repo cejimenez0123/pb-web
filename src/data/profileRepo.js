@@ -85,6 +85,16 @@ seen:seen
         let res = await axios.get(this.url+"/"+id+"/public")
         return res.data
     }
+    async markNotificationsRead() {
+  const headers = await this.getAuthHeaders();
+  try {
+    const res = await axios.patch(this.url + "/notifications/read", {}, { headers });
+    return res.data;
+  } catch (e) {
+    console.log("ERROR", e);
+    throw e;
+  }
+}
     async updateProfile(params){
         let headers = await this.getAuthHeaders()
 
