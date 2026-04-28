@@ -135,7 +135,7 @@ const isNative = Capacitor.isNativePlatform()
       </button>
       <ul className="dropdown-content menu bg-base-bg p-2 shadow rounded">
         <li>
-          <button className="w-full text-left" onClick={() => router.push(Paths.myProfile, "root", "replace")}>
+          <button className="w-full text-left" onClick={() => router.push(Paths.myProfile, "root")}>
             Profile
           </button>
         </li>
@@ -199,7 +199,7 @@ function HomeButton({router}) {
 
   const handleClick = () => {
     if (currentProfile) {
-      ionrouter.push(Paths.home, "root", "replace");
+      ionrouter.push(Paths.home, "root");
     } else {
       ionrouter.push(Paths.about(), "forward");
     }
@@ -294,7 +294,7 @@ function NavCreateDropdown({}) {
       label:"Link",
       icon:LinkIcon,
       action:()=>{
-        dispatch(setHtmlContent({html:""}))
+        dispatch(setHtmlContent(""))
         router.push(Paths.editor.link,"forward")
       }
     },

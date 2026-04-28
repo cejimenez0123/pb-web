@@ -19,7 +19,7 @@ import { useDialog } from '../domain/usecases/useDialog.jsx';
 import CreateCollectionForm from '../components/collection/CreateCollectionForm.jsx';
 import Enviroment from '../core/Enviroment.js';
 import { Capacitor } from '@capacitor/core';
-import { getMyCollections } from '../actions/CollectionActions.js';
+import { getMyCollections, getRecommendedCollectionsProfile } from '../actions/CollectionActions.js';
 import StoryDashboardItem from '../components/StoryDashboardItem.jsx';
 import SectionHeader from '../components/SectionHeader.jsx';
 import { useMediaQuery } from 'react-responsive';
@@ -60,23 +60,19 @@ const ACTION_ROW = "flex flex-col items-center gap-4 w-full";
 function DashboardEmbed() {
 const pageSize = 7
   const currentProfile = useSelector(state=>state.users.currentProfile)
- const isTablet = useMediaQuery({ query: '(min-width: 768px)' });
-const isDesktop = useMediaQuery({ query: '(min-width: 1024px)' });
+
   const router = useIonRouter()
   const dispatch = useDispatch();
-   const collectionsRaw = useSelector(state => state.books.collections) ?? [];
+ 
 
 const { columns, rows } = useResponsiveGrid();
 const visibleCount = columns * rows;
 
-const collections = collectionsRaw
-  .slice() // safer than spread in this context
-  .sort((a, b) => new Date(b.updated) - new Date(a.updated));
   
   const [workshop,setWorkshop]=useState(null)
   const [saves,setSaved]=useState([])
 
-  const isNative = Capacitor.isNativePlatform()
+
      const [homeCol,setHomeCol]=useState(null)
     const [archiveCol,setArchiveCol]=useState(null)
     
@@ -90,7 +86,16 @@ const personalStories = usePaginatedResource({
     totalCount: res.totalCount,
   }),
 });
-
+const recCols = usePaginatedResource({
+  cacheKey: "recommended-collections",
+  fetcher: getRecommendedCollectionsProfile,
+  pageSize,
+  enabled: !!currentProfile?.id,
+  select: (res) => ({
+    items: res.collections,
+    totalCount: res.totalCount,
+  }),
+});
 const myStories = personalStories.items
 const personalCollections = usePaginatedResource({
   cacheKey: "collections",
@@ -561,13 +566,13 @@ scrollY: false,
 </div>
          </div>  
             
-            
-     
-          
+          <div className='list-bottom-padding'>
+        <ExploreList page={recCols.page} totalCount={recCols.totalCount}  setPage={recCols.setPage} pageSize={pageSize}  items={[...recCols.items]} />
+
+          </div> 
        </div>
-      <div className='min-h-[28rem]  bg-cream dark:bg-base-bgDark'>
-        <ExploreList items={collections} />
- </div>
+{/* <div className='list-bottom-padding'> */}
+     {/* </div> */}
       </ErrorBoundary>
   );
 }

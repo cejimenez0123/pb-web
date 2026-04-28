@@ -1005,3 +1005,73 @@ textarea.sc-ion-textarea {
   animation: annotation-pulse 1.5s ease-in-out;
   border-radius: 2px;
 }
+
+.list-bottom-padding::part(scroll) {
+   --background:#f4f4e0;
+  padding-bottom: 12rem;
+}
+.list-bottom-padding{
+   --background: #f4f4e0;
+  padding-bottom: 12rem;
+}
+ ion-content .inner-scroll {
+    --background: #f4f4e0;
+}
+* ion-content {
+
+  --background: #f4f4e0;
+  }
+#background-content{
+  --background: #f4f4e0;
+}
+
+ion-content.page-content {
+  --background: #f4f4e0;
+}
+.editor-content {
+  color: #1c1f1a;;
+}
+
+@media (prefers-color-scheme: dark) {
+  .editor-content p,span,h1,h2,h3,h4,h5.h6 {
+    color: #f4f4e0 !important
+    ;
+  }
+}
+@media (prefers-color-scheme: dark) {
+  ion-content.page-content {
+    --background: #1c1f1a;
+  }
+}
+
+ion-content.page-content::part(scroll) {
+  padding-bottom: 12em;
+}
+@media (prefers-color-scheme: dark) {
+  #background-content{
+   --background:#1c1f1a;
+}
+  ion-content .inner-scroll {
+     --background: #1c1f1a;
+}
+.list-bottom-padding{
+  --background: #1c1f1a;
+  padding-bottom: 12rem;
+}
+.list-bottom-padding::part(scroll) {
+       --background:#1c1f1a;
+  padding-bottom: 12rem;
+}
+ion-content {
+
+  background-color: #1c1f1a;
+  overflow-y: scroll;
+}
+}
+
+
+
+ion-content::part(scroll) {
+ 
+    padding-bottom: 18em;
+}

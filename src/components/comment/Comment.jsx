@@ -62,7 +62,7 @@ export default function Comment({ page, comment, level = 0 }) {
   const handleOpenReply = () => {
     openDialog({
       title: "",
-      height: 50,
+      height: 60,
       text: (
         <CommentInput
           page={page}
@@ -79,7 +79,7 @@ export default function Comment({ page, comment, level = 0 }) {
   const handleEdit = () => {
     openDialog({
       title: "",
-      height: 50,
+      height: 60,
       text: (
         <CommentInput
           page={page}

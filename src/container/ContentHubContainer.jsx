@@ -16,7 +16,7 @@ import Enviroment from '../core/Enviroment.js';
 import useProfileDependentEffects from '../core/useProfileDependentEffects.jsx';
 import HomeEmbed from './HomeContainer.jsx';
 import DashboardEmbed from './DashboardContainer.jsx';
-import getBackground from '../core/getbackground.jsx';
+import getBackground, { watchBackground } from '../core/getbackground.jsx';
 import usePushNotificationListener from '../domain/usecases/usePushNotificationListener.jsx';
 
 
@@ -55,26 +55,27 @@ function ContentHubContainer() {
   }
 }, [tab, setSeo]);
 
-
+useEffect(() => {
+  getBackground();
+  watchBackground();
+}, []);
 
   return (
 <IonContent 
   fullscreen 
+scrollY={true}
+className='page-content'
+ 
 
-  style={{
-   ...getBackground(), // use base.bg not cream, they differ slightly
-    "--min-height":"100%"       // use ionic var not paddingBottom
-  }} 
-  scrollY={true}
 >
         
       <ErrorBoundary>
-{/* <div className='ion-padding'>  */}
+{/* <div className="  overflow-y-auto h-[100%] bg-cream dark:bg-base-bgDark space-y-8"> */}
   <DiscDashTabs tab={tab} setTab={setTab} disc={() =><HomeEmbed workshops={workshops} stories={stories}
   prompts={prompts} isGlobal={isGlobal} setIsGlobal={setIsGlobal}/>} dash={()=><DashboardEmbed />} />
 
-{/* </div> */}
- 
+
+ {/* </div> */}
       </ErrorBoundary>
 </IonContent>
   );
@@ -108,14 +109,18 @@ function DiscDashTabs({ tab, setTab, disc, dash}) {
       width: "100vw",
     }),
   };
+// Just call it once on mount as a side effect
 
   return (
-    <IonContent fullscreen>
-      <div className="pt-12 dark:bg-base-bgDark bg-base-surface">
+  
+      <div className="pt-12 dark:bg-base-bgDark overflow-y-croll h-[100%] pb-[20rem] bg-base-surface">
         <div className="flex justify-center lg:justify-start lg:mx-12 mb-2">
           <div className="flex rounded-full mx-auto  border overflow-clip min-h-12 sm:w-[40em] lg:w-[30em] border-soft">
             <button
-              className={`px-4 py-2 transition-colors w-[45vw] sm:w-[20em] lg:w-[15em] ${
+              className={`px-4 py-2 transition-colors w-[45vw] sm:
+                
+                
+                w-[20em] lg:w-[15em] ${
                 tab === "home" ? "bg-soft text-white" : "text-soft bg-transparent"
               }`}
               onClick={() => {
@@ -178,7 +183,7 @@ function DiscDashTabs({ tab, setTab, disc, dash}) {
           </AnimatePresence>
         </div>
       </div>
-    </IonContent>
+
   );
 }
 //  function DiscDashTabs({ tab, setTab, disc, dash}) {

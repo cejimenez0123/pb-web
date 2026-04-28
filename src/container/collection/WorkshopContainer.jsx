@@ -24,7 +24,7 @@ const DEFAULT_LOCATION = { latitude: 40.818622458906425, longitude: -73.88903636
 
 const WRAP = "max-w-[50em]  mx-auto px-4";
 const WRAPB = "mx-auto bg-cream dark:bg-base-bgDark w-[100%]";
-const PAGE_Y = "pt-16 pb-10";
+const PAGE_Y = "pt-16 ";
 const STACK_LG = "space-y-8";
 const STACK_MD = "space-y-6";
 const STACK_SM = "space-y-3";
@@ -98,15 +98,7 @@ console.log("WOROK",workshops)
     );
   }, [storyId]);
 
-  // ── fetch workshops on mount and when isGlobal changes ──
-  // useEffect(() => {
-  //   dispatch(fetchWorkshopGroups());
-  // }, []);
-
-  // useEffect(() => {
-  //   if (currentProfile?.id) fetchWorkshops();
-  // }, [currentProfile?.id, isGlobal]);
-
+ 
   // ── reset location when toggling global ──
   useEffect(() => {
     setLocation(DEFAULT_LOCATION);
@@ -124,7 +116,7 @@ console.log("WOROK",workshops)
     if (!currentProfile?.id) return;
     const register = async () => {
       const city = await fetchCity(location);
-      registerUser(currentProfile.id, { longitude: location.longitude, latitude: location.latitude, city });
+      registerUser(currentProfile?.id, { longitude: location.longitude, latitude: location.latitude, city });
     };
     register();
   }, [location]);
@@ -150,7 +142,7 @@ console.log("WOROK",workshops)
   const applyLocation = (coords) => {
     setLocation(coords);
     if (currentProfile?.id) {
-      registerUser(currentProfile.id, coords);
+      registerUser(currentProfile?.id, coords);
       setLoading(false);
     }
   };
@@ -229,26 +221,21 @@ useEffect(() => {
 
   return (
     <IonContent
-       style={{
-   ...getBackground(), // use base.bg not cream, they differ slightly
-    "--min-height":"100%"       // use ionic var not paddingBottom
-  }} 
+
+className='page-content'
       fullscreen
-      className="flex flex-col items-center pb-8"
+    
     >
-      {!currentProfile ? (
-        <div className="flex items-center   justify-center h-full">
-          <IonLoading isOpen={true} message={"Loading your space..."} spinner="crescent" />
-        </div>
-      ) : (
-        <div className={`${WRAPB} ${PAGE_Y} ${STACK_LG}`}>
+  
+   
+        <div className={`${WRAPB} page-content dark:bg-base-bgDark  ${PAGE_Y} ${STACK_LG}`}>
           <div className={WRAP}>
             <div className={`${CARD} ${CARD_INNER}`}>
               {page?.id && <WorkshopContextCard page={page} />}
 
               <div className={`${ROW_BETWEEN}`}>
                 <h2 className={`${TITLE} dark:text-cream`}>
-                  {currentProfile.username.toLowerCase()}
+                  {currentProfile?.username.toLowerCase()}
                 </h2>
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center ${isLocationReady ? "bg-emerald-600" : "bg-yellow-500"}`}>
                   <img src={check} alt="status" className="w-5 h-5" />
@@ -291,12 +278,7 @@ useEffect(() => {
               {loading && (
                 <IonLoading isOpen={loading} message={"Loading your space..."} spinner="crescent" />
               )}
-            </div>
-            <div></div>
-          </div>
-
-          <div className="flex flex-col space-y-4 pb-24">
-        <div className="flex flex-col space-y-4 pb-24">
+             </div>                
   <ExploreList 
     label={"Communities"} 
     items={communities}
@@ -313,10 +295,15 @@ useEffect(() => {
     totalCount={workshopTotal}
     pageSize={10}
   />
-</div>
+
+       
+
           </div>
-        </div>
-      )}
+
+    
+
+   
+      </div>
     </IonContent>
   );
 };

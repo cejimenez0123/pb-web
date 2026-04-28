@@ -20,7 +20,7 @@ import truncate from "html-truncate";
 import Enviroment from "../../core/Enviroment";
 import Pill from "../../components/Pill";
 import shortName from "../../core/shortName";
-import getBackground from "../../core/getbackground";
+import getBackground, { watchBackground } from "../../core/getbackground";
 // ── Layout tokens ──────────────────────────────────────
 const WRAP         = "max-w-2xl mx-auto px-4";
 const PAGE_Y       = "py-6";
@@ -46,7 +46,18 @@ export default function AddToCollectionsContainer() {
   const [item, setItem] = useState(
     type === "collection" ? collectionInView : pageInView
   );
-
+const refreshItem = async () => {
+  if (type === "story") {
+    dispatch(getStory({ id })).then((res) =>
+      checkResult(res, (payload) => setItem(payload.story), (err) => setError(err.message))
+    );
+  }
+  if (type === "collection") {
+    dispatch(fetchCollectionProtected({ id })).then((res) =>
+      checkResult(res, (payload) => setItem(payload.collection), (err) => setError(err.message))
+    );
+  }
+};
   // Close dialogs on load
   useEffect(() => closeDialog(), []);
 
@@ -91,7 +102,10 @@ export default function AddToCollectionsContainer() {
       );
     }
   }, [currentProfile]);
-
+useEffect(() => {
+  getBackground();
+  watchBackground();
+}, []);
   // Open new collection form
   const openNewCollectionForm = () => {
     const dia = {
@@ -107,7 +121,7 @@ export default function AddToCollectionsContainer() {
   // Loading state
   if (!item) {
     return (
-      <IonContent fullscreen style={{...getBackground(),"--min-height":"100%"}}>
+      <IonContent fullscreen >
        <div className={`${WRAP} ${PAGE_Y} ${PAGE_STACK} animate-pulse`}>
           <div className="h-6 w-40 bg-gray-200 rounded" />
           <div className="h-24 bg-gray-200 rounded-2xl" />
@@ -120,7 +134,7 @@ export default function AddToCollectionsContainer() {
 
   return (
     <ErrorBoundary>
-      <IonContent fullscreen style={{...getBackground(),"--min-height":"100%"}}>
+      <IonContent fullscreen className="page-content">
     
 <div className={`${WRAP}  bg-base-surface pb-26 dark:bg-base-bgDark ${PAGE_Y} ${PAGE_STACK}`}>
           {/* Header */}
@@ -162,7 +176,7 @@ export default function AddToCollectionsContainer() {
   className="bg-base-surface dark:bg-base-bgDark "
   renderItem={(col) => {
     if(item.id==col.id)return
-   return <AddToItem key={col.id ?? col.title} col={col} item={item} />
+   return <AddToItem key={col.id ?? col.title} col={col} item={item} onSuccess={refreshItem} />
   }}
 />
     

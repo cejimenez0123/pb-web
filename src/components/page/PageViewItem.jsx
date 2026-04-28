@@ -11,12 +11,13 @@ import DataElement from "./DataElement";
 import { initGA, sendGAEvent } from "../../core/ga4";
 import { useDialog } from "../../domain/usecases/useDialog";
 import { useDispatch } from "react-redux";
+import { setHtmlContent } from "../../actions/PageActions";
 
 export default function PageViewItem({ page, canEdit }) {
   const router = useIonRouter();
   const currentProfile = useSelector((state) => state.users.currentProfile);
   const { openDialog } = useDialog();
-
+const dispatch =useDispatch()
   useLayoutEffect(() => {
     initGA();
     sendGAEvent("View Story", JSON.stringify(page));
@@ -52,7 +53,7 @@ export default function PageViewItem({ page, canEdit }) {
     openDialog({
       isOpen: true,
       title: "",
-      height: 50,
+      height: 60,
       text: <CommentInput page={page} anchorText={anchorText} />,
       disagreeText: null,
       disagree: null,
@@ -92,7 +93,10 @@ export default function PageViewItem({ page, canEdit }) {
 
       {canEdit && (
         <div
-          onClick={() => router.push(Paths.editPage.createRoute(page.id), "forward")}
+          onClick={() =>{
+              dispatch(setHtmlContent(page.data))
+             router.push(Paths.editPage.createRoute(page.id), "forward")
+          }}
           className="btn btn-sm btn-ghost text-soft dark:text-cream hover:bg-base-bg dark:hover:bg-base-bgDark rounded-full"
         >
           ✏️

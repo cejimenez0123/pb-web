@@ -45,7 +45,7 @@ import {motion} from 'framer-motion'
 import SectionHeader from "../../components/SectionHeader.jsx";
 import computePermissions from "../../core/compusePermissions.jsx";
 import { postCollectionHistory } from "../../actions/HistoryActions.js";
-import getBackground from "../../core/getbackground.jsx";
+import getBackground, { watchBackground } from "../../core/getbackground.jsx";
 const containerVariants = {
   hidden: { opacity: 0 },
   show: {
@@ -243,105 +243,129 @@ const handleFollow = async () => {
   }
 };
 
-useEffect(() => {
-  if (!collection?.storyIdList?.length || !canSee) return;
 
-  getContent();
-}, [collection?.id, canSee]);
-// useEffect(() => {
-//   dispatch(setCollections({ collections: [] }));
-//   dispatch(setPagesInView({ pages: [] }));
-// }, [id]);
+
 useEffect(() => {
   dispatch(setCollections({ collections: [] }));
   dispatch(setPagesInView({ pages: [] }));
-}, []);
-const getCol = async (id) => {
+}, [id]);
+// const getCol = async (id) => {
  
-  try {
+//   try {
 
-    if (currentProfile) {
-      dispatch(fetchCollectionProtected({ id }))
-        .then((res) => {
-          checkResult(
-            res,
-            (payload) => {
+//     if (currentProfile) {
+//       dispatch(fetchCollectionProtected({ id }))
+//         .then((res) => {
+//           checkResult(
+//             res,
+//             (payload) => {
                
-              setLoading(false);
+//               setLoading(false);
      
-              // computePermissions(payload.collection,currentProfile)
-              dispatch(setPagesInView({pages:payload.collection?.storyIdList.map(str=>str.story)}))
+//               // computePermissions(payload.collection,currentProfile)
+//               dispatch(setPagesInView({pages:payload.collection?.storyIdList.map(str=>str.story)}))
             
              
        
-            },
-            (err) => {
-             setLoading(false);
+//             },
+//             (err) => {
+//              setLoading(false);
               
-              if (err.status === 403) {
+//               if (err.status === 403) {
        
-                setError("Access Denied: You do not have permission to view this collection.");
+//                 setError("Access Denied: You do not have permission to view this collection.");
                
-              } else {
+//               } else {
                      
-                setError(err.message || "Failed to load collection.");
-              }
-              setLoading(false);
-            }
-          );
-        })
-        .catch((e) => {
+//                 setError(err.message || "Failed to load collection.");
+//               }
+//               setLoading(false);
+//             }
+//           );
+//         })
+//         .catch((e) => {
                  
-          setError("An unexpected error occurred.");
-          setLoading(false);
-        });
-    } else {
+//           setError("An unexpected error occurred.");
+//           setLoading(false);
+//         });
+//     } else {
 
-      dispatch(fetchCollection({ id }))
-        .then((res) => {
-          checkResult(
-            res,
-            (payload) => {
+//       dispatch(fetchCollection({ id }))
+//         .then((res) => {
+//           checkResult(
+//             res,
+//             (payload) => {
              
-               setLoading(false);
-              if (payload.collection) {
+//                setLoading(false);
+//               if (payload.collection) {
         
-                dispatch(setPagesInView({pages:payload.collection?.storyIdList.map(str=>str.story)}))
-                // setCanUserSee(true)
-                //
+//                 dispatch(setPagesInView({pages:payload.collection?.storyIdList.map(str=>str.story)}))
+//                 // setCanUserSee(true)
+//                 //
               
-              } 
-            },
-            (err) => {
-               setLoading(false);
-              if (err.status === 403) {
+//               } 
+//             },
+//             (err) => {
+//                setLoading(false);
+//               if (err.status === 403) {
          
-                setError("Access Denied: You do not have permission to view this collection.");
-                // setCanUserSee(false);
+//                 setError("Access Denied: You do not have permission to view this collection.");
+//                 // setCanUserSee(false);
                 
-              } else {
-                //  console.log(err)
-                setError(err.message || "Failed to load collection.");
-              }
-              // setLoading(false);
-            }
-          );
-        })
-        .catch((e) => {
+//               } else {
+//                 //  console.log(err)
+//                 setError(err.message || "Failed to load collection.");
+//               }
+//               // setLoading(false);
+//             }
+//           );
+//         })
+//         .catch((e) => {
           
-          setError("An unexpected error occurred.");
-          setLoading(false);
-        });
-    }
+//           setError("An unexpected error occurred.");
+//           setLoading(false);
+//         });
+//     }
+//   } catch (error) {
+//     console.error(error);
+//     setError("Unexpected error occurred while fetching the collection.");
+//     setLoading(false);
+//   }
+// };
+
+
+const getCol = async (id) => {
+  try {
+    const fetchAction = currentProfile 
+      ? fetchCollectionProtected({ id }) 
+      : fetchCollection({ id });
+
+    dispatch(fetchAction).then((res) => {
+      checkResult(res, (payload) => {
+        setLoading(false);
+        const col = payload.collection;
+        if (!col) return;
+
+        // Sort once, right here
+        const sorted = [...(col.storyIdList ?? [])]
+          .filter(s => s.story)
+          .sort((a, b) => (a.index ?? 0) - (b.index ?? 0))
+          .map(stc => stc.story);
+
+        dispatch(setPagesInView({ pages: sorted }));
+      }, (err) => {
+        setLoading(false);
+        setError(err.status === 403 
+          ? "Access Denied: You do not have permission to view this collection."
+          : err.message || "Failed to load collection."
+        );
+      });
+    });
   } catch (error) {
-    console.error(error);
-    setError("Unexpected error occurred while fetching the collection.");
+    setError("Unexpected error occurred.");
     setLoading(false);
   }
 };
-
-
-
 
   const deleteFollow = () => {
     if(currentProfile?.id == collection.profile?.id){
@@ -438,22 +462,7 @@ return
           });
         });
   }}
-  const getContent=()=>{
-          
-        setHasMore(true)
-         if(collection && collection.storyIdList&&collection.storyIdList.length){
-            const sorted = [...collection.storyIdList].filter(s=>s.story).sort((a,b)=>
-                
-                    a.index && b.index && b.index<a.index
-               
-                      ).map(stc=>stc.story)
-                      
-                      if(sorted.length===collection.storyIdList.length){
-             dispatch(setPagesInView({pages:sorted}))
-                      }       
-            
-            }
-          }
+ 
           
         
     
@@ -480,11 +489,14 @@ const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     </IonContent>
   );
 }
-
+useEffect(() => {
+  getBackground();
+  watchBackground();
+}, []);
 return (
   <ErrorBoundary>
     <IonContent
- style={{...getBackground(),"--min-height":"100%"}}
+ style={{"--min-height":"100%"}}
    
       fullscreen
   

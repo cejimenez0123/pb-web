@@ -339,7 +339,7 @@ if (!isOnline) {
  <IonPage
   ref={pageRef}
   style={{ 
-    ...getBackground(),
+  
     height: '100%', 
 
   }}
@@ -386,9 +386,10 @@ if (!isOnline) {
   <IonPage
   ref={pageRef}
   style={{ 
-    ...getBackground(),
+ 
     height: '100%', 
     paddingTop: isDesktop ? '8em' : '0.0em',
+
   }}
 
      
@@ -456,14 +457,6 @@ overflow-y-auto pb-20
     `}
   >
     <div className="p-6 flex flex-col h-full">
-
-      {/* PROFILE */}
-      {/* <div className="flex items-center gap-3 mb-8"> */}
-        {/* <IonImg
-          src="/profile.jpg"
-          className="w-14 h-14 rounded-md object-cover"
-        /> */}
-        {/* <div className='pt-12'> */}
           <div className="flex items-center gap-3 pb-6 pt-10 overflow-y-scroll border-b border-soft">
     <div>
     <p className="text-xs text-soft opacity-60">Welcome back</p>
@@ -549,7 +542,9 @@ overflow-y-auto pb-20
     </div>
   </div>
 </div>
+{/* <div className='pb-[40em]'> */}
       {children}
+      {/* </div> */}
     </IonPage>
   );
 };

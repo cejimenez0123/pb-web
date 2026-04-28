@@ -114,10 +114,10 @@ const PaginationControls = ({
           onChange={(e) => setInput(e.target.value)}
           onBlur={goToPage}
           onKeyDown={(e) => e.key === "Enter" && goToPage()}
-          className="w-12 text-center bg-transparent border-b border-gray-300 focus:border-emerald-700 outline-none"
+          className="w-12 text-center dark:text-cream text-soft bg-transparent border-b border-gray-300 focus:border-emerald-700 outline-none"
         />
 
-        <span className="text-gray-400">of {totalPages}</span>
+     <span className="text-gray-400">of {totalPages || "..."}</span>
       </div>
 
       {/* Next */}

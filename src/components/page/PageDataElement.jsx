@@ -38,7 +38,7 @@ export default function PageDataElement({
       return (
         <div className="w-full h-[100%] px-4 py-2 overflow-hidden">
           <div
-            className="text-[14px] leading-6 text-soft dark:text-cream overflow-hidden"
+            className="text-[14px] editor-content leading-6 text-soft dark:text-cream overflow-hidden"
             dangerouslySetInnerHTML={{ __html: truncated }}
           />
         </div>

@@ -96,7 +96,7 @@ useEffect(() => {
   const showEmpty = !isLoading && cache[page] && items.length === 0;
 
   return (
-    <div className={`space-y-2 ${className}`}>
+    <div className={`space-y-2 bg-cream dark:bg-base-bgDark ${className}`}>
       {enableInternalSearch && (
         <div className="relative mb-2">
           <input
@@ -110,11 +110,11 @@ useEffect(() => {
       )}
 
       {isLoading && (
-        emptyState || <div className="p-4 text-gray-400 dark:text-cream animate-pulse">Loading...</div>
+        emptyState || <div className="p-4 text-gray-400 bg-cream dark:bg-base-bgDark dark:text-cream animate-pulse">Loading...</div>
       )}
 
       {!isLoading && showEmpty && (
-        <div className="p-4 text-gray-400 dark:text-cream">
+        <div className="p-4 text-gray-400 bg-cream dark:bg-base-bgDark dark:text-cream">
           {enableInternalSearch && debouncedQuery
             ? `No results for "${debouncedQuery}"`
             : "Nothing here yet"}
@@ -132,7 +132,7 @@ useEffect(() => {
           page={page}
           totalPages={totalPages}
           setPage={setPage}
-          className=""
+          className=" bg-cream dark:bg-base-bgDark "
         />
       )}
     </div>

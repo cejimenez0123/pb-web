@@ -61,7 +61,7 @@ export default function Carousel({ book, compact }) {
               {/* Content — fixed height, clipped */}
               <div className={`${SLIDE_HEIGHT} w-full overflow-hidden flex-shrink-0`}>
                 <div className="w-full h-full overflow-hidden">
-                  <PageDataElement page={stc.story} compact={true} truncateNumber={120} />
+                  <PageDataElement page={stc.story} compact={true} truncateNumber={100} />
                 </div>
               </div>
             </div>

@@ -26,7 +26,7 @@ import computePermissions from "../../core/compusePermissions.jsx";
 import { RoleType } from "../../core/constants.js";
 import PaginatedList from "../../components/page/PaginatedList.jsx";
 import shortName from "../../core/shortName.jsx";
-import getBackground from "../../core/getbackground.jsx";
+import getBackground, { watchBackground } from "../../core/getbackground.jsx";
 
 const filterTypes = {
   filter: "Filter",
@@ -192,7 +192,11 @@ useEffect(()=>{
       </div>
     );
   }
-const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  useEffect(() => {
+  getBackground();
+  watchBackground();
+}, []);
+
   const colList = () => {
     if (pending) {
       return (
@@ -214,7 +218,7 @@ if (!canSee) {
 
   if (!colInView) {
     return (
-      <IonContent style={{...getBackground(),"--min-height":"100%"
+      <IonContent style={{"--min-height":"100%"
   }} >
         {pending ? (
           <>
@@ -239,11 +243,10 @@ if (!canSee) {
   }
 
   return (
-    <IonContent fullscreen style={{...getBackground(),"--min-height":"100%"
-
-  }} >
+    <IonContent fullscreen 
+ className="page-content">
       <ErrorBoundary>
-        <div className="max-w-[50em] px-4  pb-26 dark:bg-base-bgDark bg-base-surface mx-auto pt-4">
+        <div className="max-w-[50em] px-4   dark:bg-base-bgDark bg-base-surface mx-auto pt-4">
           {/* Header */}
           <div className="mb-4 space-y-2 bg-base-surface dark:bg-base-bgDark ">
             <h2 className="text-xl font-semibold bg-base-surface dark:bg-base-bgDark  dark:text-cream text-soft">Add to {colInView?.title||"Collection"}</h2>
@@ -302,37 +305,69 @@ if (!canSee) {
                           fetcher={getMyStories}
                           pageSize={8}
                             className="bg-base-surface dark:bg-base-bgDark "
-                          renderItem={(story) => {
-                              filteredSortedStories.map((col) => {
+                            renderItem={(story) => {
+  const added =
+    newStories.some((s) => s.id === story.id) ||
+    colInView?.storyIdList?.some((j) => j.storyId === story.id);
+  return (
+    <div
+      key={story.id}
+      className="bg-base-bg border border-1 border-blue dark:bg-base-surfaceDark rounded-full px-4 py-3 shadow-sm flex items-center justify-between"
+    >
+      <div
+        onClick={() => router.push(Paths.page.createRoute(story.id))}
+        className="flex-1 pr-3 cursor-pointer"
+      >
+        <p className="text-sm dark:text-cream font-medium truncate">
+          {shortName(story.title, 20) || "Untitled"}
+        </p>
+      </div>
+      <Pill
+        label={added ? "Added ✓" : "Add"}
+        onClick={() =>
+          setNewStories((prev) =>
+            added ? prev.filter((s) => s.id !== story.id) : [...prev, story]
+          )
+        }
+        baseClass="bg-blueSea border border-blueSea border-1 dark:bg-surfaceDark dark:text-cream text-white"
+        variant={added ? "secondary" : "primary"}
+        color={added ? "softBlue" : "soft"}
+      />
+    </div>
+  );
+}}
+  //                         renderItem={(story) => {
+  //                             filteredSortedStories.map((col) => {
 
-          if (col?.id === colInView.id) return null;})
-         const added =
-  newStories.some((s) => s.id === story.id) ||
-  colInView?.storyIdList?.some((j) => j.storyId === story.id);
+  //         if (col?.id === colInView.id) return null;})
+  //        const added =
+  // newStories.some((s) => s.id === story.id) ||
+  // colInView?.storyIdList?.some((j) => j.storyId === story.id);
         
-          return (
-            <div
-              key={story.id}
-              className="bg-base-bg dark:bg-transparent rounded-full border-blue border-1 border px-4 py-3 shadow-sm flex items-center justify-between"
-            >
-              <div
-                onClick={() => router.push(Paths.page.createRoute(story.id))}
-                className="flex-1 pr-3 cursor-pointer"
-              >
-                <p className="text-sm text-soft dark:text-cream font-medium truncate">{story.title.length>20?story.title.slice(0,20)+"..." : story.title || "Untitled"}</p>
-              </div>
-              <Pill
-                label={added ? "Added ✓" : "Add"}
-                onClick={() =>
-                  setNewStories((prev) =>
-                    added ? prev.filter((s) => s.id !== story.id) : [...prev, story]
-                  )
-                }
-                variant={added ? "secondary" : "primary"}
-                color={added ? "softBlue" : "soft"}
-              />
-            </div>
-          );}}/>}
+  //         return (
+  //           <div
+  //             key={story.id}
+  //             className="bg-base-bg dark:bg-transparent rounded-full border-blue border-1 border px-4 py-3 shadow-sm flex items-center justify-between"
+  //           >
+  //             <div
+  //               onClick={() => router.push(Paths.page.createRoute(story.id))}
+  //               className="flex-1 pr-3 cursor-pointer"
+  //             >
+  //               <p className="text-sm text-soft dark:text-cream font-medium truncate">{story.title.length>20?story.title.slice(0,20)+"..." : story.title || "Untitled"}</p>
+  //             </div>
+  //             <Pill
+  //               label={added ? "Added ✓" : "Add"}
+  //               onClick={() =>
+  //                 setNewStories((prev) =>
+  //                   added ? prev.filter((s) => s.id !== story.id) : [...prev, story]
+  //                 )
+  //               }
+  //               variant={added ? "secondary" : "primary"}
+  //               color={added ? "softBlue" : "soft"}
+  //             />
+  //           </div>
+  //         );}}
+          />}
         
                    
             colList={()=> (

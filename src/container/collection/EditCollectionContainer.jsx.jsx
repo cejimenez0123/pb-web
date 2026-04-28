@@ -264,7 +264,7 @@ if (!canSee) {
 }
 
   if(loading||!colInView){return editCollectionSkeleton()}
-    return<IonContent fullscreen style={{...getBackground()}}>
+    return<IonContent fullscreen className="page-content">
   {/* <div className="max-w-lg mx-auto px-4 pb-28 pt-6 space-y-6"> */}
 <div className={`${maxContainerWidth} mx-auto ${containerPadding} ${gapBetweenCards}`}>
   {/* TITLE */}
@@ -428,14 +428,12 @@ if (!canSee) {
     )}
 
     {/* DELETE */}
-    <div className="pt-4 max-w-10 max-h-10">
-      <Pill
-        label="Delete Collection"
-        icon={deleteIcon}
-        onClick={handleDelete}
-        baseClass="bg-golden roundee-full  text-white"
-      />
-    </div>
+
+      <div  onClick={handleDelete} className="rounded-full h-14 max-w-20 flex flex-col items-center justify-center bg-golden">
+        <img src={deleteIcon}/>
+        <p className="text-white">Delete</p>
+      </div>
+  
 
   </div>
 </IonContent>

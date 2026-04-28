@@ -22,7 +22,7 @@ function BookListItem({ book }) {
     await dispatch(clearPagesInView());
     await dispatch(setCollections({ collections: [] }));
     await dispatch(setCollectionInView({ collection: book }));
-    router.push(Paths.collection.createRoute(book.id), "forward", "replace");
+    router.push(Paths.collection.createRoute(book.id), "forward");
     sendGAEvent(
       "Navigate",
       `Navigate to Collection ${JSON.stringify({ id: book.id, title: book?.title })}`

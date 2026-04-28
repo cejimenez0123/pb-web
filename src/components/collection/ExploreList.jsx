@@ -28,10 +28,10 @@ export default function ExploreList({
       setIsVisible(true);
     }, 120);
   };
-
-const totalPages = Math.ceil(totalCount / pageSize);
+const totalPages = totalCount ? Math.ceil(totalCount / pageSize) : 1;
+// const totalPages = Math.ceil(totalCount / pageSize);
   return (
-    <div className={`${WRAP}  ${SECTION_GAP}`}>
+    <div className={`${WRAP}  bg-cream dark:bg-base-bgDark ${SECTION_GAP}`}>
       <div>
         <div className={SECTION_HEADER_ROW}>
           <SectionHeader title={label} />
@@ -66,22 +66,9 @@ const totalPages = Math.ceil(totalCount / pageSize);
             {!isLoading && items?.length > 0 && (
               <div className="flex min-h-[14rem] pr-4 flex-row overflow-x-auto space-x-4 no-scrollbar">
                 {items.map((item, i) => (
-                  <BookListItem key={item.id + i} book={item} />
+            <BookListItem key={`${item.id}-${i}`} book={item} />
                 ))}
 
-        {/* Load more */}
-        {/* {hasMore && (
-          <div className="flex justify-center pt-3">
-            <button
-              onClick={handleLoadMore}
-              className="text-sm text-emerald-600 dark:text-emerald-300 font-medium hover:underline"
-            >
-              Load more
-            </button>
-          </div>
-        )} */}
-
-        {/* Page indicator */}
        
               </div>
             )}

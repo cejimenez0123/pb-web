@@ -6,11 +6,13 @@ const getDark = () => window.matchMedia('(prefers-color-scheme: dark)').matches;
 const getBackground = () => {
   const isDark = getDark();
   document.documentElement.style.setProperty(
+    
     '--background',
     isDark
       ? Enviroment.palette.base.bgDark ?? Enviroment.palette.base.surfaceDark
-      :Enviroment.palette.cream
+      :Enviroment.palette.cream,
   );
+      document.documentElement.style.setProperty("--padding-bottom","10em" )
 };
 const applyTheme = () => {
   if (window.matchMedia("(prefers-color-scheme: dark)").matches) {

@@ -98,7 +98,7 @@ function DiscoveryContainer() {
   };
 
   return (
-    <IonContent style={{ "--background": "var(--base-surface)" }}>
+    <IonContent className='page-content'>
       <div className={PAGE_WRAP}>
 
         {/* Communities */}

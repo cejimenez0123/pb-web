@@ -164,7 +164,7 @@ export default function CreateCollectionForm({ initPages, onClose }) {
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <InfoTooltip text="Collection will only be visible to you and those with roles" />
-            <span className="text-emerald-800 font-medium">Private</span>
+            <span className="text-soft dark:text-cream font-medium">Private</span>
           </div>
           <p
             onClick={() => toggleField("isPrivate")}
@@ -178,7 +178,7 @@ export default function CreateCollectionForm({ initPages, onClose }) {
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <InfoTooltip text="Anyone who finds this collection can add to it if it's open" />
-            <span className="text-emerald-800 font-medium">Open Collaboration</span>
+            <span className="text-soft dark:text-cream font-medium">Open Collaboration</span>
           </div>
           <p
             onClick={() => toggleField("isOpenCollaboration")}

@@ -87,6 +87,18 @@ const getRecommendedCollections = createAsyncThunk(
     }
   }
 );
+const getRecommendedCollectionsProfile = createAsyncThunk(
+  'collections/recommendedCollections',
+  async (params, thunkApi) => {
+    try {
+      const { skip = 0, take = 20 } = params || {};
+      const { collections, totalCount } = await collectionRepo.recommendations({ skip, take });
+      return { collections, totalCount };
+    } catch (error) {
+      return { error: new Error(`getRecommendedCollections ${error.message}`) };
+    }
+  }
+);
 // const getRecommendedCollections = createAsyncThunk(
 //     'collections/recommendedCollections',
 //     async (params,thunkApi) => {
@@ -111,25 +123,25 @@ const getRecommendedCollections = createAsyncThunk(
       
 //     }
 // )
-const getRecommendedCollectionsProfile = createAsyncThunk(
-    'collections/recommendedCollections',
-    async (params,thunkApi) => {
+// const getRecommendedCollectionsProfile = createAsyncThunk(
+//     'collections/recommendedCollections',
+//     async (params,thunkApi) => {
     
-        try{
+//         try{
 
-          const {collections}= await collectionRepo.recommendations()
-          return {collections:collections}
+//           const {collections}= await collectionRepo.recommendations()
+//           return {collections:collections}
     
      
 
-}catch (error) {
-    return{
-        error: new Error(`getRecommendedCollections ${error.message}`)
-    }
-}
+// }catch (error) {
+//     return{
+//         error: new Error(`getRecommendedCollections ${error.message}`)
+//     }
+// }
       
-    }
-)
+//     }
+// )
 const saveRoleToCollection= createAsyncThunk("collection/saveRoleToCollection",
     async (params,thunkApi)=>{
         const id = params["id"]

@@ -2,19 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
-
-       
-        <key>UIBackgroundModes</key>
-        <array>
-            <string>remote-notification</string>
-        </array>
-   <key>UIBackgroundModes</key>
-   <array>
-       <string>remote-notification</string>
-   </array>
 	<key>CFBundleDisplayName</key>
 	<string>Plumbum</string>
 	<key>CFBundleExecutable</key>
@@ -76,7 +65,10 @@
 	<string>Please give permission if you want to upload photos</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Please give permission if you want to upload photos</string>
-
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

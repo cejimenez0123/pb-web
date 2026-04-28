@@ -74,12 +74,12 @@ export default function SortableList({ items, type, onOrderChange, onDelete }) {
                       `}
                     >
                       {/* Drag handle */}
-                      <IonImg src={dragHandle} className="w-5 h-5 mr-4 cursor-grab" />
+                      <img src={dragHandle} className="w-5 dark:bg-cream rounded-2xl h-5 mr-4 cursor-grab" />
 
                       {/* Title */}
                       <h6
                         onClick={() => handleNavigate(item)}
-                        className="flex-1 text-left text-gray-800 font-medium truncate cursor-pointer"
+                        className="flex-1 text-left text-soft dark:text-cream font-medium truncate cursor-pointer"
                         style={{ maxWidth: "calc(100% - 100px)" }}
                       >
                         {item?.story?.title?.slice(0, 30) || item?.childCollection?.title?.slice(0, 30) || "Untitled"}

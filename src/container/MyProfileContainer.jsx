@@ -53,29 +53,6 @@ useEffect(() => {
 }, [profile]);
 
 
-const [page, setPage] = useState(1);
-useEffect(() => {
-  if (!profile?.id) return; // don't preload until we actually have a profile
-
-  const preload = async () => {
-    const shared = { skip: 0, take: pageSize };
-    try {
-      const [storiesRes, collectionsRes, librariesRes] = await Promise.all([
-        dispatch(getMyStories({ ...shared })).unwrap(),
-        dispatch(getMyCollections({ ...shared, type: "book" })).unwrap(),
-        dispatch(getMyCollections({ ...shared, type: "library" })).unwrap(),
-      ]);
-      if (storiesRes) dispatch(setPageData({ key: "stories:all", page: 1, items: storiesRes.pageList, totalCount: storiesRes.totalCount }));
-      if (collectionsRes) dispatch(setPageData({ key: "collections:all", page: 1, items: collectionsRes.collections, totalCount: collectionsRes.totalCount }));
-      if (librariesRes) dispatch(setPageData({ key: "libraries:all", page: 1, items: librariesRes.collections, totalCount: librariesRes.totalCount }));
-    } catch (e) {
-      console.error("Preload failed", e);
-    }
-  };
-
-  // preload();
-}, [profile?.id]);
-
 
 
 
@@ -144,16 +121,17 @@ const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 const authResolved = useSelector((state) => state.users.authResolved);
 
 
-if (!authResolved) return <IonContent fullscreen />;// blank while auth checks
+if (!authResolved) return <IonContent  scrollY={true}
+className='page-content' fullscreen />;// blank while auth checks
 if (!profile) return <EmptyProfileState />; // only show this when truly logged out;
   return (
 
-      <IonContent fullscreen 
-  style={{...getBackground(),"--min-height":"100%"}}
+      <IonContent  scrollY={true}
+className='page-content' fullscreen 
 
 >
       <ErrorBoundary>
-        <div className="  overflow-y-auto bg-cream pb-10 dark:bg-base-bgDark space-y-8">
+        <div className="  overflow-y-auto bg-cream  dark:bg-base-bgDark space-y-8">
 <div className='flex sm:pt-16 flex-col justify-center'>
 <div className=" p-4 ">
   {/* {Enviroment.palette.button.} */}
@@ -172,11 +150,7 @@ className="bg-soft rounded-full p-2"><img src={settings} /></button>
          
             </div>
 
-            {/* <div className="flex justify-between text-center">
-            <StatChip value={profile?._count?.followers ?? ""}
-               label="Followers" />
-              <StatChip value={profile?._count?.following??""} label="Following" />
-            </div> */}
+          
 
             {(profile?.bio || profile?.selfStatement) && (
               <p className="text-sm text-gray-700 dark:text-cream leading-relaxed">
@@ -332,7 +306,7 @@ className="bg-soft rounded-full p-2"><img src={settings} /></button>
           </div>
 </div>
 </div>
-     <div className='min-h-[28rem] bg-cream pb-24'>
+     <div className=' bg-cream '>
             <ExploreList/>
           </div>
      
@@ -355,7 +329,7 @@ function EmptyProfileState() {
     <IonContent
       fullscreen
    
-      style={{ "--background": Enviroment.palette.base.background }}
+  
     >
       <div className="max-w-[50em] mx-auto px-4 pt-16 space-y-6 text-center">
 

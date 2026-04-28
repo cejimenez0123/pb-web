@@ -216,13 +216,22 @@ console.log(res.data)
   });
   return res.data;
 }
-    async recommendations(){
-        const res = await axios.get(this.url+"/recommendations",{headers:{
-            Authorization:"Bearer "+(await Preferences.get({key:"token"})).value
-        }})
+async recommendations({ skip = 0, take = 20 } = {}) {
+  const res = await axios.get(this.url + "/recommendations", {
+    headers: {
+      Authorization: "Bearer " + (await Preferences.get({ key: "token" })).value
+    },
+    params: { skip, take }
+  });
+  return res.data;
+}
+    // async recommendations(){
+    //     const res = await axios.get(this.url+"/recommendations",{headers:{
+    //         Authorization:"Bearer "+(await Preferences.get({key:"token"})).value
+    //     }})
 
-        return res.data
-    }
+    //     return res.data
+    // }
     async recommendedStories({colId}){
         const res = await axios.get(this.url+"/"+colId+"/story/recommendations",{headers:{
          Authorization:"Bearer "+(await Preferences.get({key:"token"})).value
