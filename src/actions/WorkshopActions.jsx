@@ -59,16 +59,6 @@ const fetchYourWorkshops = createAsyncThunk("books/findYourWorkshops",async (par
   }
 );
 
-// const findWorkshopGroups = createAsyncThunk("books/findWorkshopGroups",async ({radius=50,global=false,location},thunkApi)=>{
-//     try {
-//       let data = await workshopRepo.findWorkshops({radius,global,location})
-//       console.log("Fetched workshop groups:", data);
-//       return data
-//     } catch (error) {
-//       console.error('Error fetching workshop groups:', error);
-//       return {groups:[]}
-//     }
-//   })
 const findWorkshopGroups = createAsyncThunk("books/findWorkshopGroups", async ({
   radius = 50,
   global = false,

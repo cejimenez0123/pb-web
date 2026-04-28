@@ -22,13 +22,13 @@ import usePaginatedResource from '../../core/usePaginatedResource';
 
 const DEFAULT_LOCATION = { latitude: 40.818622458906425, longitude: -73.8890363605602 };
 
-const WRAP = "max-w-[50em]  mx-auto px-4";
-const WRAPB = "mx-auto bg-cream dark:bg-base-bgDark w-[100%]";
+const WRAP = "  mx-auto px-4";
+const WRAPB = "mx-auto bg-cream  max-w-[50em] dark:bg-base-bgDark w-[100%]";
 const PAGE_Y = "pt-16 ";
 const STACK_LG = "space-y-8";
 const STACK_MD = "space-y-6";
 const STACK_SM = "space-y-3";
-const CARD = "rounded-2xl shadow-sm bg-base-bg border-1 border border-earth p-6";
+const CARD = "rounded-2xl max-w-2xl  mx-auto shadow-sm bg-base-bg border-1 border border-earth p-6";
 const CARD_INNER = "space-y-5 bg-base-bg ";
 const ROW_BETWEEN = "flex items-center justify-between";
 const INPUT_WRAP = "bg-gray-50 border border-gray-200 rounded-xl p-4";
@@ -228,7 +228,7 @@ className='page-content'
     >
   
    
-        <div className={`${WRAPB} page-content dark:bg-base-bgDark  ${PAGE_Y} ${STACK_LG}`}>
+        <div className={`page-content dark:bg-base-bgDark  ${PAGE_Y} ${STACK_LG}`}>
           <div className={WRAP}>
             <div className={`${CARD} ${CARD_INNER}`}>
               {page?.id && <WorkshopContextCard page={page} />}
@@ -278,7 +278,8 @@ className='page-content'
               {loading && (
                 <IonLoading isOpen={loading} message={"Loading your space..."} spinner="crescent" />
               )}
-             </div>                
+             </div>   
+                  </div>             
   <ExploreList 
     label={"Communities"} 
     items={communities}
@@ -298,7 +299,7 @@ className='page-content'
 
        
 
-          </div>
+     
 
     
 

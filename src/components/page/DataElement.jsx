@@ -1,3 +1,4 @@
+
 import { useContext, useEffect, useRef, useState, useCallback } from "react";
 import { useIonRouter } from "@ionic/react";
 import LinkPreview from "../LinkPreview";
@@ -7,7 +8,11 @@ import Enviroment from "../../core/Enviroment";
 import Paths from "../../core/paths";
 import { useSelector, useDispatch } from "react-redux";
 import { createComment } from "../../actions/PageActions.jsx";
-import "../../styles/Editor.css"
+import "../../styles/Editor.css";
+
+// ── Module level — stable reference ──────────────────────────────────────────
+const EMPTY_COMMENTS = [];
+
 // ─── Inline comment popover ───────────────────────────────────────────────────
 function CommentPopover({ comment, position, onClose, onReply }) {
   const currentProfile = useSelector((s) => s.users.currentProfile);
@@ -59,40 +64,27 @@ function CommentPopover({ comment, position, onClose, onReply }) {
           className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
         >
           <svg className="w-4 h-4" viewBox="0 0 16 16" fill="currentColor">
-            <path
-              d="M3.5 3.5l9 9M12.5 3.5l-9 9"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
+            <path d="M3.5 3.5l9 9M12.5 3.5l-9 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
           </svg>
         </button>
       </div>
 
-  
-{comment.anchorText && (
-  <blockquote
-    className="border-l-2 border-emerald-400 pl-2 text-xs text-slate-500 dark:text-slate-400 italic truncate cursor-pointer hover:text-emerald-600 dark:hover:text-emerald-300 transition-colors"
-    onClick={() => {
-      const mark = document.querySelector(
-        `[data-comment-id="${comment.id}"]`
-      );
-      if (!mark) return;
+      {comment.anchorText && (
+        <blockquote
+          className="border-l-2 border-emerald-400 pl-2 text-xs text-slate-500 dark:text-slate-400 italic truncate cursor-pointer hover:text-emerald-600 dark:hover:text-emerald-300 transition-colors"
+          onClick={() => {
+            const mark = document.querySelector(`[data-comment-id="${comment.id}"]`);
+            if (!mark) return;
+            mark.scrollIntoView({ behavior: "smooth", block: "center" });
+            mark.classList.add("annotation-mark--pulse");
+            setTimeout(() => mark.classList.remove("annotation-mark--pulse"), 1500);
+            onClose();
+          }}
+        >
+          ↑ "{comment.anchorText}"
+        </blockquote>
+      )}
 
-      // Scroll to the mark
-      mark.scrollIntoView({ behavior: "smooth", block: "center" });
-
-      // Pulse highlight animation
-      mark.classList.add("annotation-mark--pulse");
-      setTimeout(() => mark.classList.remove("annotation-mark--pulse"), 1500);
-
-      // Close the popover so the user can see the text
-      onClose();
-    }}
-  >
-    ↑ "{comment.anchorText}"
-  </blockquote>
-)}
       <p className="text-sm text-slate-700 dark:text-slate-200 leading-relaxed">
         {comment.content}
       </p>
@@ -104,9 +96,7 @@ function CommentPopover({ comment, position, onClose, onReply }) {
               <div className="w-5 h-5 rounded-full bg-sky-100 dark:bg-sky-800 flex items-center justify-center text-[10px] font-semibold text-sky-700 dark:text-sky-300 flex-shrink-0">
                 {r.profile?.username?.[0]?.toUpperCase() ?? "?"}
               </div>
-              <p className="text-xs text-slate-600 dark:text-slate-300">
-                {r.content}
-              </p>
+              <p className="text-xs text-slate-600 dark:text-slate-300">{r.content}</p>
             </div>
           ))}
         </div>
@@ -118,72 +108,26 @@ function CommentPopover({ comment, position, onClose, onReply }) {
             value={reply}
             onChange={(e) => setReply(e.target.value)}
             rows={2}
-            placeholder="Write a reply…"
+            placeholder="Write a reply..."
             className="w-full text-xs p-2 rounded-lg border border-emerald-200 dark:border-emerald-600 bg-emerald-50 dark:bg-slate-700 text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-400 resize-none"
           />
           <div className="flex justify-end gap-2">
-            <button
-              onClick={() => setShowReply(false)}
-              className="text-xs text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
-            >
+            <button onClick={() => setShowReply(false)} className="text-xs text-slate-500 hover:text-slate-700 dark:hover:text-slate-300">
               Cancel
             </button>
-            <button
-              onClick={submitReply}
-              className="text-xs bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1 rounded-full transition"
-            >
+            <button onClick={submitReply} className="text-xs bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1 rounded-full transition">
               Reply
             </button>
           </div>
         </div>
       ) : (
-        <button
-          onClick={() => setShowReply(true)}
-          className="text-xs text-emerald-600 dark:text-emerald-400 hover:underline text-left"
-        >
+        <button onClick={() => setShowReply(true)} className="text-xs text-emerald-600 dark:text-emerald-400 hover:underline text-left">
           + Reply
         </button>
       )}
     </div>
   );
 }
-
-// ─── Selection toolbar ────────────────────────────────────────────────────────
-// function SelectionToolbar({ position, onAnnotate, onClose }) {
-//   return (
-//     <div
-//       className={[
-//         "absolute z-50 flex items-center gap-1 px-2 py-1.5 rounded-xl shadow-xl",
-//         "bg-slate-800 dark:bg-slate-700",
-//         "animate-in fade-in zoom-in-95 duration-100",
-//       ].join(" ")}
-//       style={{ top: position.top, left: position.left }}
-//       onPointerDown={(e) => e.preventDefault()}
-//     >
-//       <span
-//         className="absolute -bottom-1.5 left-4 w-3 h-3 bg-slate-800 dark:bg-slate-700 rotate-45"
-//         style={{ clipPath: "polygon(0 100%, 100% 100%, 100% 0)" }}
-//       />
-//       <button
-//         className="flex items-center gap-1.5 text-xs text-soft font-medium px-2 py-1 rounded-lg hover:bg-white/10 transition"
-//         onPointerDown={(e) => { e.preventDefault(); e.stopPropagation(); onAnnotate(); }}
-//       >
-        
-//         Comment
-//       </button>
-//       <button
-//         className="text-slate-400 hover:text-white transition p-1 rounded-lg hover:bg-white/10"
-//         onPointerDown={(e) => { e.preventDefault(); e.stopPropagation(); onClose(); }}
-//       >
-//         <svg className="w-3 h-3" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-//           <path d="M1 1l10 10M11 1L1 11" />
-//         </svg>
-//       </button>
-//     </div>
-//   );
-// }
-// ── Module level — stable reference ──────────────────────────────────────────
-const EMPTY_COMMENTS = [];
 
 // ─── Selection toolbar ────────────────────────────────────────────────────────
 function SelectionToolbar({ position, onAnnotate, onClose }) {
@@ -201,16 +145,16 @@ function SelectionToolbar({ position, onAnnotate, onClose }) {
         style={{ clipPath: "polygon(0 100%, 100% 100%, 100% 0)" }}
       />
       <button
-        className="flex items-center gap-1.5 text-xs text-soft font-medium px-2 py-1 rounded-lg transition"
+        className="flex items-center gap-1.5 text-xs text-white font-medium px-2 py-1 rounded-lg hover:bg-white/10 transition"
         onPointerDown={(e) => {
           e.preventDefault();
           e.stopPropagation();
           onAnnotate();
         }}
       >
-        {/* <svg className="w-3.5 h-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round">
+        <svg className="w-3.5 h-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round">
           <path d="M2 2h8l4 4v8H2V2zM10 2v4h4M5 9h6M5 11h4" />
-        </svg> */}
+        </svg>
         Comment
       </button>
       <button
@@ -230,7 +174,7 @@ function SelectionToolbar({ position, onAnnotate, onClose }) {
 }
 
 // ─── AnnotatedText ────────────────────────────────────────────────────────────
-function AnnotatedText({ html, page, onAnnotationComment }) {
+function AnnotatedText({ html, page, onAnnotationComment, showAnnotations }) {
   const dispatch = useDispatch();
   const currentProfile = useSelector((s) => s.users.currentProfile);
   const commentsRaw = useSelector((s) => s.comments.byStory?.[page?.id]);
@@ -241,11 +185,14 @@ function AnnotatedText({ html, page, onAnnotationComment }) {
   const capturedTextRef = useRef("");
   const isProcessingRef = useRef(false);
   const [activeComment, setActiveComment] = useState(null);
-  const [toolbar, setToolbar] = useState(null); // { top, left, text }
+  const [toolbar, setToolbar] = useState(null);
 
   // ── Inject <mark> tags ──────────────────────────────────────────────────
   const annotatedHtml = useCallback(() => {
     let source = html ?? `<div>${page?.data ?? ""}</div>`;
+
+    if (!showAnnotations) return source; // ← skip when hidden
+
     comments
       .filter((c) => c.anchorText?.trim())
       .forEach((c) => {
@@ -259,65 +206,39 @@ function AnnotatedText({ html, page, onAnnotationComment }) {
         );
       });
     return source;
-  }, [html, page?.data, comments]);
+  }, [html, page?.data, comments, showAnnotations]);
 
   // ── Show toolbar above selection ────────────────────────────────────────
-// const showToolbar = useCallback(() => {
-//   const sel = window.getSelection();
-//   if (!sel || sel.isCollapsed || !sel.toString().trim()) {
-//     setToolbar(null);
-//     return;
-//   }
+  const showToolbar = useCallback(() => {
+    if (isProcessingRef.current) return;
 
-//   const text = sel.toString().trim();
-//   capturedTextRef.current = text;
+    const sel = window.getSelection();
+    if (!sel || sel.isCollapsed || !sel.toString().trim()) {
+      setToolbar(null);
+      return;
+    }
 
-//   const range = sel.getRangeAt(0);
-//   const rect = range.getBoundingClientRect();
-//   const containerRect = containerRef.current?.getBoundingClientRect();
-//   if (!containerRect || rect.width === 0) return;
+    const text = sel.toString().trim();
+    capturedTextRef.current = text;
 
-//   const top  = rect.top - containerRect.top - 48;
-//   const left = Math.min(
-//     Math.max(rect.left - containerRect.left, 0),
-//     containerRect.width - 140
-//   );
+    const range = sel.getRangeAt(0);
+    const rect = range.getBoundingClientRect();
+    const containerRect = containerRef.current?.getBoundingClientRect();
+    if (!containerRect || rect.width === 0) return;
 
-//   setToolbar({ top, left, text });
-// }, []);
-const showToolbar = useCallback(() => {
-  if (isProcessingRef.current) return; // ← guard
+    const top  = rect.top - containerRect.top - 48;
+    const left = Math.min(
+      Math.max(rect.left - containerRect.left, 0),
+      containerRect.width - 140
+    );
 
-  const sel = window.getSelection();
-  if (!sel || sel.isCollapsed || !sel.toString().trim()) {
-    setToolbar(null);
-    return;
-  }
+    setToolbar({ top, left, text });
+  }, []);
 
-  const text = sel.toString().trim();
-  capturedTextRef.current = text; 
-  if (isProcessingRef.current) return;  // ← add this
-  
- 
-
-  const range = sel.getRangeAt(0);
-  const rect = range.getBoundingClientRect();
-  const containerRect = containerRef.current?.getBoundingClientRect();
-  if (!containerRect || rect.width === 0) return;
-
-  const top  = rect.top - containerRect.top - 48;
-  const left = Math.min(
-    Math.max(rect.left - containerRect.left, 0),
-    containerRect.width - 140
-  );
-
-  setToolbar({ top, left, text });
-}, []);
-  // ── selectionchange — longer debounce lets user drag handles freely ─────
+  // ── selectionchange — 600ms debounce lets user drag handles freely ──────
   useEffect(() => {
     const handler = () => {
       clearTimeout(timerRef.current);
-      // 600ms gives mobile users time to drag selection handles
       timerRef.current = setTimeout(showToolbar, 600);
     };
     document.addEventListener("selectionchange", handler);
@@ -326,27 +247,25 @@ const showToolbar = useCallback(() => {
       clearTimeout(timerRef.current);
     };
   }, [showToolbar]);
-const handleAnnotateConfirm = useCallback(() => {
-  if (isProcessingRef.current) return;
-  const text = capturedTextRef.current;
-  if (!text) return;
 
-  isProcessingRef.current = true;
-  capturedTextRef.current = "";
-  setToolbar(null);
-  window.getSelection()?.removeAllRanges();
+  // ── Toolbar confirm ─────────────────────────────────────────────────────
+  const handleAnnotateConfirm = useCallback(() => {
+    if (isProcessingRef.current) return;
+    const text = capturedTextRef.current;
+    if (!text) return;
 
-  // 300ms delay — lets selectionchange and pointerdown events settle
-  // before the dialog opens, preventing immediate close
-  setTimeout(() => {
-    onAnnotationComment?.(text);
-    setTimeout(() => { isProcessingRef.current = false; }, 500);
-  }, 300);
-}, [onAnnotationComment]);
+    isProcessingRef.current = true;
+    capturedTextRef.current = "";
+    setToolbar(null);
+    window.getSelection()?.removeAllRanges();
 
+    setTimeout(() => {
+      onAnnotationComment?.(text);
+      setTimeout(() => { isProcessingRef.current = false; }, 500);
+    }, 300);
+  }, [onAnnotationComment]);
 
-
-
+  // ── Click existing mark → open popover ─────────────────────────────────
   const handleClick = useCallback((e) => {
     const sel = window.getSelection();
     if (sel && !sel.isCollapsed) return;
@@ -374,9 +293,7 @@ const handleAnnotateConfirm = useCallback(() => {
 
   // ── Reply from popover ──────────────────────────────────────────────────
   const handleReply = useCallback(({ text, parentId }) => {
-    
     if (!currentProfile) return;
-    console.log("PARENTID",parentId)
     dispatch(createComment({
       profile:         currentProfile,
       text,
@@ -397,11 +314,11 @@ const handleAnnotateConfirm = useCallback(() => {
         <SelectionToolbar
           position={{ top: toolbar.top, left: toolbar.left }}
           onAnnotate={handleAnnotateConfirm}
-        onClose={() => {
-  capturedTextRef.current = "";  // ← clear ref too
-  setToolbar(null);
-  window.getSelection()?.removeAllRanges();
-}}
+          onClose={() => {
+            capturedTextRef.current = "";
+            setToolbar(null);
+            window.getSelection()?.removeAllRanges();
+          }}
         />
       )}
 
@@ -423,23 +340,49 @@ const handleAnnotateConfirm = useCallback(() => {
   );
 }
 
-
+// ─── DataElement ──────────────────────────────────────────────────────────────
 function DataElement({ page, isGrid, book = null, html = null, onAnnotationComment }) {
   const initialImage =
     page?.type === PageType.picture ? resolveImageSrc(page?.data) : null;
-
   const router = useIonRouter();
+  const commentsRaw = useSelector((s) => s.comments.byStory?.[page?.id]);
+  const comments = commentsRaw ?? EMPTY_COMMENTS;
+  const hasAnnotations = comments.some((c) => c.anchorText?.trim());
+  const [showAnnotations, setShowAnnotations] = useState(true);
 
   function Element({ page, image }) {
     switch (page.type) {
       case PageType.text:
         return (
-          <AnnotatedText
-            html={html}
-            page={page}
-            onAnnotationComment={onAnnotationComment}
-          />
+          <>
+            {/* Toggle — only renders if there are annotated comments */}
+            {hasAnnotations && (
+              <div className="flex justify-end px-2 pt-2">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowAnnotations((v) => !v);
+                  }}
+                  className={[
+                    "text-xs px-3 py-1 rounded-full border transition-colors",
+                    showAnnotations
+                      ? "bg-emerald-100 border-emerald-300 text-emerald-700 dark:bg-emerald-900/40 dark:border-emerald-700 dark:text-emerald-300"
+                      : "bg-slate-100 border-slate-300 text-slate-500 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-400",
+                  ].join(" ")}
+                >
+                  {showAnnotations ? "🔖 Hide highlights" : "🔖 Show highlights"}
+                </button>
+              </div>
+            )}
+            <AnnotatedText
+              html={html}
+              page={page}
+              onAnnotationComment={onAnnotationComment}
+              showAnnotations={showAnnotations}
+            />
+          </>
         );
+
       case PageType.picture:
         return (
           <img
@@ -454,8 +397,10 @@ function DataElement({ page, isGrid, book = null, html = null, onAnnotationComme
             className="w-full h-full object-contain"
           />
         );
+
       case PageType.link:
         return <LinkPreview isGrid={isGrid} url={page.data} />;
+
       default:
         return null;
     }

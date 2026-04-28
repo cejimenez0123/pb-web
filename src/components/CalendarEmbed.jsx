@@ -322,28 +322,7 @@ const renderEvent = (event, i) => (
           {solEvents.map((event, i) => (<div key={i}>
             {renderEvent(event)}
           </div>   ))}
-          {/* {solEvents.map((event, i) => (
-            <div
-              key={i}
-              onClick={() => handleDialogOpen(event)}
-              className="min-w-[220px] bg-base-bg rounded-xl p-4 border-soft border border-1  shadow-sm"
-            >
-              <p className="font-semibold text-sm dark:text-emerald-100">{event.summary}</p>
-              <p className="text-xs text-gray-500 dark:text-emerald-100">{event.location}</p>
-     <IonText
-            className="text-xs text-gray-600 dark:text-emerald-100"
-            dangerouslySetInnerHTML={{ __html: event.startTime }}
-          />
-              <div className="flex gap-1 mt-2 flex-wrap">
-                {event.hashtags.slice(0, 2).map((tag, idx) => (
-                  <span key={idx} className="text-[10px] dark:bg-base-bg dark:text-emerald-100 px-2 py-1 rounded-full">
-                 
-                    #{tag}
-                  </span>
-                ))}
-              </div>
-            </div>
-          ))} */}
+
         </div>
         </div>
         
@@ -402,9 +381,9 @@ const renderEvent = (event, i) => (
 >
   <HorizontalScroll />
 </div>
-   
+     <SectionHeader title={"Events across New York City"}/>
 
-  <IonList style={{ "--background": Enviroment.palette.cream }}>
+  <IonList >
   
         {paginatedEvents.map(renderEvent)}
       </IonList>

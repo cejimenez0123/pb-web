@@ -99,49 +99,7 @@ const getRecommendedCollectionsProfile = createAsyncThunk(
     }
   }
 );
-// const getRecommendedCollections = createAsyncThunk(
-//     'collections/recommendedCollections',
-//     async (params,thunkApi) => {
-    
-//         try{
-     
-//           const {collections}= await collectionRepo.recommendedColCollections(params)
-//           if(collections){
-//           return {collections:collections}
-//           }
-//             return{
-//                 collections:[]
-//             }
-       
 
-// }catch (error) {
-//     return{
-//         collections:[],
-//         error: new Error(`getRecommendedCollections ${error.message}`)
-//     }
-// }
-      
-//     }
-// )
-// const getRecommendedCollectionsProfile = createAsyncThunk(
-//     'collections/recommendedCollections',
-//     async (params,thunkApi) => {
-    
-//         try{
-
-//           const {collections}= await collectionRepo.recommendations()
-//           return {collections:collections}
-    
-     
-
-// }catch (error) {
-//     return{
-//         error: new Error(`getRecommendedCollections ${error.message}`)
-//     }
-// }
-      
-//     }
-// )
 const saveRoleToCollection= createAsyncThunk("collection/saveRoleToCollection",
     async (params,thunkApi)=>{
         const id = params["id"]

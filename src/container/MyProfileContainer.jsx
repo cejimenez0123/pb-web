@@ -16,7 +16,7 @@ import debounce from "../core/debounce";
 import PageProfileList from "../components/page/PageProfileList";
 
 import EmptyState from "../components/EmptyState";
-import { getMyCollections } from "../actions/CollectionActions";
+import { getMyCollections, getProfileRecommendations } from "../actions/CollectionActions";
 import { getMyStories } from "../actions/StoryActions";
 import PaginatedList from "../components/page/PaginatedList";
 import usePaginatedResource from "../core/usePaginatedResource";
@@ -43,6 +43,12 @@ function MyProfileContainer() {
 const storiesCache = useSelector((state) => state.pagination.byKey?.["stories:all"]?.pages?.[1] ?? []);
 const collectionsCache = useSelector((state) => state.pagination.byKey?.["collections:all"]?.pages?.[1] ?? []);
 const librariesCache = useSelector((state) => state.pagination.byKey?.["libraries:all"]?.pages?.[1] ?? []);
+const { items: explorList, page: explorePage, setPage: setExplorePage, totalCount: exploreTotalCount} = usePaginatedResource({
+    cacheKey: "profile-recommendations",
+    fetcher: getProfileRecommendations,
+    pageSize: 10,
+    enabled: !!profile?.id,
+    select: (res) => ({ items: res.groups, totalCount: res.totalCount })})
 const recentPosts = storiesCache.slice(0, 5);
 const recentCollections = collectionsCache.slice(0, 5);
 const communities = { items: librariesCache };
@@ -88,7 +94,7 @@ const tabs = [
 const IndexList = ({ items, profile,router }) => (
   <div className="space-y-2">
     {items.map((i) => (
-      <ListPill item={i} profile={profile} onClick={()=>router.push(Paths.collection.createRoute(i.id))}
+      <ListPill key={i.id} item={i} profile={profile} onClick={()=>router.push(Paths.collection.createRoute(i.id))}
    />
     ))}
   </div>
@@ -115,8 +121,6 @@ const StatChip = ({ value, label }) => (
 
 // const [search, setSearch] = useState("");
 
-// const profile = useSelector((state) => state.users.currentProfile);or however your slice tracks it
-const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
 const authResolved = useSelector((state) => state.users.authResolved);
 
@@ -251,7 +255,7 @@ className="bg-soft rounded-full p-2"><img src={settings} /></button>
   fetcher={getMyStories}
   pageSize={8}
   search={debouncedSearch}
-  params={{search:debouncedSearch}}
+  // params={{search:debouncedSearch}}
   emptyState={   Array.from({ length: pageSize }).map((_, i) => (
                    <div
         key={i}
@@ -262,8 +266,9 @@ className="bg-soft rounded-full p-2"><img src={settings} /></button>
       ))}
 
   renderItem={(p) => (
-    <ListPill item={p} profile={profile} onClick={()=>router.push(Paths.page.createRoute(p.id))}/>
-  )}
+
+    <ListPill key={p.id}item={p} profile={profile} onClick={()=>router.push(Paths.page.createRoute(p.id))}/>
+)}
 />
 
 
@@ -293,7 +298,7 @@ className="bg-soft rounded-full p-2"><img src={settings} /></button>
       search={debouncedSearch}
       emptyState={<EmptyState text={search ? "No matching collections." : "No collections yet."} />}
       renderItem={(i) => (
-        <ListPill item={i} profile={profile} onClick={() => router.push(Paths.collection.createRoute(i.id))} />
+        <ListPill key={i.id} item={i} profile={profile} onClick={() => router.push(Paths.collection.createRoute(i.id))} />
       )}
     />
   </>)
@@ -307,7 +312,7 @@ className="bg-soft rounded-full p-2"><img src={settings} /></button>
 </div>
 </div>
      <div className=' bg-cream '>
-            <ExploreList/>
+            <ExploreList items={explorList} page={explorePage} totalCount={exploreTotalCount} setPage={setExplorePage}/>
           </div>
      
    </div>

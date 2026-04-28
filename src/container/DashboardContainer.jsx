@@ -377,7 +377,7 @@ scrollY: false,
               <div className='flex mx-4 flex-col gap-4'>
                {saves?.length==0?<div><h2>Bookmark things you want to see often</h2></div>:saves?.map((item, i) => { 
   return (
-    <div key={item?.id ?? i}
+    <div key={`${item.id}-`+i}
     onClick={() => {
       if (!item) return;
       item?.data
@@ -551,7 +551,8 @@ scrollY: false,
       .slice(0, visibleCount)
       .map((story, index) => (
         <div
-          key={story?.id}
+          key={`${story?.id}-`
+        +index}
          className="transition-all duration-300"
           style={{
             transitionDelay: `${index * 60}ms`

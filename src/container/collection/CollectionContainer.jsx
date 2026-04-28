@@ -26,6 +26,7 @@ import {
   deleteCollectionFromCollection,
   fetchCollection,
   fetchCollectionProtected,
+  getRecommendedCollections,
   setCollections,
 } from "../../actions/CollectionActions";
 
@@ -46,6 +47,7 @@ import SectionHeader from "../../components/SectionHeader.jsx";
 import computePermissions from "../../core/compusePermissions.jsx";
 import { postCollectionHistory } from "../../actions/HistoryActions.js";
 import getBackground, { watchBackground } from "../../core/getbackground.jsx";
+import usePaginatedResource from "../../core/usePaginatedResource.jsx";
 const containerVariants = {
   hidden: { opacity: 0 },
   show: {
@@ -122,7 +124,21 @@ useEffect(() => {
 }, [currentProfile?.id, collection?.id]);
 
   const collections = useSelector(state => state.books.collections);
-
+  const pageSize=10
+const recCols = usePaginatedResource({
+  cacheKey: `recommended-collections:${collection?.id}`,
+  fetcher: getRecommendedCollections,
+  pageSize: pageSize,
+  enabled: !!collection?.id,
+  params: {
+    colId: collection?.id,
+    type: collection?.type,
+  },
+  select: (res) => ({
+    items: res.collections,
+    totalCount: res.totalCount,
+  }),
+});
   const [loading, setLoading] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [isArchived, setIsArchived] = useState(false);
@@ -475,7 +491,7 @@ const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
    const baseClasses = "w-full sm:w-auto flex-1 sm:flex-none py-3 rounded-full btn h-12 flex items-center justify-center transition";
   if (!canSee) {
   return (
-    <IonContent  style={{...getBackground(),"--padding-bottom":"10em"}} fullscreen>
+    <IonContent  className="page-content" fullscreen>
       <IonHeader>
         <IonToolbar>
           <IonTitle>Access Denied</IonTitle>
@@ -496,13 +512,13 @@ useEffect(() => {
 return (
   <ErrorBoundary>
     <IonContent
- style={{"--min-height":"100%"}}
+
    
       fullscreen
-  
+  className="page-content"
     >
        <div
-    className={` bg-cream ppb-26 pt-12 dark:bg-base-bgDark transition-opacity duration-300 ${
+    className={` bg-cream pb-26 pt-12 dark:bg-base-bgDark transition-opacity duration-300 ${
       collection ? "opacity-100" : "opacity-0"
     }`}
   >
@@ -591,10 +607,9 @@ className={BUTTON_FULL+" transition w-[100%] border-blue border-1 text-cream bor
         </div>
            </div>
    }</div>
+   {recCols.items.length>0 && <ExploreList pageSize={pageSize}items={recCols.items} page={recCols.page} totalCount={recCols.totalCount}  />}
    </div>
-   <div className='min-h-[28rem] pb-24'>
-  <ExploreList collection={collection} />
-</div>
+
       
      
     </IonContent>

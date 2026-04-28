@@ -1032,16 +1032,15 @@ ion-content.page-content {
   color: #1c1f1a;;
 }
 
-@media (prefers-color-scheme: dark) {
-  .editor-content p,span,h1,h2,h3,h4,h5.h6 {
-    color: #f4f4e0 !important
-    ;
-  }
-}
+
 @media (prefers-color-scheme: dark) {
   ion-content.page-content {
     --background: #1c1f1a;
   }
+  .dark .editor-content,
+.dark .editor-content * {
+  color: #f4f4e0 !important;
+}
 }
 
 ion-content.page-content::part(scroll) {

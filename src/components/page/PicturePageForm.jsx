@@ -188,11 +188,7 @@ const handleFileChange = (e) => {
   }
   reader.readAsDataURL(file);
 };
-console.log("htmlContent", htmlContent, "parameters data", parameters.data, "file",)
-// const hasContent =
- 
-console.log("parmeters id", parameters.id)
-console.log("parmeters isUploaded", isUploaded)
+
 const isCreated = parameters?.id
   return (
     <div className="flex flex-col w-full max-w-xl mx-auto">

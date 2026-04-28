@@ -161,7 +161,7 @@ const showTopNavbar = isDesktop && !isNative
 const location = window.location.pathname
 
 const hiddenPaths = ["/onboard", "/apply", "/login"];
-console.log("LOCATION",location)
+
 const showBottomNavbar =
   ( !hiddenPaths.includes(location)); 
 

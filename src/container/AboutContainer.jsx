@@ -398,8 +398,8 @@ const goToCalendar = (source="about_page") => {
   router.push(Paths.calendar());
 };
   return (
-    <IonContent fullscreen={true}   scrollY={true} className="">
-     <div className="pt-8 h-[100%] overflow-scroll  bg-soft pb-36">
+    <IonContent fullscreen={true}   scrollY={true} className="h-[100%]">
+     <div className="pt-8overflow-scroll  bg-soft ">
 
         {/* <IonGrid> */}
           {/* <IonRow className="my-10"> */}
@@ -412,17 +412,10 @@ const goToCalendar = (source="about_page") => {
                 Share your Weirdness
               </h2 >  
               <br />
-              {/* <h2 className=" mx-auto text-cream  text-[1rem] pb-24" color="primary">
-                Get thoughtful feedback • Grow through workshops
-            </h2 >  */}
+          
               </div>
             </IonCol>
-          {/* </IonRow> */}
-
-          {/* <IonRow className="items-center">  */}
-      
-            {/* <IonCol > */}
-
+     
            
              <div ><BookCarousel images={[...firstImages,...secImages]} /></div> 
              <div className="flex flex-col sm:flex-row items-center text-center mt-12">
@@ -445,7 +438,7 @@ const goToCalendar = (source="about_page") => {
              </btn>
              </div>
              {stayInLoop()}
-            {/* <IonCol size="12" className="ion-text-center pb-12"> */}
+            
                <IonRow className="ion-padding items-center flex-col">
                 <div className="pt-8 flex flex-col items-center">
               {/* <IonText className=""> */}

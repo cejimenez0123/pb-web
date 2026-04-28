@@ -176,7 +176,7 @@ function DiscDashTabs({ tab, setTab, disc, dash}) {
               animate="center"
               exit="exit"
               transition={{ duration: 0.26, ease: "easeOut" }}
-              className="w-full text-soft"
+              className="w-full text-soft bg-cream dark:bg-base-bgDark"
             >
               {tab === "home" ? disc() : dash()}
             </motion.div>

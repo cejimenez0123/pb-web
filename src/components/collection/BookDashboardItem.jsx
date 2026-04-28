@@ -136,7 +136,7 @@ function BookDashboardItem({ book }) {
      
 {book.storyIdList?.some(stc => stc?.story?.data) && (
   <div className={`mx-4 mb-3 rounded-2xl overflow-hidden border ${theme.softBg}`}>
-    <Carousel book={book} compact={true} />
+    <Carousel book={book} compact={true}  />
   </div>
 )}
    
