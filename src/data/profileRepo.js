@@ -121,6 +121,12 @@ let res = await axios.post(
         // let res = await axios.post(this.url+"/"+profile.id+"/collection/"+collection.id)
         // return res.data
     }
+async recommend({profileId,limit=10}){
+     const { data } = await axios.get(this.url+`/${profileId}/recommendations`, {
+        params: { limit },
+      });
+      return data
+    }
 }
 
 export default new ProfileRepo()

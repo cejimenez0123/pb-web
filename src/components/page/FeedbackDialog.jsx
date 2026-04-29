@@ -18,7 +18,7 @@ export default function FeedbackDialog({page,isFeedback,handleChange,handlePostP
                 setFeedback(e.target.value)
                 handleChange(e.target.value)
               }}
-            className={`textarea mx-2 w-[96%]  min-h-[7rem] border-opacity-50 rounded-lg border-2 bg-transparent text-emerald-800 border-emerald-600`}/>
+            className={`textarea mx-2 w-[96%] dark:text-cream min-h-[7rem] border-opacity-50 rounded-lg border-2 bg-transparent text-emerald-800 border-emerald-600`}/>
                    <div className="mt-8">
             <button onClick={()=>handlePostPublic(feedback)} className="btn btn-emerald btn-sm w-full">Post Publicly</button>
             </div>

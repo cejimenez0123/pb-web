@@ -9,6 +9,17 @@ async ({profileId},thunkApi) => {
    }
 }
 )
+const getRecommendedHashtagCollections = createAsyncThunk(
+  "collections/getRecommended",
+  async ({ hashtagIds, skip, take, exclude = [] }, { rejectWithValue }) => {
+    try {
+            let data =await  hashtagRepo.getRecommended({ hashtagIds, skip, take, exclude })
+      return data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.error ?? "Failed to fetch recommendations");
+    }
+  }
+);
 const createHashtag = createAsyncThunk("hashtag/createHashtag", 
     async ({name,profileId},thunkApi) => {
      let data =  await hashtagRepo.create({name,profileId})
@@ -202,5 +213,6 @@ export {
         deleteHashtagCollection,
         createHashtagCollection,
         unfollowHashtag 
+        , getRecommendedHashtagCollections 
 }
 

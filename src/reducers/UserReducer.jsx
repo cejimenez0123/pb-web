@@ -20,7 +20,7 @@ import {    logIn ,
             setAuthResolved,
         } from "../actions/UserActions"
 
-import {  addNotification, createProfile, fetchNotifcations, fetchProfiles } from "../actions/ProfileActions"
+import {  addNotification, createProfile, fetchNotifcations, fetchProfileRecommendations, fetchProfiles } from "../actions/ProfileActions"
 import { createPageApproval, deletePageApproval } from "../actions/PageActions.jsx" 
 import { postCollectionHistory, postStoryHistory } from "../actions/HistoryActions"
 import { createFollow, deleteFollow } from "../actions/FollowAction"
@@ -29,6 +29,9 @@ import { postActiveUser } from "../actions/WorkshopActions"
 const initialState = {
     signedIn: false,
     user: null,
+    recommendationsStatus: "idle", // "idle" | "loading" | "succeeded" | "failed"
+    recommendationsError: null,
+    recommendations:[],
     currentProfile: null,
     homeCollection: null,
     loading: true,
@@ -178,7 +181,18 @@ const userSlice = createSlice({
                     state.dialog = payload ?? { text: "", title: "", agree: () => {}, onClose: () => {}, isOpen: false, agreeText: "agree", disagreeText: "Close" }
                 }
             }
-        })
+        }).addCase(fetchProfileRecommendations.pending, (state) => {
+        state.recommendationsStatus = "loading";
+        state.recommendationsError = null;
+      })
+      .addCase(fetchProfileRecommendations.fulfilled, (state, action) => {
+        state.recommendationsStatus = "succeeded";
+        state.recommendations = action?.payload?.profiles;
+      })
+      .addCase(fetchProfileRecommendations.rejected, (state, action) => {
+        state.recommendationsStatus = "failed";
+        state.recommendationsError = action.payload;
+      })
         .addCase(setSignedInTrue.type, (state, { payload }) => {
             state.signedIn = true
         })

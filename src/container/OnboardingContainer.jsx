@@ -1,743 +1,1039 @@
+// // OnboardingContainer.jsx — merged version
+
+// import { Preferences } from '@capacitor/preferences';
+// import {
+//   IonContent, IonText, IonLabel, IonItem
+// } from '@ionic/react';
+// import "../App.css";
+// import { useState, useEffect } from 'react';
+// import authRepo from '../data/authRepo';
+// import ThankYou from './auth/ThankYou';
+// import logo from "../images/logo/icon.png";
+// import { useSelector } from 'react-redux';
+// import { useIonRouter } from '@ionic/react';
+// import Paths from '../core/paths';
+
+// /* === TOKENS === */
+// const primaryButton = "w-full bg-emerald-700 text-white rounded-full py-3 font-semibold active:scale-[0.98] transition text-[1rem]";
+// const secondaryButton = "w-full bg-emerald-50 text-emerald-700 border border-emerald-300 rounded-full py-3 font-semibold text-[1rem]";
+// const cardClass = "border border-emerald-200 rounded-2xl p-4 flex flex-col gap-2 bg-white/60";
+// const questionClass = "text-emerald-800  dark:text-cream dark:bg-base-surfaceDark text-sm rounded-full font-semibold mont-medium";
+// const inputClass = "w-full rounded-full px-4 py-2 text-[1.05rem] outline-none bg-surface dark:bg-base-surfaceDark dark:text-cream text-emerald-800  placeholder-emerald-300 mt-1";
+
+// /* === ANIMATION === */
+// function StepTransition({ step, children }) {
+//   return (
+//     <div key={step} className='overflow-y-scroll' style={{ animation: "fadeSlide 0.35s ease-out" }}>
+//       {children}
+//       <style>{`
+//         @keyframes fadeSlide {
+//           from { opacity: 0; transform: translateY(12px); }
+//           to   { opacity: 1; transform: translateY(0); }
+//         }
+//       `}</style>
+//     </div>
+//   );
+// }
+
+// /* === PROGRESS DOTS === */
+// function ProgressDots({ activeTab }) {
+//   const tabs = ["tab1", "tab2", "tab3", "tab4"];
+//   return (
+//     <div className="flex justify-center gap-2 pt-6 pb-2">
+//       {tabs.map(t => (
+//         <div
+//           key={t}
+//           className={`rounded-full transition-all duration-300 ${
+//             activeTab === t
+//               ? "w-6 h-3 bg-emerald-600"
+//               : "w-3 h-3 bg-emerald-200"
+//           }`}
+//         />
+//       ))}
+//     </div>
+//   );
+// }
+
+// /* === MAIN === */
+// export default function OnboardingContainer() {
+//   const router = useIonRouter();
+//   const currentProfile = useSelector(s => s.users.currentProfile);
+
+//   const [activeTab, setActiveTab] = useState("tab0");
+//   const [user, setUser] = useState(null);
+//   const [loading, setLoading] = useState(false);
+//   const [error, setError] = useState("");
+
+//   const [formData, setFormData] = useState({
+//     fullName: "", email: "", igHandle: "",
+//     whyApply: "", communityNeeds: "", writingOutcome: "",
+//     selectedEvents: [], otherEvent: "",
+//     eventPain: "", howFindOut: "",
+//   });
+
+//   useEffect(() => {
+//     if (currentProfile?.id) router.push(Paths.home, "root");
+//   }, [currentProfile, router]);
+
+//   const validateEmail = email => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+//   const updateFormData = data => setFormData(prev => ({ ...prev, ...data }));
+
+//   const onClickApply = async (overrideForm = formData) => {
+//     if (loading) return;
+//     try {
+//       setLoading(true);
+//       setError("");
+//       const data = await authRepo.apply({
+//         ...overrideForm,
+//         email: overrideForm.email?.toLowerCase(),
+//       });
+//       await Preferences.set({ key: "hasSeenOnboarding", value: "true" });
+//       setUser(data?.user ?? data);
+//     } catch (err) {
+//       setError(err?.message || "Something went wrong");
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   /* === WHY / TAB 0 === */
+//   const Why = () => (
+//     <StepTransition step="tab0">
+//       <div className="p-26 text-center overflow-y-scroll space-y-6">
+//         <img src={logo} className="w-24 mx-auto" alt="Plumbum" />
+
+//         <IonText className="lora-medium block text-left text-emerald-900">
+//           <h2 className="text-2xl font-bold mb-3">What is Plumbum?</h2>
+//           <ul className="list-disc pl-5 space-y-2 text-[0.95rem]">
+//             <li><strong>Writer-Focused:</strong> A space to grow, get feedback, and share — all in one place.</li>
+//             <li><strong>Community First:</strong> Built from live workshops and honest conversations, not algorithms.</li>
+//             <li><strong>Hybrid by Design:</strong> Feedback, self-promotion, and curation — because writers need all three.</li>
+//           </ul>
+
+//           <h2 className="text-2xl font-bold mt-6 mb-3">Why Join?</h2>
+//           <ul className="list-disc pl-5 space-y-2 text-[0.95rem]">
+//             <li><strong>Real Feedback:</strong> From people who care about craft, not clout.</li>
+//             <li><strong>Creative Momentum:</strong> Events, prompts, and people who show up.</li>
+//             <li><strong>Supportive Culture:</strong> Built slow and small on purpose.</li>
+//           </ul>
+//         </IonText>
+
+//         <button className={primaryButton} onClick={() => setActiveTab("tab1")}>
+//           Join Plumbum
+//         </button>
+
+//         <div
+//           className="text-emerald-700 text-sm underline cursor-pointer"
+//           onClick={() => router.push(Paths.login)}
+//         >
+//           Already have an account? Log in
+//         </div>
+//       </div>
+//     </StepTransition>
+//   );
+
+//   /* === STEP 1 === */
+//   const Step1 = () => {
+//     const [local, setLocal] = useState(formData);
+
+//     const next = () => {
+//       if (!validateEmail(local.email)) { setError("Enter a valid email"); return; }
+//       setError("");
+//       updateFormData(local);
+//       setActiveTab("tab2");
+//     };
+
+//     return (
+//       <StepTransition step="tab1">
+//         <div className="p-4 space-y-4 min-h-screen">
+//           <IonLabel className="lora-medium text-2xl font-bold text-emerald-900 block mb-2">
+//             Interest Form
+//           </IonLabel>
+
+//           {error && <div className="text-red-500 text-sm">{error}</div>}
+
+//           {/* <IonItem fill="outline" color="success" className="rounded-full"> */}
+// //             <div className="w-full flex-col flex  py-2">
+// //               <label className={questionClass}>Preferred Name</label>
+// //               <input className={inputClass} value={local.fullName}
+// //                 onChange={e => setLocal({ ...local, fullName: e.target.value })}
+// //                 placeholder="Jane Doe" />
+// //             </div>
+// //           {/* </IonItem> */}
+
+// //           {/* <IonItem fill="outline" color="success" className="rounded-full"> */}
+// //             <div className="w-full flex-col flex  py-2">
+// //               <label className={questionClass}>Email *</label>
+// //               <input className={inputClass} type="email" value={local.email}
+// //                 onChange={e => setLocal({ ...local, email: e.target.value })}
+// //                 placeholder="email@example.com" />
+// //             </div>
+// //           {/* </IonItem> */}
+
+// //           {/* <IonItem fill="outline" color="success" className="rounded-full"> */}
+// //             <div className="w-full flex-col flex  py-2">
+// //               <label className={questionClass}>Instagram</label>
+// //               <input className={inputClass} value={local.igHandle}
+// //                 onChange={e => setLocal({ ...local, igHandle: e.target.value })}
+// //                 placeholder="@handle" />
+// //             </div>
+// //           {/* </IonItem> */}
+
+// //           <button className={primaryButton} onClick={next}>Continue</button>
+// //         </div>
+// //       </StepTransition>
+// //     );
+// //   };
+
+// //   /* === STEP 2 === */
+// //   const Step2 = () => {
+// //     const [local, setLocal] = useState(formData);
+
+// //     return (
+// //       <StepTransition step="tab2">
+// //         <div className="p-4 space-y-4 min-h-screen">
+// //           <IonLabel className="lora-medium text-2xl font-bold text-emerald-900 block mb-2">
+// //             Artist Statement
+// //           </IonLabel>
+
+// //           {[
+// //             { key: "whyApply",        label: "What's been hardest about writing consistently lately?" },
+// //             { key: "communityNeeds",  label: "What's missing from writing spaces you've tried?" },
+// //             { key: "writingOutcome",  label: "When you share your writing, what usually happens?" },
+// //           ].map(({ key, label }) => (
+// //             // <IonItem fill="outline" color="success" className="rounded-full" key={key}>
+// //               <div className="w-full flex-col flex  py-2">
+// //                 <label className={questionClass}>{label}</label>
+// //                 <textarea className={inputClass} rows={3}
+// //                   value={local[key]}
+// //                   onChange={e => setLocal({ ...local, [key]: e.target.value })}
+// //                 />
+// //               </div>
+// //             // </IonItem>
+// //           ))}
+
+// //           <div className="flex gap-3">
+// //             <button className={secondaryButton} onClick={() => { updateFormData(local); setActiveTab("tab1"); }}>Back</button>
+// //             <button className={primaryButton} onClick={() => { updateFormData(local); setActiveTab("tab3"); }}>Continue</button>
+// //           </div>
+// //         </div>
+// //       </StepTransition>
+// //     );
+// //   };
+
+// //   /* === STEP 3 === */
+// //   const Step3 = () => {
+// //     const EVENTS = ["Open mics","Workshops","Socials","Poetry readings","Art events","Music events","Raves","Other"];
+// //     const [local, setLocal] = useState({ selectedEvents: formData.selectedEvents || [], otherEvent: formData.otherEvent || "" });
+
+// //     const toggle = e => setLocal(prev => ({
+// //       ...prev,
+// //       selectedEvents: prev.selectedEvents.includes(e)
+// //         ? prev.selectedEvents.filter(x => x !== e)
+// //         : [...prev.selectedEvents, e]
+// //     }));
+
+// //     return (
+// //       <StepTransition step="tab3">
+// //         <div className="p-4 space-y-4 min-h-screen">
+// //           <IonLabel className="lora-medium text-2xl font-bold text-emerald-900 block mb-2">
+// //             Your Scene
+// //           </IonLabel>
+
+// //           <div className={cardClass}>
+// //             <label className={questionClass}>What kinds of events do you go to?</label>
+// //             <div className="flex flex-wrap gap-2 mt-2">
+// //               {EVENTS.map(e => (
+// //                 <div key={e} onClick={() => toggle(e)}
+// //                   className={`px-4 py-2 rounded-full border cursor-pointer transition select-none text-sm font-medium ${
+// //                     local.selectedEvents.includes(e)
+// //                       ? "bg-emerald-600 text-white border-emerald-600"
+// //                       : "bg-transparent text-emerald-700 border-emerald-300 hover:bg-emerald-50"
+// //                   }`}>
+// //                   {e}
+// //                 </div>
+// //               ))}
+// //             </div>
+// //           </div>
+
+// //           {local.selectedEvents.includes("Other") && (
+// //             // <IonItem fill="outline" color="success" className="rounded-full">
+// //               <div className="w-full flex-col flex py-2">
+// //                 <label className={questionClass}>What other events?</label>
+// //                 <input className={inputClass} value={local.otherEvent}
+// //                   onChange={e => setLocal(prev => ({ ...prev, otherEvent: e.target.value }))}
+// //                   placeholder="Describe it..." />
+// //               </div>
+// //             // </IonItem>
+// //           )}
+
+// //           <div className="flex gap-3">
+// //             <button className={secondaryButton} onClick={() => { updateFormData(local); setActiveTab("tab2"); }}>Back</button>
+// //             <button className={primaryButton} onClick={() => { updateFormData(local); setActiveTab("tab4"); }}>Continue</button>
+// //           </div>
+// //         </div>
+// //       </StepTransition>
+// //     );
+// //   };
+
+// //   /* === STEP 4 === */
+// //   const Step4 = () => {
+// //     const [local, setLocal] = useState({ writingOutcome: formData.writingOutcome || "", eventPain: formData.eventPain || "", howFindOut: formData.howFindOut || "" });
+
+// //     const submit = async () => {
+// //       const finalForm = { ...formData, ...local };
+// //       setFormData(finalForm);
+// //       requestAnimationFrame(() => onClickApply(finalForm));
+// //     };
+
+// //     return (
+// //       <StepTransition step="tab4">
+// //         <div className="p-4 space-y-4 min-h-screen">
+// //           <IonLabel className="lora-medium text-2xl font-bold text-emerald-900 block mb-2">
+// //             Last Few Things
+// //           </IonLabel>
+
+// //           {[
+// //             { key: "writingOutcome", label: "What do you hope will change in your writing life?", placeholder: "e.g. consistency, confidence, feedback..." },
+// //             { key: "eventPain",      label: "What makes you stay or leave writing events?",        placeholder: "e.g. vibe, structure, feedback quality..." },
+// //             { key: "howFindOut",     label: "How did you find Plumbum?",                           placeholder: "Instagram, friend, workshop..." },
+// //           ].map(({ key, label, placeholder }) => (
+// //             // <IonItem fill="outline" color="success" className="rounded-full" key={key}>
+// //               <div className="w-full flex-col flex  py-2">
+// //                 <label className={questionClass}>{label}</label>
+// //                 <textarea className={inputClass} rows={3} placeholder={placeholder}
+// //                   value={local[key]}
+// //                   onChange={e => setLocal({ ...local, [key]: e.target.value })}
+// //                 />
+// //               </div>
+// //             // </IonItem>
+// //           ))}
+
+// //           {error && <div className="text-red-500 text-sm text-center">{error}</div>}
+
+// //           <div className="flex gap-3">
+// //             <button className={secondaryButton} onClick={() => setActiveTab("tab3")}>Back</button>
+// //             <button className={primaryButton} onClick={submit} disabled={loading}>
+// //               {loading ? "Submitting..." : "Apply"}
+// //             </button>
+// //           </div>
+// //         </div>
+// //       </StepTransition>
+// //     );
+// //   };
+
+// //   /* === RENDER === */
+// //   if (user) {
+// //     return (
+// //       <div className="min-h-screen flex items-center justify-center bg-cream pb-20 px-6">
+// //         <ThankYou user={user} />
+// //       </div>
+// //     );
+// //   }
+
+// //   return (
+// //     <IonContent  fullscreen>
+// //       <div className="max-w-xl overflow-y-scroll mx-auto pb-36">
+// //         {activeTab !== "tab0" && <ProgressDots activeTab={activeTab} />}
+
+// //         {activeTab === "tab0" && <Why />}
+// //         {activeTab === "tab1" && <Step1 />}
+// //         {activeTab === "tab2" && <Step2 />}
+// //         {activeTab === "tab3" && <Step3 />}
+// //         {activeTab === "tab4" && <Step4 />}
+// //       </div>
+// //     </IonContent>
+// //   );
+// // }
+// // OnboardingContainer.jsx
+
+// import { Preferences } from '@capacitor/preferences';
+// import { IonContent, IonText, IonLabel } from '@ionic/react';
+// import "../App.css";
+// import { useState, useEffect } from 'react';
+// import authRepo from '../data/authRepo';
+// import ThankYou from './auth/ThankYou';
+// import logo from "../images/logo/icon.png";
+// import { useSelector } from 'react-redux';
+// import { useIonRouter } from '@ionic/react';
+// import Paths from '../core/paths';
+
+// /* === TOKENS === */
+// const primaryButton = "w-full bg-emerald-700 text-white rounded-full py-3 font-semibold active:scale-[0.98] transition text-[1rem]";
+// const secondaryButton = "w-full bg-emerald-50 text-soft  border border-emerald-300 rounded-full py-3 font-semibold text-[1rem]";
+// const cardClass = "border border-emerald-200 rounded-2xl p-4 flex flex-col gap-2 bg-white/60";
+// const questionClass = "text-soft dark:text-cream text-sm font-semibold mont-medium";
+// const inputClass = "w-full text-soft dark:text-cream rounded-full px-4 py-2 text-[1.05rem] outline-none bg-surface dark:bg-base-surfaceDark dark:text-cream text-emerald-800 placeholder-emerald-300 mt-1";
+
+// /* === ANIMATION === */
+// function StepTransition({ step, children }) {
+//   return (
+//     <div key={step} style={{ animation: "fadeSlide 0.35s ease-out" }}>
+//       {children}
+//       <style>{`
+//         @keyframes fadeSlide {
+//           from { opacity: 0; transform: translateY(12px); }
+//           to   { opacity: 1; transform: translateY(0); }
+//         }
+//       `}</style>
+//     </div>
+//   );
+// }
+
+// /* === PROGRESS DOTS === */
+// function ProgressDots({ activeTab }) {
+//   const tabs = ["tab1", "tab2", "tab3", "tab4"];
+//   return (
+//     <div className="flex justify-center gap-2 pt-6 pb-2">
+//       {tabs.map(t => (
+//         <div
+//           key={t}
+//           className={`rounded-full transition-all duration-300 ${
+//             activeTab === t ? "w-6 h-3 bg-emerald-600" : "w-3 h-3 bg-emerald-200"
+//           }`}
+//         />
+//       ))}
+//     </div>
+//   );
+// }
+
+// /* === WHY === */
+// function Why({ setActiveTab, onLogin }) {
+//   return (
+//     <StepTransition step="tab0">
+//       <div className="p-6 text-center space-y-6">
+//         <img src={logo} className="w-24 mx-auto" alt="Plumbum" />
+//         <IonText className="lora-medium block text-left text-soft dark:text-cream">
+//           <h2 className="text-2xl font-bold mb-3">What is Plumbum?</h2>
+//           <ul className="list-disc pl-5 space-y-2 text-[0.95rem]">
+//             <li><strong>Writer-Focused:</strong> A space to grow, get feedback, and share — all in one place.</li>
+//             <li><strong>Community First:</strong> Built from live workshops and honest conversations, not algorithms.</li>
+//             <li><strong>Hybrid by Design:</strong> Feedback, self-promotion, and curation — because writers need all three.</li>
+//           </ul>
+//           <h2 className="text-2xl font-bold mt-6 mb-3">Why Join?</h2>
+//           <ul className="list-disc pl-5 space-y-2 text-[0.95rem]">
+//             <li><strong>Real Feedback:</strong> From people who care about craft, not clout.</li>
+//             <li><strong>Creative Momentum:</strong> Events, prompts, and people who show up.</li>
+//             <li><strong>Supportive Culture:</strong> Built slow and small on purpose.</li>
+//           </ul>
+//         </IonText>
+//         <button className={primaryButton} onClick={() => setActiveTab("tab1")}>
+//           Join Plumbum
+//         </button>
+//         <div className="text-soft dark:text-cream text-sm underline cursor-pointer" onClick={onLogin}>
+//           Already have an account? Log in
+//         </div>
+//       </div>
+//     </StepTransition>
+//   );
+// }
+
+// /* === STEP 1 === */
+// function Step1({ formData, updateFormData, setActiveTab, error, setError }) {
+//   const [local, setLocal] = useState(formData);
+
+//   const validateEmail = email => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+//   const next = () => {
+//     if (!validateEmail(local.email)) { setError("Enter a valid email"); return; }
+//     setError("");
+//     updateFormData(local);
+//     setActiveTab("tab2");
+//   };
+// const back=()=>{
+//   setActiveTab("tab0")
+// }
+//   return (
+//     <StepTransition step="tab1">
+//       <div className="px-4 py-8 space-y-4 min-h-screen">
+//         <IonLabel className="lora-medium text-2xl font-bold text-soft dark:text-cream block mb-2">
+//           Interest Form
+//         </IonLabel>
+
+//         {error && <div className="text-red-500 text-sm">{error}</div>}
+
+//         {[
+//           { key: "fullName", label: "Preferred Name", type: "text",  placeholder: "Jane Doe" },
+//           { key: "email",    label: "Email *",        type: "email", placeholder: "email@example.com" },
+//           { key: "igHandle", label: "Instagram",      type: "text",  placeholder: "@handle" },
+//         ].map(({ key, label, type, placeholder }) => (
+//           <div key={key} className="w-full flex flex-col py-2">
+//             <label className={questionClass}>{label}</label>
+//             <input
+//               className={inputClass}
+//               type={type}
+//               value={local[key]}
+//               onChange={e => setLocal({ ...local, [key]: e.target.value })}
+//               placeholder={placeholder}
+//             />
+//           </div>
+//         ))}
+// <button className={secondaryButton} onClick={back}>Back</button>
+//         <button className={primaryButton} onClick={next}>Continue</button>
+//       </div>
+//     </StepTransition>
+//   );
+// }
+
+// /* === STEP 2 === */
+// function Step2({ formData, updateFormData, setActiveTab }) {
+//   const [local, setLocal] = useState(formData);
+
+//   return (
+//     <StepTransition step="tab2">
+//       <div className="p-4 space-y-4 min-h-screen">
+//         <IonLabel className="lora-medium text-2xl font-bold text-soft dark:text-cream0 block mb-2">
+//           Artist Statement
+//         </IonLabel>
+
+//         {[
+//           { key: "whyApply",       label: "What's been hardest about writing consistently lately?" },
+//           { key: "communityNeeds", label: "What's missing from writing spaces you've tried?" },
+//           { key: "writingOutcome", label: "When you share your writing, what usually happens?" },
+//         ].map(({ key, label }) => (
+//           <div key={key} className="w-full flex flex-col py-2">
+//             <label className={questionClass}>{label}</label>
+//             <textarea
+//               className={inputClass}
+//               rows={3}
+//               value={local[key]}
+//               onChange={e => setLocal({ ...local, [key]: e.target.value })}
+//             />
+//           </div>
+//         ))}
+
+//         <div className="flex gap-3">
+//           <button className={secondaryButton} onClick={() => { updateFormData(local); setActiveTab("tab1"); }}>Back</button>
+//           <button className={primaryButton}   onClick={() => { updateFormData(local); setActiveTab("tab3"); }}>Continue</button>
+//         </div>
+//       </div>
+//     </StepTransition>
+//   );
+// }
+
+// /* === STEP 3 === */
+// const EVENTS = ["Open mics","Workshops","Socials","Poetry readings","Art events","Music events","Raves","Other"];
+
+// function Step3({ formData, updateFormData, setActiveTab }) {
+//   const [local, setLocal] = useState({
+//     selectedEvents: formData.selectedEvents || [],
+//     otherEvent: formData.otherEvent || "",
+//   });
+
+//   const toggle = ev => setLocal(prev => ({
+//     ...prev,
+//     selectedEvents: prev.selectedEvents.includes(ev)
+//       ? prev.selectedEvents.filter(x => x !== ev)
+//       : [...prev.selectedEvents, ev],
+//   }));
+
+//   return (
+//     <StepTransition step="tab3">
+//       <div className="p-4 space-y-4 min-h-screen">
+//         <IonLabel className="lora-medium text-2xl font-bold text-soft dark:text-cream block mb-2">
+//           Your Scene
+//         </IonLabel>
+
+//         <div className={cardClass}>
+//           <label className={questionClass}>What kinds of events do you go to?</label>
+//           <div className="flex flex-wrap gap-2 mt-2">
+//             {EVENTS.map(ev => (
+//               <div
+//                 key={ev}
+//                 onClick={() => toggle(ev)}
+//                 className={`px-4 py-2 rounded-full border cursor-pointer transition select-none text-sm font-medium ${
+//                   local.selectedEvents.includes(ev)
+//                     ? "bg-emerald-600 text-white border-emerald-600"
+//                     : "bg-transparent text-soft dark:text-cream border-emerald-300 hover:bg-emerald-50"
+//                 }`}
+//               >
+//                 {ev}
+//               </div>
+//             ))}
+//           </div>
+//         </div>
+
+//         {local.selectedEvents.includes("Other") && (
+//           <div className="w-full flex flex-col py-2">
+//             <label className={questionClass}>What other events?</label>
+//             <input
+//               className={inputClass}
+//               value={local.otherEvent}
+//               onChange={e => setLocal(prev => ({ ...prev, otherEvent: e.target.value }))}
+//               placeholder="Describe it..."
+//             />
+//           </div>
+//         )}
+
+//         <div className="flex gap-3">
+//           <button className={secondaryButton} onClick={() => { updateFormData(local); setActiveTab("tab2"); }}>Back</button>
+//           <button className={primaryButton}   onClick={() => { updateFormData(local); setActiveTab("tab4"); }}>Continue</button>
+//         </div>
+//       </div>
+//     </StepTransition>
+//   );
+// }
+
+// /* === STEP 4 === */
+// function Step4({ formData, setFormData, onClickApply, setActiveTab, loading, error }) {
+//   const [local, setLocal] = useState({
+//     writingOutcome: formData.writingOutcome || "",
+//     eventPain:      formData.eventPain      || "",
+//     howFindOut:     formData.howFindOut     || "",
+//   });
+
+//   const submit = () => {
+//     const finalForm = { ...formData, ...local };
+//     setFormData(finalForm);
+//     requestAnimationFrame(() => onClickApply(finalForm));
+//   };
+
+//   return (
+//     <StepTransition step="tab4">
+//       <div className="p-4 space-y-4 min-h-screen">
+//         <IonLabel className="lora-medium text-2xl font-bold text-soft dark:text-cream block mb-2">
+//           Last Few Things
+//         </IonLabel>
+
+//         {[
+//           { key: "writingOutcome", label: "What do you hope will change in your writing life?", placeholder: "e.g. consistency, confidence, feedback..." },
+//           { key: "eventPain",      label: "What makes you stay or leave writing events?",        placeholder: "e.g. vibe, structure, feedback quality..." },
+//           { key: "howFindOut",     label: "How did you find Plumbum?",                           placeholder: "Instagram, friend, workshop..." },
+//         ].map(({ key, label, placeholder }) => (
+//           <div key={key} className="w-full flex flex-col py-2">
+//             <label className={questionClass}>{label}</label>
+//             <textarea
+//               className={inputClass}
+//               rows={3}
+//               placeholder={placeholder}
+//               value={local[key]}
+//               onChange={e => setLocal({ ...local, [key]: e.target.value })}
+//             />
+//           </div>
+//         ))}
+
+//         {error && <div className="text-red-500 text-sm text-center">{error}</div>}
+
+//         <div className="flex gap-3">
+//           <button className={secondaryButton} onClick={() => setActiveTab("tab3")}>Back</button>
+//           <button className={primaryButton} onClick={submit} disabled={loading}>
+//             {loading ? "Submitting..." : "Apply"}
+//           </button>
+//         </div>
+//       </div>
+//     </StepTransition>
+//   );
+// }
+
+// /* === MAIN === */
+// export default function OnboardingContainer() {
+//   const router = useIonRouter();
+//   const currentProfile = useSelector(s => s.users.currentProfile);
+
+//   const [activeTab, setActiveTab] = useState("tab0");
+//   const [user, setUser] = useState(null);
+//   const [loading, setLoading] = useState(false);
+//   const [error, setError] = useState("");
+//   const [formData, setFormData] = useState({
+//     fullName: "", email: "", igHandle: "",
+//     whyApply: "", communityNeeds: "", writingOutcome: "",
+//     selectedEvents: [], otherEvent: "",
+//     eventPain: "", howFindOut: "",
+//   });
+
+//   useEffect(() => {
+//     if (currentProfile?.id) router.push(Paths.home, "root");
+//   }, [currentProfile, router]);
+
+//   const updateFormData = data => setFormData(prev => ({ ...prev, ...data }));
+
+//   const onClickApply = async (overrideForm = formData) => {
+//     if (loading) return;
+//     try {
+//       setLoading(true);
+//       setError("");
+//       const data = await authRepo.apply({
+//         ...overrideForm,
+//         email: overrideForm.email?.toLowerCase(),
+//       });
+//       await Preferences.set({ key: "hasSeenOnboarding", value: "true" });
+//       setUser(data?.user ?? data);
+//     } catch (err) {
+//       setError(err?.message || "Something went wrong");
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   if (user) {
+//     return (
+//       <div className="min-h-screen flex items-center justify-center bg-cream pb-20 px-6">
+//         <ThankYou user={user} />
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <IonContent className='page-content' style={{ "--padding-bottom": "10rem" }} fullscreen>
+//       <div className="max-w-xl mx-auto">
+//         {activeTab !== "tab0" && <ProgressDots activeTab={activeTab} />}
+
+//         {activeTab === "tab0" && <Why setActiveTab={setActiveTab} onLogin={() => router.push(Paths.login)} />}
+//         {activeTab === "tab1" && <Step1 formData={formData} updateFormData={updateFormData} setActiveTab={setActiveTab} error={error} setError={setError} />}
+//         {activeTab === "tab2" && <Step2 formData={formData} updateFormData={updateFormData} setActiveTab={setActiveTab} />}
+//         {activeTab === "tab3" && <Step3 formData={formData} updateFormData={updateFormData} setActiveTab={setActiveTab} />}
+//         {activeTab === "tab4" && <Step4 formData={formData} setFormData={setFormData} onClickApply={onClickApply} setActiveTab={setActiveTab} loading={loading} error={error} />}
+//       </div>
+//     </IonContent>
+//   );
+// }
 import { Preferences } from '@capacitor/preferences';
-import {
-
-  IonContent,
-  IonGrid,
-  IonRow,
-  IonCol,
-  IonInput,
-
-  IonLabel,
-  IonList,
-  IonText,
-  IonItem,
-  useIonRouter
-} from '@ionic/react';
-import "../App.css"
-import { useState, useContext, useEffect } from 'react';
-import { debounce } from 'lodash';
-import Context from '../context';
-import Paths from '../core/paths';
+import { IonContent, IonText, IonLabel } from '@ionic/react';
+import "../App.css";
+import { useState, useEffect } from 'react';
 import authRepo from '../data/authRepo';
 import ThankYou from './auth/ThankYou';
 import logo from "../images/logo/icon.png";
-import { useDispatch } from 'react-redux';
-import { getCurrentProfile, signUp } from '../actions/UserActions';
 import { useSelector } from 'react-redux';
-const inputStyle = {
-  "--width": '100%',
-  border: 'none',
-  outline: 'none',
-  background: 'transparent',
-  fontSize: '1.125rem',
-  fontFamily: 'inherit',
-  fontWeight: 600,
-  // color: 'inherit',
-  "--color":"inherit",
-  "--boxShadow": 'none',
-  "--padding": 0,
+import { useIonRouter } from '@ionic/react';
+import Paths from '../core/paths';
 
-  '--background': 'transparent',
-};
+/* === TOKENS === */
+const primaryButton = "w-full bg-emerald-700 text-white rounded-full py-3 font-semibold active:scale-[0.98] transition text-[1rem]";
+const secondaryButton = "w-full bg-transparent text-emerald-700 dark:text-emerald-300 border border-emerald-400 dark:border-emerald-600 rounded-full py-3 font-semibold text-[1rem]";
+const questionClass = "text-emerald-900 dark:text-cream text-sm font-semibold mont-medium mb-1";
+const inputClass = "w-full rounded-2xl px-4 py-3 text-[1.05rem] outline-none bg-white/70 dark:bg-white/10 text-emerald-900 dark:text-cream placeholder-emerald-300 dark:placeholder-emerald-600 mt-1 border border-emerald-100 dark:border-emerald-800";
+const cardClass = "border border-emerald-200 dark:border-emerald-800 rounded-2xl p-4 flex flex-col gap-2 bg-white/60 dark:bg-white/5";
+const pageClass = "px-4 py-8 space-y-5 min-h-screen";
+const headingClass = "lora-medium text-2xl font-bold text-emerald-900 dark:text-cream block mb-4";
 
-export default function OnboardingContainer(props) {
-  const router = useIonRouter()
-  const { seo, setSeo,  } = useContext(Context);
-
-  const currentProfile = useSelector(state=>state.users.currentProfile)
-  const genres = [
-    "Fiction", "Non-fiction", "Poetry", "Drama/Playwriting", "Screenwriting",
-    "Flash Fiction", "Memoir", "Short Stories", "Fantasy", "Science Fiction",
-    "Horror", "Mystery/Thriller", "Romance", "Young Adult", "Children's Literature",
-    "Historical Fiction", "Satire/Humor", "Experimental/Hybrid Forms", "Other"
-  ];
-  
-
-     useEffect(() => {
-    // If user is logged in → redirect away from login
-    if (currentProfile?.id) {
-      router.push(Paths.home, "root");
-      return;
-    }
-
-  }, [currentProfile, router]);
-  const [activeTab, setActiveTab] = useState('tab0');
-  const [formData, setFormData] = useState({
-    idToken:"",
-    igHandle: "",
-    fullName: "",
-    email: "",
-    whyApply: "",
-    howFindOut: "",
-    otherGenre: "",
-    communityNeeds: "",
-    workshopPreference: "both",
-    feedbackFrequency: "daily",
-    selectedGenres: [],
-    comfortLevel: 1,
-    platformFeatures: "",
-  });
-
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    setSeo(prev => ({ ...prev, title: "Plumbum (Onboarding)" }));
-  }, [setSeo]);
-
-  const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||formData.idToken.length>10;
-
-
-
-  const onClickApply = async () => {
-    
-    const idToken =formData.idToken
-    if(idToken){
-    let  data = await authRepo.apply(formData)
-    console.log(data)
-    await Preferences.set({ key: 'hasSeenOnboarding', value: 'true' });
-    setUser(data?.user ?? data);
-
-    }
-
-    if (validateEmail(formData.email)) {
-      const form = {
-        ...formData,
-        email: formData.email.toLowerCase(),
-        genres: formData.selectedGenres.includes("Other")
-          ? [...formData.selectedGenres.filter(g => g !== "Other"), formData.otherGenre]
-          : formData.selectedGenres,
-      };
-      try {
-        let data;
-        if (window.location.pathname.includes("newsletter")) {
-          data = await authRepo.applyFromNewsletter(form);
-        } else {
-          data = await authRepo.apply(form);
+/* === ANIMATION === */
+function StepTransition({ step, children }) {
+  return (
+    <div key={step} style={{ animation: "fadeSlide 0.35s ease-out" }}>
+      {children}
+      <style>{`
+        @keyframes fadeSlide {
+          from { opacity: 0; transform: translateY(12px); }
+          to   { opacity: 1; transform: translateY(0); }
         }
-        await Preferences.set({ key: 'hasSeenOnboarding', value: 'true' });
-        setUser(data?.user ?? data);
-      } catch (err) {
-        setUser(err);
-      }
-    }
-  }
-
-  const updateFormData = (newData) => {
-    setFormData(prev => ({ ...prev, ...newData }));
-  };
-
-  
-const Step1 = ({ formData, updateFormData, handleTab }) => {
-
-  const [localData, setLocalData] = useState({
-    fullName: formData.fullName || "",
-    email: formData.email || "",
-    igHandle: formData.igHandle || ""
-  });
-
-  const validateEmail = (email) =>
-    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-
-  const handleNext = () => {
-    updateFormData(localData);
-    handleTab('tab2');
-  };
-
-  const handleBack = () => {
-    handleTab('tab0');
-  };
-
-  return (
-    <IonGrid className='h-[60em]'>
-      <IonRow>
-        <IonList className='text-left w-[45em] mx-auto'>
-
-          <IonText color="success" className="lora-bold">
-            * Required
-          </IonText>
-
-          <IonText className="text-[1.5rem] font-bold">
-            Interest Form
-          </IonText>
-
-          {/* Preferred Name */}
-          <IonItem fill="outline" color="success" className="my-6">
-            <div className="w-full">
-              <IonLabel className="mont-medium">
-                Preferred Name
-              </IonLabel>
-              <input
-                type="text"
-                value={localData.fullName}
-                onChange={e =>
-                  setLocalData(prev => ({ ...prev, fullName: e.target.value }))
-                }
-                placeholder="Jon Doe"
-                className="w-full bg-transparent outline-none text-lg mt-2"
-              />
-            </div>
-          </IonItem>
-
-          {/* Email */}
-          <IonItem fill="outline" color="success" className="my-6">
-            <div className="w-full">
-              <IonLabel className="mont-medium">
-                * Email
-              </IonLabel>
-              <input
-                type="email"
-                value={localData.email}
-                onChange={e =>
-                  setLocalData(prev => ({ ...prev, email: e.target.value }))
-                }
-                placeholder="email@example.com"
-                className="w-full bg-transparent outline-none text-lg mt-2"
-              />
-            </div>
-          </IonItem>
-
-          {localData.email && !validateEmail(localData.email) && (
-            <IonText color="danger" className="text-sm">
-              Please use a valid email
-            </IonText>
-          )}
-
-          {/* IG Handle */}
-          <IonItem fill="outline" color="success" className="my-6">
-            <div className="w-full">
-              <IonLabel className="mont-medium">
-                IG Handle
-              </IonLabel>
-              <input
-                type="text"
-                value={localData.igHandle}
-                onChange={e =>
-                  setLocalData(prev => ({ ...prev, igHandle: e.target.value }))
-                }
-                placeholder="@yourhandle"
-                className="w-full bg-transparent outline-none text-lg mt-2"
-              />
-            </div>
-          </IonItem>
-
-          {/* Navigation */}
-          <IonRow className='flex justify-between mt-8'>
-            <div className="btn bg-emerald-700 rounded-full px-6 py-2">
-              <IonText onClick={handleBack} className="text-white text-lg">
-                Back
-              </IonText>
-            </div>
-            <div className="btn bg-emerald-700 rounded-full px-6 py-2">
-              <IonText onClick={handleNext} className="text-white text-lg">
-                Next Step
-              </IonText>
-            </div>
-          </IonRow>
-
-        </IonList>
-      </IonRow>
-    </IonGrid>
-  );
-};
-const Step2 = ({ formData, updateFormData, handleTab }) => {
-
-  const [localData, setLocalData] = useState({
-    whyApply: formData.whyApply || "",
-    communityNeeds: formData.communityNeeds || ""
-  });
-
-  const handleNext = () => {
-    updateFormData(localData);
-    handleTab('tab3');
-  };
-
-  const handleBack = () => {
-    handleTab('tab1');
-  };
-
-  return (
-    <IonGrid>
-      <IonRow>
-        <IonCol class='text-left w-[45em] mx-auto'>
-<div className='h-[60em] text-left w-[45em] mx-auto'>
-          <IonLabel className="mont-medium text-lg font-bold">
-            Artist Statement
-          </IonLabel>
-
-          <IonLabel className="mont-medium mt-6 block">
-            What would make a writing space meaningful for you?
-          </IonLabel>
-          <textarea
-            value={localData.whyApply}
-            onChange={e =>
-              setLocalData(prev => ({ ...prev, whyApply: e.target.value }))
-            }
-            rows={4}
-            className="w-[100%] border border-emerald-400 rounded-xl p-3 mt-2"
-          />
-
-          <IonLabel className="mont-medium mt-6 block">
-            What do you look for in a writing community?
-          </IonLabel>
-          <textarea
-            value={localData.communityNeeds}
-            onChange={e =>
-              setLocalData(prev => ({ ...prev, communityNeeds: e.target.value }))
-            }
-            rows={4}
-            className="w-[100%] border border-emerald-400 rounded-xl p-3 mt-2"
-          />
-
-          <IonRow className="flex justify-between mt-8">
-         <div onClick={handleBack} className="btn-container my-auto btn bg-emerald-700 border-none rounded-full" >
-            <IonText  className="emerald-gradient-text-btn text-white text-[0.8rem] text-[1rem]" style={{ width: '100%' }}>
-              Back
-             </IonText>
-          </div>
-           <div onClick={handleNext} className="btn-container my-auto btn bg-emerald-700 border-none rounded-full" >
-            <IonText  className="emerald-gradient-text-btn text-white text-[0.8rem] text-[1rem]" style={{ width: '100%' }}>
-              Next Step
-             </IonText>
-          </div>
-          </IonRow>
-</div>
-        </IonCol>
-      </IonRow>
-    </IonGrid>
-  );
-};
-
-
-
-  const Step3 = ({ formData, updateFormData, handleTab }) => {
-    const toggleGenre = (genre) => {
-      let newSelectedGenres;
-      if (formData.selectedGenres.includes(genre)) {
-        newSelectedGenres = formData.selectedGenres.filter(g => g !== genre);
-      } else {
-        newSelectedGenres = [...formData.selectedGenres, genre];
-      }
-      updateFormData({ selectedGenres: newSelectedGenres });
-    };
-    const handleBack = () => {
-      handleTab("tab2");
-    };
-
-    const handleNext = () => {
-      handleTab("tab4");
-    };
-
-    const selectedGenres = formData.selectedGenres || [];
-    const otherGenre = formData.otherGenre || "";
-    const comfortLevel = formData.comfortLevel;
-    const feedbackFrequency = formData.feedbackFrequency;
-
-    return (
-      <IonGrid>
-        <IonRow>
-          <IonCol >
-            <IonLabel className="mont-medium" color="success" style={{ fontWeight: 'bold', fontSize: '1.2rem' }}>
-              What genres do you write in?
-            </IonLabel>
-            <IonGrid>
-              <IonRow className="ion-justify-content-start ion-align-items-center ion-padding-vertical" style={{ gap: '0.5rem' }}>
-                {genres.map((genre, i) => {
-                  const selected = selectedGenres.includes(genre);
-                  return (
-                    <div
-                      key={i}
-                      className={`
-                        cursor-pointer 
-                        rounded-full 
-                        border 
-                        border-emerald-500 
-                        py-1 px-4 
-                        text-center 
-                        transition-colors duration-300 
-                        ${selected ? 'bg-emerald-500 text-white' : 'bg-transparent text-emerald-600 hover:bg-emerald-200'}
-                      `}
-                      onClick={() => toggleGenre(genre)}
-                    >
-                      <IonText className="open-sans-medium select-none">{genre}</IonText>
-                    </div>
-                  );
-                })}
-              </IonRow>
-            </IonGrid>
-
-            {selectedGenres.includes("Other") && (
-              <IonInput
-                placeholder="Please specify"
-                value={otherGenre}
-                onIonInput={e => updateFormData({ otherGenre: e.target.value  })}
-                color="success"
-                className="ion-margin-top"
-              />
-            )}
-
-            <ComfortLevelSelector
-              comfortLevel={comfortLevel}
-              setComfortLevel={val => updateFormData({ comfortLevel: val })}
-            />
-            <FeedbackFrequencySelector
-              feedbackFrequency={feedbackFrequency}
-              setFeedbackFrequency={val => updateFormData({ feedbackFrequency: val })}
-            />
-<IonRow>
-<div className="btn-container btn bg-emerald-700 rounded-full" style={{ maxWidth: '20em', margin: '1em auto 0', textAlign: 'right' }}>
-            
-<IonText onClick={handleBack} className="emerald-gradient-text-btn text-white text-[1.3rem]" style={{ width: '100%' }}>
-               Back
-              </IonText>
-            </div>
-            <div className="btn-container btn bg-emerald-700 rounded-full" style={{ maxWidth: '20em', margin: '1em auto 0', textAlign: 'right' }}>
-  
-              <IonText onClick={handleNext} className="emerald-gradient-text-btn text-white text-[1.3rem]" style={{ width: '100%' }}>
-                Next Step
-              </IonText>
-              </div>
-              </IonRow>
-      
-          </IonCol>
-        </IonRow>
-      </IonGrid>
-    );
-  };
-
-
-//   };
-const Step4 = ({ formData, updateFormData, onSave }) => {
-  // Local state for this step
-  const [localData, setLocalData] = useState({
-    workshopPreference: formData.workshopPreference || "both",
-    howFindOut: formData.howFindOut || "",
-    platformFeatures: formData.platformFeatures || "",
-  });
-
-  const handleSubmit = () => {
-    // Push local state to parent before submitting
-    updateFormData(localData);
-    onSave();
-  };
-
-  return (
-    <IonGrid>
-      <IonCol className="text-left ion-padding">
-
-        {/* Workshop Preference */}
-        <IonLabel className="mont-medium font-bold block mb-2">
-          Would you prefer in-person workshops, online, or both?
-        </IonLabel>
-        <WorkshopPreferenceSelector
-          workshopPreference={localData.workshopPreference}
-          setWorkshopPreference={val =>
-            setLocalData(prev => ({ ...prev, workshopPreference: val }))
-          }
-        />
-
-        {/* How did you find out? */}
-        <IonLabel className="mont-medium font-bold block mt-6 mb-2">
-          How did you find out about Plumbum?
-        </IonLabel>
-        <textarea
-          rows={4}
-          value={localData.howFindOut}
-          onChange={e =>
-            setLocalData(prev => ({ ...prev, howFindOut: e.target.value }))
-          }
-          placeholder="e.g., social media, friend, workshop"
-          className="w-[100%] border border-emerald-400 rounded-xl p-3"
-        />
-
-        {/* Platform Features */}
-        <IonLabel className="mont-medium font-bold block mt-6 mb-2">
-          What features would make a writing platform most valuable to you?
-        </IonLabel>
-        <textarea
-          rows={4}
-          value={localData.platformFeatures}
-          onChange={e =>
-            setLocalData(prev => ({ ...prev, platformFeatures: e.target.value }))
-          }
-          placeholder="e.g., peer reviews, prompts, community groups"
-          className="w-[100%] border border-emerald-400 rounded-xl p-3"
-        />
-
-        {/* Apply Button */}
-        <div className="btn-container text-right mt-6">
-          <IonText
-            onClick={handleSubmit}
-            className="emerald-gradient-text-btn text-lg btn bg-emerald-600 rounded-full text-white px-6 py-2"
-            style={{
-              opacity: validateEmail(formData.email) ? 1 : 0.6,
-              pointerEvents: validateEmail(formData.email) ? "auto" : "none",
-            }}
-          >
-            Apply
-          </IonText>
-        </div>
-
-      </IonCol>
-    </IonGrid>
-  );
-};
-const Why = ({ handleTab, nav }) => {
-  return (
-    <div className='text-center py-8'>
-    <IonGrid  className="fade-in">
-      <IonRow className="justify-center">
-        <IonCol size="12" sizeMd="8" className="text-left">
-          <div className="flex justify-center mb-4">
-            <img
-              src={logo}
-              alt="Plumbum Logo"
-              className="rounded-lg"
-              style={{ maxHeight: "10em" }}
-            />
-          </div>
-
-          <IonText className="lora-medium block">
-            <h2 className="text-2xl font-bold mb-2">What is Plumbum?</h2>
-            <ul className="list-disc pl-6 space-y-2 text-[1rem]">
-              <li>
-                <strong>Writer-Focused:</strong> A space made for writers to
-                grow, get feedback, and share their work — all in one place.
-              </li>
-              <li>
-                <strong>Community First:</strong> Built from live workshops and
-                honest conversations, not algorithms.
-              </li>
-              <li>
-                <strong>Discovery Through People:</strong> Find new stories and
-                voices through trust and interaction, not trends.
-              </li>
-              <li>
-                <strong>Hybrid by Design:</strong> We mix feedback,
-                self-promotion, and curation — because writers need all three.
-              </li>
-            </ul>
-
-            <h2 className="text-2xl font-bold mt-8 mb-2">Why Join?</h2>
-            <ul className="list-disc pl-6 space-y-2 text-[1rem]">
-              <li>
-                <strong>Real Feedback:</strong> Thoughtful input from people who
-                care about craft, not clout.
-              </li>
-              <li>
-                <strong>Creative Momentum:</strong> Stay in motion with events,
-                prompts, and people who show up.
-              </li>
-              <li>
-                <strong>Supportive Culture:</strong> Built slow and small on
-                purpose, so we protect the vibe.
-              </li>
-              <li>
-                <strong>Self & Story Promotion:</strong> A space where sharing
-                your work doesn’t feel awkward — it’s expected.
-              </li>
-            </ul>
-          </IonText>
-         <IonRow className='flex mx-auto w-[100%] mx-auto justify-between'> 
-            <div onClick={()=>router.push(Paths.login)} className='btn my-auto bg-transparent mt-4 border-none '><IonText  className=" text-emerald-800 text-[1.3rem]" style={{ width: '100%' }}>
-                 Log In
-             </IonText></div>
-      
-        <div onClick={handleTab} className="btn-container my-auto btn bg-emerald-700 border-none rounded-full" >
-            <IonText  className="emerald-gradient-text-btn text-white text-[0.8rem] text-[1rem]" style={{ width: '100%' }}>
-              Next Step
-             </IonText>
-          </div></IonRow>
-        
-        </IonCol>
-      </IonRow>
-    </IonGrid>
+      `}</style>
     </div>
   );
-};
+}
 
+/* === PROGRESS DOTS === */
+function ProgressDots({ activeTab }) {
+  const tabs = ["tab1", "tab2", "tab3", "tab4"];
+  return (
+    <div className="flex justify-center gap-2 pt-6 pb-2">
+      {tabs.map(t => (
+        <div
+          key={t}
+          className={`rounded-full transition-all duration-300 ${
+            activeTab === t ? "w-6 h-3 bg-emerald-600" : "w-3 h-3 bg-emerald-200 dark:bg-emerald-800"
+          }`}
+        />
+      ))}
+    </div>
+  );
+}
 
+/* === NAV BUTTONS === */
+function NavButtons({ onBack, onNext, nextLabel = "Continue", loading = false }) {
+  return (
+    <div className="flex gap-3 pt-2">
+      {onBack && <button className={secondaryButton} onClick={onBack}>Back</button>}
+      <button className={primaryButton} onClick={onNext} disabled={loading}>
+        {loading ? "Submitting..." : nextLabel}
+      </button>
+    </div>
+  );
+}
 
-  const MyTabs = () => (
-    <>
-      <div className=" text-center my-12 mx-auto sm:w-[40em]">
-        {[1, 2, 3, 4].map((tabNum) => (
-          <IonText
-            key={tabNum}
-            className={`tab-btn ${activeTab === `tab${tabNum}` ? 'tab-active' : ''} emerald-gradient-text-btn`}
-            style={{
-              margin: '0 0.2em',
-         
-              padding: '0.5rem 0.75rem',
-              userSelect: 'none',
-              borderRadius: '9999px',
-              display: 'inline-block',
-              fontWeight: activeTab === `tab${tabNum}` ? 'bold' : 'normal',
-              opacity: activeTab === `tab${tabNum}` ? 1 : 0.6,
-            }}
-            onClick={() => setActiveTab(`tab${tabNum}`)}
-          >
-            {tabNum}
-          </IonText>
+/* === WHY === */
+function Why({ setActiveTab, onLogin }) {
+  return (
+    <StepTransition step="tab0">
+      <div className="p-6 text-center space-y-6">
+        <img src={logo} className="w-24 mx-auto" alt="Plumbum" />
+        <IonText className="lora-medium block text-left text-emerald-900 dark:text-cream">
+          <h2 className="text-2xl font-bold mb-3">What is Plumbum?</h2>
+          <ul className="list-disc pl-5 space-y-2 text-[0.95rem]">
+            <li><strong>Writer-Focused:</strong> A space to grow, get feedback, and share — all in one place.</li>
+            <li><strong>Community First:</strong> Built from live workshops and honest conversations, not algorithms.</li>
+            <li><strong>Hybrid by Design:</strong> Feedback, self-promotion, and curation — because writers need all three.</li>
+          </ul>
+          <h2 className="text-2xl font-bold mt-6 mb-3">Why Join?</h2>
+          <ul className="list-disc pl-5 space-y-2 text-[0.95rem]">
+            <li><strong>Real Feedback:</strong> From people who care about craft, not clout.</li>
+            <li><strong>Creative Momentum:</strong> Events, prompts, and people who show up.</li>
+            <li><strong>Supportive Culture:</strong> Built slow and small on purpose.</li>
+          </ul>
+        </IonText>
+        <button className={primaryButton} onClick={() => setActiveTab("tab1")}>
+          Join Plumbum
+        </button>
+        <div className="text-emerald-700 dark:text-emerald-300 text-sm underline cursor-pointer" onClick={onLogin}>
+          Already have an account? Log in
+        </div>
+      </div>
+    </StepTransition>
+  );
+}
+
+/* === STEP 1 === */
+function Step1({ formData, updateFormData, setActiveTab, error, setError }) {
+  const [local, setLocal] = useState(formData);
+  const validateEmail = email => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+  const next = () => {
+    if (!validateEmail(local.email)) { setError("Enter a valid email"); return; }
+    setError("");
+    updateFormData(local);
+    setActiveTab("tab2");
+  };
+
+  return (
+    <StepTransition step="tab1">
+      <div className={pageClass}>
+        <IonLabel className={headingClass}>Interest Form</IonLabel>
+        {error && <div className="text-red-500 text-sm">{error}</div>}
+
+        {[
+          { key: "fullName", label: "Preferred Name", type: "text",  placeholder: "Jane Doe" },
+          { key: "email",    label: "Email *",        type: "email", placeholder: "email@example.com" },
+          { key: "igHandle", label: "Instagram",      type: "text",  placeholder: "@handle" },
+        ].map(({ key, label, type, placeholder }) => (
+          <div key={key} className="w-full flex flex-col">
+            <label className={questionClass}>{label}</label>
+            <input
+              className={inputClass}
+              type={type}
+              value={local[key]}
+              onChange={e => setLocal({ ...local, [key]: e.target.value })}
+              placeholder={placeholder}
+            />
+          </div>
         ))}
-      </div>
 
-      <div className="text-center mx-auto sm:w-[50rem]">
-        {activeTab === 'tab0' && <Why handleTab={(tab) => setActiveTab('tab1')} />}
-        {activeTab === 'tab1' && <Step1 formData={formData} updateFormData={updateFormData} handleTab={(tab) => setActiveTab(tab)} />}
-        {activeTab === 'tab2' && <Step2 formData={formData} updateFormData={updateFormData} handleTab={(tab) => setActiveTab(tab)} />}
-        {activeTab === 'tab3' && <Step3 formData={formData} updateFormData={updateFormData} handleTab={(tab) => setActiveTab(tab)} />}
-        {activeTab === 'tab4' && <Step4 formData={formData} updateFormData={updateFormData} onSave={onClickApply} handleTab={() => setActiveTab('tab5')} />}
-        {activeTab === 'tab5' && user && <ThankYou user={user} />}
+        <NavButtons onBack={() => setActiveTab("tab0")} onNext={next} />
       </div>
-    </>
-  
-  );
-
-  return (
-<IonContent fullscreen={true} style={{"--padding-bottom":"4em"}}>
-  {/* <div className='pt-8 pb-12'> */}
-          {user ? <ThankYou user={user} /> : <MyTabs />}
-    {/* </div> */}
-  </IonContent>
+    </StepTransition>
   );
 }
 
-// Supporting components also in the same file
-
-function ComfortLevelSelector({ comfortLevel, setComfortLevel }) {
-  const levels = [1, 2, 3, 4, 5];
+/* === STEP 2 === */
+function Step2({ formData, updateFormData, setActiveTab }) {
+  const [local, setLocal] = useState(formData);
 
   return (
-    <IonCol className="pt-4">
-      <IonLabel
-        className="mont-medium"
-        color="success"
-        style={{ fontWeight: 'bold', marginTop: '1rem', display: 'block' }}
-      >
-        How comfortable are you sharing your work with others?
-      </IonLabel>
-<div>
-      <IonGrid style={{ marginTop: '1rem' }}>
-        <IonRow className="ion-justify-content-center" style={{ gap: '0.5rem' }}>
-          {levels.map((level) => (
-            <IonCol size="auto" key={level}>
+    <StepTransition step="tab2">
+      <div className={pageClass}>
+        <IonLabel className={headingClass}>Artist Statement</IonLabel>
+
+        {[
+          { key: "whyApply",       label: "What's been hardest about writing consistently lately?" },
+          { key: "communityNeeds", label: "What's missing from writing spaces you've tried?" },
+        ].map(({ key, label }) => (
+          <div key={key} className="w-full flex flex-col">
+            <label className={questionClass}>{label}</label>
+            <textarea
+              className={inputClass}
+              rows={3}
+              value={local[key]}
+              onChange={e => setLocal({ ...local, [key]: e.target.value })}
+            />
+          </div>
+        ))}
+
+        <NavButtons
+          onBack={() => { updateFormData(local); setActiveTab("tab1"); }}
+          onNext={() => { updateFormData(local); setActiveTab("tab3"); }}
+        />
+      </div>
+    </StepTransition>
+  );
+}
+
+/* === STEP 3 === */
+const EVENTS = ["Open mics","Workshops","Socials","Poetry readings","Art events","Music events","Raves","Other"];
+
+function Step3({ formData, updateFormData, setActiveTab }) {
+  const [local, setLocal] = useState({
+    selectedEvents: formData.selectedEvents || [],
+    otherEvent: formData.otherEvent || "",
+    writingOutcome: formData.writingOutcome || "",
+  });
+
+  const toggle = ev => setLocal(prev => ({
+    ...prev,
+    selectedEvents: prev.selectedEvents.includes(ev)
+      ? prev.selectedEvents.filter(x => x !== ev)
+      : [...prev.selectedEvents, ev],
+  }));
+
+  return (
+    <StepTransition step="tab3">
+      <div className={pageClass}>
+        <IonLabel className={headingClass}>Your Scene</IonLabel>
+
+        <div className={cardClass}>
+          <label className={questionClass}>What kinds of events do you go to?</label>
+          <div className="flex flex-wrap gap-2 mt-2">
+            {EVENTS.map(ev => (
               <div
-                onClick={() => setComfortLevel(level)}
-                style={{
-                  cursor: 'pointer',
-                  padding: '0.75rem 1rem',
-                  borderRadius: '9999px',
-                  userSelect: 'none',
-                  backgroundColor: comfortLevel === level ? '#059669' : 'transparent', // emerald-600 bg if selected
-                  color: comfortLevel === level ? 'white' : '#065f46', // white text if selected else emerald-800
-                  fontWeight: comfortLevel === level ? '700' : '500',
-                  transition: 'background-color 0.3s, color 0.3s',
-                  boxShadow: comfortLevel === level ? '0 2px 6px rgba(5, 150, 105, 0.5)' : 'none',
-                  textAlign: 'center',
-                  minWidth: '2.5rem',
-                }}
+                key={ev}
+                onClick={() => toggle(ev)}
+                className={`px-4 py-2 rounded-full border cursor-pointer transition select-none text-sm font-medium ${
+                  local.selectedEvents.includes(ev)
+                    ? "bg-emerald-600 text-white border-emerald-600"
+                    : "bg-transparent text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-900"
+                }`}
               >
-                <IonText className="open-sans-medium">{level}</IonText>
+                {ev}
               </div>
-            </IonCol>
-          ))}
-        </IonRow>
-      </IonGrid>
+            ))}
+          </div>
+        </div>
+
+        {local.selectedEvents.includes("Other") && (
+          <div className="w-full flex flex-col">
+            <label className={questionClass}>What other events?</label>
+            <input
+              className={inputClass}
+              value={local.otherEvent}
+              onChange={e => setLocal(prev => ({ ...prev, otherEvent: e.target.value }))}
+              placeholder="Describe it..."
+            />
+          </div>
+        )}
+
+        {/* Moved here — separate from Step4's writingOutcome */}
+        <div className="w-full flex flex-col">
+          <label className={questionClass}>When you share your writing, what usually happens?</label>
+          <textarea
+            className={inputClass}
+            rows={3}
+            value={local.writingOutcome}
+            onChange={e => setLocal({ ...local, writingOutcome: e.target.value })}
+          />
+        </div>
+
+        <NavButtons
+          onBack={() => { updateFormData(local); setActiveTab("tab2"); }}
+          onNext={() => { updateFormData(local); setActiveTab("tab4"); }}
+        />
       </div>
-    </IonCol>
+    </StepTransition>
   );
 }
 
-const FeedbackFrequencySelector = ({ feedbackFrequency, setFeedbackFrequency }) => {
-  const options = [
-    { label: 'Daily', value: 'daily' },
-    { label: 'Weekly', value: 'weekly' },
-    { label: 'Monthly', value: 'monthly' },
-    { label: 'Occasionally', value: 'occasionally' },
-    { label: 'Rarely', value: 'rarely' },
-  ];
+/* === STEP 4 === */
+function Step4({ formData, onClickApply, setActiveTab, loading, error }) {
+  const [local, setLocal] = useState({
+    eventPain:  formData.eventPain  || "",
+    howFindOut: formData.howFindOut || "",
+    writingHope: formData.writingHope || "",
+  });
+
+  const submit = () => onClickApply({ ...formData, ...local });
 
   return (
-    <>
-      <IonLabel
-        className="mont-medium"
-        color="success"
-        style={{ fontWeight: 'bold', marginTop: '1rem' }}
-      >
-        How often do you seek feedback on your writing?
-      </IonLabel>
-      <div className="ion-margin-top flex justify-center flex-wrap gap-2">
-        {options.map(option => {
-          const selected = feedbackFrequency === option.value;
-          return (
-            <div
-              key={option.value}
-              onClick={() => setFeedbackFrequency(option.value)}
-              className={`cursor-pointer rounded-full min-w-max px-6 py-2 flex items-center justify-center select-none ${
-                selected
-                  ? 'bg-gradient-to-r from-emerald-400 to-emerald-600 text-white font-bold shadow-md'
-                  : 'bg-transparent text-emerald-700 hover:bg-emerald-200'
-              }`}
-              role="button"
-              tabIndex={0}
-              onKeyPress={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  setFeedbackFrequency(option.value);
-                }
-              }}
-            >
-              <IonText className="open-sans-medium text-center">{option.label}</IonText>
-            </div>
-          );
-        })}
-      </div>
-    </>
-  );
-};
+    <StepTransition step="tab4">
+      <div className={pageClass}>
+        <IonLabel className={headingClass}>Last Few Things</IonLabel>
 
-const WorkshopPreferenceSelector = ({ workshopPreference, setWorkshopPreference }) => {
-  const options = [
-    { label: 'In-person', value: 'in-person' },
-    { label: 'Online', value: 'online' },
-    { label: 'Both', value: 'both' },
-  ];
+        {[
+          { key: "writingHope", label: "What do you hope will change in your writing life?",  placeholder: "e.g. consistency, confidence, community..." },
+          { key: "eventPain",   label: "What makes you stay or leave writing events?",         placeholder: "e.g. vibe, structure, feedback quality..." },
+          { key: "howFindOut",  label: "How did you find Plumbum?",                            placeholder: "Instagram, friend, workshop..." },
+        ].map(({ key, label, placeholder }) => (
+          <div key={key} className="w-full flex flex-col">
+            <label className={questionClass}>{label}</label>
+            <textarea
+              className={inputClass}
+              rows={3}
+              placeholder={placeholder}
+              value={local[key]}
+              onChange={e => setLocal({ ...local, [key]: e.target.value })}
+            />
+          </div>
+        ))}
+
+        {error && <div className="text-red-500 text-sm text-center">{error}</div>}
+
+        <NavButtons
+          onBack={() => setActiveTab("tab3")}
+          onNext={submit}
+          nextLabel="Apply"
+          loading={loading}
+        />
+      </div>
+    </StepTransition>
+  );
+}
+
+/* === MAIN === */
+export default function OnboardingContainer() {
+  const router = useIonRouter();
+  const currentProfile = useSelector(s => s.users.currentProfile);
+
+  const [activeTab, setActiveTab] = useState("tab0");
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [formData, setFormData] = useState({
+    fullName: "", email: "", igHandle: "",
+    whyApply: "", communityNeeds: "",
+    writingOutcome: "", writingHope: "",
+    selectedEvents: [], otherEvent: "",
+    eventPain: "", howFindOut: "",
+  });
+
+  useEffect(() => {
+    if (currentProfile?.id) router.push(Paths.home, "root");
+  }, [currentProfile, router]);
+
+  const updateFormData = data => setFormData(prev => ({ ...prev, ...data }));
+
+  const onClickApply = async (overrideForm = formData) => {
+    if (loading) return;
+    try {
+      setLoading(true);
+      setError("");
+      const data = await authRepo.apply({
+        ...overrideForm,
+        email: overrideForm.email?.toLowerCase(),
+      });
+      await Preferences.set({ key: "hasSeenOnboarding", value: "true" });
+      setUser(data?.user ?? data);
+    } catch (err) {
+      setError(err?.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (user) {
+    return (
+       <IonContent className="page-content" style={{ "--padding-bottom": "10rem" }} fullscreen>
+      <ThankYou user={user} />
+      </IonContent>
+    );
+  }
 
   return (
+    <IonContent className="page-content" style={{ "--padding-bottom": "10rem" }} fullscreen>
+      <div className="max-w-xl py-4 mx-auto">
+        {activeTab !== "tab0" && <ProgressDots activeTab={activeTab} />}
 
-    <>
-      <IonLabel
-        // className="mont-medium"
-        color="success"
-        // style={{ fontWeight: 'bold', marginTop: '1rem' }}
-      >
-        Would you prefer in-person workshops, online, or both?
-      </IonLabel>
-      <div className="ion-margin-top flex justify-center flex-wrap gap-2">
-        {options.map(option => {
-          const selected = workshopPreference === option.value;
-          return (
-            <div
-              key={option.value}
-              onClick={() => setWorkshopPreference(option.value)}
-              className={`cursor-pointer rounded-full min-w-max px-6 py-2 flex items-center justify-center select-none ${
-                selected
-                  ? 'bg-gradient-to-r from-emerald-400 to-emerald-600 text-white font-bold shadow-md'
-                  : 'bg-transparent text-emerald-700 hover:bg-emerald-200'
-              }`}
-              role="button"
-              tabIndex={0}
-              onKeyPress={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  setWorkshopPreference(option.value);
-                }
-              }}
-            >
-              <IonText className="open-sans-medium text-center">{option.label}</IonText>
-            </div>
-          );
-        })}
+        {activeTab === "tab0" && <Why setActiveTab={setActiveTab} onLogin={() => router.push(Paths.login)} />}
+        {activeTab === "tab1" && <Step1 formData={formData} updateFormData={updateFormData} setActiveTab={setActiveTab} error={error} setError={setError} />}
+        {activeTab === "tab2" && <Step2 formData={formData} updateFormData={updateFormData} setActiveTab={setActiveTab} />}
+        {activeTab === "tab3" && <Step3 formData={formData} updateFormData={updateFormData} setActiveTab={setActiveTab} />}
+        {activeTab === "tab4" && <Step4 formData={formData} onClickApply={onClickApply} setActiveTab={setActiveTab} loading={loading} error={error} />}
       </div>
-    </>
-    // </IonContent>
+    </IonContent>
   );
-};
+}

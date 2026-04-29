@@ -8,7 +8,7 @@ import { useMediaQuery } from "react-responsive";
 import { BookListItem } from "../../components/collection/BookListItem";
 import DashboardItem from "../../components/page/DashboardItem";
 import { initGA, sendGAEvent } from "../../core/ga4.js";
-import { fetchHashtag, followHashtag, unfollowHashtag } from "../../actions/HashtagActions";
+import { fetchHashtag, followHashtag, getRecommendedHashtagCollections, unfollowHashtag } from "../../actions/HashtagActions";
 import { setCollections } from "../../actions/CollectionActions";
 import { appendToPagesInView, setPagesInView } from "../../actions/PageActions.jsx";
 import Context from "../../context";
@@ -18,8 +18,8 @@ import grid from "../../images/grid.svg";
 import stream from "../../images/stream.svg";
 import { useParams } from "react-router";
 import SectionHeader from "../../components/SectionHeader.jsx";
-import getBackground from "../../core/getbackground.jsx";
 import ExploreList from "../../components/collection/ExploreList.jsx";
+import usePaginatedResource from "../../core/usePaginatedResource.jsx";
 
 export default function HashtagContainer() {
   const { id } = useParams();
@@ -35,7 +35,15 @@ export default function HashtagContainer() {
   const [followPending, setFollowPending] = useState(false);
   const [isGrid, setIsGrid] = useState(false);
   const isNotPhone = useMediaQuery({ query: "(min-width: 999px)" });
+  const pageSize = 20
 
+const { items, totalCount, page, setPage, totalPages } = usePaginatedResource({
+  cacheKey: "collectionRecommendations",
+  fetcher:   getRecommendedHashtagCollections,
+  params:   { hashtagIds: [id] },
+  pageSize: pageSize,
+  select:   (res) => ({ items: res.collections, totalCount: res.totalCount }),
+});
   useScrollTracking({ name: id });
 
   const books = useMemo(
@@ -107,11 +115,7 @@ export default function HashtagContainer() {
    
       <IonContent
         fullscreen
-        style={{
-          ...getBackground(),
-      
-          "--min-height":"100%"
-        }}
+       className="page-content"
       >
         <ErrorBoundary>
         <div className="text-left bg-cream dark:bg-base-bgDark pb-34 pt-20">
@@ -201,7 +205,7 @@ export default function HashtagContainer() {
             )}
           </div>
             <div className="pb-24">
-              <ExploreList />
+              <ExploreList items={items} totalCount={totalCount}  page={page} setPage={setPage} />
             </div>
         </div>
         </ErrorBoundary>

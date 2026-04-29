@@ -127,6 +127,18 @@ async unfollowHashtag({ hashtagId }) {
   );
   return res.data;
 }
+
+async  getRecommended({hashtagIds, skip, take, exclude = []} ){
+        const { data } = await axios.get(this.url+"/recommendations", {
+        params: {
+          hashtagIds: hashtagIds.join(","),
+          exclude:    exclude.join(","),
+          skip,
+          take,
+        },
+      });
+      return data
+}
     }
 
 export default new HashtagRepo()

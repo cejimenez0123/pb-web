@@ -181,7 +181,18 @@ const uploadPicture = createAsyncThunk(
     }
   }
 );
-
+const fetchProfileRecommendations = createAsyncThunk(
+  "profile/fetchRecommendations",
+  async ({ profileId, limit = 10 }, { rejectWithValue }) => {
+    try {
+    let data = await profileRepo.recommend({profileId,limit})
+    console.log("ECMEEND",data)
+      return { profiles:data.profiles };
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.error ?? "Failed to fetch recommendations");
+    }
+  }
+);
 const fetchProfiles = createAsyncThunk("users/fetchProfiles",async (params,thunkApi)=>{
 
   let data = await profileRepo.all()
@@ -197,5 +208,6 @@ const fetchProfiles = createAsyncThunk("users/fetchProfiles",async (params,thunk
     fetchProfiles,
     fetchNotifcations,
     addNotification,
-    markNotificationsRead
+    markNotificationsRead,
+    fetchProfileRecommendations
 }
