@@ -367,6 +367,7 @@ import {
   IonInput,
   IonText,
   IonImg,
+  useIonRouter,
 } from "@ionic/react";
 import React, { memo } from "react";
 import { useState, useContext, useEffect } from "react";
@@ -385,6 +386,9 @@ import { Capacitor } from "@capacitor/core";
 export default function PicturePageForm({ handleChange, type, isSaved, setIsSaved, parameters, createPageAction }) {
   const page = useSelector((state) => state.pages.editingPage);
   const { type: typeOrNull } = useParams();
+  let path = location.pathname.split("/")
+  const id = path[path.length-1] !== "edit"
+  console.log("Updated",id)
   const pageType = typeOrNull || type;
   const { setError } = useContext(Context);
   const dispatch = useDispatch();
@@ -394,13 +398,7 @@ export default function PicturePageForm({ handleChange, type, isSaved, setIsSave
   const [uploading, setUploading] = useState(false);
   const [isUploaded, setIsUploaded] = useState(false);
   const isNative = Capacitor.isNativePlatform();
-
-const hasContent = type === PageType.picture
-  ? isUploaded
-  : type === PageType.link
-  ? isValidUrl(parameters.data || url || "")
-  : !!(htmlContent?.trim());
-
+const hasContent = !(pageType==PageType.picture && !!(htmlContent?.trim())) || (pageType==PageType.link && !!htmlContent.trim())
   const pickImage = async () => {
     try {
       const image = await Camera.getPhoto({
@@ -449,11 +447,6 @@ const hasContent = type === PageType.picture
       handleChange("data", htmlContent);
     }
   }, [htmlContent]);
-
-  // useEffect(() => {
-  //   if (type === PageType.picture && parameters.data) setHasContent(true);
-  //   if (type === PageType.link && isValidUrl(parameters.data)) setHasContent(true);
-  // }, [parameters.data]);
 
   const uploadPictureFile = async () => {
     if (!file) { setError("No File"); return null; }
@@ -511,7 +504,7 @@ const handleCreate = async () => {
   //     setUploading(false);
   //   }
   // };
-console.log("HASCONTENT",hasContent)
+
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -524,7 +517,7 @@ console.log("HASCONTENT",hasContent)
     reader.onload = () => dispatch(setHtmlContent(reader.result));
     reader.readAsDataURL(file);
   };
-
+console.log("updated",id)
   return (
     <div className="flex flex-col w-full max-w-xl mx-auto">
 
@@ -568,11 +561,15 @@ console.log("HASCONTENT",hasContent)
             Add {type === PageType.link ? "a valid URL" : "an image"} to continue
           </div>
         )}
-{(hasContent&&type==PageType.link||!hasContent&&type==PageType.picture)&& (type === PageType.picture || type === PageType.link) && (
+
+{!id && (type === PageType.link || type === PageType.picture) && (
+  (type === PageType.link && hasContent) ||
+  (type === PageType.picture && !hasContent)
+) && (
   <button
     onClick={handleCreate}
     disabled={uploading}
-    className="w-full h-[3.5em] rounded-xl bg-emerald-600 text-white font-semibold active:scale-[0.98] disabled:opacity-50 transition"
+    className="w-full h-[3.5em] mt-4 rounded-xl bg-emerald-600 text-white font-semibold active:scale-[0.98] disabled:opacity-50 transition"
   >
     {uploading ? "Uploading..." : "Create"}
   </button>

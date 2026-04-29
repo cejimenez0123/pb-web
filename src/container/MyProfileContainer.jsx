@@ -40,7 +40,7 @@ function MyProfileContainer() {
 
   const { setSeo  } = useContext(Context);
   const profile = useSelector((state) => state.users.currentProfile);
-const storiesCache = useSelector((state) => state.pagination.byKey?.["stories:all"]?.pages?.[1] ?? []);
+const storiesCache = useSelector((state) => state.pagination.byKey?.["stories"]?.pages?.[1] ?? []);
 const collectionsCache = useSelector((state) => state.pagination.byKey?.["collections:all"]?.pages?.[1] ?? []);
 const librariesCache = useSelector((state) => state.pagination.byKey?.["libraries:all"]?.pages?.[1] ?? []);
 const { items: explorList, page: explorePage, setPage: setExplorePage, totalCount: exploreTotalCount} = usePaginatedResource({
@@ -255,7 +255,6 @@ className="bg-soft rounded-full p-2"><img src={settings} /></button>
   fetcher={getMyStories}
   pageSize={8}
   search={debouncedSearch}
-  // params={{search:debouncedSearch}}
   emptyState={   Array.from({ length: pageSize }).map((_, i) => (
                    <div
         key={i}

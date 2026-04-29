@@ -47,7 +47,7 @@ function TopBarDropdown({
       </div>
       <ul
         tabIndex={0}
-        className="dropdown-content menu bg-base-surface rounded-box shadow-lg z-[10] p-2"
+        className="dropdown-content menu bg-base-bg rounded-box shadow-lg z-[10] p-2"
         style={{ minWidth: "12rem" }}
       >
         <li className="text-emerald-600 pt-3 pb-2 cursor-pointer"

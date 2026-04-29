@@ -142,7 +142,7 @@ export default function CreateCollectionForm({ initPages, onClose }) {
           placeholder="Enter collection name"
           onChange={handleChange}
           required
-          className="rounded-lg border-blueSea bg-cream border-2 shadow-sm border-opacity-30 sm:w-full w-full p-3 text-blueSea"
+          className="rounded-lg border-blueSea dark:bg-base-surfaceDark dark:text-cream bg-base-bg  border-2 shadow-sm border-opacity-30 sm:w-full w-full p-3 text-blueSea"
         />
       </div>
 
@@ -154,7 +154,7 @@ export default function CreateCollectionForm({ initPages, onClose }) {
           value={formData.purpose}
           placeholder="What is this collection for?"
           onChange={handleChange}
-          className="rounded-lg border-blueSea border-2 bg-cream shadow-sm border-opacity-30 sm:w-full w-full min-h-[6em] text-blueSea p-3"
+          className="rounded-lg border-blueSea border-2 bg-base-bg dark:bg-base-surfaceDark dark:bg-cream shadow-sm border-opacity-30 sm:w-full w-full min-h-[6em] text-blueSea p-3"
         />
       </div>
 

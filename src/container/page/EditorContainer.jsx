@@ -8,7 +8,7 @@ import { Capacitor } from "@capacitor/core";
 import Paths from "../../core/paths";
 import { PageType } from "../../core/constants";
 import { createStory, deleteStory, getStory, updateStory } from "../../actions/StoryActions";
-import { setEditingPage, setHtmlContent, setPageInView, removeFromPaginatedKey, setPageType } from "../../actions/PageActions.jsx";
+import { setEditingPage, setHtmlContent, setPageInView, removeFromPaginatedKey, setPageType, setPageData } from "../../actions/PageActions.jsx";
 import checkResult from "../../core/checkResult";
 import debounce from "../../core/debounce.js";
 import Context from "../../context";
@@ -74,7 +74,13 @@ export default function EditorContainer({ presentingElement }) {
     debounce((payload) => {
       dispatch(updateStory(payload)).then(res =>
         checkResult(res,
-          () => setIsSaved(true),
+          (data) =>{
+         
+     if (data?.story) {
+      dispatch(updatePaginatedItem({ key: "stories", item: data.story }));
+    }
+            setIsSaved(true)
+          },
           (err) => { console.log(err); setError(err.message); }
         )
       );
@@ -163,6 +169,8 @@ export default function EditorContainer({ presentingElement }) {
     lastSavedRef.current = payload;
     setIsSaved(false);
     debouncedSave({ ...payload });
+
+
   }, [parameters.data, parameters.title, parameters.status, parameters.isPrivate, parameters.commentable, parameters.id]);
 
   const createPageAction = async (data) => {
@@ -226,7 +234,12 @@ export default function EditorContainer({ presentingElement }) {
 
     const res = await dispatch(updateStory({ ...payload, id: resolvedId }));
     return checkResult(res,
-      () => setIsSaved(true),
+      (data) => {
+                 console.log(data)
+     if (data?.story) {
+      dispatch(updatePaginatedItem({ key: "stories", item: data.story }));
+    }
+        setIsSaved(true)},
       (err) => { setIsSaved(false); setError(err.message); }
     );
   };
@@ -304,7 +317,12 @@ export default function EditorContainer({ presentingElement }) {
   const handlePostPublic = (desc) => {
     const payload = { ...parameters, id: effectiveId, description: desc, isPrivate: false, status: "finished", needsFeedback: true };
     dispatch(updateStory(payload)).then(res =>
-      checkResult(res, () => { resetDialog(); router.push(Paths.page.createRoute(effectiveId), "forward"); }, (err) => setError(err.message))
+      
+      checkResult(res, (data) => { 
+                
+  
+        resetDialog(); 
+        router.push(Paths.page.createRoute(effectiveId), "forward"); }, (err) => setError(err.message))
     );
   };
 
@@ -312,7 +330,8 @@ export default function EditorContainer({ presentingElement }) {
     const payload = { ...parameters, id: effectiveId, description: feedbackDesc, status: "workshop", needsFeedback: true };
     dispatch(updateStory(payload)).then(res => {
       resetDialog();
-      checkResult(res, () => router.push(Paths.workshop.createRoute(effectiveId), "forward"), (err) => setError(err.message));
+      checkResult(res, (data) => {
+        router.push(Paths.workshop.createRoute(effectiveId), "forward")}, (err) => setError(err.message));
     });
   };
 
@@ -363,7 +382,7 @@ export default function EditorContainer({ presentingElement }) {
 
   return (
     <EditorContext.Provider value={{ page: editPage, parameters, setParameters }}>
-      <IonContent fullscreen style={{ ...getBackground() }}>
+      <IonContent fullscreen className="page-content">
         <div className="bg-cream flex flex-col min-h-[100dvh] overflow-y-auto dark:bg-base-bgDark">
           <AnimatePresence>
             <motion.div key="topbar" initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.05 }}>

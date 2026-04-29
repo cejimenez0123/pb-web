@@ -8,7 +8,7 @@ const EMPTY_PAGES = {};
 function usePaginatedResource({ cacheKey, fetcher, pageSize = 20, enabled = true, params = {}, select }) {
   const dispatch = useDispatch();
   const stableParams = useMemo(() => params, [JSON.stringify(params)]);
-  const key = `${cacheKey}:${JSON.stringify(stableParams)}`;
+  const key = `${cacheKey}`
 
   const page        = useSelector((s) => s.pagination.byKey?.[key]?.currentPage ?? 1);
   const cache       = useSelector((s) => s.pagination.byKey?.[key]?.pages ?? EMPTY_PAGES);

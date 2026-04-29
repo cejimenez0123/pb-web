@@ -230,7 +230,7 @@ console.log("Filtered Profiles:", filteredProfiles.slice(0,5), "Search:", search
   <button
     onClick={() => cycleRole(profile)}
     className="min-w-[5.5rem] text-center px-3 py-2 rounded-full text-xs font-semibold transition-colors duration-150 cursor-pointer
-      bg-base-surface dark:bg-base-bgDark
+      bg-base-bg dark:bg-base-bgDark
       text-text-brand dark:text-cream
       border border-border-focus dark:border-border-soft
       active:scale-95 active:bg-button-primary-bg active:text-text-inverse"

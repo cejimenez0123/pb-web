@@ -27,7 +27,7 @@ const T = {
   surface:     " page-content",
   card:        "bg-cream dark:bg-base-bgDark shadow-sm",
   header:      "flex items-center gap-3 px-4 pt-12 pb-2",
-  searchWrap:  "flex-1 bg-base-surface dark:bg-base-surfaceDark rounded-full px-2",
+  searchWrap:  "flex-1 bg-base-bg dark:bg-base-surfaceDark rounded-full px-2",
   logo:        "text-text-brand dark:text-cream text-xl font-semibold pr-1",
   filterRow:   "flex flex-wrap gap-2 px-4 py-3",
   filterBase:  "px-3 py-1.5 rounded-full text-xs border transition-all duration-150 cursor-pointer",

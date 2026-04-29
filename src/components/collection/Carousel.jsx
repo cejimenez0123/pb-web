@@ -44,7 +44,7 @@ export default function Carousel({ book, compact }) {
           >
             <div className="
               w-full rounded-xl overflow-hidden
-              bg-base-surface dark:bg-base-bgDark
+              bg-base-bg dark:bg-base-bgDark
               border border-border-default dark:border-border-soft
               flex flex-col
             ">

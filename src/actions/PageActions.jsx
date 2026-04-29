@@ -190,7 +190,11 @@ const setPaginationLoading = createAction("pagination/setLoading");
  const initKey = createAction("pagination/initKey");
  const resetKey = createAction("pagination/resetKey");
 
-
+const updatePaginatedItem = createAction("pagination/updatePaginatedItem",
+  function prepare({ key, item }) {
+    return { payload: { key, item } };
+  }
+); 
 const setPageData = createAction(
   "pagination/setPageData",
   function prepare({ key, page, items, totalCount }) {
@@ -336,5 +340,6 @@ try{
    fetchPage,
        setPageData,
          setCurrentPage,
-         initKey
+         initKey,
+         updatePaginatedItem
         } 

@@ -505,6 +505,7 @@ const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     </IonContent>
   );
 }
+
 useEffect(() => {
   getBackground();
   watchBackground();

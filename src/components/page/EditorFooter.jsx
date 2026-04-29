@@ -4,15 +4,17 @@ import HashtagForm from "../hashtag/HashtagForm";
 import deleteIcon from "../../images/icons/delete.svg"
 function EditorFooter({ pageInView, effectiveId, openConfirmDeleteDialog }) {
   const [openHashtag, setOpenHashtag] = useState(false);
-
-
+let path = location.pathname.split("/")
+console.log("STOP",path)
+  const id = path[path.length-1] !== "edit"
+console.log("STOP",id)
 return(<AnimatePresence><motion.div
   className="flex flex-col"
   initial={{ opacity: 0 }}
   animate={{ opacity: effectiveId && effectiveId !== "new" ? 1 : 0 }}
   transition={{ duration: 0.3, ease: "easeIn" }}
 ><div className="flex my-4 items-center justify-between">
-  {(effectiveId && effectiveId !== "new") && <button
+  {(effectiveId && id && effectiveId !== "new") && <button
     onClick={() => setOpenHashtag(prev => !prev)}
     className={`
       flex items-center gap-2 px-5 py-4 text-sm font-semibold
@@ -42,7 +44,7 @@ return(<AnimatePresence><motion.div
   </button>}
 
   {/* Trash inline */}
-  {effectiveId && effectiveId !== "new" && (
+  {effectiveId && id && effectiveId !== "new" && (
     <button
       onClick={openConfirmDeleteDialog}
       className="flex flex-col items-center rounded-full dark:bg-text-primary bg-golden gap-1.5 group"

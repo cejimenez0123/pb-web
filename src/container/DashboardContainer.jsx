@@ -48,7 +48,7 @@ function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex
 const WRAP = "max-w-2xl mx-auto dark:bg-base-bgDark bg-base-surface ";
 const SECTION_GAP = "dark:bg-base-bgDark bg-base-surface ";  // applied to each section's root div
 const SECTION_HEADING = "text-xl lora-medium";          // text style only
-const SECTION_HEADER_ROW = "flex items-center justify-between px-4"; // row layout
+const SECTION_HEADER_ROW = "flex mt-6 mb-2 items-center flex-row justify-between px-4"; // row layout
 const LIST_WRAP = "flex flex-col gap-4";  // Saves
 
 const TILE = "w-36 md:w-44 flex-shrink-0";
@@ -366,9 +366,18 @@ scrollY: false,
  <div>
 <SectionHeader title={"Saves"}/>
               </div>
-              <img src={arrowToRight} onClick={()=>homeCol && router.push(Paths.collection.createRoute(homeCol?.id))}
-                className="max-w-8 max-h-8"
-              />
+            <svg
+  onClick={() => homeCol && router.push(Paths.collection.createRoute(homeCol?.id))}
+  className="max-w-8 max-h-8 stroke-soft dark:stroke-cream cursor-pointer"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  strokeWidth="2"
+  strokeLinecap="round"
+  strokeLinejoin="round"
+>
+  <path d="M5 12h14M13 6l6 6-6 6" />
+</svg>
               </div>
               <div className='flex mx-4 flex-col gap-4'>
                {saves?.length==0?<div><h2>Bookmark things you want to see often</h2></div>:saves?.map((item, i) => { 
@@ -483,11 +492,19 @@ scrollY: false,
        
       />
     </div>
-      <img
-            onClick={() => openYourWorkshops()}
-            src={arrowToRight}
-            className="max-w-8 max-h-8"
-          />
+                <svg
+ onClick={() => openYourWorkshops()}
+  className="max-w-8 max-h-8 stroke-soft dark:stroke-cream cursor-pointer"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  strokeWidth="2"
+  strokeLinecap="round"
+  strokeLinejoin="round"
+>
+  <path d="M5 12h14M13 6l6 6-6 6" />
+</svg>
+  
   </div>
 
   <div className="px-4">

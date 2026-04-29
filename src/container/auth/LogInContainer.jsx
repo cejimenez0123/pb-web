@@ -302,10 +302,10 @@ const WRAP           = "max-w-2xl mx-auto px-4";
 const CARD           = "max-w-lg mx-auto px-4 py-6 rounded-lg text-emerald-800";
 const FORM           = "space-y-6";
 const FIELD          = "space-y-2";
-const INPUT          = "w-[100%] rounded-full px-4 py-2 text-emerald-800 bg-base-bg dark:text-emerald-100 text-sm focus:outline-none focus:ring-1 focus:ring-gray-300";
+const INPUT          = "w-[100%] rounded-full border border-1 border-soft px-4 py-2 text-emerald-800 bg-base-bg dark:text-emerald-100 text-sm focus:outline-none focus:ring-1 focus:ring-gray-300";
 const BUTTON_PRIMARY = "bg-soft rounded-full w-[90%] mx-auto py-3 mt-2 text-white text-lg";
-const LINK           = "text-soft hover:text-green-400 cursor-pointer";
-const INPUT_WRAP     = "max-w-md mx-auto border border-1 border-soft";
+const LINK           = "text-soft dark:text-cream hover:text-green-400 cursor-pointer";
+const INPUT_WRAP     = "max-w-md mx-auto ";
 
 export default function LogInContainer({ currentProfile }) {
   const { setError, setSeo } = useContext(Context);

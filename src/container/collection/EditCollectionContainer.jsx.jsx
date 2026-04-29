@@ -30,6 +30,7 @@ import Enviroment from "../../core/Enviroment";
 import TabBar from "../../components/TabBar";
 import computePermissions from "../../core/compusePermissions";
 import getBackground from "../../core/getbackground";
+import { removeFromPaginatedKey } from "../../actions/PageActions";
 // Layout & spacing
 const containerPadding = "px-4 pb-28 pt-6"; // consistent padding
 const cardPadding = "p-4"; // inner card padding
@@ -231,7 +232,7 @@ const cycleFollowersRole = () => {
   },[id])
 
   const handleDelete = () => {
-   
+
     closeDialog()
     let dia = { ...dialog };
     // dia.title = "Deleting?";
@@ -240,6 +241,7 @@ const cycleFollowersRole = () => {
      
      
       dispatch(deleteCollection(params)).then(()=>{
+           dispatch(removeFromPaginatedKey({ key: "stories", id: parameters.id }));
    router.push(Paths.myProfile);
       resetDialog()
       })

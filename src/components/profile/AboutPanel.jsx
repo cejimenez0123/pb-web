@@ -77,7 +77,7 @@ if (cache.has(JSON.stringify(location))) {
       )}
 
      <div>
-  {/* <p className="text-xs text-gray-400 uppercase">Location</p> */}
+ 
 <SectionHeader title="Location"/>
   {isLoadingLocation ? (
     <div className="mt-1 h-4 w-32 bg-gray-200 rounded animate-pulse" />

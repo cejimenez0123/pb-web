@@ -84,86 +84,149 @@ export default function ReferralForm({ onClose }) {
 
     setTimeout(() => setMessage(""), 2000);
   };
+ return (
+    <div className="flex flex-col md:min-w-[28em] px-4 py-5 bg-cream dark:bg-base-bgDark">
 
-  return (
-    <div className="flex flex-col md:min-w-[28em] px-4 py-5">
-
-      {/* Title */}
-      <h1 className="text-center text-lg font-semibold text-gray-900 mb-6">
+      <h1 className="text-center text-lg font-semibold text-soft dark:text-cream mb-6">
         Refer a Friend
       </h1>
 
-      {/* Message */}
       {message && (
-        <p className="text-center text-sm text-gray-500 mb-3">
+        <p className="text-center text-sm text-gray-500 dark:text-gray-400 mb-3">
           {message}
         </p>
       )}
 
-      {/* Referral Link */}
       {pending ? (
-        <IonLoading
-          isOpen={true}
-          message={"Loading your referral..."}
-          spinner="crescent"
-        />
+        <IonLoading isOpen={true} message={"Loading your referral..."} spinner="crescent" />
       ) : referralLink ? (
-        <div className="flex items-center gap-2 bg-base-bg rounded-xl px-3 py-2">
+        <div className="flex items-center gap-2 bg-base-bg dark:bg-base-surfaceDark rounded-xl px-3 py-2">
           <input
             value={referralLink}
             disabled
-            className="flex-1 bg-base-bg text-sm text-gray-700 outline-none"
+            className="flex-1 bg-transparent text-sm text-soft dark:text-cream outline-none"
           />
-
-          <button
-            onClick={copyToClipboard}
-            className="p-2 rounded-full active:scale-95"
-          >
-            <img src={copyContent} className="w-5 h-5 opacity-70" />
+          <button onClick={copyToClipboard} className="p-2 rounded-full active:scale-95">
+            <img src={copyContent} className="w-5 h-5 opacity-70 dark:invert" />
           </button>
         </div>
       ) : null}
 
-      {/* Divider */}
       <div className="flex items-center my-6">
-        <div className="flex-1 h-[1px] bg-gray-200" />
-        <span className="mx-3 text-xs text-gray-400">OR</span>
-        <div className="flex-1 h-[1px] bg-gray-200" />
+        <div className="flex-1 h-[1px] bg-gray-200 dark:bg-gray-700" />
+        <span className="mx-3 text-xs text-gray-400 dark:text-gray-500">OR</span>
+        <div className="flex-1 h-[1px] bg-gray-200 dark:bg-gray-700" />
       </div>
 
-      {/* Invite Form */}
       <div className="flex flex-col gap-4">
-
         <div className="flex flex-col">
-          <label className="text-sm text-gray-600">Friend’s Name</label>
+          <label className="text-sm text-gray-600 dark:text-gray-400">Friend's Name</label>
           <input
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="name..."
-            className="w-full mt-1 px-3 py-3 rounded-full border bg-base-bg text-soft outline-none"
+            className="w-full mt-1 px-3 py-3 rounded-full border border-gray-200 dark:border-gray-700 bg-base-bg dark:bg-base-surfaceDark text-soft dark:text-cream outline-none placeholder:text-gray-400 dark:placeholder:text-gray-600"
           />
         </div>
 
         <div className="flex flex-col">
-          <label className="text-sm text-gray-600">Friend’s Email</label>
+          <label className="text-sm text-gray-600 dark:text-gray-400">Friend's Email</label>
           <input
             value={email}
-            onChange={(e) =>
-              setEmail(e.target.value.toLowerCase().trim())
-            }
+            onChange={(e) => setEmail(e.target.value.toLowerCase().trim())}
             placeholder="example@example.com"
-            className="w-full mt-1 px-3 py-3 rounded-full border bg-base-bg text-soft outline-none"
+            className="w-full mt-1 px-3 py-3 rounded-full border border-gray-200 dark:border-gray-700 bg-base-bg dark:bg-base-surfaceDark text-soft dark:text-cream outline-none placeholder:text-gray-400 dark:placeholder:text-gray-600"
           />
         </div>
       </div>
 
-      {/* Submit */}
       <button
         onClick={handleClick}
-        className="mt-8 h-12 py-3 rounded-full bg-emerald-600 text-white font-medium active:scale-[0.98]"
+        className="mt-8 h-12 py-3 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium active:scale-[0.98] transition"
       >
         Send Invite
       </button>
     </div>
   );
+  // return (
+  //   <div className="flex flex-col md:min-w-[28em] px-4 py-5">
+
+  //     {/* Title */}
+  //     <h1 className="text-center text-lg font-semibold text-gray-900 mb-6">
+  //       Refer a Friend
+  //     </h1>
+
+  //     {/* Message */}
+  //     {message && (
+  //       <p className="text-center text-sm text-gray-500 mb-3">
+  //         {message}
+  //       </p>
+  //     )}
+
+  //     {/* Referral Link */}
+  //     {pending ? (
+  //       <IonLoading
+  //         isOpen={true}
+  //         message={"Loading your referral..."}
+  //         spinner="crescent"
+  //       />
+  //     ) : referralLink ? (
+  //       <div className="flex items-center gap-2 bg-base-bg rounded-xl px-3 py-2">
+  //         <input
+  //           value={referralLink}
+  //           disabled
+  //           className="flex-1 bg-base-bg text-sm text-gray-700 outline-none"
+  //         />
+
+  //         <button
+  //           onClick={copyToClipboard}
+  //           className="p-2 rounded-full active:scale-95"
+  //         >
+  //           <img src={copyContent} className="w-5 h-5 opacity-70" />
+  //         </button>
+  //       </div>
+  //     ) : null}
+
+  //     {/* Divider */}
+  //     <div className="flex items-center my-6">
+  //       <div className="flex-1 h-[1px] bg-gray-200" />
+  //       <span className="mx-3 text-xs text-gray-400">OR</span>
+  //       <div className="flex-1 h-[1px] bg-gray-200" />
+  //     </div>
+
+  //     {/* Invite Form */}
+  //     <div className="flex flex-col gap-4">
+
+  //       <div className="flex flex-col">
+  //         <label className="text-sm text-gray-600">Friend’s Name</label>
+  //         <input
+  //           value={name}
+  //           onChange={(e) => setName(e.target.value)}
+  //           placeholder="name..."
+  //           className="w-full mt-1 px-3 py-3 rounded-full border bg-base-bg text-soft outline-none"
+  //         />
+  //       </div>
+
+  //       <div className="flex flex-col">
+  //         <label className="text-sm text-gray-600">Friend’s Email</label>
+  //         <input
+  //           value={email}
+  //           onChange={(e) =>
+  //             setEmail(e.target.value.toLowerCase().trim())
+  //           }
+  //           placeholder="example@example.com"
+  //           className="w-full mt-1 px-3 py-3 rounded-full border bg-base-bg text-soft outline-none"
+  //         />
+  //       </div>
+  //     </div>
+
+  //     {/* Submit */}
+  //     <button
+  //       onClick={handleClick}
+  //       className="mt-8 h-12 py-3 rounded-full bg-emerald-600 text-white font-medium active:scale-[0.98]"
+  //     >
+  //       Send Invite
+  //     </button>
+  //   </div>
+  // );
 }
