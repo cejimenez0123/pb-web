@@ -53,14 +53,14 @@ const WorkshopContainer = () => {
 
 // Protected — for logged in user
 const { items: communities, page: communityPage, setPage: setCommunityPage, totalPages:comTotalPage, totalCount: communityTotal } = usePaginatedResource({
-    cacheKey: "profile-recommendations",
+    cacheKey: "profile:recommendations",
     fetcher: getProfileRecommendations,
     pageSize: 10,
     enabled: !!currentProfile?.id,
     select: (res) => ({ items: res.groups, totalCount: res.totalCount }),
 });
 const { items: workshops, page: workshopPage,totalPages:workshopPages, setPage: setWorkshopPage, totalCount: workshopTotal } = usePaginatedResource({
-    cacheKey: "workshops",
+    cacheKey: "collections:workshops",
     fetcher: findWorkshopGroups,
     pageSize: 10,
     enabled: !!currentProfile?.id,
@@ -284,6 +284,7 @@ className='page-content'
     label={"Communities"} 
     items={communities}
     page={communityPage}
+  
   totalPages={comTotalPage}
     setPage={setCommunityPage}
     totalCount={communityTotal}

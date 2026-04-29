@@ -44,7 +44,7 @@ const storiesCache = useSelector((state) => state.pagination.byKey?.["stories"]?
 const collectionsCache = useSelector((state) => state.pagination.byKey?.["collections:all"]?.pages?.[1] ?? []);
 const librariesCache = useSelector((state) => state.pagination.byKey?.["libraries:all"]?.pages?.[1] ?? []);
 const { items: explorList, page: explorePage, setPage: setExplorePage, totalCount: exploreTotalCount} = usePaginatedResource({
-    cacheKey: "profile-recommendations",
+    cacheKey: "profile:recommendations",
     fetcher: getProfileRecommendations,
     pageSize: 10,
     enabled: !!profile?.id,
