@@ -174,6 +174,7 @@ const [token,setToken]=useState(null)
   });
 };
 let signedOutMenu = [{ label: "Discovery", action: () => {router.push(Paths.discovery) }},
+  { label: "Log in", action: () => {router.push(Paths.login) }},
           { label: "Events", action: () => {router.push(Paths.calendar())} },
         ]
         
@@ -451,7 +452,7 @@ if (!isOnline) {
     className={`
 overflow-y-auto pb-20
       absolute left-0 top-0 h-[100dvh] w-[85%] max-w-[22em]
-      bg-[#f8f6f1] shadow-xl rounded-r-3xl
+      dark:bg-base-bgDark bg-cream shadow-xl rounded-r-3xl
       transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]
       ${menuOpen ? "translate-x-0" : "-translate-x-full"}
     `}
@@ -459,8 +460,8 @@ overflow-y-auto pb-20
     <div className="p-6 flex flex-col h-full">
           <div className="flex items-center gap-3 pb-6 pt-10 overflow-y-scroll border-b border-soft">
     <div>
-    <p className="text-xs text-soft opacity-60">Welcome back</p>
-<p className="text-base font-semibold text-soft">
+    <p className="text-xs text-soft dark:text-cream  opacity-60">Welcome back</p>
+<p className="text-base font-semibold dark:text-cream text-soft">
   {currentProfile?.username || "Guest"}
 </p>
     </div>
@@ -468,7 +469,7 @@ overflow-y-auto pb-20
       {/* </div> */}
 
       {/* NAV */}
-      <div className="flex flex-col gap-4 py-6">
+      <div className="flex  flex-col gap-4 py-6">
       
 {menuArr.map((item) => (
   <button
@@ -478,7 +479,9 @@ overflow-y-auto pb-20
           text-left 
           text-[1rem] 
           bg-base-surface
+          dark:bg-base-surfaceDark
           text-soft 
+          dark:text-cream
           my-1
        
           hover:bg-purple
@@ -506,8 +509,10 @@ overflow-y-auto pb-20
           className=" rounded-s-full
           text-left 
           text-[1rem] 
-          bg-base-surface
+         bg-base-surface
+          dark:bg-base-surfaceDark
           text-soft 
+          dark:text-cream
           my-1
          
           hover:bg-purple
@@ -518,8 +523,10 @@ overflow-y-auto pb-20
         <button  className=" rounded-s-full
           text-left 
           text-[1rem] 
-          bg-base-surface
+        bg-base-surface
+          dark:bg-base-surfaceDark
           text-soft 
+          dark:text-cream
           my-1
         
           hover:bg-purple
@@ -529,8 +536,10 @@ overflow-y-auto pb-20
         {currentProfile && <button className=" rounded-s-full
           text-left 
           text-[1rem] 
-          bg-base-surface
+           bg-base-surface
+          dark:bg-base-surfaceDark
           text-soft 
+          dark:text-cream
           my-1
         
           hover:bg-purple

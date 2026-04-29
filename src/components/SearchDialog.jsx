@@ -24,7 +24,7 @@ import { ErrorBoundary } from '@sentry/react';
 // ── Tokens ───────────────────────────────
 const T = {
   wrap:        "max-w-2xl sm:max-w-[100%] mx-auto px-4 bg-cream dark:bg-base-bgDark ",
-  surface:     "",
+  surface:     " page-content",
   card:        "bg-cream dark:bg-base-bgDark shadow-sm",
   header:      "flex items-center gap-3 px-4 pt-12 pb-2",
   searchWrap:  "flex-1 bg-base-surface dark:bg-base-surfaceDark rounded-full px-2",
@@ -137,7 +137,7 @@ const SearchDialog = ({ presentingElement }) => {
   const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
   return (
-    <IonContent fullscreen style={{...getBackground(),"--min-height":"100vh"}} className={T.surface}>
+    <IonContent fullscreen  className={T.surface}>
       <ErrorBoundary>
 <div className='bg-cream dark:bg-base-bgDark overglow-y-auto minm-h-[100vh]  '>
       {/* Header + Search */}

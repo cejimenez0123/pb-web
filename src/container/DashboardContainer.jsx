@@ -286,7 +286,7 @@ const openCommunities = () => {
         if (payload.story) {
           // dispatch(setEditingPage({ page: payload.story }));
           dispatch(setPageInView({ page: payload.story }));
-        router.push(Paths.editPage.createRoute(payload?.story?.id),'forward', 'push');
+        router.push(Paths.editPage.createRoute(payload?.story?.id,payload?.story?.type),'forward', 'push');
         }else{
           window.alert("COULD NOT CREATE STORY")
         }

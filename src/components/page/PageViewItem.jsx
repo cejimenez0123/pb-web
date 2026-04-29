@@ -95,7 +95,7 @@ const dispatch =useDispatch()
         <div
           onClick={() =>{
               dispatch(setHtmlContent(page.data))
-             router.push(Paths.editPage.createRoute(page.id), "forward")
+             router.push(Paths.editPage.createRoute(page.id,page.type), "forward")
           }}
           className="btn btn-sm btn-ghost text-soft dark:text-cream hover:bg-base-bg dark:hover:bg-base-bgDark rounded-full"
         >

@@ -148,6 +148,7 @@ const uploadPicture = createAsyncThunk(
 
       const fileName = `image/${Date.now()}-${uuidv4()}.jpg`;
       const storageRef = ref(storage, fileName);
+console.log("FILENAME",fileName)
 
       if (!Capacitor.isNativePlatform()) {
         // ✅ WEB → needs Blob/File
@@ -170,7 +171,9 @@ const uploadPicture = createAsyncThunk(
         });
       }
 
-      const url = await getDownloadURL(storageRef);
+    const url = Capacitor.isNativePlatform()
+  ? await FirebaseStorage.getDownloadUrl({ path: fileName }).then(r => r.downloadUrl)
+  : await getDownloadURL(storageRef);
       return { url, fileName };
 
     } catch (err) {

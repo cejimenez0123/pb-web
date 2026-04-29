@@ -279,7 +279,7 @@ function NavCreateDropdown({}) {
       icon:CreateIcon,
       action:()=>{
         dispatch(setPageType({type:PageType.text}))
-        router.push(Paths.editPage.createRoute("new"),'forward');
+        router.push(Paths.editor.text,'forward');
       }
     },
     {
@@ -398,7 +398,7 @@ function CreateButton({router}) {
         dispatch(setPageInView({ page: null }));
         dispatch(setEditingPage({ page: null }));
         dispatch(setPageType({ type: PageType.text }));
-        router.push(Paths.editPage.createRoute("new"), "forward");
+        router.push(Paths.editor.text, "forward");
         break;
       case "image":
         dispatch(setHtmlContent(""));

@@ -18,7 +18,7 @@ import SectionHeader from '../components/SectionHeader.jsx';
 import shortName from '../core/shortName.jsx';
 
 // ── Layout ──────────────────────────────────────
-const WRAP = "max-w-[72rem] dark:bg-base-bgDark bg-base-surface mx-auto sm:px-6 lg:px-8";
+const WRAP = "max-w-[72rem] dark:bg-base-bgDark bg-cream mx-auto sm:px-6 lg:px-8";
 
 
 // ── Sections ────────────────────────────────────
@@ -39,7 +39,7 @@ const SCROLL_ROW = "flex gap-4 overflow-x-auto pb-2 min-h-fit -mx-4 px-4 sm:mx-0
 const GRID = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4";
 
 // ── Cards ───────────────────────────────────────
-const CARD = "bg-base-bg border-base-bg dark:border-purple border-1 border bg-base-surfaceDark rounded-2xl shadow-sm w-full";
+const CARD = "bg-cream border-purple border-1 border dark:bg-base-surfaceDark rounded-2xl shadow-sm w-full";
 const CARD_PAD = "p-4 sm:p-5";
 
 // ── Skeleton ────────────────────────────────────
@@ -51,13 +51,13 @@ const WorkshopItem = ({ item, router }) => {
 
   <div onClick={() => router.push(Paths.collection.createRoute(item.id))} className={`${CARD} ${CARD_PAD}  w-[100%]`}>
       <IonLabel>
-        <h2 className="text-md font-semibold dark:text-cream text-emerald-800 truncate">
+        <h2 className="text-md font-semibold dark:text-cream text-soft truncate">
           {shortName(item.title,30)}
         </h2>
 
-        <p className="text-sm text-gray-600 dark:text-cream line-clamp-3">
+        {/* <p className="text-sm text-gray-600 dark:text-cream line-clamp-3">
           {shortName(item.description,40) || "No description available."}
-        </p>
+        </p> */}
 
         <div className="flex justify-between text-xs dark:text-cream text-gray-500 mt-1">
           <span>{item?.location?.city || "Online / TBD"}</span>
@@ -88,14 +88,13 @@ function HomeEmbed({workshops,stories,prompts,isGlobal,setIsGlobal}) {
 
   const [whatsHappeningList, setWhatsHappeningList] = useState([]);
 
-  const sortedWorkshops = useMemo(() => [...workshops]?.sort((a,b) => a?.title.localeCompare(b?.title)), [workshops]);
+  const sortedWorkshops = useMemo(() => [...workshops]?.sort((a,b) => a?.title.localeCompare(b?.title)).slice(0,4), [workshops]);
   const filteredPrompts =prompts
   //  useMemo(() => prompts?.filter(p => p?.data) || [], [prompts]);
-console.log("filteredPromptsx",prompts)
-console.log("filteredPrompts",filteredPrompts)
+
   useEffect(() => {
     if (stories?.length) {
-      const sorted = [...stories].sort((a,b)=>new Date(b.updated)-new Date(a.updated));
+      const sorted = [...stories].filter(s=>s.type==PageType.text).sort((a,b)=>new Date(b.updated)-new Date(a.updated));
       setWhatsHappeningList(sorted);
     }
   }, [stories]);
@@ -125,7 +124,7 @@ console.log("filteredPrompts",filteredPrompts)
       if (!payload.story) return window.alert("COULD NOT CREATE STORY");
       // dispatch(setEditingPage({ page: payload.story }));
       dispatch(setPageInView({ page: payload?.story }));
-      router.push(Paths.editPage.createRoute(payload?.story?.id), 'forward', 'push');
+      router.push(Paths.editPage.createRoute(payload?.story?.id,payload?.story?.type), 'forward', 'push');
     }));
   }, 5);
 

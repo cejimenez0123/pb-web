@@ -73,11 +73,10 @@ function DiscoveryContainer() {
     });
   }, [setSeo]);
 
-  useEffect(() => {
-    fetchContentItems();
-    fetchLibraries();
-  }, [currentProfile]);
-
+ useEffect(() => {
+  fetchContentItems();
+  fetchLibraries();
+}, []); 
   useEffect(() => {
     let finalList = sortItems(
       pagesInView,
@@ -155,34 +154,7 @@ function DiscoveryContainer() {
 
           <div className="px-4 max-w-[50em] mx-auto flex flex-col gap-3">
             <PageList items={viewItems}/>
-            {/* {viewItems.map((item) => {
-              const isCollection = !!item?.storyIdList;
-              return (
-                <div
-                  key={item.id}
-                  onClick={() =>
-                    isCollection
-                      ? router.push(Paths.collection.createRoute(item.id), "forward")
-                      : router.push(Paths.page.createRoute(item.id), "forward")
-                  }
-                  className={`
-                    border rounded-full px-4 py-3
-                    bg-base-bg dark:bg-base-bgDark
-                    shadow-sm active:scale-[0.98] transition cursor-pointer
-                    ${isCollection ? "border-purple" : "border-blue"}
-                  `}
-                >
-                  <div className="flex flex-row gap-3 items-center">
-                    <h6 className={`text-[0.75rem] ${isCollection ? "text-purple" : "text-blue"}`}>
-                      {isCollection ? "collection" : "page"} ·
-                    </h6>
-                    <h5 className="text-[0.95rem] text-soft dark:text-cream font-medium truncate">
-                      {item.title || "Untitled"}
-                    </h5>
-                  </div>
-                </div>
-              );
-            })} */}
+
           </div>
 
           {!currentProfile && (

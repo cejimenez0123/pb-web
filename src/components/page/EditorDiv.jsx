@@ -2,6 +2,7 @@
 import { PageType } from "../../core/constants";
 import RichEditor from "./RichEditor";
 import PicturePageForm from "./PicturePageForm";
+import isValidUrl from "../../core/isValidUrl";
 
 export default function EditorDiv({ page, handleChange, isSaved, setIsSaved, parameters, type, createPageAction }) {
   const pageType = type;
@@ -36,7 +37,7 @@ export default function EditorDiv({ page, handleChange, isSaved, setIsSaved, par
 
   return (
     <RichEditor
-      key={`editor-${page?.id ?? "new"}`}  // ← forces remount when page changes
+      key={`editor-${page?.id ?? "new"}`}
       handleChange={(content) => handleChange("data", content)}
     />
   );

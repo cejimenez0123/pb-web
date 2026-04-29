@@ -382,21 +382,84 @@ function DataElement({ page, isGrid, book = null, html = null, onAnnotationComme
             />
           </>
         );
+        case PageType.picture: {
+  const [imgError, setImgError] = useState(false);
+  const [src, setSrc] = useState(image);
 
-      case PageType.picture:
-        return (
-          <img
-            id="page-data-pic"
-            onClick={() => {
-              if (router.routeInfo.pathname !== Paths.page.createRoute(page.id)) {
-                router.push(Paths.page.createRoute(page.id));
-              }
-            }}
-            alt={page.title}
-            src={image}
-            className="w-full h-full object-contain"
-          />
+  if (imgError) return (
+    <div className="w-full h-48 flex flex-col items-center justify-center gap-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500">
+      <svg className="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 15l5-5 4 4 3-3 4 4"/>
+        <circle cx="8.5" cy="8.5" r="1.5"/>
+      </svg>
+      <span className="text-xs">Image unavailable</span>
+    </div>
+  );
+
+  return (
+    <img
+      id="page-data-pic"
+      onClick={() => {
+        if (router.routeInfo.pathname !== Paths.page.createRoute(page.id)) {
+          router.push(Paths.page.createRoute(page.id));
+        }
+      }}
+      alt={page.title}
+      src={src}
+      className="w-full h-full object-contain"
+      onError={() => {
+        const raw = page?.data;
+        if (raw && !src.includes("imageProxy")) {
+          setSrc(Enviroment.imageProxy(raw)); // retry via proxy
+        } else {
+          setImgError(true);
+        }
+      }}
+    />
+  );
+}
+// case PageType.picture:
+  return (
+    <img
+      id="page-data-pic"
+      onClick={() => {
+        if (router.routeInfo.pathname !== Paths.page.createRoute(page.id)) {
+          router.push(Paths.page.createRoute(page.id));
+        }
+      }}
+      alt={page.title}
+      src={image}
+      className="w-full h-full object-contain"
+      onError={(e) => {
+        e.target.onerror = null; // prevent infinite loop
+        e.target.style.display = "none";
+        e.target.insertAdjacentHTML(
+          "afterend",
+          `<div class="w-full h-48 flex flex-col items-center justify-center gap-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500">
+            <svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 15l5-5 4 4 3-3 4 4"/>
+              <circle cx="8.5" cy="8.5" r="1.5"/>
+            </svg>
+            <span class="text-xs">Image unavailable</span>
+          </div>`
         );
+      }}
+    />
+  );
+      // case PageType.picture:
+      //   return (
+      //     <img
+      //       id="page-data-pic"
+      //       onClick={() => {
+      //         if (router.routeInfo.pathname !== Paths.page.createRoute(page.id)) {
+      //           router.push(Paths.page.createRoute(page.id));
+      //         }
+      //       }}
+      //       alt={page.title}
+      //       src={image}
+      //       className="w-full h-full object-contain"
+      //     />
+      //   );
 
       case PageType.link:
         return <LinkPreview isGrid={isGrid} url={page.data} />;

@@ -374,7 +374,7 @@ export default function ShareList({ page, profile, archive, setArchive, bookmark
             onClick={() => {
               sendGAEvent("story_edit_open", { story_id: page.id, source: getShareSource() });
               openDialog({ ...dialog, isOpen: false });
-              router.push(Paths.editPage.createRoute(page.id));
+              router.push(Paths.editPage.createRoute(page.id,page.type));
             }}
           >
             <h5 className={TEXT}>Edit</h5>

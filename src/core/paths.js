@@ -1,3 +1,4 @@
+import { PageType } from "./constants";
 
 
 const isClip = import.meta.env.MODE === "clip";  // or use a VITE flag
@@ -44,8 +45,15 @@ const Paths ={
         image:`/story/image/edit`  
     },
     login: `/login`,
-    editPage:{route:`/story/:id/editor`,
-        createRoute:(id)=>{return `/story/${id}/editor`}},
+    
+    editPage:{route:`/story/:type/edit/:id`,
+        createRoute:(id,type)=>{
+            let addType = type
+            if(type==PageType.text){
+                addType = "text"
+            }
+            return `/story/${addType}/edit/${id}`
+        }},
 
     addToCollection:{
         route:'/collection/:id/add',

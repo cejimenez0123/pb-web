@@ -28,6 +28,7 @@ import ShareList from './ShareList';
 import { useParams } from 'react-router';
 import { useDialog } from '../../domain/usecases/useDialog';
 import computePermissions from '../../core/compusePermissions';
+import DataElement from './DataElement';
 // THEME HELPERS (light + dark ready)
 const theme = {
   card: `
@@ -410,7 +411,8 @@ return (
         </IonText>
       )}
 <div className={`mt-3 rounded-2xl overflow-hidden border ${theme.softBg}`}>
-        <PageDataElement truncateNumber={200}isGrid={isGrid} page={page} />
+  <DataElement isGrid={isGrid} page={page}/>
+        {/* <PageDataElement truncateNumber={200}isGrid={isGrid} page={page} /> */}
       </div>
     </IonCardContent>
 <div className="flex items-center justify-between px-4 pb-3">

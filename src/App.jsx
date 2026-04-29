@@ -353,7 +353,7 @@ const showBottomNavbar =
     render={()=>  <PageWrapper> <EmailPreferences/>  </PageWrapper> }/>
    
     <Route  
-       exact path={"/story/:type/edit"}
+      path={"/story/:type/edit"}
         render={()=>       <PageWrapper>  
           <PrivateRoute>
        

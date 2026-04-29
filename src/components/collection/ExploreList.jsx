@@ -12,6 +12,7 @@ export default function ExploreList({
   label = "Explore", 
   items,
   page,
+  totalPages,
   setPage,
   totalCount,
   pageSize = 10,
@@ -28,7 +29,7 @@ export default function ExploreList({
       setIsVisible(true);
     }, 120);
   };
-const totalPages = totalCount ? Math.ceil(totalCount / pageSize) : 1;
+
 // const totalPages = Math.ceil(totalCount / pageSize);
   return (
     <div className={`${WRAP}  bg-cream dark:bg-base-bgDark ${SECTION_GAP}`}>

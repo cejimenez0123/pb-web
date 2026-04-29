@@ -31,7 +31,7 @@ const DESCRIPTION =
 
 // ── Width Behavior (important for HomeEmbed)
 const CARD_WIDTH =
-  "w-[100%]"; // ❗ remove min/max width constraints
+  "w-[100%] max-w-[12rem]"; // ❗ remove min/max width constraints
 function StoryItem({ page, isGrid = true, html = null }) {
   const { isHorizPhone } = useContext(Context);
   const router = useIonRouter();

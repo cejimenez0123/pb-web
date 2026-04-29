@@ -45,7 +45,7 @@ export default function CalendarContainer() {
   return (
 
 <IonContent
-  style={{ "--background": prefersDark ? Enviroment.palette.base.backgroundDark ?? Enviroment.palette.base.bg : Enviroment.palette.base.background }}
+  className="page-content"
   fullscreen={true}
 >
    
