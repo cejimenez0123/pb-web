@@ -27,12 +27,7 @@ class StoryRepo{
 
   return res.data;
 }
-    async getPublicProfileStories({profileId}){
-   
-        let res = await axios.get(this.url+"/profile/"+profileId+"/public")
-        
-        return res.data
-    }
+
         async getPrompts(){
    try{
         let res = await axios.get(this.url+"/prompts")
@@ -86,18 +81,15 @@ class StoryRepo{
      async getMyStories({ skip = 0,status, take = 50 ,search=""} = {}) {
   try {
     const headers = await this.getAuthHeaders();
-
-
-
     const res = await axios.get(
-      this.url + "/profile/protected",
+      Enviroment.url + "/story/profile/protected",
       {
-        headers,
-        params: { status, skip, take,search}, // 🔥 THIS is the key
+      headers:headers,
+        params: { status, skip, take,search}, 
       }
     );
 
-    console.log("GET MY STORIES", res);
+  
 
     return res.data;
   } catch (e) {

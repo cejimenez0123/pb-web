@@ -153,7 +153,7 @@ function DiscoveryContainer() {
           </div>
 
           <div className="px-4 max-w-[50em] mx-auto flex flex-col gap-3">
-            <PageList items={viewItems}/>
+            <PageList items={viewItems} shortenTo={200}/>
 
           </div>
 

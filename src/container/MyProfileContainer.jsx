@@ -1,5 +1,5 @@
 import { useContext, useEffect, useMemo,useRef, useState } from "react";
-import { IonContent, useIonRouter } from "@ionic/react";
+import { IonContent, useIonRouter, useIonViewDidEnter } from "@ionic/react";
 import { useSelector, useDispatch } from "react-redux";
 import Context from "../context";
 import Enviroment from "../core/Enviroment";
@@ -23,9 +23,7 @@ import usePaginatedResource from "../core/usePaginatedResource";
 import ListPill from "../components/page/ListPill";
 import SectionHeader from "../components/SectionHeader";
 import useDebounce from "../core/useDebounce";
-import { setPageData } from "../actions/PageActions";
-import getBackground from "../core/getbackground";
-import usePushNotificationListener from "../domain/usecases/usePushNotificationListener";
+
 
 const TABS = {
   POSTS: "pages",
@@ -40,9 +38,13 @@ function MyProfileContainer() {
 
   const { setSeo  } = useContext(Context);
   const profile = useSelector((state) => state.users.currentProfile);
-const storiesCache = useSelector((state) => state.pagination.byKey?.["stories"]?.pages?.[1] ?? []);
-const collectionsCache = useSelector((state) => state.pagination.byKey?.["collections:all"]?.pages?.[1] ?? []);
-const librariesCache = useSelector((state) => state.pagination.byKey?.["libraries:all"]?.pages?.[1] ?? []);
+const storiesCache = useSelector((state) => 
+  state.pagination.byKey?.["stories"]?.pages?.[1] ?? []
+);
+const collectionsCache = useSelector((state) => 
+  state.pagination.byKey?.["collections"]?.pages?.[1] ?? []
+);
+const librariesCache = useSelector((state) => state.pagination.byKey?.["libraries"]?.pages?.[1] ?? []);
 const { items: explorList, page: explorePage, setPage: setExplorePage, totalCount: exploreTotalCount} = usePaginatedResource({
     cacheKey: "profile:recommendations",
     fetcher: getProfileRecommendations,
@@ -52,7 +54,7 @@ const { items: explorList, page: explorePage, setPage: setExplorePage, totalCoun
 const recentPosts = storiesCache.slice(0, 5);
 const recentCollections = collectionsCache.slice(0, 5);
 const communities = { items: librariesCache };
-   const pageSize = 10;
+   const pageSize = 8;
 
 useEffect(() => {
   console.log("PROFILE CHANGED", profile);
@@ -69,7 +71,6 @@ const [search, setSearch] = useState("");
 const debouncedSearch = useDebounce(search, 300);
  
   const [tab, setTab] = useState(TABS.POSTS);
-
 
 
 
@@ -99,7 +100,7 @@ const IndexList = ({ items, profile,router }) => (
     ))}
   </div>
 )
-
+const storiesParams = useMemo(() => ({ type: "" }), []);
 const StatChip = ({ value, label }) => (
   <div className="flex flex-col text-center">
     <span className="font-bold dark:text-cream">{value}</span>
@@ -245,34 +246,24 @@ className="bg-soft rounded-full p-2"><img src={settings} /></button>
                   </section>
                 )}
 
-              
-                  <section className="space-y-4">
-
-                    <SectionHeader title={"All Pages"}/>
-
- <PaginatedList
+            
+      <SectionHeader title={"All Pages"}/>
+    
+<PaginatedList
   cacheKey="stories"
+  params={storiesParams}
   fetcher={getMyStories}
-  pageSize={8}
+  pageSize={pageSize}
+  enabled={!!profile?.id}
   search={debouncedSearch}
-  emptyState={   Array.from({ length: pageSize }).map((_, i) => (
-                   <div
-        key={i}
-   className="px-3 py-5 rounded-full skeleton  border border-blue border-1 bg-base-bg backdrop-blur-sm shadow-sm active:scale-[0.98] transition"
-      >
-       <span className="min-h-14 "></span>
-      </div>
-      ))}
-
-  renderItem={(p) => (
-
-    <ListPill key={p.id}item={p} profile={profile} onClick={()=>router.push(Paths.page.createRoute(p.id))}/>
-)}
+  emptyState={<EmptyState text={search ? "No matching Stories." : "No Stories yet."} />}
+  renderItem={(i) => (
+    <ListPill key={i.id} item={i} profile={profile} onClick={() => router.push(Paths.page.createRoute(i.id))} />
+  )}
 />
+ 
 
-
-
-         </section>     
+       
          </>
             )}    
         
@@ -291,9 +282,9 @@ className="bg-soft rounded-full p-2"><img src={settings} /></button>
     <SectionHeader title="All Collections" />
     <PaginatedList
       cacheKey="collections"
-      params={{ type: "book", search: debouncedSearch }}
+      params={{ type: "book" }}
       fetcher={getMyCollections}
-      pageSize={8}
+      pageSize={pageSize}
       search={debouncedSearch}
       emptyState={<EmptyState text={search ? "No matching collections." : "No collections yet."} />}
       renderItem={(i) => (

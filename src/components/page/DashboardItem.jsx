@@ -22,7 +22,7 @@ import ProfileCircle from '../profile/ProfileCircle';
 import Context from '../../context';
 import Enviroment from '../../core/Enviroment';
 import ErrorBoundary from '../../ErrorBoundary';
-import { debounce, set } from 'lodash';
+import { debounce, set, truncate } from 'lodash';
 import { sendGAEvent } from '../../core/ga4';
 import ShareList from './ShareList';
 import { useParams } from 'react-router';
@@ -92,7 +92,7 @@ const theme = {
     transition
   `,
 };
-function DashboardItem({ page, book, isGrid }) {
+function DashboardItem({ page, book,shortenTo, isGrid }) {
   const { isPhone, isHorizPhone, setSuccess, setError} = useContext(Context);
   const currentProfile = useSelector(state=>state.users.currentProfile)
   const dispatch = useDispatch();
@@ -411,7 +411,7 @@ return (
         </IonText>
       )}
 <div className={`mt-3 rounded-2xl overflow-hidden border ${theme.softBg}`}>
-  <DataElement isGrid={isGrid} page={page}/>
+  <DataElement isGrid={isGrid} shortenTo={shortenTo} page={page} />
         {/* <PageDataElement truncateNumber={200}isGrid={isGrid} page={page} /> */}
       </div>
     </IonCardContent>

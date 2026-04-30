@@ -1,11 +1,7 @@
-
 import { useEffect, useState, useRef, useCallback, useMemo } from "react";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { initKey, setPageData, setPaginationLoading } from "../../actions/PageActions";
 import PaginationControls from "../PaginationControls";
-
-const EMPTY_PAGES = {};
 
 export default function PaginatedList({
   cacheKey,
@@ -26,19 +22,9 @@ export default function PaginatedList({
   const debounceTimer = useRef(null);
 
   const activeSearch = enableInternalSearch ? debouncedQuery : externalSearch;
-  const key = `${cacheKey}:${activeSearch?.trim()?.toLowerCase() || "all"}`;
 
-  const stableParams = useMemo(() => params, [JSON.stringify(params)]);
-
-  const cache = useSelector(
-    (state) => state.pagination.byKey?.[key]?.pages ?? EMPTY_PAGES
-  );
-  const totalCount = useSelector(
-    (state) => state.pagination.byKey?.[key]?.totalCount ?? 0
-  );
-  const isLoading = useSelector(
-    (state) => state.pagination.byKey?.[key]?.loading ?? false
-  );
+  const cache = useSelector((s) => s.pagination.byKey?.[cacheKey]?.pages || {});
+  const totalCount = useSelector((s) => s.pagination.byKey?.[cacheKey]?.totalCount || 0);
 
   const items = cache[page] || [];
   const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
@@ -47,53 +33,43 @@ export default function PaginatedList({
     const val = e.target.value;
     setInternalQuery(val);
     clearTimeout(debounceTimer.current);
-    debounceTimer.current = setTimeout(() => {
-      setDebouncedQuery(val);
-    }, 350);
+    debounceTimer.current = setTimeout(() => setDebouncedQuery(val), 350);
   }, []);
 
   useEffect(() => () => clearTimeout(debounceTimer.current), []);
 
+  // Reset on search or key change
   useEffect(() => {
-    dispatch(initKey({ key }));
+    dispatch(initKey({ key: cacheKey }));
     setPage(1);
-  }, [key]);
+  }, [activeSearch, cacheKey]);
 
-
-
-const fetchPage = useCallback(async (p) => {
+  const fetchPage = async (p) => {
     if (!enabled) return;
-    dispatch(setPaginationLoading({ key, loading: true }));
+    dispatch(setPaginationLoading({ key: cacheKey, loading: true }));
     try {
-        const res = await dispatch(
-            fetcher({
-                skip: (p - 1) * pageSize,
-                take: pageSize,
-                ...stableParams,
-                search: activeSearch,
-            })
-        ).unwrap();
-        dispatch(setPageData({ key, page: p, items: res.pageList || res.items || res.collections || [], totalCount: res.totalCount }));
+      const res = await dispatch(
+        fetcher({
+          skip: (p - 1) * pageSize,
+          take: pageSize,
+          ...params,
+          search: activeSearch,
+        })
+      ).unwrap();
+      dispatch(setPageData({
+        key: cacheKey,
+        page: p,
+        items: res.pageList || res.items || res.collections || [],
+        totalCount: res.totalCount,
+      }));
     } finally {
-        dispatch(setPaginationLoading({ key, loading: false }));
+      dispatch(setPaginationLoading({ key: cacheKey, loading: false }));
     }
-}, [key, stableParams, enabled, activeSearch]); // ← removed cache
-// Prefetch next page
-useEffect(() => {
-    if (!enabled) return;
-    const nextPage = page + 1;
-    const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
-    if (nextPage > totalPages) return;         // no next page
-    if (cache[nextPage] !== undefined) return; // already cached
-    fetchPage(nextPage);
-}, [fetchPage, page, totalCount, cache]);
-useEffect(() => {
-    if (cache[page] !== undefined) return; // guard here, not inside callback
+  };
+
+  useEffect(() => {
     fetchPage(page);
-}, [fetchPage, page]); // cache intentionally omitted — checked inline
-
-
-  const showEmpty = !isLoading && cache[page] && items.length === 0;
+  }, [page, activeSearch, JSON.stringify(params)]);
 
   return (
     <div className={`space-y-2 bg-cream dark:bg-base-bgDark ${className}`}>
@@ -109,32 +85,27 @@ useEffect(() => {
         </div>
       )}
 
-      {isLoading && (
-        emptyState || <div className="p-4 text-gray-400 bg-cream dark:bg-base-bgDark dark:text-cream animate-pulse">Loading...</div>
-      )}
+      {!items.length && !cache[page]
+        ? emptyState || <div className="p-4 text-gray-400 dark:text-cream animate-pulse">Loading...</div>
+        : (cache[page] || items).map((item, index) => (
+            <div key={item.id ?? index}>{renderItem(item, index)}</div>
+          ))
+      }
 
-      {!isLoading && showEmpty && (
-        <div className="p-4 text-gray-400 bg-cream dark:bg-base-bgDark dark:text-cream">
+      {!items.length && cache[page] && (
+        <div className="p-4 text-gray-400 dark:text-cream">
           {enableInternalSearch && debouncedQuery
             ? `No results for "${debouncedQuery}"`
             : "Nothing here yet"}
         </div>
       )}
 
-      {!isLoading && items.length > 0 &&
-        items.map((item, index) => (
-          <div key={item.id ?? index}>{renderItem(item, index)}</div>
-        ))
-      }
-
-      {totalPages > 1 && (
-        <PaginationControls
-          page={page}
-          totalPages={totalPages}
-          setPage={setPage}
-          className=" bg-cream dark:bg-base-bgDark "
-        />
-      )}
+      <PaginationControls
+        page={page}
+        totalPages={totalPages}
+        setPage={setPage}
+        className="bg-cream dark:bg-base-bgDark"
+      />
     </div>
   );
 }

@@ -94,6 +94,7 @@ const itemVariants = {
 const PageList = ({
   items = [],
   forFeedback,
+  shortenTo,
   getMore = () => {},
   hasMore = true,
   isGrid,
@@ -144,6 +145,7 @@ const PageList = ({
                     key={i}
                     item={item}
                     index={i}
+                    shortenTo={shortenTo}
                     forFeedback={forFeedback}
                     isGrid={isGrid}
                     page={item}

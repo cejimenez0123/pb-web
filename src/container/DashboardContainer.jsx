@@ -145,7 +145,7 @@ const openPages = () => {
   cacheKey="stories"
   fetcher={getMyStories}
   pageSize={pageSize}
-  // search={search}
+
   enableInternalSearch={true}
   renderItem={(story) => (
         <div

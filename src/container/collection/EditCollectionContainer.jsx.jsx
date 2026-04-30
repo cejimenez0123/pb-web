@@ -30,7 +30,8 @@ import Enviroment from "../../core/Enviroment";
 import TabBar from "../../components/TabBar";
 import computePermissions from "../../core/compusePermissions";
 import getBackground from "../../core/getbackground";
-import { removeFromPaginatedKey } from "../../actions/PageActions";
+import { removeFromPaginatedKey, updatePaginatedItem } from "../../actions/PageActions";
+import checkResult from "../../core/checkResult";
 // Layout & spacing
 const containerPadding = "px-4 pb-28 pt-6"; // consistent padding
 const cardPadding = "p-4"; // inner card padding
@@ -203,7 +204,17 @@ const cycleFollowersRole = () => {
         profile: currentProfile,
       })
     )
-      .then(() => setSuccess("Successful Update"))
+      .then((res)=>{
+        checkResult(res,payload=>{
+          if(payload?.collection){
+   dispatch(updatePaginatedItem({key:"collections",item:payload?.collection}))
+          }
+  
+        },err=>{
+
+        })
+   
+      })
       .catch((err) => setError(err.message));
   };
   function openRoleForm(){
@@ -241,7 +252,7 @@ const cycleFollowersRole = () => {
      
      
       dispatch(deleteCollection(params)).then(()=>{
-           dispatch(removeFromPaginatedKey({ key: "stories", id: parameters.id }));
+           dispatch(removeFromPaginatedKey({ key: "collections", id: parameters.id }));
    router.push(Paths.myProfile);
       resetDialog()
       })

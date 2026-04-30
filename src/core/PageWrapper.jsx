@@ -29,9 +29,7 @@ import Enviroment from './Enviroment';
 import { IonContent } from '@ionic/react';
 import ReferralForm from '../components/auth/ReferralForm';
 import { setPageInView } from '../actions/PageActions';
-import checkResult from './checkResult';
-import { Preferences } from '@capacitor/preferences';
-import getBackground from './getbackground';
+
 import { getMyStories } from '../actions/StoryActions';
 import PaginatedList from '../components/page/PaginatedList';
 import shortName from './shortName';
@@ -209,7 +207,7 @@ let signedInMenu = [
 
       
           <PaginatedList
-  cacheKey="stories"
+  cacheKey="stories:draft"
   fetcher={getMyStories}
   pageSize={pageSize}
   params={{ status: "draft" }}
@@ -252,7 +250,7 @@ let signedInMenu = [
         renderItem={(y) => (
           <div
             onClick={() => {
-              router.push(Paths.collection.createRoute(story.id));
+              router.push(Paths.collection.createRoute(y.id));
               resetDialog();
             }}
             className="p-4 border border-purple rounded-xl"

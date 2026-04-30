@@ -9,6 +9,7 @@ import Paths from "../../core/paths";
 import { useSelector, useDispatch } from "react-redux";
 import { createComment } from "../../actions/PageActions.jsx";
 import "../../styles/Editor.css";
+import truncate from "html-truncate";
 
 // ── Module level — stable reference ──────────────────────────────────────────
 const EMPTY_COMMENTS = [];
@@ -174,7 +175,7 @@ function SelectionToolbar({ position, onAnnotate, onClose }) {
 }
 
 // ─── AnnotatedText ────────────────────────────────────────────────────────────
-function AnnotatedText({ html, page, onAnnotationComment, showAnnotations }) {
+function AnnotatedText({ html, page, shortenTo,onAnnotationComment, showAnnotations }) {
   const dispatch = useDispatch();
   const currentProfile = useSelector((s) => s.users.currentProfile);
   const commentsRaw = useSelector((s) => s.comments.byStory?.[page?.id]);
@@ -191,8 +192,7 @@ function AnnotatedText({ html, page, onAnnotationComment, showAnnotations }) {
   const annotatedHtml = useCallback(() => {
     let source = html ?? `<div>${page?.data ?? ""}</div>`;
 
-    if (!showAnnotations) return source; // ← skip when hidden
-
+    if (!showAnnotations) return source
     comments
       .filter((c) => c.anchorText?.trim())
       .forEach((c) => {
@@ -325,7 +325,8 @@ function AnnotatedText({ html, page, onAnnotationComment, showAnnotations }) {
       <div
         className="ql-editor prose prose-sm max-w-none text-sky-900 dark:text-sky-100"
         style={{ WebkitUserSelect: "text", userSelect: "text" }}
-        dangerouslySetInnerHTML={{ __html: annotatedHtml() }}
+        dangerouslySetInnerHTML={{ __html: shortenTo?truncate(annotatedHtml(),400,{}): annotatedHtml() // ← skip when hidden
+ }}
       />
 
       {activeComment && (
@@ -341,7 +342,7 @@ function AnnotatedText({ html, page, onAnnotationComment, showAnnotations }) {
 }
 
 // ─── DataElement ──────────────────────────────────────────────────────────────
-function DataElement({ page, isGrid, book = null, html = null, onAnnotationComment }) {
+function DataElement({ page, isGrid,shortenTo=null, book = null, html = null, onAnnotationComment }) {
   const initialImage =
     page?.type === PageType.picture ? resolveImageSrc(page?.data) : null;
   const router = useIonRouter();
@@ -377,6 +378,7 @@ function DataElement({ page, isGrid, book = null, html = null, onAnnotationComme
             <AnnotatedText
               html={html}
               page={page}
+              shortenTo={shortenTo}
               onAnnotationComment={onAnnotationComment}
               showAnnotations={showAnnotations}
             />
