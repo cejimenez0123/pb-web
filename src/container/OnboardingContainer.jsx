@@ -321,7 +321,11 @@ export default function OnboardingContainer() {
       await Preferences.set({ key: "hasSeenOnboarding", value: "true" });
       setUser(data?.user ?? data);
     } catch (err) {
+      if(err.status){
+          setError("You may have applied already. Give more time for a response")
+      }else{
       setError(err?.message || "Something went wrong");
+      }
     } finally {
       setLoading(false);
     }
