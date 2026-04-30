@@ -24,7 +24,7 @@ function useProfileDependentEffects(currentProfile, isGlobal) {
 
         const sorted = [...payload?.prompts].sort((a,b)=>new Date(b.updated)-new Date(a.updated));
         setResults(prev => ({ ...prev, prompts: sorted }));
-    console.log("FUCL",sorted)
+
       },err=>{
            console.log("STOP PROMPTING ME err",err)
       });

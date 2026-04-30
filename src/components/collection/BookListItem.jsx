@@ -34,8 +34,17 @@ function BookListItem({ book }) {
   return (
     <div
       onClick={navigateToBook}
-      className="min-h-[8rem] max-h-[12rem] min-w-[16rem] max-w-[16em] shadow-md flex flex-col justify-between rounded-xl border-purple bg-base-bg dark:bg-base-bgDark border  dark:border-purple cursor-pointer shadow-md mx-2 transition-shadow duration-300 p-4 space-y-3 active:scale-[0.98]"
-      style={{ WebkitTapHighlightColor: "transparent" }}
+ className={[
+        // Fixed golden ratio dimensions — 16rem wide, 10rem tall (1:1.618)
+        "w-[16rem] h-[10rem]",
+        "flex-shrink-0",          // prevents squishing in horizontal scroll
+        "flex flex-col justify-between",
+        "rounded-xl border border-purple dark:border-purple",
+        "bg-base-bg dark:bg-base-bgDark",
+        "shadow-md mx-2 p-4",
+        "cursor-pointer transition-all duration-200",
+        "active:scale-[0.98] hover:shadow-lg",
+      ].join(" ")}  style={{ WebkitTapHighlightColor: "transparent" }}
     >
       <h3 className="font-bold text-soft dark:text-cream text-lg truncate">
         {shortName(book.title, 30)}
@@ -51,8 +60,17 @@ function BookListItem({ book }) {
 
 function BookListItemShadow() {
   return (
-    <div className="min-h-[10rem] w-[16rem] flex flex-col justify-between rounded-xl bg-base-soft animate-pulse shadow-sm p-4 space-y-3 mx-2 flex-shrink-0">
-      <div className="h-6 w-3/4 bg-base-bg rounded" />
+    <div  className={[
+        // Fixed golden ratio dimensions — 16rem wide, 10rem tall (1:1.618)
+        "w-[16rem] h-[10rem]",
+        "flex-shrink-0",          // prevents squishing in horizontal scroll
+        "flex flex-col justify-between",
+        "rounded-xl border border-purple dark:border-purple",
+        "bg-base-bg dark:bg-base-bgDark",
+        "shadow-md mx-2 p-4",
+        "cursor-pointer transition-all duration-200",
+        "active:scale-[0.98] hover:shadow-lg",
+      ].join(" ")}> <div className="h-6 w-3/4 bg-base-bg rounded" />
       <div className="space-y-2">
         <div className="h-3 w-full bg-base-bg rounded" />
         <div className="h-3 w-5/6 bg-base-bg rounded" />

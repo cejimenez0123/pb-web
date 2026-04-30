@@ -25,6 +25,7 @@ import PaginatedList from '../components/page/PaginatedList.jsx';
 import shortName from '../core/shortName.jsx';
 import ListPill from '../components/page/ListPill.jsx';
 import WorkshopItem from '../components/page/WorkshopItem.jsx';
+import { useMediaQuery } from 'react-responsive';
 
 function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex = 0, role = "button" }) {
   return (
@@ -54,7 +55,12 @@ const LIST_WRAP = "flex flex-col gap-4";  // Saves
 const TILE = "w-36 md:w-44 flex-shrink-0";
 const ACTION_ROW = "flex flex-col items-center gap-4 w-full";
 function DashboardEmbed() {
-const pageSize = 7
+
+  const isMobile  = useMediaQuery({ query: "(max-width: 480px)" });        // phones portrait
+const isTablet  = useMediaQuery({ query: "(min-width: 481px) and (max-width: 1199px)" }); // tablets + phone landscape
+const isDesktop = useMediaQuery({ query: "(min-width: 1200px)" });        // desktop + iPad landscape
+
+const pageSize = isMobile? 7:isTablet||isDesktop?12:8
   const currentProfile = useSelector(state=>state.users.currentProfile)
 
   const router = useIonRouter()
@@ -334,28 +340,30 @@ scrollY: false,
   {/* Primary: Write — full width, most prominent */}
   <ButtonWrapper
     onClick={ClickWriteAStory}
-    className="hover:bg-button-secondary-hover  bg-blue  dark:bg-transparent dark:border-button-secondary-hover text-white rounded-2xl h-[3.2rem] w-full w-[88%] sm:w-[21rem] font-bold"
+    className="hover:bg-button-secondary-hover  bg-blue  w-xl min-w-[24em] dark:bg-transparent dark:border-button-secondary-hover text-white rounded-2xl h-[3.2rem] w-full  sm:w-[21rem] font-bold"
     style={{ WebkitTapHighlightColor: "transparent" }}
   >
-    <IonText className="text-[1.2em] text-cream font-bold">Write Something</IonText>
+    <IonText className="text-sm text-cream 
+    
+    font-bold">Write Something</IonText>
   </ButtonWrapper>
 <div className='flex flex-row gap-4'>
   {/* Secondary: Join a Workshop — full width, distinct color */}
   <ButtonWrapper
     onClick={() => router.push(Paths.workshop.reader(), "forward")}
-    className="bg-button-primary-bg dark:bg-transparent dark:border-purple  hover:bg-opacity-70 text-button-primary-text rounded-full h-[3rem] w-full sm:w-[21rem] font-bold"
+    className="bg-button-primary-bg dark:bg-transparent max-w-[20em] dark:border-purple  hover:bg-opacity-70 text-button-primary-text rounded-full h-[3rem] flex-1 sm:w-[21rem] font-bold"
     style={{ WebkitTapHighlightColor: "transparent" }}
   >
-    <IonText className="text-cream text-[1.1em]">Join a Workshop</IonText>
+    <IonText className="text-cream text-sm">Join a Workshop</IonText>
   </ButtonWrapper>
 
   {/* Tertiary: Create Collection — smaller, understated */}
   <ButtonWrapper
     onClick={ClickCreateACollection}
-    className="bg-transparent border border-soft dark:border-purple text-soft rounded-full h-[2.6rem] w-full sm:w-[21rem]"
+    className="bg-transparent border border-soft dark:border-purple  max-w-[20em]  text-soft rounded-full h-[3rem] flex-1 sm:w-[21rem]"
     style={{ WebkitTapHighlightColor: "transparent" }}
   >
-    <IonText className="text-[1em] text-soft dark:text-cream">+ Create Collection</IonText>
+    <IonText className="text-sm text-soft dark:text-cream">+ Collection</IonText>
   </ButtonWrapper>
 </div>
 </div>

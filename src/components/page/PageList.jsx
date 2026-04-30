@@ -103,7 +103,7 @@ const PageList = ({
   const router = useIonRouter();
 
   return (
-    <div className="bg-base-surface dark:bg-base-bgDark">
+    <div className="bg-base-surface max-w-2xl mx-auto dark:bg-base-bgDark">
       <motion.div variants={containerVariants} initial="hidden" animate="show">
         {items.map((item, i) => {
           const isCollection = !!item?.storyIdList;

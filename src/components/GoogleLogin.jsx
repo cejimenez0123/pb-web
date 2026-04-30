@@ -31,7 +31,7 @@ function GoogleLoginInner({ drive, onUserSignIn }) {
 
   const CLIENT_ID = import.meta.env.VITE_OAUTH2_CLIENT_ID;
   const IOS_CLIENT_ID = import.meta.env.VITE_IOS_CLIENT_ID;
-console.log("CLIENT"+CLIENT_ID,"ios"+IOS_CLIENT_ID)
+
   const driveTokenKey = "googledrivetoken";
 
   // ---------------------------
@@ -112,71 +112,7 @@ console.log("CLIENT"+CLIENT_ID,"ios"+IOS_CLIENT_ID)
     loadStoredUser();
   }, []);
 
-  // ---------------------------
-  // 4️⃣ Native login (FIXED)
-  // ---------------------------
-  // const nativeGoogleSignIn = async () => {
-  //   if (pending) return;
 
-  //   setPending(true);
-  //   setLoginError(null);
-
-  //   sendGAEvent("login_start", {
-  //     method: "google",
-  //     platform: "native",
-  //     drive: !!drive,
-  //   });
-
-  //   try {
-  //     const user = await SocialLogin.login({
-  //       provider: "google",
-  //       options: {
-  //         scopes: [
-  //           "email",
-  //           "profile",
-  //           "https://www.googleapis.com/auth/drive.readonly",
-  //         ],
-  //       },
-  //     });
-
-  //     if (!user.result) throw new Error("No user data returned");
-
-  //     const { accessToken, idToken, profile } = user.result;
-
-  //     const tokenValue = accessToken?.token || accessToken;
-  //     const expiry = Date.now() + 3600 * 1000;
-
-  //     await Promise.all([
-  //       Preferences.set({ key: "userEmail", value: profile.email }),
-  //       Preferences.set({ key: "userName", value: profile.name }),
-  //       Preferences.set({ key: "googleId", value: profile.id }),
-  //       Preferences.set({ key: "googleIdToken", value: idToken || "" }),
-  //       Preferences.set({ key: driveTokenKey, value: tokenValue || "" }),
-  //       Preferences.set({
-  //         key: "googledrivetoken_expiry",
-  //         value: expiry.toString(),
-  //       }),
-  //     ]);
-
-  //     setAccessToken(tokenValue);
-  //     setIdToken(idToken);
-  //     setSignedIn(true);
-
-  //     onUserSignIn?.({
-  //       email: profile.email,
-  //       name: profile.name,
-  //       googleId: profile.id,
-  //       driveAccessToken: tokenValue,
-  //       idToken,
-  //     });
-  //   } catch (err) {
-  //     console.error(err);
-
-  //     setLoginError("Google Sign-In failed.");
-  //   } finally {
-  //     setPending(false);
-  //   }
-  // };
 const nativeGoogleSignIn = async () => {
   if (pending) return;
 

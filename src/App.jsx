@@ -153,17 +153,26 @@ useIonViewWillEnter(() => {
 
  },[])
 
-const isDesktop = useMediaQuery({ query: '(min-width: 60.1em)' }) // 768px
-const isMobileOrTablet = useMediaQuery({ query: '(max-width: 60em)' })
+const isMobile  = useMediaQuery({ query: "(max-width: 480px)" });        // phones portrait
+const isTablet  = useMediaQuery({ query: "(min-width: 481px) and (max-width: 1199px)" }); // tablets + phone landscape
+const isDesktop = useMediaQuery({ query: "(min-width: 1200px)" });        // desktop + iPad landscape
 
-const showTopNavbar = isDesktop && !isNative
+// Convenience — matches your old isMobileOrTablet usage
+const isMobileOrTablet = isMobile || isTablet;
 
+
+
+// ❌ current issues:
+
+// 1. showTopNavbar is hardcoded false — dead variable
+const showTopNavbar = isDesktop
+
+// 2. location derived wrong — doesn't update on navigation
 const location = window.location.pathname
 
+// 3. hiddenPaths check is too rigid — doesn't handle subroutes like /onboard/step2
 const hiddenPaths = ["/onboard", "/apply", "/login"];
-
-const showBottomNavbar =
-  ( !hiddenPaths.includes(location)); 
+const showBottomNavbar = (!hiddenPaths.includes(location)) && isNative && isMobileOrTablet
 
  return (
 

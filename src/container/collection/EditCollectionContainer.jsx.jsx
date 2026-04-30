@@ -251,8 +251,8 @@ const cycleFollowersRole = () => {
     dia.agree = () => {
      
      
-      dispatch(deleteCollection(params)).then(()=>{
-           dispatch(removeFromPaginatedKey({ key: "collections", id: parameters.id }));
+      dispatch(deleteCollection(params)).then((res)=>{
+           dispatch(removeFromPaginatedKey({ key: "collections", id: id }));
    router.push(Paths.myProfile);
       resetDialog()
       })

@@ -104,7 +104,7 @@ reader.readAsDataURL(file);
     
     if (password.length && username.length && email) {
           const params = {
-        email,
+        email:email.toLowerCase(),
         token: tok,
         password,
         username,
@@ -155,15 +155,7 @@ return (
             Complete Sign Up
           </h2>
 
-          {/* Email */}
-          {/* <IonInput
-              label="Email"
-              labelPlacement="stacked"
-              placeholder="example@x.com"
-            value={email}
-            onIonInput={(e) => setEmail(e.target.value)}
-            className="mb-4 bg-base-bg/80 text-emerald-800 rounded-xl px-3"
-          /> */}
+  
      <TextInput
       label="Email"
               labelPlacement="stacked"

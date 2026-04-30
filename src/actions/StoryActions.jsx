@@ -70,75 +70,31 @@ try{
       return {error}
     }
   })
-  const getMyStories = createAsyncThunk(
+const getMyStories = createAsyncThunk(
   'pages/getMyStories',
   async (params, thunkApi) => {
     try {
+          
       const data = await storyRepo.getMyStories(params);
+
+
+
       return {
-        totalCount: data.totalCount,
-        hasMore: data.hasMore,
-        skip: data.skip,
-        take: data.take,
+        totalCount:data.totalCount,
+        hasMore:data.hasMore,
+        skip:data.skip,
+        take:data.take,
         pageList: data.items,
       };
     } catch (e) {
       console.log("GET MY STORIES ERROR:", e);
-      return thunkApi.rejectWithValue(e?.response?.data || e.message);
-    }
-  },
-  {
-    condition: (_, { getState }) => {
-      const state = getState();
-      const loading = state.pagination.byKey?.["stories:all"]?.loading;
-      if (loading) return false; // cancel if already in flight
+
+      return thunkApi.rejectWithValue(
+        e?.response?.data || e.message
+      );
     }
   }
 );
-//   const getMyStories = createAsyncThunk(
-//   'pages/getMyStories',
-//   async (params, thunkApi) => {
-//     console.log("[getMyStories] called with:", params); // ← add this
-//     try {
-//       const data = await storyRepo.getMyStories(params);
-//       return {
-//         totalCount: data.totalCount,
-//         hasMore: data.hasMore,
-//         skip: data.skip,
-//         take: data.take,
-//         pageList: data.items,
-//       };
-//     } catch (e) {
-//       console.log("GET MY STORIES ERROR:", e);
-//       return thunkApi.rejectWithValue(e?.response?.data || e.message);
-//     }
-//   }
-// );
-// const getMyStories = createAsyncThunk(
-//   'pages/getMyStories',
-//   async (params, thunkApi) => {
-//     try {
-          
-//       const data = await storyRepo.getMyStories(params);
-
-
-
-//       return {
-//         totalCount:data.totalCount,
-//         hasMore:data.hasMore,
-//         skip:data.skip,
-//         take:data.take,
-//         pageList: data.items,
-//       };
-//     } catch (e) {
-//       console.log("GET MY STORIES ERROR:", e);
-
-//       return thunkApi.rejectWithValue(
-//         e?.response?.data || e.message
-//       );
-//     }
-//   }
-// );
 const createStory = createAsyncThunk("pages/createStory",async (params,thunkApi)=>{
   try{
 

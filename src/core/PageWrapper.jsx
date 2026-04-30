@@ -59,15 +59,23 @@ const PageWrapper = ({
   const { setPresentingEl } = useContext(Context);
   //  const isDev = import.meta.env.VITE_NODE_ENV=="dev"
 const isNativePlatform = Capacitor.isNativePlatform();
-const pageSize = 6
-const isNative = isNativePlatform
+      // desktop + iPad landscape
+
+
 const {currentProfile}=useSelector(state=>state.users)
   const isAuthed = !!currentProfile?.id;
 const myCollections=useSelector(state=>state.books.myCollections.filter(t=>t))
 const myStories=useSelector(state=>state.pages.myPages.filter(t=>t))
 // const  /
   const [isOnline, setIsOnline] = useState(navigator.onLine);
-const isDesktop = useMediaQuery({ query: '(min-width: 60.1em)' }) // 768px
+const isMobile  = useMediaQuery({ query: "(max-width: 480px)" });        // phones portrait
+const isTablet  = useMediaQuery({ query: "(min-width: 481px) and (max-width: 1199px)" }); // tablets + phone landscape
+const isDesktop = useMediaQuery({ query: "(min-width: 1200px)" });        // desktop + iPad landscape
+const pageSize = isMobile? 7:isTablet||isDesktop?12:8
+const isNative = isNativePlatform
+// Convenience — matches your old isMobileOrTablet usage
+const isMobileOrTablet = isMobile || isTablet;
+
 // const isMobileOrTablet = useMediaQuery({ query: '(max-width: 60em)' })
 const [homeCol, setHomeCol] = useState(null);
 const dispatch = useDispatch()
@@ -265,6 +273,7 @@ let signedInMenu = [
         
       </div>
       )})}
+
   const openPages=()=>{
      openDialog({
       title: "Pages",

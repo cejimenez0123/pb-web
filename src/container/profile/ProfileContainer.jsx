@@ -324,7 +324,7 @@ function ProfileContainer() {
                 </div>
               )}
 
-              {tab === TABS.COMMUNITIES && <CommunitiesPanel communities={communities} router={router} />}
+              {tab === TABS.COMMUNITIES && <CommunitiesPanel  id={id}fetch={(args) => getPublicProfileCollections({profileId:id,...args})}communities={communities} router={router} />}
               {tab === TABS.ABOUT && <AboutPanel router={router} profile={profile} locationName={locationName} />}
             </div>
 

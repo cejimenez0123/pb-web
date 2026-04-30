@@ -139,7 +139,7 @@ const SearchDialog = ({ presentingElement }) => {
   return (
     <IonContent fullscreen  className={T.surface}>
       <ErrorBoundary>
-<div className='bg-cream dark:bg-base-bgDark overglow-y-auto minm-h-[100vh]  '>
+<div className='bg-cream dark:bg-base-bgDark max-w-2xl mx-auto overglow-y-auto   '>
       {/* Header + Search */}
       <div className={`${T.header} bg-cream dark:bg-base-bgDark ${T.surface}`}>
         <div className={T.searchWrap}>

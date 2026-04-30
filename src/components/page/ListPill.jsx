@@ -14,12 +14,7 @@ export default function ListPill({ item, onClick, profile }) {
   if(item?.userHistory?.length>0){
     isNew=false
   }
-  console.log({
-    title: item,
-    updated: item?.updated,
-    lastSeen,
-    isNew,
-  });
+
   let bordercolor = item.data?"border-blue":"border-purple"
   return (
     <div

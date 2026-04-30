@@ -18,14 +18,14 @@ import SectionHeader from '../components/SectionHeader.jsx';
 import shortName from '../core/shortName.jsx';
 
 // ── Layout ──────────────────────────────────────
-const WRAP = "max-w-[72rem] dark:bg-base-bgDark bg-cream mx-auto sm:px-6 lg:px-8";
+const WRAP = "max-w-[72rem] dark:bg-base-bgDark bg-cream mx-auto ";
 
 
 // ── Sections ────────────────────────────────────
 
 //
 // ── Layout ──────────────────────────────────────
-const PAGE_Y = "pt-4 px-4 pb-12";
+const PAGE_Y = "pt-4 pb-12";
 const STACK_LG = "space-y-10";
 const STACK_MD = "space-y-6";
 
@@ -33,7 +33,7 @@ const STACK_MD = "space-y-6";
 const SECTION = "space-y-4";
 
 // horizontal scroll that feels native
-const SCROLL_ROW = "flex gap-4 overflow-x-auto pb-2 min-h-fit -mx-4 px-4 sm:mx-0 sm:px-0";
+const SCROLL_ROW = "flex gap-4 px-4 overflow-x-auto pb-2 min-h-fit  mx-0 ";
 
 // responsive grid
 const GRID = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4";
@@ -80,7 +80,7 @@ function HomeEmbed({workshops,stories,prompts,isGlobal,setIsGlobal}) {
 
   const dispatch = useDispatch();
   const router = useIonRouter();
-  const { seo, setSeo } = useContext(Context);
+  const {  setSeo } = useContext(Context);
 
   const currentProfile = useSelector(state => state.users.currentProfile);
   const {recommendedStories} = useSelector(state=>state.pages)
@@ -169,42 +169,37 @@ function HomeEmbed({workshops,stories,prompts,isGlobal,setIsGlobal}) {
           />
          
         
-           <div className={SECTION}>
-  <div className="grid gap-4 sm:grid-cols-2  lg:grid-cols-2">
-            {sortedWorkshops?.length
-  ? sortedWorkshops.map(workshop => (
-      <WorkshopItem key={workshop?.id} item={workshop} router={router} />
-    ))
-  : [1,2,3].map(i => (
-      <WorkshopItem key={i} item={null} router={router} />
-    ))
-}
- </div>
-
-        
-     <div className={SECTION}>
-          {/* Prompts */}
-          {/* {filteredPrompts.length? */}
-          <><SectionHeader title="Writing Prompts for you" />
-       {/* <div className='px-4'> */}
-          <div className={`${GRID} `}>
-
-           
-              {  filteredPrompts.map(( story ) =>{ return<StoryItem key={story?.id} page={story} html={story.html} />})}
-              {/* // : [1,2,3,4].map(i => <div key={i} className="skeleton min-w-[20em] min-h-[20em]" />)} */}
-            </div></> 
-            {/* :null } */}
+           {/* Workshop grid */}
+          <div className={SECTION}>
+            <div className="grid gap-4 sm:grid-cols-2 px-4 lg:grid-cols-2">
+              {sortedWorkshops?.length
+                ? sortedWorkshops.map(workshop => (
+                    <WorkshopItem key={workshop?.id} item={workshop} router={router} />
+                  ))
+                : [1, 2, 3].map(i => (
+                    <WorkshopItem key={i} item={null} router={router} />
+                  ))}
+            </div>
           </div>
-          {/* </div> */}
-       <div className={SECTION}>
-           <SectionHeader title="What's new" />
-              {/* <div className='px-4'> */}
-          <PageList  items={recommendedStories.slice(0,4)}/>
-          {/* </div> */}
+        </div> {/* ← closes "Workshops near you" SECTION */}
+
+        {/* Prompts */}
+        <div className={SECTION}>
+          <SectionHeader title="Writing Prompts for you" />
+          <div className={`${GRID} px-4`}>
+            {filteredPrompts.map(story => (
+              <StoryItem key={story?.id} page={story} html={story.html} />
+            ))}
           </div>
         </div>
-    </div>
-    </div>
+
+        {/* What's new */}
+        <div className={SECTION+"px-2"}>
+          <SectionHeader title="What's new" />
+          <PageList items={recommendedStories.slice(0, 4)} />
+        </div>
+
+      </div> {/* ← closes WRAP */}
     </ErrorBoundary>
   );
 }

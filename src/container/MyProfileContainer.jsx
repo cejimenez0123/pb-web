@@ -296,7 +296,7 @@ className="bg-soft rounded-full p-2"><img src={settings} /></button>
 
           }
 
-            {tab === TABS.COMMUNITIES && <CommunitiesPanel router={router} communities={communities.items} />}
+            {tab === TABS.COMMUNITIES && <CommunitiesPanel  fetch={getMyCollections} router={router} communities={communities.items} />}
             {tab === TABS.ABOUT && <AboutPanel router={router} profile={profile}  />}
           </div>
 </div>

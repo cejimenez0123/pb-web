@@ -1,59 +1,36 @@
-import { useMemo, useState } from "react";
 import Paths from "../../core/paths";
-import PaginationControls from "../PaginationControls";
 import EmptyState from "../EmptyState";
+import PaginatedList from "../page/PaginatedList";
+import { getMyCollections } from "../../actions/CollectionActions";
+import { useSelector } from "react-redux";
 
-const CommunitiesPanel = ({communities ,router}) => {
-
-
-  const [page, setPage] = useState(1);
-  const limit = 6; // adjust based on feel
-
-  const totalPages = Math.ceil(communities.length / limit);
-
-  const paginatedCommunities = useMemo(() => {
-    const start = (page - 1) * limit;
-    return communities?.slice(start, start + limit);
-  }, [communities, page]);
-
-  if (!communities.length) {
-    return (
-      <EmptyState text={"No Communities"}/>
-    
-    );
-  }
+const CommunitiesPanel = ({fetch,id, router }) => {
+  const profile = useSelector((state) => state.users.currentProfile);
 
   return (
-    <div className="space-y-4">
-      
-      {/* List */}
-      {paginatedCommunities.map((c) => (
+    <PaginatedList
+  cacheKey={`libraries${id ? `:${id}` : ""}`}
+      params={{ type: "library" }}
+      fetcher={fetch}
+      pageSize={6}
+      enabled={!!profile?.id}
+      emptyState={<EmptyState text="No Communities" />}
+      renderItem={(c) => (
         <div
           key={c.id}
           onClick={() => router.push(Paths.collection.createRoute(c.id))}
           className="p-4 rounded-xl bg-base-bg active:scale-[0.98] transition"
         >
           <p className="text-sm font-medium text-gray-900">
-            {c.title.length>0?c.title:"Untitled"}
+            {c.title?.length > 0 ? c.title : "Untitled"}
           </p>
-
           {c.purpose && (
-            <p className="text-sm text-gray-500 mt-1">
-              {c.purpose}
-            </p>
+            <p className="text-sm text-gray-500 mt-1">{c.purpose}</p>
           )}
         </div>
-      ))||null}
-
-      {/* Pagination */}
-      {totalPages > 1 && (
-        <PaginationControls
-          page={page}
-          totalPages={totalPages}
-          setPage={setPage}
-        />
       )}
-    </div>
+    />
   );
 };
-export default CommunitiesPanel
+
+export default CommunitiesPanel;

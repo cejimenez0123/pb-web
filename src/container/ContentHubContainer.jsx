@@ -70,12 +70,12 @@ className='page-content'
 >
         
       <ErrorBoundary>
-{/* <div className="  overflow-y-auto h-[100%] bg-cream dark:bg-base-bgDark space-y-8"> */}
+
   <DiscDashTabs tab={tab} setTab={setTab} disc={() =><HomeEmbed workshops={workshops} stories={stories}
   prompts={prompts} isGlobal={isGlobal} setIsGlobal={setIsGlobal}/>} dash={()=><DashboardEmbed />} />
 
 
- {/* </div> */}
+
       </ErrorBoundary>
 </IonContent>
   );
@@ -113,16 +113,14 @@ function DiscDashTabs({ tab, setTab, disc, dash}) {
 
   return (
   
-      <div className="pt-12 dark:bg-base-bgDark overflow-y-croll h-[100%] pb-[20rem] bg-base-surface">
-        <div className="flex justify-center lg:justify-start lg:mx-12 mb-2">
-          <div className="flex rounded-full mx-auto  border overflow-clip min-h-12 sm:w-[40em] lg:w-[30em] border-soft">
-            <button
-              className={`px-4 py-2 transition-colors w-[45vw] sm:
-                
-                
-                w-[20em] lg:w-[15em] ${
-                tab === "home" ? "bg-soft text-white" : "text-soft bg-transparent"
-              }`}
+    <div className="pt-12 dark:bg-base-bgDark overflow-y-scroll w-xl pb-[20rem] bg-base-surface">
+          <div className="flex justify-center lg:justify-start px-4 mx-auto lg:mx-12  max-w-xl  mb-2">
+          <div className="flex rounded-full mx-auto    border overflow-clip min-h-12   w-[100%]   border-soft">
+           
+         <button
+  className={`px-4 py-2 transition-colors w-[100%] ${
+    tab === "home" ? "bg-soft text-cream" : "text-soft dark:text-cream  bg-transparent"
+  }`}
               onClick={() => {
                 sendGAEvent("tab_select", {
                   tab: "discovery",
@@ -138,8 +136,8 @@ function DiscDashTabs({ tab, setTab, disc, dash}) {
 
             {currentProfile?.id ? (
               <button
-                className={`px-4 py-2 transition-colors w-[45vw] sm:w-[20em] lg:w-[15em] ${
-                  tab === "dash" ? "bg-soft text-white" : "text-soft bg-transparent"
+                className={`px-4 py-2 transition-colors w-[100%] ${
+                  tab === "dash" ? "bg-soft text-cream" : "text-soft dark:text-cream bg-transparent"
                 }`}
                 onClick={() => {
                   sendGAEvent("tab_select", {
@@ -155,7 +153,7 @@ function DiscDashTabs({ tab, setTab, disc, dash}) {
               </button>
             ) : (
               <button
-                className={`px-4 py-2 transition-colors w-[45vw] sm:w-[20em] lg:w-[15em] ${
+                className={`px-4 py-2 transition-colors w-[100%] ${
                   tab === "dash" ? "bg-soft text-white" : "text-soft bg-transparent"
                 }`}
                 onClick={() => router.push(Paths.login)}

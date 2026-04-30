@@ -162,8 +162,7 @@ const { canSee, canAdd, canEdit } = useMemo(
     <ErrorBoundary>
       <IonContent
         fullscreen
-        className="ion-padding-bottom"
-        style={{ "--background": Enviroment.palette.cream}}
+        className="ion-padding-bottom page-content"
       >
         <div
           className="relative pb-32 min-h-screen bg-[#f4f4e0] dark:bg-slate-950 transition-colors duration-300"

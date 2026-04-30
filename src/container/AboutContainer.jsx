@@ -37,7 +37,7 @@ import { useState,useRef,useEffect } from "react"
 export default function AboutContainer() {
 
   const {setSeo } = useContext(Context);
-  // const md = useMediaQuery({ query: '(min-width: 750px)' });
+
   const router = useIonRouter()
 useScrollTracking({
   contentType: "about",

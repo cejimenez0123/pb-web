@@ -98,6 +98,7 @@ function LogInCard({ setLogInError }) {
       checkResult(
         res,
         (payload) => {
+          window.alert(JSON.stringify(payload))
           if (payload?.profile?.id) {
             router.push(Paths.home, "forward");
           } else {
@@ -140,7 +141,7 @@ function LogInCard({ setLogInError }) {
                 <input
                   type="text"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => setEmail(e.target.value.toLowerCase())}
                   placeholder="example@email.com"
                   className={INPUT}
                 />
