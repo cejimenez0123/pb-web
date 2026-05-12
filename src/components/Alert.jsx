@@ -26,7 +26,7 @@ function Alert() {
             role="alert"
             onClick={alert.type !== "prompt" ? closeAlert : undefined}
             className={`alert w-[96vw] md:w-page mx-auto pointer-events-auto
-              ${alert.type === "prompt" ? "h-auto py-4" : "h-[6em]"}
+              h-auto py-4
               ${alert.type === "success" ? "alert-success" : "alert-warning"}
               ${alert.type !== "prompt" ? "cursor-pointer" : ""}`}
           >
@@ -47,7 +47,7 @@ function Alert() {
                     />
                   </svg>
                 )}
-                <span className="my-auto mx-4 whitespace-nowrap">
+                <span className="my-auto mx-4 whitespace-pre-wrap break-words">
                   {alert.message}
                 </span>
               </div>
