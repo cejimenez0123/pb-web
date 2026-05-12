@@ -312,8 +312,8 @@ const handleCredentialResponse = async (response) => {
     <div className="flex flex-col justify-center items-center w-full min-h-full">
       <div
         onClick={!pending ?()=>{
-          showPrompt({message:"Google Sign asks permission for Google Doc.\n We do not save or access anything you do not share with us.",agreeText:"Continue",agree:()=>closeAlert(),type:"prompt"})
-       nativeGoogleSignIn()
+          showPrompt({message:"Google Sign asks permission for Google Doc.\n We do not save or access anything you do not share with us.",agreeText:"Continue",agree:()=>nativeGoogleSignIn(),type:"prompt"})
+
         }  : undefined}
         className="bg-gray-200 btn rounded-full flex h-[4rem] w-[10rem] mt-8"
       >
