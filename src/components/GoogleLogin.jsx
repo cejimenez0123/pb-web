@@ -118,7 +118,7 @@ const nativeGoogleSignIn = async () => {
   
   setPending(true);
   setLoginError(null);
-  showPrompt({message:"Google Sign asks permission for Google Doc. We do not save or access anything you do not share with us."})
+  showPrompt({message:"Google Sign asks permission for Google Doc. We do not save or access anything you do not share with us.",agreeText:"Continue",agree:()=>closeAlert(),type:"prompt"})
   try {
     const user = await SocialLogin.login({
       provider: "google",
