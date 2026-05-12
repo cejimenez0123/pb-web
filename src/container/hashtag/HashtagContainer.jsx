@@ -12,6 +12,8 @@ import { fetchHashtag, followHashtag, getRecommendedHashtagCollections, unfollow
 import { setCollections } from "../../actions/CollectionActions";
 import { appendToPagesInView, setPagesInView } from "../../actions/PageActions.jsx";
 import Context from "../../context";
+import { useAlert } from "../../core/useAlert.jsx";
+import AlertType from "../../core/AlertType.js";
 import useScrollTracking from "../../core/useScrollTracking.jsx";
 import Paths from "../../core/paths.js";
 import grid from "../../images/grid.svg";
@@ -25,7 +27,8 @@ export default function HashtagContainer() {
   const { id } = useParams();
   const dispatch = useDispatch();
   const router = useIonRouter();
-  const { setError, seo, setSeo, isPhone } = useContext(Context);
+  const { seo, setSeo, isPhone } = useContext(Context);
+  const { showAlert } = useAlert();
   const currentProfile = useSelector(state => state.users.currentProfile);
   const collections = useSelector((state) => state.books.collections);
   const pagesInView = useSelector((state) => state.pages.pagesInView);
@@ -74,7 +77,7 @@ const { items, totalCount, page, setPage, totalPages } = usePaginatedResource({
       const res = await dispatch(fetchHashtag({ id }));
       checkResult(res, (payload) => {
         const { hashtag } = payload;
-        if (!hashtag) return setError("No hashtag found");
+        if (!hashtag) return showAlert({ message: "No hashtag found", type: AlertType.error });
         setHashtag(hashtag);
         setFollowing(!!hashtag.followers?.some(f => f.followerId === currentProfile?.id));
         dispatch(setPagesInView({ pages: hashtag.stories.map((s) => s.story) }));
@@ -84,11 +87,11 @@ const { items, totalCount, page, setPage, totalPages } = usePaginatedResource({
         });
         setPending(false);
       }, (err) => {
-        setError(err);
+        showAlert({ message: err.message ?? err, type: AlertType.error });
         setPending(false);
       });
     } catch (err) {
-      setError(err.message);
+      showAlert({ message: err.message, type: AlertType.error });
       setPending(false);
     }
   };
@@ -105,7 +108,7 @@ const { items, totalCount, page, setPage, totalPages } = usePaginatedResource({
         setFollowing(true);
       }
     } catch (e) {
-      setError(e.message);
+      showAlert({ message: e.message, type: AlertType.error });
     } finally {
       setFollowPending(false);
     }

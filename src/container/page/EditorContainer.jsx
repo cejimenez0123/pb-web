@@ -12,6 +12,8 @@ import { setEditingPage, setHtmlContent, setPageInView, removeFromPaginatedKey, 
 import checkResult from "../../core/checkResult";
 import debounce from "../../core/debounce.js";
 import Context from "../../context";
+import { useAlert } from "../../core/useAlert.jsx";
+import AlertType from "../../core/AlertType.js";
 import EditorContext from "./EditorContext";
 import HashtagForm from "../../components/hashtag/HashtagForm";
 import FeedbackDialog from "../../components/page/FeedbackDialog";
@@ -39,7 +41,7 @@ export default function EditorContainer({ presentingElement }) {
     if(type=="text"){
       type = PageType.text
     }
-  const { setError } = useContext(Context);
+  const { showAlert } = useAlert();
   const [files, setFiles] = useState([]);
   const isNative = Capacitor.isNativePlatform();
   const htmlContent = useSelector(state => state.pages.editorHtmlContent);
@@ -81,7 +83,7 @@ export default function EditorContainer({ presentingElement }) {
     }
             setIsSaved(true)
           },
-          (err) => { console.log(err); setError(err.message); }
+          (err) => { console.log(err); showAlert({ message: err.message, type: AlertType.error }); }
         )
       );
     }, 500)
@@ -201,7 +203,7 @@ export default function EditorContainer({ presentingElement }) {
     dispatch(getStory({ id })).then((res) =>
       checkResult(res,
         (payload) => { setStory(payload.story); },
-        (err) => setError(err.message)
+        (err) => showAlert({ message: err.message, type: AlertType.error })
       )
     );
   };
@@ -229,7 +231,7 @@ export default function EditorContainer({ presentingElement }) {
         dispatch(setHtmlContent(story.data));
         setParameters((prev) => ({ ...prev, id: story.id }));
         window.history.replaceState(null, "", Paths.editPage.createRoute(story.id, story.type));
-      }, (err) => setError(err.message));
+      }, (err) => showAlert({ message: err.message, type: AlertType.error }));
     }
 
     const res = await dispatch(updateStory({ ...payload, id: resolvedId }));
@@ -240,7 +242,7 @@ export default function EditorContainer({ presentingElement }) {
       dispatch(updatePaginatedItem({ key: "stories", item: data.story }));
     }
         setIsSaved(true)},
-      (err) => { setIsSaved(false); setError(err.message); }
+      (err) => { setIsSaved(false); showAlert({ message: err.message, type: AlertType.error }); }
     );
   };
 
@@ -288,7 +290,7 @@ export default function EditorContainer({ presentingElement }) {
 
   const openGoogleDrive = async () => {
     const accessToken = (await Preferences.get({ key: driveTokenKey })).value;
-    if (!accessToken) { setError("No Access Token"); return; }
+    if (!accessToken) { showAlert({ message: "No Access Token", type: AlertType.error }); return; }
     openDialog({
       title: null,
       text: (
@@ -322,7 +324,7 @@ export default function EditorContainer({ presentingElement }) {
                 
   
         resetDialog(); 
-        router.push(Paths.page.createRoute(effectiveId), "forward"); }, (err) => setError(err.message))
+        router.push(Paths.page.createRoute(effectiveId), "forward"); }, (err) => showAlert({ message: err.message, type: AlertType.error }))
     );
   };
 
@@ -331,7 +333,7 @@ export default function EditorContainer({ presentingElement }) {
     dispatch(updateStory(payload)).then(res => {
       resetDialog();
       checkResult(res, (data) => {
-        router.push(Paths.workshop.createRoute(effectiveId), "forward")}, (err) => setError(err.message));
+        router.push(Paths.workshop.createRoute(effectiveId), "forward")}, (err) => showAlert({ message: err.message, type: AlertType.error }));
     });
   };
 

@@ -1,5 +1,7 @@
 
 import {useContext,useEffect,useState} from 'react'
+import { useAlert } from '../../core/useAlert.jsx';
+import AlertType from '../../core/AlertType.js';
 import "../../App.css"
 import { logIn } from '../../actions/UserActions';
 import {useDispatch} from 'react-redux';
@@ -23,7 +25,8 @@ const LINK           = "text-soft dark:text-cream hover:text-green-400 cursor-po
 const INPUT_WRAP     = "max-w-md mx-auto ";
 
 export default function LogInContainer({ currentProfile }) {
-  const { setError, setSeo } = useContext(Context);
+  const { setSeo } = useContext(Context);
+  const { showAlert,closeAlert,showPrompt } = useAlert();
   const router = useIonRouter();
 
   useEffect(() => {
@@ -41,7 +44,7 @@ useEffect(() => {
   return (
     <IonContent className="page-content" fullscreen>
       <div className="py-10">
-        <LogInCard setLogInError={setError} />
+        <LogInCard setLogInError={(msg) => showPrompt({ message: msg, type: AlertType.prompt, agree: () => closeAlert(), agreeText:"Understood"  })} />
       </div>
     </IonContent>
   );
@@ -50,7 +53,7 @@ useEffect(() => {
 function LogInCard({ setLogInError }) {
   const dispatch = useDispatch();
   const router   = useIonRouter();
-  const { setError } = useContext(Context);
+  const { showAlert ,closeAlert,showPrompt} = useAlert();
   const { openDialog, closeDialog, dialog } = useDialog();
   const isNative = Capacitor.isNativePlatform();
 
@@ -60,7 +63,7 @@ function LogInCard({ setLogInError }) {
   const [showPassword, setShowPassword] = useState(false);
 
   const handleAuthError = (err) => {
-    setError(err?.status === 401 ? "User Not Found. Apply Below" : err?.message || "Unknown error");
+    showAlert({ message: err?.status === 401 ? "User Not Found. Apply Below" : err?.message || "Unknown error", type: AlertType.error });
   };
 
   const handleLogIn = () => {
@@ -73,7 +76,7 @@ function LogInCard({ setLogInError }) {
             if (payload?.profile?.id) {
               router.push(Paths.home);
             } else {
-              setError("Error with Profile");
+              showAlert({ message: "Error with Profile", type: AlertType.error });
             }
           },
           (err) => {
@@ -84,13 +87,13 @@ function LogInCard({ setLogInError }) {
       });
     } else {
       setPending(false);
-      setError("Values can't be empty");
+      showAlert({ message: "Values can't be empty", type: AlertType.error });
     }
   };
 
   const dispatchLogin = ({ email, googleId, idToken }) => {
     if (!idToken && !googleId) {
-      setError("Google login failed: missing credentials");
+      showAlert({ message: "Google login failed: missing credentials", type: AlertType.error });
       return;
     }
     setPending(true);
@@ -98,11 +101,11 @@ function LogInCard({ setLogInError }) {
       checkResult(
         res,
         (payload) => {
-          window.alert(JSON.stringify(payload))
+        
           if (payload?.profile?.id) {
             router.push(Paths.home, "forward");
           } else {
-            setError("No profile found");
+            showPrompt({ message: "No profile found. Check email or apply", type: AlertType.prompt, agree: () => closeAlert(), agreeText:"Understood"  });
           }
           setPending(false);
         },

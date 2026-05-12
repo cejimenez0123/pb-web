@@ -149,8 +149,11 @@ const setDialog = createAction("user/setDialog", (params)=> {
 
   return  {payload:
      params}
-    
-  
+
+
+})
+const setAlert = createAction("user/setAlert", (params) => {
+  return { payload: params }
 })
 const setUserLoading = createAction("user/setUserLoading", (params)=> {
 
@@ -332,5 +335,5 @@ export {logIn,
         updateSubscription,
         getIosInfo,
         setAuthResolved,
-        setUserLoading,setCurrentProfile,referSomeone,setMainLoading
+        setUserLoading,setCurrentProfile,referSomeone,setMainLoading,setAlert
     }

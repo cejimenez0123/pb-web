@@ -6,9 +6,12 @@ import checkResult from "../core/checkResult";
 import Context from "../context";
 import { useIonRouter } from "@ionic/react";
 import { useLocation } from "react-router";
+import { useAlert } from "../core/useAlert.jsx";
+import AlertType from "../core/AlertType.js";
 
 export default function EmailPreferences() {
-  const {setSuccess,setError,setSeo,seo}=useContext(Context)
+  const {setSeo}=useContext(Context)
+  const { showAlert } = useAlert();
   const selectRef = useRef()
   const router = useIonRouter()
   const dispatch = useDispatch()
@@ -45,13 +48,13 @@ const location = useLocation();
   const save=()=>{
       dispatch(updateSubscription({token,frequency:new Number(selectRef.current.value)})).then(res=>{
         checkResult(res,payload=>{
-setSuccess(payload.message)
+showAlert({ message: payload.message, type: AlertType.success })
         },err=>{
           console.log(err)
            if(err && !err.message.includes("Network")){
-setError(err.message)
+showAlert({ message: err.message, type: AlertType.error })
            }else if(err){
-            setError(err.message)
+            showAlert({ message: err.message, type: AlertType.error })
            }
         })
       })
@@ -63,7 +66,7 @@ setError(err.message)
         router.push("/subscribe?"+pars.toString())
       },err=>{
          if(!err.message.includes("Network")){
-setError(err.message)
+showAlert({ message: err.message, type: AlertType.error })
          }
       })
     })

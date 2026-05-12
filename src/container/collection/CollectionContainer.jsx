@@ -1,4 +1,6 @@
 import { useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useAlert } from "../../core/useAlert.jsx";
+import AlertType from "../../core/AlertType.js";
 import {
   IonHeader,
   IonToolbar,
@@ -93,7 +95,8 @@ const H_SCROLL = "flex gap-4 overflow-x-auto lg:grid lg:grid-cols-3 lg:overflow-
 export default function CollectionContainer() {
 
 
-  const { setError, setSuccess, setSeo, seo } = useContext(Context);
+  const { setSeo, seo } = useContext(Context);
+  const { showAlert } = useAlert();
   const [sentHistory,setSentHistory]=useState(false)
   const currentProfile = useSelector(state => state.users.currentProfile);
     const collection = useSelector(state => state.books.collectionInView);
@@ -244,14 +247,14 @@ const handleFollow = async () => {
         res,
         (payload) => {
      
-          setSuccess("You are now following this collection");
+          showAlert({ message: "You are now following this collection", type: AlertType.success });
         },
         (err) => {
-          setError(err.message);
+          showAlert({ message: err.message, type: AlertType.error });
         }
       );
     } else {
-      setError("Please Sign In");
+      showAlert({ message: "Please Sign In", type: AlertType.error });
     }
   } finally {
     actionLock.current = false;
@@ -288,44 +291,37 @@ const getCol = async (id) => {
         dispatch(setPagesInView({ pages: sorted }));
       }, (err) => {
         setLoading(false);
-        setError(err.status === 403 
-          ? "Access Denied: You do not have permission to view this collection."
-          : err.message || "Failed to load collection."
-        );
+        showAlert({ message: err.status === 403 ? "Access Denied: You do not have permission to view this collection." : err.message || "Failed to load collection.", type: AlertType.error });
       });
     });
   } catch (error) {
-    setError("Unexpected error occurred.");
+    showAlert({ message: "Unexpected error occurred.", type: AlertType.error });
     setLoading(false);
   }
 };
 
   const deleteFollow = () => {
     if(currentProfile?.id == collection.profile?.id){
-setError("This is yours, delete it silly")
+showAlert({ message: "This is yours, delete it silly", type: AlertType.error });
 return
     }
     if (currentProfile && role) {
-      // setRole(null);
       dispatch(deleteCollectionRole({id, role })).then(res => {
         checkResult(res, payload => {
-          setSuccess("Unfollowed collection");
-      
-        
+          showAlert({ message: "Unfollowed collection", type: AlertType.success });
         }, err => {
-          //  console.log(err)
-          setError(err.message);
+          showAlert({ message: err.message, type: AlertType.error });
         });
       });
     } else {
-      setError("Please sign in");
+      showAlert({ message: "Please sign in", type: AlertType.error });
     }
   };
 
        
   const handleBookmark = (type) => {
     if (!currentProfile) {
-      setError("Please sign in");
+      showAlert({ message: "Please sign in", type: AlertType.error });
       return;
     }
 
@@ -340,7 +336,7 @@ return
           dispatch(addCollectionListToCollection(params)).then(res => {
             checkResult(res, payload => {
               checkFound();
-              setSuccess("Saved to Home");
+              showAlert({ message: "Saved to Home", type: AlertType.success });
               setBookmarkLoading(false)
             }, err => {
               setBookmarkLoading(false);
@@ -353,7 +349,7 @@ return
           checkResult(res, payload => {
             if (payload.message?.includes("Already") || payload.message?.includes("Deleted")) {
               setIsBookmarked(null);
-              setSuccess("Removed from Home");
+              showAlert({ message: "Removed from Home", type: AlertType.success });
                      setBookmarkLoading(false)
             }
             setBookmarkLoading(false);
@@ -375,7 +371,7 @@ return
             checkResult(res, payload => {
               setBookmarkLoading(false)
               
-              setSuccess("Saved to Archive");
+              showAlert({ message: "Saved to Archive", type: AlertType.success });
             }, err => {
               setBookmarkLoading(false);
             });
@@ -387,7 +383,7 @@ return
           checkResult(res, payload => {
             if (payload.message?.includes("Already") || payload.message?.includes("Deleted")) {
               setBookmarkLoading(false)
-              setSuccess("Removed from Archive");
+              showAlert({ message: "Removed from Archive", type: AlertType.success });
             }
             setBookmarkLoading(false);
           }, err => {

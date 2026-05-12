@@ -20,6 +20,8 @@ import { signUp } from "../../actions/UserActions";
 import checkResult from "../../core/checkResult";
 import Paths from "../../core/paths";
 import Context from "../../context";
+import { useAlert } from "../../core/useAlert.jsx";
+import AlertType from "../../core/AlertType.js";
 import "../../App.css";
 import InfoTooltip from '../../components/InfoTooltip';
 import { debounce } from 'lodash';
@@ -57,7 +59,8 @@ useEffect(() => {
     setIdentityToken(token.value);
   });
 }, []);
-  const { setError, setSuccess, setSeo, seo } = useContext(Context);
+  const { setSeo, seo } = useContext(Context);
+  const { showAlert } = useAlert();
 
   useEffect(() => {
     setSeo({
@@ -84,7 +87,7 @@ const handleProfilePicture = (e) => {
 
   if (!file.type.startsWith('image/')) {
 
-    setError('Please upload a valid image file.');
+    showAlert({ message: 'Please upload a valid image file.', type: AlertType.error });
     return;
   }
 
@@ -98,7 +101,6 @@ const handleProfilePicture = (e) => {
 
   setFile(file);
   setPictureUrl(newUrl);
-  setError('');
 }else{
   const reader = new FileReader();
 reader.onloadend = () => {
@@ -150,16 +152,11 @@ dispatch(uploadProfilePicture({ file:fileFind })).then(res => checkResult(res, p
  if (payload.profile) {
           router.push(Paths.login);
         } else {
-          setSuccess(null);
-          setError(payload.error.status==409?"Username is not unique":payload.error.message || "Try reusing the link");
+          showAlert({ message: payload.error.status==409?"Username is not unique":payload.error.message || "Try reusing the link", type: AlertType.error });
         }
   }))
   .catch(err => {
-    setSuccess(null);
-    setError(err?.status == 409 
-      ? "Username is not unique" 
-      : err?.message || "Try reusing the link"
-    );
+    showAlert({ message: err?.status == 409 ? "Username is not unique" : err?.message || "Try reusing the link", type: AlertType.error });
   });
 
         Preferences.set({key:"firstTime",value: payload.firstTime}).then(()=>{})
@@ -170,15 +167,12 @@ dispatch(uploadProfilePicture({ file:fileFind })).then(res => checkResult(res, p
         if (payload.profile) {
           router.push(Paths.login);
         } else {
-          setSuccess(null);
-          setError(payload.error.status==409?"Username is not unique":payload.error.message || "Try reusing the link");
+          showAlert({ message: payload.error.status==409?"Username is not unique":payload.error.message || "Try reusing the link", type: AlertType.error });
         }
         Preferences.set({key:"firstTime",value: payload.firstTime}).then(()=>{})
-   
+
       }),err=>{
-         setSuccess(null);
-         
-      setError(err.status==409?"Username is not unique":err.message || "Try reusing the link");
+      showAlert({ message: err.status==409?"Username is not unique":err.message || "Try reusing the link", type: AlertType.error });
       })}
     
   

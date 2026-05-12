@@ -198,7 +198,7 @@ const showBottomNavbar = (!hiddenPaths.includes(location)) && isNative && isMobi
        
        <Dialog dialog={dialog} presentingElement={presentingEl} />
       
-<Alert />
+<Alert/>
 <div  >
     <IonRouterOutlet>   
        

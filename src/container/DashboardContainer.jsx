@@ -26,6 +26,8 @@ import shortName from '../core/shortName.jsx';
 import ListPill from '../components/page/ListPill.jsx';
 import WorkshopItem from '../components/page/WorkshopItem.jsx';
 import { useMediaQuery } from 'react-responsive';
+import { useAlert } from '../core/useAlert.jsx';
+import AlertType from '../core/AlertType.js';
 
 function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex = 0, role = "button" }) {
   return (
@@ -65,6 +67,7 @@ const pageSize = isMobile? 7:isTablet||isDesktop?12:8
 
   const router = useIonRouter()
   const dispatch = useDispatch();
+  const { showAlert } = useAlert();
  
 
 const { columns, rows } = useResponsiveGrid();
@@ -297,7 +300,7 @@ const openCommunities = () => {
           window.alert("COULD NOT CREATE STORY")
         }
       },err=>{
-        setErrorLocal(err.message)
+        showAlert({ message: err.message, type: AlertType.error })
       }));
     }
   }, 5);

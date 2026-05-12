@@ -1,4 +1,6 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useAlert } from "../core/useAlert.jsx";
+import AlertType from "../core/AlertType.js";
 import { useDispatch } from "react-redux";
 import {
   updateProfile,
@@ -12,7 +14,6 @@ import { Geolocation } from "@capacitor/geolocation";
 import { IonContent, IonLoading, useIonRouter } from "@ionic/react";
 
 import checkResult from "../core/checkResult";
-import Context from "../context";
 import Enviroment from "../core/Enviroment";
 import { useSelector } from "react-redux";
 import GoogleMapSearch from "./collection/GoogleMapSearch";
@@ -57,7 +58,7 @@ export default function SettingsContainer() {
   const dispatch = useDispatch();
   const router = useIonRouter();
 const {openDialog,dialog,closeDialog}=useDialog()
-  const {  setError, setSuccess } = useContext(Context);
+  const { showAlert } = useAlert();
   const {currentProfile}=useSelector(state=>state.users)
   const [file, setFile] = useState(null);
 // Helper: extract city from full address
@@ -148,10 +149,10 @@ const handleUseCurrentLocation = async () => {
         city: cityCountry || "",
       });
 
-      setSuccess("Location updated!");
+      showAlert({ message: "Location updated!", type: AlertType.success });
     } catch (err) {
       console.error(err);
-      setError("Unable to fetch current location.");
+      showAlert({ message: "Unable to fetch current location.", type: AlertType.error });
     } finally {
       setLoading(false);
     }
@@ -224,7 +225,7 @@ const getPosition = async () => {
     if (!selected) return;
 
     if (!selected.type.startsWith("image/")) {
-      setError("Upload a valid image");
+      showAlert({ message: "Upload a valid image", type: AlertType.error });
       return;
     }
 
@@ -269,12 +270,12 @@ dispatch(updateProfile({
 
       checkResult(
         result,
-        () => setSuccess("Profile updated"),
-        err => setError(err.message)
+        () => showAlert({ message: "Profile updated", type: AlertType.success }),
+        err => showAlert({ message: err.message, type: AlertType.error })
       );
     })
     } catch (err) {
-      setError("Update failed");
+      showAlert({ message: "Update failed", type: AlertType.error });
     }
   };
 
@@ -289,10 +290,10 @@ dispatch(updateProfile({
       agreeText: "Delete",
       agree: () => dispatch(deleteUserAccounts()).then(res=>{
         checkResult(res,()=>{
-          setSuccess("Account deleted");
+          showAlert({ message: "Account deleted", type: AlertType.success });
           router.push(Paths.login)
         },err=>{
-          setError(err.message)
+          showAlert({ message: err.message, type: AlertType.error })
       })
 
     })})}
@@ -327,7 +328,7 @@ dispatch(updateProfile({
             dispatch(signOutAction({ profile: currentProfile })).then(res =>
               checkResult(res, (data) => {
                 router.push(Paths.login);
-              }, err => setError(err.message))
+              }, err => showAlert({ message: err.message, type: AlertType.error }))
             );
           }}
           className="btn mx-4 bg-base-bg dark:bg-base-surfaceDark border border-soft/20 dark:text-cream text-soft flex w-full"

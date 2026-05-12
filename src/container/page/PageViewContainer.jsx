@@ -1,14 +1,15 @@
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { useState, useLayoutEffect, useEffect, useContext, useMemo } from "react";
+import { useState, useLayoutEffect, useEffect, useMemo } from "react";
 import { IonContent, useIonRouter } from "@ionic/react";
 import PageViewItem from "../../components/page/PageViewItem";
 import CommentThread from "../../components/comment/CommentThread";
 import { getStory } from "../../actions/StoryActions";
 import { fetchCommentsOfPage } from "../../actions/PageActions.jsx";
 import ErrorBoundary from "../../ErrorBoundary";
-import Context from "../../context";
 import Paths from "../../core/paths.js";
+import { useAlert } from "../../core/useAlert.jsx";
+import AlertType from "../../core/AlertType.js";
 import useScrollTracking from "../../core/useScrollTracking.jsx";
 import checkResult from "../../core/checkResult.js";
 import { initGA, sendGAEvent } from "../../core/ga4.js";
@@ -38,7 +39,7 @@ const FADE    = "transition-opacity duration-500";
 const CENTER  = "text-center mx-auto";
 
 export default function PageViewContainer() {
-  const { setError } = useContext(Context);
+  const { showAlert } = useAlert();
   const { id } = useParams();
   const dispatch = useDispatch();
   const router = useIonRouter();
@@ -127,9 +128,9 @@ const { canSee, canAdd, canEdit } = useMemo(
             setPending(false);
             if (err?.response?.status === 404) {
               setErrorStatus(404);
-              setError("Story not found");
+              showAlert({ message: "Story not found", type: AlertType.error });
             } else {
-              setError(err.message || "Failed to load story");
+              showAlert({ message: err.message || "Failed to load story", type: AlertType.error });
               setErrorStatus(err?.response?.status || 500);
             }
           }
@@ -139,7 +140,7 @@ const { canSee, canAdd, canEdit } = useMemo(
       setPending(false);
       if (error?.response?.status === 403) setErrorStatus(403);
       else {
-        setError(error.message);
+        showAlert({ message: error.message, type: AlertType.error });
         setErrorStatus(500);
       }
     }

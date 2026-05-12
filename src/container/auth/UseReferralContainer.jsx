@@ -1,5 +1,7 @@
 
-import { useState, useEffect, useContext,} from "react";
+import { useState, useEffect } from "react";
+import { useAlert } from "../../core/useAlert.jsx";
+import AlertType from "../../core/AlertType.js";
 import { useDispatch } from "react-redux";
 import { uploadProfilePicture } from "../../actions/ProfileActions";
 import checkResult from "../../core/checkResult";
@@ -7,7 +9,6 @@ import Paths from "../../core/paths";
 import info from "../../images/icons/info.svg";
 import "../../App.css";
 import { useReferral } from "../../actions/UserActions";
-import Context from "../../context";
 import authRepo from "../../data/authRepo";
 import { debounce } from "lodash";
 import { Preferences } from "@capacitor/preferences";
@@ -38,7 +39,7 @@ const [showPassword, setShowPassword] = useState(false);
 const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const dispatch = useDispatch();
 
-  const { error, setError, setSuccess } = useContext(Context);
+  const { showAlert } = useAlert();
   useEffect(() => {
    
     if(token){
@@ -70,7 +71,7 @@ const handleProfilePicture = (e) => {
 
   if (!file.type.startsWith('image/')) {
 
-    setError('Please upload a valid image file.');
+    showAlert({ message: 'Please upload a valid image file.', type: AlertType.error });
     return;
   }
 
@@ -84,7 +85,6 @@ const handleProfilePicture = (e) => {
 
   setFile(file);
   setSelectedImage(newUrl);
-  setError('');
 }else{
   const reader = new FileReader();
 reader.onloadend = () => {
@@ -135,7 +135,7 @@ const handleUseRefferal=(params)=>{
               router.push(Paths.myProfile);
             }
           },
-          (err) => setError(err.message)
+          (err) => showAlert({ message: err.message, type: AlertType.error })
         )
       );
 }

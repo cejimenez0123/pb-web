@@ -1,5 +1,7 @@
 
 import { useContext, useRef, useEffect, useState } from 'react';
+import { useAlert } from '../../core/useAlert.jsx';
+import AlertType from '../../core/AlertType.js';
 import { registerUser, postActiveUser, findWorkshopGroup, findWorkshopGroups, fetchWorkshopGroups } from "../../actions/WorkshopActions";
 import { useSelector, useDispatch } from 'react-redux';
 import checkResult from '../../core/checkResult';
@@ -78,7 +80,8 @@ const { items: workshops, page: workshopPage,totalPages:workshopPages, setPage: 
 console.log("COMMEN",communities)
 console.log("WOROK",workshops)
 
-  const { error, setError, setSuccess, setSeo } = useContext(Context);
+  const { setSeo } = useContext(Context);
+  const { showAlert } = useAlert();
  
 
 
@@ -93,7 +96,7 @@ console.log("WOROK",workshops)
     dispatch(getStory({ id: storyId })).then(res =>
       checkResult(res,
         (payload) => { dispatch(setPagesInView({ page: payload.story })); },
-        (err) => setError(err.message)
+        (err) => showAlert({ message: err.message, type: AlertType.error })
       )
     );
   }, [storyId]);
@@ -152,11 +155,10 @@ console.log("WOROK",workshops)
       async ({ coords }) => {
         const name = await fetchCity({ latitude: coords.latitude, longitude: coords.longitude });
         applyLocation({ latitude: coords.latitude, longitude: coords.longitude, city: name });
-        setError(null);
         setLoading(false);
       },
       () => {
-        setError("We use location to connect with your fellow writers. Reload for access.");
+        showAlert({ message: "We use location to connect with your fellow writers. Reload for access.", type: AlertType.error });
         setLoading(false);
       }
     );
@@ -174,13 +176,12 @@ console.log("WOROK",workshops)
         const name = await fetchCity({ latitude: coords.latitude, longitude: coords.longitude });
         setLoading(false);
         applyLocation({ latitude: coords.latitude, longitude: coords.longitude, city: name });
-        setError(null);
       } else {
-        setError("Location permission denied. Please enable it in your device settings.");
+        showAlert({ message: "Location permission denied. Please enable it in your device settings.", type: AlertType.error });
       }
     } catch (err) {
       console.error("Error requesting location:", err);
-      setError("Could not get location. Please try again.");
+      showAlert({ message: "Could not get location. Please try again.", type: AlertType.error });
     } finally {
       setLoading(false);
     }
@@ -191,7 +192,6 @@ console.log("WOROK",workshops)
   const handleGroupClick = () => {
     if (!location?.latitude || !location?.longitude) return;
     setLoading(true);
-    setError(null);
     dispatch(setPagesInView({ pages: [] }));
     dispatch(setCollections({ collections: [] }));
     dispatch(findWorkshopGroup({
@@ -208,7 +208,7 @@ console.log("WOROK",workshops)
             router.push(Paths.collection.createRoute(payload.collection.id), 'forward', 'push');
           }
         },
-        err => setError(err.message)
+        err => showAlert({ message: err.message, type: AlertType.error })
       );
       setLoading(false);
     });

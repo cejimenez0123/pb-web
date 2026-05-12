@@ -6,11 +6,14 @@ import Dialog from "../../components/Dialog"
 import { IonContent, useIonRouter } from "@ionic/react"
 import ThankYou from "./ThankYou"
 import Context from "../../context"
+import { useAlert } from "../../core/useAlert.jsx"
+import AlertType from "../../core/AlertType.js"
 
 function ApplyContainer(props) {
   const router = useIonRouter()
 const location = router.routeInfo.pathname
-  const { seo, setSeo, setError } = useContext(Context)
+  const { seo, setSeo } = useContext(Context)
+  const { showAlert } = useAlert()
 
   const genres = [
     "Fiction",
@@ -113,13 +116,11 @@ const location = router.routeInfo.pathname
       })
       .catch((err) => {
         if (err.message.includes("403")) {
-          setError("User Already Exists")
+          showAlert({ message: "User Already Exists", type: AlertType.error })
         } else {
-          setError(err.message)
+          showAlert({ message: err.message, type: AlertType.error })
         }
       })
-
-    setTimeout(() => setError(null), 4001)
   }
 
   return (

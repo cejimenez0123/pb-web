@@ -2,6 +2,8 @@ import { useContext, useEffect, useLayoutEffect, useRef, useState } from "react"
 import authRepo from "../../data/authRepo";
 import validateEmail from "../../core/validateEmail";
 import Context from "../../context";
+import { useAlert } from "../../core/useAlert.jsx";
+import AlertType from "../../core/AlertType.js";
 import clear from "../../images/icons/clear.svg";
 import { initGA, sendGAEvent } from "../../core/ga4";
 import { IonContent} from "@ionic/react";
@@ -9,8 +11,8 @@ import ErrorBoundary from "../../ErrorBoundary";
 import { useDialog } from "../../domain/usecases/useDialog";
 
 function NewsletterContainer() {
-  const { setError } = useContext(Context);
   const { seo, setSeo } = useContext(Context);
+  const { showAlert } = useAlert();
 const{openDialog,closeDialog,dialog}=useDialog()
   const selectRef = useRef(null);
 
@@ -46,15 +48,6 @@ const{openDialog,closeDialog,dialog}=useDialog()
       setSeo({ ...seo, title: "Plumbum (Newsletter Apply)" });
     }
   }, [location.pathname]);
-
-  // ---------- AUTO CLEAR ERROR ----------
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setError(null);
-    }, 4000);
-
-    return () => clearTimeout(timer);
-  }, []);
 
   // ---------- CHECKBOX HANDLER ----------
   const handleCheckboxChange = (event, field) => {
@@ -92,7 +85,7 @@ const{openDialog,closeDialog,dialog}=useDialog()
     sendGAEvent("Apply for Newsletter", "Apply for Newsletter", "Subscribe", 0, false);
 
     if (!validateEmail(formData.email)) {
-      setError("Please use valid email");
+      showAlert({ message: "Please use valid email", type: AlertType.error });
       return;
     }
 
@@ -150,7 +143,7 @@ console.log(data)
           otherInputs: { eventInterests: "", newsletterContent: "", writingRole: "" },
         });
       } else {
-        setError(e.message);
+        showAlert({ message: e.message, type: AlertType.error });
       }
     }
   };

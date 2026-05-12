@@ -1,4 +1,6 @@
 import { useContext, useEffect, useLayoutEffect, useMemo, useState } from "react";
+import { useAlert } from "../../core/useAlert.jsx";
+import AlertType from "../../core/AlertType.js";
 import { IonContent } from "@ionic/react";
 import { useDispatch, useSelector } from "react-redux";
 import CreateCollectionForm from "../../components/collection/CreateCollectionForm";
@@ -32,7 +34,8 @@ const SECTION_STACK = "space-y-2";
 const LABEL        = "text-xs text-gray-500";
 const INPUT_WRAP   = "bg-base-bg rounded-2xl px-4 py-2 shadow-sm border border-soft";
 export default function AddToCollectionsContainer() {
-  const { setError, seo, setSeo } = useContext(Context);
+  const { seo, setSeo } = useContext(Context);
+  const { showAlert } = useAlert();
   const { currentProfile } = useSelector((state) => state.users);
   const { dialog, openDialog, closeDialog, resetDialog } = useDialog();
 
@@ -49,12 +52,12 @@ export default function AddToCollectionsContainer() {
 const refreshItem = async () => {
   if (type === "story") {
     dispatch(getStory({ id })).then((res) =>
-      checkResult(res, (payload) => setItem(payload.story), (err) => setError(err.message))
+      checkResult(res, (payload) => setItem(payload.story), (err) => showAlert({ message: err.message, type: AlertType.error }))
     );
   }
   if (type === "collection") {
     dispatch(fetchCollectionProtected({ id })).then((res) =>
-      checkResult(res, (payload) => setItem(payload.collection), (err) => setError(err.message))
+      checkResult(res, (payload) => setItem(payload.collection), (err) => showAlert({ message: err.message, type: AlertType.error }))
     );
   }
 };
@@ -93,12 +96,12 @@ const refreshItem = async () => {
     if (!currentProfile) return;
     if (type === "story") {
       dispatch(getStory({ id })).then((res) =>
-        checkResult(res, (payload) => setItem(payload.story), (err) => setError(err.message))
+        checkResult(res, (payload) => setItem(payload.story), (err) => showAlert({ message: err.message, type: AlertType.error }))
       );
     }
     if (type === "collection") {
       dispatch(fetchCollectionProtected({ id })).then((res) =>
-        checkResult(res, (payload) => setItem(payload.collection), (err) => setError(err.message))
+        checkResult(res, (payload) => setItem(payload.collection), (err) => showAlert({ message: err.message, type: AlertType.error }))
       );
     }
   }, [currentProfile]);

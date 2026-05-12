@@ -7,7 +7,7 @@ import {
   useIonRouter,
 } from "@ionic/react";
 import CollectionToCollection from "../../domain/models/CollectionToCollection";
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import HashtagForm from "../../components/hashtag/HashtagForm";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteCollection, deleteCollectionFromCollection, deleteStoryFromCollection, fetchCollectionProtected, patchCollectionContent } from "../../actions/CollectionActions";
@@ -19,7 +19,8 @@ import StoryToCollection from "../../domain/models/storyToColleciton";
 import { Preferences } from "@capacitor/preferences";
 import { RoleType } from "../../core/constants";
 import arrowDown from "../../images/icons/arrow_down.svg"
-import Context from "../../context";
+import { useAlert } from "../../core/useAlert.jsx";
+import AlertType from "../../core/AlertType.js";
 import RoleForm from "../../components/role/RoleForm";
 import ErrorBoundary from "../../ErrorBoundary";
 import { Capacitor } from "@capacitor/core";
@@ -55,7 +56,7 @@ const tabInactive = "bg-softBlue text-soft";
 const EditCollectionContainer = () => {
 
 
-  const {setError,setSuccess}=useContext(Context)
+  const { showAlert } = useAlert();
   const dispatch = useDispatch();
   const router = useIonRouter()
      const params = useParams()
@@ -215,7 +216,7 @@ const cycleFollowersRole = () => {
         })
    
       })
-      .catch((err) => setError(err.message));
+      .catch((err) => showAlert({ message: err.message, type: AlertType.error }));
   };
   function openRoleForm(){
    openDialog({...dialog,text:<RoleForm item={ colInView} />})

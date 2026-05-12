@@ -18,6 +18,7 @@ import {    logIn ,
             setUserLoading,
             setCurrentProfile,
             setAuthResolved,
+            setAlert,
         } from "../actions/UserActions"
 
 import {  addNotification, createProfile, fetchNotifcations, fetchProfileRecommendations, fetchProfiles } from "../actions/ProfileActions"
@@ -47,7 +48,8 @@ const initialState = {
     searchResults: [],
     searchDialogOpen: false,
     error: "",
-    dialog: { text: "", title: "", agree: null, onClose: null, isOpen: false, agreeText: "agree", disagreeText: "Close" }
+    dialog: { text: "", title: "", agree: null, onClose: null, isOpen: false, agreeText: "agree", disagreeText: "Close" },
+    alert: { isOpen: false, message: null, type: null,agree: null, agreeText: null, disagreeText: null, disagree:null }
 }
 
 const userSlice = createSlice({
@@ -172,6 +174,10 @@ const userSlice = createSlice({
             console.log("SIGN OUT REJECTED");
             state.error = payload.error
             state.signedIn = false
+        })
+      .addCase(setAlert.type, (state, { payload }) => {
+        console.log("SET ALERT", payload);
+            state.alert = payload ?? { isOpen: false, message: null, type: null,agree: null, agreeText: null, disagreeText: null, disagree:null }
         })
         .addCase(setDialog.type, (state, { payload }) => {
             if (payload) {
