@@ -568,7 +568,7 @@ useLayoutEffect(() => {
   });
 
 
-    router.push(Paths.login());
+    router.push(Paths.login);
   }
 
 
@@ -900,7 +900,7 @@ const goToCalendar = (source="about_page") => {
   router.push(Paths.calendar());
 };
   return (
-    <IonContent fullscreen={true}   scrollY={true} className="">
+    <IonContent fullscreen={true}   scrollY={true} className="page-content">
      <div className="pt-8 h-[100%] overflow-scroll  bg-soft pb-36">
 
         {/* <IonGrid> */}
