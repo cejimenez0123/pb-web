@@ -14,7 +14,7 @@ import Googlelogo from "../images/logo/googlelogo.png";
 import ErrorBoundary from "../ErrorBoundary";
 import { sendGAEvent } from "../core/ga4";
 import { Capacitor } from "@capacitor/core";
-
+import { useAlert } from "../core/useAlert";
 function GoogleLoginInner({ drive, onUserSignIn }) {
   const [bootstrapping, setBootstrapping] = useState(true);
   const [pending, setPending] = useState(false);
@@ -22,7 +22,7 @@ function GoogleLoginInner({ drive, onUserSignIn }) {
   const [loginError, setLoginError] = useState(null);
   const [signedIn, setSignedIn] = useState(false);
   const [gisLoaded, setGisLoaded] = useState(false);
-
+  const {showPrompt,closeAlert} = useAlert();
   const [accessToken, setAccessToken] = useState(null);
   const [idToken, setIdToken] = useState(null);
 
@@ -115,10 +115,10 @@ function GoogleLoginInner({ drive, onUserSignIn }) {
 
 const nativeGoogleSignIn = async () => {
   if (pending) return;
-
+  
   setPending(true);
   setLoginError(null);
-
+  showPrompt({message:"Google Sign asks permission for Google Doc. We do not save or access anything you do not share with us."})
   try {
     const user = await SocialLogin.login({
       provider: "google",
