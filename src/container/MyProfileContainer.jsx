@@ -1,6 +1,6 @@
-import { useContext, useEffect, useMemo,useRef, useState } from "react";
-import { IonContent, useIonRouter, useIonViewDidEnter } from "@ionic/react";
-import { useSelector, useDispatch } from "react-redux";
+import { useContext, useEffect, useMemo, useState } from "react";
+import { IonContent, useIonRouter} from "@ionic/react";
+import { useSelector } from "react-redux";
 import Context from "../context";
 import Enviroment from "../core/Enviroment";
 import ErrorBoundary from "../ErrorBoundary";
@@ -12,7 +12,6 @@ import ExploreList from "../components/collection/ExploreList";
 import Pill from "../components/Pill";
 import CommunitiesPanel from "../components/profile/CommunitiesPanel";
 import AboutPanel from "../components/profile/AboutPanel";
-import debounce from "../core/debounce";
 import PageProfileList from "../components/page/PageProfileList";
 
 import EmptyState from "../components/EmptyState";
@@ -56,9 +55,6 @@ const recentCollections = collectionsCache.slice(0, 5);
 const communities = { items: librariesCache };
    const pageSize = 8;
 
-useEffect(() => {
-  console.log("PROFILE CHANGED", profile);
-}, [profile]);
 
 
 

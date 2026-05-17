@@ -1,7 +1,6 @@
 import { useState, useLayoutEffect,  useContext } from 'react';
-import { useDispatch } from 'react-redux';
 import { SocialLogin } from "@capgo/capacitor-social-login";
-import { IonText, IonList, IonContent, IonInfiniteScroll, } from '@ionic/react';
+import { IonText, } from '@ionic/react';
 import Context from "../context";
 
 import { Preferences } from '@capacitor/preferences';

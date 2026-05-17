@@ -125,7 +125,7 @@ useEffect(() => {
 
     if (results?.length > 0) {
       const group = results[0];
-      // console.log("FCKSXLCC",group)
+ 
       const stories = group.storyIdList?.filter(a => a?.story?.type === PageType.text)
         .sort((a, b) => a?.story?.updated - b?.story?.updated)
       
@@ -133,7 +133,7 @@ useEffect(() => {
      
     }
   } catch (err) {
-    console.log(err);
+    showAlert({ message: "Error loading workshops", type: AlertType.error });
   }
 
   

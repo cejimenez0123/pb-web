@@ -53,7 +53,7 @@ function Alert() {
               </div>
 
               {alert.type === "prompt" && (
-                <div className="flex gap-3 mt-3 justify-end w-full px-4">
+                <div className="flex gap-3 mt-3 justify-around w-full mx-auto px-4">
                   <div
                     onClick={closeAlert}
                     className="px-4 h-[2.5rem] flex items-center rounded-full border border-soft text-soft active:scale-95 transition cursor-pointer"

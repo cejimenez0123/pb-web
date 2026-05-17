@@ -198,7 +198,7 @@ const deleteStoryFromCollection = createAsyncThunk("collection/deleteStoryFromCo
     return data
     
 }catch(error){
-   console.log(error)
+  
     return{error,collection:null}
 }
  })

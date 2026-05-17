@@ -16,12 +16,12 @@ const submitCollection = async ({
   setError,
 }) => {
   const { name, purpose, isPrivate, isOpenCollaboration } = formData;
-console.log("FCIK",formData)
+
   if (!name?.trim()) {
     setError("Collection name is required.");
     return;
   }
-  console.log("Dialog agree clicked");
+
   setSubmitting(true);
   setError(null);
 
@@ -33,8 +33,6 @@ console.log("FCIK",formData)
       profileId: currentProfile?.id,
       isOpenCollaboration,
     };
-
-    console.log("Creating collection with params:", params);
 
     const res = await dispatch(createCollection(params));
     
@@ -66,7 +64,7 @@ console.log("FCIK",formData)
       dispatch(setCollectionInView({ collection }));
       router.push(Paths.collection.createRoute(collection.id));
     }
-console.log("RESSS",res)
+
     // Reset form data
     setFormData({
       name: "",

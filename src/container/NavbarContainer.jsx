@@ -148,7 +148,7 @@ const isNative = Capacitor.isNativePlatform()
           <button
             className="w-full text-left"
             onClick={async () => {
-              console.log("LOGOUT CLICKED");
+             
             isNative &&  await SocialLogin.logout({ provider: "google" });
               dispatch(signOutAction({ profile: currentProfile })).then(res => router.push(Paths.login));
             }}

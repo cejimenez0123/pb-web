@@ -89,19 +89,17 @@ const userSlice = createSlice({
         .addCase(createFollow.fulfilled, (state, { payload }) => {})
         .addCase(deleteFollow.fulfilled, (state, { payload }) => {})
         .addCase(logIn.pending, (state) => {
-            console.log("LOGIN PENDING");
+            
             state.loading = true
         })
         .addCase(logIn.fulfilled, (state, { payload }) => {
-            console.log("LOGIN FULFILLED", payload?.profile?.id);
             state.currentProfile = payload?.profile
             state.loading = false
             state.signedIn = true
             state.authResolved = true
         })
         .addCase(logIn.rejected, (state, { payload }) => {
-            console.log("LOGIN REJECTED");
-            if (payload?.error) state.error = payload.error
+             if (payload?.error) state.error = payload.error
             state.loading = false
         })
         .addCase(fetchNotifcations.fulfilled, (state, { payload }) => {
@@ -130,23 +128,20 @@ const userSlice = createSlice({
     if (payload?.profile) state.currentProfile = payload.profile;
 })
         .addCase(setCurrentProfile.type, (state, action) => {
-            console.log("SET CURRENT PROFILE", action.payload?.id);
             state.currentProfile = action.payload;
             state.loading = false;
             state.authResolved = true;
         })
         .addCase(getCurrentProfile.pending, (state) => {
-            console.log("GET CURRENT PROFILE PENDING");
-            state.loading = true
+            state.loading = true;
+        
         })
         .addCase(getCurrentProfile.fulfilled, (state, action) => {
-            console.log("GET CURRENT PROFILE FULFILLED", action.payload?.profile?.id);
             state.currentProfile = action?.payload?.profile;
             state.loading = false;
             state.authResolved = true;
         })
         .addCase(getCurrentProfile.rejected, (state) => {
-            console.log("GET CURRENT PROFILE REJECTED");
             state.loading = false;
             state.authResolved = true;
         })
@@ -161,8 +156,7 @@ const userSlice = createSlice({
             state.profileInView = payload.profile
         })
         .addCase(signOutAction.pending, (state, payload) => {
-            console.log("SIGN OUT PENDING");
-            state.loading = true
+             state.loading = true
         })
     .addCase(signOutAction.fulfilled, (state) => {
     state.currentProfile = null
@@ -171,13 +165,11 @@ const userSlice = createSlice({
     state.authResolved = true  // ← auth resolved, user is simply logged out
 })
         .addCase(signOutAction.rejected, (state, { payload }) => {
-            console.log("SIGN OUT REJECTED");
             state.error = payload.error
             state.signedIn = false
         })
       .addCase(setAlert.type, (state, { payload }) => {
-        console.log("SET ALERT", payload);
-            state.alert = payload ?? { isOpen: false, message: null, type: null,agree: null, agreeText: null, disagreeText: null, disagree:null }
+          state.alert = payload ?? { isOpen: false, message: null, type: null,agree: null, agreeText: null, disagreeText: null, disagree:null }
         })
         .addCase(setDialog.type, (state, { payload }) => {
             if (payload) {

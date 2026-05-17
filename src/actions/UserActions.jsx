@@ -21,7 +21,7 @@ try{
   
         return {token:token,profile:authData.profile,user:authData.user}
 }catch(error){
-  console.log(error)
+  return thunkApi.rejectWithValue(error)
 }
       
     }
@@ -59,9 +59,8 @@ const useReferral = createAsyncThunk("users/useReferral",async(params,thunkApi)=
       }
     );
 
-    console.log("✅ Profile updated in Algolia via API");
   } catch (err) {
-    console.error("⚠️ Failed to update profile in Algolia:", err);
+    return thunkApi.rejectWithValue(err);
   }
 }
     return data
@@ -99,9 +98,8 @@ const signUp = createAsyncThunk(
         selfStatement: profile.selfStatement,
         profilePic: profile.profilePic,
       });
-      console.log("✅ Profile indexed in Algolia");
     } catch (err) {
-      console.error("⚠️ Failed to save to Algolia:", err);
+      return thunkApi.rejectWithValue(err);
     }
   }
             
@@ -111,9 +109,7 @@ const signUp = createAsyncThunk(
             
       }
     } catch (error){
-       
-          console.error("⚠️", err);
-       
+      return thunkApi.rejectWithValue(error);
     }
     }
 )
@@ -192,10 +188,10 @@ const getCurrentProfile = createAsyncThunk(
   async (params, thunkApi) => {
     try {
       const data = await profileRepo.getMyProfiles();
-      console.log("GET CURRENT", data);
+  
       return data; // ✅ return clean payload
     } catch (error) {
-      console.log(error);
+
       return thunkApi.rejectWithValue(
         error?.response?.data || error.message
       );
@@ -213,10 +209,9 @@ try{
         try{
         await algoliaRepo.partialUpdateObject("profile",profile.id,{username:profile.username})
         }catch(err){
-          console.log(err)
+          return thunkApi.rejectWithValue(err)
         }
           }
-          console.log(data)
           return {profile:data.profile}
         }catch(err){
           return err
@@ -247,11 +242,7 @@ const fetchProfile = createAsyncThunk("users/fetchProfile", async function(param
         }
       }
     }catch(e){
-      console.log(e)
-      return {
-        error: new Error("ERROR:FETCH PROFILE:"+e.message)
-      }
-  
+      return thunkApi.rejectWithValue(e)
     }
   
   
@@ -272,7 +263,6 @@ const deletePicture = createAsyncThunk("users/deletePicture",async (params,thunk
     const {fileName}=params
     const imageRef = ref(storage, fileName); // Create a reference to the file
     await deleteObject(imageRef); // Delete the file
-    console.log('File deleted successfully!');
     return{message:"Success delete"}
   } catch (error) {
     

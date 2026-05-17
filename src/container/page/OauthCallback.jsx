@@ -9,11 +9,7 @@ const OAuthCallback = () => {
     const code = params.get("code");
 
     let storyId = null;
-console.log("OAuth returned:", {
-  fullUrl: window.location.href,
-  state: params.get("state"),
-  code: params.get("code")
-});
+
     // ✅ Support both plain string and JSON state
     try {
       const parsed = JSON.parse(rawState);
@@ -22,18 +18,11 @@ console.log("OAuth returned:", {
       storyId = rawState;
     }
 
-    console.log("OAuth returned:", {
-      fullUrl: window.location.href,
-      state: rawState,
-      parsedStoryId: storyId,
-      code,
-      isNative: Capacitor.isNativePlatform()
-    });
+
 
     if (storyId) {
       const redirectPath = `/story/${storyId}/editor`;
 
-      console.log("Redirecting to:", redirectPath);
 
       // ✅ Use hard redirect for BOTH platforms (most reliable)
       window.location.replace(redirectPath);

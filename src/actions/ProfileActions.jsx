@@ -17,7 +17,7 @@ const createProfile= createAsyncThunk("users/createProfile",async (params,thunkA
 
     const data = await profileRepo.create(params)
     const profile = data.profile
-    console.log(token)
+ 
     if(data.token){
     
        await Preferences.set({key:"token",value:JSON.stringify(data.token)})
@@ -148,7 +148,7 @@ const uploadPicture = createAsyncThunk(
 
       const fileName = `image/${Date.now()}-${uuidv4()}.jpg`;
       const storageRef = ref(storage, fileName);
-console.log("FILENAME",fileName)
+
 
       if (!Capacitor.isNativePlatform()) {
         // ✅ WEB → needs Blob/File
@@ -189,7 +189,7 @@ const fetchProfileRecommendations = createAsyncThunk(
   async ({ profileId, limit = 10 }, { rejectWithValue }) => {
     try {
     let data = await profileRepo.recommend({profileId,limit})
-    console.log("ECMEEND",data)
+    
       return { profiles:data.profiles };
     } catch (err) {
       return rejectWithValue(err.response?.data?.error ?? "Failed to fetch recommendations");

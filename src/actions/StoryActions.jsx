@@ -21,7 +21,7 @@ const getStory = createAsyncThunk("story/getStory",async ({id},thunkApi)=>{
 
     }
   }catch(error){
-    console.log("Error in getStory:", error);
+ 
     return {error}
   }
 })
@@ -87,7 +87,7 @@ const getMyStories = createAsyncThunk(
         pageList: data.items,
       };
     } catch (e) {
-      console.log("GET MY STORIES ERROR:", e);
+   
 
       return thunkApi.rejectWithValue(
         e?.response?.data || e.message
@@ -104,12 +104,12 @@ const createStory = createAsyncThunk("pages/createStory",async (params,thunkApi)
       if(story && !story.isPrivate && story.id) {
        await algoliaRepo.partialUpdateObject("story",story.id,{title:story?.title})
       }
-   console.log("DATA",data)
+
       return {
         story:data.story
       }
   }catch(e){
-    console.log("CREATE STORY ERROR",e)
+  
     return {
       error: "Create Story"+e
     }

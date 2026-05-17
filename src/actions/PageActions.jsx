@@ -135,7 +135,7 @@ const createComment = createAsyncThunk("pages/createComment", async function({
   anchorText,        // ← add
 }, thunkApi) {
   try {
-    console.log(parentCommentId)
+  
     let data = await commentRepo.create({
       profile,
       storyId,
@@ -258,7 +258,7 @@ const pagesLoading = createAction("PAGES_LOADING", function prepare(){
    try{
     const {story,profile,score}=params
     const data = await likeRepo.storyCreate({story,profile})
-    console.log("DATA FROM LIKE REPO",data)
+   
     return {
       profile:data.profile
     }

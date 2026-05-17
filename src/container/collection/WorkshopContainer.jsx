@@ -77,8 +77,6 @@ const { items: workshops, page: workshopPage,totalPages:workshopPages, setPage: 
 
 
 
-console.log("COMMEN",communities)
-console.log("WOROK",workshops)
 
   const { setSeo } = useContext(Context);
   const { showAlert } = useAlert();
@@ -124,23 +122,6 @@ console.log("WOROK",workshops)
     register();
   }, [location]);
 
-  // const fetchWorkshops = async () => {
-  //   try {
-  //     const res = await dispatch(findWorkshopGroups({
-  //       location: isGlobal ? null : location,
-  //       radius: 50,
-  //       global: isGlobal
-  //     }));
-  //     checkResult(res, ({ groups }) => {
-  //       if (!isMounted.current) return;
-  //       const sort = [...groups].sort((a, b) => new Date(b.updated) - new Date(a.updated));
-   
-  //       setLoading(false);
-  //     });
-  //   } catch (err) {
-  //     console.error("Failed fetching workshops:", err);
-  //   }
-  // };
 
   const applyLocation = (coords) => {
     setLocation(coords);
