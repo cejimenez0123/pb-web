@@ -26,7 +26,7 @@ function useProfileDependentEffects(currentProfile, isGlobal) {
         setResults(prev => ({ ...prev, prompts: sorted }));
 
       },err=>{
-           console.log("STOP PROMPTING ME err",err)
+         
       });
     } catch (err) { console.error("Failed fetching prompts:", err); }
   };

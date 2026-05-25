@@ -34,7 +34,7 @@ export default function GoogleDrivePicker({ onFilePicked, onReauthenticateNeeded
   // --- Native Google Sign-In Flow ---
 const nativeGoogleSignIn = async () => {
     try {
-     console.log("WHATS UP")
+
       const user = await SocialLogin.login({
         provider:"google",
         options:{
@@ -54,7 +54,7 @@ const nativeGoogleSignIn = async () => {
   await Preferences.set({key:TOKEN_EXPIRY_KEY,value:expiry})
   fetchFiles()
     } catch (err) {
-      console.log(err)
+    
       console.error("Native sign-in error", err);
    
     } 

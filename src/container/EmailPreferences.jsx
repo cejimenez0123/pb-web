@@ -50,7 +50,7 @@ const location = useLocation();
         checkResult(res,payload=>{
 showAlert({ message: payload.message, type: AlertType.success })
         },err=>{
-          console.log(err)
+      
            if(err && !err.message.includes("Network")){
 showAlert({ message: err.message, type: AlertType.error })
            }else if(err){

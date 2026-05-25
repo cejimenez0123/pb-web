@@ -154,7 +154,7 @@ const handleCreate = async () => {
     reader.onload = () => dispatch(setHtmlContent(reader.result));
     reader.readAsDataURL(file);
   };
-console.log("updated",id)
+
   return (
     <div className="flex flex-col w-full max-w-xl mx-auto">
 

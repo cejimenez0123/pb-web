@@ -21,8 +21,7 @@ function PlacesSearchMap({ initLocationName, onLocationSelected }) {
   } = usePlacesAutocomplete({
     debounce: 300
   });
-// console.log("INIT LOCATION NAME:", initLocationName)
- useEffect(() => {
+   useEffect(() => {
     if (initLocationName) {
       setDesc(initLocationName);
       setValue(initLocationName, false); // false prevents triggering suggestions

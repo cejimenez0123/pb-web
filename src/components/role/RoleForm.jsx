@@ -158,10 +158,8 @@ const sortedResult = [...result].sort((a, b) => {
     (rolePriority[roleB] || 99)
   );
 });
- console.log(`sortedResult after filtering with search="${search}":`, sortedResult.slice(0,5));
   return sortedResult;
 }, [profiles, search,dispatch]);
-console.log("Filtered Profiles:", filteredProfiles.slice(0,5), "Search:", search, "Roles:", roles);
   return (
     <div className="dark:bg-base-bgDark bg-cream ">
 

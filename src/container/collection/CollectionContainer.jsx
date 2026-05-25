@@ -329,7 +329,7 @@ return
 
 
       if (!isBookmarked) {
-        // console.log()
+     
         setIsBookmarked(true)
         if (collection && homeCol) {
           let params = { id: homeCol.id, list: [collection.id], profile: currentProfile };

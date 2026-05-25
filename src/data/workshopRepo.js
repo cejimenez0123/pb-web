@@ -48,7 +48,7 @@ async findYourWorkshops() {
   );
   return res.data;
 }catch(err){
-  console.log("find your workshops",err)
+
 }
 }
 

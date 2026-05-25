@@ -61,7 +61,7 @@ const location = router.routeInfo.pathname
       ...prev,
       [field]: typeof value === "string" ? value : value,
     }))
-    console.log(JSON.stringify(formData))
+   
   }
 
   // Update SEO on load

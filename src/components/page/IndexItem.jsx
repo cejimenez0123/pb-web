@@ -126,7 +126,7 @@ handleFeedback={(item)=>{
         });
 }}
 handlePostPublic={()=>{
-  console.log("Publishing...")
+
   handleisPrviate(false)
   resetDialog()
   router.push(Paths.page.createRoute(item.id),"forward")

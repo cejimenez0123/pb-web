@@ -2,7 +2,7 @@
 import { Preferences } from '@capacitor/preferences';
 import { IonContent, IonText, IonLabel } from '@ionic/react';
 import "../App.css";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import authRepo from '../data/authRepo';
 import ThankYou from './auth/ThankYou';
 import logo from "../images/logo/icon.png";
@@ -291,6 +291,7 @@ export default function OnboardingContainer() {
   const router = useIonRouter();
   const currentProfile = useSelector(s => s.users.currentProfile);
 
+  const contentRef = useRef(null);
   const [activeTab, setActiveTab] = useState("tab0");
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -306,6 +307,10 @@ export default function OnboardingContainer() {
   useEffect(() => {
     if (currentProfile?.id) router.push(Paths.home, "root");
   }, [currentProfile, router]);
+
+  useEffect(() => {
+    contentRef.current?.scrollToTop(0);
+  }, [activeTab]);
 
   const updateFormData = data => setFormData(prev => ({ ...prev, ...data }));
 
@@ -340,7 +345,7 @@ export default function OnboardingContainer() {
   }
 
   return (
-    <IonContent className="page-content" style={{ "--padding-bottom": "10rem" }} fullscreen>
+    <IonContent ref={contentRef} className="page-content" style={{ "--padding-bottom": "10rem" }} fullscreen>
       <div className="max-w-xl py-4 mx-auto">
         {activeTab !== "tab0" && <ProgressDots activeTab={activeTab} />}
 

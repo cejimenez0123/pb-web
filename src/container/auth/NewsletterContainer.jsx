@@ -92,7 +92,7 @@ const{openDialog,closeDialog,dialog}=useDialog()
     try {
       const payload = { ...formData, frequency: Number(formData.frequency) };
       const data = await authRepo.newsletter(payload);
-console.log(data)
+
 
       if (data.user)
         { setUser(data.user)

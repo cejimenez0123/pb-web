@@ -11,7 +11,7 @@ import { Geolocation } from "@capacitor/geolocation";
       // Permission already granted, get location
      getPostion()
       
-      console.log("request location",null);
+ 
     }else if (permStatus.location === 'prompt' || permStatus.location === 'denied') {
       // Request permission explicitly, triggers iOS popup if needed
       const requestResult = await Geolocation.requestPermissions();

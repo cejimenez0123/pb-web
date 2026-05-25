@@ -83,7 +83,7 @@ export default function EditorContainer({ presentingElement }) {
     }
             setIsSaved(true)
           },
-          (err) => { console.log(err); showAlert({ message: err.message, type: AlertType.error }); }
+          (err) => { showAlert({ message: err.message, type: AlertType.error }); }
         )
       );
     }, 500)
@@ -237,7 +237,7 @@ export default function EditorContainer({ presentingElement }) {
     const res = await dispatch(updateStory({ ...payload, id: resolvedId }));
     return checkResult(res,
       (data) => {
-                 console.log(data)
+           
      if (data?.story) {
       dispatch(updatePaginatedItem({ key: "stories", item: data.story }));
     }
@@ -251,7 +251,10 @@ export default function EditorContainer({ presentingElement }) {
   const [accessToken, setAccessToken] = useState(null);
 
   useEffect(() => {
-    try { fetchFiles(); } catch (err) { console.log(err); }
+    try { fetchFiles(); } catch (err) { 
+
+      
+    }
   }, [accessToken]);
 
   const fetchFiles = async () => {

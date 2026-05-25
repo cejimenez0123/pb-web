@@ -34,7 +34,7 @@ async getMyProfiles() {
   
     return res.data;
   } catch (e) {
-  console.log("ERROR", e);
+
   throw e;
 }
 }
@@ -48,7 +48,7 @@ try{
 
         return res.data
     }catch (e) {
-  console.log("ERROR", e);
+
   throw e;
 }
     }
@@ -91,7 +91,7 @@ seen:seen
     const res = await axios.patch(this.url + "/notifications/read", {}, { headers });
     return res.data;
   } catch (e) {
-    console.log("ERROR", e);
+
     throw e;
   }
 }

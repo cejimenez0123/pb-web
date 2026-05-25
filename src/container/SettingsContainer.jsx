@@ -49,7 +49,7 @@ async function reverseGeocode(lat, lng) {
     return data?.display_name || "";
 
   } catch (err) {
-    console.log("Reverse geocode error:", err);
+
     return "";
   }
 
@@ -106,9 +106,7 @@ useEffect(() => {
     if (!currentProfile) return;
 
     const pic = currentProfile.profilePic;
-
-// console.log("Current profile location in settings useEffect:", currentProfile.location)
-    setForm({
+  setForm({
       username: currentProfile.username ?? "",
       selfStatement: currentProfile.selfStatement ?? "",
       isPrivate: currentProfile.isPrivate ?? false,
@@ -143,7 +141,6 @@ const handleUseCurrentLocation = async () => {
       // Use fetchCity helper to get city + state
       const cityCountry = await fetchCity(coords);
 
-      console.log("Fetched city for current location:", cityCountry);
       handleChange("location", {
         ...coords,
         city: cityCountry || "",

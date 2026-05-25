@@ -5,9 +5,9 @@ import deleteIcon from "../../images/icons/delete.svg"
 function EditorFooter({ pageInView, effectiveId, openConfirmDeleteDialog }) {
   const [openHashtag, setOpenHashtag] = useState(false);
 let path = location.pathname.split("/")
-console.log("STOP",path)
+
   const id = path[path.length-1] !== "edit"
-console.log("STOP",id)
+
 return(<AnimatePresence><motion.div
   className="flex flex-col"
   initial={{ opacity: 0 }}

@@ -233,7 +233,7 @@ const cycleFollowersRole = () => {
 
 
       token &&id&& dispatch(fetchCollectionProtected(params)).then((res) => {
-        console.log(res)
+       
        
         setPending(false);
       });

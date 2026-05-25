@@ -94,7 +94,7 @@ const paginatedEvents = events.slice(
   .map((event) => {
           const hashtags = extractHashtags(event.description || "");
 let obj = event.description?cleanDescriptionAndExtractHashtags(event.description):{cleanedDescription: "",suggestions:[]}             
-console.log(event.organizer.displayName)      
+     
 return {
             summary: event.summary,
             shortSummary: event.summary?.slice(0, 30),

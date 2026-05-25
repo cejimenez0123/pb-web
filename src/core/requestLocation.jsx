@@ -70,7 +70,7 @@ if(isNative){
         setLoading(false);
       },
       (err) => {
-        console.log("location error")
+    
         setError("We use location to conect with you fellow writers. Reload for access.");
         setLoading(false);
   

@@ -1,6 +1,6 @@
 import { io } from 'socket.io-client';
 import Enviroment from '../core/Enviroment';
-console.log("Enviroment",Enviroment.url)
+
 let domain = import.meta.env.VITE_DOMAIN
 if(import.meta.env.VITE_NODE_ENV=="dev"){
   domain=import.meta.env.VITE_DEV_DOMAIN
@@ -11,8 +11,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import workshopRepo from '../data/workshopRepo';
 
 socket.on("connect", () => {
-    console.log("Connected to the server:", socket.id);
-});
+  });
 
 socket.on("connect_error", (error) => {
     console.error("connect error",JSON.stringify(error));
@@ -35,7 +34,7 @@ const {story,profile,location}=params
         story:data.story
       }
     } catch (error) {
-      console.error('Error fetching active users:', error);
+      // console.error('Error fetching active users:', error);
       return { profiles:[],
         profile:null,
       story:null}
@@ -69,7 +68,7 @@ const findWorkshopGroups = createAsyncThunk("books/findWorkshopGroups", async ({
 }, thunkApi) => {
   try {
     let data = await workshopRepo.findWorkshops({ radius, global, location, type, skip, take });
-    console.log("Fetched workshop groups:", data);
+
     return data;
   } catch (error) {
     console.error('Error fetching workshop groups:', error);
@@ -130,7 +129,7 @@ const fetchWorkshopGroups = createAsyncThunk("books/fetchWorkshopGroups",    asy
     
         return response.data
       } catch (error) {
-        console.log( error);
+   
         return [];
       }
 

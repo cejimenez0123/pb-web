@@ -300,7 +300,7 @@ export default function ThankYou({ user }) {
         {/* BUTTONS */}
         <div className="flex flex-col sm:flex-row gap-3 sm:justify-between">
 
-          {!Capacitor.isNativePlatform() && (
+          {/* {!Capacitor.isNativePlatform() && (
             <IonText
               onClick={() => router.push(Paths.about())}
               className={buttonClassNames}
@@ -308,7 +308,7 @@ export default function ThankYou({ user }) {
             >
               About Plumbum
             </IonText>
-          )}
+          )} */}
 
           <IonText
             onClick={() => router.push(Paths.discovery)}

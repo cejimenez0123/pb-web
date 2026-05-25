@@ -22,7 +22,7 @@ import { motion } from "framer-motion";
 import PageList from '../components/page/PageList.jsx';
 
 const PAGE_WRAP = "mx-auto pb-24 bg-base-surface dark:bg-base-bgDark min-h-screen";
-const SECTION = "space-y-4";
+const SECTION = "space-y-4 px-2";
 const SECTION_HEADER_ROW = "flex items-center justify-between px-4 max-w-[50em] mx-auto";
 const H_SCROLL_WRAP = "pl-4 -mx-4 sm:mx-0";
 const H_SCROLL_ROW = "flex flex-row gap-4";
@@ -152,10 +152,9 @@ function DiscoveryContainer() {
             <SectionHeader title="Pages" />
           </div>
 
-          <div className="px-4 max-w-[50em] mx-auto flex flex-col gap-3">
-            <PageList items={viewItems} shortenTo={200}/>
+             <PageList items={viewItems} shortenTo={200}/>
 
-          </div>
+       
 
           {!currentProfile && (
             <div className="px-4 max-w-[50em] mx-auto">

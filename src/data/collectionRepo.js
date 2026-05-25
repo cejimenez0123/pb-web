@@ -159,7 +159,7 @@ async getProtectedProfileCollections({ id, skip = 0, take = 20 }) {
     async fetchCollection({id}){
            
         const res = await axios.get(this.url+"/"+id)
-console.log(res.data)
+
         return res.data
     }
     async fetchCollectionProtected({id}){
@@ -179,7 +179,7 @@ console.log(res.data)
         let res = await axios.delete(this.url+"/colToCol/"+tcId,
             {headers:headers}
         )
-        console.log(res)
+
         return res.data
     }
     async deleteStoryToCollection({stId}){
@@ -201,15 +201,11 @@ console.log(res.data)
         const res = await axios.post(this.url+"/home",{collection,type},{
             headers:headers
         })
-        console.log(res)
+  
         return res.data
 
     }
-    // async recommendedColCollections({colId}){
-    //     const res = await axios.get(this.url+"/"+colId+"/recommendations",)
-
-    //     return res.data
-    // }
+ 
     async recommendedColCollections({ colId, skip = 0, take = 10, type } = {}) {
   const res = await axios.get(`${this.url}/${colId}/recommendations`, {
     params: { skip, take, ...(type && { type }) }

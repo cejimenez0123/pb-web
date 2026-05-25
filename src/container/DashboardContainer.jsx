@@ -260,7 +260,7 @@ const openCommunities = () => {
             fetchWorkshops()
                 if (currentProfile?.profileToCollections) {
                   let home = currentProfile.profileToCollections.find(pTc => pTc.type === "home")?.collection || null;
-                     console.log("HOME COL",home)
+            
                   setHomeCol(home);
                 
                   let archive = currentProfile.profileToCollections.find(pTc => pTc.type === "archive")?.collection || null;

@@ -76,7 +76,7 @@ export default function CreateCollectionForm({ initPages, onClose }) {
         isOpenCollaboration,
       };
 
-      console.log("FORM DATA", formData);
+ 
 
       const res = await dispatch(createCollection(params));
 
