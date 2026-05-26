@@ -68,17 +68,24 @@ class AuthRepo{
       return res.data
     }
 
-async startSession({ uId, email, password, identityToken }) {
-  const headers = await this.getAuthHeaders();
+// async startSession({ uId, email, password, identityToken }) {
+//   const headers = await this.getAuthHeaders();
 
 
 
+//   const res = await axios.post(
+//     `${Enviroment.url}/auth/session`,
+//     { uId, email, password, identityToken },
+//     { headers }
+//   );
+
+//   return res.data;
+// }
+async startSession({ uId, email, password, identityToken, idToken }) {
   const res = await axios.post(
     `${Enviroment.url}/auth/session`,
-    { uId, email, password, identityToken },
-    { headers }
+    { uId, email, password, identityToken, idToken },
   );
-
   return res.data;
 }
     async updateSubscription({token,frequency}){

@@ -34,23 +34,25 @@ export default function LogInContainer({ currentProfile }) {
   }, [setSeo]);
 
  // Option 1 — setTimeout (simplest)
+const [signingIn, setSigningIn] = useState(false);
+
 useEffect(() => {
-  if (!currentProfile?.id) return;
+  if (!currentProfile?.id || signingIn) return;
   setTimeout(() => {
     router.push(Paths.myProfile, "root");
   }, 0);
-}, [currentProfile, router]);
+}, [currentProfile, router, signingIn]);
 
   return (
     <IonContent className="page-content" fullscreen>
       <div className="py-10">
-        <LogInCard setLogInError={(msg) => showPrompt({ message: msg, type: AlertType.prompt, agree: () => closeAlert(), agreeText:"Understood"  })} />
+        <LogInCard  setSigningIn={setSigningIn}  setLogInError={(msg) => showPrompt({ message: msg, type: AlertType.prompt, agree: () => closeAlert(), agreeText:"Understood"  })} />
       </div>
     </IonContent>
   );
 }
 
-function LogInCard({ setLogInError }) {
+function LogInCard({ setSigningIn, setLogInError }) {
   const dispatch = useDispatch();
   const router   = useIonRouter();
   const { showAlert ,closeAlert,showPrompt} = useAlert();
@@ -61,11 +63,26 @@ function LogInCard({ setLogInError }) {
   const [password, setPassword]       = useState("");
   const [pending, setPending]         = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  //   showAlert({ message: err?.status === 401 ? "User Not Found. Apply Below" : err?.message || "Unknown error", type: AlertType.error });
+  // };
+const handleAuthError = (err) => {
+  const message = err?.data?.message || err?.message || "Unknown error";
+  const isNoAccount = err?.status === 404;
 
-  const handleAuthError = (err) => {
-    showAlert({ message: err?.status === 401 ? "User Not Found. Apply Below" : err?.message || "Unknown error", type: AlertType.error });
-  };
-
+  if (isNoAccount) {
+    showPrompt({
+      message: "No account found. Have you applied to Plumbum?",
+      type: AlertType.prompt,
+      agree: () => {
+        closeAlert();
+        router.push(Paths.onboard);
+      },
+      agreeText: "Apply Now",
+    });
+  } else {
+    showAlert({ message, type: AlertType.error });
+  }
+};
   const handleLogIn = () => {
     if (email.length > 3 && password.length) {
       setPending(true);
@@ -90,32 +107,65 @@ function LogInCard({ setLogInError }) {
       showAlert({ message: "Values can't be empty", type: AlertType.error });
     }
   };
-
-  const dispatchLogin = ({ email, googleId, idToken }) => {
-    if (!idToken && !googleId) {
-      showAlert({ message: "Google login failed: missing credentials", type: AlertType.error });
-      return;
-    }
-    setPending(true);
-    dispatch(logIn({ email: email || null, uId: googleId || null, idToken: idToken || null, isNative })).then((res) => {
-      checkResult(
-        res,
-        (payload) => {
-        
-          if (payload?.profile?.id) {
-            router.push(Paths.home, "forward");
-          } else {
-            showPrompt({ message: "No profile found. Check email or apply", type: AlertType.prompt, agree: () => closeAlert(), agreeText:"Understood"  });
-          }
-          setPending(false);
-        },
-        (err) => {
-          handleAuthError(err);
-          setPending(false);
+  const dispatchLogin = ({ email, googleId, idToken, provider }) => {
+  if (!idToken && !googleId) {
+    showAlert({ message: "Login failed: missing credentials", type: AlertType.error });
+    return;
+  }
+  setSigningIn(true);
+  setPending(true);
+  dispatch(logIn({
+    email: email || null,
+    uId: googleId || null,
+    idToken: idToken || null,
+    provider,
+    isNative,
+  })).then((res) => {
+    checkResult(
+      res,
+      (payload) => {
+        if (payload?.profile?.id) {
+          router.push(Paths.home, "forward");
+        } else {
+          showPrompt({ message: "No profile found. Check email or apply", type: AlertType.prompt, agree: () => closeAlert(), agreeText: "Understood" });
         }
-      );
-    });
-  };
+        setPending(false);
+        setSigningIn(false);
+      },
+      (err) => {
+        handleAuthError(err);
+        setPending(false);
+        setSigningIn(false);
+      }
+    );
+  });
+};
+  //     setSigningIn(true);  // prevent redirect while auth is in flight
+  // setPending(true);
+  //   if (!idToken && !googleId) {
+  //     showAlert({ message: "Google login failed: missing credentials", type: AlertType.error });
+  //     return;
+  //   }
+  //   setPending(true);
+  //   dispatch(logIn({ email: email || null, uId: googleId || null, idToken: idToken || null, isNative })).then((res) => {
+  //     checkResult(
+  //       res,
+  //       (payload) => {
+        
+  //         if (payload?.profile?.id) {
+  //           router.push(Paths.home, "forward");
+  //         } else {
+  //           showPrompt({ message: "No profile found. Check email or apply", type: AlertType.prompt, agree: () => closeAlert(), agreeText:"Understood"  });
+  //         }
+  //         setPending(false);
+  //       },
+  //       (err) => {
+  //         handleAuthError(err);
+  //         setPending(false);
+  //       }
+  //     );
+  //   });
+  // };
 
   const handleForgotPasswordDialog = () => {
     openDialog({
@@ -176,11 +226,11 @@ function LogInCard({ setLogInError }) {
             <span className="flex flex-col mt-4 justify-center">
               <div className="w-fit mx-auto">
                 <AppleSignInButton
-                  onUserSignIn={({ idToken, email }) => dispatchLogin({ email: email || null, idToken })}
+                  onUserSignIn={({ idToken, email }) =>     dispatchLogin({ email, googleId: null, idToken, provider: 'apple' })}
                 />
               </div>
               <GoogleLogin
-                onUserSignIn={({ email, name, googleId, idToken }) => dispatchLogin({ email, googleId, name, isNative })}
+                onUserSignIn={({ email, name, googleId, idToken }) =>   dispatchLogin({ email, googleId, idToken, provider: 'google' })}
               />
             </span>
 

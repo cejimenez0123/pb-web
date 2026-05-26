@@ -5,28 +5,76 @@ import authRepo from "../data/authRepo";
 import profileRepo from "../data/profileRepo";
 import { Preferences } from "@capacitor/preferences";
 import algoliaRepo from "../data/algoliaRepo";
-import { SocialLogin } from "@capgo/capacitor-social-login";
 const logIn = createAsyncThunk(
-    'users/logIn',
-    async (params,thunkApi) => {
+  'users/logIn',
+  async (params, thunkApi) => {
+    try {
+      const { uId, email, password, idToken, provider, isNative } = params;
+
+      window.alert(`logIn thunk — provider: ${provider}, idToken: ${idToken ? idToken.slice(0,20) : 'NULL'}`);
+
+      const body = {
+        uId,
+        email,
+        password,
+        idToken:       provider === 'google' ? idToken : null,
+        identityToken: provider === 'apple'  ? idToken : null,
+      };
+
+      window.alert(`body being sent: ${JSON.stringify({ ...body, idToken: body.idToken?.slice(0,20), identityToken: body.identityToken?.slice(0,20) })}`);
+
+      const authData = await authRepo.startSession(body);
+      const { token } = authData;
+      await Preferences.set({ key: "token", value: token });
+      return { token, profile: authData.profile, user: authData.user };
+    } catch (error) {
+      window.alert(`logIn thunk ERROR: ${JSON.stringify(error)}`);
+      return thunkApi.rejectWithValue(error);
+    }
+  }
+);
+// const logIn = createAsyncThunk(
+//     'users/logIn',
+//     async (params,thunkApi) => {
    
      
-try{      
+// try{      
   
-        const {uId,email,password,idToken,isNative}=params
-        const authData = await authRepo.startSession({uId:uId,email:email,password,identityToken:idToken})
-        const {token}=authData  
+//         const {uId,email,password,idToken,isNative}=params
+//         const authData = await authRepo.startSession({uId:uId,email:email,password,identityToken:idToken})
+//         const {token}=authData  
  
-         await Preferences.set({key:"token",value:token})
+//          await Preferences.set({key:"token",value:token})
   
-        return {token:token,profile:authData.profile,user:authData.user}
-}catch(error){
-  return thunkApi.rejectWithValue(error)
-}
+//         return {token:token,profile:authData.profile,user:authData.user}
+// }catch(error){
+//   return thunkApi.rejectWithValue(error)
+// }
       
-    }
-)
+//     }
+// )
+// const logIn = createAsyncThunk(
+//   'users/logIn',
+//   async (params, thunkApi) => {
+//     try {
+//       const { uId, email, password, idToken, provider, isNative } = params;
 
+//       const authData = await authRepo.startSession({
+//         uId,
+//         email,
+//         password,
+//         idToken:       provider === 'google' ? idToken : null,
+//         identityToken: provider === 'apple'  ? idToken : null,
+//       });
+
+//       const { token } = authData;
+//       await Preferences.set({ key: "token", value: token });
+//       return { token, profile: authData.profile, user: authData.user };
+//     } catch (error) {
+//       return thunkApi.rejectWithValue(error);
+//     }
+//   }
+// );
 const referSomeone =createAsyncThunk('users/referral',async (params,thunkApi)=>{
   let data = await authRepo.referral(params)
   return data
