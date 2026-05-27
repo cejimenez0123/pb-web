@@ -7,11 +7,12 @@ import { useDispatch } from "react-redux";
 import { referSomeone } from "../../actions/UserActions";
 import { useDialog } from "../../domain/usecases/useDialog";
 import checkResult from "../../core/checkResult";
+import { useAlert } from "../../core/useAlert";
 
 export default function ReferralForm({ onClose }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-
+const { showAlert } =useAlert()
   const [referralLink, setReferralLink] = useState("");
   const [message, setMessage] = useState("");
   const [pending, setPending] = useState(false);
@@ -67,7 +68,7 @@ export default function ReferralForm({ onClose }) {
         },
         () => {
           onClose();
-          window.alert("An error occurred. Please try again.");
+          showAlert({ message: "An error occurred. Please try again.", type: AlertType.error });
         }
       );
     });

@@ -16,6 +16,8 @@ import StoryItem from '../components/page/StoryItem.jsx';
 import PageList from '../components/page/PageList.jsx';
 import SectionHeader from '../components/SectionHeader.jsx';
 import shortName from '../core/shortName.jsx';
+import AlertType from '../core/AlertType.js';
+import { useAlert } from '../core/useAlert.jsx';
 
 // ── Layout ──────────────────────────────────────
 const WRAP = "max-w-[72rem] dark:bg-base-bgDark bg-cream mx-auto ";
@@ -85,7 +87,7 @@ function HomeEmbed({workshops,stories,prompts,isGlobal,setIsGlobal}) {
   const currentProfile = useSelector(state => state.users.currentProfile);
   const {recommendedStories} = useSelector(state=>state.pages)
 
-
+const { showAlert } = useAlert()
   const [whatsHappeningList, setWhatsHappeningList] = useState([]);
 
   const sortedWorkshops = useMemo(() => [...workshops]?.sort((a,b) => a?.title.localeCompare(b?.title)).slice(0,4), [workshops]);
@@ -121,8 +123,8 @@ function HomeEmbed({workshops,stories,prompts,isGlobal,setIsGlobal}) {
       title: "Untitled",
       commentable: true
     })).then(res => checkResult(res, payload => {
-      if (!payload.story) return window.alert("COULD NOT CREATE STORY");
-      // dispatch(setEditingPage({ page: payload.story }));
+      if (!payload.story) return showAlert({ message: "COULD NOT CREATE STORY", type: AlertType.error });
+
       dispatch(setPageInView({ page: payload?.story }));
       router.push(Paths.editPage.createRoute(payload?.story?.id,payload?.story?.type), 'forward', 'push');
     }));

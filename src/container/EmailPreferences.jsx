@@ -131,7 +131,7 @@ showAlert({ message: err.message, type: AlertType.error })
         <p className="text-center text-sm text-gray-500 mt-4">
           Want to stop receiving emails? 
           <a onClick={()=>unsubscribe()}
-          className="text-emerald-600 mx-2 font-semibold hover:underline">Unsubscribe</a>
+          className="text-emerald-600 mx-2 font-semibold hover:underline">None</a>
         </p>
       </div>)}
     </div>

@@ -65,7 +65,27 @@ function LogInCard({ setSigningIn, setLogInError }) {
   const [showPassword, setShowPassword] = useState(false);
   //   showAlert({ message: err?.status === 401 ? "User Not Found. Apply Below" : err?.message || "Unknown error", type: AlertType.error });
   // };
+// const handleAuthError = (err) => {
+//   const message = err?.data?.message || err?.message || "Unknown error";
+//   const isNoAccount = err?.status === 404;
+
+//   if (isNoAccount) {
+//     showPrompt({
+//       message: "No account found. Have you applied to Plumbum?",
+//       type: AlertType.prompt,
+//       agree: () => {
+//         closeAlert();
+//         router.push(Paths.onboard);
+//       },
+//       agreeText: "Apply Now",
+//     });
+//   } else {
+//     showAlert({ message, type: AlertType.error });
+//   }
+// };
 const handleAuthError = (err) => {
+
+  
   const message = err?.data?.message || err?.message || "Unknown error";
   const isNoAccount = err?.status === 404;
 

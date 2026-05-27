@@ -16,9 +16,13 @@ import Paths from "../../core/paths";
 import Context from "../../context";
 import "../../App.css";
 import InfoTooltip from '../../components/InfoTooltip';
-import { debounce } from 'lodash';
+
 import { Preferences } from '@capacitor/preferences';
 import { Capacitor } from '@capacitor/core';
+import { useAlert } from '../../core/useAlert';
+import AlertType from '../../core/AlertType';
+import authRepo from '../../data/authRepo';
+import debounce from '../../core/debounce';
   
 const ProfilePicture = React.memo(({ image }) => (
   <IonImg
@@ -43,7 +47,7 @@ const [referralToken, setReferralTokenState] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
   const [loading,setLoading]=useState(false)
   const [email, setEmail] = useState("");
-
+  const {showAlert}=useAlert()
 const router = useIonRouter();
 const searchParams = new URLSearchParams(router.routeInfo.search);
 
@@ -60,7 +64,7 @@ useEffect(() => {
   }
   if (t) setReferralTokenState(t);
 }, []);
-  const { setError, setSuccess, setSeo, seo } = useContext(Context);
+  const {  setSeo, seo } = useContext(Context);
 
   useEffect(() => {
     setSeo({
@@ -78,7 +82,7 @@ const handleProfilePicture = (e) => {
 
   if (!file.type.startsWith('image/')) {
 
-    setError('Please upload a valid image file.');
+  showAlert({message:'Please upload a valid image file.',type:AlertType.error});
     return;
   }
 
@@ -92,7 +96,7 @@ const handleProfilePicture = (e) => {
 
   setFile(file);
   setPictureUrl(newUrl);
-  setError('');
+
 }else{
   const reader = new FileReader();
 reader.onloadend = () => {
@@ -116,21 +120,21 @@ useEffect(() => {
 const completeSignUp = async () => {
   try {
     // ✅ Safe Capacitor reads
+    if (!usernameUnique) {
+  showAlert({ message: "Username is already taken", type: AlertType.error });
+  return;
+}
     const { value: identityToken } = await Preferences.get({ key: "idToken" });
     const { value: googleId } = await Preferences.get({ key: "googleId" });
 
     const pictureParams = fileFind
       ? { file: fileFind }
       : { profilePicture: selectedImage };
-let {value:token }= await Preferences.get("token")
-    // ✅ referral token from URL param state
-    
-
-    // ✅ MUST match backend exactly
+let { value: token } = await Preferences.get({ key: "token" });
+   
 const params = {
   authToken: identityToken,
   referralToken:referralToken??token,
-  email: email?.trim() || null,
   username:username.trim() || null,
   password,
   googleId,
@@ -139,7 +143,7 @@ const params = {
   privacy: isPrivate,
   ...pictureParams
 };
-
+console.log("Sign-up params:", params)
     // =========================
     // If uploading image first
     // =========================
@@ -156,15 +160,22 @@ const params = {
 
           await checkResult(res, (payload) => {
             if (payload.profile) {
-              router.push(Paths.login());
+              router.push(Paths.login);
             } else {
-              setSuccess(null);
-              setError(
+          
+            showAlert({message:  
                 payload?.error?.status === 409
                   ? "Username is not unique"
-                  : payload?.error?.message || "Try reusing the link"
-              );
+                  : payload?.error?.message || "Try reusing the link",type:AlertType.error})
+           
             }
+          }, err => {
+    
+            showAlert({message:
+              err?.status === 409
+                ? "Username is not unique"
+                : err?.message || "Try reusing the link",type:AlertType.error
+            });
           });
 
           await Preferences.set({
@@ -172,12 +183,12 @@ const params = {
             value: String(payload.firstTime || false)
           });
         } catch (err) {
-          setSuccess(null);
-          setError(
+
+          showAlert({message:
             err?.status === 409
               ? "Username is not unique"
-              : err?.message || "Try reusing the link"
-          );
+              : err?.message || "Try reusing the link",type:AlertType.error
+          });
         }
       });
     }
@@ -191,14 +202,14 @@ const params = {
 
         await checkResult(res, async (payload) => {
           if (payload.profile) {
-            router.push(Paths.login());
+            router.push(Paths.login);
           } else {
-            setSuccess(null);
-            setError(
+   
+            showAlert({message:
               payload?.error?.status === 409
                 ? "Username is not unique"
-                : payload?.error?.message || "Try reusing the link"
-            );
+                : payload?.error?.message || "Try reusing the link",type:AlertType.error
+            });
           }
 
           await Preferences.set({
@@ -207,27 +218,41 @@ const params = {
           });
         });
       } catch (err) {
-        setSuccess(null);
-        setError(
+
+        showAlert({message:
           err?.status === 409
             ? "Username is not unique"
-            : err?.message || "Try reusing the link"
-        );
+            : err?.message || "Try reusing the link",type:AlertType.error
+        });
+  
       }
     }
   } catch (err) {
-    setSuccess(null);
-    setError(err?.message || "Unexpected error occurred");
+
+    showAlert({message:
+      err?.status === 409
+        ? "Username is not unique"
+        : err?.message || "Try reusing the link",type:AlertType.error
+    });
+   
   }
 };
+const [usernameUnique, setUsernameUnique] = useState(true);
 
-const handlePrivate = useCallback(
-  debounce(() => {
-    setIsPrivate(prev => !prev);
-  }, 100),
-  []
-);
+const debouncedCheck = useRef(
+  debounce((u) => {
+    authRepo.checkUsername(u).then((data) => {
+      setUsernameUnique(data ? data.available : false);
+    });
+  }, 300)
+).current;
 
+useEffect(() => {
+  if (username.length > 0) debouncedCheck(username);
+}, [username]);
+useEffect(() => {
+  if (username.length > 0) debouncedCheck(username);
+}, [username]);
 return(<IonContent
   fullscreen
   className="ion-padding bg-base-100"
@@ -248,6 +273,9 @@ return(<IonContent
   setIsPrivate={setIsPrivate}
   onSubmit={completeSignUp}
   loading={loading}
+    pictureUrl={pictureUrl}           // ← add
+  handleProfilePicture={handleProfilePicture}  // ← add
+  usernameUnique={usernameUnique}
 />
 </IonContent>)
           }
@@ -262,9 +290,14 @@ return(<IonContent
   isPrivate,
   setIsPrivate,
   onSubmit,
-  loading
+  loading,
+    pictureUrl,                // ← add
+  handleProfilePicture   ,
+  usernameUnique
 }) {
   const [showPassword, setShowPassword] = useState(false);
+
+
 
   return (
     <div className="min-h-screen bg-neutral-50 text-neutral-900">
@@ -284,7 +317,7 @@ return(<IonContent
         <div className="bg-white rounded-2xl border border-neutral-200 p-4 space-y-4">
           
           {/* Email */}
-          <div className="space-y-1">
+          {/* <div className="space-y-1">
             <label className="text-sm text-neutral-500">Email</label>
             <input
               type="email"
@@ -294,7 +327,7 @@ return(<IonContent
               className="w-full px-4 py-3 rounded-xl border border-neutral-300 bg-white 
                          focus:outline-none focus:ring-2 focus:ring-neutral-400 transition"
             />
-          </div>
+          </div> */}
 
           {/* Username */}
           <div className="space-y-1">
@@ -302,13 +335,36 @@ return(<IonContent
             <input
               type="text"
               value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={(e) => setUsername(e.target.value.toLowerCase())}
               placeholder="@username"
               className="w-full px-4 py-3 rounded-xl border border-neutral-300 bg-white 
                          focus:outline-none focus:ring-2 focus:ring-neutral-400 transition"
             />
+            {username.length >= 4 && !usernameUnique && (
+    <p className="text-xs text-rose-500">Username already taken</p>
+  )}
+  {username.length >= 4 && usernameUnique && (
+    <p className="text-xs text-emerald-500">✓ Username available</p>
+  )}
           </div>
-
+ <div className="flex flex-col items-center gap-4">
+  <img
+    src={pictureUrl}          // ← was selectedImage (undefined in IOSFormTemplate)
+    alt="Profile"
+    className="w-16 h-16 rounded-2xl object-cover border-2 border-emerald-100 shadow-sm flex-shrink-0"
+  />
+  <label className="flex-1 cursor-pointer">
+    <div className="border-2 border-dashed border-emerald-200 rounded-2xl px-4 py-3 text-center text-sm text-emerald-600 hover:border-emerald-400 hover:bg-emerald-50 transition-colors">
+      Tap to upload photo
+      <input 
+        type="file" 
+        accept="image/*" 
+        className="hidden" 
+        onChange={handleProfilePicture}  // ← was undefined
+      />
+    </div>
+  </label>
+</div>
           {/* Password */}
           <div className="space-y-1">
             <label className="text-sm text-neutral-500">Password</label>

@@ -5,13 +5,12 @@ import authRepo from "../data/authRepo";
 import profileRepo from "../data/profileRepo";
 import { Preferences } from "@capacitor/preferences";
 import algoliaRepo from "../data/algoliaRepo";
+
 const logIn = createAsyncThunk(
   'users/logIn',
   async (params, thunkApi) => {
     try {
       const { uId, email, password, idToken, provider, isNative } = params;
-
-      window.alert(`logIn thunk — provider: ${provider}, idToken: ${idToken ? idToken.slice(0,20) : 'NULL'}`);
 
       const body = {
         uId,
@@ -21,15 +20,15 @@ const logIn = createAsyncThunk(
         identityToken: provider === 'apple'  ? idToken : null,
       };
 
-      window.alert(`body being sent: ${JSON.stringify({ ...body, idToken: body.idToken?.slice(0,20), identityToken: body.identityToken?.slice(0,20) })}`);
-
       const authData = await authRepo.startSession(body);
       const { token } = authData;
       await Preferences.set({ key: "token", value: token });
       return { token, profile: authData.profile, user: authData.user };
     } catch (error) {
-      window.alert(`logIn thunk ERROR: ${JSON.stringify(error)}`);
-      return thunkApi.rejectWithValue(error);
+      // Extract the useful parts from the axios error
+      const status  = error?.response?.status;
+      const message = error?.response?.data?.message || error?.message || "Unknown error";
+      return thunkApi.rejectWithValue({ status, message });
     }
   }
 );
@@ -128,14 +127,23 @@ const setMainLoading = createAction("books/setCollectionInView", (params)=> {
 const signUp = createAsyncThunk(
     'users/signUp',
     async (params,thunkApi) => {
-      const{email,token,idToken,googleId,frequency,password,username,profilePicture,selfStatement,privacy}=params
+         const { email, referralToken, idToken, googleId, frequency, password, username, profilePicture, selfStatement, privacy } = params
 
       try {
         
-          // const userCred = await  createUserWithEmailAndPassword(auth, email, password)
-          let data = await profileRepo.register({uId:"",idToken,frequency,token,email,password,username,profilePicture,selfStatement,privacy})
-           
 
+let data = await profileRepo.register({
+  uId: "",
+  idToken,
+  frequency,
+  referralToken,  // ← renamed
+  email,
+  password,
+  username,
+  profilePicture,
+  selfStatement,
+  privacy
+})
            
           if (!privacy) {
             const {profile}= data
