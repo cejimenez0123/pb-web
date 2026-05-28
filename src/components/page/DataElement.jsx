@@ -156,7 +156,7 @@ function SelectionToolbar({ position, onAnnotate, onClose }) {
         <svg className="w-3.5 h-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round">
           <path d="M2 2h8l4 4v8H2V2zM10 2v4h4M5 9h6M5 11h4" />
         </svg>
-        Comment
+        <p className="text-slate-400">Comment</p>
       </button>
       <button
         className="text-slate-400 hover:text-white transition p-1 rounded-lg hover:bg-white/10"

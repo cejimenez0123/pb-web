@@ -51,18 +51,7 @@ if (cache.has(JSON.stringify(location))) {
 
     fetchLocation();
   }, [profile]);
-  
-  // const [locationName,setLocationName]=useState("")
-//   useEffect(()=>{
-    
-//   async function city(){
-//     let address =await fetchCity(profile.location)
-// if (address) {
-//   setLocationName(address);
-// }
-//   }
-//   profile?.location ?setLocationName(profile.location.city):city()
-//   },[profile])
+
   if (!profile) return null;
 
   const hashtags = profile.hashtags ?? profile.tags ?? [];
@@ -71,7 +60,7 @@ if (cache.has(JSON.stringify(location))) {
     <div className="space-y-6 px-4">
       <SectionHeader title="Bio"/>
       {(profile.bio || profile.selfStatement) && (
-        <p className="text-sm text-gray-700 leading-relaxed">
+        <p className="text-sm text-gray-700 dark:text-cream leading-relaxed">
           {profile.bio ?? profile.selfStatement}
         </p>
       )}
@@ -82,7 +71,7 @@ if (cache.has(JSON.stringify(location))) {
   {isLoadingLocation ? (
     <div className="mt-1 h-4 w-32 bg-gray-200 rounded animate-pulse" />
   ) : (
-    <p className="text-sm text-gray-700 mt-1">
+    <p className="text-sm text-gray-700 dark:text-cream mt-1">
       {locationName}
     </p>
   )}
