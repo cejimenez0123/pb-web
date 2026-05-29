@@ -20,9 +20,8 @@ export default function ExploreList({
   const [isVisible, setIsVisible] = useState(true);
   const [animatedItems, setAnimatedItems] = useState([]);
   const prevItemsRef = useRef(null);
-
-  const hasMore = items?.length < totalCount;
-  const isLoading = !items;
+const isLoading = !items; // keep as-is
+const isEmpty = items?.length === 0;
 
   // Trigger staggered entrance whenever items array changes to a new populated set
   useEffect(() => {
@@ -47,13 +46,7 @@ export default function ExploreList({
     });
   }, [items]);
 
-  const handleLoadMore = () => {
-    setIsVisible(false);
-    setTimeout(() => {
-      setPage(page + 1);
-      setIsVisible(true);
-    }, 120);
-  };
+console.log("EXPLORE ITEMS", items)
 
   return (
     <div className={`${WRAP} bg-cream dark:bg-base-bgDark ${SECTION_GAP}`}>
@@ -64,6 +57,7 @@ export default function ExploreList({
 
         <div className="relative min-h-[14rem]">
           {/* Skeleton */}
+          
           <div className={`transition-all duration-300 ease-out ${
             isLoading
               ? "opacity-100 translate-x-0"
@@ -82,12 +76,16 @@ export default function ExploreList({
               ))}
             </div>
           </div>
-
+{!isLoading && isEmpty && (
+  <div className="flex items-center justify-center min-h-[14rem] text-soft dark:text-cream opacity-50">
+    <p>Nothing to explore yet.</p>
+  </div>
+)}
           {/* Content */}
           <div className={`transition-all duration-300 ease-out ${
             isVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-6"
           }`}>
-            {!isLoading && items?.length > 0 && (
+            {!isLoading && !isEmpty && (
               <div className="flex min-h-[14rem] pr-4 flex-row overflow-x-auto space-x-4 no-scrollbar">
                 {items.map((item, i) => (
                   <div

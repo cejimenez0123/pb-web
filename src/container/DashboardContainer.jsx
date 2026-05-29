@@ -51,7 +51,7 @@ function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex
 const WRAP = "max-w-2xl mx-auto dark:bg-base-bgDark bg-base-surface ";
 const SECTION_GAP = "dark:bg-base-bgDark bg-base-surface ";  // applied to each section's root div
 const SECTION_HEADING = "text-xl lora-medium";          // text style only
-const SECTION_HEADER_ROW = "flex mt-6 mb-2 items-center flex-row justify-between px-4"; // row layout
+const SECTION_HEADER_ROW = "flex mt-6 mb-2 max-w-xl mx-auto items-center flex-row justify-between px-4"; // row layout
 const LIST_WRAP = "flex flex-col gap-4";  // Saves
 
 const TILE = "w-36 md:w-44 flex-shrink-0";
@@ -101,6 +101,7 @@ const recCols = usePaginatedResource({
     totalCount: res.totalCount,
   }),
 });
+console.log("REC COLS", recCols)
 const myStories = personalStories.items
 const personalCollections = usePaginatedResource({
   cacheKey: "collections",
@@ -518,13 +519,13 @@ scrollY: false,
   
   </div>
 
-  <div className="px-4">
+  <div className="px-4 flex">
     {workshop ? (
       <WorkshopItem workshop={workshop} router={router} />
     ) : (
-      <h2 className="text-lg text-soft">
-        Click Join a Workshop or Studio below
-      </h2>
+    <h2 onClick={() => router.push(Paths.workshop.reader())} className="text-lg py-12 mx-auto text-soft">
+  No workshops yet — find one to join →
+</h2>
     )}
     </div>
   </div>
@@ -550,8 +551,10 @@ scrollY: false,
 </div>
             <div className="w-full grid gap-4 auto-rows-fr items-stretch">
   <div className="relative min-h-[120px]">
-
-  {/* EMPTY STATE */}
+{myStories.length === 0 && (<div className="px-4 py-8 text-center text-soft dark:text-cream">
+    <p className="text-lg">You haven't written anything yet.</p>
+    <p className="text-sm mt-1 opacity-60">Hit "Write Something" above to start your first page.</p>
+  </div>)}
 
 
   {/* STORIES LIST */}
@@ -563,7 +566,7 @@ scrollY: false,
         : "opacity-0 translate-y-2 pointer-events-none absolute inset-0"}
     `}
   >
-    {myStories.length > 0 &&  (
+    {myStories.length > 0 && (
 <div
   className="w-full px-4 grid gap-4"
   style={{
@@ -587,6 +590,7 @@ scrollY: false,
       ))}
   </div>
 )}
+
    </div>
 </div>
          </div>  
@@ -596,8 +600,7 @@ scrollY: false,
 
           </div> 
        </div>
-{/* <div className='list-bottom-padding'> */}
-     {/* </div> */}
+
       </ErrorBoundary>
   );
 }

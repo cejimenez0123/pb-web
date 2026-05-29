@@ -1,23 +1,18 @@
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useState, useEffect, useLayoutEffect, useContext } from 'react';
 import '../styles/Discovery.css';
 import '../Dashboard.css';
 import ErrorBoundary from '../ErrorBoundary.jsx';
-import { getPublicStories, setPagesInView } from '../actions/PageActions.jsx';
-import { getMyCollections, getPublicCollections, setCollections } from '../actions/CollectionActions.js';
 import { AnimatePresence, motion } from "framer-motion";
 import {  sendGAEvent} from '../core/ga4.js';
 import Context from '../context.jsx';
 import Paths from '../core/paths.js';
 import useScrollTracking from '../core/useScrollTracking.jsx';
-import {  IonContent, useIonRouter, useIonViewWillEnter } from '@ionic/react';
-
-import Enviroment from '../core/Enviroment.js';
+import {  IonContent, useIonRouter, } from '@ionic/react';
 import useProfileDependentEffects from '../core/useProfileDependentEffects.jsx';
 import HomeEmbed from './HomeContainer.jsx';
 import DashboardEmbed from './DashboardContainer.jsx';
 import getBackground, { watchBackground } from '../core/getbackground.jsx';
-import usePushNotificationListener from '../domain/usecases/usePushNotificationListener.jsx';
 
 
 function ContentHubContainer() {
@@ -114,7 +109,7 @@ function DiscDashTabs({ tab, setTab, disc, dash}) {
   return (
   
     <div className="pt-12 dark:bg-base-bgDark overflow-y-scroll w-xl pb-[20rem] bg-base-surface">
-          <div className="flex justify-center lg:justify-start px-4 mx-auto lg:mx-12  max-w-xl  mb-2">
+         <div className="flex justify-center px-4 mx-auto max-w-xl mb-2">
           <div className="flex rounded-full mx-auto    border overflow-clip min-h-12   w-[100%]   border-soft">
            
          <button

@@ -426,7 +426,7 @@ export default function EditorContainer({ presentingElement }) {
               </div>
             </motion.div>
           </AnimatePresence>
-
+<div className="max-w-3xl mx-auto ">
           <AnimatePresence>
             <motion.div key="editor" initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.05 }}>
               <div className={CONTAINER}>
@@ -445,10 +445,11 @@ export default function EditorContainer({ presentingElement }) {
                 <EditorDiv page={editPage} isSaved={isSaved} setIsSaved={setIsSaved} handleChange={handleChange} parameters={parameters} type={type} createPageAction={createPageAction} />
               </div>
             </motion.div>
-            <div className="pt-8 px-4 bg-cream dark:bg-base-bgDark">
+           
               <EditorFooter pageInView={pageInView} effectiveId={effectiveId} openConfirmDeleteDialog={openConfirmDeleteDialog} />
-            </div>
+         
           </AnimatePresence>
+        </div>
         </div>
       </IonContent>
     </EditorContext.Provider>

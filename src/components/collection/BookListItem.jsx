@@ -16,7 +16,7 @@ function BookListItem({ book }) {
   useLayoutEffect(() => {
     initGA();
   }, []);
-
+console.log("BOOK ITEM", book)
   const navigateToBook = async () => {
     if (!book) return;
     await dispatch(clearPagesInView());

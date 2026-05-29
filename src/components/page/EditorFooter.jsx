@@ -13,7 +13,7 @@ return(<AnimatePresence><motion.div
   initial={{ opacity: 0 }}
   animate={{ opacity: effectiveId && effectiveId !== "new" ? 1 : 0 }}
   transition={{ duration: 0.3, ease: "easeIn" }}
-><div className="flex my-4 items-center justify-between">
+><div className="flex my-4  flex-row justify-between">
   {(effectiveId && id && effectiveId !== "new") && <button
     onClick={() => setOpenHashtag(prev => !prev)}
     className={`
@@ -44,10 +44,11 @@ return(<AnimatePresence><motion.div
   </button>}
 
   {/* Trash inline */}
+  {/* <div> */}
   {effectiveId && id && effectiveId !== "new" && (
     <button
       onClick={openConfirmDeleteDialog}
-      className="flex flex-col items-center rounded-full dark:bg-text-primary bg-golden gap-1.5 group"
+      className="flex flex-col items-center rounded-2xl dark:bg-text-primary bg-golden gap-1.5 group"
       style={{ WebkitTapHighlightColor: "transparent" }}
     >
   
@@ -56,7 +57,7 @@ return(<AnimatePresence><motion.div
       <span className="text-[11px] text-white group-hover:text-red-400 transition-colors">Delete</span>
     </button>
   )}
-
+{/* </div> */}
   </div>
   <div className="mt-2">
        <AnimatePresence initial={false}>
