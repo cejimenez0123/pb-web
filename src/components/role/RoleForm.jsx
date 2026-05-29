@@ -1,173 +1,250 @@
-import { IonList, IonItem, IonText, IonInput, IonSearchbar, IonContent } from "@ionic/react";
-import { useContext, useEffect, useLayoutEffect, useMemo, useState } from "react";
+import { IonSearchbar} from "@ionic/react";
+import { useContext, useEffect,  useMemo, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchProfiles } from "../../actions/ProfileActions";
 import { patchRoles } from "../../actions/RoleActions";
-import { patchCollectionRoles } from "../../actions/CollectionActions";
+import { fetchCollection, patchCollectionRoles } from "../../actions/CollectionActions";
 import { RoleType } from "../../core/constants";
 import Role from "../../domain/models/role";
 import checkResult from "../../core/checkResult";
 import Context from "../../context";
 import ProfileCircle from "../profile/ProfileCircle";
+import { getStory } from "../../actions/StoryActions";
+import Enviroment from "../../core/Enviroment";
+import Pill from "../Pill";
 
-export default function RoleForm({ item, onClose }) {
+export default function RoleForm({ item }) {
   const dispatch = useDispatch();
   const profiles = useSelector((state) => state.users.profilesInView);
+  
   const currentProfile = useSelector((state) => state.users.currentProfile);
-  const pending = useSelector((state) => state.roles.loading);
-  const [search, setSearch] = useState("");
 
   const { error, success, setError, setSuccess } = useContext(Context);
+
   const [roles, setRoles] = useState([]);
+  const [search, setSearch] = useState("");
+const handleResetAllRoles = () => {
+ const newRoles = roles.map(role=>{
+ return new Role(role.id, role.profile, item, "none",role.created)
+  })
+ 
+  setRoles(newRoles);
+};
+const handleUpdateRole = ({ role, profile }) => {
 
-  // Fetch profiles on mount
-  useLayoutEffect(() => {
-    dispatch(fetchProfiles());
-  }, [dispatch]);
+  setRoles((prevRoles) =>
+    prevRoles.map((r) =>{
+     
+      return r.profile.id === profile.id
+        ? new Role(r.id, profile, item, role, r.created) // preserve id & created
+        : r
+ } )
+  );
+};
+ 
+useEffect(() => {
+  if (!item || !profiles) return;
 
-  // Initialize roles
-  useEffect(() => {
-    if (!item) return;
+  const sourceRoles = item.roles || item.betaReaders || [];
 
-    const source = item.roles || item.betaReaders || [];
-    const list = source.map(
-      (role) =>
-        new Role(role.id, role.profile, role.collection || role.story, role.role, role.created)
+  const roleMap = new Map(
+    sourceRoles.map((r) => [r.profile.id, r])
+  );
+
+  const list = profiles.map((profile) => {
+    const existing = roleMap.get(profile.id);
+
+    return new Role(
+      existing?.id || null,
+      profile,
+      item,
+      existing?.role || "none",
+      existing?.created || null
     );
-    setRoles(list);
-  }, [item]);
+  });
+
+  setRoles(list);
+}, [item, profiles]);
 
   const handlePatchRoles = () => {
-    if (!currentProfile) {
-      setError("No current profile found.");
-      setSuccess(null);
-      return;
-    }
+    if (!currentProfile) return;
 
-    const onSuccess = () => {
-      setSuccess("Roles updated successfully!");
-      setError(null);
-    };
-    const onError = () => {
-      setError("Error saving roles.");
-      setSuccess(null);
-    };
-
-    const action = item.storyIdList
+    const action = item?.storyIdList
       ? patchCollectionRoles({ roles, profile: currentProfile, collection: item })
       : patchRoles({ roles, profileId: currentProfile.id, storyId: item.id });
 
-    dispatch(action).then((res) => checkResult(res, onSuccess, onError));
+    dispatch(action).then((res) =>
+      checkResult(
+        res,
+        () => {
+          
+          item.data?dispatch(getStory({ id: item.id })):dispatch(fetchCollection({id:item.id}))
+          setSuccess("Saved")},
+        () => setError("Error saving")
+      )
+    );
+  };
+ useEffect(() => {
+    dispatch(fetchProfiles());
+  }, [currentProfile,dispatch])
+
+
+// const cycleRole = (profile) => {
+//   const roleTypes = Object.values(RoleType);
+//   const current = roles.find((r) => r.profile.id === profile.id)?.role;
+
+//   const currentIndex = roleTypes.indexOf(current);
+//   const nextIndex =
+//     currentIndex === -1 ? 0 : (currentIndex + 1) % roleTypes.length;
+
+//   handleUpdateRole({
+//     role: roleTypes[nextIndex],
+//     profile,
+//   });
+// };
+const cycleRole = (profile) => {
+  const roleTypes = Object.values(RoleType);
+  const current = roles.find((r) => r.profile.id === profile.id)?.role ?? "none";
+
+  const currentIndex = roleTypes.indexOf(current);
+  const nextIndex = currentIndex === -1 ? 0 : (currentIndex + 1) % roleTypes.length;
+
+  handleUpdateRole({
+    role: roleTypes[nextIndex],
+    profile,
+  });
+};
+ const filteredProfiles = useMemo(() => {
+  if (!profiles?.length) return [];
+
+  let result = profiles;
+
+  // 🔍 search filter
+  if (search) {
+    result = result.filter((p) =>
+      p.username?.toLowerCase().includes(search.toLowerCase())
+    );
+  }
+
+  // ⚡ build role map once (O(n))
+  const roleMap = new Map(
+    roles.map((r) => [r.profile.id, r.role])
+  );
+
+
+const sortedResult = [...result].sort((a, b) => {
+  const roleA = roleMap.get(a.id) || "none";
+  const roleB = roleMap.get(b.id) || "none";
+
+  const isNoneA = roleA === "none";
+  const isNoneB = roleB === "none";
+
+  // ✅ ALWAYS push "none" to bottom
+  if (isNoneA !== isNoneB) {
+    return isNoneA ? 1 : -1;
+  }
+
+  // 🎯 then sort by priority
+  const rolePriority = {
+    editor: 1,
+    writer: 2,
+    commenter: 3,
+    reader: 4,
+    none: 5,
   };
 
-  const handleUpdateRole = ({ role, profile }) => {
-    const updatedRole = new Role(null, profile, item, role);
-    const newRoles = roles.filter((r) => r.profile.id !== profile.id);
-    setRoles([...newRoles, updatedRole]);
-  };
+  return (
+    (rolePriority[roleA] || 99) -
+    (rolePriority[roleB] || 99)
+  );
+});
+  return sortedResult;
+}, [profiles, search,dispatch]);
+  return (
+    <div className="dark:bg-base-bgDark bg-cream ">
 
-  const renderProfileItem = (profile, i) => {
-    const role = roles.find((r) => r.profile.id === profile.id);
-    const dropdownPosition = i > profiles.length / 2 ? "dropdown-top" : "dropdown-bottom";
- // <IonItem key={profile.id || i} style={{"--background-color":"#f4f4e0"}}className=" ">
-    return (
+      {/* TITLE */}
+   <div className="mb-6">
+  <h1 className="text-2xl font-serif text-text-primary dark:text-base-surface leading-tight">
+    {item?.title || "Untitled"}
+  </h1>
+  <p className="text-sm text-text-secondary dark:text-text-secondary mt-1">
+    Who is in conversation with this piece
+  </p>
+</div>
+ 
+      <div className="flex flex-row justify-center gap-6 mb-4">
+                <Pill
+          label="Reset All Roles"
+           onClick={handleResetAllRoles}
+          variant="secondary"
       
-     
-        <div style={{"--background-color":"#f4f4e0"}} className="flex bg-cream justify-between items-center w-[100%] border-2 border-blueSea  py-2 my-2 px-2 rounded-full shadow-sm">
-          <ProfileCircle profile={profile} color="text-emerald-700" fontSize="text-[1rem]"/>
-
-          <div className={`dropdown bg-cream ${dropdownPosition} dropdown-end`}>
-            <IonText
-              tabIndex={0}
-              role="button"
-              className="py-2 px-4 rounded-full text-[1.2rem] text-emerald-700  underline cursor-pointer"
-            >
-              {role ? role.role : "Select Role"}
-            </IonText>
-            <ul
-              tabIndex={0}
-              className="dropdown-content menu bg-emerald-50 rounded-box z-[1] w-48 p-2 shadow"
-            >
-              {Object.values(RoleType).map((roleType) => (
-                <li key={roleType} onClick={() => handleUpdateRole({ role: roleType, profile })}>
-                  <a className="text-emerald-600 hover:text-emerald-800">{roleType}</a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
+          baseClass={"bg-button-primary dark:text-cream dark:bg-transparent dark:border dark:border-1 dark:border-button-primary"}
+        />
+    
+ 
+        <Pill
+          label="Save Changes"
+           onClick={handlePatchRoles}
+          variant="primary"
+        baseClass="bg-soft text-white"
+        />
 
   
-    );
-  };
-   
-   const filteredProfiles = useMemo(() => {
-    if (!profiles?.length) return [];
-    if (!search||search.length==0) return profiles;
-    const lower = search.toLowerCase();
-    return profiles.filter((p) =>
-      p.username?.toLowerCase().includes(lower)
-    );
-  }, [profiles, search]);
-  return (
-    // <IonContent scrollY fullscreen={true} className="ion-padding pt-4">
-    <div className="flex flex-col bg-cream  w-[100%]">
-      {/* Alerts */}
-      {(error || success) && (
-        <div
-          role="alert"
-          className={`fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-[90%] md:w-[60%] text-center px-4 py-2 rounded-lg text-white ${
-            success ? "bg-emerald-600" : "bg-amber-500"
-          } shadow-lg transition-all`}
-        >
+  </div>
+  {(error || success) && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 text-sm text-gray-700">
           {error || success}
         </div>
       )}
-
-      {/* <div className="mt-12"> */}
-        <div className="flex justify-between items-center mb-4">
-          <IonText className="text-emerald-900 text-lg font-medium">
-            {item?.title?.length ? item?.title : "Untitled"}
-          </IonText>
-        </div>
-
-        {/* Save Button */}
-        <button
-          onClick={handlePatchRoles}
-          className="mx-auto mb-6 flex items-center justify-center py-2 text-xl rounded-full text-white bg-emerald-700 hover:bg-emerald-600 transition-colors font-medium shadow-md"
-        >
-          Save
-        </button>
-        <div className="mx-4 w-[100%]">
-          <IonSearchbar 
-value={search}
- onIonInput={(event) => {
-let query = '';
-      const target = event.target
-    if (target){
-       query = target.value.toLowerCase();
-         setSearch(query)}}}
-  placeholder="Search by username..."
+      {/* SEARCH */}
+      <div className="mb-6">
+        <IonSearchbar
+          value={search}
+          onIonInput={(e) => setSearch(e.target.value)}
+          placeholder="Search contributors"
+          style={{
+            "--background": Enviroment.palette.base.surface,
+            "--border-radius": "8px",
+          }}
         />
+      </div>
+
+      {/* LIST */}
+      <div className="space-y-4 dark:bg-base-bgDark bg-cream  min-w-[20em] w-[100%] mb-4 max-h-[30rem]">
+        {filteredProfiles.map((profile) => {
+ 
+          const role = roles.find((r) => r.profile.id === profile.id);
+          return (
+
+  <div
+  key={profile.id}
+  className="flex items-center bg-base-bg dark:bg-base-surfaceDark py-3 justify-between   dark:border-border-soft px-4 rounded-full"
+>
+  <div className="flex items-center gap-3">
+    <ProfileCircle profile={profile} includeUsername={true} />
+    {/* <span className="text-sm text-text-primary dark:text-base-surface">{profile.username}</span> */}
+  </div>
+  <button
+    onClick={() => cycleRole(profile)}
+    className="min-w-[5.5rem] text-center px-3 py-2 rounded-full text-xs font-semibold transition-colors duration-150 cursor-pointer
+      bg-base-bg dark:bg-base-bgDark
+      text-text-brand dark:text-cream
+      border border-border-focus dark:border-border-soft
+      active:scale-95 active:bg-button-primary-bg active:text-text-inverse"
+  >
+    {role?.role ?? "none"}
+  </button>
 </div>
-        {/* Profile List */}
-        <div className="sm:max-w-[50em] w-[100%] md:w-[80%] bg-cream mx-auto sm:overflow-y-auto">
-        <IonList lines="none" style={{"--background-color":"#f4f4e0"}}  className=" bg-cream flex overflow-auto rounded-lg">
-          {pending && (
-            <IonText className="text-emerald-800 text-center py-2 block">Loading...</IonText>
-          )}
-          {!pending && profiles.length > 0 ? <div className="mx-auto bg-cream  w-[100%] sm:max-w-[50em]"> 
-            {filteredProfiles.map(renderProfileItem)}
-          </div> : (
-            <IonText className="text-emerald-800 text-center p-4 block">
-              No profiles available
-            </IonText>
-          )}
-        </IonList>
-        </div>
-      {/* </div> */}
-       {/* </IonContent> */}
+          );
+        })}
+      </div>
+
+      {/* SAVE */}
+     
+
+      {/* FEEDBACK */}
+      
     </div>
-   
   );
 }

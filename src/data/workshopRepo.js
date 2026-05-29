@@ -13,24 +13,52 @@ class WorkshopRepo{
       Authorization: `Bearer ${value}`,
     };
   }
-    async joinWorkshop({profile,story,location,radius=50}){
-      const headers = await this.getAuthHeaders()
-      let query = new URLSearchParams({radius})
-   
-        let res = await axios.post(Enviroment.url+'/workshop/groups?='+query.toString(),{profile,story,location},{headers:headers})
-       return res.data
-    }
-    async joinGlobalWorkshop({profile,story}){
-      const headers = await this.getAuthHeaders()
-      let res = await axios.post(Enviroment.url+'/workshop/groups/global',{profile,story},{headers:headers})
-     return res.data
-  }
-    async postActiveUser({story,profile}){
+  // async findWorkshops({radius=50,location,global=false}){
+  //   const headers = await this.getAuthHeaders()
+  //     const query = new URLSearchParams({ radius, global: global });
+  //   let res = await axios.post(this.url+`/look?${query.toString()}`,{location},{headers:headers})
+  //  return res.data
+  // }
+async findWorkshops({ radius = 50, global = true, location, type, skip, take }) {
+    const headers = await this.getAuthHeaders();
+    return axios.post(
+        `${this.url}/look`,
+        { location },                              // body — only location
+        { params: { radius, global, type, skip, take }, headers }  // config — params + headers
+    ).then(res => res.data);
+}
+async joinWorkshop({ profile, story, location, radius = 50, isGlobal = false }) {
+ 
+  const headers = await this.getAuthHeaders();
+  const query = new URLSearchParams({ radius, global: isGlobal });
+  const res = await axios.post(
+    `${this.url}/group/join?${query.toString()}`,
+    { profile, story, location },
+    { headers }
+  );
+  return res.data;
+}
+async findYourWorkshops() {
+ try{
+  const headers = await this.getAuthHeaders();
+
+  const res = await axios.get(
+    `${this.url}/profile/workshops`,
+    { headers }
+  );
+  return res.data;
+}catch(err){
+
+}
+}
+
+    async postActiveUser({story,profile,location}){
 
  const headers = await this.getAuthHeaders()
     const response = await axios.post(Enviroment.url+`/workshop/active-users`,{
         story:story,
-        profile:profile
+        profile:profile,
+        location
       },{headers:headers}); 
       return response.data
     }

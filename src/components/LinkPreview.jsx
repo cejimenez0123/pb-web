@@ -1,122 +1,266 @@
-import { useState, useEffect, useContext } from 'react';
-import Enviroment from '../core/Enviroment';
-import "../App.css";
-import { initGA, sendGAEvent } from '../core/ga4';
-import adjustScreenSize from '../core/adjustScreenSize';
-import Context from '../context';
-import SpotifyEmbed from './SpotifyEmbed';
-import axios from 'axios';
-import { IonImg } from '@ionic/react';
-function LinkPreview({ url, isGrid }) {
-  const { isPhone, isHorizPhone } = useContext(Context);
-  const [previewData, setPreviewData] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  const size = "w-[100%] sm:w-[48em]"
-
-  useEffect(() => {
-    initGA();
-  }, []);
-
-  useEffect(() => {
-
-    if (!url) return;
-
-    const isSpotify = url.includes('https://open.spotify.com/');
-    const isPlumbum = url.includes("plumubum.app");
-
-    if (isSpotify) {
-      setPreviewData({ title: "Spotify" });
-      setLoading(false);
-    } else {
-      fetchPreview(url).catch(err => {
-        console.error("Failed to fetch preview:", err);
-        setLoading(false);
-      });
-    }
-  }, []);
 
 
-const fetchPreview = async (url) => {
+// import { useState, useEffect, useContext } from "react";
+// import axios from "axios";
+// import { IonImg } from "@ionic/react";
+// import Enviroment from "../core/Enviroment";
+// import Context from "../context";
+// import SpotifyEmbed from "./SpotifyEmbed";
+// import SoundCloudEmbed from "./page/SoundcloudEmbed";
+
+// function normalizeUrl(url) {
+//   if (!url) return "";
+//   try {
+//     const fixed = url.startsWith("http") ? url : `https://${url}`;
+//     return new URL(fixed).href;
+//   } catch {
+//     return "";
+//   }
+// }
+
+// function getHostname(url) {
+//   try {
+//     return new URL(url).hostname;
+//   } catch {
+//     return url;
+//   }
+// }
+
+// export default function LinkPreview({ url, compact }) {
+//   const { isPhone } = useContext(Context);
+//   const [previewData, setPreviewData] = useState(null);
+//   const [loading, setLoading] = useState(false);
+
+//   const normalizedUrl = normalizeUrl(url);
+//   const isSpotify = normalizedUrl.includes("open.spotify.com");
+//   const isSoundCloud = normalizedUrl.includes("soundcloud.com");
+//   const isYouTube =
+//     normalizedUrl.includes("youtube.com") ||
+//     normalizedUrl.includes("youtu.be");
+
+//   useEffect(() => {
+//     if (!normalizedUrl) return;
+//     if (isSpotify) { setPreviewData({ type: "spotify" }); return; }
+//     if (isSoundCloud) { setPreviewData({ type: "soundcloud" }); return; }
+//     if (isYouTube) { setPreviewData({ type: "youtube" }); return; }
+//     fetchPreview(normalizedUrl);
+//   }, [normalizedUrl]);
+
+//   const fetchPreview = async (url) => {
+//     setLoading(true);
+//     try {
+//       const res = await axios.get(
+//         `${Enviroment.proxyUrl}/preview?url=${encodeURIComponent(url)}`,
+//         { timeout: 8000 }
+//       );
+//       setPreviewData({
+//         title: res.data?.title || url,
+//         description: res.data?.description || "",
+//         image: res.data?.image || null,
+//       });
+//     } catch (err) {
+//       const hostname = getHostname(url);
+//       setPreviewData({
+//         title: hostname,
+//         description: "Tap to open link",
+//         image: `https://www.google.com/s2/favicons?domain=${hostname}`,
+//       });
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   const handleClick = () => window.open(normalizedUrl, "_blank");
+
+//   if (previewData?.type === "spotify") {
+//     return <SpotifyEmbed url={normalizedUrl} compact={compact} />;
+//   }
+
+//   if (previewData?.type === "soundcloud") {
+//     return <SoundCloudEmbed url={normalizedUrl} />;
+//   }
+
+//   if (previewData?.type === "youtube") {
+//     const id =
+//       normalizedUrl.split("v=")[1]?.split("&")[0] ||
+//       normalizedUrl.split("youtu.be/")[1];
+//     return (
+//       <img
+//         src={`https://img.youtube.com/vi/${id}/maxresdefault.jpg`}
+//         className="rounded-xl w-full cursor-pointer active:scale-[0.98] transition"
+//         onClick={handleClick}
+//         alt="YouTube thumbnail"
+//       />
+//     );
+//   }
+
+//   if (loading) {
+//     return (
+//       <div className="h-32 bg-base-bg dark:bg-base-bgDark animate-pulse rounded-xl border border-soft" />
+//     );
+//   }
+
+//   if (!previewData) return null;
+
+//   const hostname = getHostname(normalizedUrl);
+
+//   return (
+//     <div
+//       onClick={handleClick}
+//       className="rounded-xl border border-soft bg-base-surface dark:bg-base-bgDark shadow-sm overflow-hidden cursor-pointer active:scale-[0.98] transition"
+//     >
+//       {previewData.image && (
+//         <IonImg
+//           src={previewData.image}
+//           className="w-full h-40 object-cover"
+//           alt="Link preview"
+//         />
+//       )}
+//       <div className="p-3">
+//         <h4 className="text-sm font-medium text-soft dark:text-cream line-clamp-2">
+//           {previewData.title}
+//         </h4>
+//         {!isPhone && previewData.description && (
+//           <p className="text-xs text-soft dark:text-cream opacity-60 mt-1 line-clamp-2">
+//             {previewData.description}
+//           </p>
+//         )}
+//         <p className="text-xs text-soft dark:text-cream opacity-40 mt-1 truncate">
+//           {hostname}
+//         </p>
+//       </div>
+//     </div>
+//   );
+// }
+import { useState, useEffect, useContext } from "react";
+import axios from "axios";
+import { IonImg } from "@ionic/react";
+import Enviroment from "../core/Enviroment";
+import Context from "../context";
+import SpotifyEmbed from "./SpotifyEmbed";
+import SoundCloudEmbed from "./page/SoundcloudEmbed";
+
+function normalizeUrl(url) {
+  if (!url) return "";
   try {
-    const response = await axios.get(
-      `${Enviroment.proxyUrl}/preview?url=${encodeURIComponent(url)}`
-    );
-
-    const data = response.data; // ✅ axios already gives JSON
-
-    // 
-    setPreviewData(data);
-  } catch (error) {
-   } finally {
-    setLoading(false);
+    const fixed = url.startsWith("http") ? url : `https://${url}`;
+    return new URL(fixed).href;
+  } catch {
+    return "";
   }
-};
+}
 
-
-
-  const handleClick = () => {
-    sendGAEvent("Click Link Preview", `Navigate to ${previewData?.title || ""}:${url}`);
-    window.open(url, '_blank');
-  };
-
-  const isYouTubeURL = (url) => url.includes('youtube.com') || url.includes('youtu.be');
-
-  const extractYouTubeVideoId = (url) => {
-    const videoIdRegex = /(?:\/embed\/|\/watch\?v=|\/(?:embed\/|v\/|watch\?.*v=|youtu\.be\/|embed\/|v=))([^&?#]+)/;
-    const match = url.match(videoIdRegex);
-    return match ? match[1] : '';
-  };
-
-
-  if (url?.includes('https://open.spotify.com/')) {
-    return <SpotifyEmbed url={url} />;
+function getHostname(url) {
+  try {
+    return new URL(url).hostname;
+  } catch {
+    return url;
   }
+}
 
-  if (loading) return <div className={"skeleton " + size} />;
+export default function LinkPreview({ url, compact }) {
+  const { isPhone } = useContext(Context);
+  const [previewData, setPreviewData] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  if (!previewData) return <p onClick={handleClick}>Failed to fetch link preview.</p>;
+  // Guard: no url at all
+  if (!url) return null;
 
-  if (isYouTubeURL(url)) {
-    const videoId = extractYouTubeVideoId(url);
-    const videoThumbnail = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
-    return <img onClick={handleClick} style={{ cursor: 'pointer' }} className={`rounded-lg p-1 ${size}`} src={videoThumbnail} alt="Video Thumbnail" />;
-  }
+  const normalizedUrl = normalizeUrl(url);
 
-  const imageView = () => {
+  // Guard: url couldn't be normalized
+  if (!normalizedUrl) return null;
 
-      return previewData.image && (
-        <a href={url}>
-          <IonImg className='rounded-t-lg' src={previewData.image} alt={previewData.title} />
-        </a>
+  const isSpotify    = normalizedUrl.includes("open.spotify.com");
+  const isSoundCloud = normalizedUrl.includes("soundcloud.com");
+  const isYouTube    = normalizedUrl.includes("youtube.com") || normalizedUrl.includes("youtu.be");
+
+  useEffect(() => {
+    if (!normalizedUrl) return;
+    if (isSpotify)    { setPreviewData({ type: "spotify" });    return; }
+    if (isSoundCloud) { setPreviewData({ type: "soundcloud" }); return; }
+    if (isYouTube)    { setPreviewData({ type: "youtube" });    return; }
+    fetchPreview(normalizedUrl);
+  }, [normalizedUrl]);
+
+  const fetchPreview = async (targetUrl) => {
+    setLoading(true);
+    try {
+      const res = await axios.get(
+        `${Enviroment.proxyUrl}/preview?url=${encodeURIComponent(targetUrl)}`,
+        { timeout: 8000 }
       );
-  
+      setPreviewData({
+        title:       res.data?.title       || targetUrl,
+        description: res.data?.description || "",
+        image:       res.data?.image       || null,
+      });
+    } catch {
+      const hostname = getHostname(targetUrl);
+      setPreviewData({
+        title:       hostname,
+        description: "Tap to open link",
+        image:       `https://www.google.com/s2/favicons?domain=${hostname}`,
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const previewTitle = () => {
-    if (previewData?.title !== "Spotify") {
-      return <h4 className={isGrid ? "" : 'text-slate-800 bg-emerald-200 text-[1rem] p-4'}>{previewData?.title}</h4>;
-    }
-    return null;
-  };
+  const handleClick = () => window.open(normalizedUrl, "_blank");
 
-  const previewDescription = () => {
-    if (!isPhone && !isGrid &&previewData && previewData.title !== "Spotify") {
-      return <h6 className={isGrid ? "overflow-scroll pt-2 px-1 mx-auto" : 'text-slate-800 p-3 bg-emerald-200 text-[0.8rem]'}>{previewData?.description}</h6>;
-    }
-    return null;
-  };
+  if (previewData?.type === "spotify") {
+    return <SpotifyEmbed url={normalizedUrl} compact={compact} />;
+  }
+
+  if (previewData?.type === "soundcloud") {
+    return <SoundCloudEmbed url={normalizedUrl} />;
+  }
+
+  if (previewData?.type === "youtube") {
+    const id =
+      normalizedUrl.split("v=")[1]?.split("&")[0] ||
+      normalizedUrl.split("youtu.be/")[1];
+    if (!id) return null;
+    return (
+      <img
+        src={`https://img.youtube.com/vi/${id}/maxresdefault.jpg`}
+        className="rounded-xl w-full cursor-pointer active:scale-[0.98] transition"
+        onClick={handleClick}
+        alt="YouTube thumbnail"
+      />
+    );
+  }
+
+  if (loading) {
+    return <div className="h-32 bg-base-bg dark:bg-base-bgDark animate-pulse rounded-xl border border-soft" />;
+  }
+
+  if (!previewData) return null;
+
+  const hostname = getHostname(normalizedUrl);
 
   return (
-    <div className=" w-[90vw] sm:w-[50em] sm:w-page mx-auto" onClick={handleClick} style={{ cursor: 'pointer' }}>
-      {imageView()}
-      <div className='text-left overflow-clip open-sans-medium'>
-        {previewDescription()}
-        {isGrid ? null : previewTitle()}
+    <div
+      onClick={handleClick}
+      className="rounded-xl border border-soft bg-base-surface dark:bg-base-bgDark shadow-sm overflow-hidden cursor-pointer active:scale-[0.98] transition"
+    >
+      {previewData.image && (
+        <IonImg src={previewData.image} className="w-full h-40 object-cover" alt="Link preview" />
+      )}
+      <div className="p-3">
+        <h4 className="text-sm font-medium text-soft dark:text-cream line-clamp-2">
+          {previewData.title}
+        </h4>
+        {!isPhone && previewData.description && (
+          <p className="text-xs text-soft dark:text-cream opacity-60 mt-1 line-clamp-2">
+            {previewData.description}
+          </p>
+        )}
+        <p className="text-xs text-soft dark:text-cream opacity-40 mt-1 truncate">
+          {hostname}
+        </p>
       </div>
     </div>
   );
 }
-
-export default LinkPreview;
-

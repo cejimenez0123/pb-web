@@ -1,38 +1,25 @@
 
-
 import { Preferences } from '@capacitor/preferences';
-import { IonContent } from '@ionic/react';
-
+import { IonContent, IonText, IonLabel } from '@ionic/react';
 import "../App.css";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import authRepo from '../data/authRepo';
 import ThankYou from './auth/ThankYou';
 import logo from "../images/logo/icon.png";
 import { useSelector } from 'react-redux';
+import { useIonRouter } from '@ionic/react';
+import Paths from '../core/paths';
 
-/* =========================
-   TOKENS
-========================= */
+/* === TOKENS === */
+const primaryButton = "w-full bg-emerald-700 text-white rounded-full py-3 font-semibold active:scale-[0.98] transition text-[1rem]";
+const secondaryButton = "w-full bg-transparent text-emerald-700 dark:text-emerald-300 border border-emerald-400 dark:border-emerald-600 rounded-full py-3 font-semibold text-[1rem]";
+const questionClass = "text-emerald-900 dark:text-cream text-sm font-semibold mont-medium mb-1";
+const inputClass = "w-full rounded-2xl px-4 py-3 text-[1.05rem] outline-none bg-white/70 dark:bg-white/10 text-emerald-900 dark:text-cream placeholder-emerald-300 dark:placeholder-emerald-600 mt-1 border border-emerald-100 dark:border-emerald-800";
+const cardClass = "border border-emerald-200 dark:border-emerald-800 rounded-2xl p-4 flex flex-col gap-2 bg-white/60 dark:bg-white/5";
+const pageClass = "px-4 py-8 space-y-5 min-h-screen";
+const headingClass = "lora-medium text-2xl font-bold text-emerald-900 dark:text-cream block mb-4";
 
-const primaryButton =
-  "w-full bg-emerald-600 text-white rounded-2xl py-3 font-semibold active:scale-[0.98] transition";
-
-const secondaryButton =
-  "w-full bg-emerald-50 text-emerald-700 rounded-2xl py-3 font-semibold";
-
-const card =
-  "bg-cream border border-emerald-100 rounded-2xl p-5 flex flex-col gap-2";
-
-const question =
-  "text-emerald-700 text-sm font-medium";
-
-const input =
-  "w-full text-[1.05rem] outline-none bg-transparent text-emerald-900 placeholder-emerald-400";
-
-/* =========================
-   ANIMATION
-========================= */
-
+/* === ANIMATION === */
 function StepTransition({ step, children }) {
   return (
     <div key={step} style={{ animation: "fadeSlide 0.35s ease-out" }}>
@@ -40,98 +27,80 @@ function StepTransition({ step, children }) {
       <style>{`
         @keyframes fadeSlide {
           from { opacity: 0; transform: translateY(12px); }
-          to { opacity: 1; transform: translateY(0); }
+          to   { opacity: 1; transform: translateY(0); }
         }
       `}</style>
     </div>
   );
 }
 
-/* =========================
-   MAIN
-========================= */
+/* === PROGRESS DOTS === */
+function ProgressDots({ activeTab }) {
+  const tabs = ["tab1", "tab2", "tab3", "tab4"];
+  return (
+    <div className="flex justify-center gap-2 pt-6 pb-2">
+      {tabs.map(t => (
+        <div
+          key={t}
+          className={`rounded-full transition-all duration-300 ${
+            activeTab === t ? "w-6 h-3 bg-emerald-600" : "w-3 h-3 bg-emerald-200 dark:bg-emerald-800"
+          }`}
+        />
+      ))}
+    </div>
+  );
+}
 
-export default function OnboardingContainer() {
-  const currentProfile = useSelector(s => s.users.currentProfile);
+/* === NAV BUTTONS === */
+function NavButtons({ onBack, onNext, nextLabel = "Continue", loading = false }) {
+  return (
+    <div className="flex gap-3 pt-2">
+      {onBack && <button className={secondaryButton} onClick={onBack}>Back</button>}
+      <button className={primaryButton} onClick={onNext} disabled={loading}>
+        {loading ? "Submitting..." : nextLabel}
+      </button>
+    </div>
+  );
+}
 
-  const [activeTab, setActiveTab] = useState("tab0");
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-const [formData, setFormData] = useState({
-  fullName: "",
-  email: "",
-  igHandle: "",
+/* === WHY === */
+function Why({ setActiveTab, onLogin }) {
+  return (
+    <StepTransition step="tab0">
+      <div className="p-6 text-center space-y-6">
+        <img src={logo} className="w-24 mx-auto" alt="Plumbum" />
+        <IonText className="lora-medium block text-left text-emerald-900 dark:text-cream">
+          <h2 className="text-2xl font-bold mb-3">What is Plumbum?</h2>
+          <ul className="list-disc pl-5 space-y-2 text-[0.95rem]">
+            <li><strong>Writer-Focused:</strong> A space to grow, get feedback, and share — all in one place.</li>
+            <li><strong>Community First:</strong> Built from live workshops and honest conversations, not algorithms.</li>
+            <li><strong>Hybrid by Design:</strong> Feedback, self-promotion, and curation — because writers need all three.</li>
+          </ul>
+          <h2 className="text-2xl font-bold mt-6 mb-3">Why Join?</h2>
+          <ul className="list-disc pl-5 space-y-2 text-[0.95rem]">
+            <li><strong>Real Feedback:</strong> From people who care about craft, not clout.</li>
+            <li><strong>Creative Momentum:</strong> Events, prompts, and people who show up.</li>
+            <li><strong>Supportive Culture:</strong> Built slow and small on purpose.</li>
+          </ul>
+        </IonText>
+        <button className={primaryButton} onClick={() => setActiveTab("tab1")}>
+          Join Plumbum
+        </button>
+        <div className="text-emerald-700 dark:text-emerald-300 text-sm underline cursor-pointer" onClick={onLogin}>
+          Already have an account? Log in
+        </div>
+      </div>
+    </StepTransition>
+  );
+}
 
-  whyApply: "",
-  communityNeeds: "",
-  writingOutcome: "",
-
-  selectedEvents: [],
-  otherEvent: "",
-
-  eventPain: "",
-  howFindOut: "",
-});
-
-  useEffect(() => {
-    if (currentProfile?.id) setUser(currentProfile);
-  }, [currentProfile]);
-
-  const validateEmail = (email) =>
-    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-
-  const updateFormData = (data) =>
-    setFormData(prev => ({ ...prev, ...data }));
-
-/* =========================
-   APPLY (FIXED + SAFE)
-========================= */
-
-const onClickApply = async (overrideForm = formData) => {
-  if (loading) return;
-
-  try {
-    setLoading(true);
-    setError("");
-
-    const form = {
-      ...overrideForm,
-      email: overrideForm.email?.toLowerCase(),
-      genres: overrideForm.selectedGenres?.includes("Other")
-        ? [
-            ...overrideForm.selectedGenres.filter(g => g !== "Other"),
-            overrideForm.otherGenre
-          ]
-        : overrideForm.selectedGenres,
-    };
-
-    const data = await authRepo.apply(form);
-
-    await Preferences.set({ key: "hasSeenOnboarding", value: "true" });
-
-    setUser(data?.user ?? data);
-
-  } catch (err) {
-    setError(err?.message || "Something went wrong");
-  } finally {
-    setLoading(false);
-  }
-};
-
-/* =========================
-   STEP 1
-========================= */
-
-const Step1 = () => {
+/* === STEP 1 === */
+function Step1({ formData, updateFormData, setActiveTab, error, setError }) {
   const [local, setLocal] = useState(formData);
+  const validateEmail = email => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   const next = () => {
-    if (!validateEmail(local.email)) {
-      setError("Enter a valid email");
-      return;
-    }
-
+    if (!validateEmail(local.email)) { setError("Enter a valid email"); return; }
     setError("");
     updateFormData(local);
     setActiveTab("tab2");
@@ -139,616 +108,253 @@ const Step1 = () => {
 
   return (
     <StepTransition step="tab1">
-      <div className="p-4 space-y-4 bg-cream min-h-screen">
+      <div className={pageClass}>
+        <IonLabel className={headingClass}>Interest Form</IonLabel>
+        {error && <div className="text-red-500 text-sm">{error}</div>}
 
-        <img src={logo} className="w-20 mx-auto mb-4" />
+        {[
+          { key: "fullName", label: "Preferred Name", type: "text",  placeholder: "Jane Doe" },
+          { key: "email",    label: "Email *",        type: "email", placeholder: "email@example.com" },
+          { key: "igHandle", label: "Instagram",      type: "text",  placeholder: "@handle" },
+        ].map(({ key, label, type, placeholder }) => (
+          <div key={key} className="w-full flex flex-col">
+            <label className={questionClass}>{label}</label>
+            <input
+              className={inputClass}
+              type={type}
+              value={local[key]}
+              onChange={e => setLocal({ ...local, [key]: e.target.value })}
+              placeholder={placeholder}
+            />
+          </div>
+        ))}
 
-        {error && <div className="text-red-500 text-sm text-center">{error}</div>}
-
-        <div className={card}>
-          <label className={question}>Name</label>
-          <input
-            className={input}
-            value={local.fullName}
-            onChange={e => setLocal({ ...local, fullName: e.target.value })}
-            placeholder="Jane Doe"
-          />
-        </div>
-
-        <div className={card}>
-          <label className={question}>Email *</label>
-          <input
-            className={input}
-            value={local.email}
-            onChange={e => setLocal({ ...local, email: e.target.value })}
-            placeholder="email@example.com"
-          />
-        </div>
-
-        <div className={card}>
-          <label className={question}>Instagram</label>
-          <input
-            className={input}
-            value={local.igHandle}
-            onChange={e => setLocal({ ...local, igHandle: e.target.value })}
-            placeholder="@handle"
-          />
-        </div>
-
-        <button className={primaryButton} onClick={next}>
-          Continue
-        </button>
-
+        <NavButtons onBack={() => setActiveTab("tab0")} onNext={next} />
       </div>
     </StepTransition>
   );
-};
+}
 
-/* =========================
-   STEP 2 (UPDATED QUESTIONS FIXED)
-========================= */
-
-const Step2 = () => {
+/* === STEP 2 === */
+function Step2({ formData, updateFormData, setActiveTab }) {
   const [local, setLocal] = useState(formData);
 
   return (
     <StepTransition step="tab2">
-      <div className="p-4 space-y-6 bg-cream min-h-screen">
+      <div className={pageClass}>
+        <IonLabel className={headingClass}>Artist Statement</IonLabel>
 
-        <div className={card}>
-          <label className={question}>
-            What’s been hardest about writing consistently lately?
-          </label>
-          <textarea
-            className={input}
-            rows={4}
-            value={local.whyApply}
-            onChange={e => setLocal({ ...local, whyApply: e.target.value })}
-          />
+        {[
+          { key: "whyApply",       label: "What's been hardest about writing consistently lately?" },
+          { key: "communityNeeds", label: "What's missing from writing spaces you've tried?" },
+        ].map(({ key, label }) => (
+          <div key={key} className="w-full flex flex-col">
+            <label className={questionClass}>{label}</label>
+            <textarea
+              className={inputClass}
+              rows={3}
+              value={local[key]}
+              onChange={e => setLocal({ ...local, [key]: e.target.value })}
+            />
+          </div>
+        ))}
+
+        <NavButtons
+          onBack={() => { updateFormData(local); setActiveTab("tab1"); }}
+          onNext={() => { updateFormData(local); setActiveTab("tab3"); }}
+        />
+      </div>
+    </StepTransition>
+  );
+}
+
+/* === STEP 3 === */
+const EVENTS = ["Open mics","Workshops","Socials","Poetry readings","Art events","Music events","Raves","Other"];
+
+function Step3({ formData, updateFormData, setActiveTab }) {
+  const [local, setLocal] = useState({
+    selectedEvents: formData.selectedEvents || [],
+    otherEvent: formData.otherEvent || "",
+    writingOutcome: formData.writingOutcome || "",
+  });
+
+  const toggle = ev => setLocal(prev => ({
+    ...prev,
+    selectedEvents: prev.selectedEvents.includes(ev)
+      ? prev.selectedEvents.filter(x => x !== ev)
+      : [...prev.selectedEvents, ev],
+  }));
+
+  return (
+    <StepTransition step="tab3">
+      <div className={pageClass}>
+        <IonLabel className={headingClass}>Your Scene</IonLabel>
+
+        <div className={cardClass}>
+          <label className={questionClass}>What kinds of events do you go to?</label>
+          <div className="flex flex-wrap gap-2 mt-2">
+            {EVENTS.map(ev => (
+              <div
+                key={ev}
+                onClick={() => toggle(ev)}
+                className={`px-4 py-2 rounded-full border cursor-pointer transition select-none text-sm font-medium ${
+                  local.selectedEvents.includes(ev)
+                    ? "bg-emerald-600 text-white border-emerald-600"
+                    : "bg-transparent text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-900"
+                }`}
+              >
+                {ev}
+              </div>
+            ))}
+          </div>
         </div>
 
-        <div className={card}>
-          <label className={question}>
-            What’s missing from writing spaces you’ve tried?
-          </label>
-          <textarea
-            className={input}
-            rows={4}
-            value={local.communityNeeds}
-            onChange={e => setLocal({ ...local, communityNeeds: e.target.value })}
-          />
-        </div>
+        {local.selectedEvents.includes("Other") && (
+          <div className="w-full flex flex-col">
+            <label className={questionClass}>What other events?</label>
+            <input
+              className={inputClass}
+              value={local.otherEvent}
+              onChange={e => setLocal(prev => ({ ...prev, otherEvent: e.target.value }))}
+              placeholder="Describe it..."
+            />
+          </div>
+        )}
 
-        <div className={card}>
-          <label className={question}>
-            When you share your writing, what usually happens?
-          </label>
+        {/* Moved here — separate from Step4's writingOutcome */}
+        <div className="w-full flex flex-col">
+          <label className={questionClass}>When you share your writing, what usually happens?</label>
           <textarea
-            className={input}
+            className={inputClass}
             rows={3}
             value={local.writingOutcome}
             onChange={e => setLocal({ ...local, writingOutcome: e.target.value })}
           />
         </div>
 
-        <div className="flex gap-3">
-          <button className={secondaryButton} onClick={() => setActiveTab("tab1")}>
-            Back
-          </button>
-
-          <button
-            className={primaryButton}
-            onClick={() => {
-              updateFormData(local);
-              setActiveTab("tab3");
-            }}
-          >
-            Continue
-          </button>
-        </div>
-
+        <NavButtons
+          onBack={() => { updateFormData(local); setActiveTab("tab2"); }}
+          onNext={() => { updateFormData(local); setActiveTab("tab4"); }}
+        />
       </div>
     </StepTransition>
-  );
-};
-
-/* =========================
-   STEP 3
-========================= */
-
-// const Step3 = () => {
-//   const toggle = (g) => {
-//     const exists = formData.selectedGenres.includes(g);
-//     const updated = exists
-//       ? formData.selectedGenres.filter(x => x !== g)
-//       : [...formData.selectedGenres, g];
-
-//     updateFormData({ selectedGenres: updated });
-//   };
-
-//   return (
-//     <StepTransition step="tab3">
-//       <div className="p-4 space-y-4 bg-cream">
-
-//         <div className={card}>
-//           <label className={question}>Genres</label>
-
-//           <div className="flex flex-wrap gap-2 mt-2">
-//             {["Fiction", "Poetry", "Non-fiction", "Fantasy", "Other"].map(g => (
-//               <div
-//                 key={g}
-//                 onClick={() => toggle(g)}
-//                 className={`px-4 py-2 rounded-full border ${
-//                   formData.selectedGenres.includes(g)
-//                     ? "bg-emerald-600 text-white"
-//                     : "bg-emerald-50 text-emerald-700"
-//                 }`}
-//               >
-//                 {g}
-//               </div>
-//             ))}
-//           </div>
-//         </div>
-
-//         <button className={primaryButton} onClick={() => setActiveTab("tab4")}>
-//           Continue
-//         </button>
-
-//       </div>
-//     </StepTransition>
-//   );
-// };
-const Step3 = () => {
-  const EVENTS = [
-    "Open mics",
-    "Workshops",
-    "Socials",
-    "Poetry readings",
-    "Art events",
-    "Music events",
-    "Raves",
-    "Other"
-  ];
-
-  // ✅ LOCAL STATE (fixes refresh / flicker issue)
-  const [local, setLocal] = useState({
-    selectedEvents: formData.selectedEvents || [],
-    otherEvent: formData.otherEvent || ""
-  });
-
-  const toggle = (event) => {
-    setLocal(prev => {
-      const exists = prev.selectedEvents.includes(event);
-
-      const updated = exists
-        ? prev.selectedEvents.filter(x => x !== event)
-        : [...prev.selectedEvents, event];
-
-      return {
-        ...prev,
-        selectedEvents: updated
-      };
-    });
-  };
-
-  const handleNext = () => {
-    updateFormData(local);
-    setActiveTab("tab4");
-  };
-
-  return (
-    <StepTransition step="tab3">
-      <div className="p-4 space-y-4 bg-cream min-h-screen">
-
-        <div className={card}>
-          <label className={question}>
-            What kinds of events do you go to?
-          </label>
-
-          <div className="flex flex-wrap gap-2 mt-2">
-            {EVENTS.map((e) => (
-              <div
-                key={e}
-                onClick={() => toggle(e)}
-                className={`px-4 py-2 rounded-full border cursor-pointer transition ${
-                  local.selectedEvents.includes(e)
-                    ? "bg-emerald-600 text-white"
-                    : "bg-emerald-50 text-emerald-700"
-                }`}
-              >
-                {e}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* OTHER INPUT */}
-        {local.selectedEvents.includes("Other") && (
-          <div className={card}>
-            <label className={question}>What other events?</label>
-
-            <input
-              className={input}
-              value={local.otherEvent}
-              onChange={(e) =>
-                setLocal(prev => ({
-                  ...prev,
-                  otherEvent: e.target.value
-                }))
-              }
-              placeholder="Describe it..."
-            />
-          </div>
-        )}
-
-        <button className={primaryButton} onClick={handleNext}>
-          Continue
-        </button>
-
-      </div>
-    </StepTransition>
-  );
-};
-/* =========================
-   STEP 4
-========================= */
-// 
-// const Step4 = () => {
-//   const [local, setLocal] = useState({
-//     writingOutcome: formData.writingOutcome || "",
-//     howFindOut: formData.howFindOut || "",
-//     eventPain: formData.eventPain || "",
-//   });
-
-//   const submit = async () => {
-//     const finalForm = {
-//       ...formData,
-//       ...local,
-//     };
-
-//     setFormData(finalForm);
-
-//     requestAnimationFrame(() => {
-//       onClickApply(finalForm);
-//     });
-//   };
-
-//   return (
-//     <StepTransition step="tab4">
-//       <div className="p-4 space-y-4 bg-cream min-h-screen">
-
-//         {/* WRITING OUTCOME (THIS WAS MISSING BEFORE) */}
-//         <div className={card}>
-//           <label className={question}>
-//             What do you hope will change in your writing life?
-//           </label>
-
-//           <textarea
-//             className={input}
-//             rows={4}
-//             value={local.writingOutcome}
-//             onChange={(e) =>
-//               setLocal({ ...local, writingOutcome: e.target.value })
-//             }
-//             placeholder="e.g. consistency, confidence, feedback..."
-//           />
-//         </div>
-
-//         {/* EVENT PAIN */}
-//         <div className={card}>
-//           <label className={question}>
-//             What makes you stay or leave writing events?
-//           </label>
-
-//           <textarea
-//             className={input}
-//             rows={4}
-//             value={local.eventPain}
-//             onChange={(e) =>
-//               setLocal({ ...local, eventPain: e.target.value })
-//             }
-//             placeholder="e.g. vibe, structure, feedback quality..."
-//           />
-//         </div>
-
-//         {/* HOW DID YOU FIND OUT */}
-//         <div className={card}>
-//           <label className={question}>
-//             How did you find Plumbum?
-//           </label>
-
-//           <textarea
-//             className={input}
-//             rows={3}
-//             value={local.howFindOut}
-//             onChange={(e) =>
-//               setLocal({ ...local, howFindOut: e.target.value })
-//             }
-//           />
-//         </div>
-
-//         {error && (
-//           <div className="text-red-500 text-sm text-center">
-//             {error}
-//           </div>
-//         )}
-
-//         <button
-//           className={primaryButton}
-//           onClick={submit}
-//           disabled={loading}
-//         >
-//           {loading ? "Submitting..." : "Apply"}
-//         </button>
-
-//       </div>
-//     </StepTransition>
-//   );
-// };
-// const Step4 = () => {
-//   const [local, setLocal] = useState({
-//     writingOutcome: formData.writingOutcome || "",
-//     eventPain: formData.eventPain || "",
-//     howFindOut: formData.howFindOut || "",
-//   });
-
-//   const submit = async () => {
-//     const finalForm = {
-//       ...formData,
-//       ...local,
-//     };
-
-//     setFormData(finalForm);
-
-//     requestAnimationFrame(() => {
-//       onClickApply(finalForm);
-//     });
-//   };
-
-//   return (
-//     <StepTransition step="tab4">
-//       <div className="p-4 space-y-4 bg-cream min-h-screen">
-
-//         <div className={card}>
-//           <label className={question}>
-//             What do you hope will change in your writing life?
-//           </label>
-
-//           <textarea
-//             className={input}
-//             rows={4}
-//             value={local.writingOutcome}
-//             onChange={(e) =>
-//               setLocal({ ...local, writingOutcome: e.target.value })
-//             }
-//           />
-//         </div>
-
-//         <div className={card}>
-//           <label className={question}>
-//             What makes you stay or leave writing events?
-//           </label>
-
-//           <textarea
-//             className={input}
-//             rows={4}
-//             value={local.eventPain}
-//             onChange={(e) =>
-//               setLocal({ ...local, eventPain: e.target.value })
-//             }
-//           />
-//         </div>
-
-//         <div className={card}>
-//           <label className={question}>
-//             How did you find Plumbum?
-//           </label>
-
-//           <textarea
-//             className={input}
-//             rows={3}
-//             value={local.howFindOut}
-//             onChange={(e) =>
-//               setLocal({ ...local, howFindOut: e.target.value })
-//             }
-//           />
-//         </div>
-
-//         {error && (
-//           <div className="text-red-500 text-sm text-center">
-//             {error}
-//           </div>
-//         )}
-
-//         <button
-//           className={primaryButton}
-//           onClick={submit}
-//           disabled={loading}
-//         >
-//           {loading ? "Submitting..." : "Apply"}
-//         </button>
-
-//       </div>
-//     </StepTransition>
-//   );
-// };
-const Step4 = () => {
-  const [local, setLocal] = useState({
-    writingOutcome: formData.writingOutcome || "",
-    eventPain: formData.eventPain || "",
-    howFindOut: formData.howFindOut || "",
-  });
-
-  const submit = async () => {
-    const finalForm = {
-      ...formData,
-      ...local,
-    };
-
-    setFormData(finalForm);
-
-    requestAnimationFrame(() => {
-      onClickApply(finalForm);
-    });
-  };
-
-  return (
-    <StepTransition step="tab4">
-      <div className="p-4 space-y-4 bg-cream min-h-screen">
-
-        <div className={card}>
-          <label className={question}>
-            What do you hope will change in your writing life?
-          </label>
-
-          <textarea
-            className={input}
-            rows={4}
-            value={local.writingOutcome}
-            onChange={(e) =>
-              setLocal({ ...local, writingOutcome: e.target.value })
-            }
-          />
-        </div>
-
-        <div className={card}>
-          <label className={question}>
-            What makes you stay or leave writing events?
-          </label>
-
-          <textarea
-            className={input}
-            rows={4}
-            value={local.eventPain}
-            onChange={(e) =>
-              setLocal({ ...local, eventPain: e.target.value })
-            }
-          />
-        </div>
-
-        <div className={card}>
-          <label className={question}>
-            How did you find Plumbum?
-          </label>
-
-          <textarea
-            className={input}
-            rows={3}
-            value={local.howFindOut}
-            onChange={(e) =>
-              setLocal({ ...local, howFindOut: e.target.value })
-            }
-          />
-        </div>
-
-        {error && (
-          <div className="text-red-500 text-sm text-center">
-            {error}
-          </div>
-        )}
-
-        <button
-          className={primaryButton}
-          onClick={submit}
-          disabled={loading}
-        >
-          {loading ? "Submitting..." : "Apply"}
-        </button>
-
-      </div>
-    </StepTransition>
-  );
-};
-// const Step4 = () => {
-//   const [local, setLocal] = useState({
-//     howFindOut: formData.howFindOut || "",
-//   });
-
-//   const submit = async () => {
-//     const finalForm = {
-//       ...formData,
-//       howFindOut: local.howFindOut,
-//     };
-
-//     setFormData(finalForm);
-
-//     requestAnimationFrame(() => {
-//       onClickApply(finalForm);
-//     });
-//   };
-
-//   return (
-//     <StepTransition step="tab4">
-//       <div className="p-4 space-y-4 bg-cream min-h-screen">
-
-//         <div className={card}>
-//           <label className={question}>
-//             How did you find Plumbum & why did you apply?
-//           </label>
-
-//           <textarea
-//             className={input}
-//             rows={4}
-//             value={local.howFindOut}
-//             onChange={(e) => setLocal({ howFindOut: e.target.value })}
-//             placeholder="Instagram, friend, workshop..."
-//           />
-//         </div>
-
-//         {error && (
-//           <div className="text-red-500 text-sm text-center">
-//             {error}
-//           </div>
-//         )}
-
-//         <button
-//           className={primaryButton}
-//           onClick={submit}
-//           disabled={loading}
-//         >
-//           {loading ? "Submitting..." : "Apply"}
-//         </button>
-
-//       </div>
-//     </StepTransition>
-//   );
-// };
-
-/* =========================
-   SUCCESS
-========================= */
-
-if (user) {
-  return (
-    <div className="min-h-screen flex overflow-y-scoll pb-20 items-center justify-center bg-cream pt-6 px-6">
-      <ThankYou user={user} />
-    </div>
   );
 }
 
-/* =========================
-   RENDER
-========================= */
+/* === STEP 4 === */
+function Step4({ formData, onClickApply, setActiveTab, loading, error }) {
+  const [local, setLocal] = useState({
+    eventPain:  formData.eventPain  || "",
+    howFindOut: formData.howFindOut || "",
+    writingHope: formData.writingHope || "",
+  });
 
-return (
-  <IonContent style={{ "--background": "#f4f4e0" }} fullscreen>
-    <div className="max-w-xl mx-auto pt-6 pb-20">
+  const submit = () => onClickApply({ ...formData, ...local });
 
-      {activeTab === "tab1" && <Step1 />}
-      {activeTab === "tab2" && <Step2 />}
-      {activeTab === "tab3" && <Step3 />}
-      {activeTab === "tab4" && <Step4 />}
+  return (
+    <StepTransition step="tab4">
+      <div className={pageClass}>
+        <IonLabel className={headingClass}>Last Few Things</IonLabel>
 
-      {activeTab === "tab0" && (
-        <div className="text-center p-6">
-          <img src={logo} className="w-24 mx-auto mb-6" />
-          <button className={primaryButton} onClick={() => setActiveTab("tab1")}>
-            Join Plumbum
-          </button>
-        </div>
-      )}
+        {[
+          { key: "writingHope", label: "What do you hope will change in your writing life?",  placeholder: "e.g. consistency, confidence, community..." },
+          { key: "eventPain",   label: "What makes you stay or leave writing events?",         placeholder: "e.g. vibe, structure, feedback quality..." },
+          { key: "howFindOut",  label: "How did you find Plumbum?",                            placeholder: "Instagram, friend, workshop..." },
+        ].map(({ key, label, placeholder }) => (
+          <div key={key} className="w-full flex flex-col">
+            <label className={questionClass}>{label}</label>
+            <textarea
+              className={inputClass}
+              rows={3}
+              placeholder={placeholder}
+              value={local[key]}
+              onChange={e => setLocal({ ...local, [key]: e.target.value })}
+            />
+          </div>
+        ))}
 
-    </div>
-  </IonContent>
-);
+        {error && <div className="text-red-500 text-sm text-center">{error}</div>}
+
+        <NavButtons
+          onBack={() => setActiveTab("tab3")}
+          onNext={submit}
+          nextLabel="Apply"
+          loading={loading}
+        />
+      </div>
+    </StepTransition>
+  );
+}
+
+/* === MAIN === */
+export default function OnboardingContainer() {
+  const router = useIonRouter();
+  const currentProfile = useSelector(s => s.users.currentProfile);
+
+  const contentRef = useRef(null);
+  const [activeTab, setActiveTab] = useState("tab0");
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [formData, setFormData] = useState({
+    fullName: "", email: "", igHandle: "",
+    whyApply: "", communityNeeds: "",
+    writingOutcome: "", writingHope: "",
+    selectedEvents: [], otherEvent: "",
+    eventPain: "", howFindOut: "",
+  });
+
+  useEffect(() => {
+    if (currentProfile?.id) router.push(Paths.home, "root");
+  }, [currentProfile, router]);
+
+  useEffect(() => {
+    contentRef.current?.scrollToTop(0);
+  }, [activeTab]);
+
+  const updateFormData = data => setFormData(prev => ({ ...prev, ...data }));
+
+  const onClickApply = async (overrideForm = formData) => {
+    if (loading) return;
+    try {
+      setLoading(true);
+      setError("");
+      const data = await authRepo.apply({
+        ...overrideForm,
+        email: overrideForm.email?.toLowerCase(),
+      });
+      await Preferences.set({ key: "hasSeenOnboarding", value: "true" });
+      setUser(data?.user ?? data);
+    } catch (err) {
+      if(err.status){
+          setError("You may have applied already. Give more time for a response")
+      }else{
+      setError(err?.message || "Something went wrong");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (user) {
+    return (
+       <IonContent className="page-content" style={{ "--padding-bottom": "10rem" }} fullscreen>
+      <ThankYou user={user} />
+      </IonContent>
+    );
+  }
+
+  return (
+    <IonContent ref={contentRef} className="page-content" style={{ "--padding-bottom": "10rem" }} fullscreen>
+      <div className="max-w-xl py-4 mx-auto">
+        {activeTab !== "tab0" && <ProgressDots activeTab={activeTab} />}
+
+        {activeTab === "tab0" && <Why setActiveTab={setActiveTab} onLogin={() => router.push(Paths.login)} />}
+        {activeTab === "tab1" && <Step1 formData={formData} updateFormData={updateFormData} setActiveTab={setActiveTab} error={error} setError={setError} />}
+        {activeTab === "tab2" && <Step2 formData={formData} updateFormData={updateFormData} setActiveTab={setActiveTab} />}
+        {activeTab === "tab3" && <Step3 formData={formData} updateFormData={updateFormData} setActiveTab={setActiveTab} />}
+        {activeTab === "tab4" && <Step4 formData={formData} onClickApply={onClickApply} setActiveTab={setActiveTab} loading={loading} error={error} />}
+      </div>
+    </IonContent>
+  );
 }

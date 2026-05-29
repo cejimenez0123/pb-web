@@ -1,66 +1,338 @@
-import React, {  useEffect, useLayoutEffect, useState } from "react"
-import ReactQuill from "react-quill";
-import "../../styles/Editor.css"
+
+import React, { useEffect, useRef, useCallback, useState } from "react";
 import { useSelector } from "react-redux";
 import { ErrorBoundary } from "@sentry/react";
-import { setHtmlContent } from "../../actions/PageActions";
-const fonts = ["Arial","Courier New","Georgia"]
-export default function RichEditor({ handleChange}){
+import alignLeft from "../../images/editor/align-left-svgrepo-com.svg"
+import alignCenter from "../../images/editor/align-center-svgrepo-com.svg"
+import alignRight from "../../images/editor/align-right-svgrepo-com.svg"
+import numberedList from "../../images/editor/ordered-list-svgrepo-com.svg"
+import unorderedList from "../../images/editor/unordered-list-svgrepo-com.svg"
+import blockquoteIcon from "../../images/editor/block-quote-svgrepo-com.svg"
+import undo from "../../images/editor/undo-left-svgrepo-com.svg"
+import redo from "../../images/editor/undo-right-svgrepo-com.svg"
+import codeBlock from "../../images/editor/code-block-svgrepo-com.svg"
+import clearFormat from "../../images/editor/clear-format-svgrepo-com.svg"
+import imageIcon from "../../images/editor/insert-image-svgrepo-com.svg"
+import insetLink from "../../images/editor/insert-link-svgrepo-com.svg"
+import Enviroment from "../../core/Enviroment";
 
-    
-      const htmlContent = useSelector(state=>state.pages.editorHtmlContent)
-      const [html,setHtml] = useState(htmlContent.html)
+const FONTS = ["Default", "Georgia", "Courier New", "Arial", "Trebuchet MS"];
+const SIZES = ["12px", "14px", "16px", "18px", "20px", "24px", "32px"];
 
-    useEffect(()=>{
-       
-        handleTextChange(htmlContent.html??"")
-      
-    },[htmlContent.html])
-    const modules = {
-      toolbar: [
-        [{ 'font': []}],
-        ['bold', 'italic', 'underline', 'strike'],
-        ['blockquote', 'code-block'],
-        [{ 'size': []}],
-        [{ 'align': [] }],
-        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-        ['link', 'image', 'video'],
-        ['clean'],
-      ],
-    };
-   
-    const formats = [
-      'header',
-      'font',
-      'size',
-      'bold',
-      'italic',
-      'underline',
-      'strike',
-      'blockquote',
-      'code-block',
-      'list',
-      'bullet',
-      'link',
-      'image',
-      'video',
-      'align',
-    ];
+const iconStyle = () =>
+  window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? { filter: "invert(100%)"}
+    : {};
 
-    const handleTextChange=(content)=>{
-        setHtml(content)
-        handleChange(content)
+// ─── Icon ──────────────────────────────────────────────────────────────────
+function Icon({ src }) {
+  return <img src={src} className="max-w-4 max-h-4 block" style={iconStyle()} />;
+}
+
+// ─── ToolbarButton ─────────────────────────────────────────────────────────
+// function ToolbarButton({ title, icon, action, active, disabled }) {
+//   return (
+//     <div
+//       title={title}
+//       onMouseDown={(e) => { e.preventDefault(); if (!disabled) action(); }}
+//       className={[
+//         "flex items-center justify-center min-w-8 min-h-8 rounded-lg text-sm transition-all duration-150",
+//         active ? "bg-base-soft text-cream" : "text-text-primary hover:bg-base-surface",
+//         disabled ? "opacity-30 cursor-not-allowed" : "cursor-pointer",
+//       ].join(" ")}
+//     >
+//       {icon}
+//     </div>
+//   );
+// }
+function ToolbarButton({ title, icon, action, active, disabled }) {
+  return (
+    <div
+      title={title}
+      onMouseDown={(e) => { e.preventDefault(); if (!disabled) action(); }}
+      className={[
+        "flex items-center justify-center min-w-8 min-h-8 rounded-lg text-sm transition-all duration-150",
+        active
+          ? "bg-base-soft text-cream"
+          : "text-text-primary dark:text-text-dark hover:bg-base-surface dark:hover:bg-base-surfaceDark",
+        disabled ? "opacity-30 cursor-not-allowed" : "cursor-pointer",
+      ].join(" ")}
+    >
+      {icon}
+    </div>
+  );
+}
+
+function ToolbarSeparator() {
+  return <span className="w-px h-6 bg-border-default mx-1 self-center" />;
+}
+
+function ToolbarSelect({ value, options, onChange, title, className = "" }) {
+  return (
+    <select
+      title={title}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      onMouseDown={(e) => e.stopPropagation()}
+      className={[
+        "text-xs px-1 py-1 rounded-lg border border-border-default",
+        "bg-base-surface text-text-primary",
+        "focus:outline-none focus:ring-2 focus:ring-soft cursor-pointer",
+        className,
+      ].join(" ")}
+    >
+      {options.map((opt) => (
+        <option key={opt.value ?? opt} value={opt.value ?? opt}>
+          {opt.label ?? opt}
+        </option>
+      ))}
+    </select>
+  );
+}
+const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+// ─── Wrap selection in a block element ────────────────────────────────────
+// Fixes: execCommand("formatBlock") silently fails on plain contentEditable divs
+function wrapSelectionInBlock(tag, styles = {}) {
+  const sel = window.getSelection();
+  if (!sel || sel.rangeCount === 0) return;
+  const range = sel.getRangeAt(0);
+
+  // Walk up to find if we're already inside this block tag — if so, unwrap
+  let ancestor = range.commonAncestorContainer;
+  if (ancestor.nodeType === Node.TEXT_NODE) ancestor = ancestor.parentNode;
+  while (ancestor && ancestor.contentEditable !== "true") {
+    if (ancestor.tagName === tag.toUpperCase()) {
+      // Unwrap: move children out then remove the wrapper
+      const parent = ancestor.parentNode;
+      while (ancestor.firstChild) parent.insertBefore(ancestor.firstChild, ancestor);
+      parent.removeChild(ancestor);
+      return;
     }
+    ancestor = ancestor.parentNode;
+  }
 
-  
-    return( 
-      <ErrorBoundary>
-      <ReactQuill 
-      className=" text-sky-800 bg-emerald-50   stroke-white"
-      modules={modules}
-      formats={formats} value={html} onChange={(content)=>handleTextChange(content)}
-        
-     />
-     </ErrorBoundary>
-    )
+  // Wrap selection in the block element
+  const fragment = range.extractContents();
+  const block = document.createElement(tag);
+  Object.assign(block.style, styles);
+  block.appendChild(fragment);
+  range.insertNode(block);
+
+  // Restore selection inside new block
+  const newRange = document.createRange();
+  newRange.selectNodeContents(block);
+  sel.removeAllRanges();
+  sel.addRange(newRange);
+}
+
+// ─── Wrap selection in inline span ────────────────────────────────────────
+// Fixes: surroundContents throws when selection crosses element boundaries
+function wrapSelectionInline(styles = {}) {
+  const sel = window.getSelection();
+  if (!sel || sel.rangeCount === 0 || sel.isCollapsed) return false;
+  try {
+    const range = sel.getRangeAt(0);
+    const fragment = range.extractContents();
+    const span = document.createElement("span");
+    Object.assign(span.style, styles);
+    span.appendChild(fragment);
+    range.insertNode(span);
+    const newRange = document.createRange();
+    newRange.selectNodeContents(span);
+    sel.removeAllRanges();
+    sel.addRange(newRange);
+    return true;
+  } catch (_) {
+    return false;
+  }
+}
+
+// ─── Main RichEditor ────────────────────────────────────────────────────────
+export default function RichEditor({ handleChange }) {
+  const htmlContent = useSelector((state) => state.pages.editorHtmlContent);
+  const editorRef = useRef(null);
+  const hasInitialized = useRef(false);
+
+  const [formats, setFormats] = useState({
+    bold: false, italic: false, underline: false, strikethrough: false,
+    ordered: false, unordered: false, blockquote: false, code: false,
+    align: "none", font: "Default", size: "16px",
+  });
+
+  useEffect(() => {
+    const el = editorRef.current;
+    if (!el || hasInitialized.current) return;
+    el.innerHTML = htmlContent || "";
+    hasInitialized.current = true;
+  }, [htmlContent]);
+
+  const emitChange = useCallback(() => {
+    handleChange?.(editorRef.current?.innerHTML ?? "");
+  }, [handleChange]);
+
+  // ── Detect if cursor is inside a given tag ──────────────────────────────
+  const isInsideTag = useCallback((tag) => {
+    const sel = window.getSelection();
+    let node = sel?.anchorNode;
+    while (node && node !== editorRef.current) {
+      if (node.tagName === tag) return true;
+      node = node.parentNode;
+    }
+    return false;
+  }, []);
+
+  const updateFormatState = useCallback(() => {
+    const isCenter = document.queryCommandState("justifyCenter");
+    const isRight  = document.queryCommandState("justifyRight");
+    const isFull   = document.queryCommandState("justifyFull");
+    const isLeft   = document.queryCommandState("justifyLeft");
+
+    setFormats({
+      bold:          document.queryCommandState("bold"),
+      italic:        document.queryCommandState("italic"),
+      underline:     document.queryCommandState("underline"),
+      strikethrough: document.queryCommandState("strikeThrough"),
+      ordered:       document.queryCommandState("insertOrderedList"),
+      unordered:     document.queryCommandState("insertUnorderedList"),
+      blockquote:    isInsideTag("BLOCKQUOTE"),
+      code:          isInsideTag("PRE") || isInsideTag("CODE"),
+      align: isCenter ? "center" : isRight ? "right" : isFull ? "justify" : isLeft ? "left" : "none",
+      font:  document.queryCommandValue("fontName") || "Default",
+      size:  document.queryCommandValue("fontSize") || "16px",
+    });
+  }, [isInsideTag]);
+
+  const exec = useCallback((cmd, value = null) => {
+    editorRef.current?.focus();
+    document.execCommand(cmd, false, value);
+    updateFormatState();
+    emitChange();
+  }, [updateFormatState, emitChange]);
+
+  // ── Blockquote: manual DOM wrap/unwrap ───────────────────────────────────
+  const toggleBlockquote = useCallback(() => {
+    editorRef.current?.focus();
+    wrapSelectionInBlock("blockquote", {
+      borderLeft: "3px solid #40906f",
+      paddingLeft: "1rem",
+      margin: "0.5rem 0",
+      color: "var(--text-sub)",
+      fontStyle: "italic",
+    });
+    updateFormatState();
+    emitChange();
+  }, [updateFormatState, emitChange]);
+
+  // ── Code block: manual DOM wrap/unwrap ──────────────────────────────────
+  const toggleCodeBlock = useCallback(() => {
+    editorRef.current?.focus();
+    wrapSelectionInBlock("pre", {
+      background: "var(--bg-surface)",
+      border: "1px solid var(--border)",
+      borderRadius: "6px",
+      padding: "0.75rem 1rem",
+      fontFamily: "Courier New, monospace",
+      fontSize: "0.875rem",
+      overflowX: "auto",
+      whiteSpace: "pre",
+    });
+    updateFormatState();
+    emitChange();
+  }, [updateFormatState, emitChange]);
+
+  // ── Font size: inline span wrap ─────────────────────────────────────────
+  const applySize = useCallback((size) => {
+    editorRef.current?.focus();
+    if (!wrapSelectionInline({ fontSize: size })) {
+      // Nothing selected — just set for next typed character
+      document.execCommand("fontSize", false, "3");
+    }
+    emitChange();
+  }, [emitChange]);
+
+  const applyFont = useCallback((font) => {
+    exec("fontName", font === "Default" ? "inherit" : font);
+  }, [exec]);
+
+  const insertLink = useCallback(() => {
+    const url = window.prompt("Enter URL:", "https://");
+    if (url) exec("createLink", url);
+  }, [exec]);
+
+  const insertImage = useCallback(() => {
+    const url = window.prompt("Image URL:", "https://");
+    if (url) exec("insertImage", url);
+  }, [exec]);
+
+  const handlePaste = useCallback((e) => {
+    e.preventDefault();
+    document.execCommand("insertText", false, e.clipboardData.getData("text/plain"));
+  }, []);
+
+  const fontOptions = FONTS.map((f) => ({ value: f, label: f }));
+  const sizeOptions = SIZES.map((s) => ({ value: s, label: s }));
+
+  return (
+    <ErrorBoundary>
+      <div
+        className="rich-editor flex flex-col rounded-2xl overflow-hidden shadow-sm"
+        style={{ border: "1px solid var(--border)", background: "var(--bg-surface)" }}
+      >
+        {/* ── Toolbar ── */}
+        <div
+          className="flex flex-wrap items-center gap-0.5 px-3 py-2 overflow-x-auto"
+          style={{ background: "var(--bg-surface)", borderBottom: "1px solid var(--border)" }}
+          onMouseDown={(e) => e.preventDefault()}
+        >
+          <ToolbarSelect title="Font Family" value={formats.font} options={fontOptions} onChange={applyFont} className="w-28 hidden sm:block" />
+          <ToolbarSelect title="Font Size"   value={formats.size} options={sizeOptions} onChange={applySize} className="w-20 hidden sm:block" />
+          <ToolbarSeparator />
+
+          <ToolbarButton title="Bold (⌘B)"      active={formats.bold}          action={() => exec("bold")}          icon={<span className="font-bold text-sm"        style={{ color: "var(--text-primary)" }}>B</span>} />
+          <ToolbarButton title="Italic (⌘I)"    active={formats.italic}        action={() => exec("italic")}        icon={<span className="italic font-serif text-sm" style={{ color: "var(--text-primary)" }}>I</span>} />
+          <ToolbarButton title="Underline (⌘U)" active={formats.underline}     action={() => exec("underline")}     icon={<span className="underline text-sm"         style={{ color: "var(--text-primary)" }}>U</span>} />
+          <ToolbarButton title="Strikethrough"  active={formats.strikethrough}  action={() => exec("strikeThrough")} icon={<span className="line-through text-sm"      style={{ color: "var(--text-primary)" }}>S</span>} />
+          <ToolbarSeparator />
+
+          <ToolbarButton title="Align Left"   active={formats.align === "left"}   action={() => exec("justifyLeft")}   icon={<Icon src={alignLeft} />} />
+          <ToolbarButton title="Align Center" active={formats.align === "center"} action={() => exec("justifyCenter")} icon={<Icon src={alignCenter} />} />
+          <ToolbarButton title="Align Right"  active={formats.align === "right"}  action={() => exec("justifyRight")}  icon={<Icon src={alignRight} />} />
+          <ToolbarSeparator />
+
+          <ToolbarButton title="Numbered List" active={formats.ordered}   action={() => exec("insertOrderedList")}   icon={<Icon src={numberedList} />} />
+          <ToolbarButton title="Bullet List"   active={formats.unordered} action={() => exec("insertUnorderedList")} icon={<Icon src={unorderedList} />} />
+          <ToolbarSeparator />
+
+          <ToolbarButton title="Blockquote" active={formats.blockquote} action={toggleBlockquote} icon={<Icon src={blockquoteIcon} />} />
+          <ToolbarButton title="Code Block" active={formats.code}       action={toggleCodeBlock}  icon={<Icon src={codeBlock} />} />
+          <ToolbarSeparator />
+
+          <ToolbarButton title="Insert Link"  action={insertLink}  icon={<Icon src={insetLink} />} />
+          <ToolbarButton title="Insert Image" action={insertImage} icon={<Icon src={imageIcon} />} />
+          <ToolbarSeparator />
+
+          <ToolbarButton title="Undo (⌘Z)"       action={() => exec("undo")}         icon={<Icon src={undo} />} />
+          <ToolbarButton title="Redo (⌘⇧Z)"      action={() => exec("redo")}         icon={<Icon src={redo} />} />
+          <ToolbarButton title="Clear Formatting" action={() => exec("removeFormat")} icon={<Icon src={clearFormat} />} />
+        </div>
+
+        {/* ── Editable area ── */}
+        <div
+          ref={editorRef}
+          contentEditable
+          suppressContentEditableWarning
+          spellCheck
+          onInput={emitChange}
+          onKeyUp={updateFormatState}
+          onMouseUp={updateFormatState}
+          onPaste={handlePaste}
+          className="rich-editor__body dark:text-cream bg-cream text-soft dark:bg-base-surfaceDark min-h-[220px] px-5 py-4 focus:outline-none prose prose-sm sm:prose-base max-w-none"
+          style={{
+             WebkitUserSelect: "text",
+            userSelect: "text",
+          }}
+        />
+      </div>
+    </ErrorBoundary>
+  );
 }

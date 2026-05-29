@@ -1,260 +1,270 @@
+
 import {useContext,useEffect,useState} from 'react'
+import { useAlert } from '../../core/useAlert.jsx';
+import AlertType from '../../core/AlertType.js';
 import "../../App.css"
-import { logIn, } from '../../actions/UserActions';
+import { logIn } from '../../actions/UserActions';
 import {useDispatch} from 'react-redux';
-import loadingGif from "../../images/loading.gif"
 import Paths from '../../core/paths';
 import checkResult from '../../core/checkResult';
 import ForgotPasswordForm from '../../components/auth/ForgetPasswordForm';
 import Context from '../../context';
-import DeviceCheck from '../../components/DeviceCheck';
-import { IonContent,  IonInput, IonText, useIonRouter } from '@ionic/react';
-import { Preferences } from '@capacitor/preferences';
+import { IonContent, useIonRouter } from '@ionic/react';
 import AppleSignInButton from '../../components/auth/AppleSignInButton';
-import { useSelector } from 'react-redux';
 import GoogleLogin from '../../components/GoogleLogin';
-import ErrorBoundary from "../../ErrorBoundary.jsx"
 import { Capacitor } from '@capacitor/core';
 import { useDialog } from '../../domain/usecases/useDialog.jsx';
-export default function LogInContainer() {
-    const {setError,seo,setSeo}=useContext(Context)
-    const currentProfile = useSelector(state=>state.users.currentProfile)
-    const router = useIonRouter()
 
-    useEffect(()=>{
-        let soo = seo
-        soo.title = "Plumbum (Log In) - Share Your Weirdness"
-        setSeo(soo)
-       
-   },[])
-   useEffect(()=>{
- 
-    const checkAuth= async()=>{
-       const token = (await Preferences.get({key:"token"})).value
-       token&& currentProfile &&currentProfile.id&&router.push(Paths.myProfile)
+const WRAP           = "max-w-2xl mx-auto px-4";
+const CARD           = "max-w-lg mx-auto px-4 py-6 rounded-lg text-emerald-800";
+const FORM           = "space-y-6";
+const FIELD          = "space-y-2";
+const INPUT          = "w-[100%] rounded-full border border-1 border-soft px-4 py-2 text-emerald-800 bg-base-bg dark:text-emerald-100 text-sm focus:outline-none focus:ring-1 focus:ring-gray-300";
+const BUTTON_PRIMARY = "bg-soft rounded-full w-[100%] mx-auto py-3 mt-2 text-white text-lg";
+const LINK           = "text-soft dark:text-cream hover:text-green-400 cursor-pointer";
+const INPUT_WRAP     = "max-w-md mx-auto ";
 
-    }
-    checkAuth()
- 
-   },[currentProfile])
+export default function LogInContainer({ currentProfile }) {
+  const { setSeo } = useContext(Context);
+  const { showAlert,closeAlert,showPrompt } = useAlert();
+  const router = useIonRouter();
 
-    return (
-        <IonContent fullscreen={true}>
-            <div className='py-10'>
-     
-            <LogInCard  
-                       
-            setLogInError={setError}
-            handleSubmit={(e)=>handleLogIn(e)}
-            setPassword={(str)=>setLiPassword(str)}/>
-            </div>
-  
-         </IonContent>
-    )
+  useEffect(() => {
+    setSeo((prev) => ({ ...prev, title: "Plumbum (Log In) - Share Your Weirdness" }));
+  }, [setSeo]);
+
+ // Option 1 — setTimeout (simplest)
+const [signingIn, setSigningIn] = useState(false);
+
+useEffect(() => {
+  if (!currentProfile?.id || signingIn) return;
+  setTimeout(() => {
+    router.push(Paths.myProfile, "root");
+  }, 0);
+}, [currentProfile, router, signingIn]);
+
+  return (
+    <IonContent className="page-content" fullscreen>
+      <div className="py-10">
+        <LogInCard  setSigningIn={setSigningIn}  setLogInError={(msg) => showPrompt({ message: msg, type: AlertType.prompt, agree: () => closeAlert(), agreeText:"Understood"  })} />
+      </div>
+    </IonContent>
+  );
 }
 
-function LogInCard({setLogInError}){
-    const dispatch = useDispatch()
-    const router = useIonRouter()
-    const {setError}=useContext(Context)
-    const [email, setEmail] = useState('');
-    const isNative = DeviceCheck()
-    const [password, setPassword] = useState('');
-    const [pending,setPending]=useState(false)
-    const [showPassword, setShowPassword] = useState(false);
-    const {openDialog,closeDialog}=useDialog()
+function LogInCard({ setSigningIn, setLogInError }) {
+  const dispatch = useDispatch();
+  const router   = useIonRouter();
+  const { showAlert ,closeAlert,showPrompt} = useAlert();
+  const { openDialog, closeDialog, dialog } = useDialog();
+  const isNative = Capacitor.isNativePlatform();
+
+  const [email, setEmail]             = useState("");
+  const [password, setPassword]       = useState("");
+  const [pending, setPending]         = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  //   showAlert({ message: err?.status === 401 ? "User Not Found. Apply Below" : err?.message || "Unknown error", type: AlertType.error });
+  // };
+// const handleAuthError = (err) => {
+//   const message = err?.data?.message || err?.message || "Unknown error";
+//   const isNoAccount = err?.status === 404;
+
+//   if (isNoAccount) {
+//     showPrompt({
+//       message: "No account found. Have you applied to Plumbum?",
+//       type: AlertType.prompt,
+//       agree: () => {
+//         closeAlert();
+//         router.push(Paths.onboard);
+//       },
+//       agreeText: "Apply Now",
+//     });
+//   } else {
+//     showAlert({ message, type: AlertType.error });
+//   }
+// };
+const handleAuthError = (err) => {
+
   
-    const dialog = useSelector(state=>state.users.dialog)
-     
-    
-       
-    const handleFirstTimeClick=()=>{
-  
- router.push(Paths.onboard)
-    
+  const message = err?.data?.message || err?.message || "Unknown error";
+  const isNoAccount = err?.status === 404;
+
+  if (isNoAccount) {
+    showPrompt({
+      message: "No account found. Have you applied to Plumbum?",
+      type: AlertType.prompt,
+      agree: () => {
+        closeAlert();
+        router.push(Paths.onboard);
+      },
+      agreeText: "Apply Now",
+    });
+  } else {
+    showAlert({ message, type: AlertType.error });
+  }
+};
+  const handleLogIn = () => {
+    if (email.length > 3 && password.length) {
+      setPending(true);
+      dispatch(logIn({ email: email.toLowerCase(), password, isNative })).then((res) => {
+        checkResult(
+          res,
+          (payload) => {
+            if (payload?.profile?.id) {
+              router.push(Paths.home);
+            } else {
+              showAlert({ message: "Error with Profile", type: AlertType.error });
+            }
+          },
+          (err) => {
+            handleAuthError(err);
+            setPending(false);
+          }
+        );
+      });
+    } else {
+      setPending(false);
+      showAlert({ message: "Values can't be empty", type: AlertType.error });
     }
-
-    const handleLogIn = (event)=>{
-        event.preventDefault()
-   
-        if(email.length>3 && password.length){
-            setPending(true)
-            const params ={email:email.toLowerCase(),password:password,isNative:Capacitor.isNativePlatform()}
-            dispatch(logIn(params)).then(res=>{
-                checkResult(res,payload=>{
-                    setPending(false)
-                if(payload.message){
-                    setError(payload.message)
-                }else{
-                    if(payload && payload.profile && payload.profile.id){
-
-                   
-                    navigate(Paths.myProfile)
-                     }else{
-                        setError("Error with Profile")
-                     }}
-                },err=>{
-                    if(err.message=="Request failed with status code 401"){
-setError("User Not Found. Apply Below")
-                    }else{
-                        setError(err.message)
-                    }
-             
-                    
-                    setPending(false)
-                })
-            })       
-        }else{
-            setPending(false)
-            setError("Values can't be empty")
+  };
+  const dispatchLogin = ({ email, googleId, idToken, provider }) => {
+  if (!idToken && !googleId) {
+    showAlert({ message: "Login failed: missing credentials", type: AlertType.error });
+    return;
+  }
+  setSigningIn(true);
+  setPending(true);
+  dispatch(logIn({
+    email: email || null,
+    uId: googleId || null,
+    idToken: idToken || null,
+    provider,
+    isNative,
+  })).then((res) => {
+    checkResult(
+      res,
+      (payload) => {
+        if (payload?.profile?.id) {
+          router.push(Paths.home, "forward");
+        } else {
+          showPrompt({ message: "No profile found. Check email or apply", type: AlertType.prompt, agree: () => closeAlert(), agreeText: "Understood" });
         }
-    }
-  
-    const dispatchLogin=  ({email,googleId,idToken})=>{
-   
-        if(idToken){
-            dispatch(logIn({email,idToken:idToken,isNative})).then(res=>{
-                checkResult(res, payload=>{
-                 console.log("B",payload)
-                    router.push(Paths.home(),"forward")
-                    setPending(false)
-                },err=>{
-console.log("BE",err)
-                    if(err.message=="Request failed with status code 401"){
-    setError("User Not Found. Apply Below")
-                    }else{
-                        setError(err.message)
-                    }
-             
-                    
-                    setPending(false)
-                })
-            })   
-        }else if(googleId){
-
+        setPending(false);
+        setSigningIn(false);
+      },
+      (err) => {
+        handleAuthError(err);
+        setPending(false);
+        setSigningIn(false);
+      }
+    );
+  });
+};
+  //     setSigningIn(true);  // prevent redirect while auth is in flight
+  // setPending(true);
+  //   if (!idToken && !googleId) {
+  //     showAlert({ message: "Google login failed: missing credentials", type: AlertType.error });
+  //     return;
+  //   }
+  //   setPending(true);
+  //   dispatch(logIn({ email: email || null, uId: googleId || null, idToken: idToken || null, isNative })).then((res) => {
+  //     checkResult(
+  //       res,
+  //       (payload) => {
         
-        dispatch(logIn({email,uId:googleId,isNative})).then(res=>{
-            checkResult(res,payload=>{
-            
-                if(payload.message){
-                    setError(payload.message)
-                }
-                setPending(false)
-            },err=>{
-               console.log("XE",err)
-                if(err.message=="Request failed with status code 401"){
-setError("User Not Found. Apply Below")
-                }else{
-                    setError(err.message)
-                }
-         
-                
-                setPending(false)
-            })
-        })   
-    }
-    }
-    const handleForgotPasswordDialog=()=>{
-        let dia = {...dialog}
-        
-    
-    dia.onClose=()=>{
-       closeDialog()
-    }
-    dia.isOpen = true
-dia.title=null
-dia.agree=null
-dia.agreeText=null
-dia.disagreeText=("Close")
-dia.breakpoint=1
-dia.text=(<ForgotPasswordForm/>)
-openDialog(dia)
-    }
-    return(
-    //    
-    <div  className=' flex md:mt-8  mx-auto sm:max-w-[50em]  lg:mt-36 mb-16 rounded-lg   text-emerald-800 p-4 '><div className='   '>
-        
-        <div  className='mx-auto'>
-            <form className=' sm:max-w-[40em] overflow-auto pt-4'>
-        <h1 className='text-emerald-800 mont-medium mx-auto text-center pb-4'> Log In</h1>
-        <div className='w-[90vw] text-center sm:w-[40em] '>
-  <div className='text-left'>
-  <IonInput type="text" 
-    value={email} 
-         className=' bg-transparent text-emerald-800 mx-auto'
-         labelPlacement='stacked'
-         label='Email'
-         style={{"--ion-max-width":"50em"}}
-         onIonInput={(e) => setEmail(e.target.value)}
-        placeholder='example@email.com' />
-    </div>
-</div>   
+  //         if (payload?.profile?.id) {
+  //           router.push(Paths.home, "forward");
+  //         } else {
+  //           showPrompt({ message: "No profile found. Check email or apply", type: AlertType.prompt, agree: () => closeAlert(), agreeText:"Understood"  });
+  //         }
+  //         setPending(false);
+  //       },
+  //       (err) => {
+  //         handleAuthError(err);
+  //         setPending(false);
+  //       }
+  //     );
+  //   });
+  // };
 
+  const handleForgotPasswordDialog = () => {
+    openDialog({
+      ...dialog,
+      isOpen:      true,
+      title:       null,
+      agree:       null,
+      agreeText:   null,
+      disagreeText: "Close",
+      breakpoint:  1,
+      text:        <ForgotPasswordForm />,
+      onClose:     closeDialog,
+    });
+  };
 
-  <IonInput type={showPassword?"text":`password`}
-         value={password}
-         label='Password'
-         labelPlacement='stacked'
-         onIonInput={(e) => setPassword(e.target.value)}
-        placeholder='*****' 
-        >
-            {/* <IonIcon slot='end'> */}
-         <h5 slot='end' onClick={()=>setShowPassword(!showPassword)}
-                className={`text-[0.7rem] open-sans-medium ${showPassword?"":"" } my-auto`}>
-                    {showPassword?"Hide":"Show"}</h5>
-                    {/* </IonIcon> */}
-        </IonInput>
-         
+  return (
+    <div className={WRAP}>
+      <div className={CARD}>
+        <div className="mx-auto">
+          <div className={FORM}>
+            <h1 className="text-emerald-800 mont-medium mx-auto text-center pb-4">Log In</h1>
 
-
-         
-            
-            <div
-            className='bg-green-600  rounded-full btn w-[100%] mx-4 mx-auto sm:w-[40em] mx-auto hover:bg-green-400  font-bold py-3 px-12 mt-4 '
-               onClick={handleLogIn}
-                
-                variant="contained" ><IonText className='  text-white text-xl text-center '>Log In</IonText></div>
-                
-        <span className='flex flex-col mt-4 justify-center '> 
-        <div className='w-fit mx-auto'>
-        <AppleSignInButton
-        onUserSignIn={({idToken,email})=>{
-            dispatchLogin({email,idToken,isNative})
-        }}
-        />
-        </div>
-         <GoogleLogin
-     
-        onUserSignIn={({ email,
-        name,
-        googleId,
-        driveAccessToken,
-        idToken})=>{
-dispatchLogin({email,idToken:null,googleId,isNative})
-        }}
-            
-
-    
-     />
-     </span>
-        <div className='mt-4 text-center p-4'>
-        <a  onClick={handleFirstTimeClick}
-        className='text-emerald-800 text-xl hover:text-green-400  '>Click here if this your first time?</a>
-      
-        {pending? <div className='flex'>
-       <img  
-        className="max-w-24 mx-auto max-w-24 min-w-20 min-h-20"src={loadingGif}/>
-        </div>:null}
-                
-                <h5 onClick={()=>{
-                    handleForgotPasswordDialog()
-                 }} className='text-[1rem] pt-8 w-fit hover:text-green-400 mx-auto text-emerald-800'>Forgot Password?</h5>
+            <div className={FIELD}>
+              <label>Email</label>
+              <div className={INPUT_WRAP}>
+                <input
+                  type="text"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value.toLowerCase())}
+                  placeholder="example@email.com"
+                  className={INPUT}
+                />
               </div>
-        </form>
+            </div>
 
-                </div></div>
-                
+            <div className={FIELD}>
+              <label>Password</label>
+              <div className={INPUT_WRAP}>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onInput={(e) => setPassword(e.target.value)}
+                  placeholder="*****"
+                  className={INPUT}
+                />
+              </div>
+              <div className="text-right text-xs pr-2">
+                <span onClick={() => setShowPassword(!showPassword)} className={LINK}>
+                  {showPassword ? "Hide" : "Show"}
+                </span>
+              </div>
+            </div>
+
+            <button type="button" onClick={handleLogIn} className={BUTTON_PRIMARY}>
+              {pending ? "Logging in..." : "Log In"}
+            </button>
+
+            <span className="flex flex-col mt-4 justify-center">
+              <div className="w-fit mx-auto">
+                <AppleSignInButton
+                  onUserSignIn={({ idToken, email }) =>     dispatchLogin({ email, googleId: null, idToken, provider: 'apple' })}
+                />
+              </div>
+              <GoogleLogin
+                onUserSignIn={({ email, name, googleId, idToken }) =>   dispatchLogin({ email, googleId, idToken, provider: 'google' })}
+              />
+            </span>
+
+            <div className="text-center space-y-3">
+              <p onClick={() => router.push(Paths.onboard)} className={LINK}>
+                First time here?
+              </p>
+              <p onClick={handleForgotPasswordDialog} className={`${LINK} text-sm`}>
+                Forgot Password?
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    )
-
+  );
 }

@@ -54,11 +54,7 @@ class AuthRepo{
         purpose,
         message}){
            
-            //   const res = await axios.post(Enviroment.url+"/api/email-webhook",{ preferredName,
-            //     email,
-            //     subject,
-            //     purpose,
-            //     message})
+         
 
         const res = await axios.post(Enviroment.url+"/auth/feedback",{ preferredName,
                 email,
@@ -87,18 +83,36 @@ class AuthRepo{
      
       return res.data
     }
-    async startSession({uId,email,password,identityToken}){
-let headers = await this.getAuthHeaders()
-        const res = await axios.post(Enviroment.url+"/auth/session",{uId,email,password,identityToken},
-            {headers:headers})
 
-        return res.data
-    }
+// async startSession({ uId, email, password, identityToken }) {
+//   const headers = await this.getAuthHeaders();
+
+
+
+//   const res = await axios.post(
+//     `${Enviroment.url}/auth/session`,
+//     { uId, email, password, identityToken },
+//     { headers }
+//   );
+
+//   return res.data;
+// }
+async startSession({ uId, email, password, identityToken, idToken }) {
+  const res = await axios.post(
+    `${Enviroment.url}/auth/session`,
+    { uId, email, password, identityToken, idToken },
+  );
+  return res.data;
+}
     async updateSubscription({token,frequency}){
         
         const res = await axios.put(Enviroment.url+"/auth/subscription",{
             token,frequency
         })
+        return res.data
+    }async referral({email,name}){
+        const headers = await this.getAuthHeaders()
+        const res = await axios.post(Enviroment.url+"/auth/invite",{email,name}, {headers:headers})
         return res.data
     }
 

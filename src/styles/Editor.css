@@ -178,34 +178,103 @@
  .ql-editor em{
   font-style: italic!important;
  }
- 
- @media (min-width: 768px) {
+ .ql-container .ql-editor {
+  min-height: 25dvh;
+ }
 
+ /* ─── Rich editor toolbar (replaces react-quill toolbar styles) ─────────────*/
 
- #editor .ql-editor{
+/*
+  Your existing .ql-toolbar rules already cover the gradient background and
+  icon colors. The custom editor uses the same .ql-editor class for the
+  content area so font sizes carry over automatically.
+  Only new rules needed:
+*/
 
-    top:0;
-
-    min-height: 20em !important;
-    color: #052e16 !important;
-    background: linear-gradient(#a7f3d0, #d1fae5)!important;
-    color: #052e16 !important;
-    border-bottom: 0.5em !important;
-
+.rich-editor {
+  border-radius: 1rem;
+  overflow: hidden;
 }
 
- }
- @media (max-width: 768px) {
+/* Toolbar scrolls horizontally on small screens instead of wrapping oddly */
+@media (max-width: 500px) {
+  .rich-editor [role="toolbar"],
+  .rich-editor .toolbar {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+  }
+}
 
- 
+/* Active toolbar button matches your emerald palette */
+.rich-editor button[data-active="true"],
+.rich-editor button.active {
+  background-color: #a7f3d0;
+  color: #052e16;
+  border-radius: 0.5rem;
+}
+
+.rich-editor button:hover {
+  background-color: #d1fae5;
+}
+/*
+  Ionic sets user-select: none on ion-content and its children by default.
+  This re-enables text selection inside the annotated text container.
+  Add to your global CSS / index.css / App.css
+*/
+
+/* ─── REPLACE the existing annotation block at the bottom with this ──────── */
+
+/* Ionic full chain — covers ion-app → ion-router-outlet → ion-content */
+ion-app,
+ion-router-outlet,
+ion-nav,
+ion-content,
+.ion-page {
+  -webkit-user-select: text !important;
+  user-select: text !important;
+  touch-action: auto !important;
+  -webkit-touch-callout: default !important;
+}
+/* ion-content {
+
+  --background: #f4f4e0;
+  --overflow: scroll;
+}
+
+@media (prefers-color-scheme: dark) {
+  ion-content {
+    --background:#1c1f1a 
+  }
+} */
+/* Ionic 6/7 shadow part */
+ion-content::part(scroll) {
+  -webkit-user-select: text !important;
+  user-select: text !important;
+  touch-action: auto !important;
   
-  #editor .ql-editor{
-    top:0;
-    text-overflow: ellipsis !important;
-    color: #052e16 !important;
-    background: linear-gradient(#a7f3d0, #d1fae5)!important;
-    border-bottom: 0.5em !important;
-
 }
 
- }
+/* Ionic 5 inner-scroll */
+ion-content .inner-scroll {
+  -webkit-user-select: text !important;
+  user-select: text !important;
+}
+
+/* Annotation container */
+.annotation-container,
+.annotation-container * {
+  -webkit-user-select: text !important;
+  user-select: text !important;
+  -webkit-touch-callout: default !important;
+  touch-action: auto !important;
+}
+
+/* ── CRITICAL: no-scroll must never apply inside annotation content ───────── */
+/* Remove touch-action:none when inside annotation — it kills text selection  */
+.annotation-container.no-scroll,
+.annotation-container .no-scroll {
+  touch-action: auto !important;
+  overflow: hidden !important;      /* keep scroll locked if needed */
+  overscroll-behavior: none !important;
+  /* but NOT touch-action: none — that blocks selection */
+}

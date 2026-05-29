@@ -1,114 +1,103 @@
-import {
-  IonModal,
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonFooter,
-  IonButtons,
-  IonText,
-  IonBackButton,
-  IonContent,
-} from '@ionic/react';
-import { useDialog } from "../domain/usecases/useDialog";
-import { Capacitor } from '@capacitor/core';
 
-const Dialog = ({ presentingElement }) => {
-  const { dialog, closeDialog, resetDialog } = useDialog();
+import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useDialog } from "../domain/usecases/useDialog";
+import SectionHeader from "./SectionHeader";
+
+const Dialog = () => {
+  const { dialog, resetDialog } = useDialog();
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    if (dialog?.isOpen) {
+      setVisible(true);
+    } else {
+      handleClose();
+    }
+  }, [dialog]);
+
+  const handleClose = () => {
+    setVisible(false);
+    setTimeout(() => resetDialog(), 250);
+  };
 
   if (!dialog) return null;
 
-  // Detect if running on native mobile
-  const isNative = Capacitor.isNativePlatform();
-
-  // Adjust breakpoints for native vs web
-const breakpoints = isNative ? [0, 1] : [0, 1];
-  const initialBreakpoint = isNative ? 1 : 1;
-  const backdropBreakpoint = 0;
-
   return (
-    <IonModal
-      isOpen={dialog.isOpen}
-      presentingElement={presentingElement}
-      swipeToClose
-      canDismiss
-      backdropDismiss={true}    
-             // ensures tap-away dismissal
-       onDidDismiss={() => {
-    resetDialog();
-  
+    <AnimatePresence>
+      {visible && (
+        <>
+          {/* Backdrop */}
+          <motion.div
+            onClick={handleClose}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm"
+          />
 
-  }}       // clears modal state after dismiss
-      keepContentsMounted={false}       // allows proper re-render
-      breakpoints={breakpoints}
-      initialBreakpoint={initialBreakpoint}
-      backdropBreakpoint={backdropBreakpoint}
-      cssClass="dialog-half"
-      mode="ios"
-    >
-      {/* <div className='flex flex-col'> */}
-      <IonContent
-        className="ion-padding"
-    
-        scrollY={dialog.scrollY ?? true}
-        style={{ "--background": "#f4f4e0" }}
-      >
-        {dialog.title && (
-          <IonHeader>
-            <IonToolbar color="success">
-              <IonButtons slot="start">
-                <IonBackButton onClick={closeDialog} />
-              </IonButtons>
-              <IonTitle className="ion-text-emerald-900">{dialog.title}</IonTitle>
-            </IonToolbar>
-          </IonHeader>
-        )}
-<div className='min-h-[10em]'>
-        <h1 className="px-8 text-[2rem]">{dialog.text}</h1>
+          {/* Sheet */}
+          <motion.div
+            drag="y"
+            dragConstraints={{ top: 0 }}
+            dragElastic={0.2}
+            onDragEnd={(e, info) => {
+              if (info.offset.y > 120 || info.velocity.y > 800) {
+                handleClose();
+              }
+            }}
+            initial={{ y: "100%" }}
+            animate={{ y: 0 }}
+            exit={{ y: "100%" }}
+            transition={{ type: "spring", stiffness: 320, damping: 32 }}
+            className="fixed bottom-0 left-0 right-0 z-50"
+          >
+            <div
+              style={{ height: `${dialog.height ?? 90}vh` }}
+              className=" bg-cream dark:bg-base-bgDark rounded-t-3xl shadow-xl px-4 pt-3 pb-8 flex flex-col"
+            >
+              {/* Grabber */}
+              <div className="w-10 h-1.5 bg-soft opacity-30 rounded-full mx-auto mb-4" />
 
-     </div>
-      </IonContent>
-                <div className='bg-cream'>
-         <IonFooter
-         slot='fixed'
-          className=" ion-padding-bottom ion-padding-tio"
-          style={{
-            "--background-color": "#f4f4e0",
-          
-          }}
-        >
-<div className={`pb-14 px-4 flex flex-row ${dialog.agree ? "justify-between" : "flex-end"}`}>
-          {dialog.agree && (
-            <div className="rounded-full flex px-4 w-fit h-[3rem] text-[1rem] border-emerald-400 border-2">
-              <IonText
-                fill="outline"
-                color="success"
-                className="my-auto mx-auto text-emerald-800 text-[1rem]"
-                onClick={dialog.agree}
-              >
-                {dialog.agreeText}
-              </IonText>
+              {/* Title */}
+              <SectionHeader title={dialog.title} />
+
+              {/* Content */}
+              <div className="mt-4 px-2 flex-1 overflow-y-auto pb-4">
+                <div className="text-[1.4rem] leading-relaxed text-soft">
+                {typeof dialog.text === 'function' ? dialog.text() : dialog.text}
+                </div>
+              </div>
+
+              {/* Actions */}
+              <div className="mt-6 flex gap-3 justify-end">
+                {dialog.disagree && (
+                  <div
+                    onClick={() => { dialog.disagree() }}
+                    className="px-5 h-[3rem] flex rounded-full btn border border-soft border-1 bg-soft text-cream dark:bg-base-bgDark active:scale-95 transition"
+                  
+
+                  >
+                    <p claassName="my-auto">{dialog.disagreeText}</p>
+                  </div>
+                )}
+            {dialog.agree && (
+  <div
+  onClick={() => { dialog.agree(); handleClose(); }}
+  className="px-5 h-[3rem] flex items-center justify-center rounded-full bg-button-secondary-bg text-white active:scale-95 transition"
+  style={{ WebkitTapHighlightColor: "transparent" }}
+>
+  <p>{dialog.agreeText}</p>
+</div>
+)}
+              </div>
             </div>
-          )}
-
-         {dialog.disagree && (
-<div onClick={()=>{
-        if(dialog.disagree)dialog.disagree()
-          closeDialog()
-      }}  className="rounded-full flex px-4 w-fit h-[3rem] text-[1rem] border-emerald-400 border-2">
-    <IonText
-      className="text-[1rem] text-emerald-600 my-auto mx-auto"
-      // <-- use disagree here
-    >
-      {dialog.disagreeText}
-    </IonText>
-  </div>
-)}</div>
-        </IonFooter>
-        </div>
-        {/* </div> */}
-    </IonModal>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
   );
 };
 
 export default Dialog;
-

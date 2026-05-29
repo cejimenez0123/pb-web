@@ -1,71 +1,85 @@
-import { useContext, useEffect, useLayoutEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
-  IonPage,
-  IonHeader,
-  IonToolbar,
-  IonButtons,
-  IonBackButton,
-  IonTitle,
   IonContent,
   IonList,
-  IonItem,
   IonText,
-  IonImg,
   IonSkeletonText,
-  IonLabel,
   useIonRouter,
 } from "@ionic/react";
 import { useDispatch, useSelector } from "react-redux";
-import { Preferences } from "@capacitor/preferences";
 import ErrorBoundary from "../../ErrorBoundary";
-import Context from "../../context.jsx";
 import Paths from "../../core/paths";
-import {
-  clearPagesInView,
-} from "../../actions/PageActions.jsx";
 import {
   addCollectionListToCollection,
   addStoryListToCollection,
   fetchCollectionProtected,
-  fetchCollection,
   getMyCollections,
-} from "../../actions/CollectionActions";
-import { getMyStories } from "../../actions/StoryActions";
 
-import checked from "../../images/icons/check.svg";
-import emptyBox from "../../images/icons/empty_circle.svg";
+} from "../../actions/CollectionActions";
 import StoryCollectionTabs from "../../components/page/StoryCollectionTabs.jsx";
-import { Capacitor } from "@capacitor/core";
 import { useParams } from "react-router";
-  const filterTypes = {
-    filter: "Filter",
-    recent: "Recent",
-    oldest: "Oldest",
-    feedback: "Feedback",
-    AZ: "A-Z",
-    ZA: "Z-A"
-  };
+import Enviroment from "../../core/Enviroment.js";
+
+import Pill from "../../components/Pill.jsx";
+import { getMyStories } from "../../actions/StoryActions.jsx";
+import computePermissions from "../../core/compusePermissions.jsx";
+import { RoleType } from "../../core/constants.js";
+import PaginatedList from "../../components/page/PaginatedList.jsx";
+import shortName from "../../core/shortName.jsx";
+import getBackground, { watchBackground } from "../../core/getbackground.jsx";
+
+const filterTypes = {
+  filter: "Filter",
+  recent: "Recent",
+  oldest: "Oldest",
+  feedback: "Feedback",
+  AZ: "A-Z",
+  ZA: "Z-A"
+};
+
 export default function AddToCollectionContainer() {
-  const router = useIonRouter()
-  const pathParams = useParams()
+  const router = useIonRouter();
   const dispatch = useDispatch();
-  const { seo, setSeo } = useContext(Context);
+  const { id } = useParams();
+
   const [filterType, setFilterType] = useState(filterTypes.filter);
-  const currentProfile = useSelector((state) => state.users.currentProfile);
-  const pending = useSelector((state) => state.books.loading);
-  const profile = useSelector((state) => state.users.currentProfile);
   const [search, setSearch] = useState("");
-  const colInView = useSelector((state) => state.books.collectionInView);
-  const collections = useSelector((state) => state.books.collections);
-  const cTcList = useSelector((state) => state.books.collectionToCollectionsList);
-    const stories = useSelector((state) =>
-    state.pages.pagesInView.filter((page) => page)
-  );
-const filteredSortedStories = useMemo(() => {
-    let result = stories || [];
+  const [tab, setTab] = useState("page");
+  const [newStories, setNewStories] = useState([]);
+  const [newCollections, setNewCollections] = useState([]);
+
+  const currentProfile = useSelector((state) => state.users.currentProfile);
+  const {myCollections:collections,collectionInView:colInView}=useSelector(state=>state.books)
+  const stories = useSelector((state) => state.pages.myPages);
+  const [pending,setPending]=useState(false)
+  const storyIdList = colInView?.storyIdList || [];
+     const {canSee,canAdd,canEdit,role} = computePermissions(colInView,currentProfile, {
+  getAccessList: (c) => c.roles??[],
+  getAccessRole: (r) => r.role,
+  isPrivate: (c) => c.isPrivate,
+  isOpen: (c) => c.isOpenCollaboration,
+  canWriteRoles: [RoleType.writer, RoleType.editor],
+  canEditRoles: [RoleType.editor],
+});
+
+  const isOwner = currentProfile && colInView && currentProfile.id === colInView.authorId;
+
+useEffect(()=>{
+      dispatch(fetchCollectionProtected({id}))
+},[id])
+  const filteredSortedStories = useMemo(() => {
+    let result = stories?.filter(Boolean) || [];
+
+    if (!pending && colInView?.storyIdList) {
+      result = result.filter(
+        (story) => !colInView?.storyIdList.some((s) => s?.story?.id === story.id)
+      );
+    }
 
     if (filterType === filterTypes.feedback) {
-      result = result.filter(s => s.needsFeedback);
+      result = result.filter(
+        (s) => s.status?.toLowerCase().includes("draft") || s.title.toLowerCase().includes("workshop")
+      );
     } else {
       switch (filterType) {
         case filterTypes.recent:
@@ -80,23 +94,23 @@ const filteredSortedStories = useMemo(() => {
         case filterTypes.ZA:
           result = [...result].sort((a, b) => b.title.localeCompare(a.title));
           break;
-        default:
-          break;
       }
     }
 
-    if (search.trim().length > 0) {
-      const lowerSearch = search.toLowerCase();
-      result = result.filter(s => s.title && s.title.toLowerCase().includes(lowerSearch));
+    if (search?.trim()) {
+      const lower = search.toLowerCase();
+      result = result.filter((s) => s.title?.toLowerCase().includes(lower));
     }
 
     return result;
-  }, [stories, filterType, search]);
+  }, [stories, filterType, search, storyIdList]);
 
   const filteredSortedCollections = useMemo(() => {
     let result = collections || [];
-    if(filterType==filterTypes.feedback){
-      result = collections.filter(col=>col.type=="feedback"||col.purpose.toLowerCase().includes("feedback"))
+    if (filterType === filterTypes.feedback) {
+      result = collections.filter(
+        (col) => col && col.type === "feedback" || col.purpose.toLowerCase().includes("feedback")
+      );
     }
     switch (filterType) {
       case filterTypes.AZ:
@@ -115,310 +129,336 @@ const filteredSortedStories = useMemo(() => {
         break;
     }
 
-    if (search.trim().length > 0) {
+    if (search?.trim()?.length > 0) {
       const lowerSearch = search.toLowerCase();
-      result = result.filter(c => c && c.title && c.title.toLowerCase().includes(lowerSearch));
+      result = result.filter((c) => c?.title?.toLowerCase().includes(lowerSearch));
     }
 
     return result;
   }, [collections, filterType, search]);
 
-
-
-
-  const [token, setToken] = useState(null);
-  const [tab, setTab] = useState("page");
-  const [newStories, setNewStories] = useState([]);
-  const [newCollection, setNewCollections] = useState([]);
-
-  useEffect(() => {
-    Preferences.get({ key: "token" }).then((tok) => setToken(tok.value));
-  }, []);
-
-  useEffect(() => {
-    if (token) {
-      dispatch(getMyCollections({ profile, token }));
-      dispatch(getMyStories({ profile, token }));
-    }
-  }, [token]);
-
-  useLayoutEffect(() => {
-    if (profile) {
-      dispatch(fetchCollectionProtected(pathParams));
-    } else {
-      dispatch(fetchCollection(pathParams));
-    }
-  }, [location.pathname]);
-
-  const handleBack = () => {
-    if (window.history.length > 1) {
-       router.goBack()
-    } else {
-      router.push(Paths.discovery);
-    }
-  };
-
-  const handleSearch = (e) => setSearch(e.target.value);
-
   const save = () => {
-    const storyIdList = newStories.filter((s) => s);
-    const collectionIdList = newCollection.filter((c) => c).map((c) => c.id);
+    const storyIdList = newStories.filter(Boolean);
+    const collectionIdList = newCollections.filter(Boolean).map((c) => c.id);
 
-    if (collectionIdList.length > 0 && currentProfile) {
-      dispatch(
-        addCollectionListToCollection({
-          id: colInView.id,
-          list: collectionIdList,
-          profile: currentProfile,
-        })
-      ).then(() => {
-        dispatch(clearPagesInView());
-        setNewCollections([]);
-        setNewStories([]);
-        router.push(Paths.collection.createRoute(colInView.id));
-      });
-    }
-
-    if (storyIdList.length > 0) {
-      dispatch(
-        addStoryListToCollection({
-          id: colInView.id,
-          list: storyIdList,
-          profile: currentProfile,
-        })
-      ).then(() => {
-        dispatch(clearPagesInView());
-        setNewCollections([]);
-        setNewStories([]);
-        router.push(Paths.collection.createRoute(colInView.id));
-      });
-    }
+    Promise.all([
+      collectionIdList.length > 0 &&
+        dispatch(
+          addCollectionListToCollection({
+            id: colInView.id,
+            list: collectionIdList,
+            profile: currentProfile,
+          })
+        ),
+      storyIdList.length > 0 &&
+        dispatch(
+          addStoryListToCollection({
+            id: colInView.id,
+            list: storyIdList,
+            profile: currentProfile,
+          })
+        ),
+    ]).then(() => {
+      router.push(Paths.collection.createRoute(colInView.id));
+    });
   };
 
   const storyList = () => {
-    return (
-      <IonList>
-        {filteredSortedStories
-          .filter((story) => story)
-          .filter(
-            (story) =>
-              !colInView?.storyIdList?.some(
-                (sj) => sj?.story?.id === story.id
-              ) && story?.title.toLowerCase().includes(search.toLowerCase())
-          )
-          .map((story, i) => {
-            const addedToCollection =
-              newStories.includes(story) ||
-              colInView?.storyIdList?.some((sj) => sj?.story?.id === story.id);
+    if (pending) {
+      return (
+        <div className="flex flex-col gap-4">
+          {[1, 2, 3, 4].map((i) => (
+            <IonSkeletonText
+              key={i}
+              animated
+              style={{ width: "90%", height: 50, margin: "0.5rem auto", borderRadius: 12 }}
+            />
+          ))}
+        </div>
+      );
+    }
 
-            return (
-              <IonItem
-                key={i}
-               lines="none"
-              
-                className="rounded-xl my-2  pb-2 "
-              >
-                <div onClick={()=>{router.push(Paths.page.createRoute(story.id))}} className="flex flex-row py-2 border-b border-emerald-600 justify-between w-[100%]">
-  
-                <IonLabel slot="start" className="text-emerald-800 my-auto truncate max-w-[70%]  font-medium
-text-[1rem]">
-                  {story?.title?.trim() || "Untitled"}
-                </IonLabel>
-                <div
-                slot="end"
-                     className="w-10 h-10 flex items-center my-auto justify-center bg-emerald-700 rounded-full cursor-pointer transition-all duration-200 hover:bg-emerald-600 active:scale-95"
-    onClick={() =>
-                    addedToCollection
-                      ? setNewStories(newStories.filter((s) => s.id !== story.id))
-                      : setNewStories([...newStories, story])
-                  }
-                >
-                  <IonImg
-                    src={addedToCollection ? checked : emptyBox}
-                    alt="toggle"
-                  className="w-[2rem] p-2 h-[2rem]"
-                  />
-                </div>
-                </div>
-              </IonItem>
-            );
-          })}
-      </IonList>
-    );
-  };
-
-  const colList = () => {
-    let list = collections || [];
-    if (cTcList.length > 0) {
-      list = cTcList.filter(
-        (col) =>
-          !colInView?.childCollections?.some(
-            (joint) => joint.childCollectionId === col.id
-          )
+    if (!filteredSortedStories.length) {
+      return (
+        <div className="py-8 text-center text-gray-500">
+          {isOwner ? <p>No stories available.</p> : <p>No stories available.</p>}
+        </div>
       );
     }
 
     return (
-      <IonList>
-        {filteredSortedCollections
-          .filter((col) => col.title.toLowerCase().includes(search.toLowerCase()))
-          .map((col) => {
-            if (col.id === colInView?.id) return null;
-            const addedToCollection =
-              newCollection.includes(col) ||
-              colInView?.childCollections?.some(
-                (joint) => joint.childCollectionId === col.id
-              );
-
-            return (
-              <IonItem
-  key={col.id}
-  lines="none"
- 
-                className="rounded-xl my-2 border-b border-emerald-600 pb-2 "
-              >
-                <div className="flex flex-row py-2 my-auto justify-between w-[100%]">
-  
-                <IonLabel slot="start" onClick={()=>{router.push(Paths.collection.createRoute(col.id))}}className="text-emerald-800  truncate w-[100%]  font-medium
-text-[1rem]">
-    {col.title?.trim() || "Untitled"}
-  </IonLabel>
-
-  <div
-  slot="end"
-    className="max-w-10 max-h-10 flex items-center my-auto justify-center bg-emerald-700 rounded-full cursor-pointer transition-all duration-200 hover:bg-emerald-600 active:scale-95"
-   onClick={() =>
-      addedToCollection
-        ? setNewCollections(newCollection.filter((c) => c.id !== col.id))
-        : setNewCollections([...newCollection, col])
-    }
-  >
-    <IonImg
-      src={addedToCollection ? checked : emptyBox}
-      alt="toggle"
-      className="w-[2rem] p-2  h-[2rem]"
-    />
-    </div>
-  {/*  */}
-  {/* </div>
-  </div> */}
-  </div>
-</IonItem>)
-// <IonItem
-             
-          
-          })}
-      </IonList>
+      <div className="space-y-2">
+        
+      </div>
     );
-  };
+  }
+  useEffect(() => {
+  getBackground();
+  watchBackground();
+}, []);
+
+  const colList = () => {
+    if (pending) {
+      return (
+        <div className="flex flex-col gap-4">
+          {[1, 2, 3, 4].map((i) => (
+            <IonSkeletonText
+              key={i}
+              animated
+              style={{ width: "90%", height: 50, margin: "0.5rem auto", borderRadius: 12 }}
+            />
+          ))}
+        </div>
+      );
+    }}
+if (!canSee) {
+  return <NoPermissionUI />;
+
+}
 
   if (!colInView) {
     return (
-<div>
-          {pending ? (
-            <>
-              <IonSkeletonText
-                animated
-                style={{
-                  width: "90%",
-                  height: 120,
-                  margin: "1rem auto",
-                  borderRadius: 16,
-                }}
-              />
-              <IonSkeletonText
-                animated
-                style={{
-                  width: "90%",
-                  height: 300,
-                  margin: "1rem auto",
-                  borderRadius: 16,
-                }}
-              />
-            </>
-          ) : (
-            <div className="ion-text-center ion-padding">
-              <IonText color="medium">
-                <h5>Collection Not Found</h5>
-              </IonText>
-            </div>
-          )}
-      </div>
+      <IonContent style={{"--min-height":"100%"
+  }} >
+        {pending ? (
+          <>
+            <IonSkeletonText
+              animated
+              style={{ width: "90%", height: 120, margin: "1rem auto", borderRadius: 16 }}
+            />
+            <IonSkeletonText
+              animated
+              style={{ width: "90%", height: 300, margin: "1rem auto", borderRadius: 16 }}
+            />
+          </>
+        ) : (
+          <div className="ion-text-center ion-padding">
+            <IonText color="medium">
+              <h5 className=" text-soft dark:text-cream">Collection Not Found</h5>
+            </IonText>
+          </div>
+        )}
+      </IonContent>
     );
   }
 
   return (
-    <ErrorBoundary>
-        <IonContent fullscreen={true} className="ion-padding">
-              <IonHeader translucent>
-          <IonToolbar>
-        <IonButtons slot="start">
-                  {Capacitor.isNativePlatform()?<IonBackButton defaultHref={Paths.discovery} onClick={handleBack} />:null}
-            </IonButtons>
-            <IonTitle className="text-emerald-800 font-semibold">
-              Add to Collection
-            </IonTitle>
-          </IonToolbar>
-        </IonHeader>
-        {/* <IonContent fullscreen={true} className="ion-padding pt-12 ion-text-emerald-800" scrollY > */}
-        <div className="sm:max-w-[50rem] mx-auto ion-padding">
-          <h2 className="text-xl font-semibold text-emerald-800 mb-1">
-            {colInView.title?.trim() || "Untitled"}
-          </h2>
-          <p className="text-emerald-700 mb-4">{colInView.purpose || ""}</p>
-          <div className="flex justify-between items-center mb-4">
-         
-            
-            <div className="text-center text-emerald-800">
-              <div className="text-lg font-medium">
-                {newCollection.length + newStories.length}
-              </div>
-              <div className="text-sm text-gray-600">New items</div>
+    <IonContent fullscreen 
+ className="page-content">
+      <ErrorBoundary>
+        <div className="max-w-[50em] px-4   dark:bg-base-bgDark bg-base-surface mx-auto pt-4">
+          {/* Header */}
+          <div className="mb-4 space-y-2 bg-base-surface dark:bg-base-bgDark ">
+            <h2 className="text-xl font-semibold bg-base-surface dark:bg-base-bgDark  dark:text-cream text-soft">Add to {colInView?.title||"Collection"}</h2>
+            <p className="text-sm text-gray-500 dark:text-cream">Select stories or collections to include</p>
+            <div className="flex items-center justify-between mt-3">
+               
+              {/* <span className="text-sm text-soft">{newStories.length + newCollections.length} selected</span> */}
+              <Pill
+                label="View"
+                onClick={() => router.push(Paths.collection.createRoute(colInView.id))}
+                variant="secondary"
+               baseClass="bg-blueSea border-blueSea border border-1 dark:bg-base-surfaceDark text-cream"
+              />
+                  <Pill
+                label={`Save (${newStories.length + newCollections.length})`}
+                onClick={save}
+                variant="primary"
+               baseClass="bg-blueSea border border-blueSea border-1 dark:bg-base-surfaceDark text-cream"
+               
+              />
             </div>
-            <div className="flex space-x-4 flex-row">
-                 <div
-              onClick={save}
-              className="bg-soft text-white px-5 py-2 rounded-full  btn hover:bg-emerald-400 flex w-[6rem] h-[3rem] text-center  cursor-pointer shadow-md"
-            >
-             <h6 className="mx-auto my-auto text-[1.4em] ">Save</h6> 
-           
-            </div>
-            <div
-              onClick={()=>router.push(Paths.collection.createRoute(colInView.id))}
-              className="bg-soft flex text-white px-5 py-2 w-[6rem] btn h-[3rem] hover:bg-emerald-400  rounded-full text-center  cursor-pointer shadow-md"
-            >
-              <h6 className="my-auto mx-auto text-[1.4rem]">View</h6>
-            </div> </div>
-          </div>
-          <div className="pb-4">
-      <select
-        onChange={e => setFilterType(e.target.value)}
-        value={filterType}
-        className="select w-24 text-emerald-800 rounded-full bg-transparent"
-      >
-        {Object.entries(filterTypes).map(([, val]) => (
-          <option key={val} value={val}>{val}</option>
-        ))}
-      </select>
-      </div>
-          {/* Search */}
-          <div className="rounded-full border border-emerald-700 flex items-center px-4 py-2 mb-4">
-            <IonText className="text-emerald-700 font-medium mr-2">Search:</IonText>
-            <input
-              type="text"
-              value={search}
-              onChange={handleSearch}
-              className="flex-1 bg-transparent focus:outline-none text-emerald-800"
-              placeholder="Search collections or stories"
-            />
           </div>
 
-        <div className="sm:max-w-[50em] mx-auto">
-          <StoryCollectionTabs tab={tab} setTab={setTab}  storyList={storyList} colList={colList}/>
+          {/* Filter + Search */}
+          <div className="flex justify-between  dark:bg-base-bgDark bg-base-surface max-w-[100vw] items-center mb-4 space-x-3">
+            <select
+              onChange={(e) => setFilterType(e.target.value)}
+              value={filterType}
+              className="select w-full sm:w-32 dark:text-cream rounded-full border border-emerald-300 bg-base-bg px-3 py-1 text-emerald-800 shadow-sm focus:outline-none"
+            >
+              {Object.entries(filterTypes).map(([, val]) => (
+                <option className="dark:text-cream " key={val} value={val}>
+                  {val}
+                </option>
+              ))}
+            </select>
+            <div className="flex-1 rounded-full border border-emerald-300 flex items-center px-4 py-2 bg-base-bg shadow-sm">
+              <IonText className="text-emerald-700 font-medium mr-2 text-sm">Search:</IonText>
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="...title"
+                className="bg-transparent  w-[100%] dark:text-cream py-2 focus:outline-none dark:text-cream text-emerald-800 text-sm"
+              />
+            </div>
+
           </div>
-       </div> 
+
+          {/* List container */}
+          <div className=" dark:bg-base-bgDark bg-base-surface  rounded-2xl p-3 pb-24 shadow-sm">
+            <StoryCollectionTabs tab={tab} setTab={setTab} storyList={()=>
+               <PaginatedList
+                 cacheKey="stories"
+                    // key={"getMyStories"}
+                          fetcher={getMyStories}
+                          pageSize={8}
+                            className="bg-base-surface dark:bg-base-bgDark "
+                            renderItem={(story) => {
+  const added =
+    newStories.some((s) => s.id === story.id) ||
+    colInView?.storyIdList?.some((j) => j.storyId === story.id);
+  return (
+    <div
+      key={story.id}
+      className="bg-base-bg border border-1 border-blue dark:bg-base-surfaceDark rounded-full px-4 py-3 shadow-sm flex items-center justify-between"
+    >
+      <div
+        onClick={() => router.push(Paths.page.createRoute(story.id))}
+        className="flex-1 pr-3 cursor-pointer"
+      >
+        <p className="text-sm dark:text-cream font-medium truncate">
+          {shortName(story.title, 20) || "Untitled"}
+        </p>
+      </div>
+      <Pill
+        label={added ? "Added ✓" : "Add"}
+        onClick={() =>
+          setNewStories((prev) =>
+            added ? prev.filter((s) => s.id !== story.id) : [...prev, story]
+          )
+        }
+        baseClass="bg-blueSea border border-blueSea border-1 dark:bg-surfaceDark dark:text-cream text-white"
+        variant={added ? "secondary" : "primary"}
+        color={added ? "softBlue" : "soft"}
+      />
+    </div>
+  );
+}}
+  //                         renderItem={(story) => {
+  //                             filteredSortedStories.map((col) => {
+
+  //         if (col?.id === colInView.id) return null;})
+  //        const added =
+  // newStories.some((s) => s.id === story.id) ||
+  // colInView?.storyIdList?.some((j) => j.storyId === story.id);
+        
+  //         return (
+  //           <div
+  //             key={story.id}
+  //             className="bg-base-bg dark:bg-transparent rounded-full border-blue border-1 border px-4 py-3 shadow-sm flex items-center justify-between"
+  //           >
+  //             <div
+  //               onClick={() => router.push(Paths.page.createRoute(story.id))}
+  //               className="flex-1 pr-3 cursor-pointer"
+  //             >
+  //               <p className="text-sm text-soft dark:text-cream font-medium truncate">{story.title.length>20?story.title.slice(0,20)+"..." : story.title || "Untitled"}</p>
+  //             </div>
+  //             <Pill
+  //               label={added ? "Added ✓" : "Add"}
+  //               onClick={() =>
+  //                 setNewStories((prev) =>
+  //                   added ? prev.filter((s) => s.id !== story.id) : [...prev, story]
+  //                 )
+  //               }
+  //               variant={added ? "secondary" : "primary"}
+  //               color={added ? "softBlue" : "soft"}
+  //             />
+  //           </div>
+  //         );}}
+          />}
+        
+                   
+            colList={()=> (
+      <PaginatedList
+       cacheKey="collections"
+
+        fetcher={getMyCollections}
+        pageSize={8}
        
+          className="bg-base-surface dark:bg-base-bgDark "
+        renderItem={(col) => {
+          filteredSortedCollections.map((col) => {
+
+          if (col?.id === colInView.id) return null;})
+               const added =
+            newCollections.some((c) => c.id === col.id) ||
+            colInView?.childCollections?.some((j) => j.childCollectionId === col.id);
+               return<div
+              key={col.id}
+              className="bg-base-bg border border-1 border-purple dark:bg-base-surfaceDark rounded-full px-4 py-3 shadow-sm flex items-center justify-between"
+            >
+              <div
+                onClick={() => router.push(Paths.collection.createRoute(col.id))}
+                className="flex-1 pr-3 cursor-pointer"
+              >
+                <p className="text-sm dark:text-cream font-medium truncate">{col?.title?.length>20?shortName(col.title,20):col.title.length>0?col.title:"Untitled"}</p>
+              </div>
+              <Pill
+                label={added ? "Added ✓" : "Add"}
+                onClick={() =>
+                  setNewCollections((prev) =>
+                    added ? prev.filter((c) => c.id !== col.id) : [...prev, col]
+                  )
+                }
+               baseClass="bg-blueSea border border-blueSea border-1 dark:bg-surfaceDark dark:text-cream text-white"
+                variant={added ? "secondary" : "primary"}
+                color={added ? "softBlue" : "soft"}
+              />
+            </div>
+        }}
+      />
+    )} />
+          </div>
+
+        </div>
+      </ErrorBoundary>
     </IonContent>
-    </ErrorBoundary>
   );
 }
+
+
+const NoPermissionUI = () => {
+  const router = useIonRouter();
+
+  return (
+    <IonContent
+      fullscreen
+      style={{ "--background": Enviroment.palette.cream }}
+    >
+      <div className="h-full flex flex-col items-center justify-center px-6 text-center">
+
+        {/* Icon */}
+        <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-4">
+          <span className="text-2xl">🚫</span>
+        </div>
+
+        {/* Title */}
+        <h2 className="text-lg font-semibold text-soft">
+          No permission
+        </h2>
+
+        {/* Description */}
+        <p className="text-sm text-gray-500 mt-2 max-w-xs">
+          You can’t add to this collection.
+        </p>
+
+        {/* Actions */}
+        <div className="mt-6 flex gap-3">
+          <Pill
+            label="Go Back"
+            onClick={() => router.goBack()}
+            baseClass="bg-gray-200 text-gray-700"
+          />
+
+          <Pill
+            label="Refresh"
+            onClick={() => window.location.reload()}
+            baseClass="bg-blueSea text-white"
+          />
+        </div>
+      </div>
+    </IonContent>
+  );
+};

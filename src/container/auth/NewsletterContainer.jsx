@@ -2,6 +2,8 @@ import { useContext, useEffect, useLayoutEffect, useRef, useState } from "react"
 import authRepo from "../../data/authRepo";
 import validateEmail from "../../core/validateEmail";
 import Context from "../../context";
+import { useAlert } from "../../core/useAlert.jsx";
+import AlertType from "../../core/AlertType.js";
 import clear from "../../images/icons/clear.svg";
 import { initGA, sendGAEvent } from "../../core/ga4";
 import { IonContent} from "@ionic/react";
@@ -9,8 +11,8 @@ import ErrorBoundary from "../../ErrorBoundary";
 import { useDialog } from "../../domain/usecases/useDialog";
 
 function NewsletterContainer() {
-  const { setError } = useContext(Context);
   const { seo, setSeo } = useContext(Context);
+  const { showAlert } = useAlert();
 const{openDialog,closeDialog,dialog}=useDialog()
   const selectRef = useRef(null);
 
@@ -46,15 +48,6 @@ const{openDialog,closeDialog,dialog}=useDialog()
       setSeo({ ...seo, title: "Plumbum (Newsletter Apply)" });
     }
   }, [location.pathname]);
-
-  // ---------- AUTO CLEAR ERROR ----------
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setError(null);
-    }, 4000);
-
-    return () => clearTimeout(timer);
-  }, []);
 
   // ---------- CHECKBOX HANDLER ----------
   const handleCheckboxChange = (event, field) => {
@@ -92,14 +85,14 @@ const{openDialog,closeDialog,dialog}=useDialog()
     sendGAEvent("Apply for Newsletter", "Apply for Newsletter", "Subscribe", 0, false);
 
     if (!validateEmail(formData.email)) {
-      setError("Please use valid email");
+      showAlert({ message: "Please use valid email", type: AlertType.error });
       return;
     }
 
     try {
       const payload = { ...formData, frequency: Number(formData.frequency) };
       const data = await authRepo.newsletter(payload);
-console.log(data)
+
 
       if (data.user)
         { setUser(data.user)
@@ -150,7 +143,7 @@ console.log(data)
           otherInputs: { eventInterests: "", newsletterContent: "", writingRole: "" },
         });
       } else {
-        setError(e.message);
+        showAlert({ message: e.message, type: AlertType.error });
       }
     }
   };
@@ -406,7 +399,7 @@ console.log(data)
               <select
                 ref={selectRef}
                 name="frequency"
-                className="bg-white text-emerald-700 select select-bordered"
+                className="bg-base-bg text-emerald-700 select select-bordered"
                 value={formData.frequency}
                 onChange={(e) => handleChange("frequency", Number(e.target.value))}
               >
@@ -432,44 +425,7 @@ console.log(data)
           </form>
 
           {/* SUCCESS / ERROR DIALOG */}
-          {/* <Dialog
-            open={!!user}
-            onClose={handleClose}
-            text={
-              <div className="p-6">
-                {!user ? (
-                  <p>Error. Try again later.</p>
-                ) : user.message ? (
-                  <div className="text-center lora-medium">
-                    <p>User already applied</p>
-                    <br />
-                    <p>
-                      Message{" "}
-                      <a href="https://www.instagram.com/plumbumapp" target="_blank">
-                        @plumbumapp
-                      </a>
-                      {" "}or email plumbumapp@gmail.com
-                    </p>
-                    <br />
-                    <p>Subject: I want to be an alpha user!</p>
-                  </div>
-                ) : (
-                  <div className="lora-medium leading-relaxed">
-                    <p>Thank You {user.preferredName}! You’re In—Welcome to the Journey!</p>
-                    <br />
-                    <p>
-                      You’re officially on board as a beta user for Plumbum. This is more than
-                      an app—we’re building a community where stories grow and writers rise.
-                    </p>
-                    <br />
-                    <p>Let’s make our story, together.</p>
-                    <br />
-                    <p>- Sol Emilio Christian, Founder of Plumbum</p>
-                  </div>
-                )}
-              </div>
-            }
-          /> */}
+
         </div>
       </ErrorBoundary>
  </IonContent>

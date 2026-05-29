@@ -1,108 +1,79 @@
-import { useContext, useEffect, useRef } from "react";
-import "../../Dashboard.css";
-import PageDataElement from "../page/PageDataElement";
-import { sendGAEvent } from "../../core/ga4";
-import Context from "../../context";
-import React from "react";
-import { register } from "swiper/element/bundle";
 
+import { useEffect, useRef } from "react";
+import PageDataElement from "../page/PageDataElement";
+import { register } from "swiper/element/bundle";
 register();
 
-export default function Carousel({ book, isGrid }) {
-  const { isPhone, isHorizPhone } = useContext(Context);
+const SLIDE_HEIGHT = "h-[200px]";
+
+export default function Carousel({ book, compact }) {
   const swiperElRef = useRef(null);
+
+  const validSlides = book?.storyIdList?.filter(
+    stc => stc?.story && stc.story.data
+  ) ?? [];
 
   useEffect(() => {
     const swiperEl = swiperElRef.current;
-    if (!swiperEl) return;
+    if (!swiperEl || !validSlides.length) return;
+    Object.assign(swiperEl, {
+      slidesPerView: 1.08,
+      spaceBetween: 10,
+      centeredSlides: false,
+      resistanceRatio: 0.85,
+      speed: 300,
+      pagination: { clickable: true, dynamicBullets: true },
+      touchStartPreventDefault: false,
+      simulateTouch: true,
+    });
+    swiperEl.initialize?.();
+  }, [validSlides.length]);
 
-    const onProgress = (e) => {
-      const [swiper, progress] = e.detail;
-      // console.log("progress", progress);
-    };
+  if (!validSlides.length) return null;
 
-    swiperEl.addEventListener("swiperprogress", onProgress);
-
-    return () => {
-      swiperEl.removeEventListener("swiperprogress", onProgress);
-    };
-  }, []);
-
-  const description = (story) => {
-    if (!story.description) return null;
-
-    return (
-      <div className="md:pt-4 p-1">
-        {story.needsFeedback ? (
-          <label className="text-emerald-800">Feedback Request:</label>
-        ) : null}
-
-        <h6
-          className={`overflow-hidden ${
-            isGrid
-              ? isPhone
-                ? "max-h-20 m-1 p-1 w-grid-mobile-content text-white"
-                : isHorizPhone
-                ? "w-page-mobile-content text-white"
-                : "w-page-content text-emerald-700 text-white"
-              : isHorizPhone
-              ? "text-emerald-800"
-              : ""
-          }`}
-        >
-          {story.description}
-        </h6>
-      </div>
-    );
-  };
-  if(!book || book &&(!book.storyIdList ||book.storyIdList.length==0)){
-    return
-  }
   return (
-    <swiper-container
-      ref={swiperElRef}
-      slides-per-view="1"
-      pagination="true"
-    
+    <div
+      className="w-full overflow-hidden"
+      style={{ WebkitTapHighlightColor: "transparent" }}
     >
-      {book.storyIdList?.map((stc) => {
-        if (!stc?.story) return null;
+      <swiper-container ref={swiperElRef} className="w-full">
+        {validSlides.map((stc) => (
+          <swiper-slide
+            key={stc.id}
+            className="!w-auto rounded-xl overflow-hidden"
+          >
+            <div className="
+              w-full rounded-xl overflow-hidden
+              bg-base-bg dark:bg-base-bgDark
+              border border-border-default dark:border-border-soft
+              flex flex-col
+            ">
+              {/* Title row — fixed height */}
+              <span className="
+                flex-shrink-0
+                px-3 pt-3 pb-1
+                text-sm font-medium truncate
+                text-text-primary dark:text-text-inverse
+              ">
+                {stc.story.title || "Untitled"}
+              </span>
 
-        return (
-          <swiper-slide className="w-[100%]" key={stc.id}>
-            <div
-              onTouchStartCapture={() => {
-                sendGAEvent(
-                  "Opened Page from Book",
-                  `Saw ${JSON.stringify({
-                    id: stc.story.id,
-                    title: stc.story?.title,
-                  })} in book ${JSON.stringify({
-                    id: book.id,
-                    title: book?.title,
-                  })}`,
-                  "",
-                  0,
-                  false
-                );
-              }}
-              className="flex-col w-[100%] flex "
-              id={stc.id}
-            >
-              <h5 className="min-h-10 pt-3 w-[100%] px-4 text-emerald-800 top-0 no-underline text-ellipsis whitespace-nowrap overflow-hidden text-left">
-                {stc.story?.title}
-              </h5>
-
-              {!isPhone && description(stc.story)}
-              {/* <div className="max-h-[29.9rem]"> */}
-             
-                <PageDataElement isGrid={isGrid} page={stc.story} />
-       {/* </div> */}
+              {/* Content — fixed height, clipped */}
+              <div className={`${SLIDE_HEIGHT} w-full overflow-hidden flex-shrink-0`}>
+                <div className="w-full h-full overflow-hidden">
+                  <PageDataElement page={stc.story} compact={true} truncateNumber={100} />
+                </div>
+              </div>
             </div>
           </swiper-slide>
-        );
-      })}
-    </swiper-container>
+        ))}
+      </swiper-container>
+
+      <style>{`
+        swiper-container::part(pagination) { bottom: 6px; }
+        swiper-container::part(bullet) { background: #0097b2; opacity: 0.3; }
+        swiper-container::part(bullet-active) { opacity: 1; }
+      `}</style>
+    </div>
   );
 }
-

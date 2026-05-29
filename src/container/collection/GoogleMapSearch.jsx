@@ -1,23 +1,17 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from "react";
 import usePlacesAutocomplete, {
   getGeocode,
   getLatLng
-} from 'use-places-autocomplete';
-import check from "../../images/icons/check.svg"
-const libraries = ['places'];
+} from "use-places-autocomplete";
 
-const containerStyle = {
-  width: '100%',
-  height: '400px'
-};
+// import { LoadScript } from "@react-google-maps/api";
 
-const center = {
-  lat: 40.73061,
-  lng: -73.935242
-};
 
-export default function PlacesSearchMap({ onLocationSelected }) {
-  const [desc,setDesc]=useState("")
+
+function PlacesSearchMap({ initLocationName, onLocationSelected }) {
+
+  const [desc, setDesc] = useState(initLocationName ?? "");
+
   const {
     ready,
     value,
@@ -27,67 +21,98 @@ export default function PlacesSearchMap({ onLocationSelected }) {
   } = usePlacesAutocomplete({
     debounce: 300
   });
+   useEffect(() => {
+    if (initLocationName) {
+      setDesc(initLocationName);
+      setValue(initLocationName, false); // false prevents triggering suggestions
+    }
+  }, [initLocationName, setValue]);
 
   const handleInput = (e) => {
     setValue(e.target.value);
   };
 
-  const handleSelect = async (data) => {
+  const handleSelect = async (suggestion) => {
 
-     const description = data[0].description
-     setDesc(description)
-    setValue(data.description, false);
+    const description = suggestion.description;
+
+    setDesc(description);
+    setValue(description, false);
     clearSuggestions();
 
     try {
-      getGeocode({ address: description }).then((results) => {
-        const { lat, lng } = getLatLng(results[0]);
-      
-    
-           onLocationSelected({ latitude:lat,longitude:lng})
 
-    
-        setMapCenter({ lat, lng });
-        setMarker({ lat, lng });
-      }).catch(err=>console.log(err))
-  
+      const results = await getGeocode({ address: description });
 
-      if (onLocationSelected) onLocationSelected(location);
-    } catch (error) {
-      console.error('Error getting location:', error);
+      const { lat, lng } = getLatLng(results[0]);
+
+      if (onLocationSelected) {
+        onLocationSelected({
+          latitude: lat,
+          longitude: lng,
+          name: description,
+          address: description
+        });
+      }
+
+    } catch (err) {
+      console.error("Geocode error:", err);
     }
   };
 
   return (
- 
-      <div className="mb-4">
-        <div>
-          <label className='mx-4'>{desc}</label>
-        </div>
-        <div className="relative w-full">
-  <input
-    value={value || ""}
-    onChange={handleInput}
-    disabled={!ready}
-    placeholder="Search a place"
-    className="w-[100%] bg-transparent p-2 text-lg rounded-full border border-gray-300"
-  />
 
-  {status === 'OK' && (
-    <ul className="absolute z-20 bg-white w-full border border-gray-200 mt-1 rounded shadow max-h-60 overflow-auto">
-      {data.map(({ place_id, description }) => (
-        <li
-          key={place_id}
-          className="p-2 cursor-pointer hover:bg-gray-100"
-          onClick={() => handleSelect(data)}
-        >
-          {description}
-        </li>
-      ))}
-    </ul>
-  )}
-</div>
-</div>
-    
+    <div className="mb-4">
+
+      <label className="mx-4 text-sm text-gray-600">
+        {desc}
+      </label>
+
+      <div className="relative w-full">
+
+        <input
+          value={value || ""}
+          onChange={handleInput}
+          disabled={!ready}
+          placeholder="Search a place"
+          className="input bg-base-bg dark:text-cream w-[100%] border border-1 border-earth input-bordered "
+        />
+
+
+
+  {status === "OK" && (
+  
+  <div className="bg-base-bg border rounded-box shadow max-h-60 overflow-auto">
+    {data.map((suggestion) => (
+      <div
+        key={suggestion.place_id}
+        className="p-3 cursor-pointer text-soft hover:bg-sky-200"
+        onClick={() => handleSelect(suggestion)}
+      >
+        {suggestion.description}
+      </div>
+    ))}
+  </div>
+
+
+        )}
+
+      </div>
+
+    </div>
+  );
+}
+
+export default function GoogleMapSearch({ initLocationName, onLocationSelected }) {
+
+  return (
+
+
+      <PlacesSearchMap
+        initLocationName={initLocationName}
+        onLocationSelected={onLocationSelected}
+      />
+
+
   );
 }

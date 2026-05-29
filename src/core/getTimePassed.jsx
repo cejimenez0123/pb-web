@@ -8,9 +8,7 @@ export default function getTimePast(created){
     const diffMin = Math.floor(diffSec / 60); // Convert to minutes
     const diffHours = Math.floor(diffMin / 60); // Convert to hours
     const diffDays = Math.floor(diffHours / 24); // Convert to days
-    
-    // console.log(`Difference: ${diffDays} days, ${diffHours % 24} hours, ${diffMin % 60} minutes, ${diffSec % 60} seconds`);
-               
+
     
     let time = `${diffMin} mins ago`
    if(diffHours>24) {

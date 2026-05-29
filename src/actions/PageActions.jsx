@@ -34,10 +34,10 @@ const setHtmlContent = createAction(
 
 const getPublicProfilePages= createAsyncThunk(
   'pages/getPublicProfilePages',
-  async ({profile},thunkApi) => {
+  async (params,thunkApi) => {
     try{
 
-    let data= await storyRepo.getPublicProfileStories({profileId:profile.id})
+    let data= await storyRepo.getPublicProfileStories(params)
 
   return {
     pageList:data.stories
@@ -48,10 +48,10 @@ const getPublicProfilePages= createAsyncThunk(
 }})
 const getProtectedProfilePages= createAsyncThunk(
   'pages/getProtectedProfilePages',
-  async ({profile},thunkApi) => {
+  async (params,thunkApi) => {
     try{
 
-    let data= await storyRepo.getProtectedProfileStories({profileId:profile.id})
+    let data= await storyRepo.getProtectedProfileStories(params)
   
   return {
     pageList:data.stories}
@@ -71,12 +71,24 @@ const appendToPagesInView = createAction("pages/appendToPagesInView", (params)=>
   const {pages} = params
   return  {payload:
     pages}})
+const appendToMyStories = createAction("pages/appendToMyStories", (params)=> {
 
+  const {pages} = params
+  return  {payload:
+    pages}})
 const setPageInView = createAction("pages/setPageInView", (params)=> {
 
   const {page} = params
   return  {payload:
     page}
+    
+  
+})
+const setPageType = createAction("pages/setPageType", (params)=> {
+
+  const {type} = params
+  return  {payload:
+    type}
     
   
 })
@@ -120,23 +132,22 @@ const createComment = createAsyncThunk("pages/createComment", async function({
   text,
   storyId,
   parentCommentId,
-  },thunkApi){
-  try{
-
-
- let data = await commentRepo.create({profile:profile,storyId:storyId,text,parentId:parentCommentId})
-return {comment:data.comment}
-
+  anchorText,        // ← add
+}, thunkApi) {
+  try {
   
-  }catch(error){
-   
-    return {
-      error: new Error(`Error: Create Comment ${error.message}`)
-    }
+    let data = await commentRepo.create({
+      profile,
+      storyId,
+      text,
+      parentId:   parentCommentId,
+      anchorText: anchorText ?? "",  // ← add
+    });
+   return { comment: { ...data.comment, storyId } };
+  } catch(error) {
+    return { error: new Error(`Error: Create Comment ${error.message}`) };
   }
-
-
-})
+});
 const appendComment = createAction("pages/appendComment", (params)=> {
 
   const {comment} = params
@@ -153,40 +164,65 @@ const setComments = createAction("pages/setComments", (params)=> {
     
   
 })
-const fetchCommentsOfPagePublic = createAsyncThunk("comments/fetchCommentsOfPagePublic",async (params,thunkApi)=>{
-  try{
-  
-      let data = await storyRepo.fetchCommentsOfPagePublic({pageId:params.id})
-      return {
+const fetchCommentsOfPage = createAsyncThunk(
+  "comments/fetchCommentsOfPage",
+  async ({ id, isPublic = false }, thunkAPI) => {
+    try {
+      const data = await commentRepo.fetchByStory({ storyId: id }); // ✅ bound + correct key
+      return { comments: data.comments };
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.response?.data ?? err.message);
+    }
+  }
+);
 
-        comments: data.comments
-      }
 
-}catch(err){
+const setCurrentPage = createAction(
+  "pages/setCurrentPage",
+  function prepare({ key, page }) {
+    return {
+      payload: { key, page },
+    };
+  }
+);
+const removeFromPaginatedKey = createAction("pagination/removeFromKey");
+const setPaginationLoading = createAction("pagination/setLoading");
+ const initKey = createAction("pagination/initKey");
+ const resetKey = createAction("pagination/resetKey");
 
-return err
-
-}}
-
-)
-const fetchCommentsOfPageProtected = createAsyncThunk("comments/fetchCommentsOfPages",async (params,thunkApi)=>{
-  try{
-   
-   
-
-      let data = await storyRepo.fetchCommentsOfPageProtected({pageId:params.id})
-      return {
-
-        comments: data.comments
-      }
-
-}catch(err){
-
-return err
-
-}}
-
-)
+const updatePaginatedItem = createAction("pagination/updatePaginatedItem",
+  function prepare({ key, item }) {
+    return { payload: { key, item } };
+  }
+); 
+const setPageData = createAction(
+  "pagination/setPageData",
+  function prepare({ key, page, items, totalCount }) {
+    return {
+      payload: {
+        key,
+        page,
+        items,
+        totalCount,
+      },
+    };
+  }
+);
+// const setLoading = createAction("pagination/setLoading");
+//  const initKey = createAction("pagination/initKey");
+// const setPageData = createAction(
+//   "pagination/setPageData",
+//   function prepare({ key, page, items, totalCount }) {
+//     return {
+//       payload: {
+//         key,
+//         page,
+//         items,
+//         totalCount,
+//       },
+//     };
+//   }
+// );
 const deleteComment = createAsyncThunk("pages/deleteComment",async (params,thunkApi)=>{
   const { comment}= params
 
@@ -222,7 +258,7 @@ const pagesLoading = createAction("PAGES_LOADING", function prepare(){
    try{
     const {story,profile,score}=params
     const data = await likeRepo.storyCreate({story,profile})
-    console.log("DATA FROM LIKE REPO",data)
+   
     return {
       profile:data.profile
     }
@@ -234,7 +270,7 @@ const pagesLoading = createAction("PAGES_LOADING", function prepare(){
    
 try{
       const data = await likeRepo.storyDelete(params)
-      // const token = (await Preferences.get({key:"token"})).value
+    
       let profileData = await profileRepo.getMyProfiles()
 
       return {
@@ -247,6 +283,31 @@ try{
     }
   })
 
+ const fetchPage = createAsyncThunk(
+  "pages/fetchPage",
+  async ({ key, fetcher, page, pageSize, params, select }, thunkApi) => {
+    try {
+      const res = await thunkApi.dispatch(
+        fetcher({
+          skip: (page - 1) * pageSize,
+          take: pageSize,
+          ...params,
+        })
+      ).unwrap();
+
+      const parsed = select ? select(res) : res;
+
+      return {
+        key,
+        page,
+        items: parsed.items,
+        totalCount: parsed.totalCount,
+      };
+    } catch (err) {
+      return thunkApi.rejectWithValue(err);
+    }
+  }
+);
   export {
           pagesLoading,
           setHtmlContent,
@@ -258,8 +319,7 @@ try{
           clearPagesInView,
        
           createComment,
-          fetchCommentsOfPageProtected,
-          fetchCommentsOfPagePublic,
+          fetchCommentsOfPage,
           deleteComment,
           clearEditingPage,
           appendComment,
@@ -269,8 +329,17 @@ try{
           setPagesInView,
           createPageApproval,
           deletePageApproval,
-       
+       setPageType,
           getPublicStories,
          appendToPagesInView,
-         setComments
+         setComments,
+         appendToMyStories,
+         setPaginationLoading,
+         removeFromPaginatedKey,
+      resetKey,
+   fetchPage,
+       setPageData,
+         setCurrentPage,
+         initKey,
+         updatePaginatedItem
         } 

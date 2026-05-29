@@ -1,68 +1,92 @@
 import {
-  IonHeader,
-  IonToolbar,
-  IonButtons,
-  IonBackButton,
-  IonTitle,
+ 
   IonContent,
-  IonList,
-  IonItem,
-  IonLabel,
-  IonInput,
-  IonTextarea,
+
   IonImg,
-  IonSpinner,
-  IonText,
+
   useIonRouter,
 } from "@ionic/react";
 import CollectionToCollection from "../../domain/models/CollectionToCollection";
-import { useContext, useEffect, useMemo, useState } from "react";
-
+import { useEffect, useMemo, useState } from "react";
+import HashtagForm from "../../components/hashtag/HashtagForm";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteCollection, deleteCollectionFromCollection, deleteStoryFromCollection, fetchCollectionProtected, patchCollectionContent } from "../../actions/CollectionActions";
 import Paths from "../../core/paths";
-import addIcon from "../../images/icons/add_circle.svg";
 import deleteIcon from "../../images/icons/delete.svg";
 import "../../styles/EditBook.css";
-import { setDialog } from "../../actions/UserActions";
 import SortableList from "../../components/SortableList";
 import StoryToCollection from "../../domain/models/storyToColleciton";
 import { Preferences } from "@capacitor/preferences";
 import { RoleType } from "../../core/constants";
 import arrowDown from "../../images/icons/arrow_down.svg"
-import Context from "../../context";
+import { useAlert } from "../../core/useAlert.jsx";
+import AlertType from "../../core/AlertType.js";
 import RoleForm from "../../components/role/RoleForm";
 import ErrorBoundary from "../../ErrorBoundary";
 import { Capacitor } from "@capacitor/core";
 import { useParams } from "react-router";
-import HashtagForm from "../../components/hashtag/HashtagForm";
 import { useDialog } from "../../domain/usecases/useDialog";
+import Pill from "../../components/Pill";
+import Enviroment from "../../core/Enviroment";
+import TabBar from "../../components/TabBar";
+import computePermissions from "../../core/compusePermissions";
+import getBackground from "../../core/getbackground";
+import { removeFromPaginatedKey, updatePaginatedItem } from "../../actions/PageActions";
+import checkResult from "../../core/checkResult";
+// Layout & spacing
+const containerPadding = "px-4 pb-28 pt-6"; // consistent padding
+const cardPadding = "p-4"; // inner card padding
+const cardRadius = "rounded-2xl"; // consistent border radius
+const cardShadow = "shadow-sm"; // subtle shadow for cards
+const gapBetweenCards = "space-y-6"; // vertical gap between sections
+const buttonGap = "gap-3 flex flex-wrap"; // for action buttons
+// Example for input text size
+const inputResponsiveClass = "text-sm sm:text-base md:text-lg";
+const tabWrapper = "max-w-lg mx-auto px-4"; // same for both containers
+// Example for container width
+const containerResponsive = "w-full sm:max-w-md md:max-w-lg lg:max-w-xl mx-auto";
+// Breakpoints
+const maxContainerWidth = "max-w-lg bg-cream dark:bg-base-bgDark "; // desktop limit
+const inputTextClass = "bg-transparent dark:text-cream outline-none"; // text inputs and textarea
 
+// Tab bar
+const tabBarBase = "flex flex-wrap gap-1 bg-gray-100 rounded-xl p-1 px-2 sm:px-4";
+const tabActive = "text-white bg-soft shadow-sm";
+const tabInactive = "bg-softBlue text-soft";
 const EditCollectionContainer = () => {
 
 
-  const {setError,setSuccess}=useContext(Context)
+  const { showAlert } = useAlert();
   const dispatch = useDispatch();
   const router = useIonRouter()
      const params = useParams()
        const { id } = params;
   const [pending,setPending]=useState(true)
-  const isNative = Capacitor.isNativePlatform()
   const [isOpen, setIsOpen] = useState(false);
    const colInView = useSelector((state) => state.books.collectionInView);
  const [newPages, setNewPages] = useState([]);
  const [followersAre,setFollowersAre]=useState(RoleType.commenter)
-const [canUserEdit,setCanUserEdit]=useState(false)
  const [title,setTitle]=useState("")
  const [openHashtag,setOpenHashtag]=useState(false)
+ 
  const [purpose,setPurpose]=useState("")
   const [newCollections, setNewCollections] = useState([]);
   const currentProfile = useSelector((state) => state.users.currentProfile);
   const [collection, setCollection] = useState(null);
   const [loading, setLoading] = useState(true);
    const [isPrivate, setIsPrivate] = useState(true)
-// const dialog = useSelector(state=>state.users.dialog)
-const {dialog,openDialog,closeDialog}=useDialog()
+
+   const {canSee,canAdd,canEdit,role} = computePermissions(colInView,currentProfile, {
+    
+  getAccessList: (c) => c.roles,
+  getAccessRole: (r) => r.role,
+  isPrivate: (c) => c.isPrivate,
+  isOpen: (c) => c.isOpenCollaboration,
+  canWriteRoles: [RoleType.writer, RoleType.editor],
+  canEditRoles: [RoleType.editor],
+});
+
+const {dialog,openDialog,closeDialog,resetDialog}=useDialog()
 
   useEffect(() => {
     async function loadData() {
@@ -77,35 +101,31 @@ const {dialog,openDialog,closeDialog}=useDialog()
  const handleStoryOrderChange = (newOrder) => {
     setNewPages(newOrder.map((stc, i) => new StoryToCollection(stc.id, i, stc.collection, stc.story, currentProfile)));
   };
-    function soUserCanEdit() {
-      if (!currentProfile || !colInView) {
-        setCanUserEdit(null);
-        return;
-      }
+    // 
+const tabs = [
+  { key: "pages", label: "Pages" },
+  { key: "collections", label: "Collections" },
+];
 
-      if (colInView.roles) {
-        let found = colInView.roles.find(colRole => colRole && colRole.profileId === currentProfile.id);
-      
-        if (found && (found.role === RoleType.editor)||colInView.profileId==currentProfile.id) {
-          setCanUserEdit(found);
-          return;
-        }
-      }
-  
-    }
+const [activeTab, setActiveTab] = useState("pages");
 
-  const handleColOrderChange = (newOrder) => {
-    setNewCollections(
-      newOrder.map((c, i) => new CollectionToCollection(c.id, i, c.childCollection, colInView, currentProfile))
-    );
-  };
-     const deleteStory = (stc) => {
-    dispatch(deleteStoryFromCollection({ stId: stc.id }));
-  };
 
-  const deleteChildFromCollection = (tc) => {
-    if (tc) dispatch(deleteCollectionFromCollection({ tcId: tc.id }));
-  };
+;
+  const [search, setSearch] = useState("");
+
+
+const filteredPages = useMemo(() => {
+  if (!search?.trim()) return newPages;
+  const lower = search.toLowerCase();
+  return newPages.filter((s) => s.story?.title?.toLowerCase().includes(lower));
+}, [newPages, search]);
+
+const filteredCollections = useMemo(() => {
+  if (!search?.trim()) return newCollections;
+  const lower = search.toLowerCase();
+  return newCollections.filter((c) => c.childCollection?.title?.toLowerCase().includes(lower));
+}, [newCollections, search]);
+
   const setItems = (col) => {
     
     if (!col) return;
@@ -123,7 +143,6 @@ const {dialog,openDialog,closeDialog}=useDialog()
     }).sort((a, b) => a.index - b.index);
 
     setNewPages(stcList);
-    console.log(newPages)
   }
 if (col.childCollections) {
     const collList = col.childCollections.map((c, i) => {
@@ -139,14 +158,17 @@ if (col.childCollections) {
 
     setNewCollections(collList);
   }}
-         const handleBack = (e) => {
-    e.preventDefault();
-    if (window.history.length > 1) {
-       router.goBack()
-    } else {
-      router.push(Paths.discovery);
-    }
-  };
+        
+  const roleCycle = [
+  RoleType.commenter,
+  RoleType.reader,
+  RoleType.writer,
+];
+const cycleFollowersRole = () => {
+  const currentIndex = roleCycle.indexOf(followersAre);
+  const nextIndex = (currentIndex + 1) % roleCycle.length;
+  setFollowersAre(roleCycle[nextIndex]);
+};
      const setInfo = (col) => {
     
     if (!col) return;
@@ -169,7 +191,7 @@ if (col.childCollections) {
         col: colInView,
         profile: currentProfile,
       }
-    console.log("FS",log)
+
     dispatch(
       patchCollectionContent({
         id: params.id,
@@ -183,10 +205,22 @@ if (col.childCollections) {
         profile: currentProfile,
       })
     )
-      .then(() => setSuccess("Successful Update"))
-      .catch((err) => setError(err.message));
+      .then((res)=>{
+        checkResult(res,payload=>{
+          if(payload?.collection){
+   dispatch(updatePaginatedItem({key:"collections",item:payload?.collection}))
+          }
+  
+        },err=>{
+
+        })
+   
+      })
+      .catch((err) => showAlert({ message: err.message, type: AlertType.error }));
   };
-  useEffect(soUserCanEdit,[currentProfile,colInView])
+  function openRoleForm(){
+   openDialog({...dialog,text:<RoleForm item={ colInView} />})
+  }
   useEffect(() => {
     if (colInView) {
       setInfo(colInView);
@@ -197,10 +231,9 @@ if (col.childCollections) {
     const getCol = async () => {
     const token = (await Preferences.get({ key: "token" })).value;
 
-    console.log("VD",token)
-    // if (token && (!colInView || colInView.id !== id)) {
+
       token &&id&& dispatch(fetchCollectionProtected(params)).then((res) => {
-        console.log(res)
+       
        
         setPending(false);
       });
@@ -209,17 +242,23 @@ if (col.childCollections) {
   useEffect(()=>{
      getCol(id).then()
   },[id])
-  const handleAddStory = () => router.push(Paths.addToCollection.createRoute(id));
+
   const handleDelete = () => {
-   
+
     closeDialog()
     let dia = { ...dialog };
-    dia.title = "Deleting?";
+    // dia.title = "Deleting?";
     dia.isOpen = true;
     dia.agree = () => {
-      dispatch(deleteCollection(params));
-      router.push(Paths.myProfile);
-     closeDialog()
+     
+     
+      dispatch(deleteCollection(params)).then((res)=>{
+           dispatch(removeFromPaginatedKey({ key: "collections", id: id }));
+   router.push(Paths.myProfile);
+      resetDialog()
+      })
+        
+   
     };
     dia.agreeText = "Delete";
     dia.onClose = () => closeDialog()
@@ -230,197 +269,189 @@ if (col.childCollections) {
     );
   openDialog(dia)
   };
-  const openRoleForm=()=>{
+if (loading || !colInView) {
+  return editCollectionSkeleton();
+}
 
-    let dia = { ...dialog };
-    dia.title = null;
-    dia.isOpen = true;
-    dia.agree =null
-  
-    dia.agreeText = null
-    dia.onClose = () => closeDialog()
-    dia.text = <RoleForm item={colInView} onClose={()=>closeDialog()}/>
-    openDialog(dia)
-  
-  }
+if (!canSee) {
+  return <CollectionNoAccess />;
+}
 
-  return (
+  if(loading||!colInView){return editCollectionSkeleton()}
+    return<IonContent fullscreen className="page-content">
+  {/* <div className="max-w-lg mx-auto px-4 pb-28 pt-6 space-y-6"> */}
+<div className={`${maxContainerWidth} mx-auto ${containerPadding} ${gapBetweenCards}`}>
+  {/* TITLE */}
+  <div className={`bg-base-bg ${cardRadius} ${cardPadding} ${cardShadow}`}>
+    <p className="text-xs text-soft mb-1">Title</p>
+  <input
+  className={`${inputTextClass} ${inputResponsiveClass} w-[100%] font-semibold`}
+      value={title}
+      onChange={(e) => setTitle(e.target.value)}
+      placeholder="Collection title"
 
-    <ErrorBoundary>
-      {/* <IonContent fullscreen={true} className="bg-gray-50"> */}
-            
-<IonContent fullscreen={true} className="ion-padding-top"> 
-  {isNative?<IonHeader translucent>
-        <IonToolbar className="bg-white border-b border-emerald-100">
-          <IonButtons slot="start">
-            <IonBackButton
-              
-              onClick={handleBack}
-              className="text-emerald-700"
-            />
-          </IonButtons>
-
-          <IonTitle className="text-emerald-800 font-semibold text-center">
-            Edit Collection
-          </IonTitle>
-
-          {/* {canUserEdit && ( */}
-            <IonButtons slot="end">
-            
-            </IonButtons>
-          {/* )} */}
-        </IonToolbar>
-      </IonHeader>:<div className="pt-8"/>}
-        {loading ? (
-          <div className="flex justify-center items-center h-[60vh]">
-            <IonSpinner name="crescent" color="success" />
-          </div>
-        ) : (
-        
-          <div className="ion-padding sm:max-w-[50em] mx-auto">
-        
-
-            <IonList lines="none">
-              {/* Title */}
-              <IonItem className="rounded-xl mb-3 border border-emerald-100">
-                <IonLabel position="stacked" className="text-emerald-700">
-                  Title
-                </IonLabel>
-                <IonInput
-                  value={title}
-                  placeholder="Enter collection title"
-                  onIonChange={(e) =>{
-                    setCollection({ ...collection, title: e.detail.value })
-                    setTitle(e.detail.value)
-                  }}
-                  className="p-2 text-[1.8rem]"
-                />
-              
-               {canUserEdit? currentProfile.id == colInView.profileId?"You're the owner":<IonText >You are {canUserEdit.role=="editor"?"an":"a"} {canUserEdit.role}</IonText>:null}
-            
-              </IonItem>
-  <div className="mt-4">
-    <div className="mb-1">
-                <IonLabel position="stacked" className="text-emerald-700  text-[1rem] font-bold">
-                  Description
-                </IonLabel>
-                </div>
-                <textarea
-                className="border border-blueSea p-3 min-h-[12em] w-full rounded-lg shadow-sm w-[100%] sm:max-w-[50em]"
-                  autoGrow={true}
-                  placeholder="Describe your collection"
-                  value={purpose}
-              
-                  onIonChange={(e) =>{
-                    setCollection({
-                      ...collection,
-                      description: e.detail.value,
-                    })
-                    setPurpose(e.detail.value)
-                  }}
-                  // className="p-2 "
-                />
-</div>
-            </IonList>
-              <div className="mt-6 flex flex-col items-center gap-4 w-full max-w-lg mx-auto">
-  {/* Open Collaboration Toggle */}
-  <button
-    onClick={() => setIsOpen(!isOpen)}
-    className={`w-full sm:w-60 flex items-center justify-center rounded-full px-6 py-3 text-sm font-medium transition-all duration-200 shadow-sm border 
-      ${isOpen
-        ? "bg-yellow-50 border-yellow-400 text-yellow-700 hover:bg-yellow-100"
-        : "bg-gray-50 border-gray-300 text-gray-700 hover:bg-gray-100"
-      }`}
-  >
-    {isOpen ? "Open Collaboration Enabled" : "Close Collaboration"}
-  </button>
-  {/* <div className="flex flex-row space-x-4"> */}
-  <button
-    onClick={() =>openRoleForm()}
-    className={`w-full sm:w-60 flex items-center justify-center rounded-full px-6 py-3 text-sm font-medium transition-all duration-200 shadow-sm border 
-bg-emerald-50 border-emerald-400 text-emerald-700 hover:bg-emerald-100"
-      `}
-  >
-    Roles
-  </button>
-  {collection && <button
-  onClick={()=>setOpenHashtag(!openHashtag)}
-  className={`w-full sm:w-60 flex items-center justify-center rounded-full px-6 py-3 text-sm font-medium transition-all duration-200 shadow-sm border 
-bg-emerald-50 border-emerald-400 text-emerald-700 hover:bg-emerald-100"
-      `}
-  > {!openHashtag?"+":"-"} Hashtags</button>}
-
-  {/* </div> */}
-  {/* Privacy Toggle */}
-  {openHashtag && collection && <HashtagForm item={colInView} type="collection"/>}
-  <button
-    onClick={() => setIsPrivate(!isPrivate)}
-    className={`w-full sm:w-60 flex items-center justify-center rounded-full px-6 py-3 text-sm font-medium transition-all duration-200 shadow-sm border 
-      ${isPrivate
-        ? "bg-red-50 border-red-400 text-red-700 hover:bg-red-100"
-        : "bg-emerald-50 border-emerald-400 text-emerald-700 hover:bg-emerald-100"
-      }`}
-  >
-    {isPrivate ? "Private Collection" : "Public Collection"}
-  </button>
-      <FollowersDropdown followersAre={followersAre}setFollowersAre={setFollowersAre}/>
-  <div className="flex flex-row space-between">
-
-  <div
-  className={`w-full sm:w-60 flex items-center btn  border border-blueSea border-1 justify-center rounded-full px-6 py-3 text-sm font-medium transition-all duration-200 shadow-sm border`}
-  onClick={() => router.push(Paths.collection.createRoute(colInView.id))}
->
-<IonText>View Collection</IonText>
-</div>
- <IonImg    onClick={handleAddStory} src={addIcon} alt="Add" className="max-w-14 ml-8 btn rounded-full p-2 max-h-14 bg-soft" />
-  </div>           
-  <IonText
-                onClick={handleSave}
-                className="text-white btn bg-blueSea w-[100%] sm:max-w-[50em] my-auto  text-center font-bold text-[1rem] py-3 rounded-full font-medium"
-              >
-                Save
-              </IonText>
+    />
   </div>
-            
-       <div className="w-[100%] md:mt-8 mx-auto flex flex-col sm:max-w-[50em]">       <div role="tablist" className="tabs grid">
-        
-          <input type="radio" name="my_tabs_2" role="tab" defaultChecked className="tab" aria-label="Pages" />
-          <div role="tabpanel" className="tab-content pt-1 lg:py-4 rounded-lg md:mx-auto">
-              <SortableList items={newPages} onOrderChange={handleStoryOrderChange} onDelete={deleteStory} />
-         </div>
-         <input type="radio" name="my_tabs_2" role="tab" className="tab" aria-label="Collections" />
-          <div role="tabpanel" className="tab-content pt-1 lg:py-4 rounded-lg md:mx-auto">
-           <SortableList items={newCollections} onOrderChange={handleColOrderChange} onDelete={deleteChildFromCollection} />
-           </div>
-        </div>
+
+  {/* DESCRIPTION */}
+  <div className={`bg-base-bg ${cardRadius} ${cardPadding} ${cardShadow}`}>
+    <p className="text-xs text-soft mb-2">Description</p>
+    <textarea
+      value={purpose}
+      onChange={(e) => setPurpose(e.target.value)}
+      placeholder="Describe your collection"
+      className={`${inputTextClass} text-sm min-h-[120px]`}
+    />
+  </div>
+
+  {/* SETTINGS */}
+  <div className={`bg-base-bg ${cardRadius} ${cardPadding} ${cardShadow} space-y-3`}>
+    <div className="flex flex-wrap gap-2">
+   <div className="bg-base-bg rounded-2xl p-4 shadow-sm space-y-3">
+
+      <div className="flex flex-wrap gap-2">
+        <Pill
+          label={isOpen ? "Open Collaboration" : "Closed"}
+          onClick={() => setIsOpen(!isOpen)}
+          baseClass={
+            isOpen
+              ? "bg-softBlue text-blueSea"
+              : "bg-gray-100 text-gray-600"
+          }
+        />
+
+        <Pill
+          label={isPrivate ? "Private" : "Public"}
+          onClick={() => setIsPrivate(!isPrivate)}
+          baseClass={
+            isPrivate
+              ? "bg-gray-100 text-gray-600"
+              : "bg-softBlue text-blueSea"
+          }
+        />
+
+      <Pill
+  label={`Followers: ${followersAre}`}
+  onClick={cycleFollowersRole}
+  variant="secondary"
+  color="soft"
+/>
+      </div>
+    </div>
+    </div>
+  </div>
+
+  {/* ACTIONS */}
+  <div className={buttonGap}>
+       <div className="flex flex-wrap gap-3">
+
+      <Pill
+        label="Save"
+        onClick={handleSave}
+        baseClass="bg-blueSea text-white"
+      />
+
+      <Pill
+        label="View"
+        onClick={() =>
+          router.push(Paths.collection.createRoute(colInView.id))
+        }
+        baseClass="bg-softBlue text-blueSea"
+      />
+{/* <div className="pt-4"> */}
+  <Pill
+    label={openHashtag ? "- Hashtags" : "+ Hashtags"}
+    onClick={() => setOpenHashtag(!openHashtag)}
+    baseClass="bg-emerald-500 text-white"
+  />
+{/* </div> */}
+      <Pill
+        label="Add Story"
+        // icon={addIcon}
+        onClick={() =>
+          router.push(Paths.addToCollection.createRoute(id))
+        }
+        baseClass="bg-soft text-white"
+      />
+<Pill
+  label="Manage Access"
+  onClick={() => openRoleForm()}
+  baseClass="bg-emerald-600 text-white"
+/>
+  </div>
+</div>
+    {/* TITLE */}
+
+
+    {/* DESCRIPTION */}
+    <div className="bg-base-bg rounded-2xl p-4 shadow-sm">
+      <p className="text-xs text-soft mb-2 dark:text-cream" >Description</p>
+      <textarea
+        value={purpose}
+        onChange={(e) => setPurpose(e.target.value)}
+        placeholder="Describe your collection"
+        className="w-[100%] text-sm dark:text-cream bg-transparent outline-none min-h-[120px]"
+      />
+    </div>
+
+    {/* SETTINGS */}
     
-              {/* <IonButton
-                expand="block"
-                fill="solid"
-                color="success"
-                className="mt-4 rounded-full flex b items-center justify-center gap-2"
-             
-              > */}
-                  {/* <span>Add New Story</span> */}
-              {/* </IonButton> */}
-            </div>
 
-            {/* ===== DANGER ZONE ===== */}
-           {colInView && currentProfile && colInView.profileId==currentProfile.id && <div className="mt-10 border-t border-gray-200 pt-4">
-              <h4 className="text-sm font-semibold text-red-600 mb-2">
-                Danger Zone
-              </h4>
-          
-                <IonImg   onClick={handleDelete} src={deleteIcon} alt="Delete" className="max-w-12 max-h-12 rounded-lg bg-red-400" />
-                <span>Delete Collection</span>
-           
-            </div>}
-          </div>
-        )}
-      </IonContent>
+    {/* ACTIONS */}
 
- </ErrorBoundary>
-  );
+<div
+  className={`overflow-hidden transition-all duration-300 ${
+    openHashtag ? "max-h-[600px] mt-2" : "max-h-0"
+  }`}
+>
+  {openHashtag && <HashtagForm item={colInView} type="collection" />}
+</div>
+    {/* TABS */}
+    {/* SEARCH */}
+<div className="bg-base-bg rounded-2xl p-3 shadow-sm flex items-center gap-2">
+  <input
+    type="text"
+    value={search}
+    onChange={(e) => setSearch(e.target.value)}
+    placeholder={`Search ${activeTab}...`}
+    className="w-[100%] bg-transparent outline-none text-sm"
+  />
+  <IonImg src={arrowDown} className="w-5 h-5" />
+</div>
+<div className={tabWrapper}>
+  <TabBar tabs={tabs} active={activeTab} onChange={setActiveTab}/>
+</div>
+    {activeTab === "pages" && (
+      <SortableList
+        items={filteredPages}
+        onOrderChange={setNewPages}
+        onDelete={(s) =>
+          dispatch(deleteStoryFromCollection({ stId: s.id }))
+        }
+      />
+    )}
+
+    {activeTab === "collections" && (
+      <SortableList
+        items={filteredCollections}
+        onOrderChange={setNewCollections}
+        onDelete={(c) =>
+          dispatch(deleteCollectionFromCollection({ tcId: c.id }))
+        }
+      />
+    )}
+
+    {/* DELETE */}
+
+      <div  onClick={handleDelete} className="rounded-full h-14 max-w-20 flex flex-col items-center justify-center bg-golden">
+        <img src={deleteIcon}/>
+        <p className="text-white">Delete</p>
+      </div>
+  
+
+  </div>
+</IonContent>
+
 };
 
 export default EditCollectionContainer;
@@ -448,7 +479,7 @@ function FollowersDropdown({ followersAre, setFollowersAre }) {
         tabIndex={0}
         role="button"
         onClick={() => setOpen((prev) => !prev)}
-        className="w-full flex items-center justify-center rounded-full px-6 py-3 border border-emerald-400 bg-white text-emerald-700 font-medium shadow-sm hover:bg-emerald-50 cursor-pointer transition-all"
+        className="w-full flex items-center justify-center rounded-full px-6 py-3 border border-emerald-400 bg-base-bg  dark:bg-transparent dark:text-cream text-emerald-700 font-medium shadow-sm hover:bg-emerald-50 cursor-pointer transition-all"
       >
         Followers are&nbsp;
         <span className="font-semibold">{followersAre}s</span>
@@ -460,7 +491,7 @@ function FollowersDropdown({ followersAre, setFollowersAre }) {
 
       {/* Dropdown Menu */}
       <ul
-        className={`absolute z-10 mt-2 w-full bg-white border border-emerald-200 rounded-lg shadow-md text-emerald-800 text-sm font-medium transform transition-all duration-300 origin-top ${
+        className={`absolute z-10 mt-2 w-full bg-base-bg border border-emerald-200 rounded-lg shadow-md text-emerald-800 text-sm font-medium transform transition-all duration-300 origin-top ${
           open
             ? "opacity-100 scale-100 translate-y-0"
             : "opacity-0 scale-95 -translate-y-2 pointer-events-none"
@@ -477,9 +508,103 @@ function FollowersDropdown({ followersAre, setFollowersAre }) {
         ))}
       </ul>
     </div>
+   
        </IonContent>
     </ErrorBoundary>
 
   );
 }
 
+
+
+const editCollectionSkeleton = () => (
+  <IonContent>
+  <div className="ion-padding sm:max-w-[50em] mx-auto animate-pulse">
+    
+    {/* Title Input Skeleton */}
+    <div className="rounded-xl mb-3 border border-emerald-100 p-4 shadow-sm bg-base-bg">
+      <div className="h-3 w-20 bg-emerald-200 rounded mb-3 shadow" />
+      <div className="h-8 w-full bg-gray-200 rounded shadow" />
+    </div>
+
+    {/* Description Skeleton */}
+    <div className="mt-4 shadow-sm">
+      <div className="h-3 w-28 bg-emerald-200 rounded mb-2 shadow" />
+      <div className="h-[10em] w-full bg-gray-200 rounded-lg shadow" />
+    </div>
+
+    {/* Buttons Skeleton */}
+    <div className="mt-6 flex flex-col items-center gap-4 w-full max-w-lg mx-auto">
+      {[...Array(4)].map((_, i) => (
+        <div
+          key={i}
+          className="w-full sm:w-60 h-10 bg-gray-200 rounded-full shadow"
+        />
+      ))}
+    </div>
+
+    {/* Tab Bar Skeleton */}
+    <div className="mt-8 flex gap-4 justify-center">
+      <div className="w-24 h-8 bg-gray-200 rounded-full shadow" />
+      <div className="w-24 h-8 bg-gray-200 rounded-full shadow" />
+    </div>
+
+    {/* List Skeleton */}
+    <div className="mt-6 space-y-3">
+      {[...Array(3)].map((_, i) => (
+        <div
+          key={i}
+          className="flex justify-between items-center p-4 rounded-full bg-base-bg border border-gray-200 shadow-sm"
+        >
+          <div className="h-4 w-32 bg-gray-200 rounded shadow" />
+          <div className="w-8 h-8 bg-gray-300 rounded-full shadow" />
+        </div>
+      ))}
+    </div>
+
+  </div>
+  </IonContent>
+) 
+const CollectionNoAccess = () => {
+  const router = useIonRouter();
+
+  return (
+    <IonContent
+      fullscreen
+      style={{ "--background": Enviroment.palette.base.background }}
+    >
+      <div className="h-full flex flex-col items-center justify-center px-6 text-center">
+
+        {/* Icon */}
+        <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-4">
+          <span className="text-2xl">🔒</span>
+        </div>
+
+        {/* Title */}
+        <h2 className="text-lg font-semibold text-gray-800">
+          This collection is private
+        </h2>
+
+        {/* Description */}
+        <p className="text-sm text-gray-500 mt-2 max-w-xs">
+          You don’t have permission to view or edit this collection.
+        </p>
+
+        {/* Actions */}
+        <div className="mt-6 flex gap-3">
+          <Pill
+            label="Go Back"
+            onClick={() => router.goBack()}
+            baseClass="bg-gray-200 text-gray-700"
+          />
+
+          <Pill
+            label="Regresh"
+            onClick={() => window.location.reload()}
+            baseClass="bg-blueSea text-white"
+          />
+        </div>
+      </div>
+    </IonContent>
+  );
+};

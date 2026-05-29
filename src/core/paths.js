@@ -1,3 +1,4 @@
+import { PageType } from "./constants";
 
 
 const isClip = import.meta.env.MODE === "clip";  // or use a VITE flag
@@ -8,14 +9,15 @@ const Paths ={
     feedback:()=>`/feedback`,
     links:()=>`/links`,
     calendar:()=>"/events",
-    onboard:"/apply",
+    dashboard:"/dashboard",
+    onboard:"/onboard",
     library: {
         route: ()=>`/library/:id`,
         createRoute:(id)=>{return `/library/${id}`;}},
     page:{ route: ()=>`/story/:id/view`,createRoute:(id)=>{return `/story/${id}/view`
     }},
     workshop:{
-        route:()=>"/workshop/page/:pageId",
+        route:()=>"/workshop/page/:storyId",
         reader:()=>"/workshop",
         createRoute:(pageId)=>{return "/workshop/page/"+pageId}
     },
@@ -42,9 +44,16 @@ const Paths ={
         link:`/story/link/edit`,
         image:`/story/image/edit`  
     },
-    login:()=>{return `/login`},
-    editPage:{route:`/story/:id/editor`,
-        createRoute:(id)=>{return `/story/${id}/editor`}},
+    login: `/login`,
+    
+    editPage:{route:`/story/:type/edit/:id`,
+        createRoute:(id,type)=>{
+            let addType = type
+            if(type==PageType.text){
+                addType = "text"
+            }
+            return `/story/${addType}/edit/${id}`
+        }},
 
     addToCollection:{
         route:'/collection/:id/add',
@@ -61,7 +70,7 @@ const Paths ={
         }
     },
     discovery:"/discovery",
-    home:()=>{return `/home`},
+    home:`/home`,
     about:()=>{return `/about`},
     editProfile:`/profile/edit`,
     profile:{route:()=>{return `/profile/:id/view`},

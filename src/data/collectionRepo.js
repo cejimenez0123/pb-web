@@ -27,23 +27,44 @@ import { Preferences } from "@capacitor/preferences";
         let res = await axios.get(this.url+"/public/library",this.headers)
         return res.data
     }
-    async getMyCollections(){
-         const headers = await this.getAuthHeaders();
-        let res = await axios.get(this.url+"/profile/protected/",{
-            headers
-        })
-   
-        return res.data
-    }
-    async getPublicProfileCollections({id}){
-        let res = await axios.get(this.url+`/profile/${id}/public`)
-        return res.data
-    }
-    async getProtectedProfileCollections({id}){
-          const headers = await this.getAuthHeaders()
-        let res = await axios.get(this.url+`/profile/${id}/private`,{headers:headers})
-        return res.data
-    }
+   async getMyCollections({ skip = 0, take = 20, type,search="",isWorkshop=false } = {}) {
+  const headers = await this.getAuthHeaders();
+
+  const res = await axios.get(this.url + "/profile/protected", {
+    headers,
+    params: {
+      search,
+      skip,
+      take,
+      type, // 👈 add this
+      isWorkshop
+    },
+  });
+
+  return res.data;
+}
+
+
+
+async getPublicProfileCollections({ id, skip = 0, take = 20 }) {
+  const res = await axios.get(this.url + `/profile/${id}/public`, {
+    params: { skip, take },
+  });
+
+  return res.data;
+}
+
+async getProtectedProfileCollections({ id, skip = 0, take = 20 }) {
+  const headers = await this.getAuthHeaders();
+
+  const res = await axios.get(this.url + `/profile/${id}/protected`, {
+    headers,
+    params: { skip, take },
+  });
+
+  return res.data;
+}
+
     async createCollection({
         title,
         purpose,
@@ -136,6 +157,7 @@ import { Preferences } from "@capacitor/preferences";
     }
     
     async fetchCollection({id}){
+           
         const res = await axios.get(this.url+"/"+id)
 
         return res.data
@@ -144,7 +166,7 @@ import { Preferences } from "@capacitor/preferences";
         let headers = await this.getAuthHeaders()
         const res = await axios.get(this.url+"/col/"+id+"/protected",{headers:headers
         })
-        console.log(res)
+       
         return res.data
     }
     async getProfileBooks({profile}){
@@ -157,7 +179,7 @@ import { Preferences } from "@capacitor/preferences";
         let res = await axios.delete(this.url+"/colToCol/"+tcId,
             {headers:headers}
         )
-        console.log(res)
+
         return res.data
     }
     async deleteStoryToCollection({stId}){
@@ -179,22 +201,33 @@ import { Preferences } from "@capacitor/preferences";
         const res = await axios.post(this.url+"/home",{collection,type},{
             headers:headers
         })
-        console.log(res)
+  
         return res.data
 
     }
-    async recommendedColCollections({colId}){
-        const res = await axios.get(this.url+"/"+colId+"/recommendations",)
+ 
+    async recommendedColCollections({ colId, skip = 0, take = 10, type } = {}) {
+  const res = await axios.get(`${this.url}/${colId}/recommendations`, {
+    params: { skip, take, ...(type && { type }) }
+  });
+  return res.data;
+}
+async recommendations({ skip = 0, take = 20 } = {}) {
+  const res = await axios.get(this.url + "/recommendations", {
+    headers: {
+      Authorization: "Bearer " + (await Preferences.get({ key: "token" })).value
+    },
+    params: { skip, take }
+  });
+  return res.data;
+}
+    // async recommendations(){
+    //     const res = await axios.get(this.url+"/recommendations",{headers:{
+    //         Authorization:"Bearer "+(await Preferences.get({key:"token"})).value
+    //     }})
 
-        return res.data
-    }
-    async recommendations(){
-        const res = await axios.get(this.url+"/recommendations",{headers:{
-            Authorization:"Bearer "+(await Preferences.get({key:"token"})).value
-        }})
-
-        return res.data
-    }
+    //     return res.data
+    // }
     async recommendedStories({colId}){
         const res = await axios.get(this.url+"/"+colId+"/story/recommendations",{headers:{
          Authorization:"Bearer "+(await Preferences.get({key:"token"})).value
@@ -207,5 +240,20 @@ import { Preferences } from "@capacitor/preferences";
        
         return res.data
     }
+    async getCollectionRecommendations({ colId, skip = 0, take = 10, type } = {}) {
+    const res = await axios.get(`${this.url}/recommendations/collection/${colId}`, {
+        params: { skip, take, ...(type && { type }) }
+    });
+    return res.data;
+}
+
+async getProfileRecommendations({ skip = 0, take = 10, type } = {}) {
+    const headers = await this.getAuthHeaders();
+    const res = await axios.get(`${this.url}/recommendations/profile`, {
+        headers,
+        params: { skip, take, ...(type && { type }) }
+    });
+    return res.data;
+}
 }
 export default new CollectionRepo()

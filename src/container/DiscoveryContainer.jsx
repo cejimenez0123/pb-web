@@ -1,93 +1,82 @@
+
+
 import { useSelector, useDispatch } from 'react-redux';
 import { useState, useEffect, useLayoutEffect, useContext } from 'react';
-import '../styles/Discovery.css';
-import '../Dashboard.css';
-import ErrorBoundary from '../ErrorBoundary.jsx';
-import { getPublicStories, setPagesInView } from '../actions/PageActions.jsx';
-import { getPublicCollections, setCollections } from '../actions/CollectionActions.js';
+import { getPublicStories } from '../actions/PageActions.jsx';
+import { getPublicCollections } from '../actions/CollectionActions.js';
 import { getPublicLibraries } from '../actions/LibraryActions.jsx';
 import checkResult from '../core/checkResult.js';
-import DiscoveryEmbed from '../container/DiscoveryEmbed.jsx';
 import { useMediaQuery } from 'react-responsive';
-import DashboardEmbed from './DashboardEmbed.jsx';
-import { AnimatePresence, motion } from "framer-motion";
-import BookListItem from '../components/BookListItem.jsx';
-import calendar from '../images/icons/calendar.svg'
-import { initGA, sendGAEvent} from '../core/ga4.js';
+import { BookListItem } from '../components/collection/BookListItem.jsx';
+import { initGA } from '../core/ga4.js';
+import ScrollDownButton from '../components/ScrollDownButton.jsx';
 import Context from '../context.jsx';
 import Paths from '../core/paths.js';
 import useScrollTracking from '../core/useScrollTracking.jsx';
 import sortItems from '../core/sortItems.js';
-import {  IonContent,IonHeader,IonItem, IonText, IonToolbar, useIonRouter } from '@ionic/react';
+import { IonContent, useIonRouter } from '@ionic/react';
+import Enviroment from '../core/Enviroment.js';
+import SectionHeader from '../components/SectionHeader.jsx';
+import HorizontalScroll from '../components/HorizontalScroll.jsx';
+import { motion } from "framer-motion";
+import PageList from '../components/page/PageList.jsx';
+
+const PAGE_WRAP = "mx-auto pb-24 bg-base-surface dark:bg-base-bgDark min-h-screen";
+const SECTION = "space-y-4 px-2";
+const SECTION_HEADER_ROW = "flex items-center justify-between px-4 max-w-[50em] mx-auto";
+const H_SCROLL_WRAP = "pl-4 -mx-4 sm:mx-0";
+const H_SCROLL_ROW = "flex flex-row gap-4";
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: { staggerChildren: 0.08 },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20, scale: 0.98 },
+  show: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { duration: 0.3, ease: "easeOut" },
+  },
+};
 
 function DiscoveryContainer() {
-  const { seo,setSeo } = useContext(Context);
-  const  currentProfile = useSelector(state=>state.users.currentProfile)
-
+  const { setSeo } = useContext(Context);
+  const currentProfile = useSelector(state => state.users.currentProfile);
+  const router = useIonRouter();
   const dispatch = useDispatch();
-    const [tab, setTab] = useState("disc");
-  const cols = useSelector(state => state.books.collections);
 
-  const pagesInView = useSelector(state => state.pages.pagesInView);
+  const { collections: cols, books, libraries, pagesInView } = useSelector(state => ({
+    collections: state.books.collections,
+    books: state.books.books,
+    libraries: state.books.libraries,
+    pagesInView: state.pages.pagesInView,
+  }));
 
-  const [hasMoreLibraries, setHasMoreLibraries] = useState(false);
   const [viewItems, setViewItems] = useState([]);
 
-  tab && useScrollTracking({ name: tab });
-  useLayoutEffect(() => {
-  if (tab === "disc") {
-    setSeo(prev => ({
-      ...prev,
-      title: "Discover Writing, Events & Workshops | Plumbum",
-      description:
-        "Discover new writing, collections, events, and workshops on Plumbum. Explore fresh work from writers and literary communities.",
-      type: "website",
-    }));
-  }
+  useScrollTracking({ name: 'discovery' });
 
-  if (tab === "dash") {
-    setSeo(prev => ({
-      ...prev,
-      title: "Your Writing Dashboard | Plumbum",
-      description:
-        "Manage your writing, collections, reading activity, and community participation on Plumbum.",
-      type: "profile",
-      robots: "noindex, nofollow", // important
-    }));
-  }
-}, [tab, setSeo]);
-
-
- useLayoutEffect(() => {
-  if (tab === "disc") {
-    setSeo({
-      title: "Plumbum — Discover Writing, Events & Workshops",
-      description:
-        "Explore fresh writing, collections, events, and workshops on Plumbum.",
-      name: "Plumbum",
-      type: "website",
-    });
-  }
-
-  if (tab === "dash") {
-    setSeo({
-      title: "Plumbum — Your Writing Dashboard",
-      description:
-        "Manage your writing, collections, and reading activity on Plumbum.",
-      name: "Plumbum",
-      type: "profile",
-    });
-  }
-}, [tab, setSeo]);
+  useLayoutEffect(() => { initGA(); }, []);
 
   useLayoutEffect(() => {
-    dispatch(setPagesInView({ pages: [] }));
-    fetchContentItems();
-    fetchLibraries();
-  }, [currentProfile, dispatch]);
+    setSeo({
+      title: 'Plumbum (Discovery) - Read Fresh Writing',
+      description: 'Explore events, workshops, and writer meetups on Plumbum.',
+      name: 'Plumbum',
+      type: '',
+    });
+  }, [setSeo]);
 
-
-
+ useEffect(() => {
+  fetchContentItems();
+  fetchLibraries();
+}, []); 
   useEffect(() => {
     let finalList = sortItems(
       pagesInView,
@@ -96,183 +85,90 @@ function DiscoveryContainer() {
     setViewItems(finalList);
   }, [pagesInView, cols]);
 
- 
   const fetchContentItems = () => {
-    dispatch(setPagesInView({ pages: [] }));
-    dispatch(setCollections({ collections: [] }));
     dispatch(getPublicStories());
     dispatch(getPublicCollections());
   };
 
   const fetchLibraries = () => {
-    setHasMoreLibraries(true);
     dispatch(getPublicLibraries())
-      .then(result =>
-        checkResult(
-          result,
-          payload => setHasMoreLibraries(false),
-          err => setHasMoreLibraries(false)
-        )
-      )
-      .catch(() => setHasMoreLibraries(false));
+      .then(result => checkResult(result, () => {}, () => {}))
+      .catch(() => {});
   };
 
-
-
-
-
-
   return (
-  
-      <ErrorBoundary>
+    <IonContent className='page-content'>
+      <div className={PAGE_WRAP}>
 
-      
-        
-  <DiscDashTabs tab={tab} setTab={setTab} disc={() =><DiscoveryEmbed/>} dash={()=><DashboardEmbed />} />
+        {/* Communities */}
+        <div className={SECTION}>
+          <div className={SECTION_HEADER_ROW}>
+            <SectionHeader title="Communities" />
+          </div>
+          <div className={H_SCROLL_WRAP}>
+            <HorizontalScroll>
+              <motion.div
+                className={H_SCROLL_ROW}
+                variants={containerVariants}
+                initial="hidden"
+                animate="show"
+              >
+                {libraries?.map((library) => (
+                  <motion.div key={library.id} variants={itemVariants}>
+                    <BookListItem book={library} />
+                  </motion.div>
+                ))}
+              </motion.div>
+            </HorizontalScroll>
+          </div>
+        </div>
 
- 
-      </ErrorBoundary>
+        {/* Collections */}
+        <div className={SECTION}>
+          <div className={SECTION_HEADER_ROW}>
+            <SectionHeader title="Collections" />
+          </div>
+          <div className={H_SCROLL_WRAP}>
+            <HorizontalScroll>
+              <motion.div
+                className={H_SCROLL_ROW}
+                variants={containerVariants}
+                initial="hidden"
+                animate="show"
+              >
+                {books?.map((book) => (
+                  <motion.div key={book.id} variants={itemVariants}>
+                    <BookListItem book={book} />
+                  </motion.div>
+                ))}
+              </motion.div>
+            </HorizontalScroll>
+          </div>
+        </div>
 
+        {/* Pages */}
+        <div className={SECTION}>
+          <div className={SECTION_HEADER_ROW}>
+            <SectionHeader title="Pages" />
+          </div>
+
+             <PageList items={viewItems} shortenTo={200}/>
+
+       
+
+          {!currentProfile && (
+            <div className="px-4 max-w-[50em] mx-auto">
+              <ScrollDownButton
+                text="Join the community"
+                onClick={() => router.push(Paths.onboard)}
+              />
+            </div>
+          )}
+        </div>
+
+      </div>
+    </IonContent>
   );
 }
 
 export default DiscoveryContainer;
-
-
-
-
- function DiscDashTabs({ tab, setTab, disc, dash}) {
-    const { seo,setSeo } = useContext(Context);
-    const currentProfile = useSelector(state=>state.users.currentProfile)
-    const router = useIonRouter()
-  const variants = {
-    enter: (direction) => ({
-      x: direction > 0 ? 20 : -20, // smaller distance for tighter slide
-      opacity: 0,
-      position: "absolute",
-      width: "100vw",
-    }),
-    center: {
-      x: 0,
-      opacity: 1,
-      position: "relative",
-      width: "100vw",
-    },
-    exit: (direction) => ({
-      x: direction > 0 ? -20 : 20,
-      opacity: 0,
-      position: "absolute",
-      width: "100vw",
-    }),
-  };
-
-
-   return <IonContent style={{"--background":"#f4f4e0"}} fullscreen={true} scrollY={true}>
-{/*    
-           <div className=' flex flex-row flex-end p-4 max-w-[100vw]'>
-<div className='w-[100%] pt-4'/> */}
-         <div className='flex mt-4  pt-16 px-4 flex-row justify-between'>
-          {/* <img onClick={()=>{
-      sendGAEvent("navigation_click", {
-      destination: "calendar",
-      source: "discovery_header",
-    });
-
-    setSeo({
-      title: "Plumbum — Events & Writing Calendar",
-      description:
-        "Browse writing events, workshops, and meetups on the Plumbum calendar.",
-      name: "Plumbum",
-      type: "website",
-    });
-  router.push(Paths.calendar())
-
-}} src={calendar}  className=''  style={{
-            left:"0",
-    filter:
-      "invert(35%) sepia(86%) saturate(451%) hue-rotate(118deg) brightness(85%) contrast(92%)",
-  }} */}
-
-
-          {/* /> */}
-                    </div>
-    
-    <div className=" sm:pt-12 bg-cream">
-      {/* Tabs */}
-      <div className="flex justify-center lg:justify-start lg:mx-12 mb-2">
-        <div className="flex rounded-full border overflow-clip min-h-12 sm:w-[40em] lg:w-[30em] border-emerald-600">
-          <button
-            className={`px-4 py-2 transition-colors w-[45vw]  sm:w-[20em] lg:w-[15em]  ${
-              tab === "disc"
-                ? "bg-emerald-700 text-white"
-                : "text-emerald-700 bg-transparent"
-            }`}
-          onClick={() => {
-  sendGAEvent("tab_select", {
-    tab: "discovery",
-    intent: "explore_new_content",
-    surface: "discovery_dashboard",
-    logged_in: Boolean(currentProfile),
-  });
-  setTab("disc");
-}}
-
-          >
-            Discovery
-          </button>
-           {currentProfile?<button
-            className={`px-4 py-2 transition-colors w-[45vw]   sm:w-[20em] lg:w-[15em] ${
-              tab === "dash"
-                ? "bg-emerald-700 text-white"
-                : "text-emerald-700 bg-transparent"
-            }`}
-            onClick={() => {
-  sendGAEvent("tab_select", {
-    tab: "dashboard",
-    intent: "manage_own_content",
-    surface: "discovery_dashboard",
-    logged_in: true,
-  });
-  setTab("dash");
-}}
-
-        
-          >
-            Dashboard
-          </button>:<button
-            className={`px-4 py-2 transition-colors w-[45vw]  sm:w-[20em] lg:w-[15em] ${
-              tab === "dash"
-                ? "bg-emerald-700 text-white"
-                : "text-emerald-700 bg-transparent"
-            }`}
-            onClick={() => router.push(Paths.login())}
-          >
-           Log In
-          </button>}
-        </div>
-      </div>
-      <div className='pt-12 bg-cream'>
-        <AnimatePresence custom={tab === "collection" ? 1 : -1} mode="wait">
-          <motion.div
-            key={tab}
-            custom={tab === "collection" ? 1 : -1}
-            variants={variants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            transition={{
-              duration: 0.26, // faster
-              ease: "easeOut", // more responsive
-            }}
-           
-            className="w-full"
-          >
-            {tab === "disc" ? disc() :dash()}
-          </motion.div>
-        </AnimatePresence>
-      </div>
-      </div>
-</IonContent>
-  
-}
-

@@ -1,255 +1,175 @@
-import { useEffect ,useState,useLayoutEffect, useContext} from "react";
+import { useEffect, useState, useContext } from "react";
 import { useDispatch } from "react-redux";
-import { IonText,IonImg, useIonRouter } from "@ionic/react";
+import { IonText, useIonRouter } from "@ionic/react";
 import { useSelector } from "react-redux";
-import loadingGif from "../../images/loading.gif"
 import bookmarkFill from "../../images/bookmarkfill.svg";
-import { RoleType } from "../../core/constants";
-import bookmarkadd from "../../images/bookmark_add.svg"
+import bookmarkadd from "../../images/bookmark_add.svg";
 import Context from "../../context";
 import { sendGAEvent } from "../../core/ga4";
-import { deleteStoryFromCollection,addStoryListToCollection } from "../../actions/CollectionActions";
+import { deleteStoryFromCollection, addStoryListToCollection } from "../../actions/CollectionActions";
 import checkResult from "../../core/checkResult";
 import Enviroment from "../../core/Enviroment";
 import Paths from "../../core/paths";
 import { Preferences } from "@capacitor/preferences";
 import { useDialog } from "../../domain/usecases/useDialog";
-export default function ShareList({ page, profile, archive,setArchive, bookmark, setBookmarked }) {
-  const [localBookmark, setLocalBookmark] = useState(bookmark);
-  const {setSuccess,setError}=useContext(Context)
-const [loadingBookmarkId, setLoadingBookmarkId] = useState(null);
+import computePermissions from "../../core/compusePermissions";
 
-  const currentProfile = useSelector(state=>state.users.currentProfile)
-  const [canUserEdit,setCanUserEdit ]=useState(false)
-  const [loading,setLoading]=useState(false)
-  const router = useIonRouter()
-  const {openDialog,closeDialog,dialog}=useDialog()
+export default function ShareList({ page, profile, archive, setArchive, bookmark, setBookmarked }) {
+  const { setSuccess, setError } = useContext(Context);
+  const [loading, setLoading] = useState(false);
+  const currentProfile = useSelector(state => state.users.currentProfile);
+  const router = useIonRouter();
+  const dispatch = useDispatch();
+  const { openDialog, closeDialog, resetDialog, dialog } = useDialog();
+
+  const { canEdit } = computePermissions(page, currentProfile, {
+    getAccessList: (s) => s.betaReaders,
+    getAccessRole: (r) => r.permission,
+    isPrivate: (s) => s.isPrivate,
+    isOpen: () => false,
+    canWriteRoles: ["commenter", "editor"],
+    canEditRoles: ["editor"],
+  });
+
   const getShareSource = () => {
-  const pathname = router.routeInfo?.pathname || "";
+    const pathname = router.routeInfo?.pathname || "";
+    if (pathname.startsWith("/profile")) return "profile_page";
+    if (pathname.startsWith("/dashboard")) return "dashboard";
+    if (pathname.startsWith("/collection")) return "collection";
+    if (pathname.startsWith("/discovery")) return "discovery";
+    return "unknown";
+  };
 
-  if (pathname.startsWith("/profile")) return "profile_page";
-  if (pathname.startsWith("/dashboard")) return "dashboard";
-  if (pathname.startsWith("/collection")) return "collection";
-  if (pathname.startsWith("/discovery")) return "discovery";
-
-  return "unknown";
-};
-
-  function soCanUserEdit() {
-    const roles = [RoleType.editor];
-    if (currentProfile && page) {
-      if (currentProfile.id === page.authorId) {
-        setCanUserEdit(true);
-        return;
-      }
-      if (page?.betaReaders) {
-        let found = page?.betaReaders?.find((rTc) => rTc.profileId === currentProfile.id && roles.includes(rTc.role));
-        setCanUserEdit(found);
-      }
-    }
-  }
-    const onBookmarkPage = () => {
-    setLoading(true);
-    if (currentProfile && currentProfile.profileToCollections) {
+  const getArchive = () => {
+    if (currentProfile?.profileToCollections) {
       let ptc = currentProfile.profileToCollections.find((ptc) => ptc.type === "archive");
-      if (ptc && ptc.collectionId && page && page.id) {
-        dispatch(addStoryListToCollection({ id: ptc.collectionId, list: [page], profile: currentProfile })).then(
-          (res) => {
-            checkResult(
-              res,
-              ({ collection }) => {
-                let bookmark = collection.storyIdList.find((stc) => stc.storyId == page.id);
-                setArchive(collection);
-                setLocalBookmark(bookmark)
-                setLoading(false);
+      setArchive(ptc?.collection);
+    }
+  };
 
-                setSuccess("Added Successfully");
-              },
-              () => {
-                setError("Error");
-                setLoading(false);
-              }
-            );
-          }
-        );
+  const isBookmarked = () => {
+    if (currentProfile && archive) {
+      let found = archive.storyIdList.find((stc) => stc.storyId == page.id);
+      setBookmarked(found);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => { getArchive(); }, [currentProfile]);
+  useEffect(() => { isBookmarked(); }, [archive, currentProfile]);
+
+  const onBookmarkPage = () => {
+    setLoading(true);
+    if (currentProfile?.profileToCollections) {
+      let ptc = currentProfile.profileToCollections.find((ptc) => ptc.type === "archive");
+      if (ptc?.collectionId && page?.id) {
+        dispatch(addStoryListToCollection({ id: ptc.collectionId, list: [page], profile: currentProfile })).then((res) => {
+          checkResult(res, ({ collection }) => {
+            let found = collection.storyIdList.find((stc) => stc.storyId == page.id);
+            setArchive(collection);
+            setBookmarked(found);
+            setLoading(false);
+            setSuccess("Added Successfully");
+          }, () => {
+            setError("Error");
+            setLoading(false);
+          });
+        });
       }
     } else {
       setLoading(false);
     }
   };
-    useLayoutEffect(() => {
 
-    soCanUserEdit();
-  }, [page, currentProfile]);
-  const dispatch = useDispatch()
-    const copyShareLink = () => {
-    openDialog({...dialog,isOpen:false})
-      sendGAEvent("story_share_copy_link", {
-    story_id: page.id,
-    source: getShareSource(),
-  });
+  const deleteStc = () => {
+    setLoading(true);
+    dispatch(deleteStoryFromCollection({ stId: bookmark.id })).then((res) => {
+      checkResult(res, ({ collection }) => {
+        setArchive(collection[0]);
+        setBookmarked(null);
+        setLoading(false);
+        isBookmarked();
+      }, () => {
+        setBookmarked(null);
+        setLoading(false);
+        isBookmarked();
+      });
+    });
+  };
+
+  const handleBookmarkClick = async () => {
+    if (loading) return;
+    if (bookmark) {
+      deleteStc();
+    } else {
+      onBookmarkPage();
+    }
+  };
+
+  const copyShareLink = () => {
+    openDialog({ ...dialog, isOpen: false });
+    sendGAEvent("story_share_copy_link", { story_id: page.id, source: getShareSource() });
     navigator.clipboard.writeText(Enviroment.domain + Paths.page.createRoute(page.id)).then(() => {
       setSuccess("Ready to share");
     });
   };
 
-
-
-     const deleteStc = () => {
- setLoading(true);
-      dispatch(deleteStoryFromCollection({ stId: localBookmark.id })).then((res) => {
-        checkResult(
-          res,
-          ({ collection }) => {
-            setArchive(collection[0]);
-            setBookmarked(null);
-            setLocalBookmark(null)
-            setLoading(false)
-            isBookmarked();
-     
-          },
-          () => {
-            // setBookmarked(null);
-            setBookmarked(null);
-            setLocalBookmark(null)
-            setLoading(false)
-            isBookmarked();
-          }
-        );
-      });
-    
-  };
-  useEffect(() => {
- 
-        isBookmarked();
-
-  }, [archive,currentProfile]);
-  const isBookmarked = () => {
-    if (currentProfile&&archive) {
-        let bookmark = archive.storyIdList.find((stc) => stc.storyId == page.id);
-        setBookmarked(bookmark);
-        setLocalBookmark(bookmark)
-        setLoading(false)
-    }else{
-       setLoading(false)
-       setLocalBookmark(false)
-    }
-  };
-    const getArchive = () => {
-    if (currentProfile && currentProfile.profileToCollections) {
-      
-      let ptc = currentProfile.profileToCollections.find((ptc) => ptc.type === "archive");
-
-      setArchive(ptc.collection);
-    }
-  };
-
-  useEffect(() => {
-    getArchive();
-  }, [currentProfile]);
-const handleBookmarkClick = async () => {
-  if (loadingBookmarkId) return;
-
-  setLoadingBookmarkId(true);
-
-  try {
-    if (localBookmark) {
-      deleteStc(); // parent dispatch
-    } else {
-      onBookmarkPage(); // parent dispatch
-    }
-  } finally {
-    setLoadingBookmarkId(false);
-  }
-};
-
-
-  // const handleLocalBookmark = async (e) => {
-  //   e.preventDefault();
-  //  
-  // };
+  const LI = "py-3 border-b  bg-cream dark:bg-base-bgDark";
+  const TEXT = "text-[1rem] text-soft  bg-cream dark:bg-base-bgDark dark:text-cream px-4";
 
   return (
-    <div className="flex flex-col overflow-hidden">
-      <li className=" border-b">
-        <div
-        className="bg-cream py-3"
-          onClick={async () => {
-            
-            if (profile && (await Preferences.get({ key: "token" })).value) {
-              sendGAEvent("story_add_to_collection_click", {
-  story_id: page.id,
-  source: getShareSource(),
-});
+    <div className="flex flex-col  bg-cream dark:bg-base-bgDark overflow-hidden">
 
-            router.push  (Paths.addStoryToCollection.story(page.id));
+      <li className={LI}>
+        <div
+          className="py-3 "
+          onClick={async () => {
+            resetDialog();
+            if (profile && (await Preferences.get({ key: "token" })).value) {
+              sendGAEvent("story_add_to_collection_click", { story_id: page.id, source: getShareSource() });
+              router.push(Paths.addStoryToCollection.story(page.id));
             } else {
               setError("Please Sign Up");
             }
-            openDialog({ ...dialog, isOpen: false })
           }}
         >
-          <IonText className="text-[1rem] px-4">Add to Collection</IonText>
+          <h5 className={TEXT}>Add to Collection</h5>
         </div>
       </li>
 
-      {canUserEdit && (
-        <li className="py-3 border-b bg-cream">
+      {canEdit && (
+        <li className={LI}>
           <div
+            className="py-3"
             onClick={() => {
-              sendGAEvent("story_edit_open", {
-  story_id: page.id,
-  source: getShareSource(),
-});
-              openDialog({ ...dialog, isOpen: false })
-              router.push(Paths.editPage.createRoute(page.id));
-        
-     
+              sendGAEvent("story_edit_open", { story_id: page.id, source: getShareSource() });
+              openDialog({ ...dialog, isOpen: false });
+              router.push(Paths.editPage.createRoute(page.id,page.type));
             }}
-       
           >
-            <IonText className="text-[1rem] px-4 ">Edit</IonText>
+            <h5 className={TEXT}>Edit</h5>
           </div>
         </li>
       )}
 
-      <li className="py-3 border-b bg-cream">
-        <div onClick={copyShareLink}>
-          <IonText className="text-[1rem] px-4">Copy Share Link</IonText>
+      <li className={LI}>
+        <div className="py-3" onClick={copyShareLink}>
+          <h5 className={TEXT}>Copy Share Link</h5>
         </div>
       </li>
 
-      <li  onClick={(e) => {
-            currentProfile ? handleBookmarkClick(e) : setError("Please Sign In");
-          }} className="py-3 border-b bg-cream">
-        <div
-         
-        >
-        {currentProfile && (
-  <div className="text-left w-full px-4">
-{currentProfile && (
-  <div className="text-left w-full px-4">
-    {loadingBookmarkId === page.id ? (
-      <IonImg
-        src={loadingGif}
-        className="mx-auto max-h-10 max-w-10"
-        alt="Saving bookmark"
-      />
-    ) : (
-      <IonImg
-        src={localBookmark ? bookmarkFill : bookmarkadd}
-        className="max-h-10 max-w-10"
-        alt={localBookmark ? "Remove bookmark" : "Add bookmark"}
-      />
-    )}
-  </div>
-)}
-
-  </div>
-)}
-
+      <li
+        className={LI}
+        onClick={() => currentProfile ? handleBookmarkClick() : setError("Please Sign In")}
+      >
+        <div className="py-3 flex items-center gap-2 px-4">
+          <img src={bookmark ? bookmarkFill : bookmarkadd} className="w-5 h-5" alt="bookmark" />
+          <IonText className={TEXT}>
+            {loading ? "..." : bookmark ? "Remove Bookmark" : "Bookmark"}
+          </IonText>
         </div>
       </li>
+
     </div>
   );
 }

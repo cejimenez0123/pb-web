@@ -1,588 +1,205 @@
+
 import React, {
   useState,
   useEffect,
-  useLayoutEffect,
   useMemo,
   useCallback,
   useContext,
 } from 'react';
 import {
-  IonModal,
-  IonText,
-  IonHeader,
-  IonToolbar,
   IonList,
-  IonGrid,
   IonRow,
-  IonItem,
-  IonLabel,
   useIonRouter,
-  IonTitle,
   IonSearchbar,
   IonContent,
 } from '@ionic/react';
 import { useSelector, useDispatch } from 'react-redux';
-import {
-  searchMultipleIndexes,
-  searchDialogToggle,
-} from '../actions/UserActions';
-import { getMyCollections, getPublicCollections } from '../actions/CollectionActions';
-import { getMyStories } from '../actions/StoryActions';
-import { getPublicStories } from '../actions/PageActions';
+import { searchMultipleIndexes } from '../actions/UserActions';
 import checkResult from '../core/checkResult';
 import Context from '../context';
+import getBackground from '../core/getbackground';
+import Enviroment from '../core/Enviroment';
+import { ErrorBoundary } from '@sentry/react';
+
+// ── Tokens ───────────────────────────────
+const T = {
+  wrap:        "max-w-2xl sm:max-w-[100%] mx-auto px-4 bg-cream dark:bg-base-bgDark ",
+  surface:     " page-content",
+  card:        "bg-cream dark:bg-base-bgDark shadow-sm",
+  header:      "flex items-center gap-3 px-4 pt-12 pb-2",
+  searchWrap:  "flex-1 bg-base-bg dark:bg-base-surfaceDark rounded-full px-2",
+  logo:        "text-text-brand dark:text-cream text-xl font-semibold pr-1",
+  filterRow:   "flex flex-wrap gap-2 px-4 py-3",
+  filterBase:  "px-3 py-1.5 rounded-full text-xs border transition-all duration-150 cursor-pointer",
+  filterOn:    "bg-soft text-white border-soft border-2 dark:bg-base-surfaceDark dark:text-cream",
+  filterOff:   "bg-base-bg dark:bg-base-surfaceDark text-text-secondary dark:text-cream border border-soft",
+  list:        "divide-y divide-border-soft ",
+  listItem:    "py-3 px-4 flex items-center justify-between rounded-lg transition hover:bg-base-bg dark:hover:bg-base-surfaceDark cursor-pointer",
+  itemTitle:   "text-sm text-text-primary dark:text-cream",
+  empty:       "py-16 text-center text-xs text-text-secondary dark:text-cream/50",
+};
 
 const SearchDialog = ({ presentingElement }) => {
   const dispatch = useDispatch();
   const router = useIonRouter();
 
   const currentProfile = useSelector(state => state.users.currentProfile);
-  const collectionsFromStore = useSelector(
-    state => state.books.collections ?? []
-  );
-  const storiesFromStore = useSelector(
-    state => state.pages.pagesInView ?? []
-  );
-  const {isPhone}=useContext(Context)
+  const collectionsFromStore = useSelector(state => state.books.collections ?? []);
+  const storiesFromStore = useSelector(state => state.pages.pagesInView ?? []);
+
   const [selectedFilters, setSelectedFilters] = useState([]);
   const [searchText, setSearchText] = useState('');
   const [searchContent, setSearchContent] = useState([]);
 
- 
-  const personalCols = useMemo(
-    () =>
-      collectionsFromStore
-        .filter(col => !!col)
-        .map(col => ({
-          item: { ...col },
-          objectID: col.id,
-          type: 'collection'
-        })),
+  const personalCols = useMemo(() =>
+    collectionsFromStore.filter(Boolean).map(col => ({
+      item: { ...col }, objectID: col.id, type: 'collection',
+    })),
     [collectionsFromStore]
   );
 
-  const personalStories = useMemo(
-    () =>
-      storiesFromStore.map(story => ({
-        item: { ...story },
-        objectID: story.id,
-        type: 'story' 
-      })),
+  const personalStories = useMemo(() =>
+    storiesFromStore.map(story => ({
+      item: { ...story }, objectID: story.id, type: 'story',
+    })),
     [storiesFromStore]
   );
 
-  // Filters list
   const filters = useMemo(() => {
-    const includeTypes = {
-      cols: 'collection',
-      stories: 'story',
-      profiles: 'profile',
-      hashtags: 'hashtag',
-    };
-    const base = [
-      includeTypes.profiles,
-      includeTypes.hashtags,
-      includeTypes.cols,
-      includeTypes.stories,
-    ];
+    const base = ['collection', 'story', 'profile', 'hashtag'];
     return currentProfile ? ['personal', ...base] : base;
   }, [currentProfile]);
 
-  // Load initial collections/stories depending on auth
-  useLayoutEffect(() => {
-    if (currentProfile) {
-      dispatch(getMyCollections());
-      dispatch(getMyStories());
-    } else {
-      dispatch(getPublicStories());
-      dispatch(getPublicCollections());
-    }
-  }, [currentProfile, dispatch]);
-
-  // Helper: local text filter
-  const searchList = useCallback((searchQ, list) => {
-    const q = searchQ.toLowerCase();
-    return list.filter(content => {
-      const item = content.item || {};
-      const titleMatch =
-        item?.title && item?.title.toLowerCase().includes(q);
-      const usernameMatch =
-        item?.username && item?.username.toLowerCase().includes(q);
-      const nameMatch =
-        item?.name && item?.name.toLowerCase().includes(q);
-      return !!(titleMatch || usernameMatch || nameMatch);
-    });
+  const searchList = useCallback((q, list) => {
+    const lower = q.toLowerCase();
+    return list.filter(({ item = {} }) =>
+      item.title?.toLowerCase().includes(lower) ||
+      item.username?.toLowerCase().includes(lower) ||
+      item.name?.toLowerCase().includes(lower)
+    );
   }, []);
-// useEffect(()=>{
-//     const payload = {
-//       query: "",
-//       filters: selectedFilters,
-//       profileId: currentProfile ? currentProfile.id : null,
-//     };
-//  dispatch(searchMultipleIndexes(payload)).then(result => {
-//       checkResult(
-//         result,
-//         returned => {
-//           const { results } = returned;
-//           const list =
-//             (results ?? []).map(item => ({
-//               item,
-//               objectID: item.objectID,
-//               type: item.type,
-//             })) || [];
-//           setSearchContent(list);
-//         },
-//         err => console.error('Search Error:', err?.message)
-//       );
-//     });
-// },[])
-  // Remote search action (Algolia or similar)
-  // const searchAction = useCallback(() => {
-  //    const trimmed = searchText.trim();
 
-  // // personal search is LOCAL — don't return early
-  // if (selectedFilters.includes('personal')) return;
-
-  // if (!trimmed) {
-  //   setSearchContent([]); // ← reset so memo recomputes
-  //   return;
-  // }
-
-  //   const payload = {
-  //     query: trimmed,
-  //     filters: selectedFilters,
-  //     profileId: currentProfile ? currentProfile.id : null,
-  //   };
-
-  //   dispatch(searchMultipleIndexes(payload)).then(result => {
-  //     checkResult(
-  //       result,
-  //       returned => {
-  //         const { results } = returned;
-  //         const list =
-  //           (results ?? []).map(item => ({
-  //             item,
-  //             objectID: item.id,
-  //             type: item.type,
-  //           })) || [];
-  //         setSearchContent(list);
-  //       },
-  //       err => console.error('Search Error:', err?.message)
-  //     );
-  //   });
-  // }, [searchText, selectedFilters, currentProfile]);
-const searchAction = useCallback(() => {
-  const trimmed = searchText.trim();
-
-  // personal search is LOCAL — don't return early
-  if (selectedFilters.includes('personal')) return;
-
-  
-  dispatch(searchMultipleIndexes({
-    query: trimmed,
-    filters: selectedFilters,
-    profileId: currentProfile?.id ?? null,
-  })).then(result => {
-    checkResult(result, returned => {
-      setSearchContent(
-        (returned.results ?? []).map(item => ({
-          item,
-          objectID: item.objectID ?? item.id,
-          type: item.type,
-        }))
-      );
+  const searchAction = useCallback(() => {
+    if (selectedFilters.includes('personal')) return;
+    dispatch(searchMultipleIndexes({
+      query: searchText.trim(),
+      filters: selectedFilters,
+      profileId: currentProfile?.id ?? null,
+    })).then(result => {
+      checkResult(result, returned => {
+        setSearchContent(
+          (returned.results ?? []).map(item => ({
+            item,
+            objectID: item.objectID ?? item.id,
+            type: item.type,
+          }))
+        );
+      });
     });
-  });
-}, [searchText, selectedFilters, currentProfile]);
+  }, [searchText, selectedFilters, currentProfile]);
 
-  // Trigger remote search when search text or filters change
+  useEffect(() => {
+    if (!searchText.trim()) return;
+    searchAction();
+  }, [searchText, searchAction]);
+
   useEffect(() => {
     searchAction();
-  }, []);
+  }, [selectedFilters]);
 
-  // Derived filtered content (memoized)
   const filteredContent = useMemo(() => {
     const isPersonal = selectedFilters.includes('personal');
-    const inCol = selectedFilters.includes('collection');
+    const inCol   = selectedFilters.includes('collection');
     const inStory = selectedFilters.includes('story');
 
-    // Personal: only use local data
     if (isPersonal) {
-      if (inCol && !inStory) {
-        return searchList(searchText, personalCols);
-      }
-      if (inStory && !inCol) {
-        return searchList(searchText, personalStories);
-      }
-      // Both or none specified -> search across both
-      return searchList(searchText, [...personalStories, ...personalCols]);
+      const pool =
+        inCol && !inStory ? personalCols :
+        inStory && !inCol ? personalStories :
+        [...personalStories, ...personalCols];
+      return searchList(searchText, pool);
     }
 
-    // Non-personal: start from remote results, filter by type
-    const list =
-      searchContent?.filter(content => {
-        const hasItem = !!content.item;
-        const passesTypeFilter =
-          selectedFilters.length === 0 ||
-          selectedFilters.includes(content.type);
-        return hasItem && passesTypeFilter;
-      }) ?? [];
-
-    // If there is a search text, also apply local text filtering on that set
-    if (searchText.trim()) {
-      return searchList(searchText, list);
-    }
-
-    return list;
-  }, [
-    selectedFilters,
-    searchText,
-    personalCols,
-    personalStories,
-    searchContent,
-    searchList,
-  ]);
-
-  const toggleFilters = (genre) => {
-    setSelectedFilters(prev =>
-      prev.includes(genre)
-        ? prev.filter(g => g !== genre)
-        : [...prev, genre]
+    const remote = searchContent.filter(content =>
+      !!content.item &&
+      (selectedFilters.length === 0 || selectedFilters.includes(content.type))
     );
-  };
+    return searchText.trim() ? searchList(searchText, remote) : remote;
+  }, [selectedFilters, searchText, personalCols, personalStories, searchContent, searchList]);
 
-  const handleOnClick = (searchItem) => {
-    console.log("Searchccs",searchItem)
-    router.push(`/${searchItem.type}/${searchItem.objectID}/view`);
-  };
-  useEffect(() => {
-  if (!searchText.trim()) return;
+  const toggleFilter = (genre) =>
+    setSelectedFilters(prev =>
+      prev.includes(genre) ? prev.filter(g => g !== genre) : [...prev, genre]
+    );
 
-  console.log("⌨️ typing triggered search:", searchText);
-  searchAction();
-}, [searchText, searchAction]);
-
+  const handleOnClick = (item) =>
+    router.push(`/${item.type}/${item.objectID}/view`);
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
   return (
-    <IonContent
-      fullscreen
-      scrollY={true}
-      className="ion-padding"
+    <IonContent fullscreen  className={T.surface}>
+      <ErrorBoundary>
+<div className='bg-cream dark:bg-base-bgDark max-w-2xl mx-auto overglow-y-auto   '>
+      {/* Header + Search */}
+      <div className={`${T.header} bg-cream dark:bg-base-bgDark ${T.surface}`}>
+        <div className={T.searchWrap}>
+          <IonSearchbar
+            value={searchText}
+            debounce={250}
+            className="rounded-full"
+            style={{
+              "color":prefersDark?Enviroment.palette.cream:Enviroment.palette.soft,
+              "--background": "transparent", "--box-shadow": "none" }}
+            onIonInput={e => setSearchText(e.target.value?.toLowerCase() ?? "")}
+            placeholder="Search"
+          />
+        </div>
+        <span className={T.logo}>Pb</span>
+      </div>
 
-      style={{'--padding-top':isPhone?"4em":"10em", '--background': '#f4f4e0' }}
-    >
-      <div className='flex flex-row'>
-       <IonSearchbar     value={searchText}
-       debounce={1000} onIonInput={(event) => {
-let query = '';
-      const target = event.target
-    if (target){
-       query = target.value.toLowerCase();
-         setSearchText(query)}}}/>
+      {/* Filters */}
+      <div className={`${T.filterRow}  ${T.surface}`}>
+        {filters.map((genre, i) => (
+          <div
+            key={genre ?? i}
+            onClick={() => toggleFilter(genre)}
+            className={`${T.filterBase} ${selectedFilters.includes(genre) ? T.filterOn : T.filterOff}`}
+          >
+            {genre}
+          </div>
+        ))}
+      </div>
 
- 
-
-       {/* }}></IonSearchbar>
-      <IonSearchbar
-        value={searchText}
-        onIonInput={(e) => {
-  console.log("🧠 IonInput value:", e.detail.data);
-  setSearchText(e.detail.data?? "");
-}} */}
-      {/* /> */}
-       <h6 className='my-auto text-emerald-700 text-[2rem]'>Pb</h6>
-</div>
-      <IonGrid>
-        <IonRow
-          className="ion-justify-content-start gap-x-2 gap-y-2 ion-align-items-center ion-padding-vertical"
-          style={{ '--background': '#f4f4e0' }}
-        >
-          {filters
-            .filter(filter => !!filter)
-            .map((genre, i) => {
-              const selected = selectedFilters.includes(genre);
-              return (
+      {/* Results */}
+      <div className='max-w-2xl  pb-36 dark:bg-base-bgDark bg-cream mx-auto'>
+      <div className={`${T.wrap} min-h-[100%] ${T.surface}`}>
+        <IonList className={T.card}>
+          <div className={T.list}>
+            {filteredContent.length ? (
+              filteredContent.map((content, i) => (
                 <div
-                  key={genre ?? i}
-                  className={`
-                    cursor-pointer 
-                    rounded-full 
-                    border 
-                    bg-cream
-                    border-emerald-500 
-                    py-1 px-4 
-                    text-center 
-                    transition-colors duration-300 
-                    ${
-                      selected
-                        ? 'bg-emerald-500 text-white'
-                        : 'bg-transparent text-emerald-600 hover:bg-emerald-200'
-                    }
-                  `}
-                  onClick={() => toggleFilters(genre)}
+                  key={content.objectID ?? i}
+                  className={T.listItem}
+                  onClick={() => handleOnClick(content)}
                 >
-                  <IonText className="open-sans-medium select-none">
-                    {genre}
-                  </IonText>
+                  <span className={T.itemTitle}>
+                    {content.item?.title || content.item?.username || content.item?.name || "Untitled"}
+                  </span>
                 </div>
-              );
-            })}
-        </IonRow>
-      </IonGrid>
-
-      <IonList
-        style={{
-          overflowY: 'scroll',
-          '--background': '#f4f4e0',
-        }}
-      >
-        {filteredContent?.length
-          ? filteredContent.map((content, i) => (
-              <IonItem
-                key={content.objectID ?? i}
-                style={{ '--background': '#f4f4e0' }}
-                onClick={() => handleOnClick(content)}
-              >
-                <IonText className="text-emerald-800">
-                  {content.item?.title ||
-                    content.item?.username ||
-                    content.item?.name ||
-                    'Untitled'}
-                </IonText>
-              </IonItem>
-            ))
-          : null}
-      </IonList>
+              ))
+            ) : (
+              <div className={T.empty}>
+                <p>No results</p>
+              </div>
+            )}
+          </div>
+        </IonList>
+        </div>
+      </div>
+</div>
+</ErrorBoundary>
     </IonContent>
   );
 };
 
 export default SearchDialog;
-
-// import { useState, useEffect, useLayoutEffect, } from 'react';
-// import {
-//   IonModal,
-//   IonText,
-//   IonHeader,
-//   IonToolbar,
-//   IonList,
-//   IonGrid,
-//   IonRow,
-//   IonItem,
-//   IonLabel,
-//   useIonRouter,
-//   IonTitle,
-//   IonSearchbar,
-//   IonContent,
-
-// } from '@ionic/react';
-// import { useMemo } from 'react';
-// import { searchMultipleIndexes } from '../actions/UserActions';
-// import { searchDialogToggle } from '../actions/UserActions';
-// import { useSelector, useDispatch } from 'react-redux';
-// import checkResult from '../core/checkResult';
-// import { useCallback } from 'react';
-// import { getMyCollections, getPublicCollections } from '../actions/CollectionActions';
-// import { getMyStories } from '../actions/StoryActions';
-// import { getPublicStories } from '../actions/PageActions';
-
-
-// const SearchDialog = ({ presentingElement }) => {
-
-
-
-
-//   const currentProfile = useSelector(state => state.users.currentProfile); // needed for "mine"
-//   const personalStories = useSelector(state=>state.pages.pagesInView??[]).map(story=>{return{item:{...story},objectID:story.id,type:"story"}})
-//   const personalCols = useSelector(state=>state.books.collections??[]).filter(col=>col).map(col=>{return{item:{...col},objectID:col.id,type:"collection"}})
-//       const [selectedFilters,setSelectedFilters]=useState([])
-//   const dispatch = useDispatch();
-// const router = useIonRouter()
-
-//   const [searchText, setSearchText] = useState('');
-//     const [searchContent, setSearchContent] = useState([])
-//      const [filteredContent, setFilteredContent] = useState()
-
-//   useEffect(()=>{
-
-//     setFilteredContent([...personalCols,...personalStories])
-//   },[searchContent])
-  
-//   useLayoutEffect(()=>{
-//     if(currentProfile){
-//     dispatch(getMyCollections())
-//     dispatch(getMyStories())
-//     }else{
-//       dispatch(getPublicStories())
-//       dispatch(getPublicCollections())
-      
-//     }
-
-//   },[currentProfile])
-//   useLayoutEffect(()=>{
-//     searchAction("")
-//   },[])
-//   const searchList=(searchQ,list)=>{
-//    return list.filter(content=>{
-//       return content.item && (content.item.title && content.item.title.toLowerCase().includes(searchQ.toLowerCase()))||
-//       (content.item.username && content.item.username.toLowerCase().includes(searchQ.toLowerCase()))||
-//       (content.item.name && content.item.name.toLowerCase().includes(searchQ.toLowerCase()))
-//     })
-//   }
-//   useEffect(()=>{
-//     let isPersonal = selectedFilters.includes("personal")
-//     let inCol = selectedFilters.includes("collection")
-//   let inStory = selectedFilters.includes("story") 
-//     if(!searchContent)return
- 
-//     if(isPersonal){
-//       console.log("PERSONAL SEARCH")
-    
-//       if(inCol){
-//       setFilteredContent(searchList(searchText,[...personalCols]))
-//           // setFilteredContent([...personalCols])
-//          return
-  
-//       }
-//        if(inStory){
-//         setFilteredContent(searchList(searchText,[...personalStories]))
-
-//       return
-//        }
-
-//        setFilteredContent(searchList(searchText,[...personalStories,...personalCols]))
-//       return
-       
-//     }
-
-//     let list = searchContent.filter(content=>{
-       
-//    return content.item && (selectedFilters.length==0 || selectedFilters.includes(content.type))})
-  
-  
-//    setFilteredContent(list)
- 
-    
-//   },[searchContent,selectedFilters,searchText])
-  
-//   const filters = useMemo(() => {
-//     const includeTypes = { cols: "collection", stories: "story", profiles: "profile", hashtags: "hashtag" };
-//     const base = [includeTypes.profiles, includeTypes.hashtags, includeTypes.cols, includeTypes.stories];
-//     return currentProfile ? ["personal", ...base] : base;
-//   }, [currentProfile]);
-
-// const searchAction = useCallback(() => {
-//     // PREVENT 400 ERROR: Don't search if text is empty
-//     if (!searchText.trim()||selectedFilters.includes("personal")) {
-     
-//       return;
-//     }
-
-//     const payload = {
-//       query: searchText,
-//       filters: selectedFilters,
-//       profileId: currentProfile ? currentProfile.id : null
-//     };
-
-//     dispatch(searchMultipleIndexes(payload)).then(result => {
-//       checkResult(
-//         result,
-//         returned => {
-
-//           const { results } = returned;
-//         let list = results.map(item=>{return{item,objectID:item.id,type:item.type}})
-
-//           setSearchContent(list);
-//         },
-//         err => console.error("Search Error:", err.message)
-//       );
-//     });
-//   }, [searchText, selectedFilters, currentProfile, dispatch, personalCols, personalStories]);
-//   useEffect(() => {
- 
-// searchAction()
-
-//   }, [searchText, selectedFilters]);
-
-
-
-//     const toggleFilters = (genre) => {
-//       // let newSelectedGenres;
-//       if (selectedFilters.includes(genre)) {
-//         setSelectedFilters(selectedFilters.filter(g => g !== genre))
-//       } else {
-//         setSelectedFilters([...selectedFilters, genre])
-//       }
-      
-//     };
-
-//   const handleOnClick = (searchItem) => {
-// console.log("CLICK ITEM",searchItem)
-// router.push(`/${searchItem.type}/${searchItem.objectID}/view`);
-//   };
-
-//   return (
-
-// <IonContent fullscreen scrollY={true}className='ion-padding' style={{"--background":"#f4f4e0"}}>
-//          <IonSearchbar
-         
-//          onIonInput={(e) =>setSearchText(e.target.value ?? '')}/>
-
-        
-//                         <IonGrid>
-//                           <IonRow className="ion-justify-content-start gap-x-2 gap-y-2 ion-align-items-center ion-padding-vertical" style={{ "--background":"#f4f4e0" }}>
-                        
-//       {filters.filter(filter=>filter).map((genre, i) => {
-//                   // const selected = selectedGenres.includes(genre);
-//                      const selected = selectedFilters.includes(genre);
-//                   return (
-//                     <div
-//                       key={i}
-//                       className={`
-//                         cursor-pointer 
-//                         rounded-full 
-//                         border 
-//                         bg-cream
-//                         border-emerald-500 
-//                         py-1 px-4 
-
-//                         text-center 
-//                         transition-colors duration-300 
-//                         ${selected ? 'bg-emerald-500 text-white' : 'bg-transparent text-emerald-600 hover:bg-emerald-200'}
-//                       `}
-                      
-//                       onClick={() => toggleFilters(genre)}
-//                     >
-//                       <IonText className="open-sans-medium select-none">{genre}</IonText>
-//                     </div>
-//                   );
-//                 })}
-
-//                 </IonRow>
-//                 </IonGrid>
-//     {/* </IonToolbar> */}
-    
-
-//       <IonList style={{ overflowY: "scroll","--background":"#f4f4e0",}}>
-
-//         {(filteredContent && filteredContent.length) ? filteredContent.map((content, i) => {
-
-
-//             return(<IonItem
-//               key={i}
-//               style={{"--background":"#f4f4e0" }}
-               
-//               onClick={() => handleOnClick(content)}
-//             >
-//               <IonText className="text-emerald-800">
-//                 {content.item.title || content.item.username || content.item.name || "Untitled"}
-//               </IonText>
-//             </IonItem>)}):null}
-
-//       </IonList>
-// </IonContent>
-
-//   );
-// };
-
-// export default SearchDialog;

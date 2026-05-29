@@ -20,7 +20,7 @@ class LikeRepo{
           let res =  await axios.post(this.url+"/story",{story,profile},{
                 headers:headers
             })
-            console.log(res.data)
+        
             return res.data
     }
     async storyDelete({id}){

@@ -1,16 +1,49 @@
 @import url("https://fonts.googleapis.com/css?family=Roboto:400,400i,700");
 @import url('https://fonts.googleapis.com/css2?family=Lora:wght@400..700&family=Montserrat:wght@500&family=Open+Sans:ital,wdth,wght@0,75..100,300..800;1,75..100,300..800&display=swap');
-
+@import url('https://fonts.cdnfonts.com/css/akzidenzgrotesk');
 .App{
 background-color: #f4f4e0!important;
   width: 100vw;
 
+}
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 .lora-medium{
   font-family: "Lora", serif;
   font-optical-sizing: auto;
   font-weight: 400;
   font-style: normal;
+}
+.azkin{ font-family: 'AkzidenzGrotesk', sans-serif;
+  }
+.responsive-dialog {
+  --width: 100%;
+  --max-width: 100%;
+  --height: 100%;
+  --border-radius: 16px;
+}
+.pt-safe {
+  padding-top: env(safe-area-inset-top);
+}
+
+@media (min-width: 640px) {
+  .responsive-dialog {
+    --width: 90%;
+    --max-width: 600px;
+    --height: 85%;
+    --border-radius: 20px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .responsive-dialog {
+    --width: 600px;
+    --height: 80%;
+  }
 }
 .lora-bold{
   font-family: "Lora", serif;
@@ -91,29 +124,15 @@ ion-textarea textarea {
   font-size: 0.8rem !important;
 }
 
-p,div,span,h6  {
-    font-family: -apple-system, BlinkMacSystemFont, sans-serif!important;
+p:not(.comment-popover *),
+div:not(.comment-popover):not(.annotation-container .comment-popover),
+span:not(.annotation-mark *),
+h6 {
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif !important;
 }
 
-/* .mont-medium {
-  font-family: "Montserrat", serif;
-  font-optical-sizing: auto;
-  font-weight: 500;
-  font-style: normal;
-}
-.mont-medium {
-  font-family: "Montserrat", serif;
-  font-optical-sizing: auto;
-  font-weight: 500;
-  font-style: normal;
-}
-.mont-bold {
-  font-family: "Montserrat", serif;
-  font-optical-sizing: auto;
-  font-weight: 700;
-  font-style: normal;
-} */
 
+                
 @media (min-width:768px) {
   
 
@@ -951,3 +970,107 @@ textarea.sc-ion-textarea {
   --checkmark-color: transparent; 
   --background-checked: var(--ion-color-success, green);
 } */
+
+/* ─── Annotation / inline comment ─────────────────────────────────────────── */
+
+/*
+  Ionic sets user-select: none on ion-content and all children.
+  These rules force text selection back on inside annotated content.
+*/
+/* ─── Add these to the bottom of App.css ──────────────────────────────────── */
+
+/* 
+  Ionic 6/7 exposes the scroll element as a CSS part.
+  This is the most reliable way to re-enable text selection.
+*/
+
+
+/* The annotation container itself — redundant but explicit */
+.annotation-container,
+.annotation-container * {
+  -webkit-user-select: text !important;
+  user-select: text !important;
+  -webkit-touch-callout: default !important; /* iOS: show copy menu */
+  touch-action: auto !important;
+}
+/* Annotation mark pulse — fires when user clicks quote in popover */
+@keyframes annotation-pulse {
+  0%   { background: #a7f3d0cc; }
+  30%  { background: #10b981cc; }
+  70%  { background: #10b981cc; }
+  100% { background: #a7f3d0cc; }
+}
+
+.annotation-mark--pulse {
+  animation: annotation-pulse 1.5s ease-in-out;
+  border-radius: 2px;
+}
+
+.list-bottom-padding::part(scroll) {
+   --background:#f4f4e0;
+  padding-bottom: 12rem;
+}
+.list-bottom-padding{
+   --background: #f4f4e0;
+  padding-bottom: 12rem;
+}
+ ion-content .inner-scroll {
+    --background: #f4f4e0;
+}
+* ion-content {
+
+  --background: #f4f4e0;
+  }
+#background-content{
+  --background: #f4f4e0;
+}
+
+ion-content.page-content {
+  --background: #f4f4e0;
+}
+.editor-content {
+  color: #1c1f1a;;
+}
+
+
+@media (prefers-color-scheme: dark) {
+  ion-content.page-content {
+    --background: #1c1f1a;
+  }
+  .dark .editor-content,
+.dark .editor-content * {
+  color: #f4f4e0 !important;
+}
+}
+
+ion-content.page-content::part(scroll) {
+  padding-bottom: 12em;
+}
+@media (prefers-color-scheme: dark) {
+  #background-content{
+   --background:#1c1f1a;
+}
+  ion-content .inner-scroll {
+     --background: #1c1f1a;
+}
+.list-bottom-padding{
+  --background: #1c1f1a;
+  padding-bottom: 12rem;
+}
+.list-bottom-padding::part(scroll) {
+       --background:#1c1f1a;
+  padding-bottom: 12rem;
+}
+ion-content {
+
+  background-color: #1c1f1a;
+  overflow-y: scroll;
+}
+}
+
+
+
+ion-content::part(scroll) {
+ 
+    padding-bottom: 18em;
+}

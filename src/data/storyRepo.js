@@ -6,9 +6,7 @@ import { Preferences } from "@capacitor/preferences";
 
 class StoryRepo{
     headers= {
-        'Access-Control-Allow-Origin': "*",
-         "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept"
-    }
+          }
     url= Enviroment.url+"/story"
     
   async getAuthHeaders() {
@@ -18,26 +16,46 @@ class StoryRepo{
       Authorization: `Bearer ${value}`,
     };
   }
-    async getPublicStories(){
-        let res = await  axios.get(this.url+"/",{headers:{'Access-Control-Allow-Origin': "*",
-        "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept"}})
-        return res.data
+  
+    async getPublicStories({ skip = 0, take = 20 } = {}) {
+  const res = await axios.get(this.url + "/", {
+    params: {
+      skip,
+      take,
+    },
+  });
 
-    }
-    async getPublicProfileStories({profileId}){
-   
-        let res = await axios.get(this.url+"/profile/"+profileId+"/public")
+  return res.data;
+}
+
+        async getPrompts(){
+   try{
+        let res = await axios.get(this.url+"/prompts")
         
         return res.data
+   }catch(err){
+
+ return {error:err}
+   }
+             
     }
-    async getProtectedProfileStories({profileId}){
-        let headers = await this.getAuthHeaders()
-        let res = await axios.get(this.url+"/profile/"+profileId+"/protected",{
-            headers:headers
-        })
-  
-        return res.data
+    async getProtectedProfileStories({ profileId, skip = 0, take = 20 } = {}) {
+  const headers = await this.getAuthHeaders();
+
+  const res = await axios.get(
+    this.url + `/profile/${profileId}/protected`,
+    {
+      headers: { ...headers },
+      params: {
+        skip,
+        take,
+      },
     }
+  );
+
+  return res.data;
+}
+
     async recommendations(){
            let headers = await this.getAuthHeaders()
         let res = await axios.get(this.url+"/recommendations",{headers
@@ -49,9 +67,9 @@ class StoryRepo{
     async getStoryProtected({id}){
          let headers = await this.getAuthHeaders()
         let res = await axios.get(this.url+"/"+id+"/protected",{
-            headers:headers
+            headers
         })
-       
+
         return res.data
     }
     async getStoryPublic({id}){
@@ -59,15 +77,28 @@ class StoryRepo{
       
         return res.data
     }
-    async getMyStories(){
-         let headers =await this.getAuthHeaders()
-   
-        let res = await axios.get(this.url+"/profile/protected/",{
-            headers:headers
-        })
-     
-        return res.data
-    }
+
+     async getMyStories({ skip = 0,status, take = 50 ,search=""} = {}) {
+  try {
+    const headers = await this.getAuthHeaders();
+    const res = await axios.get(
+      Enviroment.url + "/story/profile/protected",
+      {
+      headers:headers,
+        params: { status, skip, take,search}, 
+      }
+    );
+
+  
+
+    return res.data;
+  } catch (e) {
+    console.error("getMyStories failed:", e);
+    throw e;
+  }
+}
+    
+
     async getPublicProfileStories({profileId}){
         let res = await axios.get(this.url+"/profile/"+profileId+"/public")
         return res.data
@@ -97,14 +128,19 @@ class StoryRepo{
             description,
             approvalScore,
             title,
+            status,
             needsFeedback,
             commentable,
             type
            }=params
+         
              let headers = await this.getAuthHeaders()
        const res = await axios.put(this.url+"/"+id,{
+        ...params,
             data: data,
             isPrivate:isPrivate,
+            page:page,
+            status,
             description,
             needsFeedback,
             approvalScore:approvalScore,

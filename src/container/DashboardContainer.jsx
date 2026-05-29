@@ -1,181 +1,606 @@
-import React, { useState, useLayoutEffect, useContext,useEffect } from 'react';
+import React, { useState,useEffect, useRef } from 'react';
 import '../App.css';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchRecommendedStories } from '../actions/StoryActions';
+import { createStory, getMyStories } from '../actions/StoryActions';
 import ExploreList from '../components/collection/ExploreList.jsx';
-import { fetchCollectionProtected, getPublicCollections, getRecommendedCollectionsProfile, setCollections } from '../actions/CollectionActions';
-import { appendToPagesInView, setPagesInView } from '../actions/PageActions';
-import Context from '../context.jsx';
+import arrowToRight from '../images/icons/arrowToRight.svg'
 import checkResult from '../core/checkResult.js';
 import ErrorBoundary from '../ErrorBoundary.jsx';
-import { initGA } from '../core/ga4.js';
-import ListView from '../components/page/ListView.jsx';
-import Enviroment from '../core/Enviroment.js';
-import {IonText, IonItem, useIonRouter} from '@ionic/react';
-import BookListItem from '../components/BookListItem.jsx';
-function DashboardContainer() {
+import {IonText, useIonRouter, } from '@ionic/react';
+import { fetchYourWorkshops } from '../actions/WorkshopActions.jsx';
 
+import { PageType } from '../core/constants.js';
+import Paths from '../core/paths.js';
+import debounce from '../core/debounce.js';
+import { sendGAEvent } from '../core/ga4.js';
+import { setPageInView } from '../actions/PageActions.jsx';
+import { useDialog } from '../domain/usecases/useDialog.jsx';
+import CreateCollectionForm from '../components/collection/CreateCollectionForm.jsx';
+import { getMyCollections, getRecommendedCollectionsProfile } from '../actions/CollectionActions.js';
+import StoryDashboardItem from '../components/StoryDashboardItem.jsx';
+import SectionHeader from '../components/SectionHeader.jsx';
+import { useResponsiveGrid } from '../core/ResponsiveGrid.jsx';
+import usePaginatedResource from '../core/usePaginatedResource.jsx';
+import PaginatedList from '../components/page/PaginatedList.jsx';
+import shortName from '../core/shortName.jsx';
+import ListPill from '../components/page/ListPill.jsx';
+import WorkshopItem from '../components/page/WorkshopItem.jsx';
+import { useMediaQuery } from 'react-responsive';
+import { useAlert } from '../core/useAlert.jsx';
+import AlertType from '../core/AlertType.js';
+
+function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex = 0, role = "button" }) {
+  return (
+    <span
+      role={role}
+      tabIndex={tabIndex}
+      onClick={onClick}
+      onKeyDown={e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onClick();
+        }
+      }}
+      className={`rounded-full flex btn items-center justify-center ${className}`}
+      style={style}
+    >
+      {children}
+    </span>
+  );
+}
+const WRAP = "max-w-2xl mx-auto dark:bg-base-bgDark bg-base-surface ";
+const SECTION_GAP = "dark:bg-base-bgDark bg-base-surface ";  // applied to each section's root div
+const SECTION_HEADING = "text-xl lora-medium";          // text style only
+const SECTION_HEADER_ROW = "flex mt-6 mb-2 items-center flex-row justify-between px-4"; // row layout
+const LIST_WRAP = "flex flex-col gap-4";  // Saves
+
+const TILE = "w-36 md:w-44 flex-shrink-0";
+const ACTION_ROW = "flex flex-col items-center gap-4 w-full";
+function DashboardEmbed() {
+
+  const isMobile  = useMediaQuery({ query: "(max-width: 480px)" });        // phones portrait
+const isTablet  = useMediaQuery({ query: "(min-width: 481px) and (max-width: 1199px)" }); // tablets + phone landscape
+const isDesktop = useMediaQuery({ query: "(min-width: 1200px)" });        // desktop + iPad landscape
+
+const pageSize = isMobile? 7:isTablet||isDesktop?12:8
   const currentProfile = useSelector(state=>state.users.currentProfile)
-  const { setSeo, seo ,isNotPhone} = useContext(Context);
+
   const router = useIonRouter()
   const dispatch = useDispatch();
-   const collections = [...(useSelector(state => state.books.collections) ?? [])]
-  .sort((a, b) => new Date(b.updated) - new Date(a.updated));
-  const recommendedCols= useSelector(state => state.books.recommendedCols);
-  const stories = useSelector(state => state.pages.pagesInView ?? []);
-  const recommendedStories = useSelector(state => state.pages.recommendedStories ?? []);
-
-  const [hasMore, setHasMore] = useState(false);
-  useEffect(()=>{
-    if(currentProfile){
-      dispatch(getRecommendedCollectionsProfile())
-      dispatch(getPublicCollections({type:"feedback"})).then(res=>{
-        checkResult(res,payload=>{
-          if(currentProfile && currentProfile.rolesToCollection && currentProfile.rolesToCollection.length){
-          let feedbackCols = currentProfile.rolesToCollection.map(col=>col.collection).filter(col=>col.type=="feedback")
-
-      dispatch(setCollections({collections:feedbackCols}))
-          }
-        },err=>{
-
-        })
-      })
-      
-    }
-},[currentProfile,router])
-const libraryForums = () => {
-  if (!collections) return null;
-
-  return (
-    <div className="">
-      <IonText
-        className={`text-emerald-900 ${
-          isNotPhone ? 'ml-16 pl-6' : 'ml-16'
-        } mb-4 lora-bold font-extrabold text-2xl`}
-      >
-        Offer Your Insight
-      </IonText>
-
-      {/* Horizontal scroll area */}
-      <div className="mb-4">
-        <div className="flex flex-row overflow-x-auto overflow-y-clip h-[14rem] space-x-4 px-4 no-scrollbar">
-          {collections.map((library) => (
-            <IonItem
-              key={library.id}
-              className=" flex-shrink-0 border-none bg-transparent"
-            >
-              <BookListItem book={library} />
-            </IonItem>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-};
-  useLayoutEffect(() => {
-  
+  const { showAlert } = useAlert();
  
-  }, []);
 
-  const getContent = () => {
-    dispatch(fetchRecommendedStories());
-    dispatch(getRecommendedCollectionsProfile());
-  };
+const { columns, rows } = useResponsiveGrid();
+const visibleCount = columns * rows;
 
-  const getHomeCollectionContent = () => {
+  
+  const [workshop,setWorkshop]=useState(null)
+  const [saves,setSaved]=useState([])
 
-    if (currentProfile && currentProfile?.profileToCollections) {
-      let ptc = currentProfile.profileToCollections.find(ptc => ptc.type === 'home');
-      if (ptc) {
-        dispatch(fetchCollectionProtected({ id: ptc.collectionId })).then(res => {
-          checkResult(
-            res,
-            payload => {
-              if (payload.collection) {
-                const { collection } = payload;
-                let pages = [];
-                if (collection.storyIdList) {
-                  pages = collection.storyIdList.map(stc => stc.story);
-                }
-                if (collection.childCollections) {
-                  let contentArr = [];
-                  for (let i = 0; i < collection.childCollections.length; i++) {
-                    if (collection.childCollections[i]) {
-                      let col = collection.childCollections[i].childCollection;
-                      if (col?.storyIdList) {
-                        contentArr = [...contentArr, ...col.storyIdList];
-                      }
-                    }
-                  }
-                  const sorted = [...pages, ...contentArr]
-                    .sort((a, b) => a.updated && b.updated && b.updated > a.updated)
-                    .map(stc => stc.story);
-                  dispatch(appendToPagesInView({ pages: sorted }));
-                }
-              }
-            },
-            err => {
-              // handle error if needed
-            }
-          );
-        });
-      }
+
+     const [homeCol,setHomeCol]=useState(null)
+    const [archiveCol,setArchiveCol]=useState(null)
+    
+const personalStories = usePaginatedResource({
+  cacheKey: "stories",
+  fetcher: getMyStories,
+  pageSize,
+  enabled: !!currentProfile?.id,
+  select: (res) => ({
+    items: res.pageList,
+    totalCount: res.totalCount,
+  }),
+});
+const recCols = usePaginatedResource({
+  cacheKey: "recommended-collections",
+  fetcher: getRecommendedCollectionsProfile,
+  pageSize,
+  enabled: !!currentProfile?.id,
+  select: (res) => ({
+    items: res.collections,
+    totalCount: res.totalCount,
+  }),
+});
+const myStories = personalStories.items
+const personalCollections = usePaginatedResource({
+  cacheKey: "collections",
+  fetcher: getMyCollections,
+  pageSize,
+  enabled: !!currentProfile?.id,
+  select: (res) => ({
+    items: res.collections,
+    totalCount: res.totalCount,
+  }),
+});
+const [results,setResults]=useState(personalCollections.items)
+ const myCollections = personalCollections.items
+
+useEffect(()=>{
+ fetchWorkshops()
+},[])
+// inside your dialog state
+
+useEffect(() => {
+  try {
+
+    if (results?.length > 0) {
+      const group = results[0];
+ 
+      const stories = group.storyIdList?.filter(a => a?.story?.type === PageType.text)
+        .sort((a, b) => a?.story?.updated - b?.story?.updated)
+      
+      setWorkshop({ group, story:stories[0]});
+     
     }
+  } catch (err) {
+    showAlert({ message: "Error loading workshops", type: AlertType.error });
+  }
+
+  
+}, [results]);
+
+    const {openDialog,closeDialog,resetDialog}=useDialog()
+const openPages = () => {
+
+
+  openDialog({
+  title: "Pages",
+  height: 94,
+  disagree:closeDialog,
+  text: (
+    <div>
+   <PaginatedList
+   
+  cacheKey="stories"
+  fetcher={getMyStories}
+  pageSize={pageSize}
+
+  enableInternalSearch={true}
+  renderItem={(story) => (
+        <div
+          key={story.id}
+          onClick={() => {
+            router.push(Paths.page.createRoute(story?.id));
+            resetDialog();
+          }}
+          className="p-4 border border-blue dark:text-cream border-1 rounded-xl"
+        >
+          {shortName(story?.title,40) || "Untitled"}
+        </div>
+      )}
+    />  </div>
+  )})}
+
+  const openCollections = () => {
+  openDialog({
+  title: "Collections",
+  height: 94,
+  disagree:closeDialog,
+  text: (
+    <PaginatedList
+      cacheKey="collections"
+      fetcher={getMyCollections}
+      pageSize={pageSize}
+      loadingState={true}
+      enableInternalSearch={true}
+      renderItem={(col) => (
+          <div
+          ket={col.id}
+            onClick={() => {
+              router.push(Paths.collection.createRoute(col.id));
+              resetDialog();
+            }}
+            className="p-4 border text-soft dark:text-cream dark:bg-transparent border-purple rounded-xl"
+          >
+            {col.title || "Untitled"}
+          </div>
+        )}
+     
+    
+    />
+  )})}
+
+const openYourWorkshops = () => {
+  
+
+  openDialog({
+    title: "Communities",
+    scrollY: false,
+    breakpoint: 1,
+    height: 90,
+    disagree:closeDialog,
+    text: (
+      <PaginatedList
+       cacheKey="collections:type=library"
+        fetcher={getMyCollections}
+        enableInternalSearch={true}
+        pageSize={pageSize}
+        params={{ type: "feedback" }} // ✅ THIS NOW WORKS
+        renderItem={(c) => (
+          <ListPill item={c} onClick={()=>router.push(Paths.collection.createRoute(c.id))}/>
+     
+        )}
+      />
+    ),
+  });
+};
+
+const openCommunities = () => {
+  openDialog({
+    title: "Communities",
+    scrollY: false,
+    breakpoint: 1,
+    height: 90,
+    disagree: closeDialog,
+    text: (
+      <PaginatedList
+       cacheKey="collections:type=library"
+        fetcher={getMyCollections}
+        pageSize={pageSize}
+        enableInternalSearch={true}
+        params={{ type: "library" }} // ✅ THIS NOW WORKS
+        renderItem={(story) => (
+          <div
+            onClick={() => {
+              router.push(Paths.collection.createRoute(story.id));
+              resetDialog();
+            }}
+            className="p-4 border border-purple rounded-xl"
+          >
+            <h4 className="text-[.9rem]">
+              {story.title || "Untitled"}
+            </h4>
+          </div>
+        )}
+      />
+    ),
+  });
+};
+              useEffect(() => {
+            fetchWorkshops()
+                if (currentProfile?.profileToCollections) {
+                  let home = currentProfile.profileToCollections.find(pTc => pTc.type === "home")?.collection || null;
+            
+                  setHomeCol(home);
+                
+                  let archive = currentProfile.profileToCollections.find(pTc => pTc.type === "archive")?.collection || null;
+                  setArchiveCol(archive);
+                }
+     
+              }, [currentProfile]);
+           
+              
+  const fetchWorkshops = async () => {
+    if (!currentProfile) return;
+    try {
+      dispatch(fetchYourWorkshops()).then(res=>{
+      checkResult(res, ({ groups }) => {
+      
+    
+        setResults(groups||[])
+      })})
+    } catch (err) {
+      console.error("Failed fetching workshops:", err);
+    }}
+    const ClickWriteAStory = debounce(() => {
+    if (currentProfile?.id) {
+      sendGAEvent("Create", "Write a Story", "Click Write Story");
+      dispatch(createStory({
+        profileId: currentProfile.id,
+        privacy: true,
+        type: PageType.text,
+        title: "Unititled",
+        commentable: true
+      })).then(res => checkResult(res, payload => {
+        if (payload.story) {
+          // dispatch(setEditingPage({ page: payload.story }));
+          dispatch(setPageInView({ page: payload.story }));
+        router.push(Paths.editPage.createRoute(payload?.story?.id,payload?.story?.type),'forward', 'push');
+        }else{
+         showAlert({message:"COULD NOT CREATE STORY",type:AlertType.error})
+        }
+      },err=>{
+        showAlert({ message: err.message, type: AlertType.error })
+      }));
+    }
+  }, 5);
+
+useEffect(()=>{
+  if(homeCol){
+ let save = [...homeCol?.childCollections.map(c=>c.childCollection),...homeCol?.storyIdList.map(s=>s.story)].slice(0,4)
+ setSaved(save)
+  }
+},[homeCol])
+  const ClickCreateACollection = () => {
+     try {
+    sendGAEvent("create_collection_open", {
+      area: "collections",
+      modal_type: "create_collection",
+      user_id: currentProfile?.id || null, // optional, if you want to track
+    });
+  } catch (e) {
+
+  }
+
+openDialog({
+// ...dialog,
+disagree:null,
+scrollY: false,
+  text: <CreateCollectionForm onClose={resetDialog} />,
+  disagreeText: "Close", // optional button
+  onClose: closeDialog,
+  breakpoint: 1, // if you want a half-sheet style
+});
+
   };
 
-  useLayoutEffect(() => {
-    setHasMore(true);
-    getContent();
-    getHomeCollectionContent();
-  }, []);
 
-  return (
+ return (
         <ErrorBoundary>
 
-  
-          <div id="dashboard">
-            <div className="py-8">
-              {libraryForums()}
-              <div className="w-[98vw]  md:mt-8 mx-auto flex flex-col md:w-page">
-                <div role="tablist" className="tabs grid">
-                  {/* Recommendations Tab */}
-                  <input
-                    type="radio"
-                    name="my_tabs_2"
-                    role="tab"
-                    defaultChecked
-                    className="tab hover:min-h-10 [--tab-bg:transparent] rounded-full mont-medium text-emerald-800 border-3 text-md md:text-xl"
-                    aria-label="Recommendations"
-                  />
-                  <div role="tabpanel" className="tab-content pt-1 lg:py-4 rounded-lg  overflow-clip">
-                    <ListView items={[...recommendedStories,...recommendedCols]} hasMore={hasMore} getMore={getContent} />
-                  </div>
+          <div className="flex flex-col items-center gap-3  w-full dark:bg-base-bgDark bg-base-surface md:max-w-[40em] mx-auto px-4">
 
-                  {/* Home Tab */}
-                  <input
-                    type="radio"
-                    name="my_tabs_2"
-                    role="tab"
-                    className="tab text-emerald-800 mont-medium rounded-full mx-auto bg-transparent border-3 text-md md:text-xl"
-                    aria-label="Home"
-                  />
-                  <div
-                    role="tabpanel"
-                    className="tab-content pt-1 lg:py-4 rounded-lg md:w-page md:mx-auto border-l-4 rounded-full"
-                  >
-                    <ListView items={stories} hasMore={hasMore} getMore={getContent} />
-                  </div>
-                </div>
+  {/* Primary: Write — full width, most prominent */}
+  <ButtonWrapper
+    onClick={ClickWriteAStory}
+    className="hover:bg-button-secondary-hover  bg-blue  w-xl min-w-[24em] dark:bg-transparent dark:border-button-secondary-hover text-white rounded-2xl h-[3.2rem] w-full  sm:w-[21rem] font-bold"
+    style={{ WebkitTapHighlightColor: "transparent" }}
+  >
+    <IonText className="text-sm text-cream 
+    
+    font-bold">Write Something</IonText>
+  </ButtonWrapper>
+<div className='flex flex-row gap-4'>
+  {/* Secondary: Join a Workshop — full width, distinct color */}
+  <ButtonWrapper
+    onClick={() => router.push(Paths.workshop.reader(), "forward")}
+    className="bg-button-primary-bg dark:bg-transparent max-w-[20em] dark:border-purple  hover:bg-opacity-70 text-button-primary-text rounded-full h-[3rem] flex-1 sm:w-[21rem] font-bold"
+    style={{ WebkitTapHighlightColor: "transparent" }}
+  >
+    <IonText className="text-cream text-sm">Join a Workshop</IonText>
+  </ButtonWrapper>
+
+  {/* Tertiary: Create Collection — smaller, understated */}
+  <ButtonWrapper
+    onClick={ClickCreateACollection}
+    className="bg-transparent border border-soft dark:border-purple  max-w-[20em]  text-soft rounded-full h-[3rem] flex-1 sm:w-[21rem]"
+    style={{ WebkitTapHighlightColor: "transparent" }}
+  >
+    <IonText className="text-sm text-soft dark:text-cream">+ Collection</IonText>
+  </ButtonWrapper>
+</div>
+</div>
+
+      <div>
+     <div className={`${WRAP} ${SECTION_GAP}`}>
+  <div className={SECTION_HEADER_ROW}>
+ <div>
+<SectionHeader title={"Saves"}/>
               </div>
-            </div>
+            <svg
+  onClick={() => homeCol && router.push(Paths.collection.createRoute(homeCol?.id))}
+  className="max-w-8 max-h-8 stroke-soft dark:stroke-cream cursor-pointer"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  strokeWidth="2"
+  strokeLinecap="round"
+  strokeLinejoin="round"
+>
+  <path d="M5 12h14M13 6l6 6-6 6" />
+</svg>
+              </div>
+              <div className='flex mx-4 flex-col gap-4'>
+               {saves?.length==0?<div><h2>Bookmark things you want to see often</h2></div>:saves?.map((item, i) => { 
+  return (
+    <div key={`${item.id}-`+i}
+    onClick={() => {
+      if (!item) return;
+      item?.data
+        ? router.push(Paths.page.createRoute(item.id), "forward")
+        : router.push(Paths.collection.createRoute(item.id), "forward");
+    }}
+  
+    className={`border shadow-md border-1  rounded-full border-purple bg-base-bg  p-4`}
+  >
+   
+    {item ? (
+      // ✅ REAL CONTENT
+      <div className="flex flex-row gap-4 bg-base-bg px-4 items-center">
+        <h6 className='text-soft dark:text-cream '>{item.type} ·</h6>
+        {/* {Enviroment.palette.base.} */}
+        <h5 className="text-[1.2em] dark:text-cream text-soft" >
+          {shortName(item.title,20)}
+         </h5>
+      </div>
+    ) : (
+      // ✅ SKELETON STATE
+      <div className="flex flex-row gap-4  bg-base-bg  items-center animate-pulse">
+        <div className="h-4 w-16 bg-gray-300 rounded-md" />
+        <div className="h-5 w-40 bg-gray-300 rounded-md" />
+      </div>
+    )}
+  </div>
+);
 
-            {/* Explore List */}
-            <ExploreList items={collections} />
-          </div>
+                    })}
+             
+  </div>
+</div>
+
+                            <div className={`${WRAP} ${SECTION_GAP}`}>
+  <div className={SECTION_HEADER_ROW}>
+  
+<SectionHeader title="Your Spaces"/>
+</div>
+ 
+
+  <div className='flex flex-row px-4 gap-4 overflow-x-auto'>
+    
+    {[
+      { label: "Pages", onClick: openPages },
+      { label: "Collections", onClick: openCollections },
+      { label: "Archive", onClick: () => archiveCol && router.push(Paths.collection.createRoute(archiveCol.id) )},
+      { label: "Communities", onClick: openCommunities }
+    ].map((item) => (
+      
+      <div
+      // {Enviroment.palette.accent.blue}
+        key={item.label}
+        onClick={item.onClick}
+        className={`
+          flex-shrink-0
+          
+          min-w-36 sm:w-36 md:w-44 lg:w-44 
+          aspect-square                
+          rounded-2xl
+          border border-soft
+          dark:border-cream
+          bg-base-bg
+  bg-button
+          backdrop-blur-sm
+         shadow-md 
+          active:scale-95
+          transition-all
+          flex items-end
+          p-3 relative
+        `}
+      >
+
+           <h4 className={`
+          absolute top-3 left-3
+       
+          text-[1.4em] text-soft dark:text-cream
+        `}>
    
-   
+          {item.label}
+        </h4>
+      </div>
+
+    ))}
+</div>
+</div>
+ 
+             
+       
+            
+
+            
+                <div className={`${WRAP} ${SECTION_GAP}`}>
+  <div className={SECTION_HEADER_ROW}>
+
+</div> 
+</div>
+
+             
+            </div>
+          
+<div className={`${WRAP} ${SECTION_GAP}`}>
+  <div className={SECTION_HEADER_ROW}>
+    <div onClick={() => openYourWorkshops()}>
+      <SectionHeader
+        title="Workshops"
+       
+      />
+    </div>
+                <svg
+ onClick={() => openYourWorkshops()}
+  className="max-w-8 max-h-8 stroke-soft dark:stroke-cream cursor-pointer"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  strokeWidth="2"
+  strokeLinecap="round"
+  strokeLinejoin="round"
+>
+  <path d="M5 12h14M13 6l6 6-6 6" />
+</svg>
+  
+  </div>
+
+  <div className="px-4">
+    {workshop ? (
+      <WorkshopItem workshop={workshop} router={router} />
+    ) : (
+      <h2 className="text-lg text-soft">
+        Click Join a Workshop or Studio below
+      </h2>
+    )}
+    </div>
+  </div>
+
+
+
+
+
+            
+        
+               <div className={`  ${SECTION_GAP}`}>
+                
+  <div className={SECTION_HEADER_ROW}>
+<SectionHeader title={"Recent Pages"}/>
+         
+
+  <h5
+    className="text-[1rem] text-soft dark:text-cream cursor-pointer pr-4 hover:opacity-70 transition"
+    onClick={ClickWriteAStory}
+  >
+    Write Something new +
+  </h5>
+</div>
+            <div className="w-full grid gap-4 auto-rows-fr items-stretch">
+  <div className="relative min-h-[120px]">
+
+  {/* EMPTY STATE */}
+
+
+  {/* STORIES LIST */}
+  <div
+    className={`
+      transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]
+      ${myStories.length > 0
+        ? "opacity-100 translate-y-0"
+        : "opacity-0 translate-y-2 pointer-events-none absolute inset-0"}
+    `}
+  >
+    {myStories.length > 0 &&  (
+<div
+  className="w-full px-4 grid gap-4"
+  style={{
+    gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
+  }}
+>
+    {[...myStories]
+      .sort((a, b) => b.updated - a.updated) // newest first 🔥
+      .slice(0, visibleCount)
+      .map((story, index) => (
+        <div
+          key={`${story?.id}-`
+        +index}
+         className="transition-all duration-300"
+          style={{
+            transitionDelay: `${index * 60}ms`
+          }}
+        >
+          <StoryDashboardItem story={story} router={router} />
+        </div>
+      ))}
+  </div>
+)}
+   </div>
+</div>
+         </div>  
+            
+          <div className='list-bottom-padding'>
+        <ExploreList page={recCols.page} totalCount={recCols.totalCount}  setPage={recCols.setPage} pageSize={pageSize}  items={[...recCols.items]} />
+
+          </div> 
+       </div>
+{/* <div className='list-bottom-padding'> */}
+     {/* </div> */}
       </ErrorBoundary>
   );
 }
 
-export default DashboardContainer;
+export default DashboardEmbed
+

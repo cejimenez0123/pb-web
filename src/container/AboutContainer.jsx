@@ -1,3 +1,4 @@
+
 import "../styles/About.css"
 import { useMediaQuery } from "react-responsive"
 import Paths from "../core/paths"
@@ -68,142 +69,17 @@ useLayoutEffect(() => {
   });
 
 
-    router.push(Paths.login());
+    router.push(Paths.login);
   }
 
 
-  // function apply() {
-    function apply(source = "about_page") {
-  sendGAEvent("apply_click", {
-    source,
-    location: "about",
-  });
 
 
-    router.push(Paths.onboard);
-  }
-
-  const whyMembership = () => (
-    <div>
-      <h1 className="lora-bold">Why Membership?</h1>
-      <p>
-        Too many places call themselves “the public square,” but they feel more like oceans—vast, anonymous, and impossible to hold. We’re building a teacup: something small enough to share, strong enough to hold heat, and made for real connection.
-      </p>
-      <br />
-      <ul className="text-left">
-        <li className="text-[1rem] my-1">
-          <h6 className="open-sans-medium">
-            <strong>People Who Care Only –</strong> No trolls. Just writers who give thoughtful feedback that builds you up.
-          </h6>
-        </li>
-        <li className="text-[1rem] my-1">
-          <h6 className="open-sans-medium">
-            <strong>Compassionate Community –</strong> Writers can be passionate, but we also lead with compassion.
-          </h6>
-        </li>
-        <li className="text-[1rem] my-1">
-          <h6 className="open-sans-medium">
-            <strong>NYC + Beyond –</strong> We’re rooted in the Bronx—a place that doesn’t fake it. We keep it real, and we want you to do the same.
-          </h6>
-        </li>
-      </ul>
-    </div>
-  );
-
-  const applicationProcess = () => (
-    <div className="">
-      <h1 className="lora-bold mb-4">How the Application Works</h1>
-      <p>We’re building a space with intention. Here’s how to join.</p>
-      <ol className="list-decimal list-inside open-sans-regular space-y-3 text-[1rem]">
-        <li>
-          <strong>Apply Online –</strong> Fill out a short form to tell us about your writing and what you're looking for.
-        </li>
-        <li>
-          <strong>We Review –</strong> Our team reads every application. We’ll either invite you in now or let you know we’re keeping your application on file for the next round.
-        </li>
-        <li>
-          <strong>You're In –</strong> If accepted, you'll get an email with a link to complete your registration and join the community.
-        </li>
-      </ol>
-    </div>
-  );
-
-  const findCreatives = () => (
-    <div className="text-emerald-800 rounded-lg p-4 h-full">
-      <div className="text-center">
-        <h2 className="lora-medium font-bold text-[2rem] mb-4">Find Your Creative Community</h2>
-        <div className="text-left">
-          <h2 className="text-[1rem] leading-loose open-sans-medium mb-4">
-            Plumbum is a space for writers to share work, get feedback, and connect with like-minded creatives. Whether you're refining your next piece or just starting out, you'll find support, inspiration, and the right audience here.
-          </h2>
-          <a onClick={()=>apply("find_creatives")} className="text-[1rem] cursor-pointer inline-block">[→ Join the Beta]</a>
-        </div>
-      </div>
-    </div>
-  );
-
-  const writingJourney = () => (
-    <div className="text-center py-9  text-emerald-800 leading-loose">
-      <h1 className="lora-bold text-left">Why Plumbum Works?</h1>
-      <br/>
-      <ul className="text-left">
-        <li className="text-[1rem] my-1">
-          <h6 className="open-sans-medium">
-            <strong>Writer-Driven Feedback –</strong> Get real, constructive responses from fellow writers.
-          </h6>
-        </li>
-        <li className="text-[1rem] my-1">
-          <h6 className="open-sans-medium">
-            <strong>Curated Discovery –</strong> Curate your space and discover others curated collections and add them to your space of inspiration.
-          </h6>
-        </li>
-        <li className="text-[1rem] my-1">
-          <h6 className="open-sans-medium">
-            <strong>Workshops & Events –</strong> Take your craft further with live workshops and community gatherings.
-          </h6>
-        </li>
-      </ul>
-      <div className="text-left">
-        <a onClick={() =>{
-
-    sendGAEvent("navigation_click", {
-      destination: "discovery",
-      source: "about_why_plumbum",
-    });
-    router.push(Paths.discovery);
-  }}
- className="text-[1rem] cursor-pointer inline-block">[→ Explore More]</a>
-      </div>
-    </div>
-  );
-
-  const howItWorks = () => (
-    <div className="py-2 leading-loose text-emerald-700 flex flex-col max-w-full">
-      <h1 className="lora-bold text-left text-emerald-800 text-4xl mt-4 py-4">How It Works</h1>
-      <ul className="list-disc open-sans-medium list-inside open-sans-regular space-y-3 text-[1rem]">
-        <li>
-          <strong>Get Feedback –</strong> Share your drafts and receive thoughtful, constructive responses from writers who care.
-        </li>
-        <li>
-          <strong>Join Live Workshops –</strong> Hop into real-time sessions online or around NYC for direct feedback and collaboration.
-        </li>
-        <li>
-          <strong>Share Your Work –</strong> Publish pieces-in-progress or notes-app gems in a space for experimentation.
-        </li>
-        <li>
-          <strong>Find Fresh Voices –</strong> Discover new writers and connect through shared creativity and weirdness.
-        </li>
-      </ul>
-    </div>
-  );
 
   const stayInLoop = () => (
     <div className="p-3 flex flex-col text-cream text-center ">
       <div className="py-12">
-      {/* <h1 className="text-[3rem] mx-auto lora-bold">Stay in the Loop</h1> */}
-      {/* <h2 className="mx-4 my-2 open-sans-medium text-[1.2em] pt-4">Be the first to know about new features, workshops, and events.</h2> */}
-      {/* <h2 className="mx-4 my-2 open-sans-medium text-[1.4em] pt-4">Follow the Journey</h2> */}
-      <a
+       <a
         onClick={() =>
     sendGAEvent("nav click", {
       destination: "link tree",
@@ -400,7 +276,7 @@ const goToCalendar = (source="about_page") => {
   router.push(Paths.calendar());
 };
   return (
-    <IonContent fullscreen={true}   scrollY={true} className="">
+    <IonContent fullscreen={true} scrollY={true} className="page-content" style={{"--background": "#40906f"}}>
      <div className="pt-8 h-[100%] overflow-scroll  bg-soft pb-36">
 
         {/* <IonGrid> */}
@@ -505,4 +381,3 @@ const TESTIMONIALS = [
     author: "NYC Writer",
   },
 ];
-

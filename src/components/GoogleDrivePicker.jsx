@@ -1,17 +1,16 @@
 import { useState, useLayoutEffect,  useContext } from 'react';
-import { useDispatch } from 'react-redux';
 import { SocialLogin } from "@capgo/capacitor-social-login";
-import { IonText, IonList, IonContent, IonInfiniteScroll, } from '@ionic/react';
+import { IonText, } from '@ionic/react';
 import Context from "../context";
 
 import { Preferences } from '@capacitor/preferences';
 import Googlelogo from "../images/logo/googlelogo.png";
 import { useDialog } from '../domain/usecases/useDialog';
+import Enviroment from '../core/Enviroment';
 export default function GoogleDrivePicker({ onFilePicked, onReauthenticateNeeded }) {
 
 
-  const { dialog, isPhone, } = useContext(Context);
-  const dispatch = useDispatch();
+  const {  isPhone, } = useContext(Context);
   const [files, setFiles] = useState([]);
   const [accessToken, setAccessToken] = useState(null);
    const driveTokenKey = "googledrivetoken";
@@ -22,9 +21,9 @@ export default function GoogleDrivePicker({ onFilePicked, onReauthenticateNeeded
 
   // Initialize Social Login
   useLayoutEffect(() => {
-    SocialLogin.initialize({
+   SocialLogin.initialize({
       google: {
-        webClientId: CLIENT_ID,
+          webClientId: CLIENT_ID,
           iOSClientId: IOS_CLIENT_ID,
           iOSServerClientId: CLIENT_ID,
         mode: 'online',
@@ -35,7 +34,7 @@ export default function GoogleDrivePicker({ onFilePicked, onReauthenticateNeeded
   // --- Native Google Sign-In Flow ---
 const nativeGoogleSignIn = async () => {
     try {
-     
+
       const user = await SocialLogin.login({
         provider:"google",
         options:{
@@ -55,7 +54,7 @@ const nativeGoogleSignIn = async () => {
   await Preferences.set({key:TOKEN_EXPIRY_KEY,value:expiry})
   fetchFiles()
     } catch (err) {
-      console.log(err)
+    
       console.error("Native sign-in error", err);
    
     } 
@@ -119,7 +118,7 @@ const fetchFiles = async () => {
     title: null,
     text: (
       <div
-        style={{ "--background": "#f4f4e0" }}
+        style={{ "--background": Enviroment.palette.cream }}
         className="bg-cream"
       >
         {/* Scrollable grid container */}
@@ -153,7 +152,7 @@ const fetchFiles = async () => {
 
   return (
     <button 
-  onClick={!accessToken ? () => nativeGoogleSignIn() : () => open()}  
+  onClick={() => nativeGoogleSignIn()}  
   className={`
     flex items-center justify-start text-center 
      btn
@@ -161,7 +160,7 @@ const fetchFiles = async () => {
     rounded-xl border-2 overflow-hidden
     ${accessToken 
       ? "bg-emerald-600 border-emerald-600 text-white" 
-      : " bg-white border-cream text-emerald-800"
+      : " bg-base-bg border-cream text-emerald-800"
     } 
     hover:bg-emerald-500 transition-all
   `}

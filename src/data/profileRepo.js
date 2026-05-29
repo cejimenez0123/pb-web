@@ -9,64 +9,75 @@ class ProfileRepo {
         return res.data
     }
      headers= {
-        'Access-Control-Allow-Origin': "*"
+        
     }
-    async getAuthHeaders() {
+
+token = null;
+
+async getAuthHeaders() {
+  if (!this.token) {
     const { value } = await Preferences.get({ key: "token" });
-
     if (!value) throw new Error("No token found");
-  
-    return {
-      ...this.headers,
-      Authorization: `Bearer ${value}`,
-    };
+    this.token = value;
   }
-    async getMyProfiles(){
-        const headers = await this.getAuthHeaders()
 
-  try{
-       const res = await axios.get(this.url+"/protected",{ headers:headers}  )
+  return {
+    Authorization: `Bearer ${this.token}`,
+  };
+}
 
-        return res.data
-    }catch(e){
-      
-        return e
-    }
-    }
+async getMyProfiles() {
+  const headers = await this.getAuthHeaders();
+
+  try {
+    const res = await axios.get(this.url + "/protected", { headers });
+  
+    return res.data;
+  } catch (e) {
+
+  throw e;
+}
+}
     async create({email,token,password,username,profilePicture,selfStatement,privacy}){
         let headers = await this.getAuthHeaders()
-
-        let res = await axios.post(this.url,
+try{     
+       let res = await axios.post(this.url,
         {email,token,password,username,profilePicture,selfStatement,privacy},{
-            headers:headers
+            headers
         })
 
         return res.data
+    }catch (e) {
+
+  throw e;
+}
     }
-    async notifications({token,profile}){
+    async notifications({seen,profile}){
     let headers = await this.getAuthHeaders()
 
-
-
-
-        let res = await axios.get(this.url+"/"+profile.id+"/alert",{headers:headers})
-        console.log(res)
+        let res = await axios.get(this.url+"/"+profile.id+"/alert",{headers:headers,params:{
+seen:seen
+        }})
+     
      return res.data
 
     }
-    async register(params){
+    async register({uId,idToken,referralToken,password,username,googleId,profilePicture,selfStatement,privacy}){
 
-       const res = await axios.post(Enviroment.url+"/auth/register",
-       params) 
+       const res = await axios.post(Enviroment.url+"/auth/register",{googleId,identityToken:idToken,referralToken,password,username,
+        profilePicture,selfStatement,privacy
+       }) 
 
        return res.data
     
     }
     async getProfileProtected(params){
-let headers = await this.getAuthHeaders()
+        let headers = await this.getAuthHeaders()
 
         const {id}=params
+        
         let res = await axios.get(this.url+"/"+id+"/protected",{headers:headers})
+      
         return res.data
     }
     async getProfile(params){
@@ -74,6 +85,16 @@ let headers = await this.getAuthHeaders()
         let res = await axios.get(this.url+"/"+id+"/public")
         return res.data
     }
+    async markNotificationsRead() {
+  const headers = await this.getAuthHeaders();
+  try {
+    const res = await axios.patch(this.url + "/notifications/read", {}, { headers });
+    return res.data;
+  } catch (e) {
+
+    throw e;
+  }
+}
     async updateProfile(params){
         let headers = await this.getAuthHeaders()
 
@@ -83,13 +104,28 @@ let headers = await this.getAuthHeaders()
     
         return res.data
     }
-    async getProfileBookmarkCollection({profileId}){
-        let res = await axios.get(this.url+"/"+id+"/collection")
-        return res.data
-    }
+  async getProfileBookmarkCollection({ profileId }) {
+  let res = await axios.get(this.url + "/" + profileId + "/collection");
+  return res.data;
+}
     async createBookmark({profile,collection}){
-        let res = await axios.post(this.url+"/"+profile.id+"/collection/"+collection.id)
-        return res.data
+             const headers = await this.getAuthHeaders();
+
+let res = await axios.post(
+  this.url + "/" + profile.id + "/collection/" + collection.id,
+  {},
+  { headers })
+ return res.data
+    // }
+
+        // let res = await axios.post(this.url+"/"+profile.id+"/collection/"+collection.id)
+        // return res.data
+    }
+async recommend({profileId,limit=10}){
+     const { data } = await axios.get(this.url+`/${profileId}/recommendations`, {
+        params: { limit },
+      });
+      return data
     }
 }
 

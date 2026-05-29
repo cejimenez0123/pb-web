@@ -1,375 +1,431 @@
-import { useContext, useEffect, useState } from "react";
-import { useDispatch,useSelector } from "react-redux";
-import { updateProfile,deleteUserAccounts, deletePicture, setDialog, getCurrentProfile, signOutAction} from "../actions/UserActions";
-import {uploadProfilePicture} from "../actions/ProfileActions"
-import "../App.css"
-import "../styles/Setting.css"
+import { useEffect, useState } from "react";
+import { useAlert } from "../core/useAlert.jsx";
+import AlertType from "../core/AlertType.js";
+import { useDispatch } from "react-redux";
+import {
+  updateProfile,
+  deleteUserAccounts,
+  deletePicture,
+  setDialog,
+  signOutAction
+} from "../actions/UserActions";
+import { uploadProfilePicture } from "../actions/ProfileActions";
+import { Geolocation } from "@capacitor/geolocation";
+import { IonContent, IonLoading, useIonRouter } from "@ionic/react";
+
 import checkResult from "../core/checkResult";
-import Context from "../context";
-import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
-import { IonContent, IonImg, IonText, useIonRouter } from "@ionic/react";
 import Enviroment from "../core/Enviroment";
-import ErrorBoundary from "../ErrorBoundary";
+import { useSelector } from "react-redux";
+import GoogleMapSearch from "./collection/GoogleMapSearch";
 import { Capacitor } from "@capacitor/core";
-import isValidUrl from "../core/isValidUrl";
-import uploadFile from "../core/uploadFile";
-import { Preferences } from "@capacitor/preferences";
 import Paths from "../core/paths";
+import fetchCity from "../core/fetchCity";
 import { useDialog } from "../domain/usecases/useDialog";
+import { SocialLogin } from "@capgo/capacitor-social-login";
+// List of countries (can be expanded)
+const COUNTRIES = [
+  "United States",
+  "Canada",
+  "Mexico",
+  "United Kingdom",
+  "France",
+  "Germany",
+  "Spain",
+  "Italy",
+  // ...add more countries as needed
+];
 
 
-export default function SettingsContainer(props) {  
+async function reverseGeocode(lat, lng) {
 
-    const router = useIonRouter()
+  try {
+
+    const res = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`
+    );
+
+    const data = await res.json();
+
+    return data?.display_name || "";
+
+  } catch (err) {
+
+    return "";
+  }
+
+}
+export default function SettingsContainer() {
+  const dispatch = useDispatch();
+  const router = useIonRouter();
+const {openDialog,dialog,closeDialog}=useDialog()
+  const { showAlert } = useAlert();
+  const {currentProfile}=useSelector(state=>state.users)
+  const [file, setFile] = useState(null);
+// Helper: extract city from full address
+// List of countries (expand as needed)
+const COUNTRIES = [
+  "United States",
+  "Canada",
+  "Mexico",
+  "United Kingdom",
+  "France",
+  "Germany",
+  "Spain",
+  "Italy",
+  // add more
+];
+
+const [form, setForm] = useState({
+  username: "",
+  selfStatement: "",
+  isPrivate: false,
+  profilePicture: "",
+  location: {
+    latitude: null,
+    longitude: null,
+     city: currentProfile?.location?.city ?? ""
+
+  }
+});
+
+  const [pictureUrl, setPictureUrl] = useState(
+    "https://placehold.co/200"
+  );
+
+  const [loading, setLoading] = useState(false);
+useEffect(() => {
+  if (!loading && !currentProfile) {
+    router.push(Paths.login, "root"); // replace history
+  }
+}, [loading, currentProfile]);
+  /* --------------------------
+     Load profile into form
+  ---------------------------*/
+  useEffect(() => {
+
+    if (!currentProfile) return;
+
+    const pic = currentProfile.profilePic;
+  setForm({
+      username: currentProfile.username ?? "",
+      selfStatement: currentProfile.selfStatement ?? "",
+      isPrivate: currentProfile.isPrivate ?? false,
+      profilePicture: pic ?? "",
+       location: {
+      latitude: currentProfile?.location?.latitude??40,
+      longitude: currentProfile?.location?.longitude??73,
+      city: currentProfile?.location?.city || ""
+    }
+    });
+
+    if (pic) {
+      if (pic.includes("http")) {
+        setPictureUrl(pic);
+      } else {
+        setPictureUrl(Enviroment.imageProxy(pic));
+      }
+    }
+
+    setLoading(false);
+
+  }, [currentProfile]);
+
+
+
+
+const handleUseCurrentLocation = async () => {
+    try {
+      const coords = await getPosition(); // your helper to get lat/lng
+      if (!coords) throw new Error("Could not get location");
+
+      // Use fetchCity helper to get city + state
+      const cityCountry = await fetchCity(coords);
+
+      handleChange("location", {
+        ...coords,
+        city: cityCountry || "",
+      });
+
+      showAlert({ message: "Location updated!", type: AlertType.success });
+    } catch (err) {
+      console.error(err);
+      showAlert({ message: "Unable to fetch current location.", type: AlertType.error });
+    } finally {
+      setLoading(false);
+    }
+};
+// Returns { latitude, longitude } for both native and browser
+const getPosition = async () => {
+  try {
+    if (Capacitor.isNativePlatform()) {
+      // Native mobile (iOS/Android)
+      const position = await Geolocation.getCurrentPosition({
+        enableHighAccuracy: true,
+      });
+      return {
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+      };
+    } else {
+      // Browser fallback: try navigator first
+      if (navigator.geolocation) {
+        return await new Promise((resolve, reject) => {
+          navigator.geolocation.getCurrentPosition(
+            (pos) => resolve({ latitude: pos.coords.latitude, longitude: pos.coords.longitude }),
+            (err) => {
+              console.warn("Navigator geolocation failed, falling back to Google API:", err);
+              reject(err);
+            },
+            { enableHighAccuracy: true, timeout: 5000 }
+          );
+        });
+      }
+
+      // If navigator fails, fallback to Google Geolocation API
+      const res = await fetch(
+        `https://www.googleapis.com/geolocation/v1/geolocate?key=${import.meta.env.VITE_GOOGLE_MAPS_API_KEY}`,
+        { method: "POST" }
+      );
+      const data = await res.json();
+      return {
+        latitude: data.location.lat,
+        longitude: data.location.lng,
+      };
+    }
+  } catch (err) {
+    console.error("Unable to get location:", err);
+    return null;
+  }
+};
+    // Reverse geocode to get human-readable address
+   
   
-    const{setError,setSuccess}=useContext(Context)
-    const currentProfile = useSelector(state=>state.users.currentProfile)
-    // const dialog = useSelector(state=>state.users.dialog)
-    const [pictureUrl,setPictureUrl]=useState("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqafzhnwwYzuOTjTlaYMeQ7hxQLy_Wq8dnQg&s")
-    const [params,setParams]=useState({profile:currentProfile,file:null,profilePicture:currentProfile?currentProfile.profilePic:pictureUrl,profileId:currentProfile?currentProfile.id:"",isPrivate:false,selfStatement:"",username:""})
-    const [homeItems,setHomeItems] = useState([])
-    const dispatch = useDispatch()
-  const {dialog,openDialog,closeDialog}=useDialog()
 
-    const [pending,setPending] = useState(false)
-     const handleChange = (key, value) => {
 
-    setParams((prev) => ({ ...prev, [key]: value }));
-
-     
+  /* --------------------------
+     Form update
+  ---------------------------*/
+  const handleChange = (key, value) => {
+    setForm((prev) => ({
+      ...prev,
+      [key]: value
+    }));
   };
 
-    useEffect( ()=>{
-        if(currentProfile){
-            setProfile(currentProfile)
-        }},[currentProfile])
-    useEffect(()=>{
-      dispatch(getCurrentProfile()).then((res)=>{
-      checkResult(res,payload=>{
-console.log("SSXB",payload)
-      },err=>{
-console.log("SSBL")
-      })})
-    },[])
+  /* --------------------------
+     Image upload preview
+  ---------------------------*/
+  const handleImage = (e) => {
 
+    const selected = e.target.files?.[0];
 
-  
- 
-    const handleAgree = () => {
-        dispatch(deleteUserAccounts()).then((res)=>{
-            checkResult(res,payload=>{
-                
-              if(payload.message){
-                setSuccess(payload.message)
-                router.push("/")
-              }
-           
-            },err=>{
-                setError(err.message)
-            })
-       
-        })
+    if (!selected) return;
+
+    if (!selected.type.startsWith("image/")) {
+      showAlert({ message: "Upload a valid image", type: AlertType.error });
+      return;
     }
-    const handleClose = () => {
-   
-        closeDialog()
-    };
 
-      const handleSignOut =async () => {
- 
-    await Preferences.clear()
+    setFile(selected);
+    setPictureUrl(URL.createObjectURL(selected));
+  };
 
-    dispatch(signOutAction()).then(res=>{
-      router.push(Paths.about())
-    })
-  
-   
-};
-    
-    const setProfile = (profile)=>{
-        setPending(true)
-        isValidUrl(profile.profilePic)?setPictureUrl(profile.profilePic):setPictureUrl(Enviroment.imageProxy(profile.profilePic))
-        
-        handleChange("selectedImage",profile.profilePic)
-        handleChange("profilePicture",profile.profilePic)
-        handleChange("profile",profile)
-        handleChange("username",profile.username)
-        handleChange("profileId",profile.id)
-        handleChange("privacy",profile.isPrivate)
-        handleChange("selfStatement",profile.selfStatement)
-   
-        setPending(false)
-  
-    }
-    const handleOnSubmit =async (e)=>{
-        e.preventDefault();
+  /* --------------------------
+     Submit update
+  ---------------------------*/
+  const handleSubmit = async () => {
 
-try{
-  if(params.file){
-      dispatch(deletePicture({fileName:currentProfile.profilePic}))
-      dispatch(uploadProfilePicture({...params})).then(result=>{
-        checkResult(result,payload=>{
-const {url,fileName}=payload
- handleChange("profilePicture",fileName)
-updateCurrentProfile({...params,profilePicture:fileName})
- isValidUrl(url)?setPictureUrl(url):setPictureUrl(Enviroment.imageProxy(fileName))
+    if (!currentProfile) return;
 
-
-window.alert("Updating Profile")
-                        //  setProfile(profile)
-        },err=>{
-
-        })
-      })
-  }else{
-
-  
-    updateCurrentProfile(params)
-
- 
-      }
-}catch(err){
-    console.log("Update profile error:"+err.message)
-}}
-    
-   const updateCurrentProfile=(parameters)=>{
-            dispatch(updateProfile({...parameters})).then((result) =>checkResult(result,
-                    (payload)=>{
-                        const {profile}=payload
-                        isValidUrl(profile.profilePic)?setPictureUrl(profile.profilePic):setPictureUrl(Enviroment.imageProxy(profile.profilePic))
-                         setProfile(profile)
-                        setSuccess("Updated")
-                    
-                    },err=>{
-                           window.alert(err.message)
-                        setError(err.message)
-                        console.log("Update profile dispatch error:"+err.message)
-                    
-                    
-        }))
-   }         
-
-      
-
-     
-   
-    const handleDeleteDialog=()=>{
-      closeDialog()
-        let dia = {...dialog}
-        dia.agree={handleAgree} 
-        dia.onClose={handleClose}
-        dia.title=("Are you sure you want to delete your account?")
-                        dia.text=("Deleting your account can't be reversed")
-                        dia.agreeText ="Delete"
-        openDialog(dia)
-
-    }
-    const deleteHomeItem  = (item)=>{
-        switch(item.type){
-            case "page":{
-                let newItems =  homeItems.filter(hash=>{return hash!==item})
-                setHomeItems(newItems)
-                let newPages= homePages.filter(id=>id!==item.id)
-                setHomePages(newPages) 
-                break;
-            }
-        
-            case "book":{
-            let newItems  = homeItems.filter(hash=>{return hash!==item})
-                setHomeItems(newItems)  
-            let newBooks = homeBooks.filter(id=>{return (id !== item.id)})
-                setHomeBooks(newBooks)
-                break;
-            }
-            case "library":{
-                let newItems = homeItems.filter(hash=>{return hash!==item})    
-                setHomeItems(newItems)  
-                let newLibraries =  homeLibraries.filter(id=>{return (id !== item.id)}) 
-                setHomeLibraries(newLibraries)
-                break;
-            }
-            case "profile":{
-                let newItems= homeItems.filter(hash=>{return  hash!==item})
-                setHomeItems(newItems) 
-                let newProfiles = homeProfiles.filter(id=>{return id !== item.id})
-                // setHomeProfiles(newProfiles)  
-                break;  
-            }  
-            default: break
-    }
-}
-
-async function handleProfilePictureNative() {
-  try {
-    const image = await Camera.getPhoto({
-      quality: 80,
-      allowEditing: true,
-      resultType: CameraResultType.Uri, // This works best with Uploader's 'filePath'
-      source: CameraSource.Prompt,
-    });
     try {
-    const fileName = await uploadFile(image);
-    handleChange("profilePicture",fileName)
-    setPictureUrl(image.webPath)
- 
-  } catch (e) {
-    console.error('Upload failed:', e);
-  }
- 
 
-    }catch(er){
+      let profilePicture = form.profilePicture;
 
+      if (file) {
+
+        await dispatch(deletePicture({
+          fileName: currentProfile.profilePic
+        }));
+
+        const upload = await dispatch(
+          uploadProfilePicture({ file })
+        );
+
+        checkResult(upload, payload => {
+          profilePicture = payload.fileName;
+        });
+      }
+
+dispatch(updateProfile({
+  profile: currentProfile,
+  username: form.username,
+  profilePicture,
+  selfStatement: form.selfStatement,
+  privacy: form.isPrivate,
+  location: form.location
+})).then(result=>{
+
+      checkResult(
+        result,
+        () => showAlert({ message: "Profile updated", type: AlertType.success }),
+        err => showAlert({ message: err.message, type: AlertType.error })
+      );
+    })
+    } catch (err) {
+      showAlert({ message: "Update failed", type: AlertType.error });
     }
+  };
 
-}
+  /* --------------------------
+     Delete account
+  ---------------------------*/
+  const handleDelete = () => {
 
+    openDialog({
+      title: "Delete account?",
+      text: "This cannot be undone.",
+      agreeText: "Delete",
+      agree: () => dispatch(deleteUserAccounts()).then(res=>{
+        checkResult(res,()=>{
+          showAlert({ message: "Account deleted", type: AlertType.success });
+          router.push(Paths.login)
+        },err=>{
+          showAlert({ message: err.message, type: AlertType.error })
+      })
 
+    })})}
 
-const handleProfilePicture = async (e) => {
-    
-  try {
-    let file, previewUrl;
-
- 
-      file = e.target.files[0];
-      if (!file) return;
-
-      if (!file.type.startsWith('image/')) {
-
-        setError('Please upload a valid image file.');
-        return;
-      }
-      if (pictureUrl?.startsWith('blob:')) {
-        URL.revokeObjectURL(pictureUrl);
-      }
-
-    previewUrl = URL.createObjectURL(file) + `#${Date.now()}`;
-  
-    handleChange("file", file);
-    window.alert("file")
-    setPictureUrl(previewUrl);
-    setError('');
-    
-  } catch (err) {
-    console.error('Error capturing or loading image:', err);
-    setError(err.message || 'Image upload failed');
+  if (loading) {
+    return (
+      <IonContent>
+        <div className="flex justify-center mt-20">
+         <IonLoading
+  isOpen={loading}
+  message={"Loading your space..."}
+  spinner="crescent"
+/>
+          <span className="loading loading-spinner loading-lg text-emerald-600"></span>
+        </div>
+      </IonContent>
+    );
   }
-};
+  return (
+  <IonContent fullscreen>
+    <div className="min-h-screen px-4 bg-cream dark:bg-base-bgDark flex justify-center pt-20 pb-32">
+      <div className="card w-96 sm:max-w-xl p-6 space-y-6">
 
-   
-     if(!pending){
-            return(
-                <ErrorBoundary>
-                {/* <IonContent fullscreen={true}> */}
-             
-            <div  className="bg-slate-100 pt-20">
-                   <div className="text-right px-4" ><button onClick={handleSignOut} className="bg-golden text-white px-4 py-2 rounded">Log Out</button></div>
-                    <div  className="card my-4 text-emerald-800 max-w-96 items-center flex mx-auto p-3">
-                      <label className="text-left flex flex-col "><h4 className="text-[1.2em]  mx-4">Username:</h4>
-                   
-            
-                            <input type="text"   
-                                        className={"text-[1.2em]  px-4 py-2 bg-white w-[100vw] border-slate-50 mb-8  border-2 border-emerald-800 border-2  "}
-                                        value={params.username}
-                                        onChange={(e)=>handleChange("username",e.target.value.toLocaleLowerCase())
-                                        }
-                                         label="Username"/>
-                                         </label>
-                                          <div className='file mt-4 mb-4'>
-                   {Capacitor.isNativePlatform() ? (
-  <button onClick={handleProfilePictureNative}>Choose Photo</button>
-) : (
-  <input type="file" className="file-input" accept="image/*" onChange={handleProfilePicture} />
-)} 
+        <h2 className="text-2xl font-bold text-center text-soft dark:text-cream">
+          Profile Settings
+        </h2>
 
-                     
-             
-     
-          
-          <IonImg
-          className="mx-auto my-4"
-            src={pictureUrl}
-            alt="Selected"
-            style={{ maxWidth: '10em', maxHeight: '300px', borderRadius: '10px' }}
+        {/* Log Out */}
+        <div
+          onClick={async () => {
+            await SocialLogin.logout({ provider: "google" });
+            dispatch(signOutAction({ profile: currentProfile })).then(res =>
+              checkResult(res, (data) => {
+                router.push(Paths.login);
+              }, err => showAlert({ message: err.message, type: AlertType.error }))
+            );
+          }}
+          className="btn mx-4 bg-base-bg dark:bg-base-surfaceDark border border-soft/20 dark:text-cream text-soft flex w-full"
+        >
+          <h4 className="mx-auto my-auto">Log Out</h4>
+        </div>
+
+        {/* Username */}
+        <div className="form-control">
+          <label className="label">
+            <span className="label-text dark:text-cream">Username</span>
+          </label>
+          <input
+            type="text"
+            className="input bg-base-bg dark:bg-base-surfaceDark dark:text-cream text-soft input-bordered border-soft/20"
+            value={form.username}
+            onChange={(e) => handleChange("username", e.target.value)}
           />
-        
-        
-      
-    
-                    </div>
-                    
-                            <label className="text-left mt-4 " id="" >
-                                <h6 className="text-[1.2em] mx-4">Self Statement:</h6>
-                               
-                                    <textarea
-                                    onChange={(e)=>{handleChange("selfStatement",e.target.value)}}
-                                  
-                                    value={params.selfStatement}
-                                    className="textarea w-[100vw] w-full  text-emerald-800 border-2 bg-white border-slate-50 px-6 py-4 min-h-36 my-2"
-                                    placeholder="Self Statement"/>
-                            </label>
-                            <section className="flex flex-col w-[100vw]">
-                           <label className="text-left  "> <h4 className="text-[1.2em] mx-4 mb-4 mt-8">Privacy Settings:</h4>
-                           </label>
-                           <div className="bg-white rounded-2xl mt-6">
-  <div className="px-4 py-3 flex items-center justify-between">
-    <div className="flex items-center gap-3">
-     
-      <div>
-        <div className="text-gray-900 font-medium">
-          {params.isPrivate ? 'Private Profile' : 'Public Profile'}
         </div>
-        <div className="text-xs text-gray-500 mt-0.5">
-          {params.isPrivate 
-            ? 'Only you can see your profile' 
-            : 'Your profile is visible to everyone'}
+
+        {/* Profile Image */}
+        <div className="flex flex-col items-center gap-4">
+          <div className="avatar">
+            <div className="w-24 rounded-xl ring-2 ring-soft/20">
+              <img src={pictureUrl} />
+            </div>
+          </div>
+          <input
+            type="file"
+            accept="image/*"
+            className="file-input bg-base-bg dark:bg-base-surfaceDark dark:text-cream text-soft file-input-bordered border-soft/20 w-full"
+            onChange={handleImage}
+          />
         </div>
+
+        {/* Location */}
+        <span className="w-fit mx-auto">
+          <GoogleMapSearch
+            initLocationName={form.location?.city}
+            onLocationSelected={(coordinates) => {
+              handleChange("location", coordinates);
+            }}
+          />
+        </span>
+        <button
+          className="btn btn-outline btn-sm mt-2 dark:text-cream dark:border-cream/30 border-soft/30"
+          onClick={handleUseCurrentLocation}
+          disabled={loading}
+        >
+          {loading ? "Fetching..." : "Use Current Location"}
+        </button>
+
+        {/* Self Statement */}
+        <div className="form-control">
+          <label className="label">
+            <span className="label-text dark:text-cream">Self Statement</span>
+          </label>
+          <textarea
+            className="textarea bg-base-bg dark:bg-base-surfaceDark dark:text-cream text-soft textarea-bordered border-soft/20 h-32"
+            value={form.selfStatement}
+            onChange={(e) => {
+              if (e.target.value.length <= 120) {
+                handleChange("selfStatement", e.target.value);
+              }
+            }}
+          />
+        </div>
+
+        {/* Privacy */}
+        <div className="form-control">
+          <label className="cursor-pointer label">
+            <span className="label-text dark:text-cream">Private Profile</span>
+            <input
+              type="checkbox"
+              className="toggle toggle-primary"
+              checked={form.isPrivate}
+              onChange={() => handleChange("isPrivate", !form.isPrivate)}
+            />
+          </label>
+        </div>
+
+        {/* Save */}
+        <button
+          className="btn bg-soft text-white hover:bg-soft/90 w-full border-none"
+          onClick={handleSubmit}
+        >
+          Update Profile
+        </button>
+
+        {/* Delete */}
+        <button
+          className="btn btn-outline border-golden text-golden hover:bg-golden hover:text-white w-full"
+          onClick={handleDelete}
+        >
+          Delete Account
+        </button>
+
       </div>
     </div>
-    <div
-      onClick={(e) => {
-        e.preventDefault();
-        handleChange("isPrivate", !params.isPrivate);
-      }}
-      className={`  min-h-6 min-w-6  ${params.isPrivate ? 'bg-blueSea' : 'bg-soft'} rounded-full `}
-    >  </div> 
-   
-  </div>
-</div>
-
-   
-   </section>
-  <div className="mt-8 w-[100vw]">
-
-                            <div
-                               className="bg-sky-700 mx-auto bg-opacity-[60%] flex btn text-white w-[90%] h-[5em] flex  rounded-xl "
-                                variant="outlined" 
-                                onClick={(e)=>handleOnSubmit(e)}
-                            >
-                                <IonText className="my-auto mx-auto text-2xl">Update Profile</IonText>
-                              
-                            </div>
-                             
-                            </div>
-                           
-                        <button 
-                        className="rounded-xl py-2 w-[100%] mt-24 text-2xl  bg-golden text-white"
-                                onClick={handleDeleteDialog}
-                                id="open-modal" expand="block"
-                        ><IonText>Delete Account</IonText> </button>
-        
-                        </div>
-            </div>
-          {/* </IonContent> */}
-          </ErrorBoundary>
-        )
-    }else{
-        return(<div>
-            Something's wrong
-        </div>)
-    }
-
+  </IonContent>
+);
 
 }
-
-

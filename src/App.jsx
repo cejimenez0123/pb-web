@@ -1,23 +1,25 @@
 import './App.css';
 import { useDispatch,connect,useSelector} from "react-redux"
-import { useEffect, useState ,useRef, useLayoutEffect, useContext} from 'react';
+import {  useEffect, useLayoutEffect, useRef, useState } from 'react';
 import {  getPublicStories } from './actions/PageActions.jsx';
 import LogInContainer from './container/auth/LogInContainer';
 import NavbarContainer from './container/NavbarContainer';
-import DiscoveryContainer from './container/DiscoveryContainer.jsx';
 import EditorContainer from './container/page/EditorContainer'
 import PageViewContainer from './container/page/PageViewContainer'
 import MyProfileContainer from './container/MyProfileContainer';
 import SettingsContainer from './container/SettingsContainer';
 import ProfileContainer from './container/profile/ProfileContainer.jsx';
-import ApplyContainer from './container/auth/ApplyContainer';
 import SearchDialog from './components/SearchDialog';
 import PrivacyNoticeContrainer from './container/PrivacyNoticeContainer.jsx';
-import {  getCurrentProfile,
+import {  
           setSignedInTrue,
           setSignedInFalse,
+          getCurrentProfile,
+          setCurrentProfile,
+          setAuthResolved,
+      
       } from './actions/UserActions'
-      import { IonApp, setupIonicReact, IonRouterOutlet,  useIonRouter, IonFooter} from '@ionic/react';
+      import { IonApp, setupIonicReact, IonRouterOutlet,  useIonRouter, IonFooter, useIonViewWillEnter, IonLoading} from '@ionic/react';
  import LoggedRoute from './LoggedRoute';
 import PrivateRoute from './PrivateRoute';
 
@@ -50,144 +52,235 @@ import Dialog from './components/Dialog.jsx';
 import { Capacitor } from '@capacitor/core';
 import { IonReactRouter} from "@ionic/react-router"
 import ErrorBoundary from './ErrorBoundary.jsx';
-import { Redirect, Route } from 'react-router-dom'
+import { Redirect, Route, useLocation } from 'react-router-dom'
 import AboutContainer from './container/AboutContainer.jsx';
 import PageWrapper from './core/PageWrapper.jsx';
-import checkResult from './core/checkResult.js';
-
+import DashboardContainer from './container/DashboardContainer.jsx';
+import { LoadScript } from '@react-google-maps/api';
+import ContentHubContainer from './container/ContentHubContainer.jsx';
+import DiscoveryContainer from './container/DiscoveryContainer.jsx';
+import { SplashScreen } from '@capacitor/splash-screen';
+import OAuthCallback from './container/page/OauthCallback.jsx';
+// import '@ionic/react/css/palettes/dark.always.css';
+import { watchBackground } from './core/getbackground.jsx';
+import initSocialLogin from './components/initSocialLogin.jsx';
+import { fetchNotifcations } from './actions/ProfileActions.jsx';
+import usePersistentCurrentProfile from './domain/usecases/usePersistentCurrentProfile.jsx';
+import usePushNotificationListener from './domain/usecases/usePushNotificationListener.jsx';
 setupIonicReact()
+function PushNotificationHandler() {
+    usePushNotificationListener()
+    return null
+}
 
-
+const libraries = ["places"];
 function App(props) {
   const {currentProfile} =props
-  const isPhone = useMediaQuery({ query: '(max-width: 800px)' });
 const isHorizPhone = useMediaQuery({ query: '(min-width: 800px)' });
-
-    const isTablet =  useMediaQuery({
-    query: '(max-width: 1100px)'
-  })
+const {loading}=useSelector(state=>state.users)
+watchBackground()
   const isNative = Capacitor.isNativePlatform()
 
   const [isFirstLaunch, setIsFirstLaunch] = useState(true);
   const dispatch = useDispatch()
   const [formerPage, setFormerPage] = useState(null);
-  const [isSaved,setIsSaved]=useState(true)
-// const [showNav,setShowNav]=useState(true)
+ 
+
+const CLIENT_ID = import.meta.env.VITE_OAUTH2_CLIENT_ID;
+const IOS_CLIENT_ID = import.meta.env.VITE_IOS_CLIENT_ID;
+
+initSocialLogin(CLIENT_ID, IOS_CLIENT_ID);
 
 
 const ionRouter = useIonRouter();
-const location = ionRouter.routeInfo?.pathname??window.location
 
   const [seo,setSeo]=useState({title:"Plumbum",heading:"Plumbum" ,image:Enviroment.logoChem,description:"Your writing, Your community", name:"Plumbum", type:"website",url:"https://plumbum.app"})
 
 const [presentingEl, setPresentingEl] = useState(null);
   const [success,setSuccess]=useState(null)
   const [error,setError]=useState(null)
+const [token,setToken]=useState(null)
+const [chuecking,setChecking]=useState(null)
+  const {dialog,loading:userLoading} = useSelector(state=>state.users)
 
-  const dialog = useSelector(state=>state.users.dialog)
+const hasFetchedProfile = useRef(false);
 
-  const initAuth = async () => {
-    const { value } = await Preferences.get({ key: "token" });
-    if (value ) {
-      
-      dispatch(getCurrentProfile()).then(res=>{
-        checkResult(res,payload=>{
-console.log("SSL")
-        },err=>{
-console.log("SSL"+err)
-        })
-      })
+
+useEffect(() => {
+  const init = async () => {
+    const { value: token } = await Preferences.get({ key: "token" });
+    if (token && token !== "undefined" && token !== "null") {
+      dispatch(getCurrentProfile());
+    } else {
+      dispatch(setAuthResolved(true));
     }
   };
-useEffect(() => {
-
-  return ()=>initAuth();
-}, [dispatch]);
-useLayoutEffect(()=>{
-  initAuth()
+  init();
+}, []);
+useEffect(()=>{
+if(currentProfile){
+  dispatch(fetchNotifcations({profile:currentProfile,seen:false}))
+}
 },[])
-useEffect(() => {
+document.documentElement.classList.add('dark');
+useIonViewWillEnter(() => {
   const checkFirstLaunch = async () => {
-    if (isNative) {
+        if (isNative) {
       const { value } = await Preferences.get({ key: 'hasSeenOnboarding' });
       if (value === null) {
         await Preferences.set({ key: "hasSeenOnboarding", value: 'true' });
-   
+  
+      }else if(currentProfile){
+        
+        
+
+        return
       }
+  
+
     }
    
   };
-  checkFirstLaunch();
+ checkFirstLaunch();
 }, [isNative]);
+ useIonViewWillEnter(()=>{
+    const splash = async ()=>await SplashScreen.show({
+      showDuration:3000,
+      autoHide: true,
+      fadeInDuration:1000
+  })
+  splash()
+
+ },[])
+
+const isMobile  = useMediaQuery({ query: "(max-width: 480px)" });        // phones portrait
+const isTablet  = useMediaQuery({ query: "(min-width: 481px) and (max-width: 1199px)" }); // tablets + phone landscape
+const isDesktop = useMediaQuery({ query: "(min-width: 1200px)" });        // desktop + iPad landscape
+
+// Convenience — matches your old isMobileOrTablet usage
+const isMobileOrTablet = isMobile || isTablet;
 
 
-const navbarBot = Capacitor.isNativePlatform() || isTablet;
+
+// ❌ current issues:
+
+// 1. showTopNavbar is hardcoded false — dead variable
+const showTopNavbar = isDesktop
+
+// 2. location derived wrong — doesn't update on navigation
+const location = window.location.pathname
+
+// 3. hiddenPaths check is too rigid — doesn't handle subroutes like /onboard/step2
+const hiddenPaths = ["/onboard", "/apply", "/login"];
+const showBottomNavbar = (!hiddenPaths.includes(location)) && isNative && isMobileOrTablet
 
  return (
 
     <ErrorBoundary>
-        <Context.Provider value={{setPresentingEl,isTablet,isPhone,isNotPhone:!isPhone,isHorizPhone,seo,setSeo,formerPage,setFormerPage,isSaved,setIsSaved,error,setError,setSuccess,success}}>
+        <Context.Provider value={{setPresentingEl,isDesktop,isTablet:isMobileOrTablet,isPhone:isMobileOrTablet,isNotPhone:!isMobileOrTablet,isHorizPhone,seo,setSeo,formerPage,setFormerPage,setError,setSuccess,success}}>
+{isNative && currentProfile && <PushNotificationHandler />}
+    <LoadScript
+      googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
+      libraries={libraries}
+    >
 
   <IonApp>
   <IonReactRouter>
-           {!navbarBot?
-           <NavbarContainer 
-    
-        currentProfile={currentProfile}/>:null}
-              <div>
+       {showTopNavbar &&
+  <div className="fixed top-0 left-0 w-full z-50 w-[100%]">
+    <NavbarContainer isDesktop={isDesktop} currentProfile={currentProfile} />
+  </div>
+}
+
+              <div >
  
     
        
        <Dialog dialog={dialog} presentingElement={presentingEl} />
-<Alert />
+      
+<Alert/>
+<div  >
     <IonRouterOutlet>   
-       <Route exact path={Paths.login()}
-                  render={()=> 
-             
-        <PageWrapper>
-            <LogInContainer  currentProfile={currentProfile} logIn={props.logIn}/>
-                      </PageWrapper>
        
-
-       }
-     />
+ 
      <Route exact path="/" render={() => 
          <PageWrapper>{
-     isFirstLaunch?Capacitor.isNativePlatform()?<Redirect to={Paths.onboard} />:<Redirect to={Paths.about()}/>:<Redirect to={Paths.login()}/>}   
+          currentProfile&&isNative?<ContentHubContainer/>:
+  currentProfile? 
+  <Redirect to={Paths.home} />:  
+  isFirstLaunch && isNative?<Redirect to={Paths.onboard}/>:<Redirect to={Paths.about()}/>   }
      </PageWrapper>}
 />
 <Route exact path="/about" render={() => 
-    <PageWrapper>
+    <PageWrapper  showBackbutton={false} >
      <AboutContainer/></PageWrapper>}
 />
 <Route exact path="/search" render={() => 
-<PageWrapper>
+<PageWrapper showSearchButton={false}>
      <SearchDialog /></PageWrapper>}
 />
 
 
    
-      <Route path={Paths.onboard} render={()=><PageWrapper><OnboardingContainer/></PageWrapper>}/>
+      <Route path={Paths.onboard} render={()=><PageWrapper showBackbutton={false}  presentHeader={false}><OnboardingContainer/></PageWrapper>}/>
 
 
             <Route exact path={Paths.notifications()}
-            render={()=><PrivateRoute currentProfile={currentProfile}><PageWrapper>
-              <NotificationContainer currentProfile={currentProfile}/></PageWrapper></PrivateRoute>}/>
-         <Route
-    exact path={Paths.myProfile}
-      render={()=>  <PrivateRoute>
-        <PageWrapper> 
+            render={()=><PageWrapper><PrivateRoute >
+              <NotificationContainer currentProfile={currentProfile}/></PrivateRoute></PageWrapper>}/>
+              <Route exact path={Paths.login}
+                  render={()=> 
+      
+        <PageWrapper presentHeader={false
+        
+        } >
+
+
+            <LogInContainer  currentProfile={currentProfile} logIn={props.logIn}/>
+ 
+                     </PageWrapper>
+         
+
+       }
+     />
+    <Route
+  path={Paths.home}
+  render={() =>
+
+      <PageWrapper showBackbutton={false}>
+            <PrivateRoute>
+        <ContentHubContainer />
+        </PrivateRoute>
+      </PageWrapper>
+
+  }
+/>
+     <Route 
+    exact path={Paths.dashboard}>
+
+        <PageWrapper>
+                <PrivateRoute>
+          <DashboardContainer/>
+          </PrivateRoute>
+        </PageWrapper>
+     
+    </Route>
+    <Route exact path={Paths.myProfile}
+      render={()=>  
+        <PageWrapper showBackbutton={false} >
+          <PrivateRoute>
           <MyProfileContainer
 
                        
                       
                            />
+                           </PrivateRoute> 
                            </PageWrapper>
-                           </PrivateRoute> }
+                          }
     />
           <Route exact path="/discovery" 
                 render={()=>
-                   <PageWrapper> 
+                   <PageWrapper showBackbutton={false}  showSearchButton={true}> 
                     <DiscoveryContainer/>
                      </PageWrapper>
                       
@@ -199,46 +292,43 @@ const navbarBot = Capacitor.isNativePlatform() || isTablet;
                   />
     
       <Route exact path={Paths.calendar()}
-     render={()=><PageWrapper><CalendarContainer/></PageWrapper>}/>
+     render={()=><PageWrapper showBackbutton={false} ><CalendarContainer/></PageWrapper>}/>
           <Route exact path={Paths.newsletter() }
-     render={()=><LoggedRoute 
- currentProfile={currentProfile}
-     ><PageWrapper><NewsletterContainer/></PageWrapper></LoggedRoute>}/>
+     render={()=><PageWrapper><NewsletterContainer/></PageWrapper>}/>
      <Route exact path={'/reset-password' }
      render={()=><PageWrapper><ResetPasswordContainer/></PageWrapper>}/>
      <Route path={Paths.collection.route()}
      render={()=><PageWrapper><CollectionContainer currentProfile={currentProfile}/></PageWrapper>}/>
      <Route path={'/signup'}
-                render={()=><PageWrapper>
+                render={()=>
+                            <PageWrapper>
                               <SignUpContainer/></PageWrapper>
-                }/>
+                        }/>
       <Route path={'/register'}
                 render={()=><PageWrapper>
                         <UserReferralContainer/></PageWrapper>}/>
        <Route path={Paths.feedback()}
             render={()=><PageWrapper><FeedbackContainer/></PageWrapper>}/>
      <Route path={Paths.addToCollection.route}
-               render={()=> <PrivateRoute
-      currentProfile={currentProfile}
-  
-      >
-            <PageWrapper><AddToCollectionContainer/>
-      </PageWrapper>
-            </PrivateRoute>}/>
+               render={()=>   <PageWrapper><PrivateRoute>
+          <AddToCollectionContainer/>
+   
+            </PrivateRoute>   </PageWrapper>}/>
      <Route 
             path={Paths.addStoryToCollection.route}
-              render={()=><PrivateRoute 
-                 currentProfile={currentProfile}
+              render={()=> <PageWrapper> <PrivateRoute 
+                
                     >
-                           <PageWrapper> 
-                            <AddStoryToCollectionContainer/>  </PageWrapper> 
-                      </PrivateRoute>}/>
+                          
+                            <AddStoryToCollectionContainer/> 
+                      </PrivateRoute> </PageWrapper> }/>
      <Route path={Paths.editCollection.route()}
       render={()=>
+          <PageWrapper>  
       <PrivateRoute 
         currentProfile={currentProfile}
-      >     <PageWrapper>     <EditCollectionContainer/>  </PageWrapper> 
-      </PrivateRoute>}/>
+      >      <EditCollectionContainer/>
+      </PrivateRoute>  </PageWrapper> }/>
      
 
        <Route path={Paths.hashtag.route()}
@@ -252,15 +342,19 @@ const navbarBot = Capacitor.isNativePlatform() || isTablet;
       
 
       <Route path={Paths.workshop.reader()}
-    render={()=><PrivateRoute      
-     currentProfile={props.currentProfile}>  <PageWrapper> <WorkshopContainer/>  </PageWrapper> </PrivateRoute>}/>
+    render={()=><PageWrapper   showBackbutton={false}><PrivateRoute      
+     currentProfile={props.currentProfile}>  <WorkshopContainer/>  </PrivateRoute> </PageWrapper>}/>
     <Route 
     path={Paths.workshop.route()}
-    render={()=><PrivateRoute
+    render={()=><PageWrapper key={Paths.workshop.route()} showBackbutton={false}><PrivateRoute
+     key={Paths.workshop.route()}
       currentProfile={props.currentProfile}
-    >  <PageWrapper> <WorkshopContainer/>  </PageWrapper> </PrivateRoute>}/>
+    >   <WorkshopContainer
+    
+     key={Paths.workshop.route()}
+     /> </PrivateRoute> </PageWrapper> }/>
     <Route path="/profile/:id/view" render={()=>
-      <PageWrapper>   <ProfileContainer/>  </PageWrapper> 
+      <PageWrapper key={"/profile/:id/view"} >   <ProfileContainer  key={"/profile/:id/view"} />  </PageWrapper> 
       }/>
 
  
@@ -268,27 +362,30 @@ const navbarBot = Capacitor.isNativePlatform() || isTablet;
     render={()=>  <PageWrapper> <EmailPreferences/>  </PageWrapper> }/>
    
     <Route  
-       exact path={"/story/:type/edit"}
-        render={()=> 
+      path={"/story/:type/edit"}
+        render={()=>       <PageWrapper>  
           <PrivateRoute>
-              <PageWrapper> 
+       
           <EditorContainer 
     htmlContent={props.htmlContent} 
         currentProfile={currentProfile} 
-            />  </PageWrapper> 
+            />  
       </PrivateRoute>
+      </PageWrapper> 
         }/>
 <Route
  exact path={Paths.editPage.route}
   render={() =>
+    <PageWrapper>
     <PrivateRoute>
-      <PageWrapper>
+      
         <EditorContainer 
         htmlContent={props.htmlContent} 
         currentProfile={currentProfile} 
               />
-      </PageWrapper>
+ 
     </PrivateRoute>
+         </PageWrapper>
   }
 />
       <Route path={Paths.page.route()} render={()=>
@@ -297,37 +394,44 @@ const navbarBot = Capacitor.isNativePlatform() || isTablet;
     /> 
 
 
-      <Route path="/profile/edit" render={()=>
- 
+      <Route path={Paths.editProfile} render={()=>
+  <PageWrapper showBackbutton={false}> 
         <PrivateRoute  >
-            <PageWrapper> 
+           
         <SettingsContainer />
-          </PageWrapper> 
+      
         </PrivateRoute>
+            </PageWrapper> 
       }/>
        <Route path={"/terms"} render={()=>
          <PageWrapper> 
           <TermsContainer />  </PageWrapper> }
     /> 
-   <Route path={"/use-referral"} render={()=>
-         <PageWrapper> 
-          <UserReferralContainer />  </PageWrapper> }
-    /> 
+  <Route
+  exact
+  path="/oauth2callback"
+  render={() => (
+    <PageWrapper presenHeader={false}>
+      <OAuthCallback />
+    </PageWrapper>
+  )}
+/>
    </IonRouterOutlet>
+</div>
 
-
-       {navbarBot?
+       {showBottomNavbar&&
           <IonFooter>
-   <div className=" bg-white">
-  <NavbarContainer currentProfile={currentProfile} />
+   <div className=" dark:bg-base-bgDark bg-base-surface">
+  <NavbarContainer isDesktop={isDesktop} currentProfile={currentProfile} />
 </div>
 </IonFooter>
-     :null}   
+     }   
      </div>
 {/* </IonPage>  */}
       </IonReactRouter>
       
     </IonApp>
+</LoadScript>
   </Context.Provider>
   </ErrorBoundary>
   );
@@ -355,5 +459,7 @@ function mapStateToProps(state){
   }
 }
 export default connect(mapStateToProps,mapDispatchToProps)(App)
+
+
 
 

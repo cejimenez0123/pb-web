@@ -8,25 +8,32 @@ import Paths from "../../core/paths";
 import { initGA,sendGAEvent } from "../../core/ga4.js";
 import { setCollectionInView } from "../../actions/CollectionActions";
 import Enviroment from "../../core/Enviroment.js";
-import Context from "../../context.jsx";
 import { IonImg, IonText, useIonRouter } from "@ionic/react";
 import { useSelector } from "react-redux";
 import { useDialog } from "../../domain/usecases/useDialog.jsx";
-export default function IndexItem({item,handleFeedback,type}) {
+import FeedbackDialog from "./FeedbackDialog.jsx";
+import { updateStory } from "../../actions/StoryActions.jsx";
+import checkResult from "../../core/checkResult.js";
+export default function IndexItem({item,type}) {
   let collectionStr ="collection"
-    const [canUserAdd,setCanUserAdd]=useState(false)
+  const {openDialog,resetDialog,dialog,closeDialog}=useDialog()
+ 
     useLayoutEffect(()=>{
       initGA()
     },[])
     const {currentProfile} =useSelector(state=>state.users)
      const dispatch = useDispatch()
     const router = useIonRouter()
-   
+   const {canSee,canAdd,canEdit,role}= computePermissions(item,currentProfile, {
+  getAccessList: (s) => s.betaReaders,
+  getAccessRole: (r) => r.permission,
+  isPrivate: (s) => s.isPrivate,
+  isOpen: () => false, // stories usually not open collab
+  canWriteRoles: ["commenter", "editor"],
+  canEditRoles: ["editor"],
+});
     const [canUserEdit,setCanUserEdit]=useState(false)
-    useLayoutEffect(()=>{
-      soCanUserEdit()
-      soCanUserAdd()
-    },[currentProfile])
+
     const copyShareLink=()=>{
       if(item && item.storyIdList){
         sendGAEvent("Copy Share Link",`Share Link Collection:${item?.title}`)
@@ -48,81 +55,85 @@ export default function IndexItem({item,handleFeedback,type}) {
   }}
     const handleEditClick = (comp)=>{
  
-      if(type=="collection"){
-        router.push(Paths.editCollection.createRoute(comp.id))
-      }else{
-         dispatch(setHtmlContent({html:comp.data}))
-        dispatch(setEditingPage({page:comp}))
+      if(comp.author){
+        dispatch(setHtmlContent(comp.data))
         dispatch(setPageInView({page:comp}))
-        router.push(Paths.editPage.createRoute(comp.id), "forward", "replace");
-      }  
+        // dispatch(setPageInView({page:comp}))
+        router.push(Paths.editPage.createRoute(comp.id));
+      }else{
+        router.push(Paths.editCollection.createRoute(comp.id))
+      } 
     }
 
     const handleNavigate=()=>{
    
-    if(type!="story"){
+    if(item.author){
+      dispatch(setPageInView({page:item}))
+              router.push(Paths.page.createRoute(item.id))
+    }else{
               dispatch(setCollectionInView({collection:item}))
               router.push(Paths.collection.createRoute(item.id))
-        }else{
-           
-              dispatch(setPageInView({page:item}))
-              router.push(Paths.page.createRoute(item.id))
         }
 
     }
 
 
-   const soCanUserAdd=()=>{
-    let arr=[RoleType.editor,RoleType.writer]
-    let found = item && item.roles?item.roles.find(role=>currentProfile && role.profileId==currentProfile.id):null
-    if(currentProfile && item){
-      if(currentProfile.id==item.authorId){
-        setCanUserAdd(true)
-        return
-      }
-      if(currentProfile.id==item.profileId){
-        setCanUserAdd(true)
-        return
-      }
-      if(found && arr.includes(found.role)){
-        setCanUserAdd(true)
-        return
-      }
-    }
-    setCanUserAdd(false)
-   }
-const soCanUserEdit = () => {
-  // 1. Guard clause: if we don't have the data, they can't edit.
-  if (!currentProfile || !item) {
-    setCanUserEdit(false);
-    return;
-  }
-
-  
-  const isOwner = currentProfile.id === item.authorId || currentProfile.id === item.profileId;
 
 
-  const hasEditorRole = item.roles?.some(
-    (role) => role.profileId === currentProfile.id && role.role === RoleType.editor
-  );
-
-  setCanUserEdit(isOwner || hasEditorRole);
-
-};
 
     const handleAddToClick = ()=>{
-       if(type!="story"){
+ 
+       if(item.author){
+        router.push(Paths.addStoryToCollection.story(item.id))
+       }else{
       router.push(Paths.addToCollection.createRoute(item.id))
-      }else{
-      router.push(Paths.addStoryToCollection.story(item.id))
       }
+      resetDialog()
     }
 
    let updated= formatDate(item.updated)
    
 const handleAddToLibrary=()=>{
+
   router.push(Paths.addStoryToCollection.collection(item.id))
+  resetDialog()
 }
+const [feedback,setFeedback]=useState()
+   const handleFeedback=()=>{
+
+openDialog({disagree:()=>resetDialog(),agreeText:"Get Feedback",agree:()=>{
+  resetDialog()
+    const params = { ...item, description:feedback, page: item, id: item.id, needsFeedback: true };
+        dispatch(updateStory(params)).then(res => {
+          checkResult(res, payload => {
+    
+            if (payload.story) router.push(Paths.workshop.createRoute(payload.story.id,"foward"));
+          });
+        });
+      },disagreeText:null,scrollY:false,text:
+    <FeedbackDialog  
+page={item}
+isFeedback={true}
+handleChange={e=>setFeedback(e)} 
+handleFeedback={(item)=>{
+  resetDialog()
+    const params = { ...item, description:feedback, page: item, id: item.id, needsFeedback: true };
+        dispatch(updateStory(params)).then(res => {
+          checkResult(res, payload => {
+    
+            if (payload.story) router.push(Paths.workshop.createRoute(payload.story.id,"foward"));
+          });
+        });
+}}
+handlePostPublic={()=>{
+
+  handleisPrviate(false)
+  resetDialog()
+  router.push(Paths.page.createRoute(item.id),"forward")
+}}
+handleClose={()=>{
+closeDialog()
+}} />})}
 
     return(
   <div className="w-[100%]  overflow-visible ">
@@ -145,28 +156,28 @@ const handleAddToLibrary=()=>{
 </div>
 
            
-              { canUserEdit?(
+              {canEdit?(
        
        <div className="dropdown  absolute my-auto relative w-fit z-40 dropdown-left">
-  <div  tabIndex={0} role="button" className=" m-1 p-2 rounded-full w-[4rem]  border-2 hover:bg-emerald-600 border border-soft h-[4rem]  "> <IonImg className="  my-auto mx-auto  " style={{width:"3rem", height:"3rem"}} src={edit}/></div>
-  <ul tabIndex={0} className="dropdown-content menu bg-emerald-50 rounded-box z-10 w-52 p-2 shadow">
-  <li className="" onClick={
-        ()=>handleEditClick(item)}><a className=" ">Edit</a></li>
-       {type!="collection"?<li className=" " onClick={handleFeedback}><a className=" "><IonText>Get Feedback</IonText></a></li>:null}
-       {canUserAdd?<li className=" no-underline" onClick={handleAddToClick}><a className="no-underline "><IonText>{item && item.storyIdList!=null?`Add items to ${item?.title}`:"Add to Collection" }</IonText></a></li>:null}
+  <div  tabIndex={0} role="button" className=" m-1 p-2 rounded-full w-[4rem]  border-2 hover:bg-emerald-600 border border-soft h-[4rem]  "> <IonImg className="  my-auto mx-auto  " style={{width:"3rem", height:"3rem",padding:"0.5em"}} src={edit}/></div>
+  <ul tabIndex={0} className="dropdown-content bg-base-bg  hover:bg-sky-100 text-soft  menu rounded-box z-10 w-52 p-2 shadow">
+  <li className="bg-base-bg  hover:bg-sky-100" onClick={
+        ()=>handleEditClick(item)}><a className="bg-base-bg  hover:bg-sky-100 text-soft ">Edit</a></li>
+       {item.author?<li className=" bg-base-bg  hover:bg-sky-100 text-soft" onClick={handleFeedback}><a className=" "><IonText>Get Feedback</IonText></a></li>:null}
+       {canAdd?<li className=" no-underline bg-base-bg  hover:bg-sky-100 text-soft" onClick={handleAddToClick}><a className="no-underline bg-base-bg  hover:bg-sky-100 text-soft"><IonText>{item && item.storyIdList!=null?`Add items to ${item?.title}`:"Add to Collection" }</IonText></a></li>:null}
          </ul>
   </div>
        
   )
-  : !canUserEdit?(
+  : !canEdit?(
   
    <div className="dropdown my-auto relative w-fit dropdown-left">
-   <div tabIndex={0} role="button" className=" m-1 p-2 rounded-full bg-emerald-800 "> <IonImg classname="my-auto mx-auto  " src={addBox}/></div>
+   <div tabIndex={0} role="button" className=" m-1 p-2 rounded-full bg-emerald-800 "> <IonImg classname="my-auto mx-auto  " style={{height:"3em",width:"3em"}} src={addBox}/></div>
    <ul tabIndex={0} className="dropdown-content menu bg-emerald-50 rounded-box  w-52 p-2 shadow">
   {!item.isPrivate && type==collectionStr&&
         <li className="no-underline "  onClick={handleAddToLibrary}><a className="no-underline"> Add Collection to Library</a></li>}
        
-        {canUserAdd&&
+        {canAdd&&
         <li className="no-underline"  onClick={handleAddToClick}><a className="no-underline ">{item && item.storyIdList!=null?`Add items to ${item?.title}`:"Add to Collection" }</a></li>}
          {/* {updated} */}
          <li  onClick={copyShareLink}><a className=" no-underline" >Share</a></li>

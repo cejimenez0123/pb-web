@@ -1,43 +1,141 @@
-import {  useEffect, useLayoutEffect,useState } from "react";
+// import isValidUrl from "../../core/isValidUrl";
+// import Paths from "../../core/paths";
+// import Enviroment from "../../core/Enviroment";
+// import {  sendGAEvent } from "../../core/ga4";
+// import { IonText, useIonRouter } from "@ionic/react";
+// import { useEffect, useState } from "react";
+// import shortName from "../../core/shortName";
+// function ProfileCircle({profile, className="white", fontSize="", includeUsername=true, isGrid=false}) {
+//   const router = useIonRouter()
+//     const [pictureUrl,setPictureUrl]=useState(Enviroment.blankProfile)
+//   async function fetchImage() {
+//             if(!profile?.profilePic)return null
+//             if(isValidUrl(profile?.profilePic)){
+//                 setPictureUrl(profile?.profilePic)
+         
+//             }else{
+//              const src = Enviroment.imageProxy(profile.profilePic)
+
+//                     setPictureUrl(src)
+//             }
+              
+//             }
+//         useEffect(() => {
+//     let isMounted = true;
+ 
+    
+
+
+//     fetchImage();
+//     return () => (isMounted = false);
+//   }, [profile]);
+//   const handleNavigate = () => {
+//     sendGAEvent(
+//       "Navigate",
+//       `Navigate to profile:${{id:profile.id,userrname:profile.username}}`,
+//       profile.username,
+//       0,
+//       false
+//     )
+//     router.push(Paths.profile.createRoute(profile.id))
+//   }
+
+//   if (!profile) {
+//     return (
+//       <span className="flex flex-row shadow">
+//         <div className="overflow-hidden bg-emerald-700 rounded-full max-w-8 min-w-8 min-h-8 max-h-8 border-2 border-white" />
+//       </span>
+//     )
+//   }
+
+//   // ✅ compute once, no state, no effect
+//   // const profilePic = resolveSrc(profile.profilePic)
+
+//   return (
+//     <span className="flex flex-row bg-transparent">
+//       <span className="flex flex-row ">
+//         <div
+//           onClick={handleNavigate}
+//           className="overflow-hidden bg-emerald-700 rounded-full max-w-8 min-w-8 min-h-8 max-h-8 border-2 border-white"
+//         >
+//           <img
+//             src={pictureUrl}
+//             className="object-cover w-full h-full"
+//             alt="profile"
+//           />
+//         </div>
+
+//         <p className={`my-auto px-2 text-soft dark:text-cream ${fontSize}`}>
+//           {includeUsername
+//             && shortName(profile.username,13)}</p>
+//       </span>
+//     </span>
+//   )
+// }
+// export default ProfileCircle;
 import isValidUrl from "../../core/isValidUrl";
 import Paths from "../../core/paths";
 import Enviroment from "../../core/Enviroment";
-import { initGA, sendGAEvent } from "../../core/ga4";
-import { IonImg, IonText, useIonRouter } from "@ionic/react";
-function ProfileCircle({profile,color="white",fontSize="",isGrid=false}){
-    const [profilePic,setProfilePic]=useState(Enviroment.blankProfile)
-    const router = useIonRouter()
+import { sendGAEvent } from "../../core/ga4";
+import { useIonRouter } from "@ionic/react";
+import { useEffect, useState } from "react";
+import shortName from "../../core/shortName";
 
-  
-    useLayoutEffect(()=>{
-  
-            if(profile){
-              if(isValidUrl(profile.profilePic)){
+const SIZES = {
+  small:  "max-w-8 min-w-8 min-h-8 max-h-8",
+  medium: "max-w-14 min-w-14 min-h-14 max-h-14",
+  large:  "max-w-24 min-w-24 min-h-24 max-h-24",
+};
 
-                setProfilePic(profile.profilePic)
-         
-            }else{
-          
-               const src = Enviroment.imageProxy(profile.profilePic);
-            
-setProfilePic(src)
-          
-          
-            }}
-    },[profile])
-    useEffect(()=>{
-      initGA()
-    },[])
-    const ProfilePic = ({url})=><IonImg className="object-fit max-h-9 max-w-10 " src={url}/>
-    const handleNavigate=()=>{
-      sendGAEvent("Navigate",`Navigate to profile:${{id:profile.id,userrname:profile.username}}`,profile.username,0,false)
-     router.push(Paths.profile.createRoute(profile.id))
+function ProfileCircle({ profile, className = "white", fontSize = "", includeUsername = true, isGrid = false, size = "small" }) {
+  const router = useIonRouter();
+  const [pictureUrl, setPictureUrl] = useState(Enviroment.blankProfile);
+
+  useEffect(() => {
+    if (!profile?.profilePic) return;
+    if (isValidUrl(profile.profilePic)) {
+      setPictureUrl(profile.profilePic);
+    } else {
+      setPictureUrl(Enviroment.imageProxy(profile.profilePic));
     }
-  
-  return(<span className="flex flex-row bg-transparent">{profile?<span className="flex flex-row bg-transparent"><div  onClick={handleNavigate}className="overflow-hidden bg-emerald-700 rounded-full max-w-8 min-w-8  min-h-8 max-h-8  border-2 border-white ">
-  <ProfilePic url={profilePic}/></div> <IonText className={`my-auto  px-2 text-soft ${fontSize} `}>{profile.username.length>9?profile.username.toLowerCase().slice(0,9)+"...":profile.username}</IonText><span/></span>:<div className=" max-w-8 min-w-8  bg-slate-100 skeleton"/>}</span>)
+  }, [profile]);
 
+  const handleNavigate = () => {
+    sendGAEvent(
+      "Navigate",
+      `Navigate to profile:${{ id: profile.id, username: profile.username }}`,
+      profile.username,
+      0,
+      false
+    );
+    router.push(Paths.profile.createRoute(profile.id));
+  };
 
+  const sizeClass = SIZES[size] ?? SIZES.small;
+
+  if (!profile) {
+    return (
+      <span className="flex flex-row shadow">
+        <div className={`overflow-hidden bg-emerald-700 rounded-full border-2 border-white ${sizeClass}`} />
+      </span>
+    );
+  }
+
+  return (
+    <span className="flex flex-row bg-transparent">
+      <span className="flex flex-row">
+        <div
+          onClick={handleNavigate}
+          className={`overflow-hidden bg-emerald-700 rounded-full border-2 border-white ${sizeClass}`}
+        >
+          <img src={pictureUrl} className="object-cover w-full h-full" alt="profile" />
+        </div>
+        <p className={`my-auto px-2 text-soft dark:text-cream ${fontSize}`}>
+          {includeUsername && shortName(profile.username, 13)}
+        </p>
+      </span>
+    </span>
+  );
 }
 
-export default ProfileCircle
+export default ProfileCircle;

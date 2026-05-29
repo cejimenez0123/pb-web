@@ -10,16 +10,18 @@ const getStory = createAsyncThunk("story/getStory",async ({id},thunkApi)=>{
 
     let token =(await Preferences.get({key:"token"})).value
     if(token){
+      
      let data = await storyRepo.getStoryProtected({id:id})
      return {story:data.story}
 
     }else{
+  
           let data = await storyRepo.getStoryPublic({id:id})
         return {story:data.story}
 
     }
   }catch(error){
-    console.log("Error in getStory:", error);
+ 
     return {error}
   }
 })
@@ -68,19 +70,31 @@ try{
       return {error}
     }
   })
-const getMyStories= createAsyncThunk(
-    'pages/getMyStories',
-    async (params,thunkApi) => {
-      try{
-      let data = await storyRepo.getMyStories(params)
- 
-    return {
-      pageList:data.stories
+const getMyStories = createAsyncThunk(
+  'pages/getMyStories',
+  async (params, thunkApi) => {
+    try {
+          
+      const data = await storyRepo.getMyStories(params);
+
+
+
+      return {
+        totalCount:data.totalCount,
+        hasMore:data.hasMore,
+        skip:data.skip,
+        take:data.take,
+        pageList: data.items,
+      };
+    } catch (e) {
+   
+
+      return thunkApi.rejectWithValue(
+        e?.response?.data || e.message
+      );
     }
-    }catch(e){
-  
-    return {error:`get my stories ${e.message}`}
-  }})
+  }
+);
 const createStory = createAsyncThunk("pages/createStory",async (params,thunkApi)=>{
   try{
 
@@ -90,12 +104,12 @@ const createStory = createAsyncThunk("pages/createStory",async (params,thunkApi)
       if(story && !story.isPrivate && story.id) {
        await algoliaRepo.partialUpdateObject("story",story.id,{title:story?.title})
       }
-   
+
       return {
         story:data.story
       }
   }catch(e){
-    console.log("CREATE STORY ERROR",e)
+  
     return {
       error: "Create Story"+e
     }
@@ -143,6 +157,17 @@ const getCollectionStoriesPublic = createAsyncThunk("pages/getCollectionStoriesP
     return {error:e}
   }
 })
+const getPrompts = createAsyncThunk("pages/getPrompts",async (params,thunkApi)=>{
+  try{
+     let data = await storyRepo.getPrompts()
+ 
+     return {
+      prompts:data.prompts
+     }
+  }catch(e){
+    return {error:e}
+  }
+})
 const getCollectionStoriesProtected = createAsyncThunk("pages/getCollectionStoriesProtected",async (params,thunkApi)=>{
   try{
 
@@ -157,6 +182,6 @@ const getCollectionStoriesProtected = createAsyncThunk("pages/getCollectionStori
     }
   }
 })
-export {deleteStory,getStory,getMyStories,createStory,updateStory,
+export {deleteStory,getStory,getMyStories,createStory,updateStory,getPrompts,
   getCollectionStoriesProtected,getCollectionStoriesPublic,fetchRecommendedStories
 }

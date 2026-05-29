@@ -1,246 +1,223 @@
-import {useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { useState, useLayoutEffect, useEffect, useContext } from "react";
-import "../../styles/PageView.css";
+import { useState, useLayoutEffect, useEffect, useMemo } from "react";
+import { IonContent, useIonRouter } from "@ionic/react";
 import PageViewItem from "../../components/page/PageViewItem";
-import { getStory } from "../../actions/StoryActions";
 import CommentThread from "../../components/comment/CommentThread";
-import { postStoryHistory } from "../../actions/HistoryActions";
-import { getProfileHashtagCommentUse } from "../../actions/HashtagActions";
+import { getStory } from "../../actions/StoryActions";
+import { fetchCommentsOfPage } from "../../actions/PageActions.jsx";
 import ErrorBoundary from "../../ErrorBoundary";
-import Context from "../../context";
-import { initGA, sendGAEvent } from "../../core/ga4.js";
+import Paths from "../../core/paths.js";
+import { useAlert } from "../../core/useAlert.jsx";
+import AlertType from "../../core/AlertType.js";
 import useScrollTracking from "../../core/useScrollTracking.jsx";
 import checkResult from "../../core/checkResult.js";
-import { IonBackButton, IonContent, IonHeader } from "@ionic/react";
-import { setComments } from "../../actions/PageActions.jsx";
-import Paths from "../../core/paths.js";
-import { Capacitor } from "@capacitor/core";
-import { useIonRouter } from '@ionic/react';
+import { initGA, sendGAEvent } from "../../core/ga4.js";
+import Enviroment from "../../core/Enviroment.js";
+import computePermissions from "../../core/compusePermissions.jsx";
+
+// ── Module level — stable references, never recreated ─────────────────────────
+const EMPTY_COMMENTS = [];
+
+const STORY_CONFIG = {
+  getOwnerId:    (r) => r.authorId,
+  getAccessList: (r) => r.betaReaders ?? [],
+  getAccessRole: (entry) => entry.role,
+  isPrivate:     (r) => r.isPrivate,
+  isOpen:        () => false,
+  canWriteRoles: [],
+  canEditRoles:  [],
+};
+
+// Layout
+const WRAP    = "max-w-[50em] mx-auto px-4";
+const SECTION = "pt-8 sm:pt-10 lg:pt-12";
+const BLOCK   = "py-4";
+const HEADING = "text-[1em] font-bold dark:text-cream  text-emerald-800 ";
+const CARD    = ["bg-[#f4f4e0] dark:bg-slate-900", "rounded-xl shadow-sm", "transition-colors duration-300"].join(" ");
+const FADE    = "transition-opacity duration-500";
+const CENTER  = "text-center mx-auto";
+
 export default function PageViewContainer() {
-  const { setSeo, seo, setError, } = useContext(Context);
+  const { showAlert } = useAlert();
   const { id } = useParams();
   const dispatch = useDispatch();
- const { currentProfile } = useSelector((state) => state.users);
-  const router = useIonRouter()
+  const router = useIonRouter();
+  const currentProfile = useSelector((state) => state.users.currentProfile);
   const page = useSelector((state) => state.pages.pageInView);
-  const comments = useSelector((state) => state.comments.comments);
-    const [canUserSee, setCanUserSee] = useState(false)
-useScrollTracking({
-  contentType: "story",
-  contentId: page?.id,
-  authorId: page?.authorId,
-  enableCompletion: canUserSee === true,
-  completionEvent: "story_read_complete",
-});
+
+const { canSee, canAdd, canEdit } = useMemo(
+  () => computePermissions(page, currentProfile, STORY_CONFIG),
+  [page, currentProfile]  // ← add page
+);
+  // ── Stable selector — no ?? [] inside useSelector ────────────────────────
+  const commentsRaw = useSelector((s) => s.comments.byStory?.[page?.id]);
+  const comments = commentsRaw ?? EMPTY_COMMENTS;
 
   const [pending, setPending] = useState(true);
   const [rootComments, setRootComments] = useState([]);
   const [errorStatus, setErrorStatus] = useState(null);
+  const isNative = useIonRouter();
 
-  useScrollTracking({ name: page ? JSON.stringify(page) : id });
+  // ── Fetch comments ────────────────────────────────────────────────────────
+  useEffect(() => {
+    if (!page?.id) return;
+    dispatch(fetchCommentsOfPage({ id: page.id, isPublic: !currentProfile }));
+  }, [page?.id]);
+
+  // ── Derive root comments — one effect only ────────────────────────────────
+  useEffect(() => {
+    setRootComments(
+      comments.length ? comments.filter((c) => c && !c.parentId) : []
+    );
+  }, [comments]);
+
+  useScrollTracking({
+    contentType:      "story",
+    contentId:        page?.id,
+    authorId:         page?.authorId,
+    enableCompletion: canSee,
+    completionEvent:  "story_read_complete",
+  });
 
   useLayoutEffect(() => {
     initGA();
-  }, []);
-
-  useLayoutEffect(() => {
-    if (currentProfile) {
-      dispatch(getProfileHashtagCommentUse({ profileId: currentProfile.id }));
-    }
-    return () => {
-      if (currentProfile && page && import.meta.env.VITE_NODE_ENV !== "dev") {
-        dispatch(postStoryHistory({ profile: currentProfile, story: page }));
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    if (comments?.length) {
-      setRootComments(comments.filter((c) => c && c.parentId == null));
-    }
-  }, [comments]);
-
-  useEffect(() => {
-
     fetchStory();
-  }, [id,dispatch]);
+  }, [id]);
+
+  // ── Unlock text selection inside Ionic shadow DOM ─────────────────────────
+  useEffect(() => {
+    const unlock = () => {
+      document.querySelectorAll("ion-content").forEach((host) => {
+        host.style.webkitUserSelect = "text";
+        host.style.userSelect = "text";
+        try {
+          const inner = host.shadowRoot?.querySelector(".inner-scroll");
+          if (inner) {
+            inner.style.webkitUserSelect = "text";
+            inner.style.userSelect = "text";
+          }
+        } catch (_) {}
+        host.getScrollElement?.()
+          .then((el) => {
+            if (el) {
+              el.style.webkitUserSelect = "text";
+              el.style.userSelect = "text";
+            }
+          })
+          .catch(() => {});
+      });
+    };
+    const t = setTimeout(unlock, 200);
+    return () => clearTimeout(t);
+  }, []);
 
   const fetchStory = async () => {
-    setPending(true)
+    setPending(true);
     setErrorStatus(null);
-
     try {
-       dispatch(getStory({ id })).then((res) => {
-
-
-      checkResult(
-        res,
-        (payload) => {
-          if (payload?.story) {
-            if (payload.story.comments?.length) {
-              dispatch(setComments({ comments: payload.story.comments }));
+      dispatch(getStory({ id })).then((res) => {
+        checkResult(
+          res,
+          (payload) => {
+            if (payload?.story) {
+              setPending(false);
+            } else throw new Error("Story not found");
+          },
+          (err) => {
+            setPending(false);
+            if (err?.response?.status === 404) {
+              setErrorStatus(404);
+              showAlert({ message: "Story not found", type: AlertType.error });
+            } else {
+              showAlert({ message: err.message || "Failed to load story", type: AlertType.error });
+              setErrorStatus(err?.response?.status || 500);
             }
-            setPending(false)
-          } else {
-            throw new Error("Story not found");
           }
-        },
-        (err) => {
-          // Handle forbidden specifically
-              setPending(false)
-          if (err?.response?.status === 403) {
-   
-            setErrorStatus(403);
-          } else {
-            setError(err.message || "Failed to load story");
-            setErrorStatus(err?.response?.status || 500);
-          }
-
-        }
-           )});
-
+        );
+      });
     } catch (error) {
-          setPending(false)
-      if (error?.response?.status === 403) {
-        setErrorStatus(403);
-
-      } else {
-        setError(error.message);
-      
+      setPending(false);
+      if (error?.response?.status === 403) setErrorStatus(403);
+      else {
+        showAlert({ message: error.message, type: AlertType.error });
         setErrorStatus(500);
       }
     }
   };
-  const soCanUserSee=()=>{
-    if(!page.isPrivate){
-      return true
-    }
-    if (page?.isPrivate) {
-    
-      if (currentProfile && currentProfile.id === page.authorId) {
-        return true;
-      }
-   
-     if(page.collections){
 
-     let found = page.collections.find(col=>!col.collection.isPrivate)
-    if(found) return true
-        }
-
-    if(page.betaReaders.length){
-      let canSee = page.betaReaders.find((br) => {
-        if (currentProfile && br.profileId === currentProfile.id) {
-          return true;
-        }
-      });
-
-      if(canSee){
-      return true;
-      }
-    }
-    }else{
-    return false
-    }}
-  useEffect(() => {
-    setPending(true);
-    page && setCanUserSee(soCanUserSee()) && sendGAEvent({
-  story_id: page.id,
-  author_id: page.authorId,
-  is_private: page.isPrivate,
-  viewer_logged_in: Boolean(currentProfile),
-  platform: Capacitor.isNativePlatform() ? "native" : "web"
-},[page])
-
-
-    setPending(false);
-  },[page])
-  useEffect(() => {
-  if (errorStatus === 403) {
-    sendGAEvent("story_access_denied", {
-      story_id: id,
-      viewer_logged_in: Boolean(currentProfile),
-    });
-  }
-}, [errorStatus]);
-useEffect(() => {
-  if (page && rootComments && rootComments.length ) {
-    sendGAEvent("view_comments", {
-      story_id: page.id,
-      comment_count: rootComments?.length,
-    });
-  }
-}, [rootComments]);
+  const handleRefresh = () => window.location.reload();
 
   const handleBack = () => {
-     sendGAEvent("story_exit_back", {
-    story_id: page?.id,
-    exit_type: window.history.length > 1
-      ? "history_back"
-      : "fallback_discovery",
-  });
-    if (window.history.length > 1) {
-          router.goBack()
-    } else {
-      router.push(Paths.discovery);
-    }
+    sendGAEvent("story_exit_back", {
+      story_id:  page?.id,
+      exit_type: window.history.length > 1 ? "history_back" : "fallback_discovery",
+    });
+    window.history.length > 1
+      ? router.goBack()
+      : router.push(Paths.discovery, "back");
   };
-  useLayoutEffect(() => {
-    if (page) {
-      setSeo({
-        ...seo,
-        title: page.title,
-        description: page.description,
-      });
-    }
-  }, [page]);
-
-  const PageDiv = ({ page }) =>
-    page ? (
-      <PageViewItem page={page} currentProfile={currentProfile} />
-    ) : (
-      <div className="skeleton w-[95vw] mx-auto sm:w-[50em] mx-auto bg-emerald-50 h-page" />
-    );
+// PageViewItem.jsx
 
   return (
     <ErrorBoundary>
-         <IonContent fullscreen={true}  style={{"--background":"#f4f4e0"}}className="ion-padding-bottom" >
- 
+      <IonContent
+        fullscreen
+        className="ion-padding-bottom page-content"
+      >
+        <div
+          className="relative pb-32 min-h-screen bg-[#f4f4e0] dark:bg-slate-950 transition-colors duration-300"
+          style={{ WebkitUserSelect: "text", userSelect: "text" }}
+        >
+          {pending && <PageViewSkeleton />}
 
-        <IonHeader className=" ">
-          {Capacitor.isNativePlatform()||true?<IonBackButton
-             className="ion-padding-start "
-      onClick={handleBack}
-    />:null}</IonHeader>
-    <div className="py-12 bg-cream">
-       <div className=" min-h-[40em] ion-padding-bottom  ">
-        <div className=" text-center bg-cream py-[4em] mx-auto h-[100%]" >
-          {pending ? ( 
-            <div className="skeleton mx-auto bg-slate-50 max-w-[96vw] mx-auto md:w-page h-page" />
-          ) : errorStatus === 403 ? (
-            <div className="flex  mx-auto md:w-50 px-8 h-page">
-              <h1 className="mont-medium my-12 mx-auto text-center text-emerald-800">
-                🚫 You don’t have permission to view this story.
-              </h1>
-            </div>
-          ) : canUserSee ? (
-            <div className="w-fit  bg-cream  mx-auto sm:max-w-[50em]">
-              <PageDiv page={page} />
-             <div className="text-left px-4 bg-cream bg-cream py-4"> <h6 className="text-[1em] font-bold">Responses</h6></div>
-              <CommentThread page={page} comments={rootComments} />
-        
-           </div>
-          ) : (
-            <div className="flex max-w-[96vw] mx-auto sm:w-page h-page">
-              <h1 className="mont-medium my-12 mx-auto">Took a wrong turn</h1>
-            </div>
-          )}
+          <div className={`${FADE} ${pending ? "opacity-0 pointer-events-none" : "opacity-100"}`}>
+            {(canSee || page?.authorId === currentProfile?.id) && (
+              <div className={WRAP} style={{ WebkitUserSelect: "text", userSelect: "text" }}>
+                <div className={`${CARD} ${BLOCK}`}>
+                  <PageViewItem page={page} canEdit={canEdit}  currentProfile={currentProfile} />
+                  <div className={SECTION}>
+                    <h6 className={HEADING+" px-4"}>Responses</h6>
+                  </div>
+                  <CommentThread page={page} comments={rootComments} rawComments={comments} />
+                </div>
+              </div>
+            )}
+
+            {!pending && errorStatus === 404 && (
+              <div className={`${CENTER} ${SECTION}`}>
+                <h1 className="text-emerald-800 dark:text-emerald-300 font-bold text-lg">📖 Story not found</h1>
+                <p className="text-sm mt-2 text-slate-500 dark:text-slate-400">It may have been deleted or never existed.</p>
+                <button onClick={handleBack} className="mt-4 px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg transition-colors">
+                  Go back
+                </button>
+              </div>
+            )}
+
+            {!pending && errorStatus === 403 && (
+              <div className={`${CENTER} ${SECTION}`}>
+                <h1 className="text-emerald-800 dark:text-emerald-300 font-bold">🚫 You don't have permission to view this story.</h1>
+                <button onClick={handleRefresh} className="btn bg-emerald-600 hover:bg-emerald-700 text-white border-none mt-4">Refresh</button>
+              </div>
+            )}
+
+            {!pending && !errorStatus && !canSee && (
+              <div className={`${CENTER} ${SECTION}`}>
+                <h1 className="text-emerald-800 dark:text-emerald-300 font-bold">🚫 You can't view this story</h1>
+                <button onClick={handleRefresh} className="btn bg-emerald-600 hover:bg-emerald-700 text-white border-none mt-4">Refresh</button>
+              </div>
+            )}
+          </div>
         </div>
-       
-      
-</div>
-         </div>
       </IonContent>
     </ErrorBoundary>
+  );
+}
+
+function PageViewSkeleton() {
+  return (
+    <div className={`${WRAP} animate-pulse pt-6`}>
+      <div className="bg-emerald-100/60 dark:bg-emerald-900/20 rounded-xl shadow-inner min-h-[40em]" />
+    </div>
   );
 }

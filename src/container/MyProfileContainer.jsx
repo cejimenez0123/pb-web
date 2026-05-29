@@ -1,444 +1,352 @@
-import { useEffect, useState, useContext, useMemo, useLayoutEffect } from 'react';
-import "../styles/MyProfile.css";
-import { useDispatch, useSelector } from "react-redux";
-import { createStory, updateStory,  } from '../actions/StoryActions';
-import { setCollections} from '../actions/CollectionActions';
-import IndexList from '../components/page/IndexList';
-import Paths from '../core/paths';
-import { debounce } from 'lodash';
-import calendar from '../images/icons/calendar.svg'
+import { useContext, useEffect, useMemo, useState } from "react";
+import { IonContent, useIonRouter} from "@ionic/react";
+import { useSelector } from "react-redux";
+import Context from "../context";
+import Enviroment from "../core/Enviroment";
+import ErrorBoundary from "../ErrorBoundary";
+import ProfileInfo from "../components/profile/ProfileInfo";
+import Paths from "../core/paths";
+import TabBar from "../components/TabBar";
 import settings from "../images/icons/settings.svg"
-import { setPageInView, setPagesInView, setEditingPage, setHtmlContent } from '../actions/PageActions.jsx';
-import { sendGAEvent } from '../core/ga4.js';
-import CreateCollectionForm from '../components/collection/CreateCollectionForm';
-import checkResult from '../core/checkResult';
-import { PageType } from '../core/constants';
-import ProfileInfo from '../components/profile/ProfileInfo';
-import Context from '../context';
-import FeedbackDialog from '../components/page/FeedbackDialog';
-import { IonText, IonInput, IonContent, IonSpinner, IonPage,  useIonViewWillEnter, IonImg, useIonRouter } from '@ionic/react';
-import GoogleDrivePicker from '../components/GoogleDrivePicker.jsx';
-import { Preferences } from '@capacitor/preferences';
-import axios from "axios";
-import StoryCollectionTabs from '../components/page/StoryCollectionTabs.jsx';
-import ErrorBoundary from '../ErrorBoundary.jsx';
+import ExploreList from "../components/collection/ExploreList";
+import Pill from "../components/Pill";
+import CommunitiesPanel from "../components/profile/CommunitiesPanel";
+import AboutPanel from "../components/profile/AboutPanel";
+import PageProfileList from "../components/page/PageProfileList";
 
-import { getCurrentProfile } from '../actions/UserActions.jsx';
-import { useDialog } from '../domain/usecases/useDialog.jsx';
+import EmptyState from "../components/EmptyState";
+import { getMyCollections, getProfileRecommendations } from "../actions/CollectionActions";
+import { getMyStories } from "../actions/StoryActions";
+import PaginatedList from "../components/page/PaginatedList";
+import usePaginatedResource from "../core/usePaginatedResource";
+import ListPill from "../components/page/ListPill";
+import SectionHeader from "../components/SectionHeader";
+import useDebounce from "../core/useDebounce";
 
-function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex = 0, role = "button" }) {
+
+const TABS = {
+  POSTS: "pages",
+  COLLECTIONS: "collections",
+  COMMUNITIES: "communities",
+  ABOUT: "about",
+};
+const WRAP = "w-[100%] max-w-[50em] px-4 mx-auto ";
+const tabWrapper = "max-w-lg mx-auto px-4 pb-4"; // same for both containers
+function MyProfileContainer() {
+
+
+  const { setSeo  } = useContext(Context);
+  const profile = useSelector((state) => state.users.currentProfile);
+const storiesCache = useSelector((state) => 
+  state.pagination.byKey?.["stories"]?.pages?.[1] ?? []
+);
+const collectionsCache = useSelector((state) => 
+  state.pagination.byKey?.["collections"]?.pages?.[1] ?? []
+);
+const librariesCache = useSelector((state) => state.pagination.byKey?.["libraries"]?.pages?.[1] ?? []);
+const { items: explorList, page: explorePage, setPage: setExplorePage, totalCount: exploreTotalCount} = usePaginatedResource({
+    cacheKey: "profile:recommendations",
+    fetcher: getProfileRecommendations,
+    pageSize: 10,
+    enabled: !!profile?.id,
+    select: (res) => ({ items: res.groups, totalCount: res.totalCount })})
+const recentPosts = storiesCache.slice(0, 5);
+const recentCollections = collectionsCache.slice(0, 5);
+const communities = { items: librariesCache };
+   const pageSize = 8;
+
+
+
+
+
+
+
+  const router = useIonRouter();
+const [searchInput, setSearchInput] = useState("");
+const [search, setSearch] = useState("");
+const debouncedSearch = useDebounce(search, 300);
+ 
+  const [tab, setTab] = useState(TABS.POSTS);
+
+
+
+
+
+const tabs = [
+  { key: TABS.POSTS, label: "Pages" },
+  { key: TABS.COLLECTIONS, label: "Collections" },
+  { key: TABS.COMMUNITIES, label: "Communities" },
+  { key: TABS.ABOUT, label: "About" },
+];
+
+
+
+
+
+// ── Minimal Empty State ──────────────────────────────
+
+
+
+
+const IndexList = ({ items, profile,router }) => (
+  <div className="space-y-2">
+    {items.map((i) => (
+      <ListPill key={i.id} item={i} profile={profile} onClick={()=>router.push(Paths.collection.createRoute(i.id))}
+   />
+    ))}
+  </div>
+)
+const storiesParams = useMemo(() => ({ type: "" }), []);
+const StatChip = ({ value, label }) => (
+  <div className="flex flex-col text-center">
+    <span className="font-bold dark:text-cream">{value}</span>
+    <span className="text-xs dark:text-cream text-gray-400">{label}</span>
+  </div>
+);
+
+
+  
+  useEffect(() => {
+    if (!profile) return;
+    setSeo({
+      title: `${profile?.username} on Plumbum`,
+      description: profile?.bio || profile?.selfStatement || `Read stories by ${profile?.username}.`,
+      url: `${Enviroment.domain}/profile/${profile?.id}`,
+      type: "profile",
+    });
+  }, [profile, setSeo]);
+
+// const [search, setSearch] = useState("");
+
+
+const authResolved = useSelector((state) => state.users.authResolved);
+
+
+if (!authResolved) return <IonContent  scrollY={true}
+className='page-content' fullscreen />;// blank while auth checks
+if (!profile) return <EmptyProfileState />; // only show this when truly logged out;
   return (
-    <span
-      role={role}
-      tabIndex={tabIndex}
-      onClick={onClick}
-      onKeyDown={e => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          onClick();
-        }
-      }}
-      className={`rounded-full flex btn items-center justify-center ${className}`}
-      style={style}
-    >
-      {children}
-    </span>
+
+      <IonContent  scrollY={true}
+className='page-content' fullscreen 
+
+>
+      <ErrorBoundary>
+        <div className="  overflow-y-auto bg-cream  dark:bg-base-bgDark space-y-8">
+<div className='flex sm:pt-16 flex-col justify-center'>
+<div className=" p-4 ">
+  {/* {Enviroment.palette.button.} */}
+<button  onClick={() => router.push(Paths.editProfile)}
+className="bg-soft rounded-full p-2"><img src={settings} /></button>
+</div>
+                  
+            </div>
+          {/* Header */}
+          <div className={`${WRAP} max-w-[50em] px-4 pt-8 space-y-6`}>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <ProfileInfo profile={profile} compact />
+                    <h5 className="text-xl dark:text-cream text-emerald-800">{profile?.username?.toLowerCase()}</h5>
+              </div>
+         
+            </div>
+
+          
+
+            {(profile?.bio || profile?.selfStatement) && (
+              <p className="text-sm text-gray-700 dark:text-cream leading-relaxed">
+                {profile.bio ?? profile.selfStatement}
+              </p>
+            )}
+
+            {profile?.hashtag?.length > 0 && (<div className="space-y-2 px-4">
+              <p className="text-xs text-gray-400 uppercase">❤️ Hashtags</p>
+        
+              <div className="flex flex-wrap gap-2">
+                 
+                {[...profile.hashtag].slice(0, 5).map((tag, i) => {
+                  
+                  return<Pill key={i} onClick={()=>router.push(Paths.hashtag.createRoute(tag.hashtag.id))}
+                  label={`#${tag.hashtag.name ?? tag.tag}`} />
+})}
+              </div>
+                  </div>
+            )}
+
+            {(communities.items?.length ?? 0) > 0 && (
+              <div className="space-y-2 px-4">
+                <p className="text-xs text-gray-400 uppercase">Communities</p>
+                <div className="flex flex-wrap gap-2 ">
+        {communities?.items?.slice(0, 3).map((c) => {
+  const path = Paths.collection.createRoute(c.id);
+
+  return (
+    <Pill
+      key={c.id}
+      baseClass="border-blue bg-base-bg"
+      onClick={() => router.push(path, "forward")}
+      label={c.title}
+    />
+  );
+})}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Search + Tabs */}
+          <div className={`${WRAP} space-y-4`}>
+
+    <div className="max-w-xl mx-auto">
+                    <div className="w-full">
+ 
+<input
+  value={searchInput}
+  onChange={(e) => {
+    const val = e.target.value;
+    setSearchInput(val);
+    setSearch(val); // immediate or controlled elsewhere
+  }}
+      placeholder="Search"
+      className="
+  
+      border-soft border rounded-full
+        w-full px-4 py-2
+        mx-4
+          bg-cream
+        dark:bg-base-bgDark 
+        dark:border-cream
+        
+
+        text-sm text-soft
+        placeholder-gray-400
+        focus:outline-none focus:ring-1 focus:ring-gray-300
+        mb-4 
+      "
+    />
+
+  </div>
+  <div className={tabWrapper}> 
+           <TabBar tabs={tabs} active={tab} onChange={setTab} />
+      </div>    
+
+          {/* Content */}
+         <div className={`${WRAP} space-y-10 min-h-[40rem]`}>
+            {tab === TABS.POSTS && (
+              <>
+                {search.length==0 && recentPosts.length > 0 && (
+                  <section className="space-y-4">
+         
+                    <SectionHeader title={"Recent"}/>
+                    <PageProfileList items={recentPosts} type={"story"}  router={router}/>
+                  </section>
+                )}
+
+            
+      <SectionHeader title={"All Pages"}/>
+    
+<PaginatedList
+  cacheKey="stories"
+  params={storiesParams}
+  fetcher={getMyStories}
+  pageSize={pageSize}
+  enabled={!!profile?.id}
+  search={debouncedSearch}
+  emptyState={<EmptyState text={search ? "No matching Stories." : "No Stories yet."} />}
+  renderItem={(i) => (
+    <ListPill key={i.id} item={i} profile={profile} onClick={() => router.push(Paths.page.createRoute(i.id))} />
+  )}
+/>
+ 
+
+       
+         </>
+            )}    
+        
+
+            
+
+           {tab === TABS.COLLECTIONS && (
+  <>
+    {search.length === 0 && recentCollections.length > 0 && (
+      <section className="space-y-4">
+        <SectionHeader title="Recent" />
+        <IndexList items={recentCollections} profile={profile} router={router} />
+      </section>
+    )}
+
+    <SectionHeader title="All Collections" />
+    <PaginatedList
+      cacheKey="collections"
+      params={{ type: "book" }}
+      fetcher={getMyCollections}
+      pageSize={pageSize}
+      search={debouncedSearch}
+      emptyState={<EmptyState text={search ? "No matching collections." : "No collections yet."} />}
+      renderItem={(i) => (
+        <ListPill key={i.id} item={i} profile={profile} onClick={() => router.push(Paths.collection.createRoute(i.id))} />
+      )}
+    />
+  </>)
+
+
+          }
+
+            {tab === TABS.COMMUNITIES && <CommunitiesPanel  fetch={getMyCollections} router={router} communities={communities.items} />}
+            {tab === TABS.ABOUT && <AboutPanel router={router} profile={profile}  />}
+          </div>
+</div>
+</div>
+     <div className=' bg-cream '>
+            <ExploreList items={explorList} page={explorePage} totalCount={exploreTotalCount} setPage={setExplorePage}/>
+          </div>
+     
+   </div>
+          {/* Explore */}
+
+           </ErrorBoundary>
+      </IonContent>
+ 
   );
 }
 
-function MyProfileContainer({ presentingElement }) {
-  const [tab, setTab] = useState("page");
-  const router = useIonRouter()
-  const dispatch = useDispatch();
-  const currentProfile = useSelector(state=>state.users.currentProfile)
-  const stories = useSelector(state => state.pages.pagesInView);
-  const { seo, setSeo ,setError} = useContext(Context);
-  const collections = useSelector(state => state.books.collections);
-  const [search, setSearch] = useState("");
-  const [filterType, setFilterType] = useState("Filter");
-  const [driveToken, setDriveToken] = useState(null);
-  const [feedback, setFeedback] = useState("");
- 
-  const filterTypes = {
-    filter: "Filter",
-    recent: "Recent",
-    oldest: "Oldest",
-    feedback: "Feedback",
-    AZ: "A-Z",
-    ZA: "Z-A"
-  };
- useEffect(() => {
-  if (currentProfile && currentProfile.username) {
-    setSeo(prev => ({
-      ...prev,
-      title: `Plumbum (${currentProfile.username}) Home`,
-      description: `Welcome to ${currentProfile.username}'s home on Plumbum.`,
-      url: `https://plumbum.app/${currentProfile.username}`,
-    }));
-  }
-}, [currentProfile, setSeo]);
-
-  const filteredSortedStories = useMemo(() => {
-    let result = stories || [];
-
-    if (filterType === filterTypes.feedback) {
-      result = result.filter(s => s.needsFeedback);
-    } else {
-      switch (filterType) {
-        case filterTypes.recent:
-          result = [...result].sort((a, b) => new Date(b.updated) - new Date(a.updated));
-          break;
-        case filterTypes.oldest:
-          result = [...result].sort((a, b) => new Date(a.updated) - new Date(b.updated));
-          break;
-        case filterTypes.AZ:
-          result = [...result].sort((a, b) => a.title.localeCompare(b.title));
-          break;
-        case filterTypes.ZA:
-          result = [...result].sort((a, b) => b.title.localeCompare(a.title));
-          break;
-        default:
-          break;
-      }
-    }
-
-    if (search.trim().length > 0) {
-      const lowerSearch = search.toLowerCase();
-      result = result.filter(s => s.title && s.title.toLowerCase().includes(lowerSearch));
-    }
-
-    return result;
-  }, [stories, filterType, search]);
-
-  const filteredSortedCollections = useMemo(() => {
-    let result = collections || [];
-    if(filterType==filterTypes.feedback){
-      result = collections?.filter(col=>col.type=="feedback"||col.purpose.toLowerCase().includes("feedback"))
-    }
-    switch (filterType) {
-      case filterTypes.AZ:
-        result = [...result].sort((a, b) => a.title.localeCompare(b.title));
-        break;
-      case filterTypes.ZA:
-        result = [...result].sort((a, b) => b.title.localeCompare(a.title));
-        break;
-      case filterTypes.recent:
-        result = [...result].sort((a, b) => new Date(b.updated) - new Date(a.updated));
-        break;
-      case filterTypes.oldest:
-        result = [...result].sort((a, b) => new Date(a.updated) - new Date(b.updated));
-        break;
-      default:
-        break;
-    }
-
-    if (search.trim().length > 0) {
-      const lowerSearch = search.toLowerCase();
-      result = result.filter(c => c && c.title && c.title.toLowerCase().includes(lowerSearch));
-    }
-
-    return result;
-  }, [collections, filterType, search]);
+export default MyProfileContainer;
 
 
-const [checkingAuth, setCheckingAuth] = useState(true);
- const {openDialog,closeDialog,dialog,resetDialog}=useDialog()
-useEffect(() => {
-  const syncProfile = async () => {
-    if (currentProfile) {
-      setCheckingAuth(false);
-      return;
-    }
+function EmptyProfileState() {
+  const router = useIonRouter();
 
-    const { value } = await Preferences.get({ key: "token" });
-
-    if (value) {
-    dispatch(getCurrentProfile()).then((res)=>{
-      checkResult(res,payload=>{
-console.log("SSX",payload)
-      },err=>{
-console.log("SSB")
-      })
-  setCheckingAuth(false);
-    })
-    
-    } else {
-      setCheckingAuth(false);
-      router.push("/");  // only once we *know* there is no token
-    }
-  };
-
- return ()=> !currentProfile && syncProfile();
-}, [currentProfile, dispatch]);
-
-
-
-  const getDriveToken = async () => {
-    try {
-      const accessToken = (await Preferences.get({ key: "googledrivetoken" })).value;
-      setDriveToken(accessToken);
-    } catch (error) {
-      console.error("Error fetching drive token:", error);
-      setErrorLocal(error.message);
-    }
-  };
+  return (
+    <IonContent
+      fullscreen
+   
   
-    useIonViewWillEnter(() => {
-  const init = async () => {
-    try {
-     
-      await getDriveToken();
-    } catch (err) {
-      console.error("Initialization error:", err);
-      setErrorLocal(err.message);
-    }
-  };
-  init();
+    >
+      <div className="max-w-[50em] mx-auto px-4 pt-16 space-y-6 text-center">
 
-  },[])
+        <h1 className="text-2xl font-semibold text-emerald-800">
+          Welcome to Plumbum
+        </h1>
 
-  const ClickWriteAStory = debounce(() => {
-    if (currentProfile?.id) {
-      sendGAEvent("Create", "Write a Story", "Click Write Story");
-      dispatch(createStory({
-        profileId: currentProfile.id,
-        privacy: true,
-        type: PageType.text,
-        title: "Unititled",
-        commentable: true
-      })).then(res => checkResult(res, payload => {
-        if (payload.story) {
-          dispatch(setEditingPage({ page: payload.story }));
-          dispatch(setPageInView({ page: payload.story }));
-        router.push(Paths.editPage.createRoute(payload.story.id),'forward', 'push');
-        }else{
-          windowl.alert("COULD NOT CREATE STORY")
-        }
-      },err=>{
-        setErrorLocal(err.message)
-      }));
-    }
-  }, 5);
+        <p className="text-gray-600 text-sm leading-relaxed">
+          Sign in to view your profile, stories, collections, and communities.
+        </p>
 
-
-  const ClickCreateACollection = () => {
-     try {
-    sendGAEvent("create_collection_open", {
-      area: "collections",
-      modal_type: "create_collection",
-      user_id: currentProfile?.id || null, // optional, if you want to track
-    });
-  } catch (e) {
-    console.warn("GA event failed", e);
-  }
-
-openDialog({
-...dialog,
-disagree:null,
-scrollY: false,
-  text: <CreateCollectionForm onClose={resetDialog} />,
-  disagreeText: "Close", // optional button
-  onClose: closeDialog,
-  breakpoint: 1, // if you want a half-sheet style
-});
-
-  };
-
-  const getFile = async (file) => {
-    try {
-      const accessToken = (await Preferences.get({ key: "googledrivetoken" })).value;
-      if (!file?.id || !accessToken) return;
-
-      const url = `https://www.googleapis.com/drive/v3/files/${file.id}/export?mimeType=text/html`;
-      const response = await axios.get(url, {
-        headers: { 'Authorization': `Bearer ${accessToken}` },
-        responseType: 'text'
-      });
-
-      const htmlContent = response.data;
-      dispatch(createStory({
-        profileId: currentProfile.id,
-        data: htmlContent,
-        isPrivate: true,
-        approvalScore: 0,
-        type: PageType.text,
-        title: file.name,
-        commentable: false
-      })).then(res => checkResult(res, ({ story }) => {
-    
-        if (story) {
-          
-          dispatch(setEditingPage({ page:story }));
-          dispatch(setPageInView({ page:story }));
-          dispatch(setHtmlContent({ html:story.data })); 
-          router.push(Paths.editPage.createRoute(story.id),'forward', 'push');
-  
-        }
-  
-      }, err => setErrorLocal(err.message)));
-    } catch (error) {
-      console.error("Error fetching Google Doc:", error);
-      setErrorLocal(error.message);
-    }
-  };
-
-const openFeedback=(item,isFeedback)=>{
-   openDialog({...dialog,disagree:null,agree:null,disagreeText:null,scrollY:false,text:
-    <FeedbackDialog
-  
-      page={item}
-      // open={!!feedbackPage}
-      isFeedback={isFeedback}
-      handleChange={setFeedback}
-      handleFeedback={(item) => {
-      
-           closeDialog()
-        const params = { ...item, description:feedback, page: item, id: item.id, needsFeedback: true };
-        dispatch(updateStory(params)).then(res => {
-          checkResult(res, payload => {
-         
-      if (payload.story) router.push(Paths.workshop.createRoute(payload.story.id,"foward"));
-          });
-        });
-      }}
-      handlePostPublic={() => {}}
-      handleClose={() => setFeedback(null)}
-    />})
-              dispatch(setPageInView({ page: item }));
-            }
-
-  
-useEffect(() => {
-  
-  if (currentProfile?.stories && currentProfile?.stories.length > 0) {
-    dispatch(setPagesInView({ pages: currentProfile.stories }));
-  }
-  if (currentProfile?.collections && currentProfile?.collections.length > 0) {
-    dispatch(setCollections({ collections: currentProfile.collections }));
-  }
-
-}, [currentProfile, dispatch]);
-
-
-  if (!currentProfile) {
-    return (
-      <IonContent>
-        <div>
-        <IonSpinner />
+        <div
+          onClick={() => router.push(Paths.login)}
+          className="
+            mx-auto w-fit px-6 py-3
+            rounded-full
+            bg-emerald-700 text-white
+            shadow-md active:scale-95 transition
+          "
+        >
+          Log in / Sign up
         </div>
-        </IonContent>
-    );
-  }
-return<ErrorBoundary><IonContent fullscreen={true} className='pt-12' style={{'--background': '#f4f4e0'}}>
 
-                    <div className='flex mt-4  pt-16 px-4 flex-row justify-between'>
-                      <IonImg  onClick={()=> router.push(Paths.editProfile)} className="bg-soft s mr-4 max-w-10 max-h-10 rounded-full p-2 " src={settings}/> 
-     
-                         {/* 
-                            <img src={calendar}  className=''  style={{
-    filter:
-      "invert(35%) sepia(86%) saturate(451%) hue-rotate(118deg) brightness(85%) contrast(92%)",
-  }}
-onClick={()=>{
-      sendGAEvent("navigation_click", {
-      destination: "calendar",
-      source: "discovery_header",
-    });
-
-  router.push(Paths.calendar())}}
-
-          /> */}
-          
-                  
-                    </div>
-  <div >
-
-  <div className="relative flex flex-col md:flex-row justify-around mx-auto p-6 mt-2 max-w-[60rem] rounded-lg gap-6">
-
-    <div className="md:w-1/3 max-w-[60em] h-[16em] mb-[4em] flex justify-center md:justify-start">
-      <ProfileInfo profile={currentProfile} />
-    </div>
-    
-
-    {/* Right: Buttons */}
-    <div className="flex flex-col items-center justify-cetner h-[15em] bottom-0  mt-4 sbg-red-100 md:items-start gap-4 w-full md:w-2/3  ">
-
-      {/* Row 1: Write a Story + Create Collection */}
-      <div className="flex flex-row mx-auto flex-wrap sm:justify-center md:justify-start gap-4">
-        <ButtonWrapper
-          onClick={ClickWriteAStory}
-          className="bg-soft hover:bg-emerald-500  border-emerald-700 border-opacity-80 text-white rounded-xl h-[3rem] w-[8.5rem]"
-        >
-          <IonText className='text-[1.2em]'>Write a Story</IonText>
-        </ButtonWrapper>
-        <ButtonWrapper
-          onClick={ClickCreateACollection}
-          className="bg-soft hover:bg-emerald-500  border-emerald-700 border-opacity-80 text-white rounded-xl h-[3rem] w-[8.5rem]"
-        >
-          <IonText className="text-white text-[1.2em]">Create Collection</IonText>
-        </ButtonWrapper>
       </div>
-
-      {/* Row 2: Join a Workshop */}
-      <div className="flex justify-center md:justify-start w-full">
-        <ButtonWrapper
-          onClick={() => router.push(Paths.workshop.reader())}
-          className="font-bold mx-auto bg-blueSea hover:bg-opacity-70 border-blueSea border-opacity-80 mx-4 rounded-xl h-[3rem] w-[90vw] sm:w-[21rem]"
-        >
-          <IonText className="text-white text-[1.2em]">Join a Workshop</IonText>
-        </ButtonWrapper>
-      </div>
-
-      {/* Row 3: Google Drive Picker */}
-      {/* <div className="flex justify-center mx-auto md:justify-start w-full"> */}
-        <GoogleDrivePicker
-          getToken={getDriveToken}
-          accessToken={driveToken}
-          onFilePicked={getFile}
-        />
-      {/* </div> */}
-
-    </div>
-  </div>
-
-  {/* Search + Tabs stay unchanged */}
-  <div className='mx-auto md:mt-8 flex flex-col md:w-page'>
-    <div className="flex items-center mb-8 mx-auto h-9 max-w-[85vw] pr-4 rounded-full bg-transparent">
-
-      <select
-        onChange={e => setFilterType(e.target.value)}
-        value={filterType}
-        className="select w-24 text-emerald-800 rounded-full bg-transparent"
-      >
-        {Object.entries(filterTypes).map(([, val]) => (
-          <option key={val} value={val}>{val}</option>
-        ))}
-      </select>
-    </div>
-
-    <div className='h-fit min-h-[55rem] mx-auto'>
-      <StoryCollectionTabs
-        tab={tab}
-        setTab={setTab}
-        colList={() => <IndexList type="collection" 
-        items={filteredSortedCollections} 
-        
-        />}
-        storyList={() => (
-          <IndexList
-            type="story"
-            items={filteredSortedStories}
-            handleFeedback={item => {
-              openFeedback(item,true)
-            }}
-          />
-        )}
-      />
-    </div>
-
-  </div>
-</div>
-</IonContent></ErrorBoundary>
+    </IonContent>
+  );
 }
 
-export default MyProfileContainer;
+

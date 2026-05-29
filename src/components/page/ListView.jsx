@@ -4,6 +4,7 @@ import DashboardItem from "./DashboardItem";
 import BookDashboardItem from "../collection/BookDashboardItem";
 import sortItems from "../../core/sortItems";
 import {  IonInfiniteScroll, IonInfiniteScrollContent, useIonRouter, IonRow, IonGrid, IonCol } from "@ionic/react";
+import Enviroment from "../../core/Enviroment";
 
 const ListView = ({ items = [], isGrid, forFeedback, getMore = () => {} }) => {
   const [page, setPage] = useState(1);
@@ -28,15 +29,13 @@ const router = useIonRouter()
 
     return sortItems(others, books) || [];
   }, [items, pathname]);
-// console.log("items",items)
-  // Initialize displayed items when sortedItems changes
+
   useEffect(() => {
     setDisplayedItems(sortedItems.slice(0, itemsPerPage));
     setHasMore(sortedItems.length > itemsPerPage);
     setPage(2);
   }, [sortedItems]);
 
-  // Load more items for infinite scroll
   const loadMore = (ev) => {
     const startIndex = (page - 1) * itemsPerPage;
     const nextItems = sortedItems.slice(startIndex, startIndex + itemsPerPage);
@@ -57,15 +56,13 @@ const router = useIonRouter()
   <>
 <div>
     
-      <IonInfiniteScroll style={{"--background":"#f4f4e0"}} >
+      <IonInfiniteScroll style={{"--background":Enviroment.palette.cream}} >
 <div className={"flex flex-col space-y-4"}>
         {displayedItems.filter(item=>item).map((item, i) => {
           if (!item) return null;
 
           return (
-            // <IonItem
-            
-            // key={item.id || i} className="">
+          
       
            <div
            className="max-w-[94vw] sm:max-w-[45em] w-[100%] mx-auto "

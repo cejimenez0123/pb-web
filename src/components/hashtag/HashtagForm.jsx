@@ -5,38 +5,31 @@ import { createHashtagCollection, createHashtagPage, deleteHashtagCollection, de
 import { useDispatch } from "react-redux";
 import checkResult from "../../core/checkResult";
 import clear from "../../images/icons/close.svg"
-import ErrorBoundary from "../../ErrorBoundary";
+
 import Context from "../../context";
-import { useParams } from "react-router-dom";
 import { IonImg, IonLabel, IonTextarea } from "@ionic/react";
+import { ErrorBoundary } from "@sentry/react";
 export function HashtagForm({item,type="story"}){
-    const storyHashtags = useSelector(state=>state.hashtags.storyHashtags)
+
     const {setError}=useContext(Context)
     const isStory = type == "story"
     const [inputValue, setInputValue] = useState('');
     const dispatch = useDispatch()
     const [hashtags, setHashtags] = useState([]);
-    //  useLayoutEffect(()=>{
-    //     resetHashtags()
-    // },[storyHashtags])
-    const currentProfile = useSelector(state=>state.users.currentProfile)
-    // const resetHashtags= ()=>{
-    //   if(storyHashtags.length>0){
-    //     setHashtags(storyHashtags)
-    //   }
-      
-    // }
   
+    const currentProfile = useSelector(state=>state.users.currentProfile)
+
+
     const handleInputChange = (e) => {
-      setInputValue(e.target.value);
+      setInputValue(e.target.value.trim());
     };
 
 const fetchHashtags=(item)=>{
-  // if(item){
+
         if(!isStory){
           dispatch(fetchCollectionHashtags({profile:currentProfile,colId:item.id})).then(res=>{
                 checkResult(res,payload=>{
-console.log("ollectionHashtags",payload)
+
                     setHashtags(payload.hashtags)
                   
             
@@ -56,7 +49,7 @@ console.log("ollectionHashtags",payload)
       // }
 }
     const deleteHashtag =  (hash) =>{
-      console.log(hash)
+    
    const {hashtag}=hash
       if(!isStory){
         dispatch(deleteHashtagCollection({colId:item.id,hashId:hash.id})).then(res=>{
@@ -93,7 +86,7 @@ try{
    
           dispatch(createHashtagCollection({name:inputValue.trim().toLocaleLowerCase(),colId:item.id,profile:currentProfile})
         ).then(res=>{
-          console.log("ASSA",res)
+         
          if(res && res.payload){ 
           setHashtags(prev=>[...prev,res.payload.hashtag])
               setInputValue('');
@@ -123,6 +116,7 @@ try{
    
     },[])
     return (
+      <ErrorBoundary>
        <form className="  w-full flex flex-col mt-2 ">
      
         <textarea
@@ -132,15 +126,14 @@ try{
           placeholder="Type a hashtag and press Enter"
           rows={4}
           cols={12}
-          className=" my-1 w-[96vw] md:w-[48em] mx-auto border-1 border-emerald-600 bg-transparent text-emerald-800"
-        />
+         className="my-1 w-[90%] p-2 rounded-xl md:w-[48em] bg-base-bg mx-auto border border-soft text-soft placeholder:text-soft/50 focus:outline-none focus:ring-2 focus:ring-button-secondary-bg"  />
       <button type="submit"  className="hidden">Submit</button>
       <div className="text-left my-1">
-        <IonLabel className="text-emerald-800">Hashtags:</IonLabel>
+        <IonLabel className="text-soft text-sm">Hashtags:</IonLabel>
         <ul className="flex flex-wrap p-4">
           {hashtags.map((hash, index) => (
   
-            <li  className=" p-1 flex flex-row m-1 text-sm rounded-lg text-white bg-emerald-800 "key={index}>
+            <li  className="p-1 flex flex-row m-1 text-sm rounded-lg bg-button-secondary-bg text-white dark:bg-button-secondary-bg dark:text-white" key={index}>
               <h6 className="my-auto mx-2">#{hash.hashtag.name}</h6><IonImg 
             className=" my-auto" 
             onClick={()=>deleteHashtag(hash)}
@@ -150,6 +143,7 @@ try{
       </div>
    
     </form>
+    </ErrorBoundary>
   
   );
 };

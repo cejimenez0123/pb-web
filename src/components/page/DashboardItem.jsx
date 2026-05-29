@@ -22,12 +22,77 @@ import ProfileCircle from '../profile/ProfileCircle';
 import Context from '../../context';
 import Enviroment from '../../core/Enviroment';
 import ErrorBoundary from '../../ErrorBoundary';
-import { debounce, set } from 'lodash';
+import { debounce, set, truncate } from 'lodash';
 import { sendGAEvent } from '../../core/ga4';
 import ShareList from './ShareList';
 import { useParams } from 'react-router';
 import { useDialog } from '../../domain/usecases/useDialog';
-function DashboardItem({ page, book, isGrid }) {
+import computePermissions from '../../core/compusePermissions';
+import DataElement from './DataElement';
+// THEME HELPERS (light + dark ready)
+const theme = {
+  card: `
+    bg-base-bg 
+    dark:bg-base-surface
+    border border-border-default 
+    dark:border-border-soft
+    shadow-sm
+  `,
+
+  headerText: `
+    text-text-primary 
+    dark:text-text-inverse
+  `,
+
+  subText: `
+    text-text-secondary 
+    dark:text-text-secondary
+  `,
+
+  contentText: `
+    text-text-primary/80 
+    dark:text-text-inverse/80
+  `,
+
+  softBg: `
+    bg-softBlue/40 
+    dark:bg-base-soft/20
+  `,
+
+  softBgHover: `
+    bg-softBlue/60 
+    dark:bg-base-soft/30
+  `,
+
+  primaryBtn: (active) => `
+    px-3 py-1.5 rounded-full text-sm font-medium
+    transition active:scale-95
+    ${
+      active
+        ? "bg-button-secondary-bg text-button-secondary-text"
+        : "bg-softBlue/40 text-text-primary dark:text-text-inverse"
+    }
+  `,
+
+  iconBtn: `
+    px-3 py-1.5 rounded-full text-sm
+    bg-softBlue/30 
+    dark:bg-base-soft/20
+    text-text-primary 
+    dark:text-text-inverse
+    transition active:scale-95
+  `,
+
+  bookmarkBtn: `
+    p-2 rounded-full 
+    bg-softBlue/30 
+    dark:bg-base-soft/20
+    active:bg-softBlue/60 
+    dark:active:bg-base-soft/30
+    transition
+  `,
+};
+function DashboardItem({ page, book,shortenTo, isGrid }) {
   const { isPhone, isHorizPhone, setSuccess, setError} = useContext(Context);
   const currentProfile = useSelector(state=>state.users.currentProfile)
   const dispatch = useDispatch();
@@ -35,8 +100,15 @@ function DashboardItem({ page, book, isGrid }) {
   const dialog = useSelector(state=>state.users.dialog)
     const router = useIonRouter()
   const pathParams = useParams()
-
-  const [canUserEdit, setCanUserEdit] = useState(false);
+const {canSee,canAdd,canEdit,role}= computePermissions(page,currentProfile, {
+  getAccessList: (s) => s.betaReaders??[],
+  getAccessRole: (r) => r.permission,
+  isPrivate: (s) => s.isPrivate,
+  isOpen: () => false, // stories usually not open collab
+  canWriteRoles: ["commenter", "editor"],
+  canEditRoles: ["editor"],
+});
+  
   const pagesInView = useSelector((state) => state.pages.pagesInView);
   const colInView = useSelector((state) => state.books.collectionInView);
   const [likeFound, setLikeFound] = useState(false);
@@ -89,12 +161,7 @@ const {openDialog,closeDialog}=useDialog()
     }
   };
 
-  const soCanUserEdit = () => {
-    if (currentProfile && currentProfile.id && page && page.authorId === currentProfile.id) {
-      setCanUserEdit(true);
-      return;
-    }
-  };
+
 
   const checkLike = (profile) => {
     if ( profile &&profile.id && page) {
@@ -146,7 +213,7 @@ sendGAEvent("story_review_open", {
   const header = () => {
     return (
       <span
-        className={`flex-row flex justify-between  px-1 rounded-t-lg pt-2 pb-1`}>
+        className={`flex-row flex justify-between  px-2  rounded-t-lg pt-2 pb-2`}>
         <div onClick={()=>router.push(Paths.profile.createRoute(page.author.id))}><ProfileCircle isGrid={isGrid} color={"emerald-700"} profile={page.author} /></div>
         {!isGrid ?
           <h6
@@ -203,6 +270,7 @@ openDialog({
     isOpen: true,
     title: null,
     scrollY:false,
+    height:50,
     text: (
       <ShareList
         page={page}
@@ -221,9 +289,7 @@ openDialog({
 };
 
 
-  useLayoutEffect(() => {
-    soCanUserEdit();
-  }, [page]);
+
 
   const onBookmarkPage = () => {
     if (currentProfile && currentProfile.profileToCollections) {
@@ -273,7 +339,7 @@ openDialog({
   const bookmarkBtn = () => {
     return isGrid ? (
       <div className={`bg-emerald-100 flex flex-row justify-between  text-emerald-700`}>
-        {isPhone ? null : <ProfileCircle isGrid={isGrid} profile={page.author} color='emerald-700' />}
+        {isPhone ? null : <ProfileCircle isGrid={isGrid} includeUsername={false} profile={page.author} color='emerald-700' />}
         <span >
           <h6 className={`text-emerald-700 ${isGrid ? isPhone ? "" : " text-right " : isHorizPhone ? "" : ""}${isPhone ? " text-[0.6rem] " : "text-[0.9rem]  w-[10rem] ml-1 pr-2"}   whitespace-nowrap  no-underline text-ellipsis  overflow-hidden  my-auto `}
             onClick={() => {
@@ -307,98 +373,94 @@ openDialog({
     }
   }, 10);
 
-  const description = (story) => {
-    if (!story.description || story.description.length === 0) return null;
 
-    return (
-      <div className="md:pt-4 p-1">
-        {story.needsFeedback ? (
-          <label className="text-emerald-800">Feedback Request:</label>
-        ) : null}
-        <h6
-          className={`overflow-hidden text-emerald-800`}
-        >
-          {story.description}
-        </h6>
-      </div>
-    );
-  };
-
-  const buttonRow = () => {
-    return isGrid
-      ? null
-      : (
-         <div className="flex-row w-[100%]  h-16 overflow-clip mx-auto bg-blueSea bg-opacity-30 flex text-white">
-       <div     onClick={handleApprovalClick} className={`${likeFound ? "bg-emerald-400 text-cream" : "bg-blueSea text-cream bg-opacity-20"} text-center grow w-1/3`}>
-            <div
-          
-              className={`py-2 flex  mx-auto text-white border-none h-[100%] border-none`}
-            >
-              <IonText className="text-xl text-cream font-bold  m-auto p-0">Yea{likeFound ? "" : ""}</IonText>
-            </div>
-          </div>
-          <div className={" bg-blueSea bg-opacity-10 border-blueSea border-opacity-30 border-x-2 border-y-0 text-center  grow w-1/3"}>
-            <div
-              className='text-emerald-700 text-center mx-auto bg-blueSea bg-opacity-10 py-2 border-none'
-              onClick={() => handleClickComment()}>
-              <IonText className="text-xl text-cream font-bold m-auto p-0">Review</IonText> 
-            </div>
-          </div>
-         
-          {!page.recommended ? (
-               <div onClick={onClickShare} className="flex-1/3 grow bg-blueSea bg-opacity-20 text-center flex justify-center items-center">
-                    {/* <IonButton  fill="clear" color="success"> */}
-                      <IonText className="text-xl text-cream font-bold  m-auto p-0">Share</IonText>
-                      </div>
-             
-          ) : (
-            <div onClick={addStoryToCollection}
-              className='bg-emerald-700 flex grow flex-1/3'>
-              <IonImg className="mx-auto my-auto" src={addCircle} />
-            </div>
-          )}
-        </div>
-      );
-  };
-
+  
   if (!page) {
     return (
-      <span className={ " skeleton"} />
+      <span className={ " skeleton w-[100%] h-[20em]"} />
     );
   }
 
-  return (
-    
-    <ErrorBoundary >
-    <IonCard
-     
-      className={
-        'mt-3 rounded-lg rounded-b-lg max-w-[94vw] sm:max-w-[45em] mx-auto mx-auto justify-between bg-blueSea bg-opacity-10 flex flex-col '
-      }
- 
-    >
-      <IonCardHeader className="p-0 m-0 bg-transparent">
-        {header()}
-        {bookTitleDiv}
-      </IonCardHeader>
 
-      {/* <IonCardContent className=" w-[100%] max-w-[94vw] sm:max-w-[45em]"> */}
-        {description(page)}
+return (
+<div className={`mt-3 mx-auto rounded-2xl ${theme.card}`}>
 
-        <PageDataElement isGrid={isGrid} page={page} />
- 
-      {/* </IonCardContent> */}
-
-  
-      {isGrid ? (
-        <div id="bottom-dash" className={`flex flex-row sm:w-[50em] justify-between rounded-b-lg bottom-0 w-full`}>
-          {bookmarkBtn()}
+    {/* Header */}
+    <IonCardHeader className="pb-2">
+      <div className="flex items-center gap-3">
+        <div onClick={() => router.push(Paths.profile.createRoute(page.author.id))}>
+          <ProfileCircle includeUsername={false} profile={page.author} />
         </div>
-      ) : <div className={ `flex w-[100%] flex-row justify-between  bottom-0`}>
-        {buttonRow()}</div>}
-    </IonCard>
-    </ErrorBoundary>
-  );
+
+        <div className="flex flex-col">
+          <IonText className={`text-sm font-semibold ${theme.headerText}`}>
+            {page.author?.username}
+          </IonText>
+          <IonText className={`text-xs ${theme.subText}`}>
+            {page.title}
+          </IonText>
+        </div>
+      </div>
+    </IonCardHeader>
+
+    {/* Content */}
+    <IonCardContent className="pt-0">
+      {page.description && (
+     <IonText className={`text-sm ${theme.contentText} leading-relaxed line-clamp-3`}>
+          {page.description}
+        </IonText>
+      )}
+<div className={`mt-3 rounded-2xl overflow-hidden border ${theme.softBg}`}>
+  <DataElement isGrid={isGrid} shortenTo={shortenTo} page={page} />
+        {/* <PageDataElement truncateNumber={200}isGrid={isGrid} page={page} /> */}
+      </div>
+    </IonCardContent>
+<div className="flex items-center justify-between px-4 pb-3">
+
+  {/* Left actions */}
+  <div className="flex items-center gap-3">
+
+    {/* Like */}
+    <button
+      onClick={handleApprovalClick}
+    className={theme.primaryBtn(likeFound)}
+  
+    >
+      Yea
+    </button>
+
+    {/* Comment */}
+    <button
+      onClick={handleClickComment}
+   className={theme.iconBtn}
+    >
+      💬
+    </button>
+
+    {/* Share */}
+    <button
+      onClick={onClickShare}
+    className={theme.iconBtn}
+    >
+      ⤴
+    </button>
+  </div>
+
+  {/* Bookmark */}
+  <button
+    onClick={handleBookmark}
+  className={theme.bookmarkBtn}
+  >
+    <IonImg
+      className="w-5 h-5"
+      src={bookmarked ? bookmarkfill : bookmarkoutline}
+    />
+  </button>
+
+</div>
+    
+  </div>
+);
 }
 
 

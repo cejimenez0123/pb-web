@@ -17,6 +17,7 @@ const createProfile= createAsyncThunk("users/createProfile",async (params,thunkA
 
     const data = await profileRepo.create(params)
     const profile = data.profile
+ 
     if(data.token){
     
        await Preferences.set({key:"token",value:JSON.stringify(data.token)})
@@ -32,13 +33,24 @@ const createProfile= createAsyncThunk("users/createProfile",async (params,thunkA
     }
     return data
  })
+ const markNotificationsRead = createAsyncThunk(
+  "notifications/markRead",
+  async (_, { getState, rejectWithValue }) => {
+    try {
+      const data = await profileRepo.markNotificationsRead();
+      return data;
+    } catch (e) {
+      return rejectWithValue(e.response?.data ?? e.message);
+    }
+  }
+);
  const fetchNotifcations = createAsyncThunk("users/fetchNotifications",async (params,thunkApi)=>{
  
-        const {profile}=params
+        // const {profile}=params
         let items =[]
-       const token =(await Preferences.get({key:"token"})).value
+    
 
-             let data = await profileRepo.notifications({token,profile})
+             let data = await profileRepo.notifications(params)
           
              const payload = data
            
@@ -127,68 +139,63 @@ const uploadProfilePicture = createAsyncThunk(
   }
 );
 
-
-const uploadPicture = createAsyncThunk("users/uploadPicture",async (params,thunkApi)=>{
-  try {
-  // const {file,profile}= params
-      try {
+const uploadPicture = createAsyncThunk(
+  "users/uploadPicture",
+  async (params, thunkApi) => {
+    try {
       const { file } = params;
-if(!Capacitor.isNativePlatform()){
-
-
       if (!file) throw new Error("No file provided");
 
-     
-      const extension = file.name?.split(".").pop() || "jpg";
-      const fileName = `image/${file.name?.split(".")[0] ?? uuidv4()}-${uuidv4()}.${extension}`;
-
+      const fileName = `image/${Date.now()}-${uuidv4()}.jpg`;
       const storageRef = ref(storage, fileName);
-      await uploadBytes(storageRef, file);
 
-      const url = await getDownloadURL(storageRef);
 
-      return {
-        url,
-        fileName,
-      };
-    }else{
-        const fileName = `image/${Date.now()}-${uuidv4()}.jpg`
- new Promise((resolve, reject) => {
-    FirebaseStorage.uploadFile(
-      {
-        path:fileName, // Unique path in Firebase Storage
-        uri: file.path // Use native file URI here for iOS compatibility
-      },
-      (event, error) => {
-        if (error) {
-          reject(error);
-        } else if (event?.completed) {
-          resolve(event);
-        }
+      if (!Capacitor.isNativePlatform()) {
+        // ✅ WEB → needs Blob/File
+        await uploadBytes(storageRef, file);
+      } else {
+        // ✅ NATIVE → needs URI
+        if (!file.path) throw new Error("Missing file path");
+
+        await new Promise((resolve, reject) => {
+          FirebaseStorage.uploadFile(
+            {
+              path: fileName,
+              uri: file.path,
+            },
+            (event, error) => {
+              if (error) reject(error);
+              else if (event?.completed) resolve(event);
+            }
+          );
+        });
       }
-    );
 
-  });
+    const url = Capacitor.isNativePlatform()
+  ? await FirebaseStorage.getDownloadUrl({ path: fileName }).then(r => r.downloadUrl)
+  : await getDownloadURL(storageRef);
+      return { url, fileName };
 
-  const storageRef = ref(storage, fileName);
-     const url = await getDownloadURL(storageRef);
- return {
-        url,
-        fileName,
-      };
-    }
     } catch (err) {
-      console.error("Error uploading profile picture:", err);
+      console.error("Upload error:", err);
       return thunkApi.rejectWithValue({
-        message: "Error: UPLOAD Profile Picture " + err.message,
+        message: "UPLOAD FAILED: " + err.message,
       });
     }
-  }catch(e){
-    console.log(e)
+  }
+);
+const fetchProfileRecommendations = createAsyncThunk(
+  "profile/fetchRecommendations",
+  async ({ profileId, limit = 10 }, { rejectWithValue }) => {
+    try {
+    let data = await profileRepo.recommend({profileId,limit})
+    
+      return { profiles:data.profiles };
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.error ?? "Failed to fetch recommendations");
     }
   }
-
-)
+);
 const fetchProfiles = createAsyncThunk("users/fetchProfiles",async (params,thunkApi)=>{
 
   let data = await profileRepo.all()
@@ -203,5 +210,7 @@ const fetchProfiles = createAsyncThunk("users/fetchProfiles",async (params,thunk
     uploadProfilePicture,
     fetchProfiles,
     fetchNotifcations,
-    addNotification
+    addNotification,
+    markNotificationsRead,
+    fetchProfileRecommendations
 }

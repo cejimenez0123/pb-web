@@ -5,24 +5,35 @@ import {
           getPublicProfilePages,
           appendToPagesInView,
           setPageInView,
-        
+       
           setPagesToBeAdded,
           clearPagesInView,
-          // fetchEditingPage,
+  
           clearEditingPage,
       
           setEditingPage,
           getPublicStories,
           setPagesInView,
+          setPageType,
+          appendToMyStories,
        
         } from "../actions/PageActions.jsx"
         
 import { createSlice} from "@reduxjs/toolkit"
-import { getMyStories, getStory,createStory, fetchRecommendedStories,
+import {  getStory,createStory, fetchRecommendedStories,
   updateStory, deleteStory, getCollectionStoriesProtected,getCollectionStoriesPublic} from "../actions/StoryActions"
+import { PageType } from "../core/constants.js"
 
 
 const initialState = {pagesInView:[],
+  myPages:[],
+    pagination: {
+    skip: 0,
+    take: 20,
+    totalCount: 0,
+    hasMore: false,
+  },
+  pageType:PageType.text,
                       storyToCollectionList:[],
                       recommendedStories:[],
                       editingPage:null,
@@ -50,7 +61,13 @@ const pageSlice = createSlice({
         state.pagesInView=[]
         state.storyToCollectionList = []
       }
-    }).addCase(fetchRecommendedStories.fulfilled,(state,{payload})=>{
+    }).addCase(appendToMyStories, (state, action) => {
+    if (action.meta?.arg?.skip === 0) {
+        state.myPages = action.payload.pages;
+    } else {
+        state.myPages = [...state.myPages, ...action.payload.pages];
+    }
+}).addCase(fetchRecommendedStories.fulfilled,(state,{payload})=>{
      state.loading=false
       state.recommendedStories = payload.stories
     }).addCase(appendToPagesInView.type,(state,{payload})=>{
@@ -96,21 +113,11 @@ const pageSlice = createSlice({
           state.loading = false
           state.pageInView = payload.story
         
-        }).addCase(getMyStories.fulfilled,(state,{payload})=>{
-          if(payload.pageList){
-            state.pagesInView =    payload.pageList
-          }
-     
-          state.loading=false
-        }).addCase(getMyStories.pending,(state)=>{
-          state.loading=true
-        }).addCase(getMyStories.rejected,(state,{payload})=>{
-          if(payload&&payload.error){
-            state.error= payload.error
-       
-          }
-          state.loading = false
-        }).addCase(getPublicStories.fulfilled,(state,{payload})=>{
+        })
+      
+  
+  
+        .addCase(getPublicStories.fulfilled,(state,{payload})=>{
           if(payload.stories){
             state.pagesInView = payload.stories
           }
@@ -122,8 +129,10 @@ const pageSlice = createSlice({
         state.loading = false
         state.error = payload.error
       })
-   
-      .addCase(setHtmlContent,(state,{payload})=>{
+
+
+
+      .addCase(setHtmlContent.type,(state,{payload})=>{
         state.editorHtmlContent = payload.html
       }).addCase(getPublicProfilePages.fulfilled,(state,{payload})=>{
         state.loading = false
@@ -159,15 +168,17 @@ const pageSlice = createSlice({
       .addCase(clearEditingPage,(state)=>{
         state.editingPage =null
       }).addCase(setPageInView,(state,{payload})=>{
-     
+  
       state.pageInView = payload
-   
-      
+
+
+      }).addCase(setPageType,(state,{payload})=>{
+        state.pageType  = payload
       }).addCase(setEditingPage.type,(state,{payload})=>{
         state.editingPage = payload
       })
 .addCase(setPagesInView,(state,{payload})=>{
-    
+
           state.pagesInView = payload
       
     
@@ -185,3 +196,4 @@ const pageSlice = createSlice({
   })
     
 export {pageSlice}
+

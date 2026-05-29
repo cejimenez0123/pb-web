@@ -5,46 +5,40 @@ import React, {
   useContext,
   useRef,
 } from "react";
-import { IonText, IonSpinner, IonImg, IonRow, useIonRouter } from "@ionic/react";
+import { IonText, IonSpinner, IonImg, IonRow } from "@ionic/react";
 import { useDispatch } from "react-redux";
 import { SocialLogin } from "@capgo/capacitor-social-login";
-import { logIn } from "../actions/UserActions";
-import DeviceCheck from "./DeviceCheck";
-import Context from "../context";
+// import DeviceCheck from "./DeviceCheck";
 import { Preferences } from "@capacitor/preferences";
 import Googlelogo from "../images/logo/googlelogo.png";
-import ErrorBoundary from "../ErrorBoundary"; // make sure this path matches your project
+import ErrorBoundary from "../ErrorBoundary";
 import { sendGAEvent } from "../core/ga4";
+import { Capacitor } from "@capacitor/core";
+import { useAlert } from "../core/useAlert";
 import checkResult from "../core/checkResult";
 function GoogleLoginInner({ drive, onUserSignIn }) {
-  const { isError } = useContext(Context);
   const [bootstrapping, setBootstrapping] = useState(true);
-const [pending, setPending] = useState(false);
+  const [pending, setPending] = useState(false);
 
   const [loginError, setLoginError] = useState(null);
   const [signedIn, setSignedIn] = useState(false);
-  const [userInfo, setUserInfo] = useState(null);
   const [gisLoaded, setGisLoaded] = useState(false);
+  const {showPrompt,closeAlert} = useAlert();
   const [accessToken, setAccessToken] = useState(null);
   const [idToken, setIdToken] = useState(null);
 
-  const isNative = DeviceCheck();
-const router =useIonRouter()
-
-  const dispatch = useDispatch();
   const googleButtonRef = useRef(null);
+  const isNative =Capacitor.isNativePlatform()
 
   const CLIENT_ID = import.meta.env.VITE_OAUTH2_CLIENT_ID;
   const IOS_CLIENT_ID = import.meta.env.VITE_IOS_CLIENT_ID;
-     
+
   const driveTokenKey = "googledrivetoken";
 
   // ---------------------------
-  // 1️⃣ Initialize for mobile
+  // 1️⃣ Native init
   // ---------------------------
   useLayoutEffect(() => {
-    // if (!isNative) return;
-
     try {
       SocialLogin.initialize({
         google: {
@@ -52,80 +46,111 @@ const router =useIonRouter()
           iOSClientId: IOS_CLIENT_ID,
           iOSServerClientId: CLIENT_ID,
           mode: "online",
-          // redirectUrl:Enviroment.redirectUrl
         },
-      }).catch((err) => console.error("SocialLogin init error:", err));
+      }).catch(console.error);
     } catch (err) {
-      console.error("Error initializing SocialLogin:", err);
+      console.error(err);
     }
-  }, [isNative, CLIENT_ID, IOS_CLIENT_ID]);
+  }, [CLIENT_ID, IOS_CLIENT_ID]);
 
   // ---------------------------
-  // 2️⃣ Load GIS script (for web)
+  // 2️⃣ Load Google script (FIXED)
   // ---------------------------
   useLayoutEffect(() => {
     if (isNative) return;
 
-    try {
-      if (!window.google?.accounts) {
-        const script = document.createElement("script");
-        script.src = "https://accounts.google.com/gsi/client";
-        script.async = true;
-        script.defer = true;
-        script.onload = () => setGisLoaded(true);
-        script.onerror = () =>
-          setLoginError("Failed to load Google Sign-In script");
-        document.body.appendChild(script);
-      } else {
-        setGisLoaded(true);
-      }
-    } catch (err) {
-      console.error("Error loading GIS script:", err);
+    if (window.google?.accounts) {
+      setGisLoaded(true);
+      return;
     }
+
+    const script = document.createElement("script");
+    script.src = "https://accounts.google.com/gsi/client";
+    script.async = true;
+    script.defer = true;
+
+    script.onload = () => setGisLoaded(true);
+    script.onerror = () =>
+      setLoginError("Failed to load Google Sign-In script");
+
+    document.body.appendChild(script);
   }, [isNative]);
 
   // ---------------------------
-  // 3️⃣ Restore previous session
+  // 3️⃣ Restore session
   // ---------------------------
   useEffect(() => {
-  const loadStoredUser = async () => {
-    try {
-      const [email, name, googleId, driveToken, expiry, idToken] =
-        await Promise.all([
-          Preferences.get({ key: "userEmail" }),
-          Preferences.get({ key: "userName" }),
-          Preferences.get({ key: "googleId" }),
-          Preferences.get({ key: driveTokenKey }),
-          Preferences.get({ key: "googledrivetoken_expiry" }),
-          Preferences.get({ key: "googleIdToken" }),
-        ]);
+    const loadStoredUser = async () => {
+      try {
+        const [email, name, googleId, driveToken, expiry, storedIdToken] =
+          await Promise.all([
+            Preferences.get({ key: "userEmail" }),
+            Preferences.get({ key: "userName" }),
+            Preferences.get({ key: "googleId" }),
+            Preferences.get({ key: driveTokenKey }),
+            Preferences.get({ key: "googledrivetoken_expiry" }),
+            Preferences.get({ key: "googleIdToken" }),
+          ]);
 
-      const valid =
-        driveToken.value &&
-        expiry.value &&
-        Date.now() < parseInt(expiry.value, 10);
+        const valid =
+          driveToken.value &&
+          expiry.value &&
+          Date.now() < parseInt(expiry.value, 10);
 
-      if (email.value && googleId.value && valid) {
-        setAccessToken(driveToken.value);
-        setIdToken(idToken.value);
-        setUserInfo({
-          email: email.value,
-          name: name.value,
-          googleId: googleId.value,
-          uId: googleId.value,
-        });
-        setSignedIn(true);
+        if (email.value && googleId.value && valid) {
+          setAccessToken(driveToken.value);
+          setIdToken(storedIdToken.value);
+
+          setSignedIn(true);
+        }
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setBootstrapping(false);
       }
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setBootstrapping(false);
+    };
+
+    loadStoredUser();
+  }, []);
+
+
+const nativeGoogleSignIn = async () => {
+  if (pending) return;
+  
+  setPending(true);
+  setLoginError(null);
+  
+  try {
+    const user = await SocialLogin.login({
+      provider: "google",
+      options: {
+        scopes: [
+          "email",
+          "profile",
+          "https://www.googleapis.com/auth/drive.readonly",
+        ],
+      },
+    });
+
+    const result = user?.result;
+
+    if (!result) throw new Error("No Google result returned");
+
+    const profile = result.profile || {};
+    const idToken = result.idToken || result.authentication?.idToken;
+    const accessToken = result.accessToken?.token || result.accessToken;
+
+    if (!idToken) {
+      throw new Error("Missing Google ID token (required for login)");
     }
-  };
 
-  loadStoredUser();
-}, []);
-
+    const payload = {
+      email: profile.email,
+      name: profile.name,
+      googleId: profile.id,
+      idToken,
+      driveAccessToken: accessToken,
+    };
 
   // ---------------------------
   // 4️⃣ Native (mobile) login
@@ -173,6 +198,16 @@ const router =useIonRouter()
         googleId: profile.id,
       };
 
+    await onUserSignIn?.(payload);
+
+    setSignedIn(true);
+  } catch (err) {
+    console.error("GOOGLE NATIVE LOGIN ERROR:", err);
+    setLoginError(err.message || "Google Sign-In failed.");
+  } finally {
+    setPending(false);
+  }
+};
       setUserInfo(info);
       setAccessToken(accessToken);
       setIdToken(idToken);
@@ -204,38 +239,116 @@ const router =useIonRouter()
   };
 
   // ---------------------------
-  // 5️⃣ Web login setup
+  // 5️⃣ Web login
   // ---------------------------
   useEffect(() => {
     if (isNative || !gisLoaded || signedIn) return;
     if (!window.google?.accounts) return;
 
-    try {
-      window.google.accounts.id.initialize({
-        client_id: CLIENT_ID,
-        callback: handleCredentialResponse,
-        auto_select: false,
-        cancel_on_tap_outside: true,
-      });
+    window.google.accounts.id.initialize({
+      client_id: CLIENT_ID,
+      callback: handleCredentialResponse,
+    });
 
-      if (googleButtonRef.current) {
-        window.google.accounts.id.renderButton(googleButtonRef.current, {
-          theme: "outline",
-          size: "large",
-          text: "signin_with",
-          width: 240,
-        });
-      }
-    } catch (err) {
-      console.error("Error initializing Google button:", err);
+    if (googleButtonRef.current) {
+      window.google.accounts.id.renderButton(googleButtonRef.current, {
+        theme: "outline",
+        size: "large",
+        text: "signin_with",
+        width: 240,
+      });
     }
   }, [isNative, gisLoaded, signedIn, CLIENT_ID]);
 
   // ---------------------------
-  // 6️⃣ Handle web credential
+  // 6️⃣ Web credential (FIXED race)
   // ---------------------------
-  const handleCredentialResponse = async (response) => {
+  // const handleCredentialResponse = async (response) => {
+  //   if (pending) return;
+  //   setPending(true);
+
+  //   try {
+  //     const decoded = JSON.parse(atob(response.credential.split(".")[1]));
+
+  //     const info = {
+  //       email: decoded.email,
+  //       name: decoded.name || decoded.given_name,
+  //       googleId: decoded.sub,
+  //     };
+
+  //     await Promise.all([
+  //       Preferences.set({ key: "userEmail", value: info.email }),
+  //       Preferences.set({ key: "userName", value: info.name }),
+  //       Preferences.set({ key: "googleId", value: info.googleId }),
+  //       Preferences.set({
+  //         key: "googleIdToken",
+  //         value: response.credential,
+  //       }),
+  //     ]);
+
+  //     setIdToken(response.credential);
+  //     setSignedIn(true);
+
+  //     if (window.google?.accounts?.oauth2) {
+  //       const tokenClient = window.google.accounts.oauth2.initTokenClient({
+  //         client_id: CLIENT_ID,
+  //         scope: "https://www.googleapis.com/auth/drive.readonly",
+  //         callback: async (tokenResponse) => {
+  //           if (!tokenResponse.access_token) {
+  //             setLoginError("Failed to get Drive token");
+  //             return;
+  //           }
+
+  //           const expiryMs =
+  //             Date.now() + tokenResponse.expires_in * 1000;
+
+  //           await Promise.all([
+  //             Preferences.set({
+  //               key: driveTokenKey,
+  //               value: tokenResponse.access_token,
+  //             }),
+  //             Preferences.set({
+  //               key: "googledrivetoken_expiry",
+  //               value: expiryMs.toString(),
+  //             }),
+  //           ]);
+
+  //           setAccessToken(tokenResponse.access_token);
+
+  //           setSignedIn(true); // ✅ FIXED PLACE
+
+  //           onUserSignIn?.({
+  //             ...info,
+  //             driveAccessToken: tokenResponse.access_token,
+  //             idToken: response.credential,
+  //           });
+  //         },
+  //       });
+
+  //       tokenClient.requestAccessToken();
+  //     }
+  //   } catch (e) {
+  //     console.error(e);
+  //     setLoginError("Login failed");
+  //   } finally {
+  //     setPending(false);
+  //   }
+  // };
+const handleCredentialResponse = async (response) => {
+  if (pending) return;
+  setPending(true);
+
+  try {
     if (!response?.credential) {
+      throw new Error("Missing Google credential");
+    }
+
+    const idToken = response.credential;
+
+    // safer decode (guarded)
+    let decoded = null;
+    try {
+      decoded = JSON.parse(atob(idToken.split(".")[1]));
       return setLoginError("No credential received.");
     }
 
@@ -290,11 +403,30 @@ const router =useIonRouter()
         tokenClient.requestAccessToken();
       }
     } catch (e) {
-      console.error("Web login error:", e);
-      setLoginError("Invalid ID token.");
+      throw new Error("Invalid Google token format");
     }
-  };
 
+    const payload = {
+      email: decoded?.email,
+      name: decoded?.name || decoded?.given_name,
+      googleId: decoded?.sub,
+      idToken,
+    };
+
+    if (!payload.email || !payload.googleId) {
+      throw new Error("Invalid Google user data");
+    }
+
+    await onUserSignIn?.(payload);
+
+    setSignedIn(true);
+  } catch (err) {
+    console.error("GOOGLE WEB LOGIN ERROR:", err);
+    setLoginError(err.message || "Login failed");
+  } finally {
+    setPending(false);
+  }
+};
   // ---------------------------
   // 7️⃣ UI
   // ---------------------------
@@ -307,21 +439,21 @@ const router =useIonRouter()
   }
 
   return (
-    <div className="flex flex-col  justify-center items-center w-full min-h-full">
+    <div className="flex flex-col justify-center items-center w-full min-h-full">
       <div
-        onClick={!pending ? nativeGoogleSignIn : undefined}
-        color="dark"
-        className="bg-gray-200 btn rounded-full flex h-[4rem] text-white w-[10rem] mt-8"
+        onClick={!pending ?()=>{
+          showPrompt({message:"Google Sign-In asks for permission to access Google Drive. We only read files you share. Not Required",agreeText:"Continue",agree:()=>nativeGoogleSignIn(),type:"prompt"})
+
+        }  : undefined}
+        className="bg-gray-200 btn rounded-full flex h-[4rem] w-[10rem] mt-8"
       >
         <IonRow>
           <IonImg src={Googlelogo} className="max-h-5 max-w-5 mx-3 my-auto" />
           <IonText className="text-black my-auto">
-            {drive ? "Access your Google Drive" : "Sign in"}
+            {drive ? "Access Google Drive" : "Sign in"}
           </IonText>
         </IonRow>
       </div>
-
-      {/* <div ref={googleButtonRef} className="mt-4"></div> */}
 
       {loginError && (
         <IonText color="danger" className="mt-3">
@@ -332,9 +464,6 @@ const router =useIonRouter()
   );
 }
 
-// ---------------------------
-// 🔒 Wrapped Component
-// ---------------------------
 export default function GoogleLogin(props) {
   return (
     <ErrorBoundary fallback={<div>Login temporarily unavailable.</div>}>
@@ -342,4 +471,5 @@ export default function GoogleLogin(props) {
     </ErrorBoundary>
   );
 }
+
 

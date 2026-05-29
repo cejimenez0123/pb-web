@@ -12,13 +12,15 @@ import { createSlice} from "@reduxjs/toolkit"
       
             } from "../actions/CollectionActions"
 import { deleteCollectionRole, postCollectionRole } from "../actions/RoleActions"
-import { createWorkshopGroup, fetchWorkshopGroups, } from "../actions/WorkshopActions"
+import { findWorkshopGroup, fetchWorkshopGroups, } from "../actions/WorkshopActions"
 import { patchCollectionRoles ,getProtectedProfileCollections,getPublicProfileCollections} from "../actions/CollectionActions"
 
 import { getPublicLibraries } from "../actions/LibraryActions.jsx"
 const initialState = {
     groups:[],
+    myCollections:[],
     collections:[],
+
     books:[],
     libraries:[],
     collectionToCollectionsList:[],
@@ -38,19 +40,20 @@ builder.addCase(patchCollectionRoles.fulfilled,(state,{payload})=>{
     if(payload.collection){
         state.collectionInView = payload.collection
     }
-    if(payload.roles){
-        state.roles = payload.collection
-    }
+  
 }).addCase(getProtectedProfileCollections.fulfilled,(state,{payload})=>{
-   state.collections= payload.collections
+  if(payload.collections && payload.collections.length){
+     state.collections= payload.collections
+  }
+   
 }).addCase(getPublicProfileCollections.fulfilled,(state,{payload})=>{
-    state.collections = payload.collections
-}).addCase(createWorkshopGroup.fulfilled,(state,{payload})=>{
+  payload.collections && (state.collections = payload.collections)
+}).addCase(findWorkshopGroup.fulfilled,(state,{payload})=>{
     state.collectionInView = payload.collection
     state.loading = false
-}).addCase(createWorkshopGroup.pending,(state)=>{
+}).addCase(findWorkshopGroup.pending,(state)=>{
 state.loading = true
-}).addCase(createWorkshopGroup.rejected,(state,{payload})=>{
+}).addCase(findWorkshopGroup.rejected,(state,{payload})=>{
     state.loading =false
 }).addCase(fetchWorkshopGroups.fulfilled,(state,{payload})=>{
     state.groups = payload.groups
@@ -80,12 +83,11 @@ state.loading = true
     }}})
   
 .addCase(getPublicCollections.fulfilled,(state,{payload})=>{
-    if(payload.collections){
-        
+   if(payload.collections && payload.collections.length){
         state.collections=payload.collections
-        state.books = payload.collections.filter(col=>col.storyIdList&&(!col.childCollections||col.childCollections.length>0))
-        state.libraries = payload.collections.filter(col=>col.storyIdList.length>0||col.childCollections.length>0)
-    }
+        state.books = payload.collections.filter(col=>col && (col.childCollections==0))
+        state.libraries = payload.collections.filter(col=>col && col.childCollections.length>0)
+   }
 })
 .addCase(addCollectionListToCollection.pending,(state,{payload})=>{
     state.loading = true
@@ -111,14 +113,14 @@ state.loading = true
    let list = state.collections.filter(col=>col)
   
     const index = list.findIndex(col=>col.id==payload.collection.id)
-    if(index>0){
+if (index >= 0) {
         list[index]=payload.collection
         state.collections = list
     }}
 }).addCase(postCollectionRole.fulfilled,(state,{payload})=>{
-    if(payload.collection){
+    // if(payload.collection){
 state.collectionInView = payload.collection
-    }
+    // }
     
 }).addCase(createCollection.pending,(state)=>{
     state.loading = true
@@ -146,37 +148,24 @@ state.collectionInView = payload.collection
     state.books= payload.books
 
 }).addCase(setCollections.type,(state,{payload})=>{
- 
+
     state.collections = payload
  
     })
 .addCase(saveRoleToCollection.rejected,(state,{payload})=>{
     state.loading = false
     state.error = "Error Saving Role"
-}).addCase(getMyCollections.fulfilled,(state,{payload})=>{
-        if(payload.collections){
-    let cols = state.collections
-   
-    if( payload.collections){
-      let collections =  payload.collections
-    
-
-    const list = cols.map(col=>{
-        return collections.find(colx=>{
-           return col && col.id && colx && colx.id && col.id==colx.id}
-        )
-    })
-    const filtered = collections.filter(col=>{
-       return !state.collections.filter(colx=>colx&&colx.id).find(colx=>col.id==colx.id)
-    })
-    state.collections =[...list,...filtered]
-    state.loading =false
-}
-        }
-}).addCase(getMyCollections.pending,)
+}).addCase(getMyCollections.fulfilled, (state, { payload }) => {
+    if (payload.collections) {
+        state.myCollections = payload.collections;
+    }
+    state.loading = false;
+}).addCase(getMyCollections.pending,(state,payload)=>{
+    state.loading = true
+})
 .addCase(getMyCollections.rejected,(state,{payload})=>{
 
-    state.loading = true
+    state.loading = false
 }).addCase(saveRoleToCollection.fulfilled,(state,{payload})=>{
     state.role = payload.role
 }).addCase(fetchCollection.pending,(state)=>{
@@ -192,8 +181,8 @@ state.collectionInView = payload.collection
 
 
     state.loading = false
-}).addCase(fetchCollectionProtected.pending,(state)=>{
-    state.loading=false
+}).addCase(fetchCollectionProtected.pending, (state) => {
+    state.loading = true// ← should be true
 }).addCase(fetchCollectionProtected.fulfilled,(state,{payload})=>{
     state.collectionInView = payload.collection
 

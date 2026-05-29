@@ -1,8 +1,6 @@
 
 import { initializeApp } from "firebase/app";
-import { getAuth, browserLocalPersistence,setPersistence, indexedDBLocalPersistence } from "firebase/auth"
 import "firebase/compat/firestore"
-import {  getFirestore} from "firebase/firestore";
 import { getStorage } from "firebase/storage"
 
 const config = { apiKey:import.meta.env.VITE_FIREBASE_API_KEY,

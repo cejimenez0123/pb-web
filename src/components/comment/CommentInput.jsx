@@ -1,108 +1,88 @@
 
-import { useSelector,useDispatch} from "react-redux"
-import { appendComment, createComment,updateComment } from "../../actions/PageActions.jsx"
-import { useContext, useEffect, useLayoutEffect, useState } from "react"
-import checkResult from "../../core/checkResult"
-import { debounce } from "lodash"
-import critiqueTipsByGenre from "../../core/writingTips"
-import Context from "../../context"
+import { useSelector, useDispatch } from "react-redux";
+import { useState } from "react";
+import { createComment, updateComment } from "../../actions/PageActions.jsx";
+import { useDialog } from "../../domain/usecases/useDialog.jsx";
 
-export default function CommentInput({parentComment,page,defaultComment,handleClose}){
-    const dispatch = useDispatch()
-    
-    const {setError}=useContext(Context)
-    const currentProfile = useSelector(state=>state.users.currentProfile)
-   const [defaultContent,setDefaultContent]=useState(state=>{
-        if(page&&page.hashtags){
-        let tips = null
-        page.hashtags.find(hashtag=>{
-            tips = critiqueTipsByGenre[hashtag.hashtag.name]
-           return tips
-        })
+export default function CommentInput({ parentComment, page, defaultComment, anchorText, handleClose }) {
+  const dispatch = useDispatch();
+  const currentProfile = useSelector((state) => state.users.currentProfile);
+  const [commentInput, setComment] = useState(defaultComment ? defaultComment.content : "");
+  const { resetDialog } = useDialog();
 
-        if(tips && tips.length>0){
-            let index = Math.floor(Math.random() * tips.length)
-            if(tips){
-               return tips[index]
-                
-            }
-        }}
-        return defaultComment?defaultComment.content:""
-})
-    const [commentInput,setComment] = useState(defaultContent)
-    const [show,setShow]=useState(true)
-    const saveComment=debounce((e)=>{
-        e.preventDefault()
-     
-        if(currentProfile && page ){
-            let id = ""
-            if(parentComment){
-                id = parentComment.id
-            }
-        const params =  {profile: currentProfile,
-              text:commentInput,
-              storyId:page.id,
-              parentCommentId:id,
-        }
-    
-        dispatch(createComment(params)).then(result=>{
-            checkResult(result,payload=>{
-                setComment("")
-                setShow(false)
-                handleClose()
-              
-              
-            },(err)=>{
-            setError(err)
-            })
-    
-        })
-    
-    }},10)
+  const saveComment = (e) => {
+    e.preventDefault();
+    if (!currentProfile) return;
+    dispatch(createComment({
+      profile:         currentProfile,
+      text:            commentInput,
+      storyId:         page.id,
+      parentCommentId: parentComment?.id || null,
+      anchorText:      anchorText || "",   // ← non-nullable in schema
+    })).then(() => {
+      setComment("");
+      resetDialog();
+    });
+  };                                       // ← was missing, breaking everything below
 
-const clickUpdateComment = ()=>{
-    const params =  {
-        newText:commentInput,
-        comment:defaultComment,
-       
-  }
-    dispatch(updateComment(params))
-    handleClose()
-}
-    const input = ()=>{
-        
-    return(<div style={{display: show?"":"none"}}className="p-2">
-        <div className="text-left">Your Note:</div>
-<textarea
-  placeholder="Write your comment here..."
-  className="textarea  bg-slate-50 mb-2 mx-auto min-h-36  p-2  text-emerald-800 w-[100%] mx-auto  "
-  
+  const clickUpdateComment = () => {
+    dispatch(updateComment({ newText: commentInput, comment: defaultComment }));
+    resetDialog();
+  };
 
-  value={commentInput}
-
-  
-  onChange={(e)=>{
-     setComment(e.target.value)
-}}></textarea>
-    <div className="flex rounded-full   flex-row-reverse ">
-       {currentProfile? 
-        defaultComment?
-            <button 
-            className="bg-emerald-400 text-white btn hover:bg-emerald-500"
-       onClick={clickUpdateComment}>Update</button>
-       :
-       
-       <p
-       onClick={(e)=>saveComment(e)} 
-   
-     className="bg-sky-600 border-sky-500 text-[1rem] text-white w-[10em] btn hover:bg-emerald-500"
-         > 
-       {parentComment?"Reply":"Save"}</p>:
-       <button className="text-emerald-800" 
-       disabled={!currentProfile} onClick={saveComment}>
-            Disabled
-        </button>}
+  return (
+    <div className="p-4 w-full h-full flex flex-col gap-3">
+      {anchorText && (
+        <blockquote className="border-l-2 border-emerald-400 pl-3 text-sm text-slate-500 dark:text-slate-400 italic">
+          "{anchorText}"
+        </blockquote>
+      )}
+      <label className="text-emerald-800 dark:text-emerald-300 font-medium text-sm block">
+        {parentComment ? "Your Reply:" : "Your Note:"}
+      </label>
+      <textarea
+        placeholder={parentComment ? "Write your reply here…" : "Write your comment here…"}
+        className={[
+          "w-full p-3 min-h-[8rem] rounded-xl resize-none",
+          "bg-slate-50 dark:bg-slate-800",
+          "text-emerald-800 dark:text-emerald-200",
+          "border border-emerald-100 dark:border-emerald-700",
+          "focus:outline-none focus:ring-2 focus:ring-emerald-300 dark:focus:ring-emerald-600",
+          "placeholder:text-slate-400 dark:placeholder:text-slate-500",
+          "transition",
+        ].join(" ")}
+        value={commentInput}
+        onChange={(e) => setComment(e.target.value)}
+      />
+      <div className="flex justify-end mt-1 gap-2">
+        {handleClose && (
+          <button
+            onClick={handleClose}
+            className="px-4 py-2 rounded-full text-sm text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 transition"
+          >
+            Cancel
+          </button>
+        )}
+        {currentProfile && (
+          defaultComment ? (
+            <button
+              onClick={clickUpdateComment}
+              disabled={!commentInput.trim()}
+              className="bg-emerald-600 hover:bg-emerald-700 disabled:opacity-40 text-white text-sm px-4 py-2 rounded-full transition"
+            >
+              Update
+            </button>
+          ) : (
+            <button
+              onClick={saveComment}
+              disabled={!commentInput.trim()}
+              className="bg-emerald-600 hover:bg-emerald-700 disabled:opacity-40 text-white text-sm px-4 py-2 rounded-full transition"
+            >
+              {parentComment ? "Reply" : "Save"}
+            </button>
+          )
+        )}
+      </div>
     </div>
-</div>)}
-    return input()
+  );
 }

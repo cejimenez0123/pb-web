@@ -9,6 +9,17 @@ async ({profileId},thunkApi) => {
    }
 }
 )
+const getRecommendedHashtagCollections = createAsyncThunk(
+  "collections/getRecommended",
+  async ({ hashtagIds, skip, take, exclude = [] }, { rejectWithValue }) => {
+    try {
+            let data =await  hashtagRepo.getRecommended({ hashtagIds, skip, take, exclude })
+      return data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.error ?? "Failed to fetch recommendations");
+    }
+  }
+);
 const createHashtag = createAsyncThunk("hashtag/createHashtag", 
     async ({name,profileId},thunkApi) => {
      let data =  await hashtagRepo.create({name,profileId})
@@ -105,7 +116,7 @@ async ({name,colId,profile},thunkApi) => {
 })
 const deleteHashtagCollection = createAsyncThunk("hashtag/deleteHashtagCollection", 
 async ({colId,hashId},thunkApi) => {
-    console.log(hashId)
+ 
         let data = await hashtagRepo.deleteCollection({colId,hashId})
       return data
   
@@ -159,14 +170,38 @@ const fetchStoryHashtags = createAsyncThunk("hashtags/fetchStoryHashtags",async 
     return {hashtags:[],error}
 }   
 
+
 })
+
+ const followHashtag = createAsyncThunk(
+  "hashtags/follow",
+  async ({ hashtagId }, { rejectWithValue }) => {
+    try {
+      const res = await hashtagRepo.followHashtag({ hashtagId });
+      return res;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.error || err.message);
+    }
+  }
+);
+ const unfollowHashtag = createAsyncThunk(
+  "hashtags/unfollow",
+  async ({ hashtagId }, { rejectWithValue }) => {
+    try {
+      const res = await hashtagRepo.unfollowHashtag({ hashtagId });
+      return res;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.error || err.message);
+    }
+  }
+);
 export {
         createHashtag,
         createHashtagComment,
         createHashtagPage,
         getHashtags,
         deleteHashtagStory,
-        // getHashtagComments,
+       
         fetchHashtag,
         clearHashComments,
         clearHashPages,
@@ -174,7 +209,10 @@ export {
         getProfileHashtagCommentUse,
         deleteHashtagComment,
         fetchStoryHashtags,
+        followHashtag,
         deleteHashtagCollection,
-        createHashtagCollection
+        createHashtagCollection,
+        unfollowHashtag 
+        , getRecommendedHashtagCollections 
 }
 

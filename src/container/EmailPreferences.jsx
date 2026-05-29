@@ -6,9 +6,12 @@ import checkResult from "../core/checkResult";
 import Context from "../context";
 import { useIonRouter } from "@ionic/react";
 import { useLocation } from "react-router";
+import { useAlert } from "../core/useAlert.jsx";
+import AlertType from "../core/AlertType.js";
 
 export default function EmailPreferences() {
-  const {setSuccess,setError,setSeo,seo}=useContext(Context)
+  const {setSeo}=useContext(Context)
+  const { showAlert } = useAlert();
   const selectRef = useRef()
   const router = useIonRouter()
   const dispatch = useDispatch()
@@ -45,13 +48,13 @@ const location = useLocation();
   const save=()=>{
       dispatch(updateSubscription({token,frequency:new Number(selectRef.current.value)})).then(res=>{
         checkResult(res,payload=>{
-setSuccess(payload.message)
+showAlert({ message: payload.message, type: AlertType.success })
         },err=>{
-          console.log(err)
+      
            if(err && !err.message.includes("Network")){
-setError(err.message)
+showAlert({ message: err.message, type: AlertType.error })
            }else if(err){
-            setError(err.message)
+            showAlert({ message: err.message, type: AlertType.error })
            }
         })
       })
@@ -63,7 +66,7 @@ setError(err.message)
         router.push("/subscribe?"+pars.toString())
       },err=>{
          if(!err.message.includes("Network")){
-setError(err.message)
+showAlert({ message: err.message, type: AlertType.error })
          }
       })
     })
@@ -91,7 +94,7 @@ setError(err.message)
             </a>
             </div>
           </>
-        ) :( <div className="card my-4 md:my-8  max-h-[40em] mx-2 md:mx-auto w-full max-w-md p-6 bg-white shadow-lg rounded-2xl">
+        ) :( <div className="card my-4 md:my-8  max-h-[40em] mx-2 md:mx-auto w-full max-w-md p-6 bg-base-bg shadow-lg rounded-2xl">
         <h2 className="text-2xl font-bold text-center text-emerald-700 mb-4">
           Manage Email Preferences
         </h2>
@@ -103,7 +106,7 @@ setError(err.message)
             Email Frequency
           </label>
           <select
-            className="w-full bg-white select text-emerald-700 mont-medium select-bordered "
+            className="w-full bg-base-bg select text-emerald-700 mont-medium select-bordered "
             value={frequency}
             ref={selectRef}
             onChange={(e) => setFrequency(e.target.value)}
@@ -128,7 +131,7 @@ setError(err.message)
         <p className="text-center text-sm text-gray-500 mt-4">
           Want to stop receiving emails? 
           <a onClick={()=>unsubscribe()}
-          className="text-emerald-600 mx-2 font-semibold hover:underline">Unsubscribe</a>
+          className="text-emerald-600 mx-2 font-semibold hover:underline">None</a>
         </p>
       </div>)}
     </div>
