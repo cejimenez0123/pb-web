@@ -207,7 +207,8 @@ scrollY: false,
   </ButtonWrapper>
 </div>
 </div>
-        <div className={`${WRAP} ${PAGE_Y} ${STACK_LG}`}>
+{/* Stories className={`${WRAP} ${PAGE_Y} ${STACK_LG}`} */}
+        
           <div className={SECTION}>
           {/* Stories */}
           <SectionHeader title="What's happening in your communities" />
@@ -227,10 +228,10 @@ scrollY: false,
         />
       ))
   }
-</div>
+
 </div>
           {/* Workshops */}
-          
+          <div className={`${WRAP} ${PAGE_Y} ${STACK_LG}`} >
            <div className={SECTION}>
           <SectionHeader
             title="Workshops near you"
@@ -241,8 +242,8 @@ scrollY: false,
               </div>
             }
           />
-         
-        
+        </div>
+        <div className={`${WRAP} ${PAGE_Y} ${STACK_LG}`} >
            {/* Workshop grid */}
           <div className={SECTION}>
             <div className="grid gap-4 sm:grid-cols-2 px-4 lg:grid-cols-2">
@@ -256,8 +257,9 @@ scrollY: false,
             </div>
           </div>
         </div> {/* ← closes "Workshops near you" SECTION */}
-
+</div>
         {/* Prompts */}
+        <div className={`${WRAP} ${PAGE_Y} ${STACK_LG}`} >
         <div className={SECTION}>
           <SectionHeader title="Writing Prompts for you" />
           <div className={`${GRID} px-4`}>
@@ -266,11 +268,12 @@ scrollY: false,
             ))}
           </div>
         </div>
+        </div>
 
         {/* What's new */}
         <div className={SECTION+"px-2"}>
           <SectionHeader title="What's new" />
-          <PageList items={recommendedStories.slice(0, 4)} />
+          <PageList items={recommendedStories.slice(0, 4)} shortenTo={400}/>
         </div>
 
       </div> {/* ← closes WRAP */}
