@@ -16,7 +16,7 @@ import imageIcon from "../../images/editor/insert-image-svgrepo-com.svg"
 import insetLink from "../../images/editor/insert-link-svgrepo-com.svg"
 import Enviroment from "../../core/Enviroment";
 
-const FONTS = ["Default", "Georgia", "Courier New", "Arial", "Trebuchet MS"];
+const FONTS = ["Default", "Georgia", "Courier New", "Arial"];
 const SIZES = ["12px", "14px", "16px", "18px", "20px", "24px", "32px"];
 
 const iconStyle = () =>
@@ -239,21 +239,111 @@ export default function RichEditor({ handleChange }) {
     updateFormatState();
     emitChange();
   }, [updateFormatState, emitChange]);
+const savedRange = useRef(null);
 
-  // ── Font size: inline span wrap ─────────────────────────────────────────
-  const applySize = useCallback((size) => {
-    editorRef.current?.focus();
-    if (!wrapSelectionInline({ fontSize: size })) {
-      // Nothing selected — just set for next typed character
-      document.execCommand("fontSize", false, "3");
+useEffect(() => {
+  const handler = () => {
+    const sel = window.getSelection();
+    if (
+      sel && sel.rangeCount > 0 && !sel.isCollapsed &&
+      editorRef.current?.contains(sel.anchorNode)
+    ) {
+      savedRange.current = sel.getRangeAt(0).cloneRange();
     }
-    emitChange();
-  }, [emitChange]);
+  };
+  document.addEventListener("selectionchange", handler);
+  return () => document.removeEventListener("selectionchange", handler);
+}, []);
 
-  const applyFont = useCallback((font) => {
-    exec("fontName", font === "Default" ? "inherit" : font);
-  }, [exec]);
+const restoreSelection = useCallback(() => {
+  const sel = window.getSelection();
+  if (savedRange.current) {
+    sel.removeAllRanges();
+    sel.addRange(savedRange.current);
+  }
+}, []);
 
+// useEffect(() => {
+//   const handler = () => {
+//     const sel = window.getSelection();
+//     if (
+//       sel && sel.rangeCount > 0 && !sel.isCollapsed &&
+//       editorRef.current?.contains(sel.anchorNode)
+//     ) {
+//       savedRange.current = sel.getRangeAt(0).cloneRange();
+//     }
+//   };
+//   document.addEventListener("selectionchange", handler);
+//   return () => document.removeEventListener("selectionchange", handler);
+// }, []);
+const applyFont = useCallback((font) => {
+  editorRef.current?.focus();
+  restoreSelection();
+  document.execCommand("fontName", false, font === "Default" ? "inherit" : font);
+  updateFormatState();
+  emitChange();
+}, [restoreSelection, updateFormatState, emitChange]);
+const applySize = useCallback((px) => {
+  const el = editorRef.current;
+  if (!el) return;
+  el.focus();
+  restoreSelection();
+
+  const sel = window.getSelection();
+  if (!sel || sel.rangeCount === 0 || sel.isCollapsed) return;
+
+  document.execCommand("styleWithCSS", false, false);
+  document.execCommand("fontSize", false, "7");          // browser handles multi-node split
+  el.querySelectorAll('font[size="7"]').forEach((font) => {
+    font.removeAttribute("size");
+    font.style.fontSize = px;                            // 7 → your real px
+  });
+
+  updateFormatState();
+  emitChange();
+}, [restoreSelection, updateFormatState, emitChange]);
+// const applySize = useCallback((size) => {
+//   editorRef.current?.focus();
+//   restoreSelection();
+//   wrapSelectionInline({ fontSize: size });   // now sees the real selection
+//   updateFormatState();
+//   emitChange();
+// }, [restoreSelection, updateFormatState, emitChange]);
+// const restoreSelection = useCallback(() => {
+//   const sel = window.getSelection();
+//   if (savedRange.current) {
+//     sel.removeAllRanges();
+//     sel.addRange(savedRange.current);
+//   }
+// }, []);
+  // ── Font size: inline span wrap ─────────────────────────────────────────
+  // const applySize = useCallback((size) => {
+  //   editorRef.current?.focus();
+  //   if (!wrapSelectionInline({ fontSize: size })) {
+  //     // Nothing selected — just set for next typed character
+  //     document.execCommand("fontSize", false, "3");
+  //   }
+  //   emitChange();
+  // }, [emitChange]);
+
+  // const applyFont = useCallback((font) => {
+  //   exec("fontName", font === "Default" ? "inherit" : font);
+  // }, [exec]);
+// const applyFont = useCallback((font) => {
+//   editorRef.current?.focus();
+//   restoreSelection();
+//   document.execCommand("fontName", false, font === "Default" ? "inherit" : font);
+//   updateFormatState();
+//   emitChange();
+// }, [restoreSelection, updateFormatState, emitChange]);
+
+// const applySize = useCallback((size) => {
+//   editorRef.current?.focus();
+//   restoreSelection();
+//   wrapSelectionInline({ fontSize: size });   // now sees the real selection
+//   updateFormatState();
+//   emitChange();
+// }, [restoreSelection, updateFormatState, emitChange]);
   const insertLink = useCallback(() => {
     const url = window.prompt("Enter URL:", "https://");
     if (url) exec("createLink", url);
@@ -284,8 +374,8 @@ export default function RichEditor({ handleChange }) {
           style={{ background: "var(--bg-surface)", borderBottom: "1px solid var(--border)" }}
           onMouseDown={(e) => e.preventDefault()}
         >
-          <ToolbarSelect title="Font Family" value={formats.font} options={fontOptions} onChange={applyFont} className="w-28 hidden sm:block" />
-          <ToolbarSelect title="Font Size"   value={formats.size} options={sizeOptions} onChange={applySize} className="w-20 hidden sm:block" />
+          <ToolbarSelect title="Font Family" value={formats.font} options={fontOptions} onChange={applyFont} className="w-28" />
+          <ToolbarSelect title="Font Size"   value={formats.size} options={sizeOptions} onChange={applySize} className="w-20 " />
           <ToolbarSeparator />
 
           <ToolbarButton title="Bold (⌘B)"      active={formats.bold}          action={() => exec("bold")}          icon={<span className="font-bold text-sm"        style={{ color: "var(--text-primary)" }}>B</span>} />
