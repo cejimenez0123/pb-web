@@ -15,7 +15,7 @@ import {
           setSignedInTrue,
           setSignedInFalse,
           getCurrentProfile,
-          setCurrentProfile,
+         
           setAuthResolved,
       
       } from './actions/UserActions'
