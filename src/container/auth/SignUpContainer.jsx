@@ -362,43 +362,45 @@ return(<IonContent
 </div>
           {/* Password */}
           <div className="space-y-1">
-            <label className="text-sm text-neutral-500">Password</label>
-            <div className="relative">
-              <input
-                type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full px-4 py-3 rounded-xl border border-neutral-300 pr-16
-                           focus:outline-none focus:ring-2 focus:ring-neutral-400 transition"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-neutral-500"
-              >
-                {showPassword ? "Hide" : "Show"}
-              </button>
-              {/* Confirm Password */}
+            {/* Password */}
+<div className="space-y-1">
+  <label className="text-sm text-neutral-500">Password</label>
+  <div className="flex items-center border border-neutral-300 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-neutral-400">
+    <input
+      type={showPassword ? "text" : "password"}
+      value={password}
+      onChange={(e) => setPassword(e.target.value)}
+      placeholder="••••••••"
+      className="flex-1 px-4 py-3 bg-white focus:outline-none"
+    />
+    <button
+      type="button"
+      onClick={() => setShowPassword(!showPassword)}
+      className="px-3 text-sm text-neutral-500 bg-white"
+    >
+      {showPassword ? "Hide" : "Show"}
+    </button>
+  </div>
+</div>
+
+{/* Confirm Password */}
 <div className="space-y-1">
   <label className="text-sm text-neutral-500">Confirm Password</label>
-  <div className="relative">
+  <div className={`flex items-center border rounded-xl overflow-hidden focus-within:ring-2 transition
+    ${confirmPassword.length > 0 && confirmPassword !== password
+      ? "border-rose-400 focus-within:ring-rose-300"
+      : "border-neutral-300 focus-within:ring-neutral-400"}`}>
     <input
       type={showPassword ? "text" : "password"}
       value={confirmPassword}
       onChange={(e) => setConfirmPassword(e.target.value)}
       placeholder="••••••••"
-      className={`w-full px-4 py-3 rounded-xl border pr-16
-                 focus:outline-none focus:ring-2 transition
-                 ${confirmPassword.length > 0 && confirmPassword !== password
-                   ? "border-rose-400 focus:ring-rose-300"
-                   : "border-neutral-300 focus:ring-neutral-400"
-                 }`}
+      className="flex-1 px-4 py-3 bg-white focus:outline-none"
     />
     <button
       type="button"
       onClick={() => setShowPassword(!showPassword)}
-      className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-neutral-500 bg-white pl-1"
+      className="px-3 text-sm text-neutral-500 bg-white"
     >
       {showPassword ? "Hide" : "Show"}
     </button>
@@ -410,7 +412,6 @@ return(<IonContent
     <p className="text-xs text-emerald-500">✓ Passwords match</p>
   )}
 </div>
-            </div>
           </div>
 
           {/* Private Toggle */}
