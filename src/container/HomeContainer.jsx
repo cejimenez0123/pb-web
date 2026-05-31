@@ -18,13 +18,32 @@ import SectionHeader from '../components/SectionHeader.jsx';
 import shortName from '../core/shortName.jsx';
 import AlertType from '../core/AlertType.js';
 import { useAlert } from '../core/useAlert.jsx';
+import CreateCollectionForm from '../components/collection/CreateCollectionForm.jsx';
 
 // ── Layout ──────────────────────────────────────
 const WRAP = "max-w-[72rem] dark:bg-base-bgDark bg-cream mx-auto ";
 
 
 // ── Sections ────────────────────────────────────
-
+function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex = 0, role = "button" }) {
+  return (
+    <span
+      role={role}
+      tabIndex={tabIndex}
+      onClick={onClick}
+      onKeyDown={e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onClick();
+        }
+      }}
+      className={`rounded-full flex btn items-center justify-center ${className}`}
+      style={style}
+    >
+      {children}
+    </span>
+  );
+}
 //
 // ── Layout ──────────────────────────────────────
 const PAGE_Y = "pt-4 pb-12";
@@ -79,7 +98,7 @@ const WorkshopItem = ({ item, router }) => {
 
 function HomeEmbed({workshops,stories,prompts,isGlobal,setIsGlobal}) {
 
-
+const { openDialog, closeDialog, resetDialog } = useContext(Context);
   const dispatch = useDispatch();
   const router = useIonRouter();
   const {  setSeo } = useContext(Context);
@@ -112,6 +131,28 @@ const { showAlert } = useAlert()
   }, [currentProfile, setSeo]);
 
   const handleGlobal = () => setIsGlobal(!isGlobal);
+ const ClickCreateACollection = () => {
+     try {
+    sendGAEvent("create_collection_open", {
+      area: "collections",
+      modal_type: "create_collection",
+      user_id: currentProfile?.id || null, // optional, if you want to track
+    });
+  } catch (e) {
+
+  }
+
+openDialog({
+// ...dialog,
+disagree:null,
+scrollY: false,
+  text: <CreateCollectionForm onClose={resetDialog} />,
+  disagreeText: "Close", // optional button
+  onClose: closeDialog,
+  breakpoint: 1, // if you want a half-sheet style
+});
+
+  };
 
   const ClickWriteAStory = debounce(() => {
     if (!currentProfile?.id) return;
@@ -134,7 +175,38 @@ const { showAlert } = useAlert()
  
   return (
     <ErrorBoundary>
+  <div className="flex flex-col items-center gap-3  w-full dark:bg-base-bgDark bg-base-surface md:max-w-[40em] mx-auto px-4">
 
+  {/* Primary: Write — full width, most prominent */}
+  <ButtonWrapper
+    onClick={ClickWriteAStory}
+    className="hover:bg-button-secondary-hover  bg-blue  w-xl min-w-[24em] dark:bg-transparent dark:border-button-secondary-hover text-white rounded-2xl h-[3.2rem] w-full  sm:w-[21rem] font-bold"
+    style={{ WebkitTapHighlightColor: "transparent" }}
+  >
+    <IonText className="text-sm text-cream 
+    
+    font-bold">Write Something</IonText>
+  </ButtonWrapper>
+<div className='flex flex-row gap-4'>
+  {/* Secondary: Join a Workshop — full width, distinct color */}
+  <ButtonWrapper
+    onClick={() => router.push(Paths.workshop.reader(), "forward")}
+    className="bg-button-primary-bg dark:bg-transparent max-w-[20em] dark:border-purple  hover:bg-opacity-70 text-button-primary-text rounded-full h-[3rem] flex-1 sm:w-[21rem] font-bold"
+    style={{ WebkitTapHighlightColor: "transparent" }}
+  >
+    <IonText className="text-cream text-sm">Join a Workshop</IonText>
+  </ButtonWrapper>
+
+  {/* Tertiary: Create Collection — smaller, understated */}
+  <ButtonWrapper
+    onClick={ClickCreateACollection}
+    className="bg-transparent border border-soft dark:border-purple  max-w-[20em]  text-soft rounded-full h-[3rem] flex-1 sm:w-[21rem]"
+    style={{ WebkitTapHighlightColor: "transparent" }}
+  >
+    <IonText className="text-sm text-soft dark:text-cream">+ Collection</IonText>
+  </ButtonWrapper>
+</div>
+</div>
         <div className={`${WRAP} ${PAGE_Y} ${STACK_LG}`}>
           <div className={SECTION}>
           {/* Stories */}

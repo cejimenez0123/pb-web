@@ -5,7 +5,7 @@ import { IonContent, useIonRouter } from "@ionic/react";
 import PageViewItem from "../../components/page/PageViewItem";
 import CommentThread from "../../components/comment/CommentThread";
 import { getStory } from "../../actions/StoryActions";
-import { fetchCommentsOfPage } from "../../actions/PageActions.jsx";
+import { fetchCommentsOfPage, setPageInView } from "../../actions/PageActions.jsx";
 import ErrorBoundary from "../../ErrorBoundary";
 import Paths from "../../core/paths.js";
 import { useAlert } from "../../core/useAlert.jsx";
@@ -80,10 +80,13 @@ const { canSee, canAdd, canEdit } = useMemo(
     completionEvent:  "story_read_complete",
   });
 
+
   useLayoutEffect(() => {
-    initGA();
-    fetchStory();
-  }, [id]);
+  initGA();
+
+  dispatch(setPageInView({ page: null })); // drop stale editor state
+  fetchStory();
+}, [id]);
 
   // ── Unlock text selection inside Ionic shadow DOM ─────────────────────────
   useEffect(() => {
@@ -158,7 +161,7 @@ const { canSee, canAdd, canEdit } = useMemo(
       : router.push(Paths.discovery, "back");
   };
 // PageViewItem.jsx
-
+const ready = !pending && page && String(page.id) === String(id);
   return (
     <ErrorBoundary>
       <IonContent
@@ -169,10 +172,10 @@ const { canSee, canAdd, canEdit } = useMemo(
           className="relative pb-32 min-h-screen bg-[#f4f4e0] dark:bg-slate-950 transition-colors duration-300"
           style={{ WebkitUserSelect: "text", userSelect: "text" }}
         >
-          {pending && <PageViewSkeleton />}
+          {!ready && <PageViewSkeleton />}
 
           <div className={`${FADE} ${pending ? "opacity-0 pointer-events-none" : "opacity-100"}`}>
-            {(canSee || page?.authorId === currentProfile?.id) && (
+        {ready && (canSee || page.authorId === currentProfile?.id)&& (
               <div className={WRAP} style={{ WebkitUserSelect: "text", userSelect: "text" }}>
                 <div className={`${CARD} ${BLOCK}`}>
                   <PageViewItem page={page} canEdit={canEdit}  currentProfile={currentProfile} />
