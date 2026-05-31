@@ -1026,6 +1026,7 @@ textarea.sc-ion-textarea {
 }
 
 ion-content.page-content {
+
   --background: #f4f4e0;
 }
 .editor-content {
@@ -1035,6 +1036,7 @@ ion-content.page-content {
 
 @media (prefers-color-scheme: dark) {
   ion-content.page-content {
+    
     --background: #1c1f1a;
   }
   .dark .editor-content,
