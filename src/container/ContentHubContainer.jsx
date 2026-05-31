@@ -20,7 +20,7 @@ function ContentHubContainer() {
   const  currentProfile = useSelector(state=>state.users.currentProfile)
 
 
-    const [tab, setTab] = useState("dash");
+    const [tab, setTab] = useState("home");
   const [isGlobal,setIsGlobal]=useState(true)
 
   const { workshops, stories, prompts } = useProfileDependentEffects(currentProfile,isGlobal);

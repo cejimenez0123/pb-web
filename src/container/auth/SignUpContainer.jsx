@@ -38,6 +38,7 @@ const [referralToken, setReferralTokenState] = useState(null);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [username, setUsername] = useState("");
+  
   const [selectedImage, setSelectedImage] = useState("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png");
   const [selfStatement, setSelfStatement] = useState("");
   const [fileFind, setFile] = useState(null);
@@ -273,6 +274,8 @@ return(<IonContent
   setIsPrivate={setIsPrivate}
   onSubmit={completeSignUp}
   loading={loading}
+  setConfirmPassword={setConfirmPassword}
+  confirmPassword={confirmPassword}
     pictureUrl={pictureUrl}           // ← add
   handleProfilePicture={handleProfilePicture}  // ← add
   usernameUnique={usernameUnique}
@@ -283,6 +286,8 @@ return(<IonContent
  function IOSFormTemplate({
   email,
   setEmail,
+  confirmPassword,
+  setConfirmPassword,
   username,
   setUsername,
   password,
@@ -317,17 +322,7 @@ return(<IonContent
         <div className="bg-white rounded-2xl border border-neutral-200 p-4 space-y-4">
           
           {/* Email */}
-          {/* <div className="space-y-1">
-            <label className="text-sm text-neutral-500">Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
-              className="w-full px-4 py-3 rounded-xl border border-neutral-300 bg-white 
-                         focus:outline-none focus:ring-2 focus:ring-neutral-400 transition"
-            />
-          </div> */}
+     
 
           {/* Username */}
           <div className="space-y-1">
@@ -374,7 +369,7 @@ return(<IonContent
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full px-4 py-3 rounded-xl border border-neutral-300 pr-12
+                className="w-full px-4 py-3 rounded-xl border border-neutral-300 pr-16
                            focus:outline-none focus:ring-2 focus:ring-neutral-400 transition"
               />
               <button
@@ -384,6 +379,37 @@ return(<IonContent
               >
                 {showPassword ? "Hide" : "Show"}
               </button>
+              {/* Confirm Password */}
+<div className="space-y-1">
+  <label className="text-sm text-neutral-500">Confirm Password</label>
+  <div className="relative">
+    <input
+      type={showPassword ? "text" : "password"}
+      value={confirmPassword}
+      onChange={(e) => setConfirmPassword(e.target.value)}
+      placeholder="••••••••"
+      className={`w-full px-4 py-3 rounded-xl border pr-16
+                 focus:outline-none focus:ring-2 transition
+                 ${confirmPassword.length > 0 && confirmPassword !== password
+                   ? "border-rose-400 focus:ring-rose-300"
+                   : "border-neutral-300 focus:ring-neutral-400"
+                 }`}
+    />
+    <button
+      type="button"
+      onClick={() => setShowPassword(!showPassword)}
+      className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-neutral-500 bg-white pl-1"
+    >
+      {showPassword ? "Hide" : "Show"}
+    </button>
+  </div>
+  {confirmPassword.length > 0 && confirmPassword !== password && (
+    <p className="text-xs text-rose-500">Passwords don't match</p>
+  )}
+  {confirmPassword.length > 0 && confirmPassword === password && (
+    <p className="text-xs text-emerald-500">✓ Passwords match</p>
+  )}
+</div>
             </div>
           </div>
 
