@@ -14,6 +14,7 @@ import {
 
 
   useIonRouter,
+  useIonViewWillEnter,
  
 } from "@ionic/react";
 
@@ -103,7 +104,7 @@ export default function CollectionContainer() {
   const dispatch = useDispatch();
   const router = useIonRouter()
 
-   const writeArr = [RoleType.editor, RoleType.writer];
+  
    const {id}=useParams()
    const {canSee,canAdd,canEdit,role} = computePermissions(collection,currentProfile, {
   getAccessList: (c) => c.roles??[],
@@ -112,6 +113,9 @@ export default function CollectionContainer() {
   isOpen: (c) => c.isOpenCollaboration,
   canWriteRoles: [RoleType.writer, RoleType.editor],
   canEditRoles: [RoleType.editor],
+});
+useIonViewWillEnter(() => {
+  if (id) getCol(id);
 });
 useEffect(() => {
   if (!sentHistory && currentProfile?.id && collection?.id) {
@@ -396,7 +400,7 @@ return
         
     
     
-        
+ 
   
   
  const isReady = collection !== null;
@@ -419,10 +423,7 @@ const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
   );
 }
 
-useEffect(() => {
-  getBackground();
-  watchBackground();
-}, []);
+
 return (
   <ErrorBoundary>
     <IonContent
@@ -734,7 +735,7 @@ useEffect(() => {
 function CollectionTabs({ tab, setTab, pages, members, about }) {
   return (
     <div className={` ${TAB_WRAP}`}>
-      <div className="flex justify-center lg:justify-start mb-4 overflow-x-auto">
+    <div className="flex justify-center mb-4 overflow-x-auto">
         <div className="inline-flex rounded-full border border-emerald-600">
           {["pages", "members", "about"].map((t) => (
             <button

@@ -205,7 +205,7 @@ const openYourWorkshops = () => {
   
 
   openDialog({
-    title: "Communities",
+    title: "Libraries",
     scrollY: false,
     breakpoint: 1,
     height: 90,
@@ -228,7 +228,7 @@ const openYourWorkshops = () => {
 
 const openCommunities = () => {
   openDialog({
-    title: "Communities",
+    title: "Libraries",
     scrollY: false,
     breakpoint: 1,
     height: 90,
@@ -442,7 +442,7 @@ scrollY: false,
       { label: "Pages", onClick: openPages },
       { label: "Collections", onClick: openCollections },
       { label: "Archive", onClick: () => archiveCol && router.push(Paths.collection.createRoute(archiveCol.id) )},
-      { label: "Communities", onClick: openCommunities }
+      { label: "Libraries", onClick: openCommunities }
     ].map((item) => (
       
       <div

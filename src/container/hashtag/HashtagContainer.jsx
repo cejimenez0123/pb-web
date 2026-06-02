@@ -148,7 +148,7 @@ const { items, totalCount, page, setPage, totalPages } = usePaginatedResource({
           {/* Libraries */}
           {libraries.length > 0 && (
             <div className="w-full min-h-[14rem]">
-              <SectionHeader title="Communities" />
+              <SectionHeader title="Libraries" />
               <div className="flex flex-row overflow-x-auto space-x-4 px-4 no-scrollbar pb-2">
                 {libraries.map((library) => (
                   <BookListItem key={library.id} book={library} />

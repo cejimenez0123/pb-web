@@ -240,7 +240,7 @@ let signedInMenu = [
       const openCommunities=()=>{
         const communities = myCollections.filter(col=>col.type=="library")
    openDialog({
-      title: "Communities",
+      title: "Libraries",
     scrollY: false,
     breakpoint: 1,
   

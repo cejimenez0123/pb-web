@@ -101,7 +101,7 @@ const LibraryForums = () => {
           isNotPhone ? 'ml-16 pl-6' : 'ml-16'
         } mb-4 lora-bold font-extrabold text-2xl`}
       >
-        Communities
+      Libraries
       </IonText>
 
       {/* Horizontal scroll area */}

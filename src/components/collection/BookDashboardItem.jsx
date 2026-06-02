@@ -147,7 +147,7 @@ function BookDashboardItem({ book }) {
             {book.storyIdList?.length || 0} {book.storyIdList?.length === 1 ? "item" : "items"}
           </IonText>
           <IonText className={`text-xs ${theme.subText}`}>
-            {book.type === "library" ? "Community" : "Collection"}
+            {book.type === "library" ? "Library" : "Collection"}
           </IonText>
         </div>
       </div>

@@ -434,7 +434,7 @@ return (
       onClick={handleClickComment}
    className={theme.iconBtn}
     >
-      💬
+     Comment
     </button>
 
     {/* Share */}

@@ -262,7 +262,7 @@ className='page-content'
              </div>   
                   </div>             
   <ExploreList 
-    label={"Communities"} 
+    label={"Libraries"} 
     items={communities}
     page={communityPage}
   

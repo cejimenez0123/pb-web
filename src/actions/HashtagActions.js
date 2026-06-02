@@ -114,6 +114,17 @@ async ({name,colId,profile},thunkApi) => {
     console.error("CREATE HASHTAC Col",err)
 }
 })
+const searchHashtags = createAsyncThunk(
+  "hashtags/search",
+  async ({ query, take = 5 }, thunkApi) => {
+    try {
+      const data = await hashtagRepo.search({ query, take });
+      return { hashtags: data.hashtags ?? [] };
+    } catch (error) {
+      return { error: new Error(`Error: Search Hashtags ${error.message}`) };
+    }
+  }
+);
 const deleteHashtagCollection = createAsyncThunk("hashtag/deleteHashtagCollection", 
 async ({colId,hashId},thunkApi) => {
  
@@ -212,7 +223,8 @@ export {
         followHashtag,
         deleteHashtagCollection,
         createHashtagCollection,
-        unfollowHashtag 
-        , getRecommendedHashtagCollections 
+        unfollowHashtag,
+        searchHashtags,
+        getRecommendedHashtagCollections
 }
 

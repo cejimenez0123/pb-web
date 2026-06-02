@@ -356,7 +356,7 @@ if (!canSee) {
         onClick={() =>
           router.push(Paths.collection.createRoute(colInView.id))
         }
-        baseClass="bg-softBlue text-blueSea"
+        baseClass="bg-softBlue text-white"
       />
 {/* <div className="pt-4"> */}
   <Pill

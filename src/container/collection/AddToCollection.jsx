@@ -27,7 +27,7 @@ import { RoleType } from "../../core/constants.js";
 import PaginatedList from "../../components/page/PaginatedList.jsx";
 import shortName from "../../core/shortName.jsx";
 import getBackground, { watchBackground } from "../../core/getbackground.jsx";
-
+import { useIonViewWillEnter } from "@ionic/react";
 const filterTypes = {
   filter: "Filter",
   recent: "Recent",

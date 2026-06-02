@@ -38,7 +38,7 @@ const nativeGoogleSignIn = async () => {
       const user = await SocialLogin.login({
         provider:"google",
         options:{
-          scopes:["email","profile", "https://www.googleapis.com/auth/drive.readonly"]
+          scopes:["email","profile", "https://www.googleapis.com/auth/drive.file"]
         }
     
         

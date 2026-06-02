@@ -127,7 +127,13 @@ async unfollowHashtag({ hashtagId }) {
   );
   return res.data;
 }
-
+// GET /hashtags/search?query=poet&take=5  →  { hashtags: [{ id, name }] }
+ async search({ query, take = 5 }){
+  const { data } = await axios.get(this.url+"/search", {
+    params: { query, take },
+  });
+  return data;
+}
 async  getRecommended({hashtagIds, skip, take, exclude = []} ){
         const { data } = await axios.get(this.url+"/recommendations", {
         params: {
