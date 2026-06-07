@@ -6,17 +6,37 @@ import bookmarkoutline from "../../images/bookmarkadd.svg"
 import Paths from "../../core/paths";
 import { useDialog } from "../../domain/usecases/useDialog";
 import ShareList from "./ShareList";
+import { useDispatch } from "react-redux";
+import { addStoryListToCollection } from "../../actions/CollectionActions";
+import checkResult from "../../core/checkResult";
 export default function PageViewButtonRow({ page, profile, setCommenting }) {
   const [likeFound, setLikeFound] = useState(false);
   const [bookmarked, setBookmarked] = useState(false);
+  const dispatch = useDispatch()
   const handleApprovalClick = () => setLikeFound(!likeFound);
   const handleClickComment = () => setCommenting(true);
   const {openDialog,dialog,resetDialog}=useDialog()
-  const handleBookmark = () => setBookmarked(!bookmarked);
-  
+  const handleBookmark = () => {
+    
+    setBookmarked(!bookmarked)
+    dispatch(addStoryListToCollection({id:homeCol.id, list: [page.id],profile})).then(res=>{
+      checkResult(res,pay=>{
+
+      },err=>{
+        
+      })
+    })
+   
+  }
+    ;
+    const [homeCol,setHomeCol]=useState(null)
   const [archiveCol,setArchiveCol]=useState(null)
   useEffect(()=>{
     if(profile?.profileToCollections){
+      let ptc =profile?.profileToCollections.find(ptc => ptc.type === "home");
+      ptc && ptc.collection && setHomeCol(ptc.collection)
+    }
+        if(profile?.profileToCollections){
       let ptc =profile?.profileToCollections.find(ptc => ptc.type === "archive");
       ptc && ptc.collection && setArchiveCol(ptc.collection)
     }

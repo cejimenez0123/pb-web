@@ -119,16 +119,24 @@ const userSlice = createSlice({
             state.currentProfile = payload.profile
         })
         .addCase(updateProfile.fulfilled, (state, { payload }) => {
-            state.currentProfile = payload.profile
+         if (payload?.profile) {
+        state.currentProfile = { ...state.currentProfile, ...payload.profile };
+    }
         })
       .addCase(postStoryHistory.fulfilled, (state, { payload }) => {
-    if (payload?.profile) state.currentProfile = payload.profile;
+      if (payload?.profile) {
+        state.currentProfile = { ...state.currentProfile, ...payload.profile };
+    }
 })
 .addCase(postCollectionHistory.fulfilled, (state, { payload }) => {
-    if (payload?.profile) state.currentProfile = payload.profile;
+  if (payload?.profile) {
+        state.currentProfile = { ...state.currentProfile, ...payload.profile };
+    }
 })
-        .addCase(setCurrentProfile.type, (state, action) => {
-            state.currentProfile = action.payload;
+        .addCase(setCurrentProfile.type, (state, { payload }) => {
+           if (payload?.profile) {
+        state.currentProfile = { ...state.currentProfile, ...payload.profile };
+    }
             state.loading = false;
             state.authResolved = true;
         })
@@ -136,8 +144,10 @@ const userSlice = createSlice({
             state.loading = true;
         
         })
-        .addCase(getCurrentProfile.fulfilled, (state, action) => {
-            state.currentProfile = action?.payload?.profile;
+        .addCase(getCurrentProfile.fulfilled, (state, { payload }) => {
+              if (payload?.profile) {
+        state.currentProfile = { ...state.currentProfile, ...payload.profile };
+    }
             state.loading = false;
             state.authResolved = true;
         })

@@ -35,7 +35,7 @@ const CARD_WIDTH =
 function StoryItem({ page, isGrid = true, html = null }) {
   const { isHorizPhone } = useContext(Context);
   const router = useIonRouter();
-
+const [loading, setLoading] = useState(true);
   const initialImage =
     page?.type === PageType.picture
       ? isValidUrl(page.data)
@@ -91,7 +91,7 @@ function StoryItem({ page, isGrid = true, html = null }) {
         return (
           <div className="skeleton w-full h-24 rounded-lg flex items-center justify-center">
          <IonLoading
-  isOpen={loading}
+  isOpen={!page}
   message={"Loading your space..."}
   spinner="crescent"
 />

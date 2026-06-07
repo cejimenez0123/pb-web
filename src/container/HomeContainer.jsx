@@ -1,6 +1,6 @@
 
 
-import { useEffect, useState, useContext, useMemo } from 'react';
+import { useEffect, useState, useContext, useMemo, useCallback, useRef } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { createStory, } from '../actions/StoryActions';
 import { setPageInView, } from '../actions/PageActions.jsx';
@@ -19,6 +19,8 @@ import shortName from '../core/shortName.jsx';
 import AlertType from '../core/AlertType.js';
 import { useAlert } from '../core/useAlert.jsx';
 import CreateCollectionForm from '../components/collection/CreateCollectionForm.jsx';
+import { fetchCollectionFeedStories, fetchCollectionFeedSubCollections } from '../actions/CollectionActions.js';
+import CollectionFeed from '../components/collection/CommunitiesPanel.jsx';
 
 // ── Layout ──────────────────────────────────────
 const WRAP = "max-w-[72rem] dark:bg-base-bgDark bg-cream mx-auto ";
@@ -76,9 +78,7 @@ const WorkshopItem = ({ item, router }) => {
           {shortName(item.title,30)}
         </h2>
 
-        {/* <p className="text-sm text-gray-600 dark:text-cream line-clamp-3">
-          {shortName(item.description,40) || "No description available."}
-        </p> */}
+    
 
         <div className="flex justify-between text-xs dark:text-cream text-gray-500 mt-1">
           <span>{item?.location?.city || "Online / TBD"}</span>
@@ -91,7 +91,7 @@ const WorkshopItem = ({ item, router }) => {
         </div>
       </IonLabel>
       </div>
-    // </IonItem>
+ 
   );
 };
 
@@ -105,6 +105,10 @@ const { openDialog, closeDialog, resetDialog } = useContext(Context);
 
   const currentProfile = useSelector(state => state.users.currentProfile);
   const {recommendedStories} = useSelector(state=>state.pages)
+ const homeCol = useMemo(() => 
+  currentProfile?.profileToCollections?.find(c => c.type === "home")?.collection,
+  [currentProfile?.profileToCollections]
+);
 
 const { showAlert } = useAlert()
   const [whatsHappeningList, setWhatsHappeningList] = useState([]);
@@ -170,7 +174,46 @@ scrollY: false,
       router.push(Paths.editPage.createRoute(payload?.story?.id,payload?.story?.type), 'forward', 'push');
     }));
   }, 5);
+const fetchStories = useCallback(async (skip, take) => {
+  if (!homeCol?.id) return [];
+  try {
+    const data = await dispatch(
+      fetchCollectionFeedStories({ id: homeCol.id, skip, take })
+    ).unwrap();
+    return data.items ?? [];
+  } catch (e) { return []; }
+}, [homeCol?.id, dispatch]);
+const { items, getMore, hasMore, isLoading } = useCollectionFeed({
+  fetchStories: async (skip, take) => {
+    try {
+      const data = await dispatch(
+        fetchCollectionFeedStories({ id: homeCol.id, skip, take })
+      ).unwrap();
+      return data.items ?? [];
+    } catch { return []; }
+  },
+  fetchSubStories: async (skip, take) => {
+    try {
+      const data = await dispatch(
+        fetchCollectionFeedSubCollections({ id: homeCol.id, skip, take })
+      ).unwrap();
+      return data.items ?? [];
+    } catch { return []; }
+  },
+  enabled: !!homeCol?.id,
+});
 
+
+
+const fetchSubCollections = useCallback(async (skip, take) => {
+  if (!homeCol?.id) return [];
+  try {
+    const data = await dispatch(
+      fetchCollectionFeedSubCollections({ id: homeCol.id, skip, take })
+    ).unwrap();
+    return data.items ?? [];
+  } catch (e) { return []; }
+}, [homeCol?.id, dispatch]);
   if (!currentProfile) return <div className="flex justify-center mt-12"><IonSpinner /></div>;
  
   return (
@@ -273,9 +316,16 @@ scrollY: false,
         {/* What's new */}
         <div className={SECTION+"px-2"}>
           <SectionHeader title="What's new" />
-          <PageList items={recommendedStories.slice(0, 4)} shortenTo={400}/>
-        </div>
 
+{homeCol?.id && (
+  <PageList
+    items={items}
+    getMore={getMore}
+    hasMore={hasMore}
+    shortenTo={400}
+  />
+)}
+</div>
       </div> {/* ← closes WRAP */}
     </ErrorBoundary>
   );
@@ -299,3 +349,140 @@ const WorkshopItemSkeleton = () => {
     </div>
   );
 };
+const RECENCY_WEIGHT = 0.75;
+const ENGAGEMENT_WEIGHT = 0.25;
+ 
+function getEngagement(item) {
+  return item._count?.roles ?? item.roles?.length ?? 0;
+}
+ 
+function buildSortedFeed(directStories, subStories) {
+  const safeDirect = Array.isArray(directStories) ? directStories : [];
+  const safeSub = Array.isArray(subStories) ? subStories : [];
+ 
+  const seen = new Set();
+  const allItems = [];
+  for (const s of [...safeDirect, ...safeSub]) {
+    if (!s?.id || seen.has(s.id)) continue;
+    seen.add(s.id);
+    allItems.push(s);
+  }
+ 
+  if (!allItems.length) return [];
+ 
+  const timestamps = allItems.map((i) =>
+    i.updated ? new Date(i.updated).getTime() : 0
+  );
+  const oldestMs = Math.min(...timestamps);
+  const newestMs = Math.max(...timestamps);
+  const range = newestMs - oldestMs || 1;
+ 
+  const maxEngagement = Math.max(...allItems.map(getEngagement), 1);
+ 
+  return allItems
+    .map((item) => {
+      const updated = item.updated ? new Date(item.updated).getTime() : 0;
+      const recency = (updated - oldestMs) / range;
+      const engagement = getEngagement(item) / maxEngagement;
+      return {
+        ...item,
+        _score: RECENCY_WEIGHT * recency + ENGAGEMENT_WEIGHT * engagement,
+      };
+    })
+    .sort((a, b) => b._score - a._score);
+}
+
+ function useCollectionFeed({
+  fetchStories,
+  fetchSubStories,
+  pageSize = 12,
+  enabled = true,
+}) {
+  const [directStories, setDirectStories] = useState([]);
+  const [subStories, setSubStories] = useState([]);
+  const [items, setItems] = useState([]);
+  const [skip, setSkip] = useState(0);
+  const [subSkip, setSubSkip] = useState(0);
+  const [hasMoreDirect, setHasMoreDirect] = useState(true);
+  const [hasMoreSub, setHasMoreSub] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const initialised = useRef(false);
+ 
+  // ── Initial load: both streams in parallel ─────────────────────────────────
+  useEffect(() => {
+    if (initialised.current || !enabled) return;
+    initialised.current = true;
+ 
+    const loadDirect = fetchStories
+      ? Promise.resolve(fetchStories(0, pageSize)).catch(() => [])
+      : Promise.resolve([]);
+    const loadSub = fetchSubStories
+      ? Promise.resolve(fetchSubStories(0, pageSize)).catch(() => [])
+      : Promise.resolve([]);
+ 
+    Promise.all([loadDirect, loadSub])
+      .then(([direct, sub]) => {
+        const d = Array.isArray(direct) ? direct : [];
+        const s = Array.isArray(sub) ? sub : [];
+        setDirectStories(d);
+        setSubStories(s);
+        setSkip(pageSize);
+        setSubSkip(pageSize);
+        if (d.length < pageSize) setHasMoreDirect(false);
+        if (s.length < pageSize) setHasMoreSub(false);
+      })
+      .finally(() => setIsLoading(false));
+  }, [fetchStories, fetchSubStories, pageSize, enabled]);
+ 
+  // ── Rebuild merged list when either stream grows ───────────────────────────
+  useEffect(() => {
+    setItems(buildSortedFeed(directStories, subStories));
+  }, [directStories, subStories]);
+ 
+  // ── getMore: pages both streams, PageList calls this on scroll ─────────────
+  const getMore = useCallback(async () => {
+    const tasks = [];
+ 
+    if (fetchStories && hasMoreDirect) {
+      tasks.push(
+        Promise.resolve(fetchStories(skip, pageSize))
+          .catch(() => [])
+          .then((res) => {
+            const arr = Array.isArray(res) ? res : [];
+            if (arr.length < pageSize) setHasMoreDirect(false);
+            setDirectStories((prev) => {
+              const ids = new Set(prev.map((p) => p.id));
+              return [...prev, ...arr.filter((i) => !ids.has(i.id))];
+            });
+            setSkip((p) => p + pageSize);
+          })
+      );
+    }
+ 
+    if (fetchSubStories && hasMoreSub) {
+      tasks.push(
+        Promise.resolve(fetchSubStories(subSkip, pageSize))
+          .catch(() => [])
+          .then((res) => {
+            const arr = Array.isArray(res) ? res : [];
+            if (arr.length < pageSize) setHasMoreSub(false);
+            setSubStories((prev) => {
+              const ids = new Set(prev.map((p) => p.id));
+              return [...prev, ...arr.filter((i) => !ids.has(i.id))];
+            });
+            setSubSkip((p) => p + pageSize);
+          })
+      );
+    }
+ 
+    await Promise.all(tasks);
+  }, [fetchStories, fetchSubStories, hasMoreDirect, hasMoreSub, skip, subSkip, pageSize]);
+ 
+  return {
+    items,
+    getMore,
+    hasMore: hasMoreDirect || hasMoreSub,
+    isLoading,
+  };
+}
+ 

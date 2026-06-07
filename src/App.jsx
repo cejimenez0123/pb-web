@@ -172,7 +172,7 @@ const location = window.location.pathname
 
 // 3. hiddenPaths check is too rigid — doesn't handle subroutes like /onboard/step2
 const hiddenPaths = ["/onboard", "/apply", "/login"];
-const showBottomNavbar = (!hiddenPaths.includes(location)) && isNative && isMobileOrTablet
+const showBottomNavbar = (!hiddenPaths.includes(location)) && isMobileOrTablet
 
  return (
 

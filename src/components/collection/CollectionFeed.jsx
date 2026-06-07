@@ -2,9 +2,9 @@ import { useEffect, useState, useCallback, useRef } from "react";
 import { IonInfiniteScroll, IonInfiniteScrollContent } from "@ionic/react";
 import { motion } from "framer-motion";
 import { useIonRouter } from "@ionic/react";
-
+;
+import BookDashboardItem from "../collection/BookDashboardItem";
 import Paths from "../../core/paths";
-import BookDashboardItem from "./BookDashboardItem";
 import DashboardItem from "../page/DashboardItem";
 
 // ─── Animation variants ───────────────────────────────────────────────────────
@@ -38,11 +38,14 @@ function scoreItem(item, oldestMs, newestMs, maxEngagement) {
   return RECENCY_WEIGHT * recencyScore + ENGAGEMENT_WEIGHT * engagementScore;
 }
 
+
 function buildSortedFeed(stories, subCollections) {
   const allItems = [
-    ...stories.map((s) => ({ ...s, _feedType: "story" })),
-    ...subCollections.map((c) => ({ ...c, _feedType: "collection" })),
+    ...(Array.isArray(stories) ? stories.map((s) => ({ ...s, _feedType: "story" })) : []),
+    ...(Array.isArray(subCollections) ? subCollections.map((c) => ({ ...c, _feedType: "collection" })) : []),
   ];
+
+
 
   if (!allItems.length) return [];
 
@@ -205,7 +208,8 @@ const CollectionFeed = ({
 
   // ── Rebuild sorted feed whenever either list changes ───────────────────────
   useEffect(() => {
-    setFeed(buildSortedFeed(stories, subCollections));
+
+    setFeed(buildSortedFeed([...stories, ...subCollections] || [], []));
   }, [stories, subCollections]);
 
   // ── Infinite scroll handler ────────────────────────────────────────────────

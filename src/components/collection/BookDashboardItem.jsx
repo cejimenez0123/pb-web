@@ -39,7 +39,7 @@ function BookDashboardItem({ book }) {
 
   useLayoutEffect(() => {
     if (!currentProfile?.profileToCollections || !book?.parentCollections) return;
-    const archive = currentProfile.profileToCollections.find(col => col.type === "archive");
+    const archive = currentProfile.profileToCollections.find(col => col.type === "home");
     const found = book.parentCollections.find(
       ptc => ptc.parentCollectionId == archive?.collection?.id
     );
@@ -54,7 +54,7 @@ function BookDashboardItem({ book }) {
         .then(() => setBookmarked(null));
     } else {
       const archive = currentProfile.profileToCollections.find(
-        col => col.type === "archive"
+        col => col.type === "home"
       )?.collection;
       if (!archive) return setError("Missing archive");
       dispatch(addCollectionListToCollection({

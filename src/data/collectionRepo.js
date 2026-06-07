@@ -246,7 +246,25 @@ async recommendations({ skip = 0, take = 20 } = {}) {
     });
     return res.data;
 }
+// Add these two methods to CollectionRepo
 
+async fetchCollectionFeedStories({ id, skip = 0, take = 20 }) {
+  const headers = await this.getAuthHeaders();
+  const res = await axios.get(this.url + `/${id}/feed/stories`, {
+    headers,
+    params: { skip, take },
+  });
+  return res.data; // { items: Story[], totalCount: number }
+}
+
+async fetchCollectionFeedSubCollections({ id, skip = 0, take = 20 }) {
+  const headers = await this.getAuthHeaders();
+  const res = await axios.get(this.url + `/${id}/feed/sub-collections`, {
+    headers,
+    params: { skip, take },
+  });
+  return res.data; // { items: Collection[], totalCount: number }
+}
 async getProfileRecommendations({ skip = 0, take = 10, type } = {}) {
     const headers = await this.getAuthHeaders();
     const res = await axios.get(`${this.url}/recommendations/profile`, {

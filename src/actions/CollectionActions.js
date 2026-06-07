@@ -202,6 +202,44 @@ const deleteStoryFromCollection = createAsyncThunk("collection/deleteStoryFromCo
     return{error,collection:null}
 }
  })
+ // actions/collectionActions.js
+
+
+// ─── GET /collections/:id/feed/stories ───────────────────────────────────────
+
+ const fetchCollectionFeedStories = createAsyncThunk(
+  "collection/feedStories",
+  async ({ id, skip = 0, take = 20 }, thunkApi) => {
+    try {
+      const data = await collectionRepo.fetchCollectionFeedStories({ id, skip, take });
+      return {
+        items: data.items,
+        totalCount: data.totalCount,
+      };
+    } catch (e) {
+      console.log("FETCH COLLECTION FEED STORIES ERROR:", e);
+      return thunkApi.rejectWithValue(e?.response?.data || e.message);
+    }
+  }
+);
+
+// ─── GET /collections/:id/feed/sub-collections ───────────────────────────────
+
+const fetchCollectionFeedSubCollections = createAsyncThunk(
+  "collection/feedSubCollections",
+  async ({ id, skip = 0, take = 20 }, thunkApi) => {
+    try {
+      const data = await collectionRepo.fetchCollectionFeedSubCollections({ id, skip, take });
+      return {
+        items: data.items,
+        totalCount: data.totalCount,
+      };
+    } catch (e) {
+      console.log("FETCH COLLECTION FEED SUB-COLLECTIONS ERROR:", e);
+      return thunkApi.rejectWithValue(e?.response?.data || e.message);
+    }
+  }
+);
 const fetchCollectionProtected = createAsyncThunk("collection/fetchCollectionProtected",async(params,thunkApi)=>{
     
     let data = await collectionRepo.fetchCollectionProtected(params)  
@@ -376,5 +414,7 @@ export {
     getRecommendedCollections,
     getRecommendedCollectionStory,
     getRecommendedCollectionsProfile,
-    setCollections
+    setCollections,
+    fetchCollectionFeedStories,
+    fetchCollectionFeedSubCollections
 }
