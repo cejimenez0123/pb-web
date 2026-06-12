@@ -52,7 +52,7 @@ import Dialog from './components/Dialog.jsx';
 import { Capacitor } from '@capacitor/core';
 import { IonReactRouter} from "@ionic/react-router"
 import ErrorBoundary from './ErrorBoundary.jsx';
-import { Redirect, Route, useLocation } from 'react-router-dom'
+import { Redirect, Route, useHistory, useLocation } from 'react-router-dom'
 import AboutContainer from './container/AboutContainer.jsx';
 import PageWrapper from './core/PageWrapper.jsx';
 import DashboardContainer from './container/DashboardContainer.jsx';
@@ -67,11 +67,31 @@ import initSocialLogin from './components/initSocialLogin.jsx';
 import { fetchNotifcations } from './actions/ProfileActions.jsx';
 import usePersistentCurrentProfile from './domain/usecases/usePersistentCurrentProfile.jsx';
 import usePushNotificationListener from './domain/usecases/usePushNotificationListener.jsx';
-setupIonicReact()
+import { PushNotifications } from '@capacitor/push-notifications';
 function PushNotificationHandler() {
-    usePushNotificationListener()
-    return null
+  usePushNotificationListener();
+  const router = useIonRouter(); // ← switch back to this
+
+  useEffect(() => {
+    if (!Capacitor.isNativePlatform()) return;
+
+    PushNotifications.addListener('pushNotificationActionPerformed', (action) => {
+      const data = action.notification.data;
+      if (data?.route) {
+        const route = data.route.replace(/\s+/g, '');
+        console.log('Navigating to:', route);
+        router.push(route, 'forward', 'push');
+      }
+    });
+
+    return () => {
+      PushNotifications.removeAllListeners();
+    };
+  }, []);
+
+  return null;
 }
+setupIonicReact()
 
 const libraries = ["places"];
 function App(props) {
@@ -162,6 +182,8 @@ const isMobileOrTablet = isMobile || isTablet;
 
 
 
+
+
 // ❌ current issues:
 
 // 1. showTopNavbar is hardcoded false — dead variable
@@ -178,7 +200,7 @@ const showBottomNavbar = (!hiddenPaths.includes(location)) && isMobileOrTablet
 
     <ErrorBoundary>
         <Context.Provider value={{setPresentingEl,isDesktop,isTablet:isMobileOrTablet,isPhone:isMobileOrTablet,isNotPhone:!isMobileOrTablet,isHorizPhone,seo,setSeo,formerPage,setFormerPage,setError,setSuccess,success}}>
-{isNative && currentProfile && <PushNotificationHandler />}
+
     <LoadScript
       googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
       libraries={libraries}
@@ -186,6 +208,7 @@ const showBottomNavbar = (!hiddenPaths.includes(location)) && isMobileOrTablet
 
   <IonApp>
   <IonReactRouter>
+     <PushNotificationHandler />
        {showTopNavbar &&
   <div className="fixed top-0 left-0 w-full z-50 w-[100%]">
     <NavbarContainer isDesktop={isDesktop} currentProfile={currentProfile} />
@@ -202,7 +225,7 @@ const showBottomNavbar = (!hiddenPaths.includes(location)) && isMobileOrTablet
 <div  >
     <IonRouterOutlet>   
        
- 
+  
      <Route exact path="/" render={() => 
          <PageWrapper>{
           currentProfile&&isNative?<ContentHubContainer/>:

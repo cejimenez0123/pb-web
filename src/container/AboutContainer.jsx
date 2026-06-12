@@ -77,7 +77,7 @@ useLayoutEffect(() => {
 
 
   const stayInLoop = () => (
-    <div className="p-3 flex flex-col text-cream text-center ">
+    <div className="p-3 flex flex-col text-soft text-center ">
       <div className="py-12">
        <a
         onClick={() =>
@@ -90,7 +90,7 @@ useLayoutEffect(() => {
         href="https://plumbum.app/links"
         target="_blank" rel="noreferrer"
       >
-        <h6 className="open-sans-bold text-[1.6rem] mx-4 my-4  text-yellow-300 ">
+        <h6 className="open-sans-bold text-[1.6rem] mx-4 my-4  text-soft ">
   Everything Plumbum 🔗
 </h6>
         
@@ -110,7 +110,7 @@ useLayoutEffect(() => {
 
       <div className="flex my-4 open-sans-medium mx-auto text-lg text-left leading-loose tracking-loose">
         <p className="mx-auto">
-          <a className="text-cream "href="https://www.instagram.com/plumbumapp" target="_blank" rel="noreferrer">@plumbumapp</a> 
+          <a className="text-soft "href="https://www.instagram.com/plumbumapp" target="_blank" rel="noreferrer">@plumbumapp</a> 
         </p>
       </div>
       </div>
@@ -276,17 +276,17 @@ const goToCalendar = (source="about_page") => {
   router.push(Paths.calendar());
 };
   return (
-    <IonContent fullscreen={true} scrollY={true} className="page-content" style={{"--background": "#40906f"}}>
-     <div className="pt-8 h-[100%] overflow-scroll  bg-soft pb-36">
+    <IonContent fullscreen={true} scrollY={true} className="page-content" style={{"--background": "#f4f4e0"}}>
+     <div className="pt-8 h-[100%] overflow-scroll  bg-cream pb-36">
 
         {/* <IonGrid> */}
           {/* <IonRow className="my-10"> */}
             <IonCol  className="ion-text-center ion-padding-top">
               <div className="flex-col flex pt-12 ">
-              <h1 className="lora-medium text-white py-36 text-[4rem]" >
+              <h1 className="lora-medium text-soft py-36 text-[4rem]" >
                 Plumbum
               </h1>
-              <h2 className="mx-auto text-white px-4 pb-12 text-[3em]" color="primary" >
+              <h2 className="mx-auto text-soft px-4 pb-12 text-[3em]" color="primary" >
                 Share your Weirdness
               </h2 >  
               <br />
@@ -327,26 +327,26 @@ const goToCalendar = (source="about_page") => {
                <IonRow className="ion-padding items-center flex-col">
                 <div className="pt-8 flex flex-col items-center">
               {/* <IonText className=""> */}
-               <h2 className="text-cream text-center px-4 text-[1.2rem] leading-loose">
+               <h2 className="text-soft text-center px-4 text-[1.2rem] leading-loose">
                 Any requests for features, feedback, or encouragement&nbsp;
                 </h2>
                 <h2
                   fill="clear"
                   size="small"
-                  className="text-cream text-[1.2rem] leading-loose cursor-pointer mx-auto"
+                  className="text-soft text-[1.2rem] leading-loose cursor-pointer mx-auto"
               z
                   onClick={() => router.push(Paths.feedback())}
                 >
                   click here
                 </h2>
                 <div className="flex gap-4 mt-4 flex-row ">
-                <h2><a className="text-white" onClick={() => router.push("/privacy")}>Privacy Policy</a></h2>
-                <h2><a className="text-white"  onClick={() => router.push("/terms")}>Terms of Service</a></h2>
+                <h2><a className="text-soft" onClick={() => router.push("/privacy")}>Privacy Policy</a></h2>
+                <h2><a className="text-soft"  onClick={() => router.push("/terms")}>Terms of Service</a></h2>
                 </div>
               {/* </IonText> */}
               <div>
            
-                <h6 className="text-cream text-[1rem] lg:text-[1.2rem]">© Plumbum 2025</h6>
+                <h6 className="text-soft text-[1rem] lg:text-[1.2rem]">© Plumbum 2025</h6>
         
               </div>
               </div>

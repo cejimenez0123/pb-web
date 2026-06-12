@@ -18,6 +18,7 @@
     "run-ios": "npx vite build --mode main && npx cap sync ios && npx cap run ios"
   },
   "dependencies": {
+    "@capacitor-firebase/messaging": "^7.5.0",
     "@capacitor-firebase/storage": "^7.4.0",
     "@capacitor/android": "^7.6.5",
     "@capacitor/camera": "^7.0.5",

@@ -47,24 +47,36 @@ export default function NotificationItem({ item, lastNotified }) {
       );
     }
 
-    case "collection": {
-      const collection = item.collection;
-      let latestCol = [...collection.childCollections].sort(
-        (a, b) => new Date(b.created) - new Date(a.created)
-      );
-      let latestStory = [...collection.storyIdList].sort(
-        (a, b) => new Date(b.created) - new Date(a.created)
-      );
-      let latest = "New Collection";
+   case "collection": {
+  const collection = item.collection;
+  const latestCol = [...(collection.childCollections ?? [])].sort(
+    (a, b) => new Date(b.created) - new Date(a.created)
+  );
+  const latestStory = [...(collection.storyIdList ?? [])].sort(
+    (a, b) => new Date(b.created) - new Date(a.created)
+  );
+      // let latest = "New Collection";
 
-      if (latestCol.length && latestStory.length && latestCol[0].created > latestStory[0].created) {
-        latest = "New Addition: " + latestCol[0].childCollection?.title;
-      } else if (latestStory.length && !latestCol.length) {
-        latest = "New Story: " + latestStory[0].story?.title;
-      } else if (!latestStory.length && latestCol.length) {
-        latest = "New Collection: " + latestCol[0].childCollection?.title;
-      }
+      // if (latestCol.length && latestStory.length && latestCol[0].created > latestStory[0].created) {
+      //   latest = "New Addition: " + latestCol[0].childCollection?.title;
+      // } else if (latestStory.length && !latestCol.length) {
+      //   latest = "New Story: " + latestStory[0].story?.title;
+      // } else if (!latestStory.length && latestCol.length) {
+      //   latest = "New Collection: " + latestCol[0].childCollection?.title;
+      // }
+let latest = "New Collection";
+const newestCol = latestCol[0];
+const newestStory = latestStory[0];
 
+if (newestCol && newestStory) {
+  latest = new Date(newestCol.created) > new Date(newestStory.created)
+    ? "New Addition: " + (newestCol.childCollection?.title ?? "")
+    : "New Story: " + (newestStory.story?.title ?? "");
+} else if (newestStory) {
+  latest = "New Story: " + (newestStory.story?.title ?? "");
+} else if (newestCol) {
+  latest = "New Addition: " + (newestCol.childCollection?.title ?? "");
+}
       return (
         <div
           onClick={() => router.push(Paths.collection.createRoute(collection.id))}
@@ -89,8 +101,9 @@ export default function NotificationItem({ item, lastNotified }) {
       );
     }
 
-    case "comment": {
-      const comment = item.item;
+case "comment": {
+  const comment = item.item;
+  if (!comment?.story) return null;
       return (
         <div
           onClick={() => router.push(Paths.page.createRoute(comment.story.id))}
