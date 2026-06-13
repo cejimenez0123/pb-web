@@ -114,7 +114,10 @@ const { showAlert } = useAlert()
   const [whatsHappeningList, setWhatsHappeningList] = useState([]);
 
   const sortedWorkshops = useMemo(() => [...workshops]?.sort((a,b) => a?.title.localeCompare(b?.title)).slice(0,4), [workshops]);
-  const filteredPrompts =prompts
+ const filteredPrompts = useMemo(() => 
+  (prompts ?? []).filter(p => p?.data),
+  [prompts]
+);
   //  useMemo(() => prompts?.filter(p => p?.data) || [], [prompts]);
 
   useEffect(() => {
@@ -305,11 +308,19 @@ const fetchSubCollections = useCallback(async (skip, take) => {
         <div className={`${WRAP} ${PAGE_Y} ${STACK_LG}`} >
         <div className={SECTION}>
           <SectionHeader title="Writing Prompts for you" />
-          <div className={`${GRID} px-4`}>
-            {filteredPrompts.map(story => (
-              <StoryItem key={story?.id} page={story} html={story.html} />
-            ))}
-          </div>
+      <div className={`${GRID} px-4`}>
+  {filteredPrompts.length
+    ? filteredPrompts.map(story => (
+        <StoryItem key={story?.id} page={story} html={story?.data} />
+      ))
+    : [1, 2, 3].map(i => (
+        <div
+          key={i}
+          className={`${SKELETON_BLOCK} h-[10rem] w-full`}
+        />
+      ))
+  }
+</div>
         </div>
         </div>
 

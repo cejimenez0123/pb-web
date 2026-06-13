@@ -30,7 +30,8 @@ class StoryRepo{
 
         async getPrompts(){
    try{
-        let res = await axios.get(this.url+"/prompts")
+     const headers = await this.getAuthHeaders();
+        let res = await axios.get(this.url+"/prompts/recommended",{headers:headers})
         
         return res.data
    }catch(err){
