@@ -179,7 +179,10 @@ const [token,setToken]=useState(null)
     ),
   });
 };
-let signedOutMenu = [{ label: "Discovery", action: () => {router.push(Paths.discovery) }},
+let signedOutMenu = [
+  {label:"About", action:()=>{router.push(Paths.about())}},
+  { label: "Join Now", action: () => { router.push(Paths.apply()) } },
+  { label: "Discovery", action: () => {router.push(Paths.discovery) }},
   { label: "Log in", action: () => {router.push(Paths.login) }},
           { label: "Events", action: () => {router.push(Paths.calendar())} },
         ]

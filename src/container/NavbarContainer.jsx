@@ -34,8 +34,8 @@ const PageName = {
   login:"Log In",
   search:"Search",
   workshop:"Workshop",
-  apply:"Join Now",
-  feedback:"Feedback"
+
+
 }
 
 const isClip = import.meta.env.MODE=="clip"
@@ -54,7 +54,7 @@ const pages = isClip?[...[
                 PageName.create, 
                 PageName.login,
                 PageName.apply,
-                PageName.feedback
+        
                 ]]
 
 
@@ -347,8 +347,9 @@ function MenuHorizontal({ pages, currentProfile }) {
         dispatch(setPageInView({ page: null }))
         router.push(Paths.workshop.reader(),"forward"); break
       case "Log In": router.push(Paths.login,"forward"); break
-      case "Join Now": router.push(Paths.apply(),"forward"); break
-      case "Feedback": router.push(Paths.feedback(),"forward"); break
+      
+
+   
     }
   }
 
@@ -365,7 +366,7 @@ function MenuHorizontal({ pages, currentProfile }) {
         }
         if (page === "Workshop" && !currentProfile) return null
         if (page === "Log In" && currentProfile) return null
-        if (page === "Join Now" && !currentProfile) return null
+       
         return (
           <li key={page} onClick={() => handleCloseNavMenu(page)}>
             <a className="text-white no-underline">{page}</a>
