@@ -28,19 +28,21 @@ class StoryRepo{
   return res.data;
 }
 
-        async getPrompts(){
-   try{
-     const headers = await this.getAuthHeaders();
-        let res = await axios.get(this.url+"/prompts/recommended",{headers:headers})
-        
-        return res.data
-   }catch(err){
+async getPrompts({ take = 3 }) {
+  try {
+    const headers = await this.getAuthHeaders();
+    let res = await axios.get(this.url + "/prompts/recommended", {
+      headers: headers,
+      params: { take },
+    });
 
- return {error:err}
-   }
-             
-    }
-    async getProtectedProfileStories({ profileId, skip = 0, take = 20 } = {}) {
+    return res.data;
+  } catch (err) {
+    return { error: err };
+  }
+}
+
+async getProtectedProfileStories({ profileId, skip = 0, take = 20 } = {}) {
   const headers = await this.getAuthHeaders();
 
   const res = await axios.get(

@@ -13,6 +13,7 @@ import useProfileDependentEffects from '../core/useProfileDependentEffects.jsx';
 import HomeEmbed from './HomeContainer.jsx';
 import DashboardEmbed from './DashboardContainer.jsx';
 import getBackground, { watchBackground } from '../core/getbackground.jsx';
+import { useMediaQuery } from 'react-responsive';
 
 
 function ContentHubContainer() {
@@ -22,8 +23,14 @@ function ContentHubContainer() {
 
     const [tab, setTab] = useState("home");
   const [isGlobal,setIsGlobal]=useState(true)
+const isMobile  = useMediaQuery({ query: "(max-width: 480px)" }); 
+const isTablet = useMediaQuery({ query: "(min-width: 768px)" });
+const promptTake = isTablet ? 3 : 1;
+  const { workshops, stories, prompts } = useProfileDependentEffects(currentProfile, isGlobal, promptTake);
+// At the top of HomeEmbed, detect breakpoint
+// const [promptTake, setPromptTake] = useState(1);
 
-  const { workshops, stories, prompts } = useProfileDependentEffects(currentProfile,isGlobal);
+
 
 
   tab && useScrollTracking({ name: tab });

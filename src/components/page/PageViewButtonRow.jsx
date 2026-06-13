@@ -9,6 +9,7 @@ import ShareList from "./ShareList";
 import { useDispatch } from "react-redux";
 import { addStoryListToCollection } from "../../actions/CollectionActions";
 import checkResult from "../../core/checkResult";
+import { useAlert } from "../../core/useAlert";
 export default function PageViewButtonRow({ page, profile, setCommenting }) {
   const [likeFound, setLikeFound] = useState(false);
   const [bookmarked, setBookmarked] = useState(false);
@@ -16,14 +17,15 @@ export default function PageViewButtonRow({ page, profile, setCommenting }) {
   const handleApprovalClick = () => setLikeFound(!likeFound);
   const handleClickComment = () => setCommenting(true);
   const {openDialog,dialog,resetDialog}=useDialog()
+  const {showAlert,closeAlert}=useAlert()
   const handleBookmark = () => {
     
     setBookmarked(!bookmarked)
-    dispatch(addStoryListToCollection({id:homeCol.id, list: [page.id],profile})).then(res=>{
+    dispatch(addStoryListToCollection({id:archiveCol.id, list: [page.id],profile})).then(res=>{
       checkResult(res,pay=>{
-
+showAlert("Saved to archive",AlertType.SUCCESS)
       },err=>{
-        
+        showAlert("Failed to save to archive",AlertType.ERROR)
       })
     })
    

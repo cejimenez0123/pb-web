@@ -157,9 +157,9 @@ const getCollectionStoriesPublic = createAsyncThunk("pages/getCollectionStoriesP
     return {error:e}
   }
 })
-const getPrompts = createAsyncThunk("pages/getPrompts",async (params,thunkApi)=>{
+const getPrompts = createAsyncThunk("pages/getPrompts",async ({take },thunkApi)=>{
   try{
-     let data = await storyRepo.getPrompts()
+     let data = await storyRepo.getPrompts({take })
  
      return {
       prompts:data.prompts

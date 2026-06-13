@@ -343,6 +343,7 @@ return
               showAlert({ message: "Saved to Home", type: AlertType.success });
               setBookmarkLoading(false)
             }, err => {
+              showAlert({ message: err.message, type: AlertType.error });
               setBookmarkLoading(false);
             });
           });
@@ -621,8 +622,11 @@ const PageTab = ({ collections }) => {
 };
 const MemberTab = ({ collection }) => {
   const router = useIonRouter()
+const roles = [
+  ...(collection?.roles ?? []).filter(role => role.profile?.id != collection.profile?.id),
+  collection.profile ? { role: "owner", profile: collection.profile } : null,
+].filter(Boolean).sort((a, b) => a.role.localeCompare(b.role))
 
-  const roles = [...collection?.roles?.filter(role=>role.profile.id!=collection.profile.id), collection.profile ? { role: "owner", profile: collection.profile } : null].filter(r => r).sort((a, b) => a.role.localeCompare(b.role))
   return (
     <>
     <div style={{...getBackground()}}className={`${WRAP} px-4 ${SECTION}`}>
@@ -653,24 +657,22 @@ const MemberTab = ({ collection }) => {
 
 const AboutTab = ({ collection,currentProfile}) => {
   const [locationName,setLocationName]=useState("")
+// AboutTab — location is undefined in scope, fix to:
 useEffect(() => {
-  if (!currentProfile || !location?.latitude) return;
-
+  if (!currentProfile || !collection?.location?.latitude) return;
   let cancelled = false;
-
   (async () => {
-    const city = await fetchCity(location);
+    const city = await fetchCity(collection.location);
     if (!cancelled) {
       registerUser(currentProfile.id, {
-        longitude: location.longitude,
-        latitude: location.latitude,
-        city
+        longitude: collection.location.longitude,
+        latitude: collection.location.latitude,
+        city,
       });
     }
   })();
-
   return () => { cancelled = true };
-}, [location?.latitude]); // 👈 only trigger when actually meaningful
+}, [collection?.location?.latitude]);
 
   
   if (!collection) return null;

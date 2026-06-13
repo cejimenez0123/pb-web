@@ -15,21 +15,29 @@ function useProfileDependentEffects(currentProfile, isGlobal) {
     prompts: [],
     location: null,
   });
-
-  const fetchPrompts = async () => {
-    try {
-      const res = await dispatch(getPrompts());
-      checkResult(res, payload => {
+const fetchPrompts = async (take = 3) => {
+  try {
+    const res = await dispatch(getPrompts({ take }));
+    checkResult(res, payload => {
+      const sorted = [...payload?.prompts].sort((a, b) => new Date(b.updated) - new Date(a.updated));
+      setResults(prev => ({ ...prev, prompts: sorted }));
+    }, err => {});
+  } catch (err) { console.error("Failed fetching prompts:", err); }
+};
+  // const fetchPrompts = async () => {
+  //   try {
+  //     const res = await dispatch(getPrompts());
+  //     checkResult(res, payload => {
         
 
-        const sorted = [...payload?.prompts].sort((a,b)=>new Date(b.updated)-new Date(a.updated));
-        setResults(prev => ({ ...prev, prompts: sorted }));
+  //       const sorted = [...payload?.prompts].sort((a,b)=>new Date(b.updated)-new Date(a.updated));
+  //       setResults(prev => ({ ...prev, prompts: sorted }));
 
-      },err=>{
+  //     },err=>{
          
-      });
-    } catch (err) { console.error("Failed fetching prompts:", err); }
-  };
+  //     });
+  //   } catch (err) { console.error("Failed fetching prompts:", err); }
+  // };
  
   const fetchStories = async () => {
     try {
@@ -63,12 +71,12 @@ function useProfileDependentEffects(currentProfile, isGlobal) {
       err => console.error("Location error:", err)
     );
   };
-  const fetches=()=>{
-     fetchPrompts();
-    fetchStories();
-    fetchWorkshops();
-    fetchLocation();
-  }
+const fetches = (take = 3) => {
+  fetchPrompts(take);
+  fetchStories();
+  fetchWorkshops();
+  fetchLocation();
+};
   useEffect(() => {
         fetches()
 
