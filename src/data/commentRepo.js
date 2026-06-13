@@ -69,6 +69,20 @@ class CommentRepo {
     const res = await axios.get(Enviroment.url + "/comment/helpful");
     return res.data;
   }
+  // ── promoteToStory ────────────────────────────────────────────────────────
+async promoteToStory({ id, isPrivate = true, status, collectionId }) {
+  const headers = await this.getAuthHeaders();
+  const res = await axios.post(
+    Enviroment.url + "/comment/" + id + "/to-story",
+    {
+      isPrivate,
+      status,
+      ...(collectionId && { collectionId }),
+    },
+    { headers }
+  );
+  return res.data;
+}
 }
 
 export default new CommentRepo();

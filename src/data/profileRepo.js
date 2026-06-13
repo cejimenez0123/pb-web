@@ -62,10 +62,10 @@ seen:seen
      return res.data
 
     }
-    async register({uId,idToken,referralToken,password,username,googleId,profilePicture,selfStatement,privacy}){
+    async register({uId,idToken,referralToken,writingSprintSlots,password,username,googleId,profilePicture,selfStatement,privacy}){
 
        const res = await axios.post(Enviroment.url+"/auth/register",{googleId,identityToken:idToken,referralToken,password,username,
-        profilePicture,selfStatement,privacy
+        profilePicture,selfStatement,privacy,writingSprintSlots
        }) 
 
        return res.data

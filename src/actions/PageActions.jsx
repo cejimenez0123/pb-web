@@ -308,6 +308,28 @@ try{
     }
   }
 );
+
+
+
+const promoteCommentToStory = createAsyncThunk(
+  "comments/promoteToStory",
+  async ({ id, isPrivate, status, collectionId }, { rejectWithValue }) => {
+    try {
+      const data = await commentRepo.promoteToStory({
+        id,
+        isPrivate,
+        status,
+        collectionId,
+      });
+      console.log("Promote Comment Response:", data);
+      return data; // { story }
+    } catch (err) {
+      return rejectWithValue(
+        err?.response?.data?.error ?? "Failed to promote comment"
+      );
+    }
+  }
+);
   export {
           pagesLoading,
           setHtmlContent,
@@ -317,7 +339,7 @@ try{
          
           setPagesToBeAdded,
           clearPagesInView,
-       
+       promoteCommentToStory,
           createComment,
           fetchCommentsOfPage,
           deleteComment,

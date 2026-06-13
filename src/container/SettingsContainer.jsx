@@ -80,11 +80,12 @@ const [form, setForm] = useState({
   selfStatement: "",
   isPrivate: false,
   profilePicture: "",
+   writingSprintSlots: [], // ← ju
   location: {
     latitude: null,
     longitude: null,
-     city: currentProfile?.location?.city ?? ""
-
+     city: currentProfile?.location?.city ?? "",
+    writingSprints: currentProfile?.writingSprints ?? []
   }
 });
 
@@ -101,6 +102,17 @@ useEffect(() => {
   /* --------------------------
      Load profile into form
   ---------------------------*/
+const toggleSlot = (slotId) => {
+  setForm(prev => {
+    const current = prev.writingSprintSlots ?? []; // ← fallback
+    return {
+      ...prev,
+      writingSprintSlots: current.includes(slotId)
+        ? current.filter(s => s !== slotId)
+        : [...current, slotId]
+    };
+  });
+};
   useEffect(() => {
 
     if (!currentProfile) return;
@@ -110,6 +122,7 @@ useEffect(() => {
       username: currentProfile.username ?? "",
       selfStatement: currentProfile.selfStatement ?? "",
       isPrivate: currentProfile.isPrivate ?? false,
+       writingSprintSlots: currentProfile.writingSprintSlots ?? [], // ← add
       profilePicture: pic ?? "",
        location: {
       latitude: currentProfile?.location?.latitude??40,
@@ -260,6 +273,8 @@ dispatch(updateProfile({
   profile: currentProfile,
   username: form.username,
   profilePicture,
+  
+   writingSprintSlots: form.writingSprintSlots,
   selfStatement: form.selfStatement,
   privacy: form.isPrivate,
   location: form.location
@@ -406,7 +421,60 @@ dispatch(updateProfile({
             />
           </label>
         </div>
+{/* Writing Sprints */}
+{(() => {
+  const SPRINT_SLOTS = [
+    { id: 'morning',   label: 'Morning',   emoji: '🌅', time: '7:00 AM'  },
+    { id: 'midday',    label: 'Midday',    emoji: '☀️', time: '12:00 PM' },
+    { id: 'afternoon', label: 'Afternoon', emoji: '🌤', time: '3:00 PM'  },
+    { id: 'evening',   label: 'Evening',   emoji: '🌆', time: '7:00 PM'  },
+    { id: 'night',     label: 'Night',     emoji: '🌙', time: '10:00 PM' },
+  ];
 
+  return (
+    <div className="form-control space-y-2">
+      <label className="label">
+        <span className="label-text dark:text-cream">Your Writing Windows</span>
+      </label>
+      <p className="text-xs text-soft/60 dark:text-cream/50 -mt-1">
+        We'll send you a prompt at these times. Show up, write something.
+      </p>
+      <div className="grid grid-cols-1 gap-2">
+        {SPRINT_SLOTS.map((slot) => {
+          const selected = form.writingSprintSlots?.includes(slot.id);
+          return (
+            <button
+              key={slot.id}
+              type="button"
+              onClick={() => toggleSlot(slot.id)}
+              className={`flex items-center justify-between px-4 py-3 rounded-xl border transition-all
+                ${selected
+                  ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400'
+                  : 'border-soft/20 bg-base-bg dark:bg-base-surfaceDark text-soft dark:text-cream/70'
+                }`}
+            >
+              <div className="flex items-center gap-2">
+                <span>{slot.emoji}</span>
+                <span className="text-sm font-medium">{slot.label}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs opacity-50">{slot.time}</span>
+                <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center transition-all
+                  ${selected ? 'border-emerald-500 bg-emerald-500' : 'border-soft/30 dark:border-cream/30'}`}>
+                  {selected && (
+                    <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  )}
+                </div>
+              </div>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+})()}
         {/* Save */}
         <button
           className="btn bg-soft text-white hover:bg-soft/90 w-full border-none"

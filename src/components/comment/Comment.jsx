@@ -1,16 +1,17 @@
 
 import { useSelector, useDispatch } from "react-redux";
 import { useState, useEffect, useContext } from "react";
-import { IonImg } from "@ionic/react";
+import { IonImg, useIonRouter } from "@ionic/react";
 import Context from "../../context.jsx";
 import ProfileCircle from "../profile/ProfileCircle.jsx";
 import CommentInput from "./CommentInput";
 import CommentThread from "./CommentThread";
 import horiz from "../../images/icons/more_vert.svg";
-import { deleteComment } from "../../actions/PageActions.jsx";
+import { deleteComment, promoteCommentToStory } from "../../actions/PageActions.jsx";
 import { createHashtagComment, deleteHashtagComment } from "../../actions/HashtagActions.js";
 import checkResult from "../../core/checkResult.js";
 import { useDialog } from "../../domain/usecases/useDialog.jsx";
+import Paths from "../../core/paths.js";
 
 const DEEP_LEVEL = 4;
 
@@ -35,7 +36,7 @@ export default function Comment({ page, comment, level = 0 }) {
 
   const hashtags = useSelector((state) => state.hashtags.profileHashtagComments);
   const isSelf = currentProfile && comment ? currentProfile?.id === comment?.profileId : false;
-
+const router = useIonRouter()
   const [isHelpful, setIsHelpful] = useState(null);
   const [isDeleted, setIsDeleted] = useState(false);
   const { openDialog, closeDialog } = useDialog();
@@ -131,7 +132,59 @@ export default function Comment({ page, comment, level = 0 }) {
       disagree: closeDialog,
     });
   };
-
+const handlePromoteToStory = () => {
+  openDialog({
+    title: "Save as story",
+    height: 40,
+    text: (
+      <div className="flex flex-col gap-4 p-4">
+        <p className="text-sm text-slate-600 dark:text-slate-300">
+          This comment will become a draft story in your profile.
+        </p>
+        <button
+          className="px-4 py-2 rounded-full bg-emerald-600 text-white font-semibold hover:bg-emerald-700 transition"
+          onClick={() => {
+            dispatch(promoteCommentToStory({ id: comment.id, status: "draft" }))
+              .then((res) =>
+                checkResult(
+                  res,
+                  ( {story}) => {
+                    console.log("FFOFOFOOF",story)
+                       router.push(Paths.editPage.createRoute( story.id ,story.type));
+                      closeDialog();
+                  },
+                  (err) => setError(err.message)
+                )
+              );
+          }}
+        >
+          Save as draft
+        </button>
+        <button
+          className="px-4 py-2 rounded-full bg-emerald-100 text-emerald-800 font-semibold hover:bg-emerald-200 transition"
+          onClick={() => {
+            dispatch(promoteCommentToStory({ id: comment.id, status: "fragment" }))
+              .then((res) =>
+                checkResult(
+                  res,
+                 ( {story}) => {
+                    console.log("FFOFOFOOLFD",story)
+                router.push(Paths.editPage.createRoute( story.id ,story.type));
+                    closeDialog();
+                  },
+                  (err) => setError(err.message)
+                )
+              );
+          }}
+        >
+          Save as fragment
+        </button>
+      </div>
+    ),
+    disagreeText: "Cancel",
+    disagree: closeDialog,
+  });
+};
   const CommentDropdown = () => (
     <div className="relative dropdown dropdown-left">
       <div tabIndex={0} role="button">
@@ -143,6 +196,12 @@ export default function Comment({ page, comment, level = 0 }) {
       >
         {isSelf && (
           <>
+              <li
+            className="p-2 bg-base-bg hover:bg-sky-100 rounded cursor-pointer"
+            onClick={handlePromoteToStory}  // ← new
+          >
+            Save as story
+          </li>
             <li
               className="p-2 bg-base-bg hover:bg-sky-100 rounded cursor-pointer"
               onClick={handleEdit}
@@ -157,6 +216,7 @@ export default function Comment({ page, comment, level = 0 }) {
             </li>
           </>
         )}
+        
       </ul>
     </div>
   );

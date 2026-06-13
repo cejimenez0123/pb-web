@@ -38,7 +38,7 @@ const [referralToken, setReferralTokenState] = useState(null);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [username, setUsername] = useState("");
-  
+  const [writingSprintSlots, setWritingSprintSlots] = useState([]);
   const [selectedImage, setSelectedImage] = useState("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png");
   const [selfStatement, setSelfStatement] = useState("");
   const [fileFind, setFile] = useState(null);
@@ -65,6 +65,11 @@ useEffect(() => {
   }
   if (t) setReferralTokenState(t);
 }, []);
+const toggleSlot = (slotId) => {
+  setWritingSprintSlots(prev =>
+    prev.includes(slotId) ? prev.filter(s => s !== slotId) : [...prev, slotId]
+  );
+};
   const {  setSeo, seo } = useContext(Context);
 
   useEffect(() => {
@@ -139,15 +144,13 @@ const params = {
   username:username.trim() || null,
   password,
   googleId,
+  writingSprintSlots,
   frequency,
   selfStatement,
   privacy: isPrivate,
   ...pictureParams
 };
-console.log("Sign-up params:", params)
-    // =========================
-    // If uploading image first
-    // =========================
+
     if (fileFind) {
       const uploadRes = await dispatch(
         uploadProfilePicture({ file: fileFind })
@@ -264,6 +267,8 @@ return(<IonContent
 >
 
   <IOSFormTemplate
+    writingSprintSlots={writingSprintSlots}
+  toggleSlot={toggleSlot}
   email={email}
   setEmail={setEmail}
   username={username}
@@ -282,10 +287,18 @@ return(<IonContent
 />
 </IonContent>)
           }
-
+const SPRINT_SLOTS = [
+  { id: 'morning',   label: 'Morning',   emoji: '🌅', time: '7:00 AM'  },
+  { id: 'midday',    label: 'Midday',    emoji: '☀️', time: '12:00 PM' },
+  { id: 'afternoon', label: 'Afternoon', emoji: '🌤', time: '3:00 PM'  },
+  { id: 'evening',   label: 'Evening',   emoji: '🌆', time: '7:00 PM'  },
+  { id: 'night',     label: 'Night',     emoji: '🌙', time: '10:00 PM' },
+];
  function IOSFormTemplate({
   email,
   setEmail,
+  writingSprintSlots,
+  toggleSlot,
   confirmPassword,
   setConfirmPassword,
   username,
@@ -360,6 +373,41 @@ return(<IonContent
     </div>
   </label>
 </div>
+<p className="text-sm font-medium text-neutral-700">Your Writing Windows</p>
+<p className="text-xs text-neutral-500 mt-0.5">We'll send you a prompt at these times. Show up, write something with others.</p>
+  <div className="grid grid-cols-1 gap-2">
+    {SPRINT_SLOTS.map((slot) => {
+      const selected = writingSprintSlots.includes(slot.id);
+      return (
+        <button
+          key={slot.id}
+          type="button"
+          onClick={() => toggleSlot(slot.id)}
+          className={`flex items-center justify-between px-4 py-3 rounded-xl border transition-all
+            ${selected
+              ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
+              : 'border-neutral-200 bg-white text-neutral-600 hover:border-neutral-300'
+            }`}
+        >
+          <div className="flex items-center gap-2">
+            <span className="text-base">{slot.emoji}</span>
+            <span className="text-sm font-medium">{slot.label}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-neutral-400">{slot.time}</span>
+            <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center transition-all
+              ${selected ? 'border-emerald-500 bg-emerald-500' : 'border-neutral-300'}`}>
+              {selected && (
+                <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+              )}
+            </div>
+          </div>
+        </button>
+      );
+    })}
+  </div>
           {/* Password */}
           <div className="space-y-1">
             {/* Password */}

@@ -134,9 +134,15 @@ export default function EditorContainer({ presentingElement }) {
     }
   }, []);
 
-  useEffect(() => {
-    if (id) fetchStory();
-  }, [id]);
+useEffect(() => {
+  if (!id || id === "new") return;
+  if (pageInView?.id === id) {
+    // already in slice — no fetch needed
+    setStory(pageInView);
+    return;
+  }
+  fetchStory();
+}, [id]);
 
   // ── Text autosave: create on first content, then debounce updates ──
   useEffect(() => {

@@ -127,7 +127,7 @@ const setMainLoading = createAction("books/setCollectionInView", (params)=> {
 const signUp = createAsyncThunk(
     'users/signUp',
     async (params,thunkApi) => {
-         const { email, referralToken, idToken, googleId, frequency, password, username, profilePicture, selfStatement, privacy } = params
+         const { email, referralToken, writingSprintSlots, idToken, googleId, frequency, password, username, profilePicture, selfStatement, privacy } = params
 
       try {
         
@@ -135,6 +135,7 @@ const signUp = createAsyncThunk(
 let data = await profileRepo.register({
   uId: "",
   idToken,
+  writingSprintSlots,
   frequency,
   referralToken,  // ← renamed
   email,
