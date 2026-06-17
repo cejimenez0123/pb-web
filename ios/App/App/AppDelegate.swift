@@ -15,7 +15,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
 //
-//    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+//    func application(_ ap     plication: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
 //        Messaging.messaging().apnsToken = deviceToken 
 //        NotificationCenter.default.post(name: .capacitorDidRegisterForRemoteNotifications, object: deviceToken)
 //    }
@@ -24,7 +24,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //        NotificationCenter.default.post(name: .capacitorDidFailToRegisterForRemoteNotifications, object: error)
 //    }
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        Messaging.messaging().apnsToken = deviceToken 
+        Messaging.messaging().apnsToken = deviceToken
       NotificationCenter.default.post(name: .capacitorDidRegisterForRemoteNotifications, object: deviceToken)
     }
 

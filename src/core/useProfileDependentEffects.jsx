@@ -5,7 +5,7 @@ import { fetchRecommendedStories, getPrompts } from "../actions/StoryActions";
 import checkResult from "./checkResult";
 import { findWorkshopGroups } from "../actions/WorkshopActions";
 import requestLocation from "./requestLocation";
-function useProfileDependentEffects(currentProfile, isGlobal) {
+function useProfileDependentEffects(currentProfile, isGlobal,promptTake) {
   const dispatch = useDispatch();
   const isNative = Capacitor.isNativePlatform();
 
@@ -78,7 +78,7 @@ const fetches = (take = 3) => {
   fetchLocation();
 };
   useEffect(() => {
-        fetches()
+        fetches(promptTake)
 
   }, [currentProfile, isGlobal]);
 

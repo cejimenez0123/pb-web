@@ -68,6 +68,7 @@ import { fetchNotifcations } from './actions/ProfileActions.jsx';
 import usePersistentCurrentProfile from './domain/usecases/usePersistentCurrentProfile.jsx';
 import usePushNotificationListener from './domain/usecases/usePushNotificationListener.jsx';
 import { PushNotifications } from '@capacitor/push-notifications';
+import { SocialLogin } from '@capgo/capacitor-social-login';
 function PushNotificationHandler() {
   usePushNotificationListener();
   const router = useIonRouter(); // ← switch back to this
@@ -91,6 +92,22 @@ function PushNotificationHandler() {
 
   return null;
 }
+   const CLIENT_ID = import.meta.env.VITE_OAUTH2_CLIENT_ID;
+   const IOS_CLIENT_ID = import.meta.env.VITE_IOS_CLIENT_ID;
+
+
+SocialLogin.initialize({
+  apple: {
+        clientId: IOS_CLIENT_ID,
+  },
+  google:{
+    webClientId: CLIENT_ID,
+          iOSClientId: IOS_CLIENT_ID,
+          iOSServerClientId: CLIENT_ID,
+  }
+}).catch((err) => {
+  console.error('Error initializing SocialLogin:', err);
+});
 setupIonicReact()
 
 const libraries = ["places"];

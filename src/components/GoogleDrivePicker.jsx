@@ -15,23 +15,10 @@ export default function GoogleDrivePicker({ onFilePicked, onReauthenticateNeeded
   const [accessToken, setAccessToken] = useState(null);
    const driveTokenKey = "googledrivetoken";
    const TOKEN_EXPIRY_KEY = "googledrivetoken_expiry"; // Key for expiry time
-  const CLIENT_ID = import.meta.env.VITE_OAUTH2_CLIENT_ID;
-  const IOS_CLIENT_ID = import.meta.env.VITE_IOS_CLIENT_ID;
+
    const {openDialog,closeDialog}=  useDialog()
 
-  // Initialize Social Login
-  useLayoutEffect(() => {
-   SocialLogin.initialize({
-      google: {
-          webClientId: CLIENT_ID,
-          iOSClientId: IOS_CLIENT_ID,
-          iOSServerClientId: CLIENT_ID,
-        mode: 'online',
-      },
-    }).catch(err => console.error('SocialLogin init error:', err));
-  }, [CLIENT_ID, IOS_CLIENT_ID]);
 
-  // --- Native Google Sign-In Flow ---
 const nativeGoogleSignIn = async () => {
     try {
 

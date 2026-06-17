@@ -16,6 +16,7 @@ import ErrorBoundary from "../ErrorBoundary";
 import { sendGAEvent } from "../core/ga4";
 import { Capacitor } from "@capacitor/core";
 import { useAlert } from "../core/useAlert";
+   const CLIENT_ID = import.meta.env.VITE_OAUTH2_CLIENT_ID;
 function GoogleLoginInner({ drive, onUserSignIn }) {
   const [bootstrapping, setBootstrapping] = useState(true);
   const [pending, setPending] = useState(false);
@@ -30,31 +31,10 @@ function GoogleLoginInner({ drive, onUserSignIn }) {
   const googleButtonRef = useRef(null);
   const isNative =Capacitor.isNativePlatform()
 
-  const CLIENT_ID = import.meta.env.VITE_OAUTH2_CLIENT_ID;
-  const IOS_CLIENT_ID = import.meta.env.VITE_IOS_CLIENT_ID;
+
 
   const driveTokenKey = "googledrivetoken";
 
-  // ---------------------------
-  // 1️⃣ Native init
-  // ---------------------------
-  useLayoutEffect(() => {
-    try {
-      SocialLogin.initialize({
-        google: {
-          webClientId: CLIENT_ID,
-          iOSClientId: IOS_CLIENT_ID,
-          iOSServerClientId: CLIENT_ID,
-          mode: "online",
-        },
-      }).catch(console.error);
-    } catch (err) {
-      console.error(err);
-    }
-  }, [CLIENT_ID, IOS_CLIENT_ID]);
-
-  // ---------------------------
-  // 2️⃣ Load Google script (FIXED)
   // ---------------------------
   useLayoutEffect(() => {
     if (isNative) return;

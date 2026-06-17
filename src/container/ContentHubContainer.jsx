@@ -27,8 +27,7 @@ const isMobile  = useMediaQuery({ query: "(max-width: 480px)" });
 const isTablet = useMediaQuery({ query: "(min-width: 768px)" });
 const promptTake = isTablet ? 3 : 1;
   const { workshops, stories, prompts } = useProfileDependentEffects(currentProfile, isGlobal, promptTake);
-// At the top of HomeEmbed, detect breakpoint
-// const [promptTake, setPromptTake] = useState(1);
+
 
 
 
