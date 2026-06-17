@@ -585,7 +585,7 @@ export default function AboutContainer() {
       />
       <div className="flex my-4 open-sans-medium mx-auto text-lg text-left leading-loose tracking-loose">
         <p>
-          <a href="https://www.instagram.com/plumbumapp" target="_blank" rel="noreferrer">@plumbumapp</a> | <a href="https://www.instagram.com/bxwriters" target="_blank" rel="noreferrer">@bxwriters</a>
+          <a href="https://www.instagram.com/plumbumapp" target="_blank" rel="noreferrer">@plumbumapp</a> 
         </p>
       </div>
   

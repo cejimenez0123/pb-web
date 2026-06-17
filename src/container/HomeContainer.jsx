@@ -326,9 +326,12 @@ const fetchSubCollections = useCallback(async (skip, take) => {
 
         {/* What's new */}
         <div className={SECTION+"px-2"}>
-          <SectionHeader title="What's new" />
-
-{homeCol?.id && (
+         <SectionHeader title="What's new" />
+{!homeCol?.id ? (
+  <FeedSkeleton />
+) : items.length === 0 ? (
+  <FeedEmpty />
+) : (
   <PageList
     items={items}
     getMore={getMore}
@@ -497,3 +500,31 @@ function buildSortedFeed(directStories, subStories) {
   };
 }
  
+
+const FeedEmpty = () => (
+  <div className="flex flex-col items-center justify-center mt-16 px-6 text-center gap-3">
+    <p className="text-2xl">✦</p>
+    <h3 className="text-soft dark:text-cream font-semibold text-lg">Nothing here yet</h3>
+    <p className="text-zinc-400 dark:text-zinc-500 text-sm max-w-xs">
+      When writers share work, it'll show up here. Be the first.
+    </p>
+  </div>
+);
+
+const FeedSkeleton = () => (
+  <div className="max-w-2xl mx-auto px-4">
+    {[...Array(4)].map((_, i) => (
+      <div key={i} className="my-2 rounded-xl bg-base-bg dark:bg-base-bgDark border border-base-border animate-pulse">
+        <div className="p-4 flex flex-col gap-3">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-full bg-base-border dark:bg-zinc-700" />
+            <div className="h-3 w-28 rounded bg-base-border dark:bg-zinc-700" />
+          </div>
+          <div className="h-4 w-3/4 rounded bg-base-border dark:bg-zinc-700" />
+          <div className="h-3 w-full rounded bg-base-border dark:bg-zinc-700" />
+          <div className="h-3 w-5/6 rounded bg-base-border dark:bg-zinc-700" />
+        </div>
+      </div>
+    ))}
+  </div>
+);
