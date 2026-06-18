@@ -557,7 +557,55 @@ export default function AboutContainer() {
       </ul>
     </div>
   );
+const foundingCohort = () => (
+  <div className="">
+    <div className="mb-2">
+      <span className="open-sans-medium text-xs tracking-widest uppercase text-emerald-600">
+        Limited — 200 spots
+      </span>
+    </div>
+    <h1 className="lora-bold  text-[2rem] leading-tight mb-3">
+      The Founding Cohort
+    </h1>
+    <p className="open-sans-medium text-[1rem] leading-loose  mb-4">
+      Plumbum started in the Bronx with a handful of writers around a table. That energy — intimate, honest, a little weird — is what we're protecting as we grow.
+    </p>
+    <p className="open-sans-medium text-[1rem] leading-loose mb-6">
+      The Founding Cohort is for the people who show up early. Not because they need convincing, but because they already get it. If that's you, this is your seat at the table.
+    </p>
+    <ul className="space-y-2 mb-6">
+      {[
+        "50% off all future events and subscriptions — permanently",
+        "Early access to new features before anyone else",
+        "A direct voice in shaping what Plumbum becomes",
+       
+      ].map((benefit, i) => (
+        <li key={i} className="flex items-start gap-2 text-[1rem] open-sans-medium text-emerald-800">
+          <span className="text-emerald-500 mt-1">→</span>
+          {benefit}
+        </li>
+      ))}
+    </ul>
+    <p className="open-sans-medium text-[0.9rem] text-emerald-600 mb-5 italic">
+      Spots are capped at 200. Once they're gone, they're gone.
+    </p>
+    
 
+    <a href="https://tally.so/r/44zJ55" target="_blank" rel="noreferrer" style={{
+        display: 'inline-block',
+        background: 'linear-gradient(to right, #34d399, #059669)',
+        color: 'white',
+        fontWeight: 500,
+        fontSize: '1rem',
+        borderRadius: '9999px',
+        padding: '0.75rem 1.5rem',
+        boxShadow: '0 2px 6px rgba(5, 150, 105, 0.4)',
+        textDecoration: 'none',
+      }}> 
+      Claim Your Spot →
+</a>
+  </div>
+);
   const stayInLoop = () => (
     <div className="p-3 flex flex-col">
       <h1 className="text-[3rem] mx-auto lora-bold">Stay in the Loop</h1>
@@ -653,6 +701,9 @@ export default function AboutContainer() {
             </IonCol> */}
             <IonCol size={md ? "4" : "12"}>
               {applicationProcess()}
+            </IonCol>
+            <IonCol size={md ? "4" : "12"}>
+              {foundingCohort()}
             </IonCol>
           </IonRow>
 

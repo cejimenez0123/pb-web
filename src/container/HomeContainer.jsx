@@ -506,7 +506,7 @@ const FeedEmpty = () => (
     <p className="text-2xl">✦</p>
     <h3 className="text-soft dark:text-cream font-semibold text-lg">Nothing here yet</h3>
     <p className="text-zinc-400 dark:text-zinc-500 text-sm max-w-xs">
-      When writers share work, it'll show up here. Be the first.
+      Save a library, when people share work. It'll show up here. Bookmark your first library.
     </p>
   </div>
 );

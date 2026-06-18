@@ -147,7 +147,7 @@ const [token,setToken]=useState(null)
 
         {/* HEADER SPACE (optional if your dialog already has one) */}
         <div className="p-4">
-          <h3 className="text-lg">Your Collections</h3>
+          <h3 className="text-lg">Your Libraries</h3>
         </div>
 
         {/* SCROLL AREA */}

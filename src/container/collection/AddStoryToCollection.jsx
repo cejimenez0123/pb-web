@@ -165,7 +165,7 @@ useEffect(() => {
 
           {/* Search */}
  
-          <p className={LABEL+" "}>Your Collections</p>
+          <p className={LABEL+" "}>Your Libraries</p>
 
 
   <div

@@ -1,74 +1,120 @@
-import { useState } from "react"
+// import { useState } from "react"
 
-import authRepo from "../../data/authRepo"
-import { IonInput, IonText } from "@ionic/react"
+// import authRepo from "../../data/authRepo"
+// import { IonInput, IonText } from "@ionic/react"
     
 
 
-const ForgotPasswordForm = ({close})=>{
-    const [username,setUsername]=useState("")
-    const [email,setEmail]=useState("")
-    const [error,setError]=useState(null)
-    const [success,setSuccess]=useState(null)
-    const [loading,setLoading]=useState(false)
-    const handleClick=()=>{
-        setLoading(true)
-            authRepo.forgotPassword({username,email:email.trim()}).then(data=>{
-                setError(null)   
-setSuccess(data.message)
-setLoading(false)
+// const ForgotPasswordForm = ({close})=>{
+//     const [username,setUsername]=useState("")
+//     const [email,setEmail]=useState("")
+//     const [error,setError]=useState(null)
+//     const [success,setSuccess]=useState(null)
+//     const [loading,setLoading]=useState(false)
+//     const handleClick=()=>{
+//         setLoading(true)
+//             authRepo.forgotPassword({username,email:email.trim()}).then(data=>{
+//                 setError(null)   
+// setSuccess(data.message)
+// setLoading(false)
 
-            }).catch(err=>{
-                setLoading(false)
-                if(err.message){
-                    setSuccess(null)
-                    setError(err.message)
-                }
+//             }).catch(err=>{
+//                 setLoading(false)
+//                 if(err.message){
+//                     setSuccess(null)
+//                     setError(err.message)
+//                 }
 
-            })
-    }
-    return(<div className="border-lg p-8 lg:min-w-[30em]">
+//             })
+//     }
+//     return(<div className="border-lg p-8 lg:min-w-[30em]">
        
-       <div className='fixed top-4 left-0 right-0 md:left-[20%] w-[96vw] mx-4 md:w-[60%]  z-50 mx-auto'>
-             {error || success? <div role="alert" className={`alert    ${success?"alert-success":"alert-warning"} animate-fade-out`}>
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    className="h-6 w-6 shrink-0 stroke-current"
-    fill="none"
-    viewBox="0 0 24 24">
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="2"
-      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-  </svg>
-  <span>{error?error:success}</span>
-</div>:null}</div>
-                   <div className="flex flex-col">
-                         <IonText
-                    id="modal-modal-title" className="text-emerald-700" variant="h6" component="h2"
-                    >
-      Enter Email for Password
-    </IonText>
+//        <div className='fixed top-4 left-0 right-0 md:left-[20%] w-[96vw] mx-4 md:w-[60%]  z-50 mx-auto'>
+//              {error || success? <div role="alert" className={`alert    ${success?"alert-success":"alert-warning"} animate-fade-out`}>
+//   <svg
+//     xmlns="http://www.w3.org/2000/svg"
+//     className="h-6 w-6 shrink-0 stroke-current"
+//     fill="none"
+//     viewBox="0 0 24 24">
+//     <path
+//       strokeLinecap="round"
+//       strokeLinejoin="round"
+//       strokeWidth="2"
+//       d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+//   </svg>
+//   <span>{error?error:success}</span>
+// </div>:null}</div>
+//                    <div className="flex flex-col">
+//                          <IonText
+//                     id="modal-modal-title" className="text-emerald-700" variant="h6" component="h2"
+//                     >
+//       Enter Email for Password
+//     </IonText>
 
-<div className=" py-8 ">
-<label  className="flex-row flex border-emerald-400 rounded-full border-2 px-4">
-    <h6 className="my-auto text-[1rem] text-emerald-800 mont-medium">Email</h6>
-<input  placeholder="email" className="input bg-transparent w-[100%] text-[1rem] text-emerald-800" value={email} onChange={(e)=>setEmail(e.target.value.trim())}/>
-</label>         
-{/* <IonInput label="email" shape="round" fill="outline"/> */}
-                        <a
-                        onClick={handleClick}
-                            className="my-8 bg-emerald-600 text-white flex rounded-full py-3"
-                            variant='outlined'
-                         >
-                         <h6 className="mx-auto my-auto">Sent</h6>
+// <div className=" py-8 ">
+// <label  className="flex-row flex border-emerald-400 rounded-full border-2 px-4">
+//     <h6 className="my-auto text-[1rem] text-emerald-800 mont-medium">Email</h6>
+// <input  placeholder="email" className="input bg-transparent w-[100%] text-[1rem] text-emerald-800" value={email} onChange={(e)=>setEmail(e.target.value.trim())}/>
+// </label>         
+// {/* <IonInput label="email" shape="round" fill="outline"/> */}
+//                         <a
+//                         onClick={handleClick}
+//                             className="my-8 bg-emerald-600 text-white flex rounded-full py-3"
+//                             variant='outlined'
+//                          >
+//                          <h6 className="mx-auto my-auto">Sent</h6>
                         
-                   </a>
-                   {loading?<h6>Loading...</h6>:null}
-                   </div>
-                   </div>
-    </div>)
+//                    </a>
+//                    {loading?<h6>Loading...</h6>:null}
+//                    </div>
+//                    </div>
+//     </div>)
+// }
+
+// export default ForgotPasswordForm
+import { useState } from "react"
+import authRepo from "../../data/authRepo"
+import { useAlert } from "../../core/useAlert"
+
+
+const ForgotPasswordForm = ({ close }) => {
+  const [email, setEmail] = useState("")
+  const [loading, setLoading] = useState(false)
+  const { showAlert } = useAlert
+
+  const handleClick = () => {
+    if (loading) return
+    setLoading(true)
+    authRepo.forgotPassword({ email: email.trim() })
+      .then(data => {
+        showAlert({ message: data.message, type: "success" })
+        close?.()
+      })
+      .catch(err => {
+        showAlert({ message: err.message || "Something went wrong", type: "error" })
+      })
+      .finally(() => setLoading(false))
+  }
+
+  return (
+    <div className="p-8 lg:min-w-[30em]">
+      <h2 className="text-emerald-700 text-lg font-semibold mb-6">Reset Password</h2>
+      <input
+        type="email"
+        placeholder="Enter your email"
+        className="w-full border-2 border-emerald-400 rounded-full px-4 py-2 text-emerald-800 bg-transparent outline-none mb-4"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+      />
+      <button
+        onClick={handleClick}
+        disabled={loading}
+        className="w-full bg-emerald-600 disabled:bg-emerald-400 text-white rounded-full py-3 transition-colors"
+      >
+        {loading ? "Sending..." : "Send Reset Email"}
+      </button>
+    </div>
+  )
 }
 
 export default ForgotPasswordForm
