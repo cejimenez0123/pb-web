@@ -183,6 +183,7 @@ let signedOutMenu = [
   {label:"About", action:()=>{router.push(Paths.about())}},
   { label: "Join Now", action: () => { router.push(Paths.apply()) } },
   { label: "Discovery", action: () => {router.push(Paths.discovery) }},
+   { label: "Be a Founder", action: () => { window.open("https://tally.so/r/44zJ55", "_blank") }},
   { label: "Log in", action: () => {router.push(Paths.login) }},
           { label: "Events", action: () => {router.push(Paths.calendar())} },
         ]
