@@ -660,16 +660,16 @@ export default function AboutContainer() {
   },
   {
     eyebrow: "Supporters",
-    name: "Flight Crew",
+    name: "The Alchemists",
     price: "Donor tier",
     description:
-      "You believe in where this is going. Flight Crew donors help fund the infrastructure — events, tools, and the team building it.",
+      "You believe in where this is going. The Alchemists donors help fund the infrastructure — events, tools, and the team building it.",
     benefits: [
       "Everything in Founding Cohort",
       "Name in the credits as a founding supporter",
       "Invites to private donor gatherings",
     ],
-    cta: { label: "Learn More", href: "#", variant: "ghost" },
+    cta: { label: "Learn More", href: "https://tally.so/r/44zJ55", variant: "ghost" },
     featured: false,
   },
   ]
