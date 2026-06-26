@@ -103,9 +103,7 @@ const{openDialog,closeDialog,dialog}=useDialog()
     <div className="p-6">
       <p>Thank You {data.user.preferredName}! You’re In—Welcome to the Journey!</p>
       <br />
-      <p>You’re officially on board as a beta user for Plumbum.</p>
-      <br />
-      <p>- Sol Emilio Christian, Founder of Plumbum</p>
+     
     </div>
   ),
   disagreeText: "Close",

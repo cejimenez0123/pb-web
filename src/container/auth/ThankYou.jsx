@@ -43,7 +43,7 @@ export default function ThankYou({ user }) {
 
         {/* COMMUNITY ROLE */}
         <p className="text-base sm:text-lg leading-relaxed mb-5">
-          As a beta member, your role is simple:
+          We’re building a space for creatives to thrive in community. A place where we can
           show up honestly, share when you can, and help shape what this becomes.
           Nothing here is finished — and that’s intentional.
         </p>

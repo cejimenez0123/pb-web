@@ -1,19 +1,25 @@
 import { useContext, useRef, useState, useEffect, useLayoutEffect } from "react";
 import useScrollTracking from "../core/useScrollTracking";
 import storyRepo from "../data/storyRepo";
-import Context from "../context";
 import { useSelector } from "react-redux";
 import calendar from "../images/icons/calendar_add_blue.svg";
 import { IonImg, IonInput, IonList, IonLoading, IonText } from "@ionic/react";
 import { useDialog } from "../domain/usecases/useDialog";
 import Enviroment from "../core/Enviroment";
 import SectionHeader from "./SectionHeader";
+import { Preferences } from "@capacitor/preferences";
+import { useAlert } from "../core/useAlert";
+import { sendGAEvent } from "../core/ga4";
+import Context from "../context";
+import AlertType from "../core/AlertType";
+
 const WRAP = "max-w-[42rem] mx-auto px-4";
 const PAGE_Y = "pt-16 pb-10";
 const STACK_LG = "space-y-8";
 const STACK_MD = "space-y-4";
 const STACK_SM = "space-y-2";
 function CalendarEmbed({ variant = "eventbrite" }) {
+  const {showAlert}= useAlert()
   const [loading, setLoading] = useState(true);
   const { isPhone, setError } = useContext(Context);
   const { openDialog, closeDialog } = useDialog();
@@ -62,6 +68,43 @@ const paginatedEvents = events.slice(
 
   useScrollTracking({ name: "Calendar Embed" });
 
+
+  // drop this inside HorizontalEventList, above the return
+const handleAddEvent = async (e, event) => {
+  e.stopPropagation();
+
+  sendGAEvent("navigate_event", {
+    event_summary: event.summary,
+    hashtags: event.hashtags,
+    hashtags_count: event.hashtags?.length ?? 0,
+    source: "event_click",
+  });
+
+  // derive the dedup key: explicit id, else the eid from the google link
+  const eidMatch = event.googleLink?.match(/[?&]eid=([^&]+)/);
+  const gid = event.googleCalendarId || (eidMatch ? eidMatch[1] : "");
+
+  const { value: token } = await Preferences.get({ key: "token" });
+
+  // logged out (or nothing to dedup on) → original behavior
+  if (!token || !gid) {
+    window.open(event.googleLink);
+    return;
+  }
+
+  try {
+    await storyRepo.saveEvent({ event: { ...event, googleCalendarId: gid } }).then(()=>{
+      showAlert({message:"Event Saved",type:AlertType.success})
+    }
+
+      
+    );
+    // optional: a toast/state flip here if you wire one in
+  } catch (err) {
+    console.warn("saveEvent failed:", err?.message);
+    window.open(event.googleLink); // fallback so the tap still does something
+  }
+};
   function formatDate(dateStr) {
     const date = new Date(dateStr);
     const weekday = date.toLocaleDateString("en-US", { weekday: "short" });
@@ -252,7 +295,10 @@ const renderEvent = (event, i) => (
           dangerouslySetInnerHTML={{ __html: event.startTime }}
         />
         <button
-          onClick={(e) => { e.stopPropagation(); window.open(event.googleLink); }}
+          onClick={(e) => { 
+            
+ handleAddEvent(e, event)
+           }}
           className="flex flex-col items-center gap-0.5 active:scale-95 transition-transform"
           // style={{ WebkitTapHighlightColor: "transparent" }}
         >
@@ -463,7 +509,6 @@ const linkifyFirstUrl=(text) =>{
  
   return url;
 }
-  
   function cleanDescriptionAndExtractHashtags(description) {
     // Step 1: Remove URLs
     const urlRegex = /(https?:\/\/[^\s]+)/i;
@@ -583,7 +628,8 @@ window.open(`https://www.google.com/maps/search/?api=1&query=${encoded}`)
   source: "event_click",
 });
 
-                        window.open(event.googleLink);
+                    handleAddEvent(e,event)
+                        
                       }}
                       className="w-10 h-10 my-auto"
                       src={calendar}

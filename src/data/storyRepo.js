@@ -195,5 +195,22 @@ async getProtectedProfileStories({ profileId, skip = 0, take = 20 } = {}) {
 
         return res.data
     }
+    // 👇 add to CollectionRepo. Note: storyUrl, since the sync route lives on the story router
+storyUrl = Enviroment.url + "/story";
+// 👇 mount prefix — your error log says "POST /events/save", so the router is at /events
+eventUrl = Enviroment.url + "/events";
+
+// Save a single transformed event. Server creates the shared story on first-ever
+// save (authored by plumbumofficial) and links it into THIS profile's events collection.
+async saveEvent({ event } = {}) {
+  const headers = await this.getAuthHeaders();
+  const res = await axios.post(
+    Enviroment.url + "/events/save",
+    { event },
+    { headers }
+  );
+  return res.data; // { story, created, linked, alreadySaved }
+
+}
 }
 export default new StoryRepo()
