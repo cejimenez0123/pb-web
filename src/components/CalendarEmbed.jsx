@@ -94,7 +94,7 @@ const handleAddEvent = async (e, event) => {
 
   try {
     await storyRepo.saveEvent({ event: { ...event, googleCalendarId: gid } }).then(()=>{
-      showAlert({message:"Event Saved",type:AlertType.success})
+      showAlert({message:"Saved in your Events",type:AlertType.success})
     }
 
       
