@@ -1,121 +1,4 @@
 
-// import "../styles/About.css"
-// import { useMediaQuery } from "react-responsive"
-// import Paths from "../core/paths"
-// import BookCarousel from "../components/collection/BookCarousel"
-// import al from "../images/workshop/al-1.jpg"
-// import duo from "../images/workshop/Duo-1.jpg"
-// import vemilo from "../images/workshop/vemilo-1.jpg"
-// import vemilo2 from "../images/workshop/speak.png"
-// import mixer from "../images/workshop/crowd-mixer.png"
-// import balcony from "../images/workshop/mixer-balcony.png"
-// import crowd from "../images/workshop/openmic-crowd.jpg"
-// import evolution from "../images/workshop/grouptable.png"
-// import out from "../images/workshop/out-1.jpg"
-// import out2 from "../images/workshop/out-2.jpg"
-// import table1 from "../images/workshop/table-1.jpg"
-// import table2 from "../images/workshop/table-2.jpg"
-// import table3 from "../images/workshop/table-3.jpg"
-// import { useLayoutEffect, useContext } from "react"
-// import events from "../images/icons/event.svg"
-// import table5 from "../images/workshop/table-5.jpg"
-// import table7 from "../images/workshop/table-7.jpg"
-// import books1 from "../images/workshop/books-1.jpg"
-// import { initGA, sendGAEvent } from "../core/ga4"
-// import Context from "../context"
-// import ScrollDown from "../components/ScrollDownButton"
-// import useScrollTracking from "../core/useScrollTracking"
-
-// import {
-//   IonContent,
-//   IonRow,
-//   IonCol,
-//   useIonRouter,
-// } from '@ionic/react';
-// import ig from "../images/icons/instagram icon.png"
-
-// import { useState,useRef,useEffect } from "react"
-// export default function AboutContainer() {
-
-//   const { setShowNav,setSeo, currentProfile } = useContext(Context);
-//   const md = useMediaQuery({ query: '(min-width: 750px)' });
-//   const router = useIonRouter()
-// useScrollTracking({
-//   contentType: "about",
-//   contentId: "about_page",
-//   enableCompletion: true,
-//   completionEvent: "about_read_complete",
-// });
-
-// useLayoutEffect(() => {
- 
-//   initGA();
-// }, []);
-// useLayoutEffect(() => {
-//   setSeo({
-//     title: "About Plumbum — A Writing Community Built with Care",
-//     description:
-//       "Plumbum is a writer-led community for sharing work, getting thoughtful feedback, and growing through workshops and real connection.",
-//     name: "Plumbum",
-//     type: "website",
-//   });
-// }, [setSeo]);
-
-  
-//     function logIn(source = "about_page") {
-//   sendGAEvent("login_onboard", {
-//     source,
-//     location: "about",
-//   });
-
-
-//     router.push(Paths.login);
-//   }
-
-
-
-
-
-//   const stayInLoop = () => (
-//     <div className="p-3 flex flex-col text-soft text-center ">
-//       <div className="py-12">
-//        <a
-//         onClick={() =>
-//     sendGAEvent("nav click", {
-//       destination: "link tree",
-//       source: "about_stay_in_loop",
-//     })
-//   }
-//         className="flex flex-col text-center my-4 mx-auto cursor-pointer"
-//         href="https://plumbum.app/links"
-//         target="_blank" rel="noreferrer"
-//       >
-//         <h6 className="open-sans-bold text-[1.6rem] mx-4 my-4  text-soft ">
-//   Everything Plumbum 🔗
-// </h6>
-        
-//       </a>
-//            <p
-//         className=" mx-auto px-4 my-4 mx-auto text-center cursor-pointer"
-//         onClick={() => goToCalendar("about_text_link")}
-//       >
-//         Check out the Calendar of NYC events for writer and creatives
-//       </p> 
-//      <img
-//   onClick={() => goToCalendar("about_icon")}
-//   className="h-[8em] mx-auto w-[8em] cursor-pointer filter invert brightness-125 sepia saturate-50 hue-rotate-30"
-//   src={events}
-//   alt="Calendar icon"
-// />
-
-//       <div className="flex my-4 open-sans-medium mx-auto text-lg text-left leading-loose tracking-loose">
-//         <p className="mx-auto">
-//           <a className="text-soft "href="https://www.instagram.com/plumbumapp" target="_blank" rel="noreferrer">@plumbumapp</a> 
-//         </p>
-//       </div>
-//       </div>
-//     </div>
-//   );
   const testimonials = [
   {
     quote:
@@ -323,84 +206,7 @@ export default function AboutContainer() {
     </div>
   );
 
-  // const applicationProcess = () => (
-  //   <div className="my-8">
-  //     <h1 className="lora-bold mb-4">How the Application Works</h1>
-  //     <p>We’re building a space with intention. Here’s how to join.</p>
-  //     <ol className="list-decimal list-inside open-sans-regular space-y-3 text-[1rem]">
-  //       <li>
-  //         <strong>Apply Online –</strong> Fill out a short form to tell us about your writing and what you're looking for.
-  //       </li>
-  //       <li>
-  //         <strong>We Review –</strong> Our team reads every application. We’ll either invite you in now or let you know we’re keeping your application on file for the next round.
-  //       </li>
-  //       <li>
-  //         <strong>You're In –</strong> If accepted, you'll get an email with a link to complete your registration and join the community.
-  //       </li>
-  //     </ol>
-  //   </div>
-  // );
 
-  // const findCreatives = () => (
-  //   <div className="text-emerald-800 rounded-lg p-4 h-full">
-  //     <div className="text-center">
-  //       <h2 className="lora-medium font-bold text-[2rem] mb-4">Find Your Creative Community</h2>
-  //       <div className="text-left">
-  //         <h2 className="text-[1rem] leading-loose open-sans-medium mb-4">
-  //           Plumbum is a space for writers to share work, get feedback, and connect with like-minded creatives. Whether you're refining your next piece or just starting out, you'll find support, inspiration, and the right audience here.
-  //         </h2>
-  //         <a onClick={apply} className="text-[1rem] cursor-pointer inline-block">[→ Join the Beta]</a>
-  //       </div>
-  //     </div>
-  //   </div>
-  // );
-
-  // const writingJourney = () => (
-  //   <div className="text-center py-9  text-emerald-800 leading-loose">
-  //     <h1 className="lora-bold text-left">Why Plumbum Works?</h1>
-  //     <br/>
-  //     <ul className="text-left">
-  //       <li className="text-[1rem] my-1">
-  //         <h6 className="open-sans-medium">
-  //           <strong>Writer-Driven Feedback –</strong> Get real, constructive responses from fellow writers.
-  //         </h6>
-  //       </li>
-  //       <li className="text-[1rem] my-1">
-  //         <h6 className="open-sans-medium">
-  //           <strong>Curated Discovery –</strong> Curate your space and discover others curated collections and add them to your space of inspiration.
-  //         </h6>
-  //       </li>
-  //       <li className="text-[1rem] my-1">
-  //         <h6 className="open-sans-medium">
-  //           <strong>Workshops & Events –</strong> Take your craft further with live workshops and community gatherings.
-  //         </h6>
-  //       </li>
-  //     </ul>
-  //     <div className="text-left">
-  //       <a onClick={() => router.push(Paths.discovery())} className="text-[1rem] cursor-pointer inline-block">[→ Explore More]</a>
-  //     </div>
-  //   </div>
-  // );
-
-  // const howItWorks = () => (
-  //   <div className="py-2 leading-loose text-emerald-700 flex flex-col max-w-full">
-  //     <h1 className="lora-bold text-left text-emerald-800 text-4xl mt-4 py-4">How It Works</h1>
-  //     <ul className="list-disc open-sans-medium list-inside open-sans-regular space-y-3 text-[1rem]">
-  //       <li>
-  //         <strong>Get Feedback –</strong> Share your drafts and receive thoughtful, constructive responses from writers who care.
-  //       </li>
-  //       <li>
-  //         <strong>Join Live Workshops –</strong> Hop into real-time sessions online or around NYC for direct feedback and collaboration.
-  //       </li>
-  //       <li>
-  //         <strong>Share Your Work –</strong> Publish pieces-in-progress or notes-app gems in a space for experimentation.
-  //       </li>
-  //       <li>
-  //         <strong>Find Fresh Voices –</strong> Discover new writers and connect through shared creativity and weirdness.
-  //       </li>
-  //     </ul>
-  //   </div>
-  // );
  function FoundingCohort() {
   const tiers = [
   {
@@ -518,7 +324,101 @@ export default function AboutContainer() {
   );
 
 }
+function BetaDownload() {
+  const steps = [
+    {
+      step: "Step 1",
+      icon: "📲",
+      name: "Download TestFlight",
+      body: "Plumbum runs through TestFlight, Apple's beta installer. Grab it from the App Store first — it's free and takes a second.",
+      cta: {
+        label: "Get TestFlight",
+        href: "https://apps.apple.com/app/testflight/id899247664",
+        variant: "ghost",
+      },
+      gaStep: "1_download_testflight",
+    },
+    {
+      step: "Step 2",
+      icon: "🪶",
+      name: "Install Plumbum",
+      body: "Once TestFlight is installed, come back here and tap below. It'll open in TestFlight and drop Plumbum onto your phone.",
+      cta: {
+        label: "Install Plumbum →",
+        href: "https://testflight.apple.com/join/nBJJb98f",
+        variant: "solid",
+      },
+      gaStep: "2_install_plumbum",
+    },
+  ];
 
+  return (
+    <>
+    <div className="py-4">
+      <div className="mb-2">
+        <span className="open-sans-medium text-xs tracking-widest uppercase text-zinc-400">
+          The Beta
+        </span>
+      </div>
+      <h2 className="lora-bold text-[2rem] leading-tight text-zinc-900 mb-2">
+        Get Plumbum on your iPhone.
+      </h2>
+      <p className="open-sans-medium text-[1rem] leading-loose text-zinc-500 mb-8">
+        Two steps. Grab TestFlight, then come back here to install Plumbum.
+      </p>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {steps.map((s) => (
+          <div
+            key={s.step}
+            className={`flex flex-col rounded-2xl p-6 bg-white ${
+              s.cta.variant === "solid"
+                ? "border-2 border-emerald-600"
+                : "border border-zinc-200"
+            }`}
+          >
+            <span className="text-2xl mb-4" role="img" aria-label={s.name}>
+              {s.icon}
+            </span>
+
+            <p
+              className={`open-sans-medium text-xs tracking-widest uppercase mb-2 ${
+                s.cta.variant === "solid" ? "text-emerald-600" : "text-zinc-400"
+              }`}
+            >
+              {s.step}
+            </p>
+
+            <h3 className="lora-bold text-[1.1rem] leading-snug text-zinc-900 mb-3">
+              {s.name}
+            </h3>
+
+            <p className="open-sans-medium text-sm leading-relaxed text-zinc-500 mb-6 flex-1">
+              {s.body}
+            </p>
+<a
+            
+              href={s.cta.href}
+              target="_blank"
+              rel="noreferrer"
+              onClick={() =>
+                sendGAEvent("beta_step", { step: s.gaStep, source: "about_page" })
+              }
+              className={`open-sans-medium text-sm font-medium text-center rounded-full px-5 py-3 transition-colors ${
+                s.cta.variant === "solid"
+                  ? "bg-emerald-600 text-white hover:bg-emerald-700"
+                  : "border border-zinc-200 text-zinc-800 hover:bg-zinc-50"
+              }`}
+            >
+              {s.cta.label}
+            </a>
+          </div>
+        ))}
+      </div>
+    </div>
+    </>
+  );
+}
 function ProblemTriptych() {
   const problems = [
   {
@@ -694,6 +594,7 @@ function ProblemTriptych() {
             </IonCol>
           </IonRow>
                   <div className="flex flex-col items-center text-center mt-12">
+                    <BetaDownload/>
           <IonLabel><h1 className=""><b></b></h1></IonLabel>
 {<ProblemTriptych />}
 </div>
