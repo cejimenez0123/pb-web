@@ -225,7 +225,12 @@ const handlePromoteToStory = () => {
     <div
       // className={`transition-all duration-300 ease-in-out overflow-hidden
       //   ${isDeleted ? "opacity-0 max-h-0 p-0 my-0" : "opacity-100 max-h-[1000px]"}`}
-       className={`transition-all duration-300 ease-in-out
+      
+    //    className={`transition-all duration-300 ease-in-out
+    // ${isDeleted
+    //   ? "opacity-0 max-h-0 p-0 my-0 overflow-hidden"
+    //   : "opacity-100 max-h-[1000px] overflow-visible"}`}
+className={`transition-all duration-300 ease-in-out
     ${isDeleted
       ? "opacity-0 max-h-0 p-0 my-0 overflow-hidden"
       : "opacity-100 max-h-[1000px] overflow-visible"}`}
