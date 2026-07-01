@@ -460,12 +460,15 @@ if (!isOnline) {
   {/* DRAWER */}
   <div
   style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+    //  left-0 rounded-r-3xl
     className={`
 overflow-y-auto pb-20
-      absolute left-0 top-0 h-[100dvh] w-[85%] max-w-[22em]
-      dark:bg-base-bgDark bg-cream shadow-xl rounded-r-3xl
+      absolute right-0
+   rounded-l-3xl
+      top-0 h-[100dvh] w-[85%] max-w-[22em]
+      dark:bg-base-bgDark bg-cream shadow-xl 
       transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]
-      ${menuOpen ? "translate-x-0" : "-translate-x-full"}
+      ${menuOpen ? "translate-x-0" : "translate-x-full"}
     `}
   >
     <div className="p-6 flex flex-col h-full">

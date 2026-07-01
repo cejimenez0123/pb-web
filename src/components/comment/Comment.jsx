@@ -223,8 +223,12 @@ const handlePromoteToStory = () => {
 
   return (
     <div
-      className={`transition-all duration-300 ease-in-out overflow-hidden
-        ${isDeleted ? "opacity-0 max-h-0 p-0 my-0" : "opacity-100 max-h-[1000px]"}`}
+      // className={`transition-all duration-300 ease-in-out overflow-hidden
+      //   ${isDeleted ? "opacity-0 max-h-0 p-0 my-0" : "opacity-100 max-h-[1000px]"}`}
+       className={`transition-all duration-300 ease-in-out
+    ${isDeleted
+      ? "opacity-0 max-h-0 p-0 my-0 overflow-hidden"
+      : "opacity-100 max-h-[1000px] overflow-visible"}`}
       style={{
         marginLeft: `${level * 1}px`,
         borderLeft: `4px solid ${
