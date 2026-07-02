@@ -69,6 +69,7 @@ import usePersistentCurrentProfile from './domain/usecases/usePersistentCurrentP
 import usePushNotificationListener from './domain/usecases/usePushNotificationListener.jsx';
 import { PushNotifications } from '@capacitor/push-notifications';
 import { SocialLogin } from '@capgo/capacitor-social-login';
+import EULATERMS from './container/auth/Agreement.jsx';
 function PushNotificationHandler() {
   usePushNotificationListener();
   const router = useIonRouter(); // ← switch back to this
@@ -327,6 +328,11 @@ const showBottomNavbar = (!hiddenPaths.includes(location)) && isMobileOrTablet
                   
                   }
             />
+              <Route path={'/eula'}
+                render={()=>
+                            <PageWrapper>
+                              <EULATERMS/></PageWrapper>
+                        }/>
           <Route exact path={"/privacy"}
                   render={()=><PageWrapper><PrivacyNoticeContrainer/></PageWrapper>}
                   />

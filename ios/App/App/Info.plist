@@ -47,8 +47,10 @@
 	</dict>
 	<key>NSCameraReactionEffectGesturesEnabledDefault</key>
 	<false/>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Plumbum uses your photo library so you can select an existing photo to use as your profile picture or to include when creating a story. For example, tapping &quot;Choose Photo&quot; during story creation opens your library so you can pick an image to attach.</string>
 	<key>NSCameraUsageDescription</key>
-	<string>Please give permission if you want to upload photos</string>
+	<string>Plumbum uses your camera so you can take a new photo to use as your profile picture or to include when creating a story. For example, tapping the camera icon on the profile setup screen lets you snap a photo on the spot instead of picking one from your library.</string>
 	<key>NSFileProviderDomainUsageDescription</key>
 	<string>We need your location to connect you with workshops in your area.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
@@ -62,8 +64,6 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>We need your location to connect you with workshops in your area.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Please give permission if you want to upload photos</string>
-	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Please give permission if you want to upload photos</string>
 	<key>UIBackgroundModes</key>
 	<array>
