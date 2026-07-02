@@ -1,52 +1,7 @@
-import { useDispatch } from "react-redux";
-import { useAlert } from "../../core/useAlert";
-import { IonContent } from "@ionic/react";
 
-function TermsGate({ children }) {
- const { currentProfile } = useSelector((state) => state.users);        
-  const dispatch = useDispatch();
-  const { showAlert } = useAlert();
-  const router = useIonRouter();
-  const CURRENT_TERMS_VERSION = "2026-07-01";
-  const needsAcceptance = !currentProfile.user?.termsAcceptedAt || currentProfile.user?.termsVersion !== CURRENT_TERMS_VERSION;
-
-  const acceptTerms = async (version) => {
-    try {
-      await dispatch(updateUserTerms({ termsVersion: version, termsAcceptedAt: new Date().toISOString() }));
-      showAlert({ message: "Thank you for accepting the Terms of Service.", type: AlertType.success });
-      router.goBack();
-    } catch (error) {
-      showAlert({ message: error.message || "Failed to accept terms.", type: AlertType.error });
-    }
-  };
-
-  if (needsAcceptance) {
-    return <TermsModal onAccept={() => acceptTerms(CURRENT_TERMS_VERSION)} />;
-  }
-  return children;
-}
-
-function TermsModal({ onAccept }) {
-  const { setSeo } = useContext(Context);
-
-  useLayoutEffect(() => {
-    setSeo((prev) => ({
-      ...prev,
-      title: "Plumbum | Terms of Service",
-      description: "Please review and accept the latest Terms of Service to continue using Plumbum.",
-    }));
-  }, []);
-
-  return (
-    <div className="terms-modal">
-      <EULATERMS />
-      <button onClick={onAccept}>Accept</button>
-    </div>
-  );
-}
 
 const EULATERMS = ()=>{
-    return(<IonContent><div className="p-8" dangerouslySetInnerHTML={{__html:`<!DOCTYPE html>
+    return(<div className="p-8" dangerouslySetInnerHTML={{__html:`<!DOCTYPE html>
     <html>
     <head>
       <meta charset='utf-8'>
@@ -60,7 +15,7 @@ const EULATERMS = ()=>{
     </body>
     </html>
       
-      `}}/></IonContent>)
+      `}}/>)
 }
 export default EULATERMS
 

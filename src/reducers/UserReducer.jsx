@@ -19,6 +19,7 @@ import {    logIn ,
             setCurrentProfile,
             setAuthResolved,
             setAlert,
+            acceptTerms,
         } from "../actions/UserActions"
 
 import {  addNotification, createProfile, fetchNotifcations, fetchProfileRecommendations, fetchProfiles } from "../actions/ProfileActions"
@@ -92,12 +93,23 @@ const userSlice = createSlice({
             
             state.loading = true
         })
-        .addCase(logIn.fulfilled, (state, { payload }) => {
-            state.currentProfile = payload?.profile
-            state.loading = false
-            state.signedIn = true
-            state.authResolved = true
-        })
+        .addCase(acceptTerms.fulfilled, (state, { payload }) => {
+    state.currentProfile = {
+        ...state.currentProfile,
+        termsAcceptedAt: new Date().toISOString(),
+        termsVersion: payload.version,
+    }
+})
+.addCase(acceptTerms.rejected, (state, { payload }) => {
+    if (payload?.error) state.error = payload.error
+})
+ .addCase(logIn.fulfilled, (state, { payload }) => {
+    state.currentProfile = { ...state.currentProfile, ...payload?.profile }
+    state.termsCurrent = payload?.termsCurrent ?? true
+    state.loading = false
+    state.signedIn = true
+    state.authResolved = true
+})
         .addCase(logIn.rejected, (state, { payload }) => {
              if (payload?.error) state.error = payload.error
             state.loading = false

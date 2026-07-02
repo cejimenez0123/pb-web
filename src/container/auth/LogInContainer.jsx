@@ -3,7 +3,7 @@ import {useContext,useEffect,useState} from 'react'
 import { useAlert } from '../../core/useAlert.jsx';
 import AlertType from '../../core/AlertType.js';
 import "../../App.css"
-import { logIn } from '../../actions/UserActions';
+import { acceptTerms, logIn } from '../../actions/UserActions';
 import {useDispatch} from 'react-redux';
 import Paths from '../../core/paths';
 import checkResult from '../../core/checkResult';
@@ -14,6 +14,7 @@ import AppleSignInButton from '../../components/auth/AppleSignInButton';
 import GoogleLogin from '../../components/GoogleLogin';
 import { Capacitor } from '@capacitor/core';
 import { useDialog } from '../../domain/usecases/useDialog.jsx';
+import EULATERMS from './Agreement.jsx';
 
 const WRAP           = "max-w-2xl mx-auto px-4";
 const CARD           = "max-w-lg mx-auto px-4 py-6 rounded-lg text-emerald-800";
@@ -56,12 +57,14 @@ function LogInCard({ setSigningIn, setLogInError }) {
   const dispatch = useDispatch();
   const router   = useIonRouter();
   const { showAlert ,closeAlert,showPrompt} = useAlert();
-  const { openDialog, closeDialog, dialog } = useDialog();
+  const { openDialog,resetDialog, closeDialog, dialog } = useDialog();
   const isNative = Capacitor.isNativePlatform();
 
   const [email, setEmail]             = useState("");
   const [password, setPassword]       = useState("");
   const [pending, setPending]         = useState(false);
+  const CURRENT_TERMS_VERSION = "2026-07-01";
+
   const [showPassword, setShowPassword] = useState(false);
   //   showAlert({ message: err?.status === 401 ? "User Not Found. Apply Below" : err?.message || "Unknown error", type: AlertType.error });
   // };
@@ -103,6 +106,27 @@ const handleAuthError = (err) => {
     showAlert({ message, type: AlertType.error });
   }
 };
+
+
+const promptTermsAcceptance = (onAccepted) => {
+  openDialog({
+    title: "Updated Terms & Conditions",
+    height: 90,
+    breakpoint: 1,
+    text: () => <EULATERMS />,
+    agree: async () => {
+      await dispatch(acceptTerms({ version: CURRENT_TERMS_VERSION }));
+      resetDialog();
+      onAccepted();
+    },
+    agreeText: "I Agree",
+    disagree: () => {
+      resetDialog();
+      dispatch(logOut());
+    },
+    disagreeText: "Decline",
+  });
+};
   const handleLogIn = () => {
     if (email.length > 3 && password.length) {
       setPending(true);
@@ -110,13 +134,20 @@ const handleAuthError = (err) => {
         checkResult(
           res,
           (payload) => {
+                console.log("Login handle:",payload);
             if (payload?.profile?.id) {
-              router.push(Paths.home);
+                 if (!payload?.termsCurrent) {
+            promptTermsAcceptance(() => router.push(Paths.home, "forward"));
+          } else {
+            router.push(Paths.home, "forward");
+          }
+          
             } else {
               showAlert({ message: "Error with Profile", type: AlertType.error });
             }
           },
           (err) => {
+            console.log("Login error:", err);
             handleAuthError(err);
             setPending(false);
           }
@@ -145,7 +176,13 @@ const handleAuthError = (err) => {
       res,
       (payload) => {
         if (payload?.profile?.id) {
-          router.push(Paths.home, "forward");
+          console.log("Login successful:", payload);
+            if (!payload?.termsCurrent) {
+
+            promptTermsAcceptance(() => router.push(Paths.home, "forward"));
+          } else {
+            router.push(Paths.home, "forward");
+          }
         } else {
           showPrompt({ message: "No profile found. Check email or apply", type: AlertType.prompt, agree: () => closeAlert(), agreeText: "Understood" });
         }

@@ -84,7 +84,7 @@ const toggleSlot = (slotId) => {
       title: "Plumbum (Sign Up) - Your Writing, Your Community"
     });
   }, []);
-const {openDialog}=useDialog()
+const {openDialog,resetDialog}=useDialog()
 const openTerms = () => {
   openDialog({
     title: "Terms & Conditions",

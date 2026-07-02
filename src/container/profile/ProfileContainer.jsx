@@ -24,7 +24,10 @@ import AboutPanel from '../../components/profile/AboutPanel';
 import PaginatedList from '../../components/page/PaginatedList';
 import SectionHeader from '../../components/SectionHeader';
 import RecommendedProfiles from '../../components/page/RecommendedProfile';
-
+import { reportContent, blockProfile } from '../../actions/termsActions';
+import horiz from "../../images/icons/more_vert.svg"
+import { IonImg } from '@ionic/react';
+import { useDialog } from '../../domain/usecases/useDialog';
 
 
 
@@ -85,11 +88,71 @@ function ProfileContainer() {
   const [followingCount, setFollowingCount] = useState(0);
   const [isSelf, setIsSelf]           = useState(false);
   const [locationName, setLocationName] = useState("Location not specified");
-
+const {openDialog, closeDialog} = useDialog();
   const dispatch = useDispatch();
   const router   = useIonRouter();
   const { id }   = useParams();
+const handleReportProfile = () => {
+  const reasons = ["Spam", "Harassment or abuse", "Hate speech", "Impersonation", "Other"];
+  openDialog({
+    title: "Report Profile",
+    height: 50,
+    text: (
+      <div className="flex flex-col gap-2 p-4">
+        {reasons.map((reason) => (
+          <button
+            key={reason}
+            className="text-left p-3 rounded-xl border border-soft hover:bg-sky-50"
+            onClick={() => {
+              dispatch(reportContent({
+                contentType: "profile",
+                contentId: profile.id,
+                reportedProfileId: profile.id,
+                reason,
+              })).then((res) =>
+                checkResult(res, () => closeDialog(), (err) => setError(err.message))
+              );
+            }}
+          >
+            {reason}
+          </button>
+        ))}
+      </div>
+    ),
+    disagreeText: "Cancel",
+    disagree: closeDialog,
+  });
+};
 
+const handleBlockProfile = () => {
+  openDialog({
+    title: `Block @${profile.username}?`,
+    height: 30,
+    text: (
+      <div className="p-4 text-sm text-slate-600">
+        You won't see their content anymore, and they won't be able to interact with yours.
+      </div>
+    ),
+    agreeText: "Block",
+    agree: () => {
+      dispatch(blockProfile({
+        blockedProfileId: profile.id,
+        reason: "Blocked from profile",
+      })).then((res) =>
+        checkResult(
+          res,
+          () => {
+            closeDialog();
+            router.push(Paths.discovery); // navigate away, this profile shouldn't be viewable anymore
+          },
+          (err) => setError(err.message)
+        )
+      );
+    },
+    disagreeText: "Cancel",
+    disagree: closeDialog,
+  });
+};
   // ── Derived lists ──────────────────────────────────────
   const collections = useMemo(
     () => collectionsRaw
@@ -253,9 +316,32 @@ function ProfileContainer() {
                 </div>
               )}
             </div>
-
+<div className={SEARCH_ROW}>
+  <input
+    value={search}
+    onChange={(e) => setSearch(e.target.value)}
+    placeholder="Search"
+    className="border-soft border rounded-full w-full px-4 py-2 bg-cream dark:bg-base-bgDark dark:border-cream/30 dark:text-cream text-sm text-soft placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-300"
+  />
+  <FollowButton isSelf={isSelf} prof={profile} onClick={onClickFollow} follow={following} current={currentProfile} />
+  {!isSelf && (
+    <div className="relative dropdown dropdown-left">
+      <div tabIndex={0} role="button">
+        <img src={horiz} className="max-w-5 max-h-5 cursor-pointer" />
+      </div>
+      <ul tabIndex={0} className="dropdown-content bg-base-bg menu text-emerald-800 rounded-box z-[1] w-52 p-2 shadow">
+        <li className="p-2 bg-base-bg hover:bg-sky-100 rounded cursor-pointer" onClick={handleReportProfile}>
+          Report
+        </li>
+        <li className="p-2 bg-base-bg hover:bg-sky-100 rounded cursor-pointer text-red-600" onClick={handleBlockProfile}>
+          Block
+        </li>
+      </ul>
+    </div>
+  )}
+</div>
             {/* Search + Follow */}
-            <div className={SEARCH_ROW}>
+            {/* <div className={SEARCH_ROW}>
               <input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
@@ -263,7 +349,7 @@ function ProfileContainer() {
                 className="border-soft border rounded-full w-full px-4 py-2 bg-cream dark:bg-base-bgDark dark:border-cream/30 dark:text-cream text-sm text-soft placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-300"
               />
               <FollowButton isSelf={isSelf} prof={profile} onClick={onClickFollow} follow={following} current={currentProfile} />
-            </div>
+            </div> */}
 
             {/* Tabs */}
             <div className={TAB_WRAPPER}>
