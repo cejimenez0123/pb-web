@@ -45,13 +45,20 @@ async reportContent({ contentType, contentId, reportedProfileId, reason, reasonD
     return res.data;
   }
 
-  async getBlockedProfiles() {
-    const headers = await this.getAuthHeaders();
-    const res = await axios.get(Enviroment.url + "/auth/blocks", {
-      headers,
-    });
-    return res.data; // { blockedProfileIds: [...] }
-  }
+// In ModerationRepo
+
+// ModerationRepo.js
+
+// ModerationRepo.js
+
+async getBlockedProfiles() {
+  const headers = await this.getAuthHeaders();
+  const res = await axios.get(Enviroment.url + "/auth/blocks", {
+    headers,
+  });
+  // res.data = { blockedProfiles: [{ id, username, profilePic }, ...] }
+  return res.data;
+}
 
   async unblockProfile(blockedProfileId) {
     const headers = await this.getAuthHeaders();
@@ -91,6 +98,11 @@ async reportContent({ contentType, contentId, reportedProfileId, reason, reasonD
     );
     return res.data; // { ok: true }
   }
+ async getBlockedUserIds() {
+        const headers = await this.getAuthHeaders();
+  const res = await axios.get("/blocked", { headers });
+  return res.data; // { blockedUserIds: string[] }
+}
 }
 
 export default new ModerationRepo();

@@ -697,10 +697,13 @@ const handleBlockProfile = () => {
                 </div>
               )}
             </div>
-<ReportProfileDialog
-  profile={profile}
+<ReportContentDialog
+  contentType="profile"
+  contentId={profile.id}
+  reportedProfileId={profile.id}
   isOpen={isReportDialogOpen}
   onClose={() => setReportDialogOpen(false)}
+  onSuccess={() => setSuccess("Report submitted")}
 />
 <div className={SEARCH_ROW}>
   <input

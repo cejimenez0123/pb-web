@@ -1,101 +1,14 @@
-// import { createSlice } from "@reduxjs/toolkit";
-// import { reportContent,blockProfile, unblockProfile,getBlockedProfiles } from "../actions/ModerationAcitons";
 
-
-// const initialState = {
-//   blockedProfileIds: [],
-//   loadingBlocks: false,
-//   errorBlocks: null,
-
-//   reportStatus: "idle", // idle | loading | succeeded | failed
-//   reportError: null,
-
-//   blockActionStatus: "idle",
-//   blockActionError: null,
-// };
-
-// const moderationSlice = createSlice({
-//   name: "moderation",
-//   initialState,
-//   reducers: {
-//     clearReportError(state) {
-//       state.reportError = null;
-//       state.reportStatus = "idle";
-//     },
-//     clearBlockActionError(state) {
-//       state.blockActionError = null;
-//       state.blockActionStatus = "idle";
-//     },
-//   },
-//   extraReducers: (builder) => {
-//     builder
-//       // reportContent
-//       .addCase(reportContent.pending, (state) => {
-//         state.reportStatus = "loading";
-//         state.reportError = null;
-//       })
-//       .addCase(reportContent.fulfilled, (state) => {
-//         state.reportStatus = "succeeded";
-//       })
-//       .addCase(reportContent.rejected, (state, action) => {
-//         state.reportStatus = "failed";
-//         state.reportError = action.payload?.error || "Failed to report";
-//       })
-
-//       // blockProfile
-//       .addCase(blockProfile.pending, (state) => {
-//         state.blockActionStatus = "loading";
-//         state.blockActionError = null;
-//       })
-//       .addCase(blockProfile.fulfilled, (state) => {
-//         state.blockActionStatus = "succeeded";
-//       })
-//       .addCase(blockProfile.rejected, (state, action) => {
-//         state.blockActionStatus = "failed";
-//         state.blockActionError = action.payload?.error || "Failed to block";
-//       })
-
-//       // getBlockedProfiles
-//       .addCase(getBlockedProfiles.pending, (state) => {
-//         state.loadingBlocks = true;
-//         state.errorBlocks = null;
-//       })
-//       .addCase(getBlockedProfiles.fulfilled, (state, action) => {
-//         state.loadingBlocks = false;
-//         state.blockedProfileIds = action.payload.blockedProfileIds || [];
-//       })
-//       .addCase(getBlockedProfiles.rejected, (state, action) => {
-//         state.loadingBlocks = false;
-//         state.errorBlocks = action.payload?.error || "Failed to load blocks";
-//       })
-
-//       // unblockProfile
-//       .addCase(unblockProfile.pending, (state) => {
-//         state.blockActionStatus = "loading";
-//         state.blockActionError = null;
-//       })
-//       .addCase(unblockProfile.fulfilled, (state, action) => {
-//         state.blockActionStatus = "succeeded";
-//         state.blockedProfileIds = state.blockedProfileIds.filter(
-//           (id) => id !== action.payload.blockedProfileId
-//         );
-//       })
-//       .addCase(unblockProfile.rejected, (state, action) => {
-//         state.blockActionStatus = "failed";
-//         state.blockActionError = action.payload?.error || "Failed to unblock";
-//       });
-//   },
-// });
-// export default moderationSlice
 import { createSlice } from "@reduxjs/toolkit";
 import {
   reportContent,
   blockProfile,
   unblockProfile,
-  getBlockedProfiles,
+
   getPendingReports,
   banUser,
   dismissReports,
+ 
 } from "../actions/ModerationAcitons";
 
 const initialState = {
@@ -112,9 +25,11 @@ const initialState = {
 
   // Admin moderation
   reports: [],          // grouped reports
-  loading: false,
-  error: null,
-
+//   loading: false,
+//   error: null,
+blockedUserIds: [],
+    loading: false,
+    error: null,
   actioningId: null,    // reportedProfileId currently being banned/dismissed
   actionError: null,
 };
@@ -166,19 +81,7 @@ const moderationSlice = createSlice({
       })
 
       // getBlockedProfiles
-      .addCase(getBlockedProfiles.pending, (state) => {
-        state.loadingBlocks = true;
-        state.errorBlocks = null;
-      })
-      .addCase(getBlockedProfiles.fulfilled, (state, action) => {
-        state.loadingBlocks = false;
-        state.blockedProfileIds = action.payload.blockedProfileIds || [];
-      })
-      .addCase(getBlockedProfiles.rejected, (state, action) => {
-        state.loadingBlocks = false;
-        state.errorBlocks = action.payload?.error || "Failed to load blocks";
-      })
-
+    
       // unblockProfile
       .addCase(unblockProfile.pending, (state) => {
         state.blockActionStatus = "loading";
@@ -237,9 +140,8 @@ const moderationSlice = createSlice({
         // Simple approach: clear reports and let the page refetch
         state.reports = [];
       })
-      .addCase(dismissReports.rejected, (state, action) => {
-        state.actionError = action.payload?.error || "Dismiss failed";
-      });
+  
+
   },
 });
 

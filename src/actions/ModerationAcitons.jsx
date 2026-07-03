@@ -35,17 +35,6 @@ const blockProfile = createAsyncThunk(
   }
 );
 
-const getBlockedProfiles = createAsyncThunk(
-  "moderation/getBlockedProfiles",
-  async (_, { rejectWithValue }) => {
-    try {
-      const res = await moderationRepo.getBlockedProfiles();
-      return res; // { blockedProfileIds: [...] }
-    } catch (err) {
-      return rejectWithValue(err.response?.data || { error: err.message });
-    }
-  }
-);
 
 const unblockProfile = createAsyncThunk(
   "moderation/unblockProfile",
@@ -62,58 +51,7 @@ const unblockProfile = createAsyncThunk(
 
 // ----- THUNKS -----
 
-// import { createAsyncThunk } from "@reduxjs/toolkit";
-// import moderationRepo from "../data/moderationRepo";
 
-// const reportContent = createAsyncThunk(
-//   "moderation/reportContent",
-//   async (payload, { rejectWithValue }) => {
-//     try {
-//       const res = await moderationRepo.reportContent(payload);
-//       return res;
-//     } catch (err) {
-//       return rejectWithValue(err.response?.data || { error: err.message });
-//     }
-//   }
-// );
-
-// const blockProfile = createAsyncThunk(
-//   "moderation/blockProfile",
-//   async (payload, { rejectWithValue }) => {
-//     try {
-//       const res = await moderationRepo.blockProfile(payload);
-//       return res;
-//     } catch (err) {
-//       return rejectWithValue(err.response?.data || { error: err.message });
-//     }
-//   }
-// );
-
-// const getBlockedProfiles = createAsyncThunk(
-//   "moderation/getBlockedProfiles",
-//   async (_, { rejectWithValue }) => {
-//     try {
-//       const res = await moderationRepo.getBlockedProfiles();
-//       return res; // { blockedProfileIds: [...] }
-//     } catch (err) {
-//       return rejectWithValue(err.response?.data || { error: err.message });
-//     }
-//   }
-// );
-
-// const unblockProfile = createAsyncThunk(
-//   "moderation/unblockProfile",
-//   async (blockedProfileId, { rejectWithValue }) => {
-//     try {
-//       const res = await moderationRepo.unblockProfile(blockedProfileId);
-//       return { blockedProfileId, ...res };
-//     } catch (err) {
-//       return rejectWithValue(err.response?.data || { error: err.message });
-//     }
-//   }
-// );
-
-// ----- ADMIN MODERATION THUNKS -----
 
 const getPendingReports = createAsyncThunk(
   "moderation/getPendingReports",
@@ -138,7 +76,22 @@ const banUser = createAsyncThunk(
     }
   }
 );
-
+ const fetchBlockedProfiles = createAsyncThunk(
+  "moderation/fetchBlockedProfiles",
+  async (_, { rejectWithValue }) => {
+    try {
+      const data = await moderationRepo.getBlockedProfiles();
+      // data = { blockedProfiles: [{ id, username, profilePic }, ...] }
+      return {
+        blockedProfiles: data.blockedProfiles || [],
+      };
+    } catch (err) {
+      return rejectWithValue(
+        err?.response?.data?.error || "Failed to load blocked users"
+      );
+    }
+  }
+);
 const dismissReports = createAsyncThunk(
   "moderation/dismissReports",
   async ({ reportIds }, { rejectWithValue }) => {
@@ -154,9 +107,10 @@ const dismissReports = createAsyncThunk(
 export {
   reportContent,
   blockProfile,
-  getBlockedProfiles,
+
   unblockProfile,
   getPendingReports,
   banUser,
   dismissReports,
+fetchBlockedProfiles
 };

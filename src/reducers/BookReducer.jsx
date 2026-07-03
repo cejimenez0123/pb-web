@@ -108,16 +108,28 @@ state.loading = true
     }
    
     state.loading = false
-}).addCase(addStoryListToCollection.fulfilled,(state,{payload})=>{
-       if(payload.collections){
-   let list = state.collections.filter(col=>col)
-  
+})
+.addCase(addStoryListToCollection.fulfilled,(state,{payload})=>{
+  if(payload.collection){
+    let list = state.collections.filter(col=>col)
     const index = list.findIndex(col=>col.id==payload.collection.id)
-if (index >= 0) {
-        list[index]=payload.collection
-        state.collections = list
-    }}
-}).addCase(postCollectionRole.fulfilled,(state,{payload})=>{
+    if (index >= 0) {
+      list[index]=payload.collection
+      state.collections = list
+    }
+  }
+})
+// .addCase(addStoryListToCollection.fulfilled,(state,{payload})=>{
+//        if(payload.collections){
+//    let list = state.collections.filter(col=>col)
+  
+//     const index = list.findIndex(col=>col.id==payload.collection.id)
+// if (index >= 0) {
+//         list[index]=payload.collection
+//         state.collections = list
+//     }}
+// })
+.addCase(postCollectionRole.fulfilled,(state,{payload})=>{
     // if(payload.collection){
 state.collectionInView = payload.collection
     // }

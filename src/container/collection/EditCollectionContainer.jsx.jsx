@@ -421,7 +421,7 @@ if (!canSee) {
 <div className={tabWrapper}>
   <TabBar tabs={tabs} active={activeTab} onChange={setActiveTab}/>
 </div>
-    {activeTab === "pages" && (
+    {/* {activeTab === "pages" && (
       <SortableList
         items={filteredPages}
         onOrderChange={setNewPages}
@@ -429,8 +429,16 @@ if (!canSee) {
           dispatch(deleteStoryFromCollection({ stId: s.id }))
         }
       />
-    )}
-
+    )} */}
+{activeTab === "pages" && (
+  <SortableList
+    items={filteredPages}
+    onOrderChange={setNewPages}
+    onDelete={(s) =>
+      dispatch(deleteStoryFromCollection({ storyId: s.story.id, collectionId: s.collectionId }))
+    }
+  />
+)}
     {activeTab === "collections" && (
       <SortableList
         items={filteredCollections}
