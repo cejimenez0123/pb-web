@@ -24,10 +24,13 @@ import AboutPanel from '../../components/profile/AboutPanel';
 import PaginatedList from '../../components/page/PaginatedList';
 import SectionHeader from '../../components/SectionHeader';
 import RecommendedProfiles from '../../components/page/RecommendedProfile';
-import { reportContent, blockProfile } from '../../actions/termsActions';
+
 import horiz from "../../images/icons/more_vert.svg"
 import { IonImg } from '@ionic/react';
 import { useDialog } from '../../domain/usecases/useDialog';
+import ReportProfileDialog from '../../components/auth/ReportProfileDialog';
+import { blockProfile, reportContent } from '../../actions/ModerationAcitons';
+
 
 
 
@@ -87,31 +90,317 @@ function ProfileContainer() {
   const [followerCount, setFollowerCount]   = useState(0);
   const [followingCount, setFollowingCount] = useState(0);
   const [isSelf, setIsSelf]           = useState(false);
+const [reportReason, setReportReason] = useState(null);
+const [reportReasonDetails, setReportReasonDetails] = useState("");
+const [reportDialogStep, setReportDialogStep] = useState(null); // "reasons" | 
+const [error, setError] = useState(null); // if you don’t already have this
   const [locationName, setLocationName] = useState("Location not specified");
-const {openDialog, closeDialog} = useDialog();
-  const dispatch = useDispatch();
+const { openDialog, closeDialog } = useDialog();
+const dispatch = useDispatch();
   const router   = useIonRouter();
   const { id }   = useParams();
-const handleReportProfile = () => {
-  const reasons = ["Spam", "Harassment or abuse", "Hate speech", "Impersonation", "Other"];
+const [isReportDialogOpen, setReportDialogOpen] = useState(false);
+
+
+  // Open reason picker when step changes to "reasons"
+useEffect(() => {
+  if (reportDialogStep !== "reasons" || !profile) return;
+
+  const reasons = [
+    "Spam",
+    "Harassment or abuse",
+    "Hate speech",
+    "Impersonation",
+    "Other",
+  ];
+
   openDialog({
     title: "Report Profile",
-    height: 50,
-    text: (
+    height: "55",
+    text: () => (
       <div className="flex flex-col gap-2 p-4">
         {reasons.map((reason) => (
           <button
             key={reason}
-            className="text-left p-3 rounded-xl border border-soft hover:bg-sky-50"
+            className={`text-left p-3 rounded-xl border border-soft hover:bg-sky-50 ${
+              reportReason === reason ? "bg-sky-50 border-sky-300" : ""
+            }`}
             onClick={() => {
-              dispatch(reportContent({
-                contentType: "profile",
-                contentId: profile.id,
-                reportedProfileId: profile.id,
-                reason,
-              })).then((res) =>
-                checkResult(res, () => closeDialog(), (err) => setError(err.message))
-              );
+              setReportReason(reason);
+              setReportDialogStep("confirm");
+            }}
+          >
+            {reason}
+          </button>
+        ))}
+      </div>
+    ),
+    disagreeText: "Cancel",
+    disagree: () => {
+      closeDialog();
+      setReportDialogStep(null);
+    },
+  });
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [reportDialogStep]);
+
+// Open confirm dialog when step changes to "confirm"
+useEffect(() => {
+  if (reportDialogStep !== "confirm" || !profile) return;
+
+  openDialog({
+    title: "Report Profile",
+    height: 75,
+    text: () => (
+      <div className="p-4 text-sm text-slate-600">
+        <div className="mb-3">
+          You’re about to report @{profile.username} for:
+          <div className="mt-1 font-semibold">{reportReason}</div>
+        </div>
+
+        <label className="block text-xs text-slate-500 mb-1">
+          Additional details (optional{reportReason === "Other" ? ", required" : ""})
+        </label>
+        <textarea
+          rows={4}
+          className="rounded-lg w-[100%] border-2 border-blueSea bg-base-bg dark:bg-base-surfaceDark dark:bg-cream shadow-sm border-opacity-30 min-h-[6em] text-blueSea p-3"
+          placeholder="Add any context that might help (e.g., specific posts, behavior, etc.)"
+          value={reportReasonDetails}
+          onChange={(e) => setReportReasonDetails(e.target.value)}
+        />
+      </div>
+    ),
+    agreeText: "Report",
+    agree: () => {
+      if (reportReason === "Other" && !reportReasonDetails.trim()) {
+        alert("Please provide details for this report.");
+        return;
+      }
+
+      dispatch(
+        reportContent({
+          contentType: "profile",
+          contentId: profile.id,
+          reportedProfileId: profile.id,
+          reason: reportReason,
+          reasonDetails: reportReasonDetails.trim() || null,
+        })
+      ).then((res) =>
+        checkResult(
+          res,
+          () => {
+            closeDialog();
+            setReportDialogStep(null);
+            setReportReason(null);
+            setReportReasonDetails("");
+          },
+          (err) => alert(err.message)
+        )
+      );
+    },
+    disagreeText: "Cancel",
+    disagree: () => {
+      closeDialog();
+      setReportDialogStep(null);
+    },
+  });
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [reportDialogStep]);
+
+// Open confirm dialog when step changes to "confirm"
+// Open reason picker when step changes to "reasons"
+
+
+
+// const handleReportProfile = () => {
+//   const reasons = ["Spam", "Harassment or abuse", "Hate speech", "Impersonation", "Other"];
+//   openDialog({
+//     title: "Report Profile",
+  
+//     text: (
+//       <div className="flex flex-col gap-2 p-4">
+//         {reasons.map((reason) => (
+//           <button
+//             key={reason}
+//             className="text-left p-3 rounded-xl border border-soft hover:bg-sky-50"
+//             onClick={() => {
+//               dispatch(reportContent({
+//                 contentType: "profile",
+//                 contentId: profile.id,
+//                 reportedProfileId: profile.id,
+//                 reason,
+//               })).then((res) =>
+//                 checkResult(res, () => closeDialog(), (err) => setError(err.message))
+//               );
+//             }}
+//           >
+//             {reason}
+//           </button>
+//         ))}
+//       </div>
+//     ),
+//     disagreeText: "Cancel",
+//     disagree: closeDialog,
+//   });
+// };
+
+// const handleReportProfile = () => {
+//   const reasons = [
+//     "Spam",
+//     "Harassment or abuse",
+//     "Hate speech",
+//     "Impersonation",
+//     "Other",
+//   ];
+
+//   // 1️⃣ First dialog: choose reason
+//   openDialog({
+//     title: "Report Profile",
+ 
+//     text: () => (
+//       <div className="flex flex-col gap-2 p-4">
+//         {reasons.map((reason) => (
+//           <button
+//             key={reason}
+//             className={`text-left p-3 rounded-xl border border-soft hover:bg-sky-50 ${
+//               reportReason === reason
+//                 ? "bg-sky-50 border-sky-300"
+//                 : ""
+//             }`}
+//             onClick={() => {
+//               setReportReason(reason);
+
+//               // 2️⃣ Second dialog: confirm report
+//               openDialog({
+//                 title: "Report Profile",
+//                 height: 60,
+//                 text: () => (
+//                   <div className="p-4 text-sm text-slate-600">
+//                     You’re about to report @{profile.username} for:
+//                     <div className="mt-2 font-semibold">{reason}</div>
+//                   </div>
+//                 ),
+//                 agreeText: "Report",
+//                 agree: () => {
+//                   dispatch(
+//                     reportContent({
+//                       contentType: "profile",
+//                       contentId: profile.id,
+//                       reportedProfileId: profile.id,
+//                       reason,
+//                     })
+//                   ).then((res) =>
+//                     checkResult(
+//                       res,
+//                       () => {
+//                         closeDialog();
+//                         setReportReason(null);
+//                       },
+//                       (err) => setError(err.message)
+//                     )
+//                   );
+//                 },
+//                 disagreeText: "Cancel",
+//                 disagree: () => {
+//                   closeDialog();
+//                   setReportReason(null);
+//                 },
+//               });
+//             }}
+//           >
+//             {reason}
+//           </button>
+//         ))}
+//       </div>
+//     ),
+//     disagreeText: "Cancel",
+//     disagree: closeDialog,
+//   });
+// };
+
+const handleReportProfile = () => {
+  const reasons = [
+    "Spam",
+    "Harassment or abuse",
+    "Hate speech",
+    "Impersonation",
+    "Other",
+  ];
+
+  // 1️⃣ First dialog: choose reason
+  openDialog({
+    title: "Report Profile",
+    text: () => (
+      <div className="flex flex-col gap-2 p-4">
+        {reasons.map((reason) => (
+          <button
+            key={reason}
+            className={`text-left p-3 rounded-xl border border-soft hover:bg-sky-50 ${
+              reportReason === reason ? "bg-sky-50 border-sky-300" : ""
+            }`}
+            onClick={() => {
+              setReportReason(reason);
+
+              // 2️⃣ Second dialog: confirm + optional details for ANY reason
+              openDialog({
+                title: "Report Profile",
+                height: 75,
+                text: () => (
+                  <div className="p-4 text-sm text-slate-600">
+                    <div className="mb-3">
+                      You’re about to report @{profile.username} for:
+                      <div className="mt-1 font-semibold">{reason}</div>
+                    </div>
+
+                    <label className="block text-xs text-slate-500 mb-1">
+                      Additional details (optional{reason === "Other" ? ", required" : ""})
+                    </label>
+                    <textarea
+                      rows={4}
+                      className="rounded-lg w-[100%] border-2 border-blueSea bg-base-bg dark:bg-base-surfaceDark dark:bg-cream shadow-sm border-opacity-30 min-h-[6em] text-blueSea p-3"
+                      placeholder="Add any context that might help (e.g., specific posts, behavior, etc.)"
+                      value={reportReasonDetails}
+                      onChange={(e) => setReportReasonDetails(e.target.value)}
+                    />
+                  </div>
+                ),
+                agreeText: "Report",
+                agree: () => {
+                  // For "Other", require some detail
+                  if (reason === "Other" && !reportReasonDetails.trim()) {
+                    setError("Please provide details for this report.");
+                    return;
+                  }
+
+                  dispatch(
+                    reportContent({
+                      contentType: "profile",
+                      contentId: profile.id,
+                      reportedProfileId: profile.id,
+                      reason,
+                      reasonDetails: reportReasonDetails.trim() || null,
+                    })
+                  ).then((res) =>
+                    checkResult(
+                      res,
+                      () => {
+                        closeDialog();
+                        setReportReason(null);
+                        setReportReasonDetails("");
+                      },
+                      (err) => setError(err.message)
+                    )
+                  );
+                },
+                disagreeText: "Cancel",
+                disagree: () => {
+                  closeDialog();
+                  setReportReason(null);
+                  setReportReasonDetails("");
+                },
+              });
             }}
           >
             {reason}
@@ -124,6 +413,98 @@ const handleReportProfile = () => {
   });
 };
 
+
+//   const reasons = [
+//     "Spam",
+//     "Harassment or abuse",
+//     "Hate speech",
+//     "Impersonation",
+//     "Other",
+//   ];
+
+//   // 1️⃣ First dialog: choose reason
+//   openDialog({
+//     title: "Report Profile",
+//     text: () => (
+//       <div className="flex flex-col gap-2 p-4">
+//         {reasons.map((reason) => (
+//           <button
+//             key={reason}
+//             className={`text-left p-3 rounded-xl border border-soft hover:bg-sky-50 ${
+//               reportReason === reason ? "bg-sky-50 border-sky-300" : ""
+//             }`}
+//             onClick={() => {
+//               setReportReason(reason);
+
+//               // 2️⃣ Second dialog: confirm + optional details for "Other"
+//               openDialog({
+//                 title: "Report Profile",
+//                 height: 70,
+//                 text: () => (
+//                   <div className="p-4 text-sm text-slate-600">
+//                     <div className="mb-3">
+//                       You’re about to report @{profile.username} for:
+//                       <div className="mt-1 font-semibold">{reason}</div>
+//                     </div>
+
+//                     {reason === "Other" && (
+//                       <textarea
+//                         // className="w-full rounded border border-soft bg-cream dark:bg-base-bgDark p-2 text-sm text-soft"
+//                         rows={4}
+//                          className="rounded-lg w-[100%] border-blueSea border-2 bg-base-bg dark:bg-base-surfaceDark dark:bg-cream shadow-sm border-opacity-30 sm:w-full w-full min-h-[6em] text-blueSea p-3"
+   
+//                         placeholder="Please briefly describe the issue (required for 'Other')"
+//                         value={reportReasonDetails}
+//                         onChange={(e) => setReportReasonDetails(e.target.value)}
+//                       />
+//                     )}
+//                   </div>
+//                 ),
+//                 agreeText: "Report",
+//                 agree: () => {
+//                   if (reason === "Other" && !reportReasonDetails.trim()) {
+//                     setError("Please provide details for this report.");
+//                     return;
+//                   }
+
+//                   dispatch(
+//                     reportContent({
+//                       contentType: "profile",
+//                       contentId: profile.id,
+//                       reportedProfileId: profile.id,
+//                       reason,
+//                       reasonDetails: reason === "Other" ? reportReasonDetails.trim() : null,
+//                     })
+//                   ).then((res) =>
+//                     checkResult(
+//                       res,
+//                       () => {
+//                         closeDialog();
+//                         setReportReason(null);
+//                         setReportReasonDetails("");
+//                       },
+//                       (err) => setError(err.message)
+//                     )
+//                   );
+//                 },
+//                 disagreeText: "Cancel",
+//                 disagree: () => {
+//                   closeDialog();
+//                   setReportReason(null);
+//                   setReportReasonDetails("");
+//                 },
+//               });
+//             }}
+//           >
+//             {reason}
+//           </button>
+//         ))}
+//       </div>
+//     ),
+//     disagreeText: "Cancel",
+//     disagree: closeDialog,
+//   });
+// };
 const handleBlockProfile = () => {
   openDialog({
     title: `Block @${profile.username}?`,
@@ -316,6 +697,11 @@ const handleBlockProfile = () => {
                 </div>
               )}
             </div>
+<ReportProfileDialog
+  profile={profile}
+  isOpen={isReportDialogOpen}
+  onClose={() => setReportDialogOpen(false)}
+/>
 <div className={SEARCH_ROW}>
   <input
     value={search}
@@ -330,9 +716,13 @@ const handleBlockProfile = () => {
         <img src={horiz} className="max-w-5 max-h-5 cursor-pointer" />
       </div>
       <ul tabIndex={0} className="dropdown-content bg-base-bg menu text-emerald-800 rounded-box z-[1] w-52 p-2 shadow">
-        <li className="p-2 bg-base-bg hover:bg-sky-100 rounded cursor-pointer" onClick={handleReportProfile}>
-          Report
-        </li>
+<li
+  className="p-2 bg-base-bg hover:bg-sky-100 rounded cursor-pointer"
+  onClick={() => setReportDialogOpen(true)}
+>
+  Report
+
+</li>
         <li className="p-2 bg-base-bg hover:bg-sky-100 rounded cursor-pointer text-red-600" onClick={handleBlockProfile}>
           Block
         </li>
@@ -462,3 +852,7 @@ function ProfileSkeleton() {
     </div>
   );
 }
+
+
+
+

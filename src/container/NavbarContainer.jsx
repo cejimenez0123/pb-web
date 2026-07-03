@@ -25,6 +25,7 @@ import submitCollection from '../core/submitCollection'
 import { Capacitor } from '@capacitor/core'
 import { Preferences } from '@capacitor/preferences'
 import { SocialLogin } from '@capgo/capacitor-social-login'
+import CreateDropdown from '../components/CreateDropdown.jsx'
 
 const PageName = {
   home: "Home",
@@ -333,50 +334,105 @@ function NavCreateDropdown({}) {
   )
 }
 
-function MenuHorizontal({ pages, currentProfile }) {
-  const router = useIonRouter()
-  const dispatch = useDispatch()
-  const { openDialog, resetDialog } = useDialog()
+// function MenuHorizontal({ pages, currentProfile }) {
+//   const router = useIonRouter()
+//   const dispatch = useDispatch()
+//   const { openDialog, resetDialog } = useDialog()
 
-  const handleCloseNavMenu = (page) => {
-    switch (page) {
-      case "About": router.push(Paths.about(),"forward"); break
-      case "Discovery": router.push(Paths.discovery,"forward"); break
-      case "Search": router.push("/search","forward"); break
-      case "Workshop": 
-        dispatch(setPageInView({ page: null }))
-        router.push(Paths.workshop.reader(),"forward"); break
-      case "Log In": router.push(Paths.login,"forward"); break
+//   const handleCloseNavMenu = (page) => {
+//     switch (page) {
+//       case "About": router.push(Paths.about(),"forward"); break
+//       case "Discovery": router.push(Paths.discovery,"forward"); break
+//       case "Search": router.push("/search","forward"); break
+//       case "Workshop": 
+//         dispatch(setPageInView({ page: null }))
+//         router.push(Paths.workshop.reader(),"forward"); break
+//       case "Log In": router.push(Paths.login,"forward"); break
       
 
    
+//     }
+//   }
+
+//   return (
+//     <ul className="menu menu-horizontal px-1">
+//       {pages.map(page => {
+//         if (page === "Create" && currentProfile) {
+//           return <CreateDropdown key="create" variant='horizontal'/>;
+//         }
+//         if (page === "Workshop" && !currentProfile) return null
+//         if (page === "Log In" && currentProfile) return null
+       
+//         return (
+//           <li key={page} onClick={() => handleCloseNavMenu(page)}>
+//             <a className="text-white no-underline">{page}</a>
+//           </li>
+//         )
+//       })}
+//     </ul>
+//   )
+// }
+function MenuHorizontal({ pages, currentProfile }) {
+  const router = useIonRouter();
+  const dispatch = useDispatch();
+  const { openDialog, resetDialog } = useDialog();
+
+  const [createOpen, setCreateOpen] = useState(false);
+
+  const handleCloseNavMenu = (page) => {
+    switch (page) {
+      case "About":
+        router.push(Paths.about(), "forward");
+        break;
+      case "Discovery":
+        router.push(Paths.discovery, "forward");
+        break;
+      case "Search":
+        router.push("/search", "forward");
+        break;
+      case "Workshop":
+        dispatch(setPageInView({ page: null }));
+        router.push(Paths.workshop.reader(), "forward");
+        break;
+      case "Log In":
+        router.push(Paths.login, "forward");
+        break;
+      default:
+        break;
     }
-  }
+  };
 
   return (
     <ul className="menu menu-horizontal px-1">
-      {pages.map(page => {
+      {pages.map((page) => {
         if (page === "Create" && currentProfile) {
-          return <NavCreateDropdown
-            key="create"
-            router={router}
-            openDialog={openDialog}
-            resetDialog={resetDialog}
-          />
+          return (
+            <li key="create" className="relative">
+              <a
+                className="text-white no-underline cursor-pointer"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setCreateOpen((v) => !v);
+                }}
+              >
+                Create
+              </a>
+              <CreateDropdown isOpen={createOpen} onClose={() => setCreateOpen(false)} />
+            </li>
+          );
         }
-        if (page === "Workshop" && !currentProfile) return null
-        if (page === "Log In" && currentProfile) return null
-       
+        if (page === "Workshop" && !currentProfile) return null;
+        if (page === "Log In" && currentProfile) return null;
+
         return (
           <li key={page} onClick={() => handleCloseNavMenu(page)}>
             <a className="text-white no-underline">{page}</a>
           </li>
-        )
+        );
       })}
     </ul>
-  )
+  );
 }
-
 function CreateButton({router}) {
   const dispatch = useDispatch();
   const { openDialog } = useDialog();

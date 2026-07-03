@@ -70,6 +70,7 @@ import usePushNotificationListener from './domain/usecases/usePushNotificationLi
 import { PushNotifications } from '@capacitor/push-notifications';
 import { SocialLogin } from '@capgo/capacitor-social-login';
 import EULATERMS from './container/auth/Agreement.jsx';
+import ReportsReviewPage from './container/auth/ReportReviewContainer.jsx';
 function PushNotificationHandler() {
   usePushNotificationListener();
   const router = useIonRouter(); // ← switch back to this
@@ -336,8 +337,10 @@ const showBottomNavbar = (!hiddenPaths.includes(location)) && isMobileOrTablet
           <Route exact path={"/privacy"}
                   render={()=><PageWrapper><PrivacyNoticeContrainer/></PageWrapper>}
                   />
-    
-      <Route exact path={Paths.calendar()}
+    <Route exact path={"/admin/reports/review"}
+      render={()=><PageWrapper><ReportsReviewPage/></PageWrapper>}
+    />
+    <Route exact path={Paths.calendar()}
      render={()=><PageWrapper showBackbutton={false} ><CalendarContainer/></PageWrapper>}/>
           <Route exact path={Paths.newsletter() }
      render={()=><PageWrapper><NewsletterContainer/></PageWrapper>}/>

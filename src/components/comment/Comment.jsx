@@ -12,7 +12,7 @@ import { createHashtagComment, deleteHashtagComment } from "../../actions/Hashta
 import checkResult from "../../core/checkResult.js";
 import { useDialog } from "../../domain/usecases/useDialog.jsx";
 import Paths from "../../core/paths.js";
-import { reportContent,blockProfile } from "../../actions/termsActions.jsx";
+import { reportContent,blockProfile } from "../../actions/ModerationAcitons.jsx";
 
 const DEEP_LEVEL = 4;
 

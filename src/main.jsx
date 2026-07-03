@@ -29,6 +29,7 @@ import '@ionic/react/css/text-transformation.css';
 import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/display.css';
 import paginationSlice from './reducers/PaginationSlice.jsx';
+import moderationSlice from './reducers/ModerationReducer.jsx';
 
 const reducer = combineReducers({
   hashtags:hashSlice.reducer,
@@ -37,7 +38,8 @@ const reducer = combineReducers({
   books: bookSlice.reducer,
   comments: commentSlice.reducer,
   roles: rolesSlice.reducer,
-  pagination:paginationSlice.reducer
+  pagination:paginationSlice.reducer,
+  moderation: moderationSlice.reducer
 })
 const store = configureStore({reducer:reducer,
 

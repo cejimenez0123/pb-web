@@ -165,7 +165,7 @@ async useReferral(params) {
     async reportContent({ contentType, contentId, reportedProfileId, reason }) {
   const headers = await this.getAuthHeaders();
   const res = await axios.post(
-    Enviroment.url + "/moderation/reports",
+    Enviroment.url + "/auth/reports",
     { contentType, contentId, reportedProfileId, reason },
     { headers }
   );
@@ -175,7 +175,7 @@ async useReferral(params) {
 async blockProfile({ blockedProfileId, reason }) {
   const headers = await this.getAuthHeaders();
   const res = await axios.post(
-    Enviroment.url + "/moderation/blocks",
+    Enviroment.url + "/auth/blocks",
     { blockedProfileId, reason },
     { headers }
   );
