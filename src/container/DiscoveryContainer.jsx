@@ -21,7 +21,7 @@ import HorizontalScroll from '../components/HorizontalScroll.jsx';
 import { motion } from "framer-motion";
 import PageList from '../components/page/PageList.jsx';
 
-const PAGE_WRAP = "mx-auto pb-24 bg-base-surface dark:bg-base-bgDark min-h-screen";
+const PAGE_WRAP = "mx-auto pt-12 pb-24 bg-base-surface dark:bg-base-bgDark min-h-screen";
 const SECTION = "space-y-4 px-2";
 const SECTION_HEADER_ROW = "flex items-center justify-between px-4 max-w-[50em] mx-auto";
 const H_SCROLL_WRAP = "pl-4 -mx-4 sm:mx-0";

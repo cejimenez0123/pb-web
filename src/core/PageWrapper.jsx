@@ -398,9 +398,8 @@ if (!isOnline) {
   <IonPage
   ref={pageRef}
   style={{ 
- 
+  
     height: '100%', 
-    paddingTop: isDesktop ? '8em' : '0.0em',
 
   }}
 
@@ -447,7 +446,7 @@ if (!isOnline) {
       )}
       
     <div className={`
-  fixed inset-0 z-[999] transition-all duration-300
+  fixed inset-0 z-[999] pt-[2em] transition-all duration-300
    ${menuOpen ? "pointer-events-auto" : "pointer-events-none"} `}>
   <div
     onClick={() => setMenuOpen(false)}
@@ -480,9 +479,7 @@ overflow-y-auto pb-20
 </p>
     </div>
   </div>
-      {/* </div> */}
-
-      {/* NAV */}
+     
       <div className="flex  flex-col gap-4 py-6">
       
 {menuArr.map((item) => (
@@ -565,9 +562,9 @@ overflow-y-auto pb-20
     </div>
   </div>
 </div>
-{/* <div className='pb-[40em]'> */}
+
       {children}
-      {/* </div> */}
+
     </IonPage>
   );
 };

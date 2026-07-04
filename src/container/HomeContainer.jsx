@@ -69,7 +69,7 @@ const CARD_PAD = "p-4 sm:p-5";
 const SKELETON_BLOCK = "bg-gray-200 rounded animate-pulse";
 const WorkshopItem = ({ item, router }) => {
   if (!item) return <WorkshopItemSkeleton />;
-
+console.log("workshopo",item)
   return (
 
   <div onClick={() => router.push(Paths.collection.createRoute(item.id))} className={`${CARD} ${CARD_PAD}  w-[100%]`}>
@@ -253,7 +253,7 @@ const fetchSubCollections = useCallback(async (skip, take) => {
   </ButtonWrapper>
 </div>
 </div>
-{/* Stories className={`${WRAP} ${PAGE_Y} ${STACK_LG}`} */}
+
         
           <div className={SECTION}>
           {/* Stories */}
@@ -290,9 +290,44 @@ const fetchSubCollections = useCallback(async (skip, take) => {
           />
         </div>
         <div className={`${WRAP} ${PAGE_Y} ${STACK_LG}`} >
+          
            {/* Workshop grid */}
-          <div className={SECTION}>
-            <div className="grid gap-4 sm:grid-cols-2 px-4 lg:grid-cols-2">
+           <div className={`${WRAP} ${PAGE_Y} ${STACK_LG}`}>
+  <div className={SECTION}>
+    <SectionHeader
+      title="Workshops near you"
+      right={
+        <div className="flex items-center gap-2">
+          <IonText className="text-sm dark:text-cream">{isGlobal ? "Global" : "Local"}</IonText>
+          <IonToggle checked={isGlobal} onIonChange={handleGlobal} />
+        </div>
+      }
+    />
+  </div>
+  <div className={`${WRAP} ${PAGE_Y} ${STACK_LG}`}>
+    {/* Workshop grid */}
+    <div className={SECTION}>
+      {sortedWorkshops === undefined ? (
+        // still loading
+        <div className="grid gap-4 sm:grid-cols-2 px-4 lg:grid-cols-2">
+          {[1, 2, 3].map(i => (
+            <WorkshopItem key={i} item={null} router={router} />
+          ))}
+        </div>
+      ) : sortedWorkshops.length ? (
+        <div className="grid gap-4 sm:grid-cols-2 px-4 lg:grid-cols-2">
+          {sortedWorkshops.map(workshop => (
+            <WorkshopItem key={workshop?.id} item={workshop} router={router} />
+          ))}
+        </div>
+      ) : (
+        <WorkshopsEmptyState isGlobal={isGlobal} router={router} />
+      )}
+    </div>
+  </div>
+</div>
+          {/* <div className={SECTION}> */}
+            {/* <div className="grid gap-4 sm:grid-cols-2 px-4 lg:grid-cols-2">
               {sortedWorkshops?.length
                 ? sortedWorkshops.map(workshop => (
                     <WorkshopItem key={workshop?.id} item={workshop} router={router} />
@@ -300,14 +335,14 @@ const fetchSubCollections = useCallback(async (skip, take) => {
                 : [1, 2, 3].map(i => (
                     <WorkshopItem key={i} item={null} router={router} />
                   ))}
-            </div>
-          </div>
+            </div> */}
+          {/* </div> */}
         </div> {/* ← closes "Workshops near you" SECTION */}
 </div>
         {/* Prompts */}
         <div className={`${WRAP} ${PAGE_Y} ${STACK_LG}`} >
         <div className={SECTION}>
-          <SectionHeader title="Writing Prompts for you" />
+          {/* <SectionHeader title="Writing Prompts for you" />
       <div className={`${GRID} px-4`}>
   {filteredPrompts.length
     ? filteredPrompts.map(story => (
@@ -319,8 +354,22 @@ const fetchSubCollections = useCallback(async (skip, take) => {
           className={`${SKELETON_BLOCK} h-[10rem] w-full`}
         />
       ))
-  }
+  } */}
+  <SectionHeader title="Writing Prompts for you" />
+<div className={`${GRID} px-4`}>
+  {filteredPrompts === undefined ? (
+    [1, 2, 3].map(i => (
+      <div key={i} className={`${SKELETON_BLOCK} h-[10rem] w-full`} />
+    ))
+  ) : filteredPrompts.length ? (
+    filteredPrompts.map(story => (
+      <StoryItem key={story?.id} page={story} html={story?.data} />
+    ))
+  ) : (
+    <PromptsEmptyState />
+  )}
 </div>
+{/* </div> */}
         </div>
         </div>
 
@@ -500,7 +549,16 @@ function buildSortedFeed(directStories, subStories) {
   };
 }
  
-
+const PromptsEmptyState = () => (
+  <div className="col-span-full flex flex-col items-center justify-center text-center gap-3 py-10 px-6">
+    <p className="text-base font-medium text-soft dark:text-cream">
+      No prompts here yet.
+    </p>
+    <p className="text-sm text-neutral-500 dark:text-cream/70 max-w-sm">
+      Nothing's landed in your queue right now. Check back soon, or start writing something of your own — no prompt required.
+    </p>
+  </div>
+);
 const FeedEmpty = () => (
   <div className="flex flex-col items-center justify-center mt-16 px-6 text-center gap-3">
     <p className="text-2xl">✦</p>
@@ -526,5 +584,31 @@ const FeedSkeleton = () => (
         </div>
       </div>
     ))}
+  </div>
+);
+const WorkshopsEmptyState = ({ isGlobal, router }) => (
+  <div className="flex flex-col items-center justify-center text-center gap-4 px-6 py-12">
+    <p className="text-base font-medium text-soft dark:text-cream">
+      {isGlobal
+        ? "No workshops out there yet."
+        : "No workshops near you yet."}
+    </p>
+    <p className="text-sm text-neutral-500 dark:text-cream/70 max-w-sm">
+      Head to the studio to find a workshop worth joining — or start your own and build the room you wish existed.
+    </p>
+    <div className="flex gap-3 mt-2">
+      <button
+        onClick={() => router.push('/studio')}
+        className="px-4 py-2 rounded-lg border border-base-border text-sm font-medium text-soft dark:text-cream hover:bg-base-bg dark:hover:bg-zinc-800 transition-colors"
+      >
+        Go to Studio
+      </button>
+      <button
+        onClick={() => router.push('/studio/new')}
+        className="px-4 py-2 rounded-lg bg-emerald-800 text-white text-sm font-medium hover:bg-emerald-700 transition-colors"
+      >
+        Create a workshop
+      </button>
+    </div>
   </div>
 );

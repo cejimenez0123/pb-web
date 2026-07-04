@@ -266,13 +266,13 @@ const showBottomNavbar = (!hiddenPaths.includes(location)) && isMobileOrTablet
   <IonApp>
   <IonReactRouter>
      <PushNotificationHandler />
-       {showTopNavbar &&
-  <div className="fixed top-0 left-0 w-full z-50 w-[100%]">
-    <NavbarContainer isDesktop={isDesktop} currentProfile={currentProfile} />
-  </div>
-}
+      {showTopNavbar && (
+        <div className="w-[100%] z-50 flex-shrink-0">
+          <NavbarContainer isDesktop={isDesktop} currentProfile={currentProfile} />
+        </div>
+      )}
 
-              <div >
+        <div className="flex-1 relative">
  
     
        

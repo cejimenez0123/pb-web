@@ -163,17 +163,17 @@ const recCols = usePaginatedResource({
   enableCompletion: false,
 });
   const [tab,setTab]=useState("pages")
- useEffect(() => {
-  if (!collection?.id || !canSee) return;
+//  useEffect(() => {
+//   if (!collection?.id || !canSee) return;
 
-  setSeo((prev) => ({
-    ...prev,
-    title: `${collection.title} — Collection`,
-    description:
-      collection.purpose ||
-      `A curated collection by ${collection.profile?.username || "a creator"}`,
-  }));
-}, [collection?.id, canSee]);
+//   setSeo((prev) => ({
+//     ...prev,
+//     title: `${collection.title} — Collection`,
+//     description:
+//       collection.purpose ||
+//       `A curated collection by ${collection.profile?.username || "a creator"}`,
+//   }));
+// }, [collection?.id, canSee]);
 useEffect(() => {
   if (!collection || !homeCol || !archiveCol) return;
 

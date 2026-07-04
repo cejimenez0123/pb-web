@@ -55,7 +55,7 @@ try{
     async notifications({seen,profile}){
     let headers = await this.getAuthHeaders()
 
-        let res = await axios.get(this.url+"/"+profile.id+"/alert",{headers:headers,params:{
+        let res = await axios.get(this.url+"/alert",{headers:headers,params:{
 seen:seen
         }})
      
