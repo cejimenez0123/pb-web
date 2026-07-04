@@ -69,46 +69,225 @@ const CARD_PAD = "p-4 sm:p-5";
 
 // ── Skeleton ────────────────────────────────────
 const SKELETON_BLOCK = "bg-gray-200 rounded animate-pulse";
-const WorkshopItem = ({ item, router }) => {
-  const dispatch = useDispatch()
-  const {currentProfile}=useSelector(state=>state.users)
-  if (!item) return <WorkshopItemSkeleton />;
+// const WorkshopItem = ({ item, router }) => {
+//   const dispatch = useDispatch()
+//   const {currentProfile}=useSelector(state=>state.users)
+//    const handleClick = () => {
+//     if (!currentProfile?.id || joining) return;
+//     setJoining(true);
+//     dispatch(postCollectionRole({ type: "writer", profileId: currentProfile.id, collectionId: item.id }))
+//       .then(res => {
+//         checkResult(res,
+//           () => router.push(Paths.collection.createRoute(item.id)),
+//           () => { /* show a toast/error state here */ }
+//         );
+//       })
+//       .finally(() => setJoining(false));
+//   };
+//   if (!item) return <WorkshopItemSkeleton />;
 
-  return (
+//   return (
 
-  <div onClick={() => {
-dispatch(postCollectionRole({type:"writer",profileId:currentProfile.id,collectionId:item.id})).then(res=>{
-  checkResult(res,()=>{
-    router.push(Paths.collection.createRoute(item.id))
-  },()=>{
+//   <div onClick={() => {
+// handleClick()
 
-  })
-})
-
-  }} className={`${CARD} ${CARD_PAD}  w-[100%]`}>
-      <IonLabel>
-        <h2 className="text-md font-semibold dark:text-cream text-soft truncate">
-          {shortName(item.title,30)}
-        </h2>
+//   }} className={`${CARD} ${CARD_PAD}  w-[100%]`}>
+//       <IonLabel>
+//         <h2 className="text-md font-semibold dark:text-cream text-soft truncate">
+//           {shortName(item.title,30)}
+//         </h2>
 
     
 
-        <div className="flex justify-between text-xs dark:text-cream text-gray-500 mt-1">
-          <span>{item?.location?.city || "Online / TBD"}</span>
+//         <div className="flex justify-between text-xs dark:text-cream text-gray-500 mt-1">
+//           <span>{item?.location?.city || "Online / TBD"}</span>
 
-          {item.participants ? (
-            <span className="font-bold dark:text-cream text-soft">
-              {item.participants} participants
-            </span>
-          ) : null}
-        </div>
-      </IonLabel>
-      </div>
+//           {item.participants ? (
+//             <span className="font-bold dark:text-cream text-soft">
+//               {item.participants} participants
+//             </span>
+//           ) : null}
+//         </div>
+//       </IonLabel>
+//       </div>
  
-  );
+//   );
+// };
+// const WorkshopItem = ({ item, router }) => {
+//   const dispatch = useDispatch();
+//   const { currentProfile } = useSelector(state => state.users);
+//   const [joining, setJoining] = useState(false);
+
+//   if (!item) return <WorkshopItemSkeleton />;
+
+//   const handleClick = () => {
+//     if (!currentProfile?.id) {
+//       // no logged-in profile — bail out (or redirect to login)
+//       return;
+//     }
+//     if (joining) return;
+
+//     setJoining(true);
+//     dispatch(
+//       postCollectionRole({
+//         type: "writer",
+//         profileId: currentProfile.id,
+//         collectionId: item.id,
+//       })
+//     )
+//       .then((res) => {
+//         checkResult(
+//           res,
+//           () => {
+//             router.push(Paths.collection.createRoute(item.id));
+//           },
+//           () => {
+//             toast.error("Couldn't join this workshop. Please try again.");
+//           }
+//         );
+//       })
+//       .finally(() => setJoining(false));
+//   };
+
+//   return (
+//     <div
+//       onClick={handleClick}
+//       className={`${CARD} ${CARD_PAD} w-[100%] ${joining ? "opacity-60 pointer-events-none" : ""}`}
+//     >
+//       <IonLabel>
+//         <h2 className="text-md font-semibold dark:text-cream text-soft truncate">
+//           {shortName(item.title, 30)}
+//         </h2>
+//         <div className="flex justify-between text-xs dark:text-cream text-gray-500 mt-1">
+//           <span>{item?.location?.city || "Online / TBD"}</span>
+//           {item.participants ? (
+//             <span className="font-bold dark:text-cream text-soft">
+//               {item.participants} participants
+//             </span>
+//           ) : null}
+//         </div>
+//       </IonLabel>
+//     </div>
+//   );
+// };
+const WorkshopItem = ({ item, router }) => {
+  const dispatch = useDispatch();
+  const { currentProfile } = useSelector(state => state.users);
+  const [joining, setJoining] = useState(false);
+
+const {showPrompt}=useAlert()
+const joinWorkshop = () => {
+  if (!currentProfile?.id) {
+    showPrompt({
+      message: "You need to log in to join this workshop.",
+      agree: () => {
+        router.push(Paths.login())
+      },
+      agreeText: "Log In",
+      disagreeText: "Cancel",
+    });
+    return;
+  }
+  if (joining) return;
+
+  setJoining(true);
+  dispatch(
+    postCollectionRole({
+      type: "writer",
+      profileId: currentProfile.id,
+      collectionId: item.id,
+    })
+  )
+    .then((res) => {
+      checkResult(
+        res,
+        () => {
+          router.push(Paths.collection.createRoute(item.id));
+        },
+        () => {
+          toast.error("Couldn't join this workshop. Please try again.");
+        }
+      );
+    })
+    .finally(() => setJoining(false));
 };
 
+const handleCardClick = () => {
+  if (item.isPrivate) {
+    showPrompt({
+      message: "This workshop is private. You'll need to join to see it.",
+      agree: joinWorkshop,
+      agreeText: "Join",
+      disagreeText: "Cancel",
+    });
+    return;
+  }
+  router.push(Paths.collection.createRoute(item.id));
+};
 
+const handleJoinClick = (e) => {
+  e.stopPropagation();
+  joinWorkshop();
+};
+
+  if (!item) return <WorkshopItemSkeleton />;
+  return(<div
+  onClick={handleCardClick}
+  className={`${CARD} ${CARD_PAD} w-full cursor-pointer flex items-center justify-between gap-2`}
+>
+  <div className="min-w-0 flex-1">
+    <h2 className="text-sm sm:text-md font-semibold dark:text-cream text-soft truncate">
+      {shortName(item.title, 30)}
+    </h2>
+    <div className="text-xs dark:text-cream text-gray-500 mt-0.5 truncate">
+      {item?.location?.city || "Online / TBD"}
+    </div>
+  </div>
+
+  <button
+    onClick={handleJoinClick}
+    disabled={joining}
+    className="btn btn-sm btn-outline shrink-0"
+  >
+    {joining ? (
+      <span className="loading loading-spinner loading-xs"></span>
+    ) : (
+      "Join"
+    )}
+  </button>
+</div>)
+  // return (
+  //   <div onClick={handleCardClick} className={`${CARD} ${CARD_PAD} w-[100%] cursor-pointer`}>
+  //     <div>
+  //       <h2 className="text-md font-semibold dark:text-cream text-soft truncate">
+  //         {shortName(item.title, 30)}
+  //       </h2>
+  //       <div className="flex justify-between items-center text-xs dark:text-cream text-gray-500 mt-1">
+  //         <span>{item?.location?.city || "Online / TBD"}</span>
+  //         {/* {item.participants ? (
+  //           <span className="font-bold dark:text-cream text-soft">
+  //             {item.participants} participants
+  //           </span>
+  //         ) : null} */}
+  //       </div>
+  //       <button
+  //         onClick={handleJoinClick}
+  //         disabled={joining}
+  //         className="btn btn-sm btn-outline mt-2"
+  //       >
+  //         {joining ? (
+  //           <>
+  //             <span className="loading loading-spinner loading-xs"></span>
+  //             Joining...
+  //           </>
+  //         ) : (
+  //           "Join"
+  //         )}
+  //       </button>
+  //     </div>
+  //   </div>
+  // );
+};
 function HomeEmbed({workshops,stories,prompts,isGlobal,setIsGlobal}) {
 
 const { openDialog, closeDialog, resetDialog } = useDialog()
