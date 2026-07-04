@@ -101,7 +101,7 @@ function HomeEmbed({workshops,stories,prompts,isGlobal,setIsGlobal}) {
 const { openDialog, closeDialog, resetDialog } = useContext(Context);
   const dispatch = useDispatch();
   const router = useIonRouter();
-  const {  setSeo } = useContext(Context);
+  // const {  setSeo } = useContext(Context);
 
   const currentProfile = useSelector(state => state.users.currentProfile);
   const {recommendedStories} = useSelector(state=>state.pages)
@@ -127,15 +127,15 @@ const { showAlert } = useAlert()
     }
   }, [stories]);
 
-  useEffect(() => {
-    if (!currentProfile) return;
-    setSeo(prev => ({
-      ...prev,
-      title: `Plumbum (${currentProfile.username}) Home`,
-      description: `Welcome to ${currentProfile.username}'s home on Plumbum.`,
-      url: `https://plumbum.app/${currentProfile.username}`,
-    }));
-  }, [currentProfile, setSeo]);
+  // useEffect(() => {
+  //   if (!currentProfile) return;
+  //   setSeo(prev => ({
+  //     ...prev,
+  //     title: `Plumbum (${currentProfile.username}) Home`,
+  //     description: `Welcome to ${currentProfile.username}'s home on Plumbum.`,
+  //     url: `https://plumbum.app/${currentProfile.username}`,
+  //   }));
+  // }, [currentProfile, setSeo]);
 
   const handleGlobal = () => setIsGlobal(!isGlobal);
  const ClickCreateACollection = () => {

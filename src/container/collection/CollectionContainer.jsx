@@ -96,7 +96,7 @@ const H_SCROLL = "flex gap-4 overflow-x-auto lg:grid lg:grid-cols-3 lg:overflow-
 export default function CollectionContainer() {
 
 
-  const { setSeo, seo } = useContext(Context);
+  // const { setSeo, seo } = useContext(Context);
   const { showAlert } = useAlert();
   const [sentHistory,setSentHistory]=useState(false)
   const currentProfile = useSelector(state => state.users.currentProfile);

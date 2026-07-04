@@ -12,8 +12,7 @@ import rolesSlice from './reducers/RoleReducer.jsx';
 import logger from "redux-logger"
 import commentSlice from './reducers/CommentReducer';
 import hashSlice from './reducers/HashtagReducer.jsx';
-import { Helmet, HelmetProvider } from 'react-helmet-async';
-import { LoadScript } from '@react-google-maps/api';
+import { HelmetProvider } from 'react-helmet-async';
 import '@ionic/react/css/core.css';
 import * as Sentry from "@sentry/react";
 /* Basic CSS for apps built with Ionic */

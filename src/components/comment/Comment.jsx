@@ -13,6 +13,7 @@ import checkResult from "../../core/checkResult.js";
 import { useDialog } from "../../domain/usecases/useDialog.jsx";
 import Paths from "../../core/paths.js";
 import { reportContent,blockProfile } from "../../actions/ModerationAcitons.jsx";
+import ReportContentDialog from "../auth/ReportProfileDialog.jsx";
 
 const DEEP_LEVEL = 4;
 
@@ -20,7 +21,8 @@ export default function Comment({ page, comment, level = 0 }) {
   const dispatch = useDispatch();
   const { setError } = useContext(Context);
   const currentProfile = useSelector((state) => state.users.currentProfile);
-
+  const [isReportDialogOpen, setReportDialogOpen] = useState(false);
+const [isBlockDialogOpen, setBlockDialogOpen] = useState(false);
   const branches = useSelector((state) => {
     const storyComments = state.comments.byStory?.[page?.id] ?? [];
     const parent = storyComments.find((c) => c.id === comment.id);
@@ -36,75 +38,14 @@ export default function Comment({ page, comment, level = 0 }) {
   });
 
 
-// inside Comment component, alongside your other handlers
 const handleReport = () => {
-  const reasons = ["Spam", "Harassment or abuse", "Hate speech", "Inappropriate content", "Other"];
-  openDialog({
-    title: "Report Comment",
-    height: 50,
-    text: (
-      <div className="flex flex-col gap-2 p-4">
-        {reasons.map((reason) => (
-          <button
-            key={reason}
-            className="text-left p-3 rounded-xl border border-soft hover:bg-sky-50"
-            onClick={() => {
-              dispatch(reportContent({
-                contentType: "comment",
-                contentId: comment.id,
-                reportedProfileId: comment.profileId,
-                reason,
-              })).then((res) =>
-                checkResult(
-                  res,
-                  () => {
-                    closeDialog();
-                    // optionally show a confirmation toast here
-                  },
-                  (err) => setError(err.message)
-                )
-              );
-            }}
-          >
-            {reason}
-          </button>
-        ))}
-      </div>
-    ),
-    disagreeText: "Cancel",
-    disagree: closeDialog,
-  });
+  setReportDialogOpen(true);
 };
 
 const handleBlockUser = () => {
-  openDialog({
-    title: `Block @${comment.profile?.username}?`,
-    height: 30,
-    text: (
-      <div className="p-4 text-sm text-slate-600">
-        You won't see their content anymore, and they won't be able to interact with yours.
-      </div>
-    ),
-    agreeText: "Block",
-    agree: () => {
-      dispatch(blockProfile({
-        blockedProfileId: comment.profileId,
-        reason: "Blocked from comment",
-      })).then((res) =>
-        checkResult(
-          res,
-          () => {
-            setIsDeleted(true); // hide this comment locally immediately
-            closeDialog();
-          },
-          (err) => setError(err.message)
-        )
-      );
-    },
-    disagreeText: "Cancel",
-    disagree: closeDialog,
-  });
+  setBlockDialogOpen(true);
 };
+
   const hashtags = useSelector((state) => state.hashtags.profileHashtagComments);
   const isSelf = currentProfile && comment ? currentProfile?.id === comment?.profileId : false;
 const router = useIonRouter()
@@ -256,6 +197,7 @@ const handlePromoteToStory = () => {
     disagree: closeDialog,
   });
 };
+
   // const CommentDropdown = () => (
   //   <div className="relative dropdown dropdown-left">
   //     <div tabIndex={0} role="button">
@@ -414,6 +356,29 @@ className={`transition-all duration-300 ease-in-out
           💬 See {branches.length} {branches.length === 1 ? "reply" : "replies"}
         </button>
       )}
+         
+       {comment?.profile && (
+  <ReportContentDialog
+    contentType="comment"
+    contentId={comment.id}
+    mode="report"
+    reportedProfileId={comment.profile.id}
+    isOpen={isReportDialogOpen}
+    onClose={() => setReportDialogOpen(false)}
+    onSuccess={() => setError(null)} // or wire to a real success toast if you have one
+  />
+)}
+{comment?.profile && (
+  <ReportContentDialog
+    contentType="profile"
+    mode="block"
+    contentId={comment.profile.id}
+    reportedProfileId={comment.profile.id}
+    isOpen={isBlockDialogOpen}
+    onClose={() => setBlockDialogOpen(false)}
+    onSuccess={() => setError(null)}
+  />
+)}
     </div>
   );
 }

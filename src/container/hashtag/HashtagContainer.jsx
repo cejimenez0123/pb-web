@@ -27,7 +27,7 @@ export default function HashtagContainer() {
   const { id } = useParams();
   const dispatch = useDispatch();
   const router = useIonRouter();
-  const { seo, setSeo, isPhone } = useContext(Context);
+  // const { seo, setSeo, isPhone } = useContext(Context);
   const { showAlert } = useAlert();
   const currentProfile = useSelector(state => state.users.currentProfile);
   const collections = useSelector((state) => state.books.collections);
@@ -58,13 +58,13 @@ const { items, totalCount, page, setPage, totalPages } = usePaginatedResource({
     [collections]
   );
 
-  useLayoutEffect(() => {
-    initGA();
-    if (hashtag) {
-      sendGAEvent("View Page", `View Hashtag ${JSON.stringify({ id: hashtag.id, name: hashtag.name })}`, hashtag.name);
-      setSeo({ ...seo, title: `Plumbum Hashtag (${hashtag.name}) - Your Writing, Your Community` });
-    }
-  }, [hashtag]);
+  // useLayoutEffect(() => {
+  //   initGA();
+  //   if (hashtag) {
+  //     sendGAEvent("View Page", `View Hashtag ${JSON.stringify({ id: hashtag.id, name: hashtag.name })}`, hashtag.name);
+  //     setSeo({ ...seo, title: `Plumbum Hashtag (${hashtag.name}) - Your Writing, Your Community` });
+  //   }
+  // }, [hashtag]);
 
   useLayoutEffect(() => { getHashtag(); }, [id]);
   useEffect(() => { if (!isNotPhone) setIsGrid(false); }, [isNotPhone]);

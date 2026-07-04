@@ -1,121 +1,4 @@
 
-// import "../styles/About.css"
-// import { useMediaQuery } from "react-responsive"
-// import Paths from "../core/paths"
-// import BookCarousel from "../components/collection/BookCarousel"
-// import al from "../images/workshop/al-1.jpg"
-// import duo from "../images/workshop/Duo-1.jpg"
-// import vemilo from "../images/workshop/vemilo-1.jpg"
-// import vemilo2 from "../images/workshop/speak.png"
-// import mixer from "../images/workshop/crowd-mixer.png"
-// import balcony from "../images/workshop/mixer-balcony.png"
-// import crowd from "../images/workshop/openmic-crowd.jpg"
-// import evolution from "../images/workshop/grouptable.png"
-// import out from "../images/workshop/out-1.jpg"
-// import out2 from "../images/workshop/out-2.jpg"
-// import table1 from "../images/workshop/table-1.jpg"
-// import table2 from "../images/workshop/table-2.jpg"
-// import table3 from "../images/workshop/table-3.jpg"
-// import { useLayoutEffect, useContext } from "react"
-// import events from "../images/icons/event.svg"
-// import table5 from "../images/workshop/table-5.jpg"
-// import table7 from "../images/workshop/table-7.jpg"
-// import books1 from "../images/workshop/books-1.jpg"
-// import { initGA, sendGAEvent } from "../core/ga4"
-// import Context from "../context"
-// import ScrollDown from "../components/ScrollDownButton"
-// import useScrollTracking from "../core/useScrollTracking"
-
-// import {
-//   IonContent,
-//   IonRow,
-//   IonCol,
-//   useIonRouter,
-// } from '@ionic/react';
-// import ig from "../images/icons/instagram icon.png"
-
-// import { useState,useRef,useEffect } from "react"
-// export default function AboutContainer() {
-
-//   const { setShowNav,setSeo, currentProfile } = useContext(Context);
-//   const md = useMediaQuery({ query: '(min-width: 750px)' });
-//   const router = useIonRouter()
-// useScrollTracking({
-//   contentType: "about",
-//   contentId: "about_page",
-//   enableCompletion: true,
-//   completionEvent: "about_read_complete",
-// });
-
-// useLayoutEffect(() => {
- 
-//   initGA();
-// }, []);
-// useLayoutEffect(() => {
-//   setSeo({
-//     title: "About Plumbum — A Writing Community Built with Care",
-//     description:
-//       "Plumbum is a writer-led community for sharing work, getting thoughtful feedback, and growing through workshops and real connection.",
-//     name: "Plumbum",
-//     type: "website",
-//   });
-// }, [setSeo]);
-
-  
-//     function logIn(source = "about_page") {
-//   sendGAEvent("login_onboard", {
-//     source,
-//     location: "about",
-//   });
-
-
-//     router.push(Paths.login);
-//   }
-
-
-
-
-
-//   const stayInLoop = () => (
-//     <div className="p-3 flex flex-col text-soft text-center ">
-//       <div className="py-12">
-//        <a
-//         onClick={() =>
-//     sendGAEvent("nav click", {
-//       destination: "link tree",
-//       source: "about_stay_in_loop",
-//     })
-//   }
-//         className="flex flex-col text-center my-4 mx-auto cursor-pointer"
-//         href="https://plumbum.app/links"
-//         target="_blank" rel="noreferrer"
-//       >
-//         <h6 className="open-sans-bold text-[1.6rem] mx-4 my-4  text-soft ">
-//   Everything Plumbum 🔗
-// </h6>
-        
-//       </a>
-//            <p
-//         className=" mx-auto px-4 my-4 mx-auto text-center cursor-pointer"
-//         onClick={() => goToCalendar("about_text_link")}
-//       >
-//         Check out the Calendar of NYC events for writer and creatives
-//       </p> 
-//      <img
-//   onClick={() => goToCalendar("about_icon")}
-//   className="h-[8em] mx-auto w-[8em] cursor-pointer filter invert brightness-125 sepia saturate-50 hue-rotate-30"
-//   src={events}
-//   alt="Calendar icon"
-// />
-
-//       <div className="flex my-4 open-sans-medium mx-auto text-lg text-left leading-loose tracking-loose">
-//         <p className="mx-auto">
-//           <a className="text-soft "href="https://www.instagram.com/plumbumapp" target="_blank" rel="noreferrer">@plumbumapp</a> 
-//         </p>
-//       </div>
-//       </div>
-//     </div>
-//   );
   const testimonials = [
   {
     quote:
@@ -272,7 +155,7 @@ let secImages = [table3,out2,evolution,  vemilo2, table2, table5];
 
 export default function AboutContainer() {
 
-  const { setSeo, currentProfile } = useContext(Context);
+  const { currentProfile } = useContext(Context);
   const md = useMediaQuery({ query: '(min-width: 750px)' });
   const router = useIonRouter()
 
@@ -282,14 +165,14 @@ export default function AboutContainer() {
     sendGAEvent("Page View", "View About Page");
   }, []);
   
-  useLayoutEffect(() => {
-    setSeo({
-      title: "Plumbum (About) - Your Writing, Your Community",
-      description: "Explore events, workshops, and writer meetups on Plumbum.",
-      name: "Plumbum",
-      type: "",
-    });
-  }, [setSeo]);
+  // useLayoutEffect(() => {
+  //   setSeo({
+  //     title: "Plumbum (About) - Your Writing, Your Community",
+  //     description: "Explore events, workshops, and writer meetups on Plumbum.",
+  //     name: "Plumbum",
+  //     type: "",
+  //   });
+  // }, []);
 
   function apply() {
     sendGAEvent("Apply to be user", "Click Apply", "Apply to Join Today", 0, false);

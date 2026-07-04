@@ -78,7 +78,7 @@ const { items: workshops, page: workshopPage,totalPages:workshopPages, setPage: 
 
 
 
-  const { setSeo } = useContext(Context);
+  // const { setSeo } = useContext(Context);
   const { showAlert } = useAlert();
  
 

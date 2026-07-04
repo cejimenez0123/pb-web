@@ -17,6 +17,8 @@ import {
           getCurrentProfile,
          
           setAuthResolved,
+          acceptTerms,
+          signOutAction,
       
       } from './actions/UserActions'
       import { IonApp, setupIonicReact, IonRouterOutlet,  useIonRouter, IonFooter, useIonViewWillEnter, IonLoading} from '@ionic/react';
@@ -71,6 +73,9 @@ import { PushNotifications } from '@capacitor/push-notifications';
 import { SocialLogin } from '@capgo/capacitor-social-login';
 import EULATERMS from './container/auth/Agreement.jsx';
 import ReportsReviewPage from './container/auth/ReportReviewContainer.jsx';
+import CURRENT_TERMS_VERSION from './core/CURRENT_TERMS_VERSION.jsx';
+import { useDialog } from './domain/usecases/useDialog.jsx';
+import { getPublicLibraries } from './actions/LibraryActions.jsx';
 function PushNotificationHandler() {
   usePushNotificationListener();
   const router = useIonRouter(); // ← switch back to this
@@ -117,6 +122,7 @@ function App(props) {
   const {currentProfile} =props
 const isHorizPhone = useMediaQuery({ query: '(min-width: 800px)' });
 const {loading}=useSelector(state=>state.users)
+const {resetDialog,openDialog}=useDialog()
 watchBackground()
   const isNative = Capacitor.isNativePlatform()
 
@@ -156,6 +162,38 @@ useEffect(() => {
   };
   init();
 }, []);
+useEffect(() => {
+  if (!currentProfile?.user) return;
+
+  const { termsAcceptedAt, termsVersion } = currentProfile.user;
+  const hasAgreedToCurrentTerms = termsAcceptedAt && termsVersion === CURRENT_TERMS_VERSION;
+
+  if (!hasAgreedToCurrentTerms) {
+    promptTermsAcceptance(() => {
+     ionRouter.push(Paths.home, "forward");
+
+    });
+  }
+}, [currentProfile]);
+const promptTermsAcceptance = (onAccepted) => {
+  openDialog({
+    title: "Updated Terms & Conditions",
+    height: 90,
+    breakpoint: 1,
+    text: () => <EULATERMS />,
+    agree: async () => {
+      await dispatch(acceptTerms({ version: CURRENT_TERMS_VERSION }));
+      resetDialog();
+      onAccepted();
+    },
+    agreeText: "I Agree",
+    disagree: () => {
+      resetDialog();
+      dispatch(signOutAction());
+    },
+    disagreeText: "Decline",
+  });
+};
 useEffect(()=>{
 if(currentProfile){
   dispatch(fetchNotifcations({profile:currentProfile,seen:false}))

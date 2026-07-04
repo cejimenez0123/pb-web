@@ -2,7 +2,7 @@
 
 // ----- THUNKS -----
 
-import { createAsyncThunk } from "@reduxjs/toolkit";
+import { createAction, createAsyncThunk } from "@reduxjs/toolkit";
 import moderationRepo from "../data/moderationRepo";
 
 const reportContent = createAsyncThunk(
@@ -30,11 +30,15 @@ const blockProfile = createAsyncThunk(
       const res = await moderationRepo.blockProfile(payload);
       return res;
     } catch (err) {
+        console.log(err)
       return rejectWithValue(err.response?.data || { error: err.message });
     }
   }
 );
 
+const removeContentByProfileId = createAction(
+  "moderation/removeContentByProfileId"
+);
 
 const unblockProfile = createAsyncThunk(
   "moderation/unblockProfile",
@@ -103,8 +107,32 @@ const dismissReports = createAsyncThunk(
     }
   }
 );
+const getBlockEvents = createAsyncThunk(
+  "moderation/getBlockEvents",
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await moderationRepo.getBlockEvents();
+      return res; // { events: [...] }
+    } catch (err) {
+      return rejectWithValue(err.response?.data || { error: err.message });
+    }
+  }
+);
 
+const acknowledgeBlockEvent = createAsyncThunk(
+  "moderation/acknowledgeBlockEvent",
+  async ({ eventId }, { rejectWithValue }) => {
+    try {
+      const res = await moderationRepo.acknowledgeBlockEvent({ eventId });
+      return { eventId, ...res };
+    } catch (err) {
+      return rejectWithValue(err.response?.data || { error: err.message });
+    }
+  }
+);
 export {
+    acknowledgeBlockEvent,
+    getBlockEvents,
   reportContent,
   blockProfile,
 
@@ -112,5 +140,6 @@ export {
   getPendingReports,
   banUser,
   dismissReports,
-fetchBlockedProfiles
+fetchBlockedProfiles,
+removeContentByProfileId
 };

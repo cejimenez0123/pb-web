@@ -8,6 +8,8 @@ import {
   getPendingReports,
   banUser,
   dismissReports,
+  getBlockEvents,
+  acknowledgeBlockEvent,
  
 } from "../actions/ModerationAcitons";
 
@@ -16,7 +18,11 @@ const initialState = {
   blockedProfileIds: [],
   loadingBlocks: false,
   errorBlocks: null,
-
+blockEvents: [],
+blockEventsLoading: false,
+blockEventsError: null,
+acknowledgingId: null,
+acknowledgeError: null,
   reportStatus: "idle", // idle | loading | succeeded | failed
   reportError: null,
 
@@ -142,6 +148,34 @@ const moderationSlice = createSlice({
       })
   
 
+.addCase(getBlockEvents.pending, (state) => {
+  state.blockEventsLoading = true;
+  state.blockEventsError = null;
+})
+.addCase(getBlockEvents.fulfilled, (state, action) => {
+  state.blockEventsLoading = false;
+  state.blockEvents = action.payload.events || [];
+})
+.addCase(getBlockEvents.rejected, (state, action) => {
+  state.blockEventsLoading = false;
+  state.blockEventsError = action.payload?.error || "Failed to load block events";
+})
+
+
+.addCase(acknowledgeBlockEvent.pending, (state, action) => {
+  state.acknowledgingId = action.meta.arg.eventId;
+  state.acknowledgeError = null;
+})
+.addCase(acknowledgeBlockEvent.fulfilled, (state, action) => {
+  state.acknowledgingId = null;
+  state.blockEvents = state.blockEvents.map((e) =>
+    e.id === action.payload.eventId ? { ...e, acknowledged: true } : e
+  );
+})
+.addCase(acknowledgeBlockEvent.rejected, (state, action) => {
+  state.acknowledgingId = null;
+  state.acknowledgeError = action.payload?.error || "Failed to acknowledge block event";
+});
   },
 });
 

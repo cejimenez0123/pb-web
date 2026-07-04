@@ -11,7 +11,7 @@ import ErrorBoundary from "../../ErrorBoundary";
 import { useDialog } from "../../domain/usecases/useDialog";
 
 function NewsletterContainer() {
-  const { seo, setSeo } = useContext(Context);
+  // const { seo, setSeo } = useContext(Context);
   const { showAlert } = useAlert();
 const{openDialog,closeDialog,dialog}=useDialog()
   const selectRef = useRef(null);
@@ -43,11 +43,11 @@ const{openDialog,closeDialog,dialog}=useDialog()
   const [user, setUser] = useState(null);
 
   // ---------- SEO ----------
-  useEffect(() => {
-    if (location.pathname.includes("newsletter")) {
-      setSeo({ ...seo, title: "Plumbum (Newsletter Apply)" });
-    }
-  }, [location.pathname]);
+  // useEffect(() => {
+  //   if (location.pathname.includes("newsletter")) {
+  //     setSeo({ ...seo, title: "Plumbum (Newsletter Apply)" });
+  //   }
+  // }, [location.pathname]);
 
   // ---------- CHECKBOX HANDLER ----------
   const handleCheckboxChange = (event, field) => {

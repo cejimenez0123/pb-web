@@ -10,7 +10,7 @@ import { useAlert } from "../core/useAlert.jsx";
 import AlertType from "../core/AlertType.js";
 
 export default function EmailPreferences() {
-  const {setSeo}=useContext(Context)
+  // const {setSeo}=useContext(Context)
   const { showAlert } = useAlert();
   const selectRef = useRef()
   const router = useIonRouter()

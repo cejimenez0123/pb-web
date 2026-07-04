@@ -34,7 +34,7 @@ const SECTION_STACK = "space-y-2";
 const LABEL        = "text-xs text-gray-500";
 const INPUT_WRAP   = "bg-base-bg rounded-2xl px-4 py-2 shadow-sm border border-soft";
 export default function AddToCollectionsContainer() {
-  const { seo, setSeo } = useContext(Context);
+  // const { seo, setSeo } = useContext(Context);
   const { showAlert } = useAlert();
   const { currentProfile } = useSelector((state) => state.users);
   const { dialog, openDialog, closeDialog, resetDialog } = useDialog();

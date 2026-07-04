@@ -15,6 +15,7 @@ import GoogleLogin from '../../components/GoogleLogin';
 import { Capacitor } from '@capacitor/core';
 import { useDialog } from '../../domain/usecases/useDialog.jsx';
 import EULATERMS from './Agreement.jsx';
+import CURRENT_TERMS_VERSION from '../../core/CURRENT_TERMS_VERSION.jsx';
 
 const WRAP           = "max-w-2xl mx-auto px-4";
 const CARD           = "max-w-lg mx-auto px-4 py-6 rounded-lg text-emerald-800";
@@ -26,13 +27,13 @@ const LINK           = "text-soft dark:text-cream hover:text-green-400 cursor-po
 const INPUT_WRAP     = "max-w-md mx-auto ";
 
 export default function LogInContainer({ currentProfile }) {
-  const { setSeo } = useContext(Context);
+  // const { setSeo } = useContext(Context);
   const { showAlert,closeAlert,showPrompt } = useAlert();
   const router = useIonRouter();
 
-  useEffect(() => {
-    setSeo((prev) => ({ ...prev, title: "Plumbum (Log In) - Share Your Weirdness" }));
-  }, [setSeo]);
+  // useEffect(() => {
+  //   setSeo((prev) => ({ ...prev, title: "Plumbum (Log In) - Share Your Weirdness" }));
+  // }, [setSeo]);
 
  // Option 1 — setTimeout (simplest)
 const [signingIn, setSigningIn] = useState(false);
@@ -63,7 +64,7 @@ function LogInCard({ setSigningIn, setLogInError }) {
   const [email, setEmail]             = useState("");
   const [password, setPassword]       = useState("");
   const [pending, setPending]         = useState(false);
-  const CURRENT_TERMS_VERSION = "2026-07-01";
+
 
   const [showPassword, setShowPassword] = useState(false);
   //   showAlert({ message: err?.status === 401 ? "User Not Found. Apply Below" : err?.message || "Unknown error", type: AlertType.error });
@@ -197,32 +198,7 @@ const promptTermsAcceptance = (onAccepted) => {
     );
   });
 };
-  //     setSigningIn(true);  // prevent redirect while auth is in flight
-  // setPending(true);
-  //   if (!idToken && !googleId) {
-  //     showAlert({ message: "Google login failed: missing credentials", type: AlertType.error });
-  //     return;
-  //   }
-  //   setPending(true);
-  //   dispatch(logIn({ email: email || null, uId: googleId || null, idToken: idToken || null, isNative })).then((res) => {
-  //     checkResult(
-  //       res,
-  //       (payload) => {
-        
-  //         if (payload?.profile?.id) {
-  //           router.push(Paths.home, "forward");
-  //         } else {
-  //           showPrompt({ message: "No profile found. Check email or apply", type: AlertType.prompt, agree: () => closeAlert(), agreeText:"Understood"  });
-  //         }
-  //         setPending(false);
-  //       },
-  //       (err) => {
-  //         handleAuthError(err);
-  //         setPending(false);
-  //       }
-  //     );
-  //   });
-  // };
+ 
 
   const handleForgotPasswordDialog = () => {
     openDialog({

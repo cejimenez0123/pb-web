@@ -23,6 +23,7 @@ import { createSlice} from "@reduxjs/toolkit"
 import {  getStory,createStory, fetchRecommendedStories,
   updateStory, deleteStory, getCollectionStoriesProtected,getCollectionStoriesPublic} from "../actions/StoryActions"
 import { PageType } from "../core/constants.js"
+import { removeContentByProfileId } from "../actions/ModerationAcitons.jsx"
 
 
 const initialState = {pagesInView:[],
@@ -190,7 +191,17 @@ const pageSlice = createSlice({
         state.pageInView = null
       }).addCase(clearPagesInView.type,(state)=>{
       state.pagesInView = []
-    })
+    }).addCase(removeContentByProfileId, (state, { payload }) => {
+        const { profileId } = payload;
+        if (!profileId) return;
+
+        state.pagesInView = state.pagesInView.filter(
+          (p) => p && p.authorId !== profileId && p.profileId !== profileId
+        );
+        state.myPages = state.myPages.filter(
+          (p) => p && p.authorId !== profileId && p.profileId !== profileId
+        );
+      });
 
     }
   })

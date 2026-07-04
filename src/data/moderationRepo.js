@@ -103,6 +103,21 @@ async getBlockedProfiles() {
   const res = await axios.get("/blocked", { headers });
   return res.data; // { blockedUserIds: string[] }
 }
+async getBlockEvents() {
+  const headers = await this.getAuthHeaders();
+  const res = await axios.get(Enviroment.url + "/auth/admin/blocks", { headers });
+  return res.data; // { events: [...] }
+}
+
+async acknowledgeBlockEvent({ eventId }) {
+  const headers = await this.getAuthHeaders();
+  const res = await axios.post(
+    Enviroment.url + "/auth/admin/blocks/acknowledge",
+    { eventId },
+    { headers }
+  );
+  return res.data; // { ok: true, id }
+}
 }
 
 export default new ModerationRepo();

@@ -16,6 +16,7 @@ import { findWorkshopGroup, fetchWorkshopGroups, } from "../actions/WorkshopActi
 import { patchCollectionRoles ,getProtectedProfileCollections,getPublicProfileCollections} from "../actions/CollectionActions"
 
 import { getPublicLibraries } from "../actions/LibraryActions.jsx"
+import { removeContentByProfileId } from "../actions/ModerationAcitons.jsx"
 const initialState = {
     groups:[],
     myCollections:[],
@@ -200,7 +201,14 @@ state.collectionInView = payload.collection
 
     if(payload.collection && payload.collection.childCollections && payload.collection.childCollections.length){
     state.collections = payload.collection.childCollections.map(cTc=>cTc.childCollection)}
-})
+}).addCase(removeContentByProfileId, (state, { payload }) => {
+        const { profileId } = payload;
+        if (!profileId) return;
+
+        state.collections = state.collections.filter((c) => c && c.profileId !== profileId);
+        state.books = state.books.filter((c) => c && c.profileId !== profileId);
+        state.libraries = state.libraries.filter((c) => c && c.profileId !== profileId);
+      });
 }
 
 })

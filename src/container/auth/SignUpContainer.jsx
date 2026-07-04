@@ -26,6 +26,7 @@ import debounce from '../../core/debounce';
 import EULATERMS from './Agreement';
 import Enviroment from '../../core/Enviroment';
 import { useDialog } from '../../domain/usecases/useDialog';
+import CURRENT_TERMS_VERSION from '../../core/CURRENT_TERMS_VERSION';
   
 const ProfilePicture = React.memo(({ image }) => (
   <IonImg
@@ -54,7 +55,7 @@ const [referralToken, setReferralTokenState] = useState(null);
   const {showAlert}=useAlert()
   const [agreedToTerms, setAgreedToTerms] = useState(false);
 const [showTerms, setShowTerms] = useState(false);
-const CURRENT_TERMS_VERSION = "2026-07-01";
+
 const router = useIonRouter();
 const searchParams = new URLSearchParams(router.routeInfo.search);
 
@@ -76,14 +77,14 @@ const toggleSlot = (slotId) => {
     prev.includes(slotId) ? prev.filter(s => s !== slotId) : [...prev, slotId]
   );
 };
-  const {  setSeo, seo } = useContext(Context);
+  // const {  setSeo, seo } = useContext(Context);
 
-  useEffect(() => {
-    setSeo({
-      ...seo,
-      title: "Plumbum (Sign Up) - Your Writing, Your Community"
-    });
-  }, []);
+  // useEffect(() => {
+  //   setSeo({
+  //     ...seo,
+  //     title: "Plumbum (Sign Up) - Your Writing, Your Community"
+  //   });
+  // }, []);
 const {openDialog,resetDialog}=useDialog()
 const openTerms = () => {
   openDialog({
