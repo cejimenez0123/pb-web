@@ -513,7 +513,23 @@ overflow-y-auto pb-20
 
       {/* FOOTER */}
       <div className="flex flex-col  gap-3 pb-20 border-t border-soft">
-  
+      {currentProfile?.isAdmin &&   <button onClick={() =>{ 
+         router.push("/admin/reports/review")
+  }}
+          className=" rounded-s-full
+          text-left 
+          text-[1rem] 
+         bg-base-surface
+          dark:bg-base-surfaceDark
+          text-soft 
+          dark:text-cream
+          my-1
+         
+          hover:bg-purple
+        hover:text-green
+          transition"
+    
+           >Admin Reports</button>}
       {currentProfile &&   <button onClick={() =>{ 
           openReferral()
        setMenuOpen(false)}}
