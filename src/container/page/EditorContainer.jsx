@@ -78,10 +78,10 @@ export default function EditorContainer({ presentingElement }) {
         checkResult(res,
           (data) =>{
          
-     if (data?.story) {
+    //  if (data?.story) {
          setIsSaved(true)
      
-    }
+    // }
          
           },
           (err) => { showAlert({ message: err.message, type: AlertType.error }); }
@@ -176,7 +176,7 @@ useEffect(() => {
     if (isSame) return;
     lastSavedRef.current = payload;
     setIsSaved(false);
-    debouncedSave({ ...payload });
+    debouncedSave({ ...payload })
 
 
   }, [parameters.data, parameters.title, parameters.status, parameters.isPrivate, parameters.commentable, parameters.id]);
