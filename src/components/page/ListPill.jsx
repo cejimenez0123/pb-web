@@ -22,7 +22,7 @@ export default function ListPill({ item, onClick, profile }) {
       onClick={onClick}
       className={`px-3 flex flex-row justify-between rounded-full border ${bordercolor} bg-base-bg backdrop-blur-sm shadow-sm active:scale-[0.98] transition`}
     >
-      <span className="text-[0.95rem] my-auto py-3 font-medium text-soft dark:text-emerald-200">
+      <span className="text-[0.95rem] my-auto py-3 font-medium dark:text-emerald-200">
         {shortName(item?.title ?? "", 30)}
       </span>
 

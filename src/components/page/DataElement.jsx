@@ -376,6 +376,7 @@ function DataElement({ page, isGrid,shortenTo=null, book = null, html = null, on
   const [showAnnotations, setShowAnnotations] = useState(true);
 
   function Element({ page, image }) {
+    
     switch (page.type) {
       case PageType.text:
         return (
@@ -383,7 +384,7 @@ function DataElement({ page, isGrid,shortenTo=null, book = null, html = null, on
             {/* Toggle — only renders if there are annotated comments */}
             {hasAnnotations && (
               <div className="flex justify-end px-2 pt-2">
-                <button
+             { router.routeInfo.pathname.includes("story") && <button
                   onClick={(e) => {
                     e.stopPropagation();
                     setShowAnnotations((v) => !v);
@@ -396,7 +397,7 @@ function DataElement({ page, isGrid,shortenTo=null, book = null, html = null, on
                   ].join(" ")}
                 >
                   {showAnnotations ? "🔖 Hide highlights" : "🔖 Show highlights"}
-                </button>
+                </button>}
               </div>
             )}
             <AnnotatedText

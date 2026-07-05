@@ -50,7 +50,7 @@ function DiscoveryContainer() {
   const currentProfile = useSelector(state => state.users.currentProfile);
   const router = useIonRouter();
   const dispatch = useDispatch();
-
+  console.log("BOX",router.routeInfo.pathname)
   const { collections: cols, books, libraries, pagesInView } = useSelector(state => ({
     collections: state.books.collections,
     books: state.books.books,

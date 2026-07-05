@@ -346,8 +346,8 @@ useEffect(() => {
 
   const openFeedback = (isFeedback) => {
     openDialog({
-      disagree: null,
-      disagreeText: null,
+      disagree:closeDialog,
+      disagreeText: "Close",
       scrollY: false,
       text: (
         <FeedbackDialog

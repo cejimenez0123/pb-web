@@ -175,6 +175,7 @@ useEffect(() => {
     });
   }
 }, [currentProfile]);
+
 const promptTermsAcceptance = (onAccepted) => {
   openDialog({
     title: "Updated Terms & Conditions",
@@ -195,6 +196,7 @@ const promptTermsAcceptance = (onAccepted) => {
   });
 };
 useEffect(()=>{
+  
 if(currentProfile){
   dispatch(fetchNotifcations({profile:currentProfile,seen:false}))
 }

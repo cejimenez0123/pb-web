@@ -10,13 +10,13 @@ import {
 import React, { useState, useEffect, useContext, useRef, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { uploadProfilePicture } from "../../actions/ProfileActions";
-import { signUp } from "../../actions/UserActions";
+import { acceptTerms, signUp } from "../../actions/UserActions";
 import checkResult from "../../core/checkResult";
 import Paths from "../../core/paths";
 import Context from "../../context";
 import "../../App.css";
 import InfoTooltip from '../../components/InfoTooltip';
-
+// import { acceptTerms } from '../../actions/UserActions';
 import { Preferences } from '@capacitor/preferences';
 import { Capacitor } from '@capacitor/core';
 import { useAlert } from '../../core/useAlert';
@@ -92,7 +92,8 @@ const openTerms = () => {
     height: 90,
     breakpoint: 1,
     text: () => <EULATERMS/>,
-    agree: () => {
+    agree:async () => {
+       await dispatch(acceptTerms({ version: CURRENT_TERMS_VERSION }));
       setAgreedToTerms(true);
       resetDialog();
     },

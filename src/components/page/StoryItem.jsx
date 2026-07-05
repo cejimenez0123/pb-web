@@ -7,9 +7,8 @@ import { useContext, useEffect, useState } from "react";
 import Context from "../../context";
 import { PageType } from "../../core/constants";
 // ── Card Layout ─────────────────────────────
-const CARD =
-  "bg-softBlue dark:bg-transparent border-softBlue border-1 border shadow-sm hover:shadow-md rounded-xl transition-shadow duration-200 cursor-pointer";
-const CARD_SIZE = "h-56 min-w-[22rem] max-w-[22rem]";
+const CARD = "bg-softBlue dark:bg-transparent border-softBlue border-1 min-w-[22em] border shadow-sm hover:shadow-md rounded-xl transition-shadow duration-200 cursor-pointer w-full";
+const CARD_SIZE = "h-56 w-full";
 const CARD_INNER = "p-4 flex flex-col h-full";
 
 // ── Vertical Rhythm ─────────────────────────
@@ -104,7 +103,7 @@ const [loading, setLoading] = useState(true);
 //   );
 return (
   // <div className="px-4 ">
-  <div className={`${CARD} ${CARD_SIZE}`} onClick={handleClick}>
+<div className={`${CARD} w-full`} onClick={handleClick}>
     <div className={`${CARD_INNER} ${STACK_MD}`}>
       
       {/* Title */}

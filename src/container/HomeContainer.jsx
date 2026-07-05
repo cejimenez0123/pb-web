@@ -25,7 +25,7 @@ import { postCollectionRole } from '../actions/RoleActions.jsx';
 import { useDialog } from '../domain/usecases/useDialog.jsx';
 
 // ── Layout ──────────────────────────────────────
-const WRAP = "max-w-[72rem] dark:bg-base-bgDark bg-cream mx-auto ";
+const WRAP = " dark:bg-base-bgDark bg-cream mx-auto ";
 
 
 // ── Sections ────────────────────────────────────
@@ -69,107 +69,7 @@ const CARD_PAD = "p-4 sm:p-5";
 
 // ── Skeleton ────────────────────────────────────
 const SKELETON_BLOCK = "bg-gray-200 rounded animate-pulse";
-// const WorkshopItem = ({ item, router }) => {
-//   const dispatch = useDispatch()
-//   const {currentProfile}=useSelector(state=>state.users)
-//    const handleClick = () => {
-//     if (!currentProfile?.id || joining) return;
-//     setJoining(true);
-//     dispatch(postCollectionRole({ type: "writer", profileId: currentProfile.id, collectionId: item.id }))
-//       .then(res => {
-//         checkResult(res,
-//           () => router.push(Paths.collection.createRoute(item.id)),
-//           () => { /* show a toast/error state here */ }
-//         );
-//       })
-//       .finally(() => setJoining(false));
-//   };
-//   if (!item) return <WorkshopItemSkeleton />;
 
-//   return (
-
-//   <div onClick={() => {
-// handleClick()
-
-//   }} className={`${CARD} ${CARD_PAD}  w-[100%]`}>
-//       <IonLabel>
-//         <h2 className="text-md font-semibold dark:text-cream text-soft truncate">
-//           {shortName(item.title,30)}
-//         </h2>
-
-    
-
-//         <div className="flex justify-between text-xs dark:text-cream text-gray-500 mt-1">
-//           <span>{item?.location?.city || "Online / TBD"}</span>
-
-//           {item.participants ? (
-//             <span className="font-bold dark:text-cream text-soft">
-//               {item.participants} participants
-//             </span>
-//           ) : null}
-//         </div>
-//       </IonLabel>
-//       </div>
- 
-//   );
-// };
-// const WorkshopItem = ({ item, router }) => {
-//   const dispatch = useDispatch();
-//   const { currentProfile } = useSelector(state => state.users);
-//   const [joining, setJoining] = useState(false);
-
-//   if (!item) return <WorkshopItemSkeleton />;
-
-//   const handleClick = () => {
-//     if (!currentProfile?.id) {
-//       // no logged-in profile — bail out (or redirect to login)
-//       return;
-//     }
-//     if (joining) return;
-
-//     setJoining(true);
-//     dispatch(
-//       postCollectionRole({
-//         type: "writer",
-//         profileId: currentProfile.id,
-//         collectionId: item.id,
-//       })
-//     )
-//       .then((res) => {
-//         checkResult(
-//           res,
-//           () => {
-//             router.push(Paths.collection.createRoute(item.id));
-//           },
-//           () => {
-//             toast.error("Couldn't join this workshop. Please try again.");
-//           }
-//         );
-//       })
-//       .finally(() => setJoining(false));
-//   };
-
-//   return (
-//     <div
-//       onClick={handleClick}
-//       className={`${CARD} ${CARD_PAD} w-[100%] ${joining ? "opacity-60 pointer-events-none" : ""}`}
-//     >
-//       <IonLabel>
-//         <h2 className="text-md font-semibold dark:text-cream text-soft truncate">
-//           {shortName(item.title, 30)}
-//         </h2>
-//         <div className="flex justify-between text-xs dark:text-cream text-gray-500 mt-1">
-//           <span>{item?.location?.city || "Online / TBD"}</span>
-//           {item.participants ? (
-//             <span className="font-bold dark:text-cream text-soft">
-//               {item.participants} participants
-//             </span>
-//           ) : null}
-//         </div>
-//       </IonLabel>
-//     </div>
-//   );
-// };
 const WorkshopItem = ({ item, router }) => {
   const dispatch = useDispatch();
   const { currentProfile } = useSelector(state => state.users);
@@ -397,8 +297,8 @@ const { items, getMore, hasMore, isLoading } = useCollectionFeed({
   },
   enabled: !!homeCol?.id,
 });
-
-
+console.log(homeCol)
+console.log(items)
 
 const fetchSubCollections = useCallback(async (skip, take) => {
   if (!homeCol?.id) return [];
@@ -447,11 +347,13 @@ const fetchSubCollections = useCallback(async (skip, take) => {
 </div>
 
         
-          <div className={SECTION}>
+        <div className={`${WRAP} ${PAGE_Y} ${STACK_LG}`} >
+        <div className={SECTION}>
           {/* Stories */}
+           <div className=" overflow-y-auto  bg-base-surface dark:bg-base-bgDark md:max-w-[52em] mx-auto">
           <SectionHeader title="What's happening in your communities" />
-      
-
+      </div>
+</div>
 <div className={SCROLL_ROW+" overflow-y-hidden"}>
   {whatsHappeningList.length
     ? whatsHappeningList.map(story => (
@@ -471,6 +373,7 @@ const fetchSubCollections = useCallback(async (skip, take) => {
           {/* Workshops */}
           <div className={`${WRAP} ${PAGE_Y} ${STACK_LG}`} >
            <div className={SECTION}>
+             <div className=" overflow-y-auto  bg-base-surface dark:bg-base-bgDark md:max-w-[52em] mx-auto">
           <SectionHeader
             title="Workshops near you"
             right={
@@ -480,6 +383,7 @@ const fetchSubCollections = useCallback(async (skip, take) => {
               </div>
             }
           />
+          </div>
         </div>
         <div className={`${WRAP} ${PAGE_Y} ${STACK_LG}`} >
           
@@ -513,9 +417,12 @@ const fetchSubCollections = useCallback(async (skip, take) => {
         {/* Prompts */}
         <div className={`${WRAP} ${PAGE_Y} ${STACK_LG}`} >
         <div className={SECTION}>
-
-  <SectionHeader title="Writing Prompts for you" />
-<div className={`${GRID} px-4`}>
+       <div className=" overflow-y-auto  bg-base-surface dark:bg-base-bgDark md:max-w-[52em] mx-auto">
+      <div className=" overflow-y-auto  bg-base-surface dark:bg-base-bgDark md:max-w-[52em] mx-auto">
+<SectionHeader title="Writing Prompts for you" />
+</div>
+</div>
+<div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 px-4 sm:px-6 lg:px-8">
   {filteredPrompts === undefined ? (
     [1, 2, 3].map(i => (
       <div key={i} className={`${SKELETON_BLOCK} h-[10rem] w-full`} />
@@ -528,13 +435,16 @@ const fetchSubCollections = useCallback(async (skip, take) => {
     <PromptsEmptyState />
   )}
 </div>
-{/* </div> */}
+
         </div>
         </div>
 
         {/* What's new */}
-        <div className={SECTION+"px-2"}>
+        <div className={`${WRAP} ${PAGE_Y} ${STACK_LG}`} >
+        <div className={SECTION}>
+           <div className=" overflow-y-auto  bg-base-surface dark:bg-base-bgDark md:max-w-[52em] mx-auto">
          <SectionHeader title="What's new" />
+         </div>
 {!homeCol?.id ? (
   <FeedSkeleton />
 ) : items.length === 0 ? (
@@ -547,6 +457,7 @@ const fetchSubCollections = useCallback(async (skip, take) => {
     shortenTo={400}
   />
 )}
+</div>
 </div>
       </div> {/* ← closes WRAP */}
     </ErrorBoundary>

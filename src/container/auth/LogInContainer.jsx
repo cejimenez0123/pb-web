@@ -116,12 +116,13 @@ const promptTermsAcceptance = (onAccepted) => {
     breakpoint: 1,
     text: () => <EULATERMS />,
     agree: async () => {
-      await dispatch(acceptTerms({ version: CURRENT_TERMS_VERSION }));
+     await dispatch(acceptTerms({ version: CURRENT_TERMS_VERSION }));
       resetDialog();
       onAccepted();
     },
     agreeText: "I Agree",
     disagree: () => {
+      
       resetDialog();
       dispatch(logOut());
     },

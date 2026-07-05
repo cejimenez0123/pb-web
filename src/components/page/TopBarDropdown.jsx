@@ -6,6 +6,7 @@ import Paths from "../../core/paths";
 import { useParams } from "react-router";
 import { useDialog } from "../../domain/usecases/useDialog";
 import RoleForm from "../role/RoleForm";
+import { xor } from "lodash";
 
 function TopBarDropdown({
   id, router, editPage, openFeedback, handleChange,
@@ -24,7 +25,10 @@ function TopBarDropdown({
     const tokenValid = token && tokenExpiry && Date.now() < parseInt(tokenExpiry, 10);
     setAccessToken(tokenValid ? token : null);
   }
-
+const handleMenuClick = (action) => (e) => {
+  e.currentTarget.blur();
+  action();
+};
   const openRoleFormDialog = () => {
     openDialog({
       ...dialog,
@@ -50,6 +54,18 @@ function TopBarDropdown({
         className="dropdown-content menu bg-base-bg rounded-box shadow-lg z-[10] p-2"
         style={{ minWidth: "12rem" }}
       >
+                {editPage && (
+  <li
+    className="text-emerald-600 pt-3 pb-2 cursor-pointer"
+    onClick={handleMenuClick(() =>
+   
+         openFeedback(false)
+       
+    )}
+  >
+     Get Feedback
+  </li>
+)}
         <li className="text-emerald-600 pt-3 pb-2 cursor-pointer"
           onClick={() => router.push(Paths.addStoryToCollection.story(id))}>
           Add to Collection
@@ -60,12 +76,8 @@ function TopBarDropdown({
             Google Doc Import
           </li>
         )}
-        {editPage?.id && (
-          <li className="text-emerald-600 pt-3 pb-2 cursor-pointer"
-            onClick={() => parameters.isPrivate ? openFeedback(false) : handleChange("isPrivate", true)}>
-            {parameters.isPrivate ? "Share / Get Feedback" : "Make Private"}
-          </li>
-        )}
+
+    
         {editPage && (
           <li className="text-emerald-600 pt-3 pb-2 cursor-pointer"
             onClick={() => openRoleFormDialog(parameters.page)}>
