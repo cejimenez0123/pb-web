@@ -331,7 +331,7 @@ const deleteCollection = createAsyncThunk("collection/deleteCollection",async(
     try{
 
        let data = await collectionRepo.deleteCollection(params)
- await algoliaRepo.deleteObject("collection", params.id)
+//  await algoliaRepo.deleteObject("collection", params.id)
    return data
     }catch(err){
         return err
@@ -356,7 +356,7 @@ const patchCollectionContent=createAsyncThunk("collection/patchCollectionContent
                }else{
 
        
-            await algoliaRepo.deleteObject("collection",id)
+            // await algoliaRepo.deleteObject("collection",id)
                 
             }  
         return {collection:data.collection}

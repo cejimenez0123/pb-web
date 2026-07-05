@@ -39,9 +39,7 @@ try{
 }catch(err){
   
 }
-  let data = await storyRepo.deleteStory({id:page.id})
-  
-    algoliaRepo.deleteObject("story",page.id)
+ 
     return data
 
 
@@ -119,24 +117,7 @@ const updateStory = createAsyncThunk("pages/updateStory",async(params,thunkApi)=
   try{
  
   let data = await storyRepo.updateStory(params)
- if(data && data.story && data.story.id){
 
-
-try{
-if(data && data.story && data.story.isPrivate&&data.story.id){
-  algoliaRepo.deleteObject("story",data.story.id)
-}else{
-data && data.story && algoliaRepo.partialUpdateObject("story",data.story.id,{title:data?.story?.title})
-}
- 
-}catch(e){
-
-  return{
-    error: e
-  }
-}
-
-  }
 
 return {
     story: data.story

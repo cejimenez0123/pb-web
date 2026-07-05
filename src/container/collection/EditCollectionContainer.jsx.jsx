@@ -30,7 +30,6 @@ import Pill from "../../components/Pill";
 import Enviroment from "../../core/Enviroment";
 import TabBar from "../../components/TabBar";
 import computePermissions from "../../core/compusePermissions";
-import getBackground from "../../core/getbackground";
 import { removeFromPaginatedKey, updatePaginatedItem } from "../../actions/PageActions";
 import checkResult from "../../core/checkResult";
 // Layout & spacing

@@ -8,7 +8,7 @@ import { Capacitor } from "@capacitor/core";
 import Paths from "../../core/paths";
 import { PageType } from "../../core/constants";
 import { createStory, deleteStory, getStory, updateStory } from "../../actions/StoryActions";
-import { setEditingPage, setHtmlContent, setPageInView, removeFromPaginatedKey, setPageType, setPageData } from "../../actions/PageActions.jsx";
+import { setEditingPage, setHtmlContent, setPageInView, removeFromPaginatedKey, setPageType, } from "../../actions/PageActions.jsx";
 import checkResult from "../../core/checkResult";
 import debounce from "../../core/debounce.js";
 import Context from "../../context";
@@ -79,9 +79,10 @@ export default function EditorContainer({ presentingElement }) {
           (data) =>{
          
      if (data?.story) {
-      dispatch(updatePaginatedItem({ key: "stories", item: data.story }));
+         setIsSaved(true)
+     
     }
-            setIsSaved(true)
+         
           },
           (err) => { showAlert({ message: err.message, type: AlertType.error }); }
         )
@@ -89,7 +90,6 @@ export default function EditorContainer({ presentingElement }) {
     }, 500)
   ).current;
 
-  // Sync profile/type changes into parameters
   useEffect(() => {
     setParameters((prev) => ({
       ...prev,
@@ -243,10 +243,7 @@ useEffect(() => {
     const res = await dispatch(updateStory({ ...payload, id: resolvedId }));
     return checkResult(res,
       (data) => {
-           
-     if (data?.story) {
-      dispatch(updatePaginatedItem({ key: "stories", item: data.story }));
-    }
+  
         setIsSaved(true)},
       (err) => { setIsSaved(false); showAlert({ message: err.message, type: AlertType.error }); }
     );
