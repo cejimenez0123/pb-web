@@ -12,7 +12,7 @@ import { createHashtagComment, deleteHashtagComment } from "../../actions/Hashta
 import checkResult from "../../core/checkResult.js";
 import { useDialog } from "../../domain/usecases/useDialog.jsx";
 import Paths from "../../core/paths.js";
-import { reportContent,blockProfile } from "../../actions/ModerationAcitons.jsx";
+import { reportContent,blockProfile, removeContentByProfileId } from "../../actions/ModerationAcitons.jsx";
 import ReportContentDialog from "../auth/ReportProfileDialog.jsx";
 
 const DEEP_LEVEL = 4;
@@ -365,7 +365,9 @@ className={`transition-all duration-300 ease-in-out
     reportedProfileId={comment.profile.id}
     isOpen={isReportDialogOpen}
     onClose={() => setReportDialogOpen(false)}
-    onSuccess={() => setError(null)} // or wire to a real success toast if you have one
+    onSuccess={() =>{
+      dispatch(removeContentByProfileId({profileID:comment.profile.id}))
+      setError(null)}} 
   />
 )}
 {comment?.profile && (
@@ -376,7 +378,9 @@ className={`transition-all duration-300 ease-in-out
     reportedProfileId={comment.profile.id}
     isOpen={isBlockDialogOpen}
     onClose={() => setBlockDialogOpen(false)}
-    onSuccess={() => setError(null)}
+    onSuccess={() =>{
+         dispatch(removeContentByProfileId({profileID:comment.profile.id}))
+      setError(null)}}
   />
 )}
     </div>

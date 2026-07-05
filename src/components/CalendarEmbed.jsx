@@ -3,7 +3,7 @@ import useScrollTracking from "../core/useScrollTracking";
 import storyRepo from "../data/storyRepo";
 import { useSelector } from "react-redux";
 import calendar from "../images/icons/calendar_add_blue.svg";
-import { IonImg, IonInput, IonList, IonLoading, IonText } from "@ionic/react";
+import { IonImg, IonInput, IonList, IonLoading, IonText, useIonRouter } from "@ionic/react";
 import { useDialog } from "../domain/usecases/useDialog";
 import Enviroment from "../core/Enviroment";
 import SectionHeader from "./SectionHeader";
@@ -12,6 +12,7 @@ import { useAlert } from "../core/useAlert";
 import { sendGAEvent } from "../core/ga4";
 import Context from "../context";
 import AlertType from "../core/AlertType";
+import Paths from "../core/paths";
 
 const WRAP = "max-w-[42rem] mx-auto px-4";
 const PAGE_Y = "pt-16 pb-10";
@@ -23,7 +24,7 @@ function CalendarEmbed({ variant = "eventbrite" }) {
   const [loading, setLoading] = useState(true);
   const { isPhone, setError } = useContext(Context);
   const { openDialog, closeDialog } = useDialog();
-
+const router = useIonRouter()
   const [list, setList] = useState([]);
   const [events, setEvents] = useState([]);
   const [solEvents, setSolEvents] = useState([]);
@@ -68,8 +69,6 @@ const paginatedEvents = events.slice(
 
   useScrollTracking({ name: "Calendar Embed" });
 
-
-  // drop this inside HorizontalEventList, above the return
 const handleAddEvent = async (e, event) => {
   e.stopPropagation();
 
@@ -80,31 +79,75 @@ const handleAddEvent = async (e, event) => {
     source: "event_click",
   });
 
-  // derive the dedup key: explicit id, else the eid from the google link
   const eidMatch = event.googleLink?.match(/[?&]eid=([^&]+)/);
   const gid = event.googleCalendarId || (eidMatch ? eidMatch[1] : "");
 
   const { value: token } = await Preferences.get({ key: "token" });
 
-  // logged out (or nothing to dedup on) → original behavior
   if (!token || !gid) {
     window.open(event.googleLink);
     return;
   }
 
   try {
-    await storyRepo.saveEvent({ event: { ...event, googleCalendarId: gid } }).then(()=>{
-      showAlert({message:"Saved in your Events",type:AlertType.success})
-    }
+    const data = await storyRepo.saveEvent({
+      event: { ...event, googleCalendarId: gid },
+    });
 
-      
-    );
-    // optional: a toast/state flip here if you wire one in
+    showAlert({ message: "Saved in your Events", type: AlertType.success });
+
+    if (data?.story?.id) {
+      router.push(Paths.page.createRoute(data.story.id));
+    }
   } catch (err) {
-    console.warn("saveEvent failed:", err?.message);
-    window.open(event.googleLink); // fallback so the tap still does something
+    window.open(event.googleLink);
   }
 };
+
+// const handleAddEvent = async (e, event) => {
+//   e.stopPropagation();
+
+//   sendGAEvent("navigate_event", {
+//     event_summary: event.summary,
+//     hashtags: event.hashtags,
+//     hashtags_count: event.hashtags?.length ?? 0,
+//     source: "event_click",
+//   });
+
+//   // derive the dedup key: explicit id, else the eid from the google link
+//   const eidMatch = event.googleLink?.match(/[?&]eid=([^&]+)/);
+//   const gid = event.googleCalendarId || (eidMatch ? eidMatch[1] : "");
+
+//   const { value: token } = await Preferences.get({ key: "token" });
+
+//   // logged out (or nothing to dedup on) → original behavior
+//   if (!token || !gid) {
+//     window.open(event.googleLink);
+//     return;
+//   }
+
+//   try {
+//     // await storyRepo.saveEvent({ event: { ...event, googleCalendarId: gid } }).then(()=>{
+//     //   showAlert({message:"Saved in your Events",type:AlertType.success})
+      
+//     // }
+// const data = await storyRepo.saveEvent({
+//   event: { ...event, googleCalendarId: gid },
+// });
+
+// showAlert({ message: "Saved in your Events", type: AlertType.success });
+
+// if (data?.created && data?.story?.id) {
+//   router.push(Paths.page.createRoute(data?.story?.id));
+// }
+      
+//     // );
+//     // optional: a toast/state flip here if you wire one in
+//   } catch (err) {
+ 
+//     window.open(event.googleLink); // fallback so the tap still does something
+//   }
+// };
   function formatDate(dateStr) {
     const date = new Date(dateStr);
     const weekday = date.toLocaleDateString("en-US", { weekday: "short" });
@@ -300,7 +343,7 @@ const renderEvent = (event, i) => (
  handleAddEvent(e, event)
            }}
           className="flex flex-col items-center gap-0.5 active:scale-95 transition-transform"
-          // style={{ WebkitTapHighlightColor: "transparent" }}
+          
         >
           <IonImg className="w-9 h-9" src={calendar} />
           <span className="text-[10px] text-soft dark:text-cream opacity-60">Add</span>

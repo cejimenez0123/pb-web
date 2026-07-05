@@ -81,17 +81,15 @@ function BookDashboardItem({ book }) {
   return (
     <ErrorBoundary>
       <div
-        onClick={() => router.push(Paths.collection.createRoute(book.id))}
-        className={`
-          mt-3 mx-auto rounded-2xl overflow-hidden
-          cursor-pointer select-none
-          transition-all duration-200
-          active:scale-[0.97] active:opacity-90
-          md:hover:shadow-md
-          w-full max-w-full
-          sm:max-w-lg md:max-w-xl
-          ${theme.card}
-        `}
+      
+className={`
+  mt-3 w-full rounded-2xl overflow-hidden
+  cursor-pointer select-none
+  transition-all duration-200
+  active:scale-[0.97] active:opacity-90
+  md:hover:shadow-md
+  ${theme.card}
+`}
         style={{ WebkitTapHighlightColor: "transparent" }}
       >
         {/* Header */}
@@ -108,7 +106,7 @@ function BookDashboardItem({ book }) {
               <IonText className={`text-sm font-medium truncate ${theme.headerText}`}>
                 {book.profile?.username}
               </IonText>
-              <IonText className={`text-xs truncate ${theme.subText}`}>
+              <IonText   onClick={() => router.push(Paths.collection.createRoute(book.id))} className={`text-xs truncate ${theme.subText}`}>
                 {book.title || "Untitled"}
               </IonText>
             </div>
@@ -125,7 +123,7 @@ function BookDashboardItem({ book }) {
 
         {/* Description */}
         {book.description && (
-          <div className="px-4 pb-3">
+          <div   onClick={() => router.push(Paths.collection.createRoute(book.id))} className="px-4 pb-3">
             <IonText className={`text-sm leading-relaxed line-clamp-2 ${theme.subText}`}>
               {book.description}
             </IonText>

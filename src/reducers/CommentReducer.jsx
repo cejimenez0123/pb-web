@@ -8,6 +8,7 @@ import {
   setComments,
   fetchCommentsOfPage,
 } from "../actions/PageActions.jsx";
+import { removeContentByProfileId } from "../actions/ModerationAcitons.jsx";
 
 const initialState = {
   byStory: {},
@@ -155,6 +156,18 @@ const commentSlice = createSlice({
         if (!state.byStory[storyId]) state.byStory[storyId] = [];
         upsert(state.byStory[storyId], payload);
       }
+    }).addCase(removeContentByProfileId, (state, { payload }) => {
+      const { profileId } = payload;
+      if (!profileId) return;
+
+      state.comments = removeByProfileIdDeep(state.comments, profileId);
+
+      Object.keys(state.byStory).forEach((storyId) => {
+        state.byStory[storyId] = removeByProfileIdDeep(
+          state.byStory[storyId] ?? [],
+          profileId
+        );
+      });
     });
   },
 });

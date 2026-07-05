@@ -1,10 +1,6 @@
 import { useEffect } from "react";
 import { initGA } from "../core/ga4";
-import Enviroment from "../core/Enviroment";
-import Context from "../context";
-import { useContext } from "react";
-import Paths from "../core/paths";
-import { useLayoutEffect } from "react";
+
 import { IonContent, IonText, useIonRouter } from "@ionic/react";
 import "../App.css";
 import CalendarEmbed from "../components/CalendarEmbed";
@@ -28,19 +24,12 @@ export default function CalendarContainer() {
   const router = useIonRouter();
   const isNative = Capacitor.isNativePlatform();
 
-  // useLayoutEffect(() => {
-  //   setSeo({
-  //     title: "Plumbum — Events & Writing Calendar",
-  //     description: "Browse writing events, workshops, and meetups on the Plumbum calendar.",
-  //     name: "Plumbum",
-  //     type: "website",
-  //   });
-  // }, []);
+  
 
   useEffect(() => {
     initGA();
   }, []);
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  
 
   return (
 

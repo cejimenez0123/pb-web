@@ -71,9 +71,9 @@ const getPendingReports = createAsyncThunk(
 
 const banUser = createAsyncThunk(
   "moderation/banUser",
-  async ({ reportedProfileId, reportIds }, { rejectWithValue }) => {
+  async ({ reportedProfileId, reportIds ,blockIds}, { rejectWithValue }) => {
     try {
-      const res = await moderationRepo.banUser({ reportedProfileId, reportIds });
+      const res = await moderationRepo.banUser({ reportedProfileId, reportIds,blockIds  });
       return { reportedProfileId, ...res };
     } catch (err) {
       return rejectWithValue(err.response?.data || { error: err.message });

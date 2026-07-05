@@ -202,13 +202,13 @@ state.collectionInView = payload.collection
     if(payload.collection && payload.collection.childCollections && payload.collection.childCollections.length){
     state.collections = payload.collection.childCollections.map(cTc=>cTc.childCollection)}
 }).addCase(removeContentByProfileId, (state, { payload }) => {
-        const { profileId } = payload;
-        if (!profileId) return;
+  const { profileId } = payload;
+  if (!profileId) return;
 
-        state.collections = state.collections.filter((c) => c && c.profileId !== profileId);
-        state.books = state.books.filter((c) => c && c.profileId !== profileId);
-        state.libraries = state.libraries.filter((c) => c && c.profileId !== profileId);
-      });
+  state.comments = state.comments.filter(
+    (c) => c && c.profileId !== profileId
+  );
+});
 }
 
 })

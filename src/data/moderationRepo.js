@@ -79,11 +79,11 @@ async getBlockedProfiles() {
     return res.data; // { reports: [...] }
   }
 
-  async banUser({ reportedProfileId, reportIds }) {
+  async banUser({ reportedProfileId, reportIds,blockIds }) {
     const headers = await this.getAuthHeaders();
     const res = await axios.post(
       Enviroment.url + "/auth/admin/ban",
-      { reportedProfileId, reportIds },
+      { reportedProfileId, reportIds,blockIds },
       { headers }
     );
     return res.data; // { ok: true }
