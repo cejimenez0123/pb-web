@@ -47,7 +47,7 @@ const store = configureStore({reducer:reducer,
     { serializableCheck: false
     }
   )
-   .concat(logger)
+  //  .concat(logger)
 
 })
 
