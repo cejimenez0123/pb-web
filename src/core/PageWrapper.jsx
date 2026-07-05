@@ -408,10 +408,13 @@ if (!isOnline) {
       {presentHeader && !isDesktop && (
         <IonHeader >
           <div >
-          <IonToolbar style={{
+    <IonToolbar
+  className="px-3 md:px-4 lg:px-2 py-2 md:py-3"
+  style={{
     '--background': Enviroment.palette.base.soft,
-    '--color': Enviroment.palette.text.inverse // text color
-  }} >
+    '--color': Enviroment.palette.text.inverse,
+  }}
+>
             {showBackbutton ? (
               <IonButtons slot="start">
                 <IonBackButton

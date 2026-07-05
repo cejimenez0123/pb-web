@@ -78,8 +78,19 @@ import { useDialog } from './domain/usecases/useDialog.jsx';
 import { getPublicLibraries } from './actions/LibraryActions.jsx';
 function PushNotificationHandler() {
   usePushNotificationListener();
+  const { currentProfile } = useSelector(state => state.users)
+  const [path,setPath]=useState(Paths.home)
   const router = useIonRouter(); // ← switch back to this
-
+    const tryNavigate = () => {
+    if (currentProfile ) {
+      router.push(path); // 'root' resets the stack
+      // pendingRouteRef.current = null;
+    }
+  };
+useEffect(() => {
+  
+    tryNavigate();
+  }, [currentProfile,path]);
   useEffect(() => {
     if (!Capacitor.isNativePlatform()) return;
 
@@ -87,8 +98,9 @@ function PushNotificationHandler() {
       const data = action.notification.data;
       if (data?.route) {
         const route = data.route.replace(/\s+/g, '');
-        console.log('Navigating to:', route);
-        router.push(route, 'forward', 'push');
+        setPath(route)
+        // console.log('Navigating to:', route);
+        // router.push(route, 'forward', 'push');
       }
     });
 
@@ -99,6 +111,45 @@ function PushNotificationHandler() {
 
   return null;
 }
+// }
+// function PushNotificationHandler() {
+//   usePushNotificationListener();
+//   const router = useIonRouter();
+//   const pendingRouteRef = useRef(null);
+//   const { currentProfile } = useSelector(state => state.users)
+//   const  authResolved  = currentProfile
+
+//   useEffect(() => {
+//     if (!Capacitor.isNativePlatform()) return;
+
+//     PushNotifications.addListener('pushNotificationActionPerformed', (action) => {
+//       const data = action.notification.data;
+//       if (data?.route) {
+//         const route = data.route.replace(/\s+/g, '');
+//         pendingRouteRef.current = route;
+//         // try immediately in case auth is already resolved
+//         tryNavigate();
+//       }
+//     });
+
+//     return () => {
+//       PushNotifications.removeAllListeners();
+//     };
+//   }, []);
+
+//   const tryNavigate = () => {
+//     if (authResolved && pendingRouteRef.current) {
+//       router.push(pendingRouteRef.current, 'root'); // 'root' resets the stack
+//       pendingRouteRef.current = null;
+//     }
+//   };
+
+//   useEffect(() => {
+//     tryNavigate();
+//   }, [authResolved]);
+
+//   return null;
+// }
    const CLIENT_ID = import.meta.env.VITE_OAUTH2_CLIENT_ID;
    const IOS_CLIENT_ID = import.meta.env.VITE_IOS_CLIENT_ID;
 
