@@ -99,8 +99,7 @@ useEffect(() => {
       if (data?.route) {
         const route = data.route.replace(/\s+/g, '');
         setPath(route)
-        // console.log('Navigating to:', route);
-        // router.push(route, 'forward', 'push');
+      
       }
     });
 

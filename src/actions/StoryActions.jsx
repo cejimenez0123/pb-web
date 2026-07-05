@@ -39,8 +39,8 @@ try{
 }catch(err){
   
 }
- 
-    return data
+ storyRepo.deleteStory({id:page.id})
+    return page
 
 
 }catch(error){

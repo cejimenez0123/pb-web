@@ -364,7 +364,10 @@ useEffect(() => {
 
   const handleDelete = () => {
     dispatch(deleteStory(parameters)).then(() => {
-      dispatch(removeFromPaginatedKey({ key: "stories", id: parameters.id }));
+      dispatch(removeFromPaginatedKey({ key: "stories", id }));
+dispatch(removeFromPaginatedKey({ key: "recommended", id }));
+
+    
       router.push(Paths.home, "root");
       closeDialog();
     });

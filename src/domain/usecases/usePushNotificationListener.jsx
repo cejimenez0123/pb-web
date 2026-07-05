@@ -21,7 +21,7 @@ export default function usePushNotificationListener() {
       await PushNotifications.register();
 
       const { token } = await FirebaseMessaging.getToken();
-      console.log('FCM token:', token);
+ 
 
       try {
         const authToken = (await Preferences.get({ key: 'token' })).value;

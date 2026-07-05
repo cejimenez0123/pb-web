@@ -187,9 +187,15 @@ const pageSlice = createSlice({
         state.pagesToBeAdded = payload
       }).addCase(deleteStory.rejected,(state,{payload})=>{
         state.error = payload.error
-      }).addCase(deleteStory.fulfilled,(state,{payload})=>{
-        state.pageInView = null
-      }).addCase(clearPagesInView.type,(state)=>{
+      }).addCase(deleteStory.fulfilled, (state, { payload }) => {
+  state.pageInView = null;
+  state.pagesInView = state.pagesInView.filter(
+    (page) => page.id !== payload.id
+  );
+  state.recommendedStories = state.recommendedStories.filter(
+    (story) => story.id !== payload.id
+  );
+}).addCase(clearPagesInView.type,(state)=>{
       state.pagesInView = []
     }).addCase(removeContentByProfileId, (state, { payload }) => {
         const { profileId } = payload;

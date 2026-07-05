@@ -161,7 +161,7 @@ const handlePromoteToStory = () => {
                 checkResult(
                   res,
                   ( {story}) => {
-                    console.log("FFOFOFOOF",story)
+               
                        router.push(Paths.editPage.createRoute( story.id ,story.type));
                       closeDialog();
                   },
@@ -180,7 +180,7 @@ const handlePromoteToStory = () => {
                 checkResult(
                   res,
                  ( {story}) => {
-                    console.log("FFOFOFOOLFD",story)
+          
                 router.push(Paths.editPage.createRoute( story.id ,story.type));
                     closeDialog();
                   },

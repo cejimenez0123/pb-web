@@ -101,7 +101,7 @@ const recCols = usePaginatedResource({
     totalCount: res.totalCount,
   }),
 });
-console.log("REC COLS", recCols)
+
 const myStories = personalStories.items
 const personalCollections = usePaginatedResource({
   cacheKey: "collections",

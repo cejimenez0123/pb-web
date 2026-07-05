@@ -321,7 +321,7 @@ const promoteCommentToStory = createAsyncThunk(
         status,
         collectionId,
       });
-      console.log("Promote Comment Response:", data);
+
       return data; // { story }
     } catch (err) {
       return rejectWithValue(

@@ -7,7 +7,7 @@ import { useContext, useEffect, useState } from "react";
 import Context from "../../context";
 import { PageType } from "../../core/constants";
 // ── Card Layout ─────────────────────────────
-const CARD = "bg-softBlue dark:bg-transparent border-softBlue border-1 min-w-[22em] border shadow-sm hover:shadow-md rounded-xl transition-shadow duration-200 cursor-pointer w-full";
+const CARD = "bg-softBlue dark:bg-transparent border-softBlue border-1 min-w-[22em] max-w-[23em] border shadow-sm hover:shadow-md rounded-xl transition-shadow duration-200 cursor-pointer w-full";
 const CARD_SIZE = "h-56 w-full";
 const CARD_INNER = "p-4 flex flex-col h-full";
 
