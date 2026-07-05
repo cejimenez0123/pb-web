@@ -71,18 +71,16 @@ const itemVariants = {
   },
 };
 // Layout system
-// const WRAP = "w-full max-w-5xl md:max-w-[52em] mx-auto px-4 sm:px-6 lg:px-8";    // main horizontal alignment
+// const WRAP = " max-w-5xl md:max-w-[52em] mx-auto px-4 sm:px-6 lg:px-8";    // main horizontal alignment
 const SECTION = "pt-8 sm:pt-10 lg:pt-12 "; // sections
 const BLOCK = "py-4 sm:py-5";             // inner blocks
 const GAP = "gap-4 sm:gap-6";             // flex/grid gaps// vertical spacing between sections
 // const HEADER = "flex items-center justify-between mb-4"; 
 // const TITLE = "lora-bold text-[1.5rem] sm:text-2xl lg:text-3xl dark:text-cream";
 // const SUBTEXT = "text-gray-600 text-sm sm:text-base";
-const WRAP  = "w-full overflow-y-auto max-w-5xl bg-base-surface dark:bg-base-bgDark md:max-w-[52em] mx-auto";
+const WRAP  = " overflow-y-auto  bg-base-surface dark:bg-base-bgDark md:max-w-[52em] mx-auto";
 const TITLE = "lora-bold text-[1.5rem] sm:text-2xl lg:text-3xl text-text-primary dark:text-cream";
-const SUBTEXT = "text-text-secondary dark:text-gray-400 text-sm sm:text-base";
-const CARD  = "bg-base-bg dark:bg-base-surfaceDark rounded-2xl p-4 shadow-sm border border-border-default dark:border-white/10";
-const TAB_WRAP = "pt-6 sm:pt-12 md:max-w-[48em] bg-base-surface dark:bg-base-bgDark mx-auto";
+const TAB_WRAP = "pt-6 sm:pt-12  bg-base-surface  dark:bg-base-bgDark mx-auto";
 // Actions
 const ACTION_ROW = "flex flex-col sm:flex-row items-stretch sm:items-center gap-3";
 const BUTTON_FULL = "h-12 rounded-full btn transition";
@@ -163,17 +161,7 @@ const recCols = usePaginatedResource({
   enableCompletion: false,
 });
   const [tab,setTab]=useState("pages")
-//  useEffect(() => {
-//   if (!collection?.id || !canSee) return;
 
-//   setSeo((prev) => ({
-//     ...prev,
-//     title: `${collection.title} — Collection`,
-//     description:
-//       collection.purpose ||
-//       `A curated collection by ${collection.profile?.username || "a creator"}`,
-//   }));
-// }, [collection?.id, canSee]);
 useEffect(() => {
   if (!collection || !homeCol || !archiveCol) return;
 
@@ -220,7 +208,7 @@ useEffect(() => {
   }
 
 
-const className=" h-12 rounded-full w-[100%]  border border-sky-100 border-1 bg-blue text-cream hover:bg-teal btn transition"
+const className=" h-12 rounded-full   border border-sky-100 border-1 bg-blue text-cream hover:bg-teal btn transition"
 
 
   
@@ -406,10 +394,10 @@ return
   
  const isReady = collection !== null;
 const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-   const baseClasses = "w-full sm:w-auto flex-1 sm:flex-none py-3 rounded-full btn h-12 flex items-center justify-center transition";
+   const baseClasses = " sm:w-auto flex-1 sm:flex-none py-3 rounded-full btn h-12 flex items-center justify-center transition";
   if (!canSee) {
   return (
-    <IonContent  className="page-content" fullscreen>
+    <IonContent  className="page-content " fullscreen>
       <IonHeader>
         <IonToolbar>
           <IonTitle>Access Denied</IonTitle>
@@ -434,16 +422,17 @@ return (
   className="page-content"
     >
        <div
-    className={` bg-cream pb-26 pt-12 dark:bg-base-bgDark transition-opacity duration-300 ${
+    className={` bg-cream pb-26 pt-12 dark:bg-base-bgDark  transition-opacity duration-300 ${
       collection ? "opacity-100" : "opacity-0"
     }`}
   >
   <div>
+    <div className="">
     {collection &&
-      <div className={`${WRAP} bg-base-surface  dark:bg-base-bgDark `}>
+      <div className={`bg-base-surface  dark:bg-base-bgDark `}>
 <div>
       <div className="px-4">
-        <div className={`${SECTION} bg-base-surface  dark:bg-base-bgDark  `}>
+        <div className={`${SECTION} bg-base-surface ${WRAP} dark:bg-base-bgDark  `}>
            <IonText className="lora-bold">
 <h1 className={TITLE}>
     {collection && collection.title ? collection.title:(
@@ -454,7 +443,7 @@ return (
           </div>
 
           {/* Collection Purpose */}
-            <div className={BLOCK+" bg-base-surface dark:bg-base-bgDark "}>
+            <div className={BLOCK+WRAP+" bg-base-surface dark:bg-base-bgDark "+WRAP}>
           {collection?.purpose? (
             <p className="text-soft dark:text-cream text-sm min-h-8 sm:text-base">
               {collection.purpose}
@@ -496,22 +485,23 @@ return (
   />
          </div>   
           </div>
-
- {canAdd && <div className={BLOCK}>
+<div className="flex justify-center pb-12">
+ {canAdd && 
    <div
 
 
    onClick={()=>router.push(Paths.addToCollection.createRoute(collection.id))}
-className={BUTTON_FULL+" transition w-[100%] border-blue border-1 text-cream border  dark:bg-base-surfaceDark  bg-base-surface dark:bg-base-bgDark  bg-blue dark:text-cream hover:bg-teal"}
+className={BUTTON_FULL+" transition  border-blue border-1 text-cream border  dark:bg-base-surfaceDark  bg-base-surface dark:bg-base-bgDark  bg-blue dark:text-cream hover:bg-teal"}
     
     >
       Add to Collection
     </div>
-          </div>
+     
 }
+</div>
        </div>
           {/* Tabs */}
-       <div className={SECTION}>
+       <div >
             <CollectionTabs
               tab={tab}
               setTab={setTab}
@@ -522,7 +512,7 @@ className={BUTTON_FULL+" transition w-[100%] border-blue border-1 text-cream bor
           </div>
         </div>
            </div>
-   }</div>
+   }</div></div>
    {recCols.items.length>0 && <ExploreList pageSize={pageSize}items={recCols.items} page={recCols.page} totalCount={recCols.totalCount}  />}
    </div>
 
@@ -546,33 +536,40 @@ const PageTab = ({ collections }) => {
   const hasAnthologies = collections?.length > 0 ;
 
   return (
-    <div className="bg-base-surface dark:bg-base-bgDark">
+    <div className="bg-base-surface  dark:bg-base-bgDark">
    
 
  {/* Hide entirely if private and not the owner */}
+
+
 {(collection.isPrivate && !isOwner) ? null : (
   hasAnthologies ? (
-    <>
-      <SectionHeader title={"Anthologies"} />
-      <div className="grid gap-4 grid-cols-1 overflow-x-auto sm:grid-cols-2 lg:grid-cols-3">
-        <motion.div
-          className="flex flex-row"
-          variants={containerVariants}
-          initial="hidden"
-          animate="show"
-        >
-          {collections.filter(Boolean).map(col => (
-            <motion.div key={col.id} variants={itemVariants}>
-              <div className="w-64 sm:w-72 lg:w-80">
-                <BookListItem book={col} />
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
+    <section className="">
+      <div className={WRAP}>
+      <SectionHeader title="Anthologies" />
       </div>
-    </>
+      <div className=" ">
+        <div className=" overflow-x-auto">
+          <motion.div
+            className="flex min-w-max  gap-4 px-4 pb-2"
+            variants={containerVariants}
+            initial="hidden"
+            animate="show"
+          >
+            {collections.filter(Boolean).map((col) => (
+              <motion.div
+                key={col.id}
+                variants={itemVariants}
+                className="flex-none w-[16rem] sm:w-[18rem] lg:w-[20rem]"
+              >
+                <BookListItem book={col} />
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </div>
+    </section>
   ) : (
-    // Only show empty state to owner or open-collab members
     (isOwner || collection.isOpenCollaboration) && (
       <div className="flex flex-col items-center mx-auto justify-center bg-base-surface dark:bg-transparent rounded-lg p-4 text-center py-6">
         <p className="mb-2 dark:text-cream text-gray-700">No anthologies yet.</p>
@@ -586,11 +583,12 @@ const PageTab = ({ collections }) => {
     )
   )
 )}
-
       <div className={SECTION}>
+        <div className={WRAP}>
       <SectionHeader title={"Pages"}/>
+      </div>
       {pagesInView?.length > 0 ? (
-        <div className="w-full px-4">
+        <div className=" px-4">
           <PageList
             items={pagesInView}
             isGrid={false}
@@ -736,7 +734,7 @@ useEffect(() => {
 
 function CollectionTabs({ tab, setTab, pages, members, about }) {
   return (
-    <div className={` ${TAB_WRAP}`}>
+    <div className={` `}>
     <div className="flex justify-center mb-4 overflow-x-auto">
         <div className="inline-flex rounded-full border border-emerald-600">
           {["pages", "members", "about"].map((t) => (
@@ -754,7 +752,7 @@ function CollectionTabs({ tab, setTab, pages, members, about }) {
           ))}
         </div>
       </div>
-      <div className="relative overflow-hidden">
+      <div className="relative">
         <motion.div
           key={tab}
           initial={{ opacity: 0 }}
@@ -778,7 +776,7 @@ function CollectionContainerShadow() {
       <div className="h-8 w-1/2 bg-gray-300 rounded-md mb-4"></div>
 
       {/* Purpose */}
-      <div className="h-4 w-full bg-gray-200 rounded-md mb-2"></div>
+      <div className="h-4  bg-gray-200 rounded-md mb-2"></div>
       <div className="h-4 w-5/6 bg-gray-200 rounded-md mb-4"></div>
 
       {/* Action Buttons */}
@@ -788,7 +786,7 @@ function CollectionContainerShadow() {
       </div>
 
       {/* Add Button */}
-      <div className="h-12 w-full bg-gray-300 rounded-full mb-4"></div>
+      <div className="h-12  bg-gray-300 rounded-full mb-4"></div>
 
       {/* Tabs */}
       <div className="flex gap-2 mb-4">
@@ -800,7 +798,7 @@ function CollectionContainerShadow() {
       {/* Content Placeholder */}
       <div className="flex flex-col gap-4">
         {[...Array(3)].map((_, i) => (
-          <div key={i} className="h-32 w-full bg-gray-200 rounded-lg"></div>
+          <div key={i} className="h-32  bg-gray-200 rounded-lg"></div>
         ))}
       </div>
     </div>

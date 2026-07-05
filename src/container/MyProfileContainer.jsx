@@ -37,6 +37,16 @@ function MyProfileContainer() {
 
   const { setSeo  } = useContext(Context);
   const profile = useSelector((state) => state.users.currentProfile);
+  const purposeCollections = useMemo(() => {
+  const rows = profile?.profileToCollections ?? [];
+
+  return rows
+    .filter((row) =>
+      ["home", "archive", "events", "portfolio"].includes(row.type)
+    )
+    .map((row) => row.collection)
+    .filter(Boolean);
+}, [profile]);
 const storiesCache = useSelector((state) => 
   state.pagination.byKey?.["stories"]?.pages?.[1] ?? []
 );
@@ -51,7 +61,7 @@ const { items: explorList, page: explorePage, setPage: setExplorePage, totalCoun
     enabled: !!profile?.id,
     select: (res) => ({ items: res.groups, totalCount: res.totalCount })})
 const recentPosts = storiesCache.slice(0, 5);
-const recentCollections = collectionsCache.slice(0, 5);
+// const recentCollections = collectionsCache.slice(0, 5);
 const communities = { items: librariesCache };
    const pageSize = 8;
 
@@ -268,10 +278,10 @@ className="bg-soft rounded-full p-2"><img src={settings} /></button>
 
            {tab === TABS.COLLECTIONS && (
   <>
-    {search.length === 0 && recentCollections.length > 0 && (
+    {search.length === 0 && purposeCollections.length > 0 && (
       <section className="space-y-4">
         <SectionHeader title="Recent" />
-        <IndexList items={recentCollections} profile={profile} router={router} />
+        <IndexList items={purposeCollections} profile={profile} router={router} />
       </section>
     )}
 
