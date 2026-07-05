@@ -78,10 +78,10 @@ export default function EditorContainer({ presentingElement }) {
         checkResult(res,
           (data) =>{
          
-    //  if (data?.story) {
+
          setIsSaved(true)
      
-    // }
+
          
           },
           (err) => { showAlert({ message: err.message, type: AlertType.error }); }
@@ -327,7 +327,7 @@ useEffect(() => {
     dispatch(updateStory(payload)).then(res =>
       
       checkResult(res, (data) => { 
-                
+         setIsSaved(true)       
   
         resetDialog(); 
         router.push(Paths.page.createRoute(effectiveId), "forward"); }, (err) => showAlert({ message: err.message, type: AlertType.error }))
@@ -339,6 +339,7 @@ useEffect(() => {
     dispatch(updateStory(payload)).then(res => {
       resetDialog();
       checkResult(res, (data) => {
+        setIsSaved(true)
         router.push(Paths.workshop.createRoute(effectiveId), "forward")}, (err) => showAlert({ message: err.message, type: AlertType.error }));
     });
   };
