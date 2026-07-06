@@ -378,7 +378,7 @@ if (!isOnline) {
   style={{
     '--background': Enviroment.palette.base.soft,
     '--color': Enviroment.palette.text.inverse,
-    '--padding-top': 'calc(env(safe-area-inset-top) + 1.5rem)',
+    '--padding-top': 'calc(env(safe-area-inset-top) + 1.3rem)',
     '--padding-bottom': '0.2rem',
   }}
 

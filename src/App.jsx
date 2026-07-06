@@ -63,7 +63,6 @@ import ContentHubContainer from './container/ContentHubContainer.jsx';
 import DiscoveryContainer from './container/DiscoveryContainer.jsx';
 import { SplashScreen } from '@capacitor/splash-screen';
 import OAuthCallback from './container/page/OauthCallback.jsx';
-// import '@ionic/react/css/palettes/dark.always.css';
 import { watchBackground } from './core/getbackground.jsx';
 import initSocialLogin from './components/initSocialLogin.jsx';
 import { fetchNotifcations } from './actions/ProfileActions.jsx';
@@ -76,191 +75,67 @@ import ReportsReviewPage from './container/auth/ReportReviewContainer.jsx';
 import CURRENT_TERMS_VERSION from './core/CURRENT_TERMS_VERSION.jsx';
 import { useDialog } from './domain/usecases/useDialog.jsx';
 import { getPublicLibraries } from './actions/LibraryActions.jsx';
-// function PushNotificationHandler() {
-//   usePushNotificationListener();
-//   const { currentProfile ,authResolved} = useSelector(state => state.users)
 
-//   const [path,setPath]=useState(Paths.home)
-//   const router = useIonRouter(); // ← switch back to this
-//     const tryNavigate = () => {
-//     if (currentProfile ) {
-//       router.push(path); // 'root' resets the stack
-    
-//     }
-//   };
-// useEffect(() => {
-  
-//     tryNavigate();
-//   }, [currentProfile,path]);
-//   useEffect(() => {
-//     if (!Capacitor.isNativePlatform()) return;
 
-//     PushNotifications.addListener('pushNotificationActionPerformed', (action) => {
-//       const data = action.notification.data;
-//       if (data?.route) {
-//         const route = data.route.replace(/\s+/g, '');
-//         setPath(route)
-//         // console.log('Navigating to:', route);
-//         // router.push(route, 'forward', 'push');
-//       }
-//     });
-
-//     return () => {
-//       PushNotifications.removeAllListeners();
-//     };
-//   }, []);
-
-//   return null;
-// }
-// function PushNotificationHandler() {
-//   usePushNotificationListener();
-//   const router = useIonRouter();
-//   const pendingRouteRef = useRef(null);
-//   const attemptsRef = useRef(0);
-
-//   const attemptFlush = async () => {
-//     if (!pendingRouteRef.current) return;
-
-//     const { value: token } = await Preferences.get({ key: 'token' });
-//     const hasValidToken = token && token !== 'undefined' && token !== 'null';
-
-//     if (hasValidToken) {
-//       const route = pendingRouteRef.current;
-//       pendingRouteRef.current = null;
-//       attemptsRef.current = 0;
-//       // defer to next tick so this doesn't race the current mount/redirect cycle
-//       setTimeout(() => router.push(route), 0);
-//       return;
-//     }
-
-//     attemptsRef.current += 1;
-//     if (attemptsRef.current < 5) {
-//       setTimeout(attemptFlush, 500);
-//     } else {
-//       // no valid token after several tries — drop the pending route
-//       pendingRouteRef.current = null;
-//       attemptsRef.current = 0;
-//     }
-//   };
-
-//   useEffect(() => {
-//     if (!Capacitor.isNativePlatform()) return;
-
-//     const handler = (action) => {
-//       const data = action.notification.data;
-//       if (!data?.route) return;
-//       const route = data.route.replace(/\s+/g, '');
-//       pendingRouteRef.current = route;
-//       attemptsRef.current = 0;
-//       attemptFlush();
-//     };
-
-//     let listenerHandle;
-//     PushNotifications.addListener('pushNotificationActionPerformed', handler).then(handle => {
-//       listenerHandle = handle;
-//     });
-
-//     // retry shortly after mount too, in case a notification tap launched
-//     // the app before this effect even had a chance to attach the listener
-//     const retryTimer = setTimeout(attemptFlush, 500);
-
-//     return () => {
-//       listenerHandle?.remove();
-//       clearTimeout(retryTimer);
-//     };
-//   }, [router]);
-
-//   return null;
-// }
-// const attemptFlush = async () => {
-//   if (!pendingRouteRef.current) return;
-
-//   // capture + clear immediately, synchronously — closes the race window
-//   const route = pendingRouteRef.current;
-//   pendingRouteRef.current = null;
-
-//   const { value: token } = await Preferences.get({ key: 'token' });
-//   const hasValidToken = token && token !== 'undefined' && token !== 'null';
-
-//   if (hasValidToken) {
-//     attemptsRef.current = 0;
-//     setTimeout(() => router.push(route), 0);
-//     return;
-//   }
-
-//   attemptsRef.current += 1;
-//   if (attemptsRef.current < 5) {
-//     // put the route back for the next retry attempt
-//     pendingRouteRef.current = route;
-//     setTimeout(attemptFlush, 500);
-//   } else {
-//     attemptsRef.current = 0;
-//     // give up — route already cleared
-//   }
-// };
 function PushNotificationHandler() {
   usePushNotificationListener();
   const router = useIonRouter();
+
   const pendingRouteRef = useRef(null);
-  const attemptsRef = useRef(0);
-  const isMountedRef = useRef(true);
+  const listenerReadyRef = useRef(false);
+  const appReadyRef = useRef(false);
+  const flushingRef = useRef(false);
   const retryTimeoutRef = useRef(null);
 
-  const attemptFlush = async () => {
+  const flushRoute = async () => {
+    if (flushingRef.current) return;
     if (!pendingRouteRef.current) return;
+    if (!appReadyRef.current) return;
 
-    const route = pendingRouteRef.current;
-    pendingRouteRef.current = null;
+    flushingRef.current = true;
 
-    let hasValidToken = false;
     try {
+      const route = pendingRouteRef.current;
+
       const { value: token } = await Preferences.get({ key: 'token' });
-      hasValidToken = token && token !== 'undefined' && token !== 'null';
+      const hasValidToken = token && token !== 'undefined' && token !== 'null';
+
+      if (!hasValidToken || !route) return;
+
+      pendingRouteRef.current = null;
+      await router.push(route);
     } catch (err) {
-      console.error('Failed to read token during notification flush:', err);
-    }
-
-    if (!isMountedRef.current) return; // bail if unmounted during the await
-
-    if (hasValidToken) {
-      attemptsRef.current = 0;
-      setTimeout(() => router.push(route), 0);
-      return;
-    }
-
-    attemptsRef.current += 1;
-    if (attemptsRef.current < 5) {
-      pendingRouteRef.current = route;
-      retryTimeoutRef.current = setTimeout(attemptFlush, 500);
-    } else {
-      attemptsRef.current = 0;
+      console.error('Failed to flush route:', err);
+    } finally {
+      flushingRef.current = false;
     }
   };
 
   useEffect(() => {
-    isMountedRef.current = true;
-    if (!Capacitor.isNativePlatform()) return;
+    let mounted = true;
 
-    const handler = (action) => {
-      const data = action.notification.data;
-      if (!data?.route) return;
-      const route = data.route.replace(/\s+/g, '');
+    const onAction = (action) => {
+      const route = action.notification.data?.route?.replace(/\s+/g, '');
+      if (!route) return;
+
       pendingRouteRef.current = route;
-      attemptsRef.current = 0;
-      attemptFlush();
+      flushRoute();
     };
 
-    let listenerHandle;
-    PushNotifications.addListener('pushNotificationActionPerformed', handler).then(handle => {
-      listenerHandle = handle;
+    PushNotifications.addListener('pushNotificationActionPerformed', onAction).then(() => {
+      listenerReadyRef.current = true;
+      if (mounted) flushRoute();
     });
 
-    retryTimeoutRef.current = setTimeout(attemptFlush, 500);
+    const timer = window.setTimeout(() => {
+      appReadyRef.current = true;
+      flushRoute();
+    }, 0);
 
     return () => {
-      isMountedRef.current = false;
-      listenerHandle?.remove();
-      clearTimeout(retryTimeoutRef.current);
+      mounted = false;
+      clearTimeout(timer);
+      retryTimeoutRef.current && clearTimeout(retryTimeoutRef.current);
     };
   }, [router]);
 
