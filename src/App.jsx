@@ -21,10 +21,10 @@ import {
           signOutAction,
       
       } from './actions/UserActions'
-      import { IonApp, setupIonicReact, IonRouterOutlet,  useIonRouter, IonFooter, useIonViewWillEnter, IonLoading} from '@ionic/react';
+      import { IonApp, setupIonicReact, IonRouterOutlet,  useIonRouter, IonFooter, useIonViewWillEnter, IonContent } from '@ionic/react';
  import LoggedRoute from './LoggedRoute';
 import PrivateRoute from './PrivateRoute';
-
+import { IonSpinner } from '@ionic/react';
 import Paths from './core/paths';
 import  Context from "./context"
 import TermsContainer from './container/TermsContainer.jsx';
@@ -76,48 +76,22 @@ import ReportsReviewPage from './container/auth/ReportReviewContainer.jsx';
 import CURRENT_TERMS_VERSION from './core/CURRENT_TERMS_VERSION.jsx';
 import { useDialog } from './domain/usecases/useDialog.jsx';
 import { getPublicLibraries } from './actions/LibraryActions.jsx';
-function PushNotificationHandler() {
-  usePushNotificationListener();
-  const { currentProfile } = useSelector(state => state.users)
-  const [path,setPath]=useState(Paths.home)
-  const router = useIonRouter(); // ← switch back to this
-    const tryNavigate = () => {
-    if (currentProfile ) {
-      router.push(path); // 'root' resets the stack
-      // pendingRouteRef.current = null;
-    }
-  };
-useEffect(() => {
-  
-    tryNavigate();
-  }, [currentProfile,path]);
-  useEffect(() => {
-    if (!Capacitor.isNativePlatform()) return;
-
-    PushNotifications.addListener('pushNotificationActionPerformed', (action) => {
-      const data = action.notification.data;
-      if (data?.route) {
-        const route = data.route.replace(/\s+/g, '');
-        setPath(route)
-      
-      }
-    });
-
-    return () => {
-      PushNotifications.removeAllListeners();
-    };
-  }, []);
-
-  return null;
-}
-// }
 // function PushNotificationHandler() {
 //   usePushNotificationListener();
-//   const router = useIonRouter();
-//   const pendingRouteRef = useRef(null);
-//   const { currentProfile } = useSelector(state => state.users)
-//   const  authResolved  = currentProfile
+//   const { currentProfile ,authResolved} = useSelector(state => state.users)
 
+//   const [path,setPath]=useState(Paths.home)
+//   const router = useIonRouter(); // ← switch back to this
+//     const tryNavigate = () => {
+//     if (currentProfile ) {
+//       router.push(path); // 'root' resets the stack
+    
+//     }
+//   };
+// useEffect(() => {
+  
+//     tryNavigate();
+//   }, [currentProfile,path]);
 //   useEffect(() => {
 //     if (!Capacitor.isNativePlatform()) return;
 
@@ -125,9 +99,9 @@ useEffect(() => {
 //       const data = action.notification.data;
 //       if (data?.route) {
 //         const route = data.route.replace(/\s+/g, '');
-//         pendingRouteRef.current = route;
-//         // try immediately in case auth is already resolved
-//         tryNavigate();
+//         setPath(route)
+//         // console.log('Navigating to:', route);
+//         // router.push(route, 'forward', 'push');
 //       }
 //     });
 
@@ -136,19 +110,169 @@ useEffect(() => {
 //     };
 //   }, []);
 
-//   const tryNavigate = () => {
-//     if (authResolved && pendingRouteRef.current) {
-//       router.push(pendingRouteRef.current, 'root'); // 'root' resets the stack
+//   return null;
+// }
+// function PushNotificationHandler() {
+//   usePushNotificationListener();
+//   const router = useIonRouter();
+//   const pendingRouteRef = useRef(null);
+//   const attemptsRef = useRef(0);
+
+//   const attemptFlush = async () => {
+//     if (!pendingRouteRef.current) return;
+
+//     const { value: token } = await Preferences.get({ key: 'token' });
+//     const hasValidToken = token && token !== 'undefined' && token !== 'null';
+
+//     if (hasValidToken) {
+//       const route = pendingRouteRef.current;
 //       pendingRouteRef.current = null;
+//       attemptsRef.current = 0;
+//       // defer to next tick so this doesn't race the current mount/redirect cycle
+//       setTimeout(() => router.push(route), 0);
+//       return;
+//     }
+
+//     attemptsRef.current += 1;
+//     if (attemptsRef.current < 5) {
+//       setTimeout(attemptFlush, 500);
+//     } else {
+//       // no valid token after several tries — drop the pending route
+//       pendingRouteRef.current = null;
+//       attemptsRef.current = 0;
 //     }
 //   };
 
 //   useEffect(() => {
-//     tryNavigate();
-//   }, [authResolved]);
+//     if (!Capacitor.isNativePlatform()) return;
+
+//     const handler = (action) => {
+//       const data = action.notification.data;
+//       if (!data?.route) return;
+//       const route = data.route.replace(/\s+/g, '');
+//       pendingRouteRef.current = route;
+//       attemptsRef.current = 0;
+//       attemptFlush();
+//     };
+
+//     let listenerHandle;
+//     PushNotifications.addListener('pushNotificationActionPerformed', handler).then(handle => {
+//       listenerHandle = handle;
+//     });
+
+//     // retry shortly after mount too, in case a notification tap launched
+//     // the app before this effect even had a chance to attach the listener
+//     const retryTimer = setTimeout(attemptFlush, 500);
+
+//     return () => {
+//       listenerHandle?.remove();
+//       clearTimeout(retryTimer);
+//     };
+//   }, [router]);
 
 //   return null;
 // }
+// const attemptFlush = async () => {
+//   if (!pendingRouteRef.current) return;
+
+//   // capture + clear immediately, synchronously — closes the race window
+//   const route = pendingRouteRef.current;
+//   pendingRouteRef.current = null;
+
+//   const { value: token } = await Preferences.get({ key: 'token' });
+//   const hasValidToken = token && token !== 'undefined' && token !== 'null';
+
+//   if (hasValidToken) {
+//     attemptsRef.current = 0;
+//     setTimeout(() => router.push(route), 0);
+//     return;
+//   }
+
+//   attemptsRef.current += 1;
+//   if (attemptsRef.current < 5) {
+//     // put the route back for the next retry attempt
+//     pendingRouteRef.current = route;
+//     setTimeout(attemptFlush, 500);
+//   } else {
+//     attemptsRef.current = 0;
+//     // give up — route already cleared
+//   }
+// };
+function PushNotificationHandler() {
+  usePushNotificationListener();
+  const router = useIonRouter();
+  const pendingRouteRef = useRef(null);
+  const attemptsRef = useRef(0);
+  const isMountedRef = useRef(true);
+  const retryTimeoutRef = useRef(null);
+
+  const attemptFlush = async () => {
+    if (!pendingRouteRef.current) return;
+
+    const route = pendingRouteRef.current;
+    pendingRouteRef.current = null;
+
+    let hasValidToken = false;
+    try {
+      const { value: token } = await Preferences.get({ key: 'token' });
+      hasValidToken = token && token !== 'undefined' && token !== 'null';
+    } catch (err) {
+      console.error('Failed to read token during notification flush:', err);
+    }
+
+    if (!isMountedRef.current) return; // bail if unmounted during the await
+
+    if (hasValidToken) {
+      attemptsRef.current = 0;
+      setTimeout(() => router.push(route), 0);
+      return;
+    }
+
+    attemptsRef.current += 1;
+    if (attemptsRef.current < 5) {
+      pendingRouteRef.current = route;
+      retryTimeoutRef.current = setTimeout(attemptFlush, 500);
+    } else {
+      attemptsRef.current = 0;
+    }
+  };
+
+  useEffect(() => {
+    isMountedRef.current = true;
+    if (!Capacitor.isNativePlatform()) return;
+
+    const handler = (action) => {
+      const data = action.notification.data;
+      if (!data?.route) return;
+      const route = data.route.replace(/\s+/g, '');
+      pendingRouteRef.current = route;
+      attemptsRef.current = 0;
+      attemptFlush();
+    };
+
+    let listenerHandle;
+    PushNotifications.addListener('pushNotificationActionPerformed', handler).then(handle => {
+      listenerHandle = handle;
+    });
+
+    retryTimeoutRef.current = setTimeout(attemptFlush, 500);
+
+    return () => {
+      isMountedRef.current = false;
+      listenerHandle?.remove();
+      clearTimeout(retryTimeoutRef.current);
+    };
+  }, [router]);
+
+  return null;
+}
+const LoadingPlaceholder = () => (
+  <IonContent>
+  <div className="flex items-center justify-center h-full">
+    <IonSpinner name="crescent" />
+  </div>
+  </IonContent>
+);
    const CLIENT_ID = import.meta.env.VITE_OAUTH2_CLIENT_ID;
    const IOS_CLIENT_ID = import.meta.env.VITE_IOS_CLIENT_ID;
 
@@ -169,7 +293,9 @@ setupIonicReact()
 
 const libraries = ["places"];
 function App(props) {
-  const {currentProfile} =props
+  
+  // const {currentProfile,} =props
+  const {authResolved,currentProfile}=useSelector(state=>state.users)
 const isHorizPhone = useMediaQuery({ query: '(min-width: 800px)' });
 const {loading}=useSelector(state=>state.users)
 const {resetDialog,openDialog}=useDialog()
@@ -193,12 +319,10 @@ const ionRouter = useIonRouter();
 
 const [presentingEl, setPresentingEl] = useState(null);
   const [success,setSuccess]=useState(null)
-  const [error,setError]=useState(null)
-const [token,setToken]=useState(null)
-const [chuecking,setChecking]=useState(null)
+
+
   const {dialog,loading:userLoading} = useSelector(state=>state.users)
 
-const hasFetchedProfile = useRef(false);
 
 
 useEffect(() => {
@@ -308,7 +432,7 @@ const showBottomNavbar = (!hiddenPaths.includes(location)) && isMobileOrTablet
  return (
 
     <ErrorBoundary>
-        <Context.Provider value={{setPresentingEl,isDesktop,isTablet:isMobileOrTablet,isPhone:isMobileOrTablet,isNotPhone:!isMobileOrTablet,isHorizPhone,seo,setSeo,formerPage,setFormerPage,setError,setSuccess,success}}>
+        <Context.Provider value={{setPresentingEl,isDesktop,isTablet:isMobileOrTablet,isPhone:isMobileOrTablet,isNotPhone:!isMobileOrTablet,isHorizPhone,seo,setSeo,formerPage,setFormerPage,setSuccess,success}}>
 
     <LoadScript
       googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
@@ -333,16 +457,23 @@ const showBottomNavbar = (!hiddenPaths.includes(location)) && isMobileOrTablet
 <Alert/>
 <div  >
     <IonRouterOutlet>   
-       
+       <Route exact path="/" render={() => 
+  <PageWrapper>{
+    !authResolved ? <LoadingPlaceholder/> :
+    currentProfile && isNative ? <ContentHubContainer/> :
+    currentProfile ? <Redirect to={Paths.home} /> :
+    isFirstLaunch && isNative ? <Redirect to={Paths.onboard}/> : <Redirect to={Paths.about()}/>
+  }</PageWrapper>}
+/>
   
-     <Route exact path="/" render={() => 
+     {/* <Route exact path="/" render={() => 
          <PageWrapper>{
-          currentProfile&&isNative?<ContentHubContainer/>:
+          isNative?<ContentHubContainer/>:
   currentProfile? 
   <Redirect to={Paths.home} />:  
   isFirstLaunch && isNative?<Redirect to={Paths.onboard}/>:<Redirect to={Paths.about()}/>   }
      </PageWrapper>}
-/>
+/> */}
 <Route exact path="/about" render={() => 
     <PageWrapper  showBackbutton={false} >
      <AboutContainer/></PageWrapper>}
@@ -598,7 +729,6 @@ function mapStateToProps(state){
   }
 }
 export default connect(mapStateToProps,mapDispatchToProps)(App)
-
 
 
 

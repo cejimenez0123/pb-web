@@ -22,7 +22,7 @@ const STACK_SM = "space-y-2";
 function CalendarEmbed({ variant = "eventbrite" }) {
   const {showAlert}= useAlert()
   const [loading, setLoading] = useState(true);
-  const { isPhone, setError } = useContext(Context);
+  const { isPhone} = useContext(Context);
   const { openDialog, closeDialog } = useDialog();
 const router = useIonRouter()
   const [list, setList] = useState([]);
@@ -157,7 +157,7 @@ return {
         setList(eventList);
       });
     } catch (err) {
-      setError(err);
+    showAlert({message:err,type:AlertType.error});
     } finally {
       setLoading(false);
     }

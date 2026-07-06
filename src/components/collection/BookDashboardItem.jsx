@@ -12,6 +12,8 @@ import { debounce } from 'lodash';
 import Carousel from './Carousel';
 import { deleteCollectionFromCollection, addCollectionListToCollection } from '../../actions/CollectionActions';
 import ErrorBoundary from '../../ErrorBoundary';
+import { useAlert } from '../../core/useAlert';
+import AlertType from '../../core/AlertType';
 
 const theme = {
   card: `
@@ -33,7 +35,8 @@ const theme = {
 function BookDashboardItem({ book }) {
   const dispatch = useDispatch();
   const { currentProfile } = useSelector(state => state.users);
-  const { setError } = useContext(Context);
+
+  const {showAlert}=useAlert()
   const router = useIonRouter();
   const [bookmarked, setBookmarked] = useState(null);
 
@@ -48,7 +51,7 @@ function BookDashboardItem({ book }) {
 
   const handleBookmark = debounce((e) => {
     e.stopPropagation();
-    if (!currentProfile) return setError("Please Login");
+    if (!currentProfile) return showAlert({message:"Please Login",type:AlertType.error});
     if (bookmarked) {
       dispatch(deleteCollectionFromCollection({ tcId: bookmarked.id }))
         .then(() => setBookmarked(null));
@@ -56,7 +59,7 @@ function BookDashboardItem({ book }) {
       const archive = currentProfile.profileToCollections.find(
         col => col.type === "home"
       )?.collection;
-      if (!archive) return setError("Missing archive");
+      if (!archive) return showAlert({message:"Missing archive",type:AlertType.error});
       dispatch(addCollectionListToCollection({
         id: archive.id,
         list: [book.id],

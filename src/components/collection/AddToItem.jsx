@@ -14,9 +14,12 @@ import {
 import checkResult from "../../core/checkResult";
 import Pill from "../Pill";
 import shortName from "../../core/shortName";
+import { useAlert } from "../../core/useAlert";
+import AlertType from "../../core/AlertType";
 
 export default function AddToItem({ col, item, onSuccess }) {
-  const { setError, setSuccess } = useContext(Context);
+ 
+  const {showAlert}=useAlert()
   const { currentProfile } = useSelector((state) => state.users);
   const { id } = useParams();
   const type = !!item?.data ? "story" : "collection";
@@ -41,7 +44,7 @@ export default function AddToItem({ col, item, onSuccess }) {
         checkResult(res, (payload) => {
           const newLink = payload.collection?.childCollections?.find((c) => c.childCollectionId === item.id);
           setFound(newLink);
-          setSuccess("Added");
+        showAlert({message:"Added",type:AlertType.success})
           onSuccess?.();
         });
       }
@@ -50,11 +53,11 @@ export default function AddToItem({ col, item, onSuccess }) {
         checkResult(res, (payload) => {
           const newLink = payload.stories?.find((s) => s.id === id);
           setFound(newLink);
-          setSuccess("Added");
+         showAlert({message:"Added",type:AlertType.success});
           onSuccess?.();
         });
       }
-    } catch (e) { setError(e.message); }
+    } catch (e) {showAlert({message:e.message,type:AlertType.error}); }
     setPending(false);
   };
 
@@ -65,7 +68,7 @@ export default function AddToItem({ col, item, onSuccess }) {
         const res = await dispatch(deleteCollectionFromCollection({ tcId: found.id }));
         checkResult(res, () => {
           setFound(null);
-          setSuccess("Removed");
+          showAlert({message:"Removed",type:AlertType.success});
           onSuccess?.();
         });
       }
@@ -73,11 +76,11 @@ export default function AddToItem({ col, item, onSuccess }) {
         const res = await dispatch(deleteStoryFromCollection({ stId: found.id }));
         checkResult(res, () => {
           setFound(null);
-          setSuccess("Removed");
+          showAlert({message:"Removed",type:AlertType.error});
           onSuccess?.();
         });
       }
-    } catch (e) { setError(e.message); }
+    } catch (e) { showAlert({message:e.message,type:AlertType.error}) }
     setPending(false);
   };
 

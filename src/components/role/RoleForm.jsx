@@ -12,14 +12,15 @@ import ProfileCircle from "../profile/ProfileCircle";
 import { getStory } from "../../actions/StoryActions";
 import Enviroment from "../../core/Enviroment";
 import Pill from "../Pill";
+import { useAlert } from "../../core/useAlert";
+import AlertType from "../../core/AlertType";
 
 export default function RoleForm({ item }) {
   const dispatch = useDispatch();
   const profiles = useSelector((state) => state.users.profilesInView);
   
   const currentProfile = useSelector((state) => state.users.currentProfile);
-
-  const { error, success, setError, setSuccess } = useContext(Context);
+const {showAlert}=useAlert()
 
   const [roles, setRoles] = useState([]);
   const [search, setSearch] = useState("");
@@ -79,8 +80,8 @@ useEffect(() => {
         () => {
           
           item.data?dispatch(getStory({ id: item.id })):dispatch(fetchCollection({id:item.id}))
-          setSuccess("Saved")},
-        () => setError("Error saving")
+          showAlert({message:"Saved",type:AlertType.success})},
+        () => showAlert({message:"Error saving",type:AlertType.error})
       )
     );
   };
@@ -192,11 +193,8 @@ const sortedResult = [...result].sort((a, b) => {
 
   
   </div>
-  {(error || success) && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 text-sm text-gray-700">
-          {error || success}
-        </div>
-      )}
+  
+   
       {/* SEARCH */}
       <div className="mb-6">
         <IonSearchbar

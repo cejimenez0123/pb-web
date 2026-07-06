@@ -63,9 +63,9 @@ const isNativePlatform = Capacitor.isNativePlatform();
 
 
 const {currentProfile}=useSelector(state=>state.users)
-  const isAuthed = !!currentProfile?.id;
+  // const isAuthed = !!currentProfile?.id;
 const myCollections=useSelector(state=>state.books.myCollections.filter(t=>t))
-const myStories=useSelector(state=>state.pages.myPages.filter(t=>t))
+// const myStories=useSelector(state=>state.pages.myPages.filter(t=>t))
 // const  /
   const [isOnline, setIsOnline] = useState(navigator.onLine);
 const isMobile  = useMediaQuery({ query: "(max-width: 480px)" });        // phones portrait
@@ -73,13 +73,10 @@ const isTablet  = useMediaQuery({ query: "(min-width: 481px) and (max-width: 119
 const isDesktop = useMediaQuery({ query: "(min-width: 1200px)" });        // desktop + iPad landscape
 const pageSize = isMobile? 7:isTablet||isDesktop?12:8
 const isNative = isNativePlatform
-// Convenience — matches your old isMobileOrTablet usage
-const isMobileOrTablet = isMobile || isTablet;
 
-// const isMobileOrTablet = useMediaQuery({ query: '(max-width: 60em)' })
 const [homeCol, setHomeCol] = useState(null);
 const dispatch = useDispatch()
-const [token,setToken]=useState(null)
+
     const [archiveCol, setArchiveCol] = useState(null);
     const { openDialog, dialog,resetDialog } = useDialog()
    
@@ -99,39 +96,7 @@ const [token,setToken]=useState(null)
 
   
 
-  const openYourWorkshops=()=>{
-  
-      openDialog({
-      title: "Your Workshops",
-    scrollY: false,
-    breakpoint: 1,
-  
-  
-      disagree:()=>resetDialog(),
-      text: (<div className=''>
-  
-        <div className={`bg-cream overflow-y-auto border border-1 rounded-xl border-soft px-4 ${isNative? "h-[36rem] sm:h-[40rem] md:h-[48rem] lg:h-[50rem]":"h-[30rem] sm:h-[40rem] md:h-[48rem] lg:h-[50rem]"}`}> 
-          <IonList
-           style={{
-            backgroundColor: Enviroment.palette.cream,
-           
-          }}>
-             
-         
-          {results.map(workshop=>{
-            return<li className=' my-2 bg-cream' onClick={()=>{
-              router.push(Paths.collection.createRoute(workshop.id))
-              resetDialog()
-            }}><div className='p-4 w-[100%] border-1 border border-soft rounded-xl'><h6>{workshop.title}</h6></div></li>
-          })}
-        
-          </IonList>
-  </div>
-        
-      </div>
-      )})
-    
-  }
+
 
   const openCollections = () => {
   
@@ -408,12 +373,15 @@ if (!isOnline) {
       {presentHeader && !isDesktop && (
         <IonHeader >
           <div >
-    <IonToolbar
-  className="px-3 md:px-4 lg:px-2 py-2 md:py-3"
+ <IonToolbar
+  className="px-3 md:px-4 plg:px-2"
   style={{
     '--background': Enviroment.palette.base.soft,
     '--color': Enviroment.palette.text.inverse,
+    '--padding-top': 'calc(env(safe-area-inset-top) + 1.5rem)',
+    '--padding-bottom': '0.2rem',
   }}
+
 >
             {showBackbutton ? (
               <IonButtons slot="start">

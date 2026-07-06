@@ -334,44 +334,6 @@ function NavCreateDropdown({}) {
   )
 }
 
-// function MenuHorizontal({ pages, currentProfile }) {
-//   const router = useIonRouter()
-//   const dispatch = useDispatch()
-//   const { openDialog, resetDialog } = useDialog()
-
-//   const handleCloseNavMenu = (page) => {
-//     switch (page) {
-//       case "About": router.push(Paths.about(),"forward"); break
-//       case "Discovery": router.push(Paths.discovery,"forward"); break
-//       case "Search": router.push("/search","forward"); break
-//       case "Workshop": 
-//         dispatch(setPageInView({ page: null }))
-//         router.push(Paths.workshop.reader(),"forward"); break
-//       case "Log In": router.push(Paths.login,"forward"); break
-      
-
-   
-//     }
-//   }
-
-//   return (
-//     <ul className="menu menu-horizontal px-1">
-//       {pages.map(page => {
-//         if (page === "Create" && currentProfile) {
-//           return <CreateDropdown key="create" variant='horizontal'/>;
-//         }
-//         if (page === "Workshop" && !currentProfile) return null
-//         if (page === "Log In" && currentProfile) return null
-       
-//         return (
-//           <li key={page} onClick={() => handleCloseNavMenu(page)}>
-//             <a className="text-white no-underline">{page}</a>
-//           </li>
-//         )
-//       })}
-//     </ul>
-//   )
-// }
 function MenuHorizontal({ pages, currentProfile }) {
   const router = useIonRouter();
   const dispatch = useDispatch();

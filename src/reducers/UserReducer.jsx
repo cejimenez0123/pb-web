@@ -27,6 +27,7 @@ import { createPageApproval, deletePageApproval } from "../actions/PageActions.j
 import { postCollectionHistory, postStoryHistory } from "../actions/HistoryActions"
 import { createFollow, deleteFollow } from "../actions/FollowAction"
 import { postActiveUser } from "../actions/WorkshopActions"
+import { Preferences } from "@capacitor/preferences"
 
 const initialState = {
     signedIn: false,
@@ -157,8 +158,10 @@ const userSlice = createSlice({
         
         })
         .addCase(getCurrentProfile.fulfilled, (state, { payload }) => {
-              if (payload?.profile) {
-        state.currentProfile = { ...state.currentProfile, ...payload.profile };
+         const {profile}=payload
+              if (profile) {
+             Preferences.set({ key: "cachedMyProfile", value: JSON.stringify(profile) }).then(res=>{})
+        state.currentProfile = { ...state.currentProfile, ...profile };
     }
             state.loading = false;
             state.authResolved = true;

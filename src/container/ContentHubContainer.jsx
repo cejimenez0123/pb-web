@@ -33,33 +33,8 @@ const promptTake = isTablet ? 3 : 1;
 
 
   tab && useScrollTracking({ name: tab });
-  useLayoutEffect(() => {
-  // if (tab === "home") {
-  //   setSeo(prev => ({
-  //     ...prev,
-  //     title: "Discover Writing, Events & Workshops | Plumbum",
-  //     description:
-  //       "Discover new writing, collections, events, and workshops on Plumbum. Explore fresh work from writers and literary communities.",
-  //     type: "website",
-  //   }));
-  // }
 
-  // if (tab === "dash") {
-  //   setSeo(prev => ({
-  //     ...prev,
-  //     title: "Your Writing Dashboard | Plumbum",
-  //     description:
-  //       "Manage your writing, collections, reading activity, and community participation on Plumbum.",
-  //     type: "profile",
-  //     robots: "noindex, nofollow", // important
-  //   }));
-  // }
-}, [tab]);
 
-useEffect(() => {
-  getBackground();
-  watchBackground();
-}, []);
 
   return (
 <IonContent 

@@ -210,7 +210,7 @@ const { showAlert } = useAlert()
   (prompts ?? []).filter(p => p?.data),
   [prompts]
 );
-  //  useMemo(() => prompts?.filter(p => p?.data) || [], [prompts]);
+  
 
   useEffect(() => {
     if (stories?.length) {
@@ -219,15 +219,7 @@ const { showAlert } = useAlert()
     }
   }, [stories]);
 
-  // useEffect(() => {
-  //   if (!currentProfile) return;
-  //   setSeo(prev => ({
-  //     ...prev,
-  //     title: `Plumbum (${currentProfile.username}) Home`,
-  //     description: `Welcome to ${currentProfile.username}'s home on Plumbum.`,
-  //     url: `https://plumbum.app/${currentProfile.username}`,
-  //   }));
-  // }, [currentProfile, setSeo]);
+ 
 
   const handleGlobal = () => setIsGlobal(!isGlobal);
  const ClickCreateACollection = () => {
@@ -385,7 +377,7 @@ const fetchSubCollections = useCallback(async (skip, take) => {
           />
           </div>
         </div>
-        <div className={`${WRAP} ${PAGE_Y} ${STACK_LG}`} >
+        {/* <div className={`${WRAP} ${PAGE_Y} ${STACK_LG}`} > */}
           
            {/* Workshop grid */}
           
@@ -410,7 +402,7 @@ const fetchSubCollections = useCallback(async (skip, take) => {
       )}
    
   </div>
-</div>
+{/* </div> */}
      
         </div> {/* ← closes "Workshops near you" SECTION */}
 </div>
@@ -422,7 +414,7 @@ const fetchSubCollections = useCallback(async (skip, take) => {
 <SectionHeader title="Writing Prompts for you" />
 </div>
 </div>
-<div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 px-4 sm:px-6 lg:px-8">
+<div className="grid grid-cols-1 sm:grid-cols-2 justify-center xl:grid-cols-3 gap-4 px-4 sm:px-6 lg:px-8">
   {filteredPrompts === undefined ? (
     [1, 2, 3].map(i => (
       <div key={i} className={`${SKELETON_BLOCK} h-[10rem] w-full`} />
@@ -445,6 +437,7 @@ const fetchSubCollections = useCallback(async (skip, take) => {
            <div className=" overflow-y-auto  bg-base-surface dark:bg-base-bgDark md:max-w-[52em] mx-auto">
          <SectionHeader title="What's new" />
          </div>
+         <div className='px-3'>
 {!homeCol?.id ? (
   <FeedSkeleton />
 ) : items.length === 0 ? (
@@ -457,6 +450,7 @@ const fetchSubCollections = useCallback(async (skip, take) => {
     shortenTo={400}
   />
 )}
+</div>
 </div>
 </div>
       </div> {/* ← closes WRAP */}

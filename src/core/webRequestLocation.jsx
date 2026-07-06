@@ -13,12 +13,12 @@ import { registerUser } from "../actions/WorkshopActions";
           registerUser(currentProfile.id,location)
         }
     
-        setError(null);
+        // setError(null);
         setLoading(false);
       },
       (err) => {
 
-        setError("We use location to conect with you fellow writers. Reload for access.");
+        // setError("We use location to conect with you fellow writers. Reload for access.");
         setLoading(false);
   
       }
