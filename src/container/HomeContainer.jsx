@@ -414,7 +414,7 @@ const fetchSubCollections = useCallback(async (skip, take) => {
 <SectionHeader title="Writing Prompts for you" />
 </div>
 </div>
-<div className="grid grid-cols-1 sm:grid-cols-2 justify-center xl:grid-cols-3 gap-4 px-4 sm:px-6 lg:px-8">
+{/* <div className="grid grid-cols-1 sm:grid-cols-2 justify-center xl:grid-cols-3 gap-4 px-4 sm:px-6 lg:px-8">
   {filteredPrompts === undefined ? (
     [1, 2, 3].map(i => (
       <div key={i} className={`${SKELETON_BLOCK} h-[10rem] w-full`} />
@@ -426,8 +426,24 @@ const fetchSubCollections = useCallback(async (skip, take) => {
   ) : (
     <PromptsEmptyState />
   )}
+</div> */}
+<div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 px-4 sm:px-6 lg:px-8 justify-items-center">
+  {filteredPrompts === undefined ? (
+    [1, 2, 3].map(i => (
+      <div key={i} className={`${SKELETON_BLOCK} h-[10rem] w-full`} />
+    ))
+  ) : filteredPrompts.length ? (
+    filteredPrompts.map(story => (
+      <div key={story?.id} className="w-full max-w-[24rem]">
+        <StoryItem page={story} html={story?.data} />
+      </div>
+    ))
+  ) : (
+    <div className="col-span-full w-full flex justify-center">
+      <PromptsEmptyState />
+    </div>
+  )}
 </div>
-
         </div>
         </div>
 

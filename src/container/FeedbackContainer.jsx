@@ -26,13 +26,7 @@ export default function FeedbackContainer() {
     message:       "",
   });
 
-  // useLayoutEffect(() => {
-  //   setSeo((prev) => ({
-  //     ...prev,
-  //     title:       "Plumbum | Feedback",
-  //     description: "Send feedback, report issues, or collaborate with Plumbum.",
-  //   }));
-  // }, [setSeo]);
+ 
 
   const updateField = (field, value) => setForm((prev) => ({ ...prev, [field]: value }));
 

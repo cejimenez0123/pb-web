@@ -64,15 +64,6 @@ function DiscoveryContainer() {
 
   useLayoutEffect(() => { initGA(); }, []);
 
-  // useLayoutEffect(() => {
-  //   setSeo({
-  //     title: 'Plumbum (Discovery) - Read Fresh Writing',
-  //     description: 'Explore events, workshops, and writer meetups on Plumbum.',
-  //     name: 'Plumbum',
-  //     type: '',
-  //   });
-  // }, [setSeo]);
-
  useEffect(() => {
   fetchContentItems();
   fetchLibraries();

@@ -42,12 +42,7 @@ const{openDialog,closeDialog,dialog}=useDialog()
 
   const [user, setUser] = useState(null);
 
-  // ---------- SEO ----------
-  // useEffect(() => {
-  //   if (location.pathname.includes("newsletter")) {
-  //     setSeo({ ...seo, title: "Plumbum (Newsletter Apply)" });
-  //   }
-  // }, [location.pathname]);
+
 
   // ---------- CHECKBOX HANDLER ----------
   const handleCheckboxChange = (event, field) => {

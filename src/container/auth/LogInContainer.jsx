@@ -31,11 +31,6 @@ export default function LogInContainer({ currentProfile }) {
   const { showAlert,closeAlert,showPrompt } = useAlert();
   const router = useIonRouter();
 
-  // useEffect(() => {
-  //   setSeo((prev) => ({ ...prev, title: "Plumbum (Log In) - Share Your Weirdness" }));
-  // }, [setSeo]);
-
- // Option 1 — setTimeout (simplest)
 const [signingIn, setSigningIn] = useState(false);
 
 useEffect(() => {

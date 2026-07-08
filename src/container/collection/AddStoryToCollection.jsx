@@ -73,16 +73,7 @@ const refreshItem = async () => {
     import("@capacitor/preferences").then(({ Preferences }) => Preferences.get({ key: "token" }));
   }, []);
 
-  // SEO
-  useEffect(() => {
-    if (item) {
-      setSeo({
-        ...seo,
-        title: `Add ${item.title} to Collections`,
-        description: "Organize your stories and collections.",
-      });
-    }
-  }, [item]);
+
 
   // Sync collections to store
   useEffect(() => {

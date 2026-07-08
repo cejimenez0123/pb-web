@@ -60,8 +60,14 @@ const PageWrapper = ({
   //  const isDev = import.meta.env.VITE_NODE_ENV=="dev"
 const isNativePlatform = Capacitor.isNativePlatform();
       // desktop + iPad landscape
+const isPhone = useMediaQuery({ query: '(max-width: 480px)' })
+const isLargePhone = useMediaQuery({
+  query: '(min-width: 430px) and (max-width: 480px)'
+});
 
-
+const is6_9 = useMediaQuery({
+  query: '(min-width: 430px) and (max-width: 450px) and (min-height: 900px)'
+});
 const {currentProfile}=useSelector(state=>state.users)
   // const isAuthed = !!currentProfile?.id;
 const myCollections=useSelector(state=>state.books.myCollections.filter(t=>t))
@@ -374,14 +380,11 @@ if (!isOnline) {
         <IonHeader >
           <div >
  <IonToolbar
-  className="px-3 md:px-4 plg:px-2"
-  style={{
-    '--background': Enviroment.palette.base.soft,
+ className='page-toolbar'
+ style={{
+   '--background': Enviroment.palette.base.soft,
     '--color': Enviroment.palette.text.inverse,
-    '--padding-top': 'calc(env(safe-area-inset-top) + 1.3rem)',
-    '--padding-bottom': '0.2rem',
-  }}
-
+ }}
 >
             {showBackbutton ? (
               <IonButtons slot="start">

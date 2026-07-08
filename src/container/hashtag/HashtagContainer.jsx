@@ -58,13 +58,7 @@ const { items, totalCount, page, setPage, totalPages } = usePaginatedResource({
     [collections]
   );
 
-  // useLayoutEffect(() => {
-  //   initGA();
-  //   if (hashtag) {
-  //     sendGAEvent("View Page", `View Hashtag ${JSON.stringify({ id: hashtag.id, name: hashtag.name })}`, hashtag.name);
-  //     setSeo({ ...seo, title: `Plumbum Hashtag (${hashtag.name}) - Your Writing, Your Community` });
-  //   }
-  // }, [hashtag]);
+ 
 
   useLayoutEffect(() => { getHashtag(); }, [id]);
   useEffect(() => { if (!isNotPhone) setIsGrid(false); }, [isNotPhone]);

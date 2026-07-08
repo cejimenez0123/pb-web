@@ -165,14 +165,7 @@ export default function AboutContainer() {
     sendGAEvent("Page View", "View About Page");
   }, []);
   
-  // useLayoutEffect(() => {
-  //   setSeo({
-  //     title: "Plumbum (About) - Your Writing, Your Community",
-  //     description: "Explore events, workshops, and writer meetups on Plumbum.",
-  //     name: "Plumbum",
-  //     type: "",
-  //   });
-  // }, []);
+
 
   function apply() {
     sendGAEvent("Apply to be user", "Click Apply", "Apply to Join Today", 0, false);

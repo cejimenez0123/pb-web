@@ -26,17 +26,6 @@ function isThirdSaturday(date = new Date()) {
   return day === 6 && dateOfMonth >= 15 && dateOfMonth <= 21;
 }
 export default function LinksContainer(props){
-//      const {seo,setSeo}=useContext(Context)
-//      useLayoutEffect(() => {
-
-
-//   setSeo(prev => ({
-//     ...prev,
-//     title: "Plumbum Writing Events & Workshops | NYC & Online",
-//     description:
-//       "Discover upcoming writing workshops, readings, and community events on Plumbum. Find writer meetups in NYC and online."
-//   }))
-// }, [])
 
  const showThirdSaturdayNode = isThirdSaturday();
 

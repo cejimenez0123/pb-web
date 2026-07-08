@@ -6,6 +6,28 @@ background-color: #f4f4e0!important;
   width: 100vw;
 
 }
+.page-toolbar {
+
+  --min-height: 60px;
+  --padding-top: 10px;
+  --padding-bottom: 8px;
+  --padding-start: 12px;
+  --padding-end: 12px;
+}
+
+ @media (max-width: 480px) {
+  .page-toolbar {
+    --min-height: 64px;
+    --padding-top: 14px;
+  }
+} 
+
+@media (min-width: 430px) and (max-width: 480px) and (min-height: 900px) {
+  .page-toolbar {
+    --min-height: 115px;
+    --padding-top: 95px;
+  }
+}
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;

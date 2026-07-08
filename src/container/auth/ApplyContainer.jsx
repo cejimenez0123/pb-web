@@ -65,13 +65,6 @@ const location = router.routeInfo.pathname
   }
 
   // Update SEO on load
-  // useEffect(() => {
-  //   if(location.includes("apply")) {
-  //     let soo = { ...seo }
-  //     soo.title = "Plumbum (Apply)"
-  //     setSeo(soo)
-  //   }
-  // }, [])
 
   // Handle genre selection
   const handleGenreSelection = (genre) => {

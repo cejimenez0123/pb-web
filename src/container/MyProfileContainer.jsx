@@ -116,15 +116,7 @@ const StatChip = ({ value, label }) => (
 
 
   
-  // useEffect(() => {
-  //   if (!profile) return;
-  //   setSeo({
-  //     title: `${profile?.username} on Plumbum`,
-  //     description: profile?.bio || profile?.selfStatement || `Read stories by ${profile?.username}.`,
-  //     url: `${Enviroment.domain}/profile/${profile?.id}`,
-  //     type: "profile",
-  //   });
-  // }, [profile, setSeo]);
+  
 
 // const [search, setSearch] = useState("");
 

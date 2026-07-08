@@ -77,14 +77,7 @@ const toggleSlot = (slotId) => {
     prev.includes(slotId) ? prev.filter(s => s !== slotId) : [...prev, slotId]
   );
 };
-  // const {  setSeo, seo } = useContext(Context);
 
-  // useEffect(() => {
-  //   setSeo({
-  //     ...seo,
-  //     title: "Plumbum (Sign Up) - Your Writing, Your Community"
-  //   });
-  // }, []);
 const {openDialog,resetDialog}=useDialog()
 const openTerms = () => {
   openDialog({

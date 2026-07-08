@@ -341,14 +341,7 @@ const showBottomNavbar = (!hiddenPaths.includes(location)) && isMobileOrTablet
   }</PageWrapper>}
 />
   
-     {/* <Route exact path="/" render={() => 
-         <PageWrapper>{
-          isNative?<ContentHubContainer/>:
-  currentProfile? 
-  <Redirect to={Paths.home} />:  
-  isFirstLaunch && isNative?<Redirect to={Paths.onboard}/>:<Redirect to={Paths.about()}/>   }
-     </PageWrapper>}
-/> */}
+
 <Route exact path="/about" render={() => 
     <PageWrapper  showBackbutton={false} >
      <AboutContainer/></PageWrapper>}
