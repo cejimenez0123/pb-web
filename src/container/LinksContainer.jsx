@@ -64,7 +64,7 @@ export default function LinksContainer(props){
                    <li>  
                       <LinkNode image={pen}
                       title={"Writers Workshop"}
-                        description={"Get Feedback on your work. Meet writers. Once the mind is clear, heal the body at the Coffee Rave."}
+                        description={"Get Feedback on your work. Meet writers. Once the mind is clear, heal mind-body at the Coffee Rave."}
                       links={
                         
 
@@ -113,7 +113,7 @@ export default function LinksContainer(props){
                     
                 </li> */}
                <li>
-               <LinkNode links={[{name:"Purchase literature written by the founder.",url:"https://www.lulu.com/shop/sol-emilio/good-hell/paperback/product-45q8j8v.html?q=good+hell&page=1&pageSize=4"}]}
+               <LinkNode links={[{name:"Buy Today!",url:"https://www.lulu.com/shop/sol-emilio/good-hell/paperback/product-45q8j8v.html?q=good+hell&page=1&pageSize=4"}]}
                   
                     image={"https://assets.lulu.com/cover_thumbs/4/5/45q8j8v-front-shortedge-384.jpg"}
                     title={"Purchase literature written by the founder."}
