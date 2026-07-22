@@ -12,6 +12,8 @@ import { createHashtagComment, deleteHashtagComment } from "../../actions/Hashta
 import checkResult from "../../core/checkResult.js";
 import { useDialog } from "../../domain/usecases/useDialog.jsx";
 import Paths from "../../core/paths.js";
+import { reportContent,blockProfile, removeContentByProfileId } from "../../actions/ModerationAcitons.jsx";
+import ReportContentDialog from "../auth/ReportProfileDialog.jsx";
 
 const DEEP_LEVEL = 4;
 
@@ -19,7 +21,8 @@ export default function Comment({ page, comment, level = 0 }) {
   const dispatch = useDispatch();
   const { setError } = useContext(Context);
   const currentProfile = useSelector((state) => state.users.currentProfile);
-
+  const [isReportDialogOpen, setReportDialogOpen] = useState(false);
+const [isBlockDialogOpen, setBlockDialogOpen] = useState(false);
   const branches = useSelector((state) => {
     const storyComments = state.comments.byStory?.[page?.id] ?? [];
     const parent = storyComments.find((c) => c.id === comment.id);
@@ -34,12 +37,21 @@ export default function Comment({ page, comment, level = 0 }) {
     });
   });
 
+
+const handleReport = () => {
+  setReportDialogOpen(true);
+};
+
+const handleBlockUser = () => {
+  setBlockDialogOpen(true);
+};
+
   const hashtags = useSelector((state) => state.hashtags.profileHashtagComments);
   const isSelf = currentProfile && comment ? currentProfile?.id === comment?.profileId : false;
 const router = useIonRouter()
   const [isHelpful, setIsHelpful] = useState(null);
   const [isDeleted, setIsDeleted] = useState(false);
-  const { openDialog, closeDialog } = useDialog();
+  const { openDialog, closeDialog ,resetDialog} = useDialog();
 
   useEffect(() => {
     const hs = hashtags.find(
@@ -149,7 +161,7 @@ const handlePromoteToStory = () => {
                 checkResult(
                   res,
                   ( {story}) => {
-                    console.log("FFOFOFOOF",story)
+               
                        router.push(Paths.editPage.createRoute( story.id ,story.type));
                       closeDialog();
                   },
@@ -168,7 +180,7 @@ const handlePromoteToStory = () => {
                 checkResult(
                   res,
                  ( {story}) => {
-                    console.log("FFOFOFOOLFD",story)
+          
                 router.push(Paths.editPage.createRoute( story.id ,story.type));
                     closeDialog();
                   },
@@ -185,46 +197,89 @@ const handlePromoteToStory = () => {
     disagree: closeDialog,
   });
 };
-  const CommentDropdown = () => (
-    <div className="relative dropdown dropdown-left">
-      <div tabIndex={0} role="button">
-        <IonImg src={horiz} className="max-w-5 max-h-5 cursor-pointer" />
-      </div>
-      <ul
-        tabIndex={0}
-        className="dropdown-content bg-base-bg menu text-emerald-800 rounded-box z-[1] w-52 p-2 shadow"
-      >
-        {isSelf && (
-          <>
-              <li
-            className="p-2 bg-base-bg hover:bg-sky-100 rounded cursor-pointer"
-            onClick={handlePromoteToStory}  // ← new
-          >
+
+  // const CommentDropdown = () => (
+  //   <div className="relative dropdown dropdown-left">
+  //     <div tabIndex={0} role="button">
+  //       <IonImg src={horiz} className="max-w-5 max-h-5 cursor-pointer" />
+  //     </div>
+  //     <ul
+  //       tabIndex={0}
+  //       className="dropdown-content bg-base-bg menu text-emerald-800 rounded-box z-[1] w-52 p-2 shadow"
+  //     >
+  //       {isSelf && (
+  //         <>
+  //             <li
+  //           className="p-2 bg-base-bg hover:bg-sky-100 rounded cursor-pointer"
+  //           onClick={handlePromoteToStory}  // ← new
+  //         >
+  //           Save as story
+  //         </li>
+  //           <li
+  //             className="p-2 bg-base-bg hover:bg-sky-100 rounded cursor-pointer"
+  //             onClick={handleEdit}
+  //           >
+  //             Edit
+  //           </li>
+  //           <li
+  //             className="p-2 bg-base-bg hover:bg-sky-100 rounded cursor-pointer"
+  //             onClick={handleDelete}
+  //           >
+  //             Delete
+  //           </li>
+  //         </>
+  //       )}
+        
+  //     </ul>
+  //   </div>
+  // );
+const CommentDropdown = () => (
+  <div className="relative dropdown dropdown-left">
+    <div tabIndex={0} role="button">
+      <IonImg src={horiz} className="max-w-5 max-h-5 cursor-pointer" />
+    </div>
+    <ul
+      tabIndex={0}
+      className="dropdown-content bg-base-bg menu text-emerald-800 rounded-box z-[1] w-52 p-2 shadow"
+    >
+      {isSelf ? (
+        <>
+          <li className="p-2 bg-base-bg hover:bg-sky-100 rounded cursor-pointer" onClick={handlePromoteToStory}>
             Save as story
           </li>
-            <li
-              className="p-2 bg-base-bg hover:bg-sky-100 rounded cursor-pointer"
-              onClick={handleEdit}
-            >
-              Edit
-            </li>
-            <li
-              className="p-2 bg-base-bg hover:bg-sky-100 rounded cursor-pointer"
-              onClick={handleDelete}
-            >
-              Delete
-            </li>
-          </>
-        )}
-        
-      </ul>
-    </div>
-  );
-
+          <li className="p-2 bg-base-bg hover:bg-sky-100 rounded cursor-pointer" onClick={handleEdit}>
+            Edit
+          </li>
+          <li className="p-2 bg-base-bg hover:bg-sky-100 rounded cursor-pointer" onClick={handleDelete}>
+            Delete
+          </li>
+        </>
+      ) : (
+        <>
+          <li className="p-2 bg-base-bg hover:bg-sky-100 rounded cursor-pointer" onClick={handleReport}>
+            Report
+          </li>
+          <li className="p-2 bg-base-bg hover:bg-sky-100 rounded cursor-pointer text-red-600" onClick={handleBlockUser}>
+            Block user
+          </li>
+        </>
+      )}
+    </ul>
+  </div>
+);
   return (
     <div
-      className={`transition-all duration-300 ease-in-out overflow-hidden
-        ${isDeleted ? "opacity-0 max-h-0 p-0 my-0" : "opacity-100 max-h-[1000px]"}`}
+      // className={`transition-all duration-300 ease-in-out overflow-hidden
+      //   ${isDeleted ? "opacity-0 max-h-0 p-0 my-0" : "opacity-100 max-h-[1000px]"}`}
+      
+    //    className={`transition-all duration-300 ease-in-out
+    // ${isDeleted
+    //   ? "opacity-0 max-h-0 p-0 my-0 overflow-hidden"
+    //   : "opacity-100 max-h-[1000px] overflow-visible"}`}
+className={`transition-all duration-300 ease-in-out
+    ${isDeleted
+      ? "opacity-0 max-h-0 p-0 my-0 overflow-hidden"
+      : "opacity-100 max-h-[1000px] overflow-visible"}`}
       style={{
         marginLeft: `${level * 1}px`,
         borderLeft: `4px solid ${
@@ -236,9 +291,9 @@ const handlePromoteToStory = () => {
       <div className="bg-base-bg rounded-2xl shadow-lg p-5 flex flex-col gap-4 relative border border-gray-100">
         {/* Header */}
         <div className="flex justify-between items-center">
-          <ProfileCircle profile={comment.profile} color="emerald-700 dark:text-cream" />
-          {isSelf && <CommentDropdown />}
-        </div>
+  <ProfileCircle profile={comment.profile} color="emerald-700 dark:text-cream" />
+  <CommentDropdown />
+</div>
 
         {/* Anchor text */}
         {comment.anchorText && (
@@ -301,6 +356,33 @@ const handlePromoteToStory = () => {
           💬 See {branches.length} {branches.length === 1 ? "reply" : "replies"}
         </button>
       )}
+         
+       {comment?.profile && (
+  <ReportContentDialog
+    contentType="comment"
+    contentId={comment.id}
+    mode="report"
+    reportedProfileId={comment.profile.id}
+    isOpen={isReportDialogOpen}
+    onClose={() => setReportDialogOpen(false)}
+    onSuccess={() =>{
+      dispatch(removeContentByProfileId({profileID:comment.profile.id}))
+      setError(null)}} 
+  />
+)}
+{comment?.profile && (
+  <ReportContentDialog
+    contentType="profile"
+    mode="block"
+    contentId={comment.profile.id}
+    reportedProfileId={comment.profile.id}
+    isOpen={isBlockDialogOpen}
+    onClose={() => setBlockDialogOpen(false)}
+    onSuccess={() =>{
+         dispatch(removeContentByProfileId({profileID:comment.profile.id}))
+      setError(null)}}
+  />
+)}
     </div>
   );
 }

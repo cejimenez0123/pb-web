@@ -19,6 +19,7 @@ import {    logIn ,
             setCurrentProfile,
             setAuthResolved,
             setAlert,
+            acceptTerms,
         } from "../actions/UserActions"
 
 import {  addNotification, createProfile, fetchNotifcations, fetchProfileRecommendations, fetchProfiles } from "../actions/ProfileActions"
@@ -26,6 +27,7 @@ import { createPageApproval, deletePageApproval } from "../actions/PageActions.j
 import { postCollectionHistory, postStoryHistory } from "../actions/HistoryActions"
 import { createFollow, deleteFollow } from "../actions/FollowAction"
 import { postActiveUser } from "../actions/WorkshopActions"
+import { Preferences } from "@capacitor/preferences"
 
 const initialState = {
     signedIn: false,
@@ -92,12 +94,23 @@ const userSlice = createSlice({
             
             state.loading = true
         })
-        .addCase(logIn.fulfilled, (state, { payload }) => {
-            state.currentProfile = payload?.profile
-            state.loading = false
-            state.signedIn = true
-            state.authResolved = true
-        })
+        .addCase(acceptTerms.fulfilled, (state, { payload }) => {
+    state.currentProfile = {
+        ...state.currentProfile,
+        termsAcceptedAt: new Date().toISOString(),
+        termsVersion: payload.version,
+    }
+})
+.addCase(acceptTerms.rejected, (state, { payload }) => {
+    if (payload?.error) state.error = payload.error
+})
+ .addCase(logIn.fulfilled, (state, { payload }) => {
+    state.currentProfile = { ...state.currentProfile, ...payload?.profile }
+    state.termsCurrent = payload?.termsCurrent ?? true
+    state.loading = false
+    state.signedIn = true
+    state.authResolved = true
+})
         .addCase(logIn.rejected, (state, { payload }) => {
              if (payload?.error) state.error = payload.error
             state.loading = false
@@ -145,8 +158,10 @@ const userSlice = createSlice({
         
         })
         .addCase(getCurrentProfile.fulfilled, (state, { payload }) => {
-              if (payload?.profile) {
-        state.currentProfile = { ...state.currentProfile, ...payload.profile };
+         const {profile}=payload
+              if (profile) {
+             Preferences.set({ key: "cachedMyProfile", value: JSON.stringify(profile) }).then(res=>{})
+        state.currentProfile = { ...state.currentProfile, ...profile };
     }
             state.loading = false;
             state.authResolved = true;

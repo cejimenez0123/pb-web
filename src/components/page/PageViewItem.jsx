@@ -113,11 +113,12 @@ const dispatch =useDispatch()
         isGrid={false}
         onAnnotationComment={handleOpenCommentInput}
       />
-      <PageViewButtonRow
-        page={page}
-        profile={currentProfile}
-        setCommenting={() => handleOpenCommentInput(null)}
-      />
+  <PageViewButtonRow
+  page={page}
+  authorProfile={page.author}   // ← match the prop name
+  profile={currentProfile}
+  setCommenting={() => handleOpenCommentInput(null)}
+/>
     </div>
   );
 }

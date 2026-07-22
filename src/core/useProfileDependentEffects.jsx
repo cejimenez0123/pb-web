@@ -24,21 +24,7 @@ const fetchPrompts = async (take = 3) => {
     }, err => {});
   } catch (err) { console.error("Failed fetching prompts:", err); }
 };
-  // const fetchPrompts = async () => {
-  //   try {
-  //     const res = await dispatch(getPrompts());
-  //     checkResult(res, payload => {
-        
 
-  //       const sorted = [...payload?.prompts].sort((a,b)=>new Date(b.updated)-new Date(a.updated));
-  //       setResults(prev => ({ ...prev, prompts: sorted }));
-
-  //     },err=>{
-         
-  //     });
-  //   } catch (err) { console.error("Failed fetching prompts:", err); }
-  // };
- 
   const fetchStories = async () => {
     try {
       const res = await dispatch(fetchRecommendedStories());

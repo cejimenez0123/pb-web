@@ -223,7 +223,7 @@ let secImages = [table3,out2,evolution,  vemilo2, table2, table5];
 
 export default function AboutContainer() {
 
-  const { setSeo, currentProfile } = useContext(Context);
+  const { currentProfile } = useContext(Context);
   const md = useMediaQuery({ query: '(min-width: 750px)' });
   const router = useIonRouter()
 
@@ -233,14 +233,7 @@ export default function AboutContainer() {
     sendGAEvent("Page View", "View About Page");
   }, []);
   
-  useLayoutEffect(() => {
-    setSeo({
-      title: "Plumbum (About) - Your Writing, Your Community",
-      description: "Explore events, workshops, and writer meetups on Plumbum.",
-      name: "Plumbum",
-      type: "",
-    });
-  }, [setSeo]);
+
 
   function apply() {
     sendGAEvent("Apply to be user", "Click Apply", "Apply to Join Today", 0, false);

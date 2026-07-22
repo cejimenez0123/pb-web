@@ -21,15 +21,31 @@ const fetchStoryRoles=createAsyncThunk("roles/fetchStoryRoles",async ({storyId},
      roles: data.roles
     }
 })
-
-const postCollectionRole=createAsyncThunk("books/postCollectionRoles",async ({type,profileId,collectionId},thunkApi)=>{
-
-    let data = await roleRepo.postCollectionRole({type,profileId,collectionId})
-    return {
-     message: "Success",
-     collection: data.collection
+const postCollectionRole = createAsyncThunk(
+  "books/postCollectionRoles",
+  async ({ type, profileId, collectionId }, thunkApi) => {
+    try {
+      let data = await roleRepo.postCollectionRole({ type, profileId, collectionId });
+      return {
+        message: "Success",
+        collection: data.collection,
+        role: data.role,
+      };
+    } catch (err) {
+      return thunkApi.rejectWithValue(
+        err?.response?.data?.error || err.message || "Something went wrong"
+      );
     }
-})
+  }
+);
+// const postCollectionRole=createAsyncThunk("books/postCollectionRoles",async ({type,profileId,collectionId},thunkApi)=>{
+
+//     let data = await roleRepo.postCollectionRole({type,profileId,collectionId})
+//     return {
+//      message: "Success",
+//      collection: data.collection
+//     }
+// })
 const deleteCollectionRole=createAsyncThunk("books/deleteCollectionRoles",async ({id,role},thunkApi)=>{
 try{
     let data = await roleRepo.deleteCollectionRole({id,role})

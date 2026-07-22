@@ -10,7 +10,7 @@ import { useDispatch } from "react-redux";
 import { addStoryListToCollection } from "../../actions/CollectionActions";
 import checkResult from "../../core/checkResult";
 import { useAlert } from "../../core/useAlert";
-export default function PageViewButtonRow({ page, profile, setCommenting }) {
+export default function PageViewButtonRow({ page, authorProfile ,profile, setCommenting }) {
   const [likeFound, setLikeFound] = useState(false);
   const [bookmarked, setBookmarked] = useState(false);
   const dispatch = useDispatch()
@@ -52,6 +52,7 @@ showAlert("Saved to archive",AlertType.SUCCESS)
       text: (
         <ShareList
           page={page}
+          authorProfile={authorProfile}
           profile={profile}
           archive={archiveCol}
           bookmark={bookmarked}

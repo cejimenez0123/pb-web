@@ -68,7 +68,7 @@ const pageSize = isMobile? 7:isTablet||isDesktop?12:8
   const router = useIonRouter()
   const dispatch = useDispatch();
   const { showAlert } = useAlert();
- 
+
 
 const { columns, rows } = useResponsiveGrid();
 const visibleCount = columns * rows;
@@ -101,7 +101,7 @@ const recCols = usePaginatedResource({
     totalCount: res.totalCount,
   }),
 });
-console.log("REC COLS", recCols)
+
 const myStories = personalStories.items
 const personalCollections = usePaginatedResource({
   cacheKey: "collections",

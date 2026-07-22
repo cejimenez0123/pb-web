@@ -23,6 +23,7 @@ import { createSlice} from "@reduxjs/toolkit"
 import {  getStory,createStory, fetchRecommendedStories,
   updateStory, deleteStory, getCollectionStoriesProtected,getCollectionStoriesPublic} from "../actions/StoryActions"
 import { PageType } from "../core/constants.js"
+import { removeContentByProfileId } from "../actions/ModerationAcitons.jsx"
 
 
 const initialState = {pagesInView:[],
@@ -186,11 +187,27 @@ const pageSlice = createSlice({
         state.pagesToBeAdded = payload
       }).addCase(deleteStory.rejected,(state,{payload})=>{
         state.error = payload.error
-      }).addCase(deleteStory.fulfilled,(state,{payload})=>{
-        state.pageInView = null
-      }).addCase(clearPagesInView.type,(state)=>{
+      }).addCase(deleteStory.fulfilled, (state, { payload }) => {
+  state.pageInView = null;
+  state.pagesInView = state.pagesInView.filter(
+    (page) => page.id !== payload.id
+  );
+  state.recommendedStories = state.recommendedStories.filter(
+    (story) => story.id !== payload.id
+  );
+}).addCase(clearPagesInView.type,(state)=>{
       state.pagesInView = []
-    })
+    }).addCase(removeContentByProfileId, (state, { payload }) => {
+        const { profileId } = payload;
+        if (!profileId) return;
+
+        state.pagesInView = state.pagesInView.filter(
+          (p) => p && p.authorId !== profileId && p.profileId !== profileId
+        );
+        state.myPages = state.myPages.filter(
+          (p) => p && p.authorId !== profileId && p.profileId !== profileId
+        );
+      });
 
     }
   })

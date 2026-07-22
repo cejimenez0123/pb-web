@@ -26,6 +26,15 @@ class AuthRepo{
 
   return res.data;
 }
+async acceptTerms({ version }) {
+    const headers = await this.getAuthHeaders();
+    const res = await axios.post(
+        Enviroment.url + "/auth/accept-terms",
+        { version },
+        { headers }
+    );
+    return res.data;
+}
     async apply(form){
        let res = await axios.post(Enviroment.url+"/auth/apply",form,{headers:this.headers})
        return res.data
@@ -153,6 +162,25 @@ async useReferral(params) {
         let res =await axios.post(Enviroment.url+"/auth/ios",{idToken:identityToken})
         return res.data
     }
+    async reportContent({ contentType, contentId, reportedProfileId, reason }) {
+  const headers = await this.getAuthHeaders();
+  const res = await axios.post(
+    Enviroment.url + "/auth/reports",
+    { contentType, contentId, reportedProfileId, reason },
+    { headers }
+  );
+  return res.data;
+}
+
+async blockProfile({ blockedProfileId, reason }) {
+  const headers = await this.getAuthHeaders();
+  const res = await axios.post(
+    Enviroment.url + "/auth/blocks",
+    { blockedProfileId, reason },
+    { headers }
+  );
+  return res.data;
+}
     }
 
 export default new AuthRepo()

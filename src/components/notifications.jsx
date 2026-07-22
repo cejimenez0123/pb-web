@@ -1,8 +1,7 @@
 import {
-    ActionPerformed,
-    PushNotificationSchema,
+
     PushNotifications,
-    Token,
+
   } from '@capacitor/push-notifications';
 
 

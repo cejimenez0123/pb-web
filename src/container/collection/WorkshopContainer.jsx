@@ -50,7 +50,7 @@ const WorkshopContainer = () => {
   const [location, setLocation] = useState(DEFAULT_LOCATION);
     const { currentProfile } = useSelector(state => state.users);
   const page = useSelector(state => state.pages.pageInView);
-  // Public — viewing a collection
+
 
 
 // Protected — for logged in user
@@ -78,7 +78,7 @@ const { items: workshops, page: workshopPage,totalPages:workshopPages, setPage: 
 
 
 
-  const { setSeo } = useContext(Context);
+  // const { setSeo } = useContext(Context);
   const { showAlert } = useAlert();
  
 
@@ -186,7 +186,7 @@ const { items: workshops, page: workshopPage,totalPages:workshopPages, setPage: 
         res,
         payload => {
           if (payload?.collection) {
-            router.push(Paths.collection.createRoute(payload.collection.id), 'forward', 'push');
+            router.push(Paths.collection.createRoute(payload.collection.id));
           }
         },
         err => showAlert({ message: err.message, type: AlertType.error })

@@ -9,7 +9,7 @@ let path = location.pathname.split("/")
   const id = path[path.length-1] !== "edit"
 
 return(<AnimatePresence><motion.div
-  className="flex flex-col"
+  className="flex px-4 flex-col"
   initial={{ opacity: 0 }}
   animate={{ opacity: effectiveId && effectiveId !== "new" ? 1 : 0 }}
   transition={{ duration: 0.3, ease: "easeIn" }}

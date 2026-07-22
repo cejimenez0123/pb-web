@@ -1,5 +1,5 @@
 
-import { useContext, useEffect, useRef, useState, useCallback } from "react";
+import { useContext, useEffect, useRef, useState, useCallback, useMemo } from "react";
 import { useIonRouter } from "@ionic/react";
 import LinkPreview from "../LinkPreview";
 import Context from "../../context";
@@ -187,26 +187,46 @@ function AnnotatedText({ html, page, shortenTo,onAnnotationComment, showAnnotati
   const isProcessingRef = useRef(false);
   const [activeComment, setActiveComment] = useState(null);
   const [toolbar, setToolbar] = useState(null);
+const annotatedHtml = useMemo(() => {
+  let source = html ?? `<div>${page?.data ?? ""}</div>`;
 
+  if (!showAnnotations) return source;
+
+  comments
+    .filter((c) => c.anchorText?.trim())
+    .forEach((c) => {
+      const escaped = c.anchorText.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      source = source.replace(
+        new RegExp(`(?![^<]*>)(${escaped})`),
+        `<mark class="annotation-mark" data-comment-id="${c.id}" style="background:#a7f3d0cc;border-radius:2px;cursor:pointer;position:relative;">$1<span style="position:absolute;top:-4px;right:-4px;width:8px;height:8px;border-radius:50%;background:#10b981;display:inline-block;pointer-events:none;"></span></mark>`
+      );
+    });
+
+  return source;
+}, [html, page?.data, comments, showAnnotations]);
+
+const renderedHtml = shortenTo
+  ? truncate(annotatedHtml, 400, {})
+  : annotatedHtml;
   // ── Inject <mark> tags ──────────────────────────────────────────────────
-  const annotatedHtml = useCallback(() => {
-    let source = html ?? `<div>${page?.data ?? ""}</div>`;
+  // const annotatedHtml = useCallback(() => {
+  //   let source = html ?? `<div>${page?.data ?? ""}</div>`;
 
-    if (!showAnnotations) return source
-    comments
-      .filter((c) => c.anchorText?.trim())
-      .forEach((c) => {
-        const escaped = c.anchorText.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-        source = source.replace(
-          new RegExp(`(?![^<]*>)(${escaped})`),
-          `<mark class="annotation-mark" data-comment-id="${c.id}" ` +
-          `style="background:#a7f3d0cc;border-radius:2px;cursor:pointer;position:relative;">` +
-          `$1<span style="position:absolute;top:-4px;right:-4px;width:8px;height:8px;` +
-          `border-radius:50%;background:#10b981;display:inline-block;pointer-events:none;"></span></mark>`
-        );
-      });
-    return source;
-  }, [html, page?.data, comments, showAnnotations]);
+  //   if (!showAnnotations) return source
+  //   comments
+  //     .filter((c) => c.anchorText?.trim())
+  //     .forEach((c) => {
+  //       const escaped = c.anchorText.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  //       source = source.replace(
+  //         new RegExp(`(?![^<]*>)(${escaped})`),
+  //         `<mark class="annotation-mark" data-comment-id="${c.id}" ` +
+  //         `style="background:#a7f3d0cc;border-radius:2px;cursor:pointer;position:relative;">` +
+  //         `$1<span style="position:absolute;top:-4px;right:-4px;width:8px;height:8px;` +
+  //         `border-radius:50%;background:#10b981;display:inline-block;pointer-events:none;"></span></mark>`
+  //       );
+  //     });
+  //   return source;
+  // }, [html, page?.data, comments, showAnnotations]);
 
   // ── Show toolbar above selection ────────────────────────────────────────
   const showToolbar = useCallback(() => {
@@ -321,13 +341,17 @@ function AnnotatedText({ html, page, shortenTo,onAnnotationComment, showAnnotati
           }}
         />
       )}
-
-      <div
+<div
+  className="ql-editor prose prose-sm max-w-none text-sky-900 dark:text-sky-100"
+  style={{ WebkitUserSelect: "text", userSelect: "text" }}
+  dangerouslySetInnerHTML={{ __html: renderedHtml }}
+/>
+      {/* <div
         className="ql-editor prose prose-sm max-w-none text-sky-900 dark:text-sky-100"
         style={{ WebkitUserSelect: "text", userSelect: "text" }}
         dangerouslySetInnerHTML={{ __html: shortenTo?truncate(annotatedHtml(),400,{}): annotatedHtml() // ← skip when hidden
  }}
-      />
+      /> */}
 
       {activeComment && (
         <CommentPopover
@@ -352,6 +376,7 @@ function DataElement({ page, isGrid,shortenTo=null, book = null, html = null, on
   const [showAnnotations, setShowAnnotations] = useState(true);
 
   function Element({ page, image }) {
+    
     switch (page.type) {
       case PageType.text:
         return (
@@ -359,7 +384,7 @@ function DataElement({ page, isGrid,shortenTo=null, book = null, html = null, on
             {/* Toggle — only renders if there are annotated comments */}
             {hasAnnotations && (
               <div className="flex justify-end px-2 pt-2">
-                <button
+             { router.routeInfo.pathname.includes("story") && <button
                   onClick={(e) => {
                     e.stopPropagation();
                     setShowAnnotations((v) => !v);
@@ -372,7 +397,7 @@ function DataElement({ page, isGrid,shortenTo=null, book = null, html = null, on
                   ].join(" ")}
                 >
                   {showAnnotations ? "🔖 Hide highlights" : "🔖 Show highlights"}
-                </button>
+                </button>}
               </div>
             )}
             <AnnotatedText

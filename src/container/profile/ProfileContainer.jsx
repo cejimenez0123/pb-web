@@ -25,6 +25,13 @@ import PaginatedList from '../../components/page/PaginatedList';
 import SectionHeader from '../../components/SectionHeader';
 import RecommendedProfiles from '../../components/page/RecommendedProfile';
 
+import horiz from "../../images/icons/more_vert.svg"
+import { IonImg } from '@ionic/react';
+import { useDialog } from '../../domain/usecases/useDialog';
+import ReportProfileDialog from '../../components/auth/ReportProfileDialog';
+import { blockProfile, reportContent } from '../../actions/ModerationAcitons';
+import ReportContentDialog from '../../components/auth/ReportProfileDialog';
+
 
 
 
@@ -71,7 +78,7 @@ const EmptyState = ({ text }) => (
 
 // ── Main Component ───────────────────────────────────────
 function ProfileContainer() {
-  const { setSeo } = useContext(Context);
+  // const { setSeo } = useContext(Context);
   const { profileInView: profile, currentProfile } = useSelector((state) => state.users);
   const pagesRaw      = useSelector((state) => state.pages.pagesInView ?? []);
   const collectionsRaw = useSelector((state) => state.books.collections ?? []);
@@ -84,11 +91,16 @@ function ProfileContainer() {
   const [followerCount, setFollowerCount]   = useState(0);
   const [followingCount, setFollowingCount] = useState(0);
   const [isSelf, setIsSelf]           = useState(false);
-  const [locationName, setLocationName] = useState("Location not specified");
 
-  const dispatch = useDispatch();
+const [error, setError] = useState(null); // if you don’t already have this
+  const [locationName, setLocationName] = useState("Location not specified");
+const { openDialog, closeDialog } = useDialog();
+const dispatch = useDispatch();
   const router   = useIonRouter();
   const { id }   = useParams();
+const [isReportDialogOpen, setReportDialogOpen] = useState(false);
+const [isBlockDialogOpen, setBlockDialogOpen] = useState(false);
+
 
   // ── Derived lists ──────────────────────────────────────
   const collections = useMemo(
@@ -148,15 +160,7 @@ function ProfileContainer() {
     setIsSelf(profile.id === currentProfile.id);
   }, [profile, currentProfile]);
 
-  useEffect(() => {
-    if (!profile) return;
-    setSeo({
-      title: `${profile.username} on Plumbum`,
-      description: profile.bio || profile.selfStatement || `Read stories by ${profile.username}.`,
-      url: `${Enviroment.domain}/profile/${profile.id}`,
-      type: "profile",
-    });
-  }, [profile, setSeo]);
+  
 
   useEffect(() => {
     if (!profile?.location) return;
@@ -193,7 +197,17 @@ function ProfileContainer() {
       });
     }
   }, 200);
-
+if (!profile || isLoading) {
+  return (
+    <ErrorBoundary>
+      <IonContent fullscreen>
+        <div className={`${WRAP} ${PAGE_PADDING_Y} bg-cream dark:bg-base-bgDark`}>
+          <ProfileSkeleton />
+        </div>
+      </IonContent>
+    </ErrorBoundary>
+  );
+}
   // ── Render ─────────────────────────────────────────────
   return (
     <ErrorBoundary>
@@ -254,18 +268,61 @@ function ProfileContainer() {
               )}
             </div>
 
-            {/* Search + Follow */}
-            <div className={SEARCH_ROW}>
-              <input
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search"
-                className="border-soft border rounded-full w-full px-4 py-2 bg-cream dark:bg-base-bgDark dark:border-cream/30 dark:text-cream text-sm text-soft placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-300"
-              />
-              <FollowButton isSelf={isSelf} prof={profile} onClick={onClickFollow} follow={following} current={currentProfile} />
-            </div>
+{profile && (
+  <ReportContentDialog
+    contentType="profile"
+    contentId={profile.id}
+    mode='report'
+    reportedProfileId={profile.id}
+    isOpen={isReportDialogOpen}
+    onClose={() => setReportDialogOpen(false)}
+    onSuccess={() => setSuccess("Report submitted")}
+  />
+)}
+{profile && (
+  <ReportContentDialog
+    contentType="profile"
+    mode='block'
+    contentId={profile.id}
+    reportedProfileId={profile.id}
+    isOpen={isBlockDialogOpen}
+    onClose={() => setBlockDialogOpen(false)}
+    onSuccess={() => setSuccess("Report submitted")}
+  />
+)}
 
-            {/* Tabs */}
+<div className={SEARCH_ROW}>
+  <input
+    value={search}
+    onChange={(e) => setSearch(e.target.value)}
+    placeholder="Search"
+    className="border-soft border rounded-full w-full px-4 py-2 bg-cream dark:bg-base-bgDark dark:border-cream/30 dark:text-cream text-sm text-soft placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-300"
+  />
+  <FollowButton isSelf={isSelf} prof={profile} onClick={onClickFollow} follow={following} current={currentProfile} />
+  {!isSelf && (
+    <div className="relative dropdown dropdown-left">
+      <div tabIndex={0} role="button">
+        <img src={horiz} className="max-w-5 max-h-5 cursor-pointer" />
+      </div>
+      <ul tabIndex={0} className="dropdown-content bg-base-bg menu text-emerald-800 rounded-box z-[1] w-52 p-2 shadow">
+<li
+  className="p-2 bg-base-bg hover:bg-sky-100 rounded cursor-pointer"
+  onClick={() => setReportDialogOpen(true)}
+>
+  Report
+
+</li>
+        <li className="p-2 bg-base-bg hover:bg-sky-100 rounded cursor-pointer text-red-600" 
+        
+     onClick={() => setBlockDialogOpen(true)}
+        >
+          Block
+        </li>
+      </ul>
+    </div>
+  )}
+</div>
+  
             <div className={TAB_WRAPPER}>
               <TabBar tabs={tabs} active={tab} onChange={setTab} />
             </div>
@@ -376,3 +433,7 @@ function ProfileSkeleton() {
     </div>
   );
 }
+
+
+
+

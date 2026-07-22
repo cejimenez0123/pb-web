@@ -18,14 +18,20 @@ class StoryRepo{
   }
   
     async getPublicStories({ skip = 0, take = 20 } = {}) {
+      try{
+      const headers = await this.getAuthHeaders()
   const res = await axios.get(this.url + "/", {
     params: {
       skip,
       take,
     },
+         headers: { ...headers },
   });
 
   return res.data;
+  } catch (err) {
+    return { error: err };
+  }
 }
 
 async getPrompts({ take = 3 }) {

@@ -8,7 +8,7 @@ import { Capacitor } from "@capacitor/core";
 import Paths from "../../core/paths";
 import { PageType } from "../../core/constants";
 import { createStory, deleteStory, getStory, updateStory } from "../../actions/StoryActions";
-import { setEditingPage, setHtmlContent, setPageInView, removeFromPaginatedKey, setPageType, setPageData } from "../../actions/PageActions.jsx";
+import { setEditingPage, setHtmlContent, setPageInView, removeFromPaginatedKey, setPageType, } from "../../actions/PageActions.jsx";
 import checkResult from "../../core/checkResult";
 import debounce from "../../core/debounce.js";
 import Context from "../../context";
@@ -78,10 +78,11 @@ export default function EditorContainer({ presentingElement }) {
         checkResult(res,
           (data) =>{
          
-     if (data?.story) {
-      dispatch(updatePaginatedItem({ key: "stories", item: data.story }));
-    }
-            setIsSaved(true)
+
+         setIsSaved(true)
+     
+
+         
           },
           (err) => { showAlert({ message: err.message, type: AlertType.error }); }
         )
@@ -89,7 +90,6 @@ export default function EditorContainer({ presentingElement }) {
     }, 500)
   ).current;
 
-  // Sync profile/type changes into parameters
   useEffect(() => {
     setParameters((prev) => ({
       ...prev,
@@ -176,7 +176,7 @@ useEffect(() => {
     if (isSame) return;
     lastSavedRef.current = payload;
     setIsSaved(false);
-    debouncedSave({ ...payload });
+    debouncedSave({ ...payload })
 
 
   }, [parameters.data, parameters.title, parameters.status, parameters.isPrivate, parameters.commentable, parameters.id]);
@@ -243,10 +243,7 @@ useEffect(() => {
     const res = await dispatch(updateStory({ ...payload, id: resolvedId }));
     return checkResult(res,
       (data) => {
-           
-     if (data?.story) {
-      dispatch(updatePaginatedItem({ key: "stories", item: data.story }));
-    }
+  
         setIsSaved(true)},
       (err) => { setIsSaved(false); showAlert({ message: err.message, type: AlertType.error }); }
     );
@@ -330,7 +327,7 @@ useEffect(() => {
     dispatch(updateStory(payload)).then(res =>
       
       checkResult(res, (data) => { 
-                
+         setIsSaved(true)       
   
         resetDialog(); 
         router.push(Paths.page.createRoute(effectiveId), "forward"); }, (err) => showAlert({ message: err.message, type: AlertType.error }))
@@ -342,14 +339,15 @@ useEffect(() => {
     dispatch(updateStory(payload)).then(res => {
       resetDialog();
       checkResult(res, (data) => {
+        setIsSaved(true)
         router.push(Paths.workshop.createRoute(effectiveId), "forward")}, (err) => showAlert({ message: err.message, type: AlertType.error }));
     });
   };
 
   const openFeedback = (isFeedback) => {
     openDialog({
-      disagree: null,
-      disagreeText: null,
+      disagree:closeDialog,
+      disagreeText: "Close",
       scrollY: false,
       text: (
         <FeedbackDialog
@@ -366,7 +364,10 @@ useEffect(() => {
 
   const handleDelete = () => {
     dispatch(deleteStory(parameters)).then(() => {
-      dispatch(removeFromPaginatedKey({ key: "stories", id: parameters.id }));
+      dispatch(removeFromPaginatedKey({ key: "stories", id }));
+dispatch(removeFromPaginatedKey({ key: "recommended", id }));
+
+    
       router.push(Paths.home, "root");
       closeDialog();
     });

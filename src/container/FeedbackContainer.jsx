@@ -15,7 +15,7 @@ const LABEL = "text-sm text-soft dark:text-cream/60 mb-1";
 const INPUT = "w-full mt-1 px-4 py-3 rounded-xl text-sm text-soft dark:text-cream bg-sky-50 dark:bg-base-surfaceDark outline-none focus:ring-2 focus:ring-emerald-500 dark:focus:ring-emerald-400 placeholder-gray-400 dark:placeholder-gray-500";
 
 export default function FeedbackContainer() {
-  const { setSeo } = useContext(Context);
+  // const { setSeo } = useContext(Context);
   const { openDialog, closeDialog, dialog } = useDialog();
 
   const [form, setForm] = useState({
@@ -26,13 +26,7 @@ export default function FeedbackContainer() {
     message:       "",
   });
 
-  useLayoutEffect(() => {
-    setSeo((prev) => ({
-      ...prev,
-      title:       "Plumbum | Feedback",
-      description: "Send feedback, report issues, or collaborate with Plumbum.",
-    }));
-  }, [setSeo]);
+ 
 
   const updateField = (field, value) => setForm((prev) => ({ ...prev, [field]: value }));
 

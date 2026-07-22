@@ -16,6 +16,7 @@ import { findWorkshopGroup, fetchWorkshopGroups, } from "../actions/WorkshopActi
 import { patchCollectionRoles ,getProtectedProfileCollections,getPublicProfileCollections} from "../actions/CollectionActions"
 
 import { getPublicLibraries } from "../actions/LibraryActions.jsx"
+import { removeContentByProfileId } from "../actions/ModerationAcitons.jsx"
 const initialState = {
     groups:[],
     myCollections:[],
@@ -108,16 +109,28 @@ state.loading = true
     }
    
     state.loading = false
-}).addCase(addStoryListToCollection.fulfilled,(state,{payload})=>{
-       if(payload.collections){
-   let list = state.collections.filter(col=>col)
-  
+})
+.addCase(addStoryListToCollection.fulfilled,(state,{payload})=>{
+  if(payload.collection){
+    let list = state.collections.filter(col=>col)
     const index = list.findIndex(col=>col.id==payload.collection.id)
-if (index >= 0) {
-        list[index]=payload.collection
-        state.collections = list
-    }}
-}).addCase(postCollectionRole.fulfilled,(state,{payload})=>{
+    if (index >= 0) {
+      list[index]=payload.collection
+      state.collections = list
+    }
+  }
+})
+// .addCase(addStoryListToCollection.fulfilled,(state,{payload})=>{
+//        if(payload.collections){
+//    let list = state.collections.filter(col=>col)
+  
+//     const index = list.findIndex(col=>col.id==payload.collection.id)
+// if (index >= 0) {
+//         list[index]=payload.collection
+//         state.collections = list
+//     }}
+// })
+.addCase(postCollectionRole.fulfilled,(state,{payload})=>{
     // if(payload.collection){
 state.collectionInView = payload.collection
     // }
@@ -188,7 +201,14 @@ state.collectionInView = payload.collection
 
     if(payload.collection && payload.collection.childCollections && payload.collection.childCollections.length){
     state.collections = payload.collection.childCollections.map(cTc=>cTc.childCollection)}
-})
+}).addCase(removeContentByProfileId, (state, { payload }) => {
+  const { profileId } = payload;
+  if (!profileId) return;
+
+  state.comments = state.comments.filter(
+    (c) => c && c.profileId !== profileId
+  );
+});
 }
 
 })

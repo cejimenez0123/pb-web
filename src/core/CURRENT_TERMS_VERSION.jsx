@@ -1,0 +1,3 @@
+  const CURRENT_TERMS_VERSION = "2026-07-06";
+
+  export default CURRENT_TERMS_VERSION;

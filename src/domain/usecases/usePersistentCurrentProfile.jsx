@@ -1,11 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 import { Preferences } from "@capacitor/preferences";
-import { setCurrentProfile } from "../../actions/UserActions";
+import { useDispatch } from "react-redux";
+import { setCurrentProfile, setAuthResolved } from "../../actions/UserActions";
 
 export default function usePersistentCurrentProfile(fetchData) {
   const key = "cachedMyProfile";
   const [profile, setProfile] = useState(null);
   const hasFetched = useRef(false);
+  const dispatch = useDispatch();
 
   const getUser = async () => {
     try {
@@ -13,6 +15,7 @@ export default function usePersistentCurrentProfile(fetchData) {
       if (value) {
         const parsed = JSON.parse(value);
         setProfile(parsed);
+        dispatch(setCurrentProfile(parsed));
         return parsed;
       }
       return null;
@@ -24,10 +27,7 @@ export default function usePersistentCurrentProfile(fetchData) {
 
   const saveProfile = async (newProfile) => {
     try {
-      await Preferences.set({
-        key,
-        value: JSON.stringify(newProfile),
-      });
+      await Preferences.set({ key, value: JSON.stringify(newProfile) });
       setProfile(newProfile);
       dispatch(setCurrentProfile(newProfile));
     } catch (error) {
@@ -39,11 +39,21 @@ export default function usePersistentCurrentProfile(fetchData) {
     const init = async () => {
       if (hasFetched.current) return;
       hasFetched.current = true;
-      await getUser();
-      const token = (await Preferences.get({ key: "token" })).value;
-      if (token && token !== "undefined") {
+
+      const { value: token } = await Preferences.get({ key: "token" });
+
+      if (token && token !== "undefined" && token !== "null") {
+        const cached = await getUser(); // hydrate from cache first, no network wait
         const remoteProfile = await fetchData({ token });
-        if (remoteProfile) saveProfile(remoteProfile);
+   if (remoteProfile) {
+  saveProfile(remoteProfile);
+  dispatch(setAuthResolved(true));
+} else if (!cached) {
+  dispatch(setAuthResolved(true));
+}
+        else if (!cached) dispatch(setAuthResolved(true));
+      } else {
+        dispatch(setAuthResolved(true));
       }
     };
     init();

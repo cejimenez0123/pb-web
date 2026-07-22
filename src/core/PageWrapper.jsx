@@ -60,12 +60,18 @@ const PageWrapper = ({
   //  const isDev = import.meta.env.VITE_NODE_ENV=="dev"
 const isNativePlatform = Capacitor.isNativePlatform();
       // desktop + iPad landscape
+const isPhone = useMediaQuery({ query: '(max-width: 480px)' })
+const isLargePhone = useMediaQuery({
+  query: '(min-width: 430px) and (max-width: 480px)'
+});
 
-
+const is6_9 = useMediaQuery({
+  query: '(min-width: 430px) and (max-width: 450px) and (min-height: 900px)'
+});
 const {currentProfile}=useSelector(state=>state.users)
-  const isAuthed = !!currentProfile?.id;
+  // const isAuthed = !!currentProfile?.id;
 const myCollections=useSelector(state=>state.books.myCollections.filter(t=>t))
-const myStories=useSelector(state=>state.pages.myPages.filter(t=>t))
+// const myStories=useSelector(state=>state.pages.myPages.filter(t=>t))
 // const  /
   const [isOnline, setIsOnline] = useState(navigator.onLine);
 const isMobile  = useMediaQuery({ query: "(max-width: 480px)" });        // phones portrait
@@ -73,13 +79,10 @@ const isTablet  = useMediaQuery({ query: "(min-width: 481px) and (max-width: 119
 const isDesktop = useMediaQuery({ query: "(min-width: 1200px)" });        // desktop + iPad landscape
 const pageSize = isMobile? 7:isTablet||isDesktop?12:8
 const isNative = isNativePlatform
-// Convenience — matches your old isMobileOrTablet usage
-const isMobileOrTablet = isMobile || isTablet;
 
-// const isMobileOrTablet = useMediaQuery({ query: '(max-width: 60em)' })
 const [homeCol, setHomeCol] = useState(null);
 const dispatch = useDispatch()
-const [token,setToken]=useState(null)
+
     const [archiveCol, setArchiveCol] = useState(null);
     const { openDialog, dialog,resetDialog } = useDialog()
    
@@ -99,39 +102,7 @@ const [token,setToken]=useState(null)
 
   
 
-  const openYourWorkshops=()=>{
-  
-      openDialog({
-      title: "Your Workshops",
-    scrollY: false,
-    breakpoint: 1,
-  
-  
-      disagree:()=>resetDialog(),
-      text: (<div className=''>
-  
-        <div className={`bg-cream overflow-y-auto border border-1 rounded-xl border-soft px-4 ${isNative? "h-[36rem] sm:h-[40rem] md:h-[48rem] lg:h-[50rem]":"h-[30rem] sm:h-[40rem] md:h-[48rem] lg:h-[50rem]"}`}> 
-          <IonList
-           style={{
-            backgroundColor: Enviroment.palette.cream,
-           
-          }}>
-             
-         
-          {results.map(workshop=>{
-            return<li className=' my-2 bg-cream' onClick={()=>{
-              router.push(Paths.collection.createRoute(workshop.id))
-              resetDialog()
-            }}><div className='p-4 w-[100%] border-1 border border-soft rounded-xl'><h6>{workshop.title}</h6></div></li>
-          })}
-        
-          </IonList>
-  </div>
-        
-      </div>
-      )})
-    
-  }
+
 
   const openCollections = () => {
   
@@ -398,9 +369,8 @@ if (!isOnline) {
   <IonPage
   ref={pageRef}
   style={{ 
- 
+  
     height: '100%', 
-    paddingTop: isDesktop ? '8em' : '0.0em',
 
   }}
 
@@ -409,10 +379,13 @@ if (!isOnline) {
       {presentHeader && !isDesktop && (
         <IonHeader >
           <div >
-          <IonToolbar style={{
-    '--background': Enviroment.palette.base.soft,
-    '--color': Enviroment.palette.text.inverse // text color
-  }} >
+ <IonToolbar
+ className='page-toolbar'
+ style={{
+   '--background': Enviroment.palette.base.soft,
+    '--color': Enviroment.palette.text.inverse,
+ }}
+>
             {showBackbutton ? (
               <IonButtons slot="start">
                 <IonBackButton
@@ -447,7 +420,7 @@ if (!isOnline) {
       )}
       
     <div className={`
-  fixed inset-0 z-[999] transition-all duration-300
+  fixed inset-0 z-[999] pt-[2em] transition-all duration-300
    ${menuOpen ? "pointer-events-auto" : "pointer-events-none"} `}>
   <div
     onClick={() => setMenuOpen(false)}
@@ -460,12 +433,15 @@ if (!isOnline) {
   {/* DRAWER */}
   <div
   style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+    //  left-0 rounded-r-3xl
     className={`
 overflow-y-auto pb-20
-      absolute left-0 top-0 h-[100dvh] w-[85%] max-w-[22em]
-      dark:bg-base-bgDark bg-cream shadow-xl rounded-r-3xl
+      absolute right-0
+   rounded-l-3xl
+      top-0 h-[100dvh] w-[85%] max-w-[22em]
+      dark:bg-base-bgDark bg-cream shadow-xl 
       transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]
-      ${menuOpen ? "translate-x-0" : "-translate-x-full"}
+      ${menuOpen ? "translate-x-0" : "translate-x-full"}
     `}
   >
     <div className="p-6 flex flex-col h-full">
@@ -477,9 +453,7 @@ overflow-y-auto pb-20
 </p>
     </div>
   </div>
-      {/* </div> */}
-
-      {/* NAV */}
+     
       <div className="flex  flex-col gap-4 py-6">
       
 {menuArr.map((item) => (
@@ -513,7 +487,23 @@ overflow-y-auto pb-20
 
       {/* FOOTER */}
       <div className="flex flex-col  gap-3 pb-20 border-t border-soft">
-  
+      {currentProfile?.isAdmin &&   <button onClick={() =>{ 
+         router.push("/admin/reports/review")
+  }}
+          className=" rounded-s-full
+          text-left 
+          text-[1rem] 
+         bg-base-surface
+          dark:bg-base-surfaceDark
+          text-soft 
+          dark:text-cream
+          my-1
+         
+          hover:bg-purple
+        hover:text-green
+          transition"
+    
+           >Admin Reports</button>}
       {currentProfile &&   <button onClick={() =>{ 
           openReferral()
        setMenuOpen(false)}}
@@ -562,9 +552,9 @@ overflow-y-auto pb-20
     </div>
   </div>
 </div>
-{/* <div className='pb-[40em]'> */}
+
       {children}
-      {/* </div> */}
+
     </IonPage>
   );
 };

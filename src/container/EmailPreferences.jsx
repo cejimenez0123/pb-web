@@ -10,7 +10,7 @@ import { useAlert } from "../core/useAlert.jsx";
 import AlertType from "../core/AlertType.js";
 
 export default function EmailPreferences() {
-  const {setSeo}=useContext(Context)
+
   const { showAlert } = useAlert();
   const selectRef = useRef()
   const router = useIonRouter()
@@ -23,13 +23,7 @@ const location = useLocation();
   const [unsubscribed,setUnsubscribed]=useState(false)
   const [frequency, setFrequency] = useState(1);
 
- useLayoutEffect(() => {
-  setSeo(prev => ({
-    ...prev,
-    title: "Plumbum | Email Preferences",
-    description: "Manage your Plumbum email preferences and choose the updates you want to receive.",
-  }));
-}, []);
+
 
   useEffect(() => {
   

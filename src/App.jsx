@@ -17,12 +17,14 @@ import {
           getCurrentProfile,
          
           setAuthResolved,
+          acceptTerms,
+          signOutAction,
       
       } from './actions/UserActions'
-      import { IonApp, setupIonicReact, IonRouterOutlet,  useIonRouter, IonFooter, useIonViewWillEnter, IonLoading} from '@ionic/react';
+      import { IonApp, setupIonicReact, IonRouterOutlet,  useIonRouter, IonFooter, useIonViewWillEnter, IonContent } from '@ionic/react';
  import LoggedRoute from './LoggedRoute';
 import PrivateRoute from './PrivateRoute';
-
+import { IonSpinner } from '@ionic/react';
 import Paths from './core/paths';
 import  Context from "./context"
 import TermsContainer from './container/TermsContainer.jsx';
@@ -61,7 +63,6 @@ import ContentHubContainer from './container/ContentHubContainer.jsx';
 import DiscoveryContainer from './container/DiscoveryContainer.jsx';
 import { SplashScreen } from '@capacitor/splash-screen';
 import OAuthCallback from './container/page/OauthCallback.jsx';
-// import '@ionic/react/css/palettes/dark.always.css';
 import { watchBackground } from './core/getbackground.jsx';
 import initSocialLogin from './components/initSocialLogin.jsx';
 import { fetchNotifcations } from './actions/ProfileActions.jsx';
@@ -69,29 +70,84 @@ import usePersistentCurrentProfile from './domain/usecases/usePersistentCurrentP
 import usePushNotificationListener from './domain/usecases/usePushNotificationListener.jsx';
 import { PushNotifications } from '@capacitor/push-notifications';
 import { SocialLogin } from '@capgo/capacitor-social-login';
+import EULATERMS from './container/auth/Agreement.jsx';
+import ReportsReviewPage from './container/auth/ReportReviewContainer.jsx';
+import CURRENT_TERMS_VERSION from './core/CURRENT_TERMS_VERSION.jsx';
+import { useDialog } from './domain/usecases/useDialog.jsx';
+import { getPublicLibraries } from './actions/LibraryActions.jsx';
+
+
 function PushNotificationHandler() {
   usePushNotificationListener();
-  const router = useIonRouter(); // ← switch back to this
+  const router = useIonRouter();
+
+  const pendingRouteRef = useRef(null);
+  const listenerReadyRef = useRef(false);
+  const appReadyRef = useRef(false);
+  const flushingRef = useRef(false);
+  const retryTimeoutRef = useRef(null);
+
+  const flushRoute = async () => {
+    if (flushingRef.current) return;
+    if (!pendingRouteRef.current) return;
+    if (!appReadyRef.current) return;
+
+    flushingRef.current = true;
+
+    try {
+      const route = pendingRouteRef.current;
+
+      const { value: token } = await Preferences.get({ key: 'token' });
+      const hasValidToken = token && token !== 'undefined' && token !== 'null';
+
+      if (!hasValidToken || !route) return;
+
+      pendingRouteRef.current = null;
+      await router.push(route);
+    } catch (err) {
+      console.error('Failed to flush route:', err);
+    } finally {
+      flushingRef.current = false;
+    }
+  };
 
   useEffect(() => {
-    if (!Capacitor.isNativePlatform()) return;
+    let mounted = true;
 
-    PushNotifications.addListener('pushNotificationActionPerformed', (action) => {
-      const data = action.notification.data;
-      if (data?.route) {
-        const route = data.route.replace(/\s+/g, '');
-        console.log('Navigating to:', route);
-        router.push(route, 'forward', 'push');
-      }
+    const onAction = (action) => {
+      const route = action.notification.data?.route?.replace(/\s+/g, '');
+      if (!route) return;
+
+      pendingRouteRef.current = route;
+      flushRoute();
+    };
+
+    PushNotifications.addListener('pushNotificationActionPerformed', onAction).then(() => {
+      listenerReadyRef.current = true;
+      if (mounted) flushRoute();
     });
 
+    const timer = window.setTimeout(() => {
+      appReadyRef.current = true;
+      flushRoute();
+    }, 0);
+
     return () => {
-      PushNotifications.removeAllListeners();
+      mounted = false;
+      clearTimeout(timer);
+      retryTimeoutRef.current && clearTimeout(retryTimeoutRef.current);
     };
-  }, []);
+  }, [router]);
 
   return null;
 }
+const LoadingPlaceholder = () => (
+  <IonContent>
+  <div className="flex items-center justify-center h-full">
+    <IonSpinner name="crescent" />
+  </div>
+  </IonContent>
+);
    const CLIENT_ID = import.meta.env.VITE_OAUTH2_CLIENT_ID;
    const IOS_CLIENT_ID = import.meta.env.VITE_IOS_CLIENT_ID;
 
@@ -112,9 +168,12 @@ setupIonicReact()
 
 const libraries = ["places"];
 function App(props) {
-  const {currentProfile} =props
+  
+  // const {currentProfile,} =props
+  const {authResolved,currentProfile}=useSelector(state=>state.users)
 const isHorizPhone = useMediaQuery({ query: '(min-width: 800px)' });
 const {loading}=useSelector(state=>state.users)
+const {resetDialog,openDialog}=useDialog()
 watchBackground()
   const isNative = Capacitor.isNativePlatform()
 
@@ -135,12 +194,10 @@ const ionRouter = useIonRouter();
 
 const [presentingEl, setPresentingEl] = useState(null);
   const [success,setSuccess]=useState(null)
-  const [error,setError]=useState(null)
-const [token,setToken]=useState(null)
-const [chuecking,setChecking]=useState(null)
+
+
   const {dialog,loading:userLoading} = useSelector(state=>state.users)
 
-const hasFetchedProfile = useRef(false);
 
 
 useEffect(() => {
@@ -154,7 +211,41 @@ useEffect(() => {
   };
   init();
 }, []);
+useEffect(() => {
+  if (!currentProfile?.user) return;
+
+  const { termsAcceptedAt, termsVersion } = currentProfile.user;
+  const hasAgreedToCurrentTerms = termsAcceptedAt && termsVersion === CURRENT_TERMS_VERSION;
+
+  if (!hasAgreedToCurrentTerms) {
+    promptTermsAcceptance(() => {
+     ionRouter.push(Paths.home, "forward");
+
+    });
+  }
+}, [currentProfile]);
+
+const promptTermsAcceptance = (onAccepted) => {
+  openDialog({
+    title: "Updated Terms & Conditions",
+    height: 90,
+    breakpoint: 1,
+    text: () => <EULATERMS />,
+    agree: async () => {
+      await dispatch(acceptTerms({ version: CURRENT_TERMS_VERSION }));
+      resetDialog();
+      onAccepted();
+    },
+    agreeText: "I Agree",
+    disagree: () => {
+      resetDialog();
+      dispatch(signOutAction());
+    },
+    disagreeText: "Decline",
+  });
+};
 useEffect(()=>{
+  
 if(currentProfile){
   dispatch(fetchNotifcations({profile:currentProfile,seen:false}))
 }
@@ -216,7 +307,7 @@ const showBottomNavbar = (!hiddenPaths.includes(location)) && isMobileOrTablet
  return (
 
     <ErrorBoundary>
-        <Context.Provider value={{setPresentingEl,isDesktop,isTablet:isMobileOrTablet,isPhone:isMobileOrTablet,isNotPhone:!isMobileOrTablet,isHorizPhone,seo,setSeo,formerPage,setFormerPage,setError,setSuccess,success}}>
+        <Context.Provider value={{setPresentingEl,isDesktop,isTablet:isMobileOrTablet,isPhone:isMobileOrTablet,isNotPhone:!isMobileOrTablet,isHorizPhone,seo,setSeo,formerPage,setFormerPage,setSuccess,success}}>
 
     <LoadScript
       googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
@@ -226,13 +317,13 @@ const showBottomNavbar = (!hiddenPaths.includes(location)) && isMobileOrTablet
   <IonApp>
   <IonReactRouter>
      <PushNotificationHandler />
-       {showTopNavbar &&
-  <div className="fixed top-0 left-0 w-full z-50 w-[100%]">
-    <NavbarContainer isDesktop={isDesktop} currentProfile={currentProfile} />
-  </div>
-}
+      {showTopNavbar && (
+        <div className="w-[100%] z-50 flex-shrink-0">
+          <NavbarContainer isDesktop={isDesktop} currentProfile={currentProfile} />
+        </div>
+      )}
 
-              <div >
+        <div className="flex-1 relative">
  
     
        
@@ -241,16 +332,16 @@ const showBottomNavbar = (!hiddenPaths.includes(location)) && isMobileOrTablet
 <Alert/>
 <div  >
     <IonRouterOutlet>   
-       
-  
-     <Route exact path="/" render={() => 
-         <PageWrapper>{
-          currentProfile&&isNative?<ContentHubContainer/>:
-  currentProfile? 
-  <Redirect to={Paths.home} />:  
-  isFirstLaunch && isNative?<Redirect to={Paths.onboard}/>:<Redirect to={Paths.about()}/>   }
-     </PageWrapper>}
+       <Route exact path="/" render={() => 
+  <PageWrapper>{
+    !authResolved ? <LoadingPlaceholder/> :
+    currentProfile && isNative ? <ContentHubContainer/> :
+    currentProfile ? <Redirect to={Paths.home} /> :
+    isFirstLaunch && isNative ? <Redirect to={Paths.onboard}/> : <Redirect to={Paths.about()}/>
+  }</PageWrapper>}
 />
+  
+
 <Route exact path="/about" render={() => 
     <PageWrapper  showBackbutton={false} >
      <AboutContainer/></PageWrapper>}
@@ -327,11 +418,18 @@ const showBottomNavbar = (!hiddenPaths.includes(location)) && isMobileOrTablet
                   
                   }
             />
+              <Route path={'/eula'}
+                render={()=>
+                            <PageWrapper>
+                              <EULATERMS/></PageWrapper>
+                        }/>
           <Route exact path={"/privacy"}
                   render={()=><PageWrapper><PrivacyNoticeContrainer/></PageWrapper>}
                   />
-    
-      <Route exact path={Paths.calendar()}
+    <Route exact path={"/admin/reports/review"}
+      render={()=><PageWrapper><ReportsReviewPage/></PageWrapper>}
+    />
+    <Route exact path={Paths.calendar()}
      render={()=><PageWrapper showBackbutton={false} ><CalendarContainer/></PageWrapper>}/>
           <Route exact path={Paths.newsletter() }
      render={()=><PageWrapper><NewsletterContainer/></PageWrapper>}/>
@@ -499,7 +597,6 @@ function mapStateToProps(state){
   }
 }
 export default connect(mapStateToProps,mapDispatchToProps)(App)
-
 
 
 

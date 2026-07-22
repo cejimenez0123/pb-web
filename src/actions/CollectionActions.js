@@ -186,10 +186,10 @@ const fetchCollection = createAsyncThunk("collection/getCollectionPublic",async(
     collection:data.collection
    }
 })
-const deleteStoryFromCollection = createAsyncThunk("collection/deleteStoryFromCollection",async({stId},thunkApi)=>{
-    let data = await collectionRepo.deleteStoryToCollection({stId})
-    return data
- })
+const deleteStoryFromCollection = createAsyncThunk("collection/deleteStoryFromCollection", async ({ storyId, collectionId }, thunkApi) => {
+  let data = await collectionRepo.deleteStoryToCollection({ storyId, collectionId })
+  return data
+})
  const deleteCollectionFromCollection = createAsyncThunk("collection/deleteCollectionFromCollection",async({tcId},thunkApi)=>{
    try{
     let data = await collectionRepo.deleteCollectionToCollection({tcId:tcId})
@@ -331,7 +331,7 @@ const deleteCollection = createAsyncThunk("collection/deleteCollection",async(
     try{
 
        let data = await collectionRepo.deleteCollection(params)
- await algoliaRepo.deleteObject("collection", params.id)
+
    return data
     }catch(err){
         return err
@@ -356,8 +356,7 @@ const patchCollectionContent=createAsyncThunk("collection/patchCollectionContent
                }else{
 
        
-            await algoliaRepo.deleteObject("collection",id)
-                
+          
             }  
         return {collection:data.collection}
     }

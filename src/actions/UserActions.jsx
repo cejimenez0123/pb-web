@@ -23,7 +23,7 @@ const logIn = createAsyncThunk(
       const authData = await authRepo.startSession(body);
       const { token } = authData;
       await Preferences.set({ key: "token", value: token });
-      return { token, profile: authData.profile, user: authData.user };
+         return { token, profile: authData.profile, user: authData.user, termsCurrent: authData.termsCurrent }
     } catch (error) {
       // Extract the useful parts from the axios error
       const status  = error?.response?.status;
@@ -32,48 +32,18 @@ const logIn = createAsyncThunk(
     }
   }
 );
-// const logIn = createAsyncThunk(
-//     'users/logIn',
-//     async (params,thunkApi) => {
-   
-     
-// try{      
-  
-//         const {uId,email,password,idToken,isNative}=params
-//         const authData = await authRepo.startSession({uId:uId,email:email,password,identityToken:idToken})
-//         const {token}=authData  
- 
-//          await Preferences.set({key:"token",value:token})
-  
-//         return {token:token,profile:authData.profile,user:authData.user}
-// }catch(error){
-//   return thunkApi.rejectWithValue(error)
-// }
-      
-//     }
-// )
-// const logIn = createAsyncThunk(
-//   'users/logIn',
-//   async (params, thunkApi) => {
-//     try {
-//       const { uId, email, password, idToken, provider, isNative } = params;
 
-//       const authData = await authRepo.startSession({
-//         uId,
-//         email,
-//         password,
-//         idToken:       provider === 'google' ? idToken : null,
-//         identityToken: provider === 'apple'  ? idToken : null,
-//       });
-
-//       const { token } = authData;
-//       await Preferences.set({ key: "token", value: token });
-//       return { token, profile: authData.profile, user: authData.user };
-//     } catch (error) {
-//       return thunkApi.rejectWithValue(error);
-//     }
-//   }
-// );
+const acceptTerms = createAsyncThunk(
+    "user/acceptTerms",
+    async ({ version }, { rejectWithValue }) => {
+        try {
+            const data = await authRepo.acceptTerms({ version });
+            return data;
+        } catch (error) {
+            return rejectWithValue(error?.response?.data || { message: error.message });
+        }
+    }
+);
 const referSomeone =createAsyncThunk('users/referral',async (params,thunkApi)=>{
   let data = await authRepo.referral(params)
   return data
@@ -379,5 +349,6 @@ export {logIn,
         updateSubscription,
         getIosInfo,
         setAuthResolved,
+        acceptTerms,
         setUserLoading,setCurrentProfile,referSomeone,setMainLoading,setAlert
     }

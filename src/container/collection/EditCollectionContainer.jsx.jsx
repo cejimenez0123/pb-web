@@ -30,7 +30,6 @@ import Pill from "../../components/Pill";
 import Enviroment from "../../core/Enviroment";
 import TabBar from "../../components/TabBar";
 import computePermissions from "../../core/compusePermissions";
-import getBackground from "../../core/getbackground";
 import { removeFromPaginatedKey, updatePaginatedItem } from "../../actions/PageActions";
 import checkResult from "../../core/checkResult";
 // Layout & spacing
@@ -421,7 +420,7 @@ if (!canSee) {
 <div className={tabWrapper}>
   <TabBar tabs={tabs} active={activeTab} onChange={setActiveTab}/>
 </div>
-    {activeTab === "pages" && (
+    {/* {activeTab === "pages" && (
       <SortableList
         items={filteredPages}
         onOrderChange={setNewPages}
@@ -429,8 +428,16 @@ if (!canSee) {
           dispatch(deleteStoryFromCollection({ stId: s.id }))
         }
       />
-    )}
-
+    )} */}
+{activeTab === "pages" && (
+  <SortableList
+    items={filteredPages}
+    onOrderChange={setNewPages}
+    onDelete={(s) =>
+      dispatch(deleteStoryFromCollection({ storyId: s.story.id, collectionId: s.collectionId }))
+    }
+  />
+)}
     {activeTab === "collections" && (
       <SortableList
         items={filteredCollections}

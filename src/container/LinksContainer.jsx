@@ -10,6 +10,7 @@ import Context from "../context";
 import flare from "../images/icons/flare.svg"
 import pen from "../images/icons/pen.svg"
 import form from "../images/icons/form.png"
+import anvil from "../images/icons/anvil.png"
 import { IonContent } from "@ionic/react";
 import bxFuture from "../images/events/bxfutures.png"
 import ErrorBoundary from "../ErrorBoundary";
@@ -26,17 +27,6 @@ function isThirdSaturday(date = new Date()) {
   return day === 6 && dateOfMonth >= 15 && dateOfMonth <= 21;
 }
 export default function LinksContainer(props){
-     const {seo,setSeo}=useContext(Context)
-     useLayoutEffect(() => {
-
-
-  setSeo(prev => ({
-    ...prev,
-    title: "Plumbum Writing Events & Workshops | NYC & Online",
-    description:
-      "Discover upcoming writing workshops, readings, and community events on Plumbum. Find writer meetups in NYC and online."
-  }))
-}, [])
 
  const showThirdSaturdayNode = isThirdSaturday();
 
@@ -50,16 +40,16 @@ export default function LinksContainer(props){
                 
        
              
-                        <li>  
+                        {/* <li>  
                 
-                    </li>
-  <LinkNode image={form}
+                    </li> */}
+  {/* <LinkNode image={form}
   title={"Las Lineas Film Festival Open Mic"}
                       links={[{name:"Join the Call",url:"https://forms.gle/USFXSyZSJ8t9QEsk7"},
                         {name:"RSVP Here",url:"https://partiful.com/e/gQkDIrDyitmSaxxKc4Ul"}
                       ]}
-                      description={"Limited Slots to perform!"}/>
- 
+                      description={"Limited Slots to perform!"}/> */}
+{/*  
           <li> 
                   <LinkNode image={bxFuture}
                       name={"Plumbum x Bronx Frame Creative Tech Mixer"}
@@ -70,28 +60,36 @@ export default function LinksContainer(props){
                     title={"May 1st. Mixer"}
                     description={`Creative and Tech mixer, bring the heart to tech, and the impact to art. Connect with the next generation of creators.`}/>
                         
-   </li>
+   </li> */}
                    <li>  
                       <LinkNode image={pen}
                       title={"Writers Workshop"}
-                        description={"Get Feedback, Build Connection, Be Inspired • Poetry Month Workshop:'Why Poetry?' "}
+                        description={"Get Feedback on your work. Meet writers. Once the mind is clear, heal mind-body at the Coffee Rave."}
                       links={
                         
-                         showThirdSaturdayNode?[{name:"To Be Read Spreadsheet",url:"https://docs.google.com/spreadsheets/d/1bPnD3ufcoBYkttmdZJLEnc2K_662yktJ_tzK2w9ueVM/edit?usp=sharing"},
-                          {name:"RSVP Here",url:"https://partiful.com/e/eMXeu8WRozzVjvd07Gr7?c=xuzYZPht"}]:
-                         [{name:"RSVP Here",url:"https://partiful.com/e/eMXeu8WRozzVjvd07Gr7?c=xuzYZPht"}]
+
+                         [{name:"RSVP Here",url:"https://partiful.com/e/eAAolN77P7pHyQUqCciC?c=uXLJq8rL"}]
                         
                         
                       
-                      } /></li>   
-                  <LinkNode image={clinic}
+                      } />
+                      </li>  
+                           <li>
+                   
+               <LinkNode image={anvil}
+               name={"Founder's Cohort"}
+       links={[{name:"Fill this out",url:"https://tally.so/r/44zJ55"}]}
+                    title={"Founder's Cohort"}
+                    description={"Capped at 200 members. Be part of Plumbum, and access exlusive benifits as we grow."}/>
+                    </li> 
+                  {/* <LinkNode image={clinic}
                   name={""}
                   links={[{name:"Book a Session",url:"https://calendly.com/solemilio-decibao"},
              
                   ]}
                   title={"Creative Writing Clinics "}
                   description={"Connect with our founder, Sol Emilio, to discuss your writing and explore the support that fits your project."}/>
-             
+              */}
                     <li>
                    
                <LinkNode image={events}
@@ -101,21 +99,21 @@ export default function LinksContainer(props){
                     description={"Need a place to be, find it in real life through our calendar of NYC and Virtual events."}/>
                     </li>
                  
-                   <li>
+                   {/* <li>
                <LinkNode links={[{name:"Discover Plumbum",url:"https://plumbum.app"+Paths.discovery}]}
                image={logo}
                     title={"Discover Plumbum"}
                     description={"Check some recent shared work"}/>
-                    </li>
-                    <li>
+                    </li> */}
+                    {/* <li>
                     <LinkNode links={[{name:"Apply to be a user today",url:`https://plumbum.app/${Paths.onboard}`}]}
                     image={logo}
                     title={"Apply to be a user today"}
                     description={"Become a user and support us from the ground."}/>
                     
-                </li>
+                </li> */}
                <li>
-               <LinkNode links={[{name:"Purchase literature written by the founder.",url:"https://www.lulu.com/shop/sol-emilio/good-hell/paperback/product-45q8j8v.html?q=good+hell&page=1&pageSize=4"}]}
+               <LinkNode links={[{name:"Buy Today!",url:"https://www.lulu.com/shop/sol-emilio/good-hell/paperback/product-45q8j8v.html?q=good+hell&page=1&pageSize=4"}]}
                   
                     image={"https://assets.lulu.com/cover_thumbs/4/5/45q8j8v-front-shortedge-384.jpg"}
                     title={"Purchase literature written by the founder."}

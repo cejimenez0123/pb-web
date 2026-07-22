@@ -10,19 +10,23 @@ import {
 import React, { useState, useEffect, useContext, useRef, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { uploadProfilePicture } from "../../actions/ProfileActions";
-import { signUp } from "../../actions/UserActions";
+import { acceptTerms, signUp } from "../../actions/UserActions";
 import checkResult from "../../core/checkResult";
 import Paths from "../../core/paths";
 import Context from "../../context";
 import "../../App.css";
 import InfoTooltip from '../../components/InfoTooltip';
-
+// import { acceptTerms } from '../../actions/UserActions';
 import { Preferences } from '@capacitor/preferences';
 import { Capacitor } from '@capacitor/core';
 import { useAlert } from '../../core/useAlert';
 import AlertType from '../../core/AlertType';
 import authRepo from '../../data/authRepo';
 import debounce from '../../core/debounce';
+import EULATERMS from './Agreement';
+import Enviroment from '../../core/Enviroment';
+import { useDialog } from '../../domain/usecases/useDialog';
+import CURRENT_TERMS_VERSION from '../../core/CURRENT_TERMS_VERSION';
   
 const ProfilePicture = React.memo(({ image }) => (
   <IonImg
@@ -49,6 +53,9 @@ const [referralToken, setReferralTokenState] = useState(null);
   const [loading,setLoading]=useState(false)
   const [email, setEmail] = useState("");
   const {showAlert}=useAlert()
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
+const [showTerms, setShowTerms] = useState(false);
+
 const router = useIonRouter();
 const searchParams = new URLSearchParams(router.routeInfo.search);
 
@@ -70,16 +77,24 @@ const toggleSlot = (slotId) => {
     prev.includes(slotId) ? prev.filter(s => s !== slotId) : [...prev, slotId]
   );
 };
-  const {  setSeo, seo } = useContext(Context);
 
-  useEffect(() => {
-    setSeo({
-      ...seo,
-      title: "Plumbum (Sign Up) - Your Writing, Your Community"
-    });
-  }, []);
-
-
+const {openDialog,resetDialog}=useDialog()
+const openTerms = () => {
+  openDialog({
+    title: "Terms & Conditions",
+    height: 90,
+    breakpoint: 1,
+    text: () => <EULATERMS/>,
+    agree:async () => {
+       await dispatch(acceptTerms({ version: CURRENT_TERMS_VERSION }));
+      setAgreedToTerms(true);
+      resetDialog();
+    },
+    agreeText: "I Agree",
+    disagree: () => resetDialog(),
+    disagreeText: "Cancel",
+  });
+};
 
 const handleProfilePicture = (e) => {
   const file = e.target.files[0];
@@ -124,12 +139,18 @@ useEffect(() => {
   };
 }, [pictureUrl]);
 const completeSignUp = async () => {
-  try {
-    // ✅ Safe Capacitor reads
+ try {
+    // try {
+    if (!agreedToTerms) {
+      showAlert({ message: "Please agree to the Terms of Service to continue", type: AlertType.error });
+      return;
+    }
     if (!usernameUnique) {
-  showAlert({ message: "Username is already taken", type: AlertType.error });
-  return;
-}
+      showAlert({ message: "Username is already taken", type: AlertType.error });
+      return;
+    }
+
+
     const { value: identityToken } = await Preferences.get({ key: "idToken" });
     const { value: googleId } = await Preferences.get({ key: "googleId" });
 
@@ -147,6 +168,9 @@ const params = {
   writingSprintSlots,
   frequency,
   selfStatement,
+  privacy: isPrivate,
+ termsVersion: CURRENT_TERMS_VERSION,
+  termsAcceptedAt: new Date().toISOString(),
   privacy: isPrivate,
   ...pictureParams
 };
@@ -279,6 +303,11 @@ return(<IonContent
   setIsPrivate={setIsPrivate}
   onSubmit={completeSignUp}
   loading={loading}
+    agreedToTerms={agreedToTerms}
+  setAgreedToTerms={setAgreedToTerms}
+  showTerms={showTerms}
+  openTerms={openTerms}
+  setShowTerms={setShowTerms}
   setConfirmPassword={setConfirmPassword}
   confirmPassword={confirmPassword}
     pictureUrl={pictureUrl}           // ← add
@@ -306,6 +335,8 @@ const SPRINT_SLOTS = [
   password,
   setPassword,
   isPrivate,
+    agreedToTerms,
+  openTerms,
   setIsPrivate,
   onSubmit,
   loading,
@@ -478,7 +509,25 @@ const SPRINT_SLOTS = [
             </p>
           </div>
         </div>
-
+<div className="flex items-start gap-2 pt-2">
+          <input
+            type="checkbox"
+            checked={agreedToTerms}
+            readOnly
+            onClick={openTerms}
+            className="mt-1"
+          />
+          <p className="text-xs text-neutral-500">
+            I agree to the{" End User License Agreement and Terms & Conditions."}
+            <button type="button" onClick={()=>window.open(Enviroment.domain+"/eula")} className="underline text-neutral-700">
+              End User License Agreement
+            </button>{" "}
+            and{" "}
+            <button type="button" onClick={()=>window.open(Enviroment.domain+"/terms")} className="underline text-neutral-700">
+              Terms & Conditions
+            </button>
+          </p>
+        </div>
         {/* Submit Button */}
         <button
           onClick={onSubmit}

@@ -1,6 +1,6 @@
 
 
-import { useEffect, useState, useContext, useMemo, useCallback, useRef } from 'react';
+import { useEffect, useState,  useMemo, useCallback, useRef } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { createStory, } from '../actions/StoryActions';
 import { setPageInView, } from '../actions/PageActions.jsx';
@@ -21,9 +21,11 @@ import { useAlert } from '../core/useAlert.jsx';
 import CreateCollectionForm from '../components/collection/CreateCollectionForm.jsx';
 import { fetchCollectionFeedStories, fetchCollectionFeedSubCollections } from '../actions/CollectionActions.js';
 import CollectionFeed from '../components/collection/CommunitiesPanel.jsx';
+import { postCollectionRole } from '../actions/RoleActions.jsx';
+import { useDialog } from '../domain/usecases/useDialog.jsx';
 
 // ── Layout ──────────────────────────────────────
-const WRAP = "max-w-[72rem] dark:bg-base-bgDark bg-cream mx-auto ";
+const WRAP = " dark:bg-base-bgDark bg-cream mx-auto ";
 
 
 // ── Sections ────────────────────────────────────
@@ -67,41 +69,131 @@ const CARD_PAD = "p-4 sm:p-5";
 
 // ── Skeleton ────────────────────────────────────
 const SKELETON_BLOCK = "bg-gray-200 rounded animate-pulse";
+
 const WorkshopItem = ({ item, router }) => {
-  if (!item) return <WorkshopItemSkeleton />;
+  const dispatch = useDispatch();
+  const { currentProfile } = useSelector(state => state.users);
+  const [joining, setJoining] = useState(false);
 
-  return (
+const {showPrompt}=useAlert()
+const joinWorkshop = () => {
+  if (!currentProfile?.id) {
+    showPrompt({
+      message: "You need to log in to join this workshop.",
+      agree: () => {
+        router.push(Paths.login())
+      },
+      agreeText: "Log In",
+      disagreeText: "Cancel",
+    });
+    return;
+  }
+  if (joining) return;
 
-  <div onClick={() => router.push(Paths.collection.createRoute(item.id))} className={`${CARD} ${CARD_PAD}  w-[100%]`}>
-      <IonLabel>
-        <h2 className="text-md font-semibold dark:text-cream text-soft truncate">
-          {shortName(item.title,30)}
-        </h2>
-
-    
-
-        <div className="flex justify-between text-xs dark:text-cream text-gray-500 mt-1">
-          <span>{item?.location?.city || "Online / TBD"}</span>
-
-          {item.participants ? (
-            <span className="font-bold dark:text-cream text-soft">
-              {item.participants} participants
-            </span>
-          ) : null}
-        </div>
-      </IonLabel>
-      </div>
- 
-  );
+  setJoining(true);
+  dispatch(
+    postCollectionRole({
+      type: "writer",
+      profileId: currentProfile.id,
+      collectionId: item.id,
+    })
+  )
+    .then((res) => {
+      checkResult(
+        res,
+        () => {
+          router.push(Paths.collection.createRoute(item.id));
+        },
+        () => {
+          toast.error("Couldn't join this workshop. Please try again.");
+        }
+      );
+    })
+    .finally(() => setJoining(false));
 };
 
+const handleCardClick = () => {
+  if (item.isPrivate) {
+    showPrompt({
+      message: "This workshop is private. You'll need to join to see it.",
+      agree: joinWorkshop,
+      agreeText: "Join",
+      disagreeText: "Cancel",
+    });
+    return;
+  }
+  router.push(Paths.collection.createRoute(item.id));
+};
 
+const handleJoinClick = (e) => {
+  e.stopPropagation();
+  joinWorkshop();
+};
+
+  if (!item) return <WorkshopItemSkeleton />;
+  return(<div
+  onClick={handleCardClick}
+  className={`${CARD} ${CARD_PAD} w-full cursor-pointer flex items-center justify-between gap-2`}
+>
+  <div className="min-w-0 flex-1">
+    <h2 className="text-sm sm:text-md font-semibold dark:text-cream text-soft truncate">
+      {shortName(item.title, 30)}
+    </h2>
+    <div className="text-xs dark:text-cream text-gray-500 mt-0.5 truncate">
+      {item?.location?.city || "Online / TBD"}
+    </div>
+  </div>
+
+  <button
+    onClick={handleJoinClick}
+    disabled={joining}
+    className="btn btn-sm btn-outline shrink-0"
+  >
+    {joining ? (
+      <span className="loading loading-spinner loading-xs"></span>
+    ) : (
+      "Join"
+    )}
+  </button>
+</div>)
+  // return (
+  //   <div onClick={handleCardClick} className={`${CARD} ${CARD_PAD} w-[100%] cursor-pointer`}>
+  //     <div>
+  //       <h2 className="text-md font-semibold dark:text-cream text-soft truncate">
+  //         {shortName(item.title, 30)}
+  //       </h2>
+  //       <div className="flex justify-between items-center text-xs dark:text-cream text-gray-500 mt-1">
+  //         <span>{item?.location?.city || "Online / TBD"}</span>
+  //         {/* {item.participants ? (
+  //           <span className="font-bold dark:text-cream text-soft">
+  //             {item.participants} participants
+  //           </span>
+  //         ) : null} */}
+  //       </div>
+  //       <button
+  //         onClick={handleJoinClick}
+  //         disabled={joining}
+  //         className="btn btn-sm btn-outline mt-2"
+  //       >
+  //         {joining ? (
+  //           <>
+  //             <span className="loading loading-spinner loading-xs"></span>
+  //             Joining...
+  //           </>
+  //         ) : (
+  //           "Join"
+  //         )}
+  //       </button>
+  //     </div>
+  //   </div>
+  // );
+};
 function HomeEmbed({workshops,stories,prompts,isGlobal,setIsGlobal}) {
 
-const { openDialog, closeDialog, resetDialog } = useContext(Context);
-  const dispatch = useDispatch();
+const { openDialog, closeDialog, resetDialog } = useDialog()
+  const dispatch = useDispatch()
   const router = useIonRouter();
-  const {  setSeo } = useContext(Context);
+
 
   const currentProfile = useSelector(state => state.users.currentProfile);
   const {recommendedStories} = useSelector(state=>state.pages)
@@ -118,7 +210,7 @@ const { showAlert } = useAlert()
   (prompts ?? []).filter(p => p?.data),
   [prompts]
 );
-  //  useMemo(() => prompts?.filter(p => p?.data) || [], [prompts]);
+  
 
   useEffect(() => {
     if (stories?.length) {
@@ -127,15 +219,7 @@ const { showAlert } = useAlert()
     }
   }, [stories]);
 
-  useEffect(() => {
-    if (!currentProfile) return;
-    setSeo(prev => ({
-      ...prev,
-      title: `Plumbum (${currentProfile.username}) Home`,
-      description: `Welcome to ${currentProfile.username}'s home on Plumbum.`,
-      url: `https://plumbum.app/${currentProfile.username}`,
-    }));
-  }, [currentProfile, setSeo]);
+ 
 
   const handleGlobal = () => setIsGlobal(!isGlobal);
  const ClickCreateACollection = () => {
@@ -205,8 +289,8 @@ const { items, getMore, hasMore, isLoading } = useCollectionFeed({
   },
   enabled: !!homeCol?.id,
 });
-
-
+console.log(homeCol)
+console.log(items)
 
 const fetchSubCollections = useCallback(async (skip, take) => {
   if (!homeCol?.id) return [];
@@ -253,13 +337,15 @@ const fetchSubCollections = useCallback(async (skip, take) => {
   </ButtonWrapper>
 </div>
 </div>
-{/* Stories className={`${WRAP} ${PAGE_Y} ${STACK_LG}`} */}
-        
-          <div className={SECTION}>
-          {/* Stories */}
-          <SectionHeader title="What's happening in your communities" />
-      
 
+        
+        <div className={`${WRAP} ${PAGE_Y} ${STACK_LG}`} >
+        <div className={SECTION}>
+          {/* Stories */}
+           <div className=" overflow-y-auto  bg-base-surface dark:bg-base-bgDark md:max-w-[52em] mx-auto">
+          <SectionHeader title="What's happening in your communities" />
+      </div>
+</div>
 <div className={SCROLL_ROW+" overflow-y-hidden"}>
   {whatsHappeningList.length
     ? whatsHappeningList.map(story => (
@@ -279,6 +365,7 @@ const fetchSubCollections = useCallback(async (skip, take) => {
           {/* Workshops */}
           <div className={`${WRAP} ${PAGE_Y} ${STACK_LG}`} >
            <div className={SECTION}>
+             <div className=" overflow-y-auto  bg-base-surface dark:bg-base-bgDark md:max-w-[52em] mx-auto">
           <SectionHeader
             title="Workshops near you"
             right={
@@ -288,45 +375,85 @@ const fetchSubCollections = useCallback(async (skip, take) => {
               </div>
             }
           />
-        </div>
-        <div className={`${WRAP} ${PAGE_Y} ${STACK_LG}`} >
-           {/* Workshop grid */}
-          <div className={SECTION}>
-            <div className="grid gap-4 sm:grid-cols-2 px-4 lg:grid-cols-2">
-              {sortedWorkshops?.length
-                ? sortedWorkshops.map(workshop => (
-                    <WorkshopItem key={workshop?.id} item={workshop} router={router} />
-                  ))
-                : [1, 2, 3].map(i => (
-                    <WorkshopItem key={i} item={null} router={router} />
-                  ))}
-            </div>
           </div>
+        </div>
+        {/* <div className={`${WRAP} ${PAGE_Y} ${STACK_LG}`} > */}
+          
+           {/* Workshop grid */}
+          
+  <div className={`${WRAP} ${PAGE_Y} ${STACK_LG}`}>
+    {/* Workshop grid */}
+    <div className={SECTION}>
+      {sortedWorkshops === undefined ? (
+        // still loading
+        <div className="grid gap-4 sm:grid-cols-2 px-4 lg:grid-cols-2">
+          {[1, 2, 3].map(i => (
+            <WorkshopItem key={i} item={null} router={router} />
+          ))}
+        </div>
+      ) : sortedWorkshops.length ? (
+        <div className="grid gap-4 sm:grid-cols-2 px-4 lg:grid-cols-2">
+          {sortedWorkshops.map(workshop => (
+            <WorkshopItem key={workshop?.id} item={workshop} router={router} />
+          ))}
+        </div>
+      ) : (
+        <WorkshopsEmptyState isGlobal={isGlobal} router={router} />
+      )}
+   
+  </div>
+{/* </div> */}
+     
         </div> {/* ← closes "Workshops near you" SECTION */}
 </div>
         {/* Prompts */}
         <div className={`${WRAP} ${PAGE_Y} ${STACK_LG}`} >
         <div className={SECTION}>
-          <SectionHeader title="Writing Prompts for you" />
-      <div className={`${GRID} px-4`}>
-  {filteredPrompts.length
-    ? filteredPrompts.map(story => (
-        <StoryItem key={story?.id} page={story} html={story?.data} />
-      ))
-    : [1, 2, 3].map(i => (
-        <div
-          key={i}
-          className={`${SKELETON_BLOCK} h-[10rem] w-full`}
-        />
-      ))
-  }
+       <div className=" overflow-y-auto  bg-base-surface dark:bg-base-bgDark md:max-w-[52em] mx-auto">
+      <div className=" overflow-y-auto  bg-base-surface dark:bg-base-bgDark md:max-w-[52em] mx-auto">
+<SectionHeader title="Writing Prompts for you" />
+</div>
+</div>
+{/* <div className="grid grid-cols-1 sm:grid-cols-2 justify-center xl:grid-cols-3 gap-4 px-4 sm:px-6 lg:px-8">
+  {filteredPrompts === undefined ? (
+    [1, 2, 3].map(i => (
+      <div key={i} className={`${SKELETON_BLOCK} h-[10rem] w-full`} />
+    ))
+  ) : filteredPrompts.length ? (
+    filteredPrompts.map(story => (
+      <StoryItem key={story?.id} page={story} html={story?.data} />
+    ))
+  ) : (
+    <PromptsEmptyState />
+  )}
+</div> */}
+<div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 px-4 sm:px-6 lg:px-8 justify-items-center">
+  {filteredPrompts === undefined ? (
+    [1, 2, 3].map(i => (
+      <div key={i} className={`${SKELETON_BLOCK} h-[10rem] w-full`} />
+    ))
+  ) : filteredPrompts.length ? (
+    filteredPrompts.map(story => (
+      <div key={story?.id} className="w-full max-w-[24rem]">
+        <StoryItem page={story} html={story?.data} />
+      </div>
+    ))
+  ) : (
+    <div className="col-span-full w-full flex justify-center">
+      <PromptsEmptyState />
+    </div>
+  )}
 </div>
         </div>
         </div>
 
         {/* What's new */}
-        <div className={SECTION+"px-2"}>
+        <div className={`${WRAP} ${PAGE_Y} ${STACK_LG}`} >
+        <div className={SECTION}>
+           <div className=" overflow-y-auto  bg-base-surface dark:bg-base-bgDark md:max-w-[52em] mx-auto">
          <SectionHeader title="What's new" />
+         </div>
+         <div className='px-3'>
 {!homeCol?.id ? (
   <FeedSkeleton />
 ) : items.length === 0 ? (
@@ -339,6 +466,8 @@ const fetchSubCollections = useCallback(async (skip, take) => {
     shortenTo={400}
   />
 )}
+</div>
+</div>
 </div>
       </div> {/* ← closes WRAP */}
     </ErrorBoundary>
@@ -500,7 +629,16 @@ function buildSortedFeed(directStories, subStories) {
   };
 }
  
-
+const PromptsEmptyState = () => (
+  <div className="col-span-full flex flex-col items-center justify-center text-center gap-3 py-10 px-6">
+    <p className="text-base font-medium text-soft dark:text-cream">
+      No prompts here yet.
+    </p>
+    <p className="text-sm text-neutral-500 dark:text-cream/70 max-w-sm">
+      Nothing's landed in your queue right now. Check back soon, or start writing something of your own — no prompt required.
+    </p>
+  </div>
+);
 const FeedEmpty = () => (
   <div className="flex flex-col items-center justify-center mt-16 px-6 text-center gap-3">
     <p className="text-2xl">✦</p>
@@ -526,5 +664,26 @@ const FeedSkeleton = () => (
         </div>
       </div>
     ))}
+  </div>
+);
+const WorkshopsEmptyState = ({ isGlobal, router }) => (
+  <div className="flex flex-col items-center justify-center text-center gap-4 px-6 py-12">
+    <p className="text-base font-medium text-soft dark:text-cream">
+      {isGlobal
+        ? "No workshops out there yet."
+        : "No workshops near you yet."}
+    </p>
+    <p className="text-sm text-neutral-500 dark:text-cream/70 max-w-sm">
+      Head to the studio to find a workshop worth joining — or start your own and build the room you wish existed.
+    </p>
+    <div className="flex gap-3 mt-2">
+ 
+      <button
+        onClick={() => router.push(Paths.workshop.reader())}
+        className="px-4 py-2 rounded-lg bg-emerald-800 text-white text-sm font-medium hover:bg-emerald-700 transition-colors"
+      >
+        Create a workshop
+      </button>
+    </div>
   </div>
 );

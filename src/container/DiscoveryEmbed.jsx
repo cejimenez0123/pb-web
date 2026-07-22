@@ -44,14 +44,6 @@ const {
     initGA();
   }, []);
 
-  useLayoutEffect(() => {
-    setSeo({
-      title: 'Plumbum (Discovery) - Read Fresh Writing',
-      description: 'Explore events, workshops, and writer meetups on Plumbum.',
-      name: 'Plumbum',
-      type: '',
-    });
-  }, [setSeo]);
 
   useLayoutEffect(() => {
     dispatch(setPagesInView({ pages: [] }));

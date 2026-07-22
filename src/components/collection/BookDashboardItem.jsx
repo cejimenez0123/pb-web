@@ -12,6 +12,8 @@ import { debounce } from 'lodash';
 import Carousel from './Carousel';
 import { deleteCollectionFromCollection, addCollectionListToCollection } from '../../actions/CollectionActions';
 import ErrorBoundary from '../../ErrorBoundary';
+import { useAlert } from '../../core/useAlert';
+import AlertType from '../../core/AlertType';
 
 const theme = {
   card: `
@@ -33,7 +35,8 @@ const theme = {
 function BookDashboardItem({ book }) {
   const dispatch = useDispatch();
   const { currentProfile } = useSelector(state => state.users);
-  const { setError } = useContext(Context);
+
+  const {showAlert}=useAlert()
   const router = useIonRouter();
   const [bookmarked, setBookmarked] = useState(null);
 
@@ -48,7 +51,7 @@ function BookDashboardItem({ book }) {
 
   const handleBookmark = debounce((e) => {
     e.stopPropagation();
-    if (!currentProfile) return setError("Please Login");
+    if (!currentProfile) return showAlert({message:"Please Login",type:AlertType.error});
     if (bookmarked) {
       dispatch(deleteCollectionFromCollection({ tcId: bookmarked.id }))
         .then(() => setBookmarked(null));
@@ -56,7 +59,7 @@ function BookDashboardItem({ book }) {
       const archive = currentProfile.profileToCollections.find(
         col => col.type === "home"
       )?.collection;
-      if (!archive) return setError("Missing archive");
+      if (!archive) return showAlert({message:"Missing archive",type:AlertType.error});
       dispatch(addCollectionListToCollection({
         id: archive.id,
         list: [book.id],
@@ -81,17 +84,15 @@ function BookDashboardItem({ book }) {
   return (
     <ErrorBoundary>
       <div
-        onClick={() => router.push(Paths.collection.createRoute(book.id))}
-        className={`
-          mt-3 mx-auto rounded-2xl overflow-hidden
-          cursor-pointer select-none
-          transition-all duration-200
-          active:scale-[0.97] active:opacity-90
-          md:hover:shadow-md
-          w-full max-w-full
-          sm:max-w-lg md:max-w-xl
-          ${theme.card}
-        `}
+      
+className={`
+  mt-3 w-full rounded-2xl overflow-hidden
+  cursor-pointer select-none
+  transition-all duration-200
+  active:scale-[0.97] active:opacity-90
+  md:hover:shadow-md
+  ${theme.card}
+`}
         style={{ WebkitTapHighlightColor: "transparent" }}
       >
         {/* Header */}
@@ -108,7 +109,7 @@ function BookDashboardItem({ book }) {
               <IonText className={`text-sm font-medium truncate ${theme.headerText}`}>
                 {book.profile?.username}
               </IonText>
-              <IonText className={`text-xs truncate ${theme.subText}`}>
+              <IonText   onClick={() => router.push(Paths.collection.createRoute(book.id))} className={`text-xs truncate ${theme.subText}`}>
                 {book.title || "Untitled"}
               </IonText>
             </div>
@@ -125,7 +126,7 @@ function BookDashboardItem({ book }) {
 
         {/* Description */}
         {book.description && (
-          <div className="px-4 pb-3">
+          <div   onClick={() => router.push(Paths.collection.createRoute(book.id))} className="px-4 pb-3">
             <IonText className={`text-sm leading-relaxed line-clamp-2 ${theme.subText}`}>
               {book.description}
             </IonText>

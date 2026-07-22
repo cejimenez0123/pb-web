@@ -22,6 +22,8 @@ import Paths from "../core/paths";
 import fetchCity from "../core/fetchCity";
 import { useDialog } from "../domain/usecases/useDialog";
 import { SocialLogin } from "@capgo/capacitor-social-login";
+import BlockedUsersDialog from "../components/auth/BlockedUserDialog.jsx";
+import { fetchBlockedProfiles } from "../actions/ModerationAcitons.jsx";
 // List of countries (can be expanded)
 const COUNTRIES = [
   "United States",
@@ -74,7 +76,7 @@ const COUNTRIES = [
   "Italy",
   // add more
 ];
-
+const [showBlocked, setShowBlocked] = useState(false);
 const [form, setForm] = useState({
   username: "",
   selfStatement: "",
@@ -294,6 +296,119 @@ dispatch(updateProfile({
   /* --------------------------
      Delete account
   ---------------------------*/
+    const handleShowBlocked = () => {
+    // Loading dialog
+    openDialog({
+      title: "Blocked Users",
+      text: () => (
+        <div className="p-4 text-center text-soft">Loading…</div>
+      ),
+      disagreeText: "Close",
+      disagree: () => closeDialog(),
+    });
+
+    dispatch(fetchBlockedProfiles()).then((res) => {
+      checkResult(
+        res,
+        () => {
+          const list = res?.payload?.blockedProfiles || [];
+
+          openDialog({
+            title: "Blocked Users",
+            height: 60,
+            text: () => (
+              <div className="p-4 max-h-64 overflow-auto">
+                {!Array.isArray(list) || list.length === 0 ? (
+                  <div className="text-center text-soft">
+                    You haven't blocked anyone.
+                  </div>
+                ) : (
+                  <ul className="space-y-3">
+                    {list.map((p) => {
+                      const pic = p.profilePic || "";
+                      const src = pic?.includes("http")
+                        ? pic
+                        : pic
+                        ? Enviroment.imageProxy(pic)
+                        : "https://placehold.co/40";
+
+                      return (
+                        <li
+                          key={p.id}
+                          className="flex items-center gap-3 p-2 rounded-lg border border-soft"
+                        >
+                          <img
+                            src={src}
+                            alt={p.username || "User"}
+                            className="w-10 h-10 rounded-full object-cover"
+                          />
+                          <div className="flex-1 text-soft">
+                            <div className="font-medium">
+                              {p.username || "Unknown"}
+                            </div>
+                            <div className="text-xs opacity-60">Blocked</div>
+                          </div>
+                          <button
+                            className="text-xs px-3 py-1 rounded-lg border border-soft hover:bg-soft/10"
+                            onClick={() => handleUnblock(p.id, p.username)}
+                          >
+                            Unblock
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+              </div>
+            ),
+            disagreeText: "Close",
+            disagree: () => closeDialog(),
+          });
+        },
+        (err) => {
+          openDialog({
+            title: "Blocked Users",
+            text: () => (
+              <div className="p-4 text-center text-red-600">
+                {err?.message || "Error loading blocked users"}
+              </div>
+            ),
+            agreeText: "OK",
+            agree: () => closeDialog(),
+          });
+        }
+      );
+    });
+  };
+
+  const handleUnblock = (blockedProfileId, username) => {
+    openDialog({
+      title: "Unblock user?",
+      text: `Unblock @${username || "this user"}?`,
+      agreeText: "Unblock",
+      agree: () => {
+        dispatch(unblockProfile(blockedProfileId)).then((res) => {
+          checkResult(
+            res,
+            () => {
+              showAlert({ message: "User unblocked", type: AlertType.success });
+              // Re-open the blocked list so it refreshes
+              handleShowBlocked();
+            },
+            (err) => {
+              showAlert({
+                message: err?.message || "Failed to unblock",
+                type: AlertType.error,
+              });
+            }
+          );
+        });
+      },
+      disagreeText: "Cancel",
+      disagree: () => closeDialog(),
+    });
+  };
+
   const handleDelete = () => {
 
     openDialog({
@@ -475,6 +590,18 @@ dispatch(updateProfile({
     </div>
   );
 })()}
+<button
+  className="btn btn-outline border-soft text-soft hover:bg-soft/10 w-full"
+  onClick={() => handleShowBlocked()}
+>
+  Blocked Users
+</button>
+
+{/* Dialog */}
+{/* <BlockedUsersDialog
+  isOpen={showBlocked}
+  onClose={() => setShowBlocked(false)}
+/> */}
         {/* Save */}
         <button
           className="btn bg-soft text-white hover:bg-soft/90 w-full border-none"

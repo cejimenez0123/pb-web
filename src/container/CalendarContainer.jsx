@@ -1,10 +1,6 @@
 import { useEffect } from "react";
 import { initGA } from "../core/ga4";
-import Enviroment from "../core/Enviroment";
-import Context from "../context";
-import { useContext } from "react";
-import Paths from "../core/paths";
-import { useLayoutEffect } from "react";
+
 import { IonContent, IonText, useIonRouter } from "@ionic/react";
 import "../App.css";
 import CalendarEmbed from "../components/CalendarEmbed";
@@ -22,25 +18,18 @@ const SectionLabel = ({ children }) => (
 );
 
 export default function CalendarContainer() {
-  const { seo, setSeo } = useContext(Context);
+  // const { seo, setSeo } = useContext(Context);
   const isClip = import.meta.env.MODE == "clip";
   const currentProfile = isClip ? null : useSelector(state => state.users.currentProfile);
   const router = useIonRouter();
   const isNative = Capacitor.isNativePlatform();
 
-  useLayoutEffect(() => {
-    setSeo({
-      title: "Plumbum — Events & Writing Calendar",
-      description: "Browse writing events, workshops, and meetups on the Plumbum calendar.",
-      name: "Plumbum",
-      type: "website",
-    });
-  }, []);
+  
 
   useEffect(() => {
     initGA();
   }, []);
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  
 
   return (
 
