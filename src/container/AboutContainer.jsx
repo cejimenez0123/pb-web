@@ -130,7 +130,7 @@ function AppStoreLaunch() {
       </div>
 
       <h2 className="lora-bold text-[2rem] leading-tight text-zinc-900 mb-2 text-center">
-        Plumbum is on the App Store
+        Plumbum {!isLive?" on the App Store":"is on the App Store"}
       </h2>
 
       <p className="open-sans-medium text-[1rem] leading-loose text-zinc-500 mb-8 text-center">
