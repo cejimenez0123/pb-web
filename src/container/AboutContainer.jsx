@@ -17,7 +17,7 @@
     author: "Kay P.",
   },
 ];
-
+import appleLogo from "../images/logo/Applelogo.png"
 function TestimonialTriptych() {
   return (
     <div className="py-4">
@@ -70,44 +70,112 @@ function TestimonialTriptych() {
   );
 }
 
-// const TESTIMONIALS = [
-//   {
-//     quote:
-//       "Plumbum.app Workshops have been impactful in helping me build community and connect with poets across NYC and the Tri-State area. I leave with quality feedback and new ways of thinking about my work.",
-//     author: "Rob P.",
-//   },
-//   {
-//     quote:
-//       "Sol Emilio brought together poets who understand that craft means sitting in a room and doing the work together.",
-//     author: "Faust S.",
-//   },
-//   {
-//     quote:
-//       "Such a fulfilling workshop ... in the Bronx.",
-//     author: "Kay P.",
-//   },
-// ];
-// let firstImages = [out, al, crowd, duo,balcony, vemilo,  table7,TESTIMONIALS[2]];
-// let secImages = [table3,out2,evolution, TESTIMONIALS[0], vemilo2, table2, table5,TESTIMONIALS[1]];
-// function userTestimonials() {
-//   const [index, setIndex] = useState(0);
-//   const [fade, setFade] = useState(true); // controls fade in/out
-//   const intervalRef = useRef(null);
+import { useEffect, useRef, useState } from "react";
+// import { sendGAEvent } from "../core/ga4";
 
-//   useEffect(() => {
-//     const nextSlide = () => {
-//       setFade(false); // start fade out
-//       setTimeout(() => {
-//         setIndex((prev) => (prev + 1) % TESTIMONIALS.length); // update index
-//         setFade(true); // fade in new quote
-//       }, 500); // match fade duration
-//     };
+// Set this to your real launch instant.
+// Using an explicit UTC offset avoids "environment default timezone" bugs.
+const LAUNCH_DATE_ISO = "2026-07-23T06:00:00-04:00"; // 6:00 AM America/New_York (EDT)
+const APP_STORE_URL = "https://apps.apple.com/us/app/plumbum-writers/id6751230895"
+function getTimeRemaining(target) {
+  const diff = target - Date.now();
+  if (diff <= 0) return null;
+  const totalSeconds = Math.floor(diff / 1000);
+  return {
+    days: Math.floor(totalSeconds / 86400),
+    hours: Math.floor((totalSeconds % 86400) / 3600),
+    minutes: Math.floor((totalSeconds % 3600) / 60),
+    seconds: totalSeconds % 60,
+  };
+}
 
-//     intervalRef.current = setInterval(nextSlide, 5000);
+function CountdownUnit({ value, label }) {
+  return (
+    <div className="flex flex-col items-center">
+      <span className="lora-bold text-[2rem] leading-none text-emerald-700 tabular-nums">
+        {String(value).padStart(2, "0")}
+      </span>
+      <span className="open-sans-medium text-[0.65rem] tracking-widest uppercase text-zinc-400 mt-1">
+        {label}
+      </span>
+    </div>
+  );
+}
 
-//     return () => clearInterval(intervalRef.current);
-//   }, []);
+function AppStoreLaunch() {
+  const launchDate = useRef(new Date(LAUNCH_DATE_ISO)).current;
+  const [remaining, setRemaining] = useState(() => getTimeRemaining(launchDate));
 
+  useEffect(() => {
+    // No need to tick every second if we're more than a minute out —
+    // but for a launch countdown, per-second feels intentional, so keep it simple.
+    const interval = setInterval(() => {
+      setRemaining(getTimeRemaining(launchDate));
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [launchDate]);
+
+  const handleDownloadClick = () => {
+    sendGAEvent("app_store_click", "Click Download", "App Store Launch CTA", 0, false);
+  };
+
+  const isLive = remaining === null;
+
+  return (
+    <div className="py-4">
+      <div className="mb-2 text-center">
+        <span className="open-sans-medium text-xs tracking-widest uppercase text-zinc-400">
+          {isLive ? "Now Available" : "Coming Soon"}
+        </span>
+      </div>
+
+      <h2 className="lora-bold text-[2rem] leading-tight text-zinc-900 mb-2 text-center">
+        Plumbum is on the App Store
+      </h2>
+
+      <p className="open-sans-medium text-[1rem] leading-loose text-zinc-500 mb-8 text-center">
+        {isLive
+          ? "Download the app and join your first workshop today."
+          : "Launching July 23 at 6:00 AM ET."}
+      </p>
+
+      <div className={`flex flex-col items-center rounded-2xl  ${!isLive?" bg-white border border-zinc-200 ":""} p-8 max-w-md mx-auto`}>
+        {!isLive ? (
+          <>
+            <div className="flex gap-6 mb-6">
+              <CountdownUnit value={remaining.days} label="Days" />
+              <CountdownUnit value={remaining.hours} label="Hrs" />
+              <CountdownUnit value={remaining.minutes} label="Min" />
+              <CountdownUnit value={remaining.seconds} label="Sec" />
+            </div>
+           
+          </>
+        ) : (
+          <a
+          href={APP_STORE_URL}
+  target="_blank"
+  rel="noreferrer"
+  onClick={handleDownloadClick}
+  className="inline-flex items-center gap-2 bg-black text-white rounded-xl px-6 py-3 hover:bg-zinc-800 transition-colors"
+>
+  <img
+    src={appleLogo}
+    alt=""
+    className="max-h-8 max-w-8"
+    onError={(e) => { e.currentTarget.style.display = "none"; }}
+  />
+  <span className="open-sans-medium text-sm leading-tight text-left">
+    <span className="block text-[0.6rem] text-zinc-300">Download on the</span>
+    <span className="block text-base font-semibold">App Store</span>
+  </span>
+</a>
+  
+
+        )}
+      </div>
+    </div>
+  );
+}
 
 import "../styles/About.css"
 import { useMediaQuery } from "react-responsive"
@@ -324,101 +392,101 @@ export default function AboutContainer() {
   );
 
 }
-function BetaDownload() {
-  const steps = [
-    {
-      step: "Step 1",
-      icon: "📲",
-      name: "Download TestFlight",
-      body: "Plumbum runs through TestFlight, Apple's beta installer. Grab it from the App Store first — it's free and takes a second.",
-      cta: {
-        label: "Get TestFlight",
-        href: "https://apps.apple.com/app/testflight/id899247664",
-        variant: "ghost",
-      },
-      gaStep: "1_download_testflight",
-    },
-    {
-      step: "Step 2",
-      icon: "🪶",
-      name: "Install Plumbum",
-      body: "Once TestFlight is installed, come back here and tap below. It'll open in TestFlight and drop Plumbum onto your phone.",
-      cta: {
-        label: "Install Plumbum →",
-        href: "https://testflight.apple.com/join/nBJJb98f",
-        variant: "solid",
-      },
-      gaStep: "2_install_plumbum",
-    },
-  ];
+// function BetaDownload() {
+//   const steps = [
+//     {
+//       step: "Step 1",
+//       icon: "📲",
+//       name: "Download TestFlight",
+//       body: "Plumbum runs through TestFlight, Apple's beta installer. Grab it from the App Store first — it's free and takes a second.",
+//       cta: {
+//         label: "Get TestFlight",
+//         href: "https://apps.apple.com/app/testflight/id899247664",
+//         variant: "ghost",
+//       },
+//       gaStep: "1_download_testflight",
+//     },
+//     {
+//       step: "Step 2",
+//       icon: "🪶",
+//       name: "Install Plumbum",
+//       body: "Once TestFlight is installed, come back here and tap below. It'll open in TestFlight and drop Plumbum onto your phone.",
+//       cta: {
+//         label: "Install Plumbum →",
+//         href: "https://testflight.apple.com/join/nBJJb98f",
+//         variant: "solid",
+//       },
+//       gaStep: "2_install_plumbum",
+//     },
+//   ];
 
-  return (
-    <>
-    <div className="py-4">
-      <div className="mb-2">
-        <span className="open-sans-medium text-xs tracking-widest uppercase text-zinc-400">
-          The Beta
-        </span>
-      </div>
-      <h2 className="lora-bold text-[2rem] leading-tight text-zinc-900 mb-2">
-        Get Plumbum on your iPhone.
-      </h2>
-      <p className="open-sans-medium text-[1rem] leading-loose text-zinc-500 mb-8">
-        Two steps. Grab TestFlight, then come back here to install Plumbum.
-      </p>
+//   return (
+//     <>
+//     <div className="py-4">
+//       <div className="mb-2">
+//         <span className="open-sans-medium text-xs tracking-widest uppercase text-zinc-400">
+//           The Beta
+//         </span>
+//       </div>
+//       <h2 className="lora-bold text-[2rem] leading-tight text-zinc-900 mb-2">
+//         Get Plumbum on your iPhone.
+//       </h2>
+//       <p className="open-sans-medium text-[1rem] leading-loose text-zinc-500 mb-8">
+//         Two steps. Grab TestFlight, then come back here to install Plumbum.
+//       </p>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {steps.map((s) => (
-          <div
-            key={s.step}
-            className={`flex flex-col rounded-2xl p-6 bg-white ${
-              s.cta.variant === "solid"
-                ? "border-2 border-emerald-600"
-                : "border border-zinc-200"
-            }`}
-          >
-            <span className="text-2xl mb-4" role="img" aria-label={s.name}>
-              {s.icon}
-            </span>
+//       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+//         {steps.map((s) => (
+//           <div
+//             key={s.step}
+//             className={`flex flex-col rounded-2xl p-6 bg-white ${
+//               s.cta.variant === "solid"
+//                 ? "border-2 border-emerald-600"
+//                 : "border border-zinc-200"
+//             }`}
+//           >
+//             <span className="text-2xl mb-4" role="img" aria-label={s.name}>
+//               {s.icon}
+//             </span>
 
-            <p
-              className={`open-sans-medium text-xs tracking-widest uppercase mb-2 ${
-                s.cta.variant === "solid" ? "text-emerald-600" : "text-zinc-400"
-              }`}
-            >
-              {s.step}
-            </p>
+//             <p
+//               className={`open-sans-medium text-xs tracking-widest uppercase mb-2 ${
+//                 s.cta.variant === "solid" ? "text-emerald-600" : "text-zinc-400"
+//               }`}
+//             >
+//               {s.step}
+//             </p>
 
-            <h3 className="lora-bold text-[1.1rem] leading-snug text-zinc-900 mb-3">
-              {s.name}
-            </h3>
+//             <h3 className="lora-bold text-[1.1rem] leading-snug text-zinc-900 mb-3">
+//               {s.name}
+//             </h3>
 
-            <p className="open-sans-medium text-sm leading-relaxed text-zinc-500 mb-6 flex-1">
-              {s.body}
-            </p>
-<a
+//             <p className="open-sans-medium text-sm leading-relaxed text-zinc-500 mb-6 flex-1">
+//               {s.body}
+//             </p>
+// <a
             
-              href={s.cta.href}
-              target="_blank"
-              rel="noreferrer"
-              onClick={() =>
-                sendGAEvent("beta_step", { step: s.gaStep, source: "about_page" })
-              }
-              className={`open-sans-medium text-sm font-medium text-center rounded-full px-5 py-3 transition-colors ${
-                s.cta.variant === "solid"
-                  ? "bg-emerald-600 text-white hover:bg-emerald-700"
-                  : "border border-zinc-200 text-zinc-800 hover:bg-zinc-50"
-              }`}
-            >
-              {s.cta.label}
-            </a>
-          </div>
-        ))}
-      </div>
-    </div>
-    </>
-  );
-}
+//               href={s.cta.href}
+//               target="_blank"
+//               rel="noreferrer"
+//               onClick={() =>
+//                 sendGAEvent("beta_step", { step: s.gaStep, source: "about_page" })
+//               }
+//               className={`open-sans-medium text-sm font-medium text-center rounded-full px-5 py-3 transition-colors ${
+//                 s.cta.variant === "solid"
+//                   ? "bg-emerald-600 text-white hover:bg-emerald-700"
+//                   : "border border-zinc-200 text-zinc-800 hover:bg-zinc-50"
+//               }`}
+//             >
+//               {s.cta.label}
+//             </a>
+//           </div>
+//         ))}
+//       </div>
+//     </div>
+//     </>
+//   );
+// }
 function ProblemTriptych() {
   const problems = [
   {
@@ -594,7 +662,7 @@ function ProblemTriptych() {
             </IonCol>
           </IonRow>
                   <div className="flex flex-col items-center text-center mt-12">
-                    <BetaDownload/>
+                    {<AppStoreLaunch/>}
           <IonLabel><h1 className=""><b></b></h1></IonLabel>
 {<ProblemTriptych />}
 </div>
