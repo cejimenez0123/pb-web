@@ -211,72 +211,7 @@ export default function AboutContainer() {
   //         <strong>We Review –</strong> Our team reads every application. We’ll either invite you in now or let you know we’re keeping your application on file for the next round.
   //       </li>
   //       <li>
-  //         <strong>You're In –</strong> If accepted, you'll get an email with a link to complete your registration and join the community.
-  //       </li>
-  //     </ol>
-  //   </div>
-  // );
-
-  // const findCreatives = () => (
-  //   <div className="text-emerald-800 rounded-lg p-4 h-full">
-  //     <div className="text-center">
-  //       <h2 className="lora-medium font-bold text-[2rem] mb-4">Find Your Creative Community</h2>
-  //       <div className="text-left">
-  //         <h2 className="text-[1rem] leading-loose open-sans-medium mb-4">
-  //           Plumbum is a space for writers to share work, get feedback, and connect with like-minded creatives. Whether you're refining your next piece or just starting out, you'll find support, inspiration, and the right audience here.
-  //         </h2>
-  //         <a onClick={apply} className="text-[1rem] cursor-pointer inline-block">[→ Join the Beta]</a>
-  //       </div>
-  //     </div>
-  //   </div>
-  // );
-
-  // const writingJourney = () => (
-  //   <div className="text-center py-9  text-emerald-800 leading-loose">
-  //     <h1 className="lora-bold text-left">Why Plumbum Works?</h1>
-  //     <br/>
-  //     <ul className="text-left">
-  //       <li className="text-[1rem] my-1">
-  //         <h6 className="open-sans-medium">
-  //           <strong>Writer-Driven Feedback –</strong> Get real, constructive responses from fellow writers.
-  //         </h6>
-  //       </li>
-  //       <li className="text-[1rem] my-1">
-  //         <h6 className="open-sans-medium">
-  //           <strong>Curated Discovery –</strong> Curate your space and discover others curated collections and add them to your space of inspiration.
-  //         </h6>
-  //       </li>
-  //       <li className="text-[1rem] my-1">
-  //         <h6 className="open-sans-medium">
-  //           <strong>Workshops & Events –</strong> Take your craft further with live workshops and community gatherings.
-  //         </h6>
-  //       </li>
-  //     </ul>
-  //     <div className="text-left">
-  //       <a onClick={() => router.push(Paths.discovery())} className="text-[1rem] cursor-pointer inline-block">[→ Explore More]</a>
-  //     </div>
-  //   </div>
-  // );
-
-  // const howItWorks = () => (
-  //   <div className="py-2 leading-loose text-emerald-700 flex flex-col max-w-full">
-  //     <h1 className="lora-bold text-left text-emerald-800 text-4xl mt-4 py-4">How It Works</h1>
-  //     <ul className="list-disc open-sans-medium list-inside open-sans-regular space-y-3 text-[1rem]">
-  //       <li>
-  //         <strong>Get Feedback –</strong> Share your drafts and receive thoughtful, constructive responses from writers who care.
-  //       </li>
-  //       <li>
-  //         <strong>Join Live Workshops –</strong> Hop into real-time sessions online or around NYC for direct feedback and collaboration.
-  //       </li>
-  //       <li>
-  //         <strong>Share Your Work –</strong> Publish pieces-in-progress or notes-app gems in a space for experimentation.
-  //       </li>
-  //       <li>
-  //         <strong>Find Fresh Voices –</strong> Discover new writers and connect through shared creativity and weirdness.
-  //       </li>
-  //     </ul>
-  //   </div>
-  // );
+ 
  function FoundingCohort() {
   const tiers = [
   {
@@ -468,39 +403,7 @@ function ProblemTriptych() {
   );
 }
 
-  // const stayInLoop = () => (
-  //   <div className="p-3 flex flex-col">
-  //     <h1 className="text-[3rem] mx-auto lora-bold">Stay in the Loop</h1>
-  //     <h2 className="mx-4 my-2 open-sans-medium text-l">Be the first to know about new features, workshops, and events.</h2>
-  //     <h2 className="mx-4 my-2 open-sans-medium text-l">Follow the Journey</h2>
-  //     <a
-  //       className="flex flex-col text-center my-4 mx-auto cursor-pointer"
-  //       href="https://www.instagram.com/channel/AbaI9yaoN4KfPze_/"
-  //       target="_blank" rel="noreferrer"
-  //     >
-  //       <p className="open-sans-medium mx-4 my-4 text-emerald-600">Join the Instagram Channel. Today!</p>
-  //       <img className="mx-auto w-[8em]" src={ig} alt="Slack invite" />
-  //     </a>
-  //     <p
-  //       className="flex open-sans-medium my-4 mx-auto text-center cursor-pointer"
-  //       onClick={() => router.push(Paths.calendar())}
-  //     >
-  //       Check out the Calendar for NYC Writing Scene
-  //     </p>
-  //     <img
-  //       onClick={() => router.push(Paths.calendar())}
-  //       className="h-[8em] mx-auto w-[8em] cursor-pointer"
-  //       src={events}
-  //       alt="Calendar icon"
-  //     />
-  //     <div className="flex my-4 open-sans-medium mx-auto text-lg text-left leading-loose tracking-loose">
-  //       <p>
-  //         <a href="https://www.instagram.com/plumbumapp" target="_blank" rel="noreferrer">@plumbumapp</a> 
-  //       </p>
-  //     </div>
-  
-  //   </div>
-  // );
+
 
   const userTestimonial = () => (
     <div>
@@ -533,16 +436,7 @@ function ProblemTriptych() {
   </p>
 </div>
 
-          {/* <IonRow className="items-center">  */}
-            {/* {md && (
-              <>
-               <IonCol>
-                <div ><BookCarousel images={secImages} /></div>
-                {findCreatives()}
-               </IonCol>
-              </>
-            )} */}
-            {/* <IonCol > */}
+       
              <div ><BookCarousel images={firstImages} /></div> 
             {/* </IonCol>
             
