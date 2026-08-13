@@ -25,7 +25,7 @@ export default function PageViewButtonRow({ page, authorProfile ,profile, setCom
       checkResult(res,pay=>{
 showAlert("Saved to archive",AlertType.SUCCESS)
       },err=>{
-        showAlert("Failed to save to archive",AlertType.ERROR)
+        showAlert({message:"Failed to save to archive",type:AlertType.ERROR})
       })
     })
    

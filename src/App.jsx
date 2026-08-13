@@ -86,7 +86,7 @@ function PushNotificationHandler() {
   const appReadyRef = useRef(false);
   const flushingRef = useRef(false);
   const retryTimeoutRef = useRef(null);
-
+  
   const flushRoute = async () => {
     if (flushingRef.current) return;
     if (!pendingRouteRef.current) return;

@@ -155,23 +155,12 @@ export default function UseReferralContainer() {
   return (
     <ErrorBoundary>
       <IonContent fullscreen scrollY={true} style={{ "--background": C.cream }}>
-<div className="flex flex-col py-24 px-4">
-        {/* ── Gradient header ─────────────────────────────────────────── */}
-        {/* <div
-          style={{
-            background: `linear-gradient(160deg, ${C.dark} 0%, ${C.medium} 60%, ${C.light} 100%)`,
-            borderBottomLeftRadius: "2rem",
-            borderBottomRightRadius: "2rem",
-          }}
-          className="px-6 pt-14 pb-10 text-center"
-        > */}
-          {/* <div className="mx-auto mb-4 w-14 h-14 rounded-2xl bg-white/15 backdrop-blur-sm border border-white/20 flex items-center justify-center shadow-lg">
-            <span className="text-white text-2xl lora-bold">P</span>
-          </div> */}
+<div className="flex justify-center flex-col py-24 px-4">
+
           <h1 className="lora-bold text-soft mx-auto text-3xl tracking-tight">Join Plumbum</h1>
           <p className="text-emerald-100/70 text-sm mt-1">Complete your account setup</p>
         {/* </div> */}
-
+<div className="max-w-lg mx-auto">
         {/* ── Identity ────────────────────────────────────────────────── */}
         <SectionHeader label="Identity" />
         <div className="px-5 pb-4 space-y-1">
@@ -260,24 +249,7 @@ export default function UseReferralContainer() {
               className="toggle toggle-success"
             />
           </div>
-          {/* <div className="flex flex-col py-1">
-            <div className="max-w-[100vw]">
-            <div>
-              <p className="text-sm font-medium text-emerald-900">Private account</p>
-              <p className="text-xs text-emerald-500">Hidden from search</p>
-            </div>
-            <label className=" items-center cursor-pointer">
-              <input
-                type="checkbox"
-                checked={isPrivate}
-                onChange={(e) => setIsPrivate(e.target.checked)}
-                className="sr-only peer"
-              />
-              <div className="w-11 h-6 bg-slate-200 rounded-full peer peer-checked:bg-emerald-500 transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-5 shadow-inner" />
-            </label>
-            </div>
-          </div>
-        </div> */}
+    
 
         {/* ── Email Preferences ───────────────────────────────────────── */}
         <SectionHeader label="Email Preferences" />
@@ -322,6 +294,7 @@ export default function UseReferralContainer() {
             {canUser ? "Complete Sign Up →" : "Fill in all fields"}
           </button>
        
+</div>
 </div>
       </IonContent>
     </ErrorBoundary>

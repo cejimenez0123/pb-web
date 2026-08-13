@@ -22,6 +22,8 @@ import { useParams } from 'react-router';
 import { useDialog } from '../../domain/usecases/useDialog';
 import computePermissions from '../../core/compusePermissions';
 import DataElement from './DataElement';
+import { useAlert } from '../../core/useAlert';
+import AlertType from '../../core/AlertType';
 
 const theme = {
   card: `
@@ -84,12 +86,12 @@ function DashboardItem({ page, isGrid, shortenTo }) {
       setArchive(ptc?.collection);
     }
   };
-  const colInView = useSelector((state) => state.books.collectionInView);
+  // const colInView = useSelector((state) => state.books.collectionInView);
   const dispatch = useDispatch();
   const router = useIonRouter();
-  const pathParams = useParams();
+  // const pathParams = useParams();
   const { openDialog ,resetDialog} = useDialog();
-
+const {showAlert}=useAlert()
   const [likeFound, setLikeFound] = useState(null);
   const [bookmarked, setBookmarked] = useState(null);
 
@@ -112,28 +114,7 @@ function DashboardItem({ page, isGrid, shortenTo }) {
     return "unknown";
   }, [router.routeInfo?.pathname]);
 
-  // Sync like + bookmark state whenever currentProfile loads or changes
-  // useEffect(() => {
-  //   if (!currentProfile?.id || !page) return;
 
-  //   if (currentProfile.likedStories) {
-  //     const found = currentProfile.likedStories.find(
-  //       (like) => like?.storyId === page.id
-  //     );
-  //     setLikeFound(found ?? null);
-  //   }
-
-  //   if (currentProfile.profileToCollections) {
-  //     // bookmarked = the storyIdList entry (stc) so deleteStc can use stc.id
-  //     const homePtc = currentProfile.profileToCollections.find(
-  //       (ptc) => ptc?.type === "home"
-  //     );
-  //     const stc = homePtc?.collection?.storyIdList?.find(
-  //       (s) => s.storyId === page.id
-  //     );
-  //     setBookmarked(stc ?? null);
-  //   }
-  // }, [currentProfile, page]);
 useEffect(() => {
   if (!currentProfile?.id || !page) return;
 
@@ -165,7 +146,7 @@ setBookmarked(
 }, [currentProfile, page]);
   // ── Like ──────────────────────────────────────────────────────────────────
   const handleApprovalClick = () => {
-    if (!currentProfile) return alert("Please Sign Up to Like");
+    if (!currentProfile) return showAlert({message:"Please Sign Up to Like",type:AlertType.success});
 
     if (likeFound) {
       setLikeFound(null);

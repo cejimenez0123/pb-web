@@ -55,7 +55,7 @@ const [referralToken, setReferralTokenState] = useState(null);
   const {showAlert}=useAlert()
   const [agreedToTerms, setAgreedToTerms] = useState(false);
 const [showTerms, setShowTerms] = useState(false);
-
+const {showPrompt }=useAlert()
 const router = useIonRouter();
 const searchParams = new URLSearchParams(router.routeInfo.search);
 
@@ -230,7 +230,10 @@ const params = {
 
         await checkResult(res, async (payload) => {
           if (payload.profile) {
-            router.push(Paths.login);
+            showPrompt({message:"Ready to download Plumbum, only on iOS",agree:()=>{
+window.location.href = "https://apps.apple.com/us/app/plumbum-writers/id6751230895"
+            },agreeText:"Yes!!",disagreeText:"Go Back"})
+ 
           } else {
    
             showAlert({message:
