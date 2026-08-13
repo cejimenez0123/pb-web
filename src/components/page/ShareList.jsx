@@ -14,6 +14,8 @@ import { useDialog } from "../../domain/usecases/useDialog";
 import computePermissions from "../../core/compusePermissions";
 import { blockProfile } from "../../actions/ModerationAcitons.jsx";
 import ReportContentDialog from "../auth/ReportProfileDialog.jsx";
+import { useAlert } from "../../core/useAlert.jsx";
+import AlertType from "../../core/AlertType.js";
 
 
 
@@ -27,7 +29,7 @@ const [isBlockDialogOpen, setBlockDialogOpen] = useState(false);
   const router = useIonRouter();
   const dispatch = useDispatch();
   const { openDialog, closeDialog, resetDialog, dialog } = useDialog();
-
+const { showAlert}=useAlert()
 
   const { canEdit } = computePermissions(page, currentProfile, {
     getAccessList: (s) => s.betaReaders,
@@ -122,10 +124,11 @@ const [isBlockDialogOpen, setBlockDialogOpen] = useState(false);
 
 
   const copyShareLink = () => {
-    openDialog({ ...dialog, isOpen: false });
+closeDialog()
     sendGAEvent("story_share_copy_link", { story_id: page.id, source: getShareSource() });
     navigator.clipboard.writeText(Enviroment.domain + Paths.page.createRoute(page.id)).then(() => {
-      setSuccess("Ready to share");
+ 
+      showAlert({message:"Link is Copied",type:AlertType.success})
     });
   };
 

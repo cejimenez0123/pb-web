@@ -14,10 +14,12 @@ import { useDialog } from "../../domain/usecases/useDialog.jsx";
 import FeedbackDialog from "./FeedbackDialog.jsx";
 import { updateStory } from "../../actions/StoryActions.jsx";
 import checkResult from "../../core/checkResult.js";
+import { useAlert } from "../../core/useAlert.jsx";
+import AlertType from "../../core/AlertType.js";
 export default function IndexItem({item,type}) {
   let collectionStr ="collection"
   const {openDialog,resetDialog,dialog,closeDialog}=useDialog()
- 
+ const {showAlert}=useAlert()
     useLayoutEffect(()=>{
       initGA()
     },[])
@@ -36,21 +38,22 @@ export default function IndexItem({item,type}) {
 
     const copyShareLink=()=>{
       if(item && item.storyIdList){
-        sendGAEvent("Copy Share Link",`Share Link Collection:${item?.title}`)
+        // sendGAEvent("Copy Share Link",`Share Link Collection:${item?.title}`)
    
       navigator.clipboard.writeText(Enviroment.domain+Paths.collection.createRoute(item.id))
                               .then(() => {
                       
-                                  alert('Text copied to clipboard');
+                                  showAlert({message:'Text copied to clipboard',type:AlertType.success});
                                 })
 
       }else{
-        sendGAEvent("Copy Share Link",`Share Link Story:${item?.title}`)
+        // sendGAEvent("Copy Share Link",`Share Link Story:${item?.title}`)
 
       navigator.clipboard.writeText(Enviroment.domain+Paths.page.createRoute(item.id))
                               .then(() => {
                       
-                                  alert('Text copied to clipboard');
+                                 showAlert({message:'Text copied to clipboard',type:AlertType.success});
+                          
                                 })
   }}
     const handleEditClick = (comp)=>{
