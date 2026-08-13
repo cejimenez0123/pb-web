@@ -63,7 +63,7 @@ const handleMenuClick = (action) => (e) => {
        
     )}
   >
-     Get Feedback
+    Share
   </li>
 )}
         <li className="text-emerald-600 pt-3 pb-2 cursor-pointer"
