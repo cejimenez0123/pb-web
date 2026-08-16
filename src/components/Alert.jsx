@@ -27,7 +27,7 @@ function Alert() {
             onClick={alert.type !== "prompt" ? closeAlert : undefined}
             className={`alert w-[96vw] md:w-page mx-auto pointer-events-auto
               h-auto py-4
-              ${alert.type === "success" ? "alert-success" : "alert-warning"}
+           ${alert.type === "success" || alert.type === "prompt" ? "alert-info" : "alert-warning"}
               ${alert.type !== "prompt" ? "cursor-pointer" : ""}`}
           >
             <div className="flex flex-col w-full">
@@ -47,25 +47,37 @@ function Alert() {
                     />
                   </svg>
                 )}
-                <span className="my-auto mx-4 whitespace-pre-wrap break-words">
+                <span className={`my-auto mx-4 whitespace-pre-wrap break-words ${alert.type == "prompt"?"text-white prompt text-[1.4rem]":""}`}>
                   {alert.message}
                 </span>
               </div>
 
               {alert.type === "prompt" && (
                 <div className="flex gap-3 mt-3 justify-around w-full mx-auto px-4">
-                  <div
+                  {/* <div
                     onClick={closeAlert}
                     className="px-4 h-[2.5rem] flex items-center rounded-full border border-soft text-soft active:scale-95 transition cursor-pointer"
                   >
                     {alert.disagreeText ?? "Dismiss"}
-                  </div>
+                  </div> */}
                   <div
+  onClick={closeAlert}
+  className="px-4 h-[2.5rem] flex items-center rounded-full border border-white text-white font-bold active:scale-95 transition cursor-pointer"
+>
+  {alert.disagreeText ?? "Dismiss"}
+</div>
+                  <div
+  onClick={() => { alert.agree?.(); closeAlert(); }}
+  className="px-4 h-[2.5rem] flex items-center rounded-full bg-success font-bold text-white active:scale-95 transition cursor-pointer"
+>
+  {alert.agreeText ? alert.agreeText : "Confirm"}
+</div>
+                  {/* <div
                     onClick={() => { alert.agree?.(); closeAlert(); }}
                     className="px-4 h-[2.5rem] flex items-center rounded-full bg-button-secondary-bg text-white active:scale-95 transition cursor-pointer"
                   >
                     {alert.agreeText ? alert.agreeText : "Confirm"}
-                  </div>
+                  </div> */}
                 </div>
               )}
             </div>
