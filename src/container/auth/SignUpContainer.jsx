@@ -188,7 +188,15 @@ const params = {
 
           await checkResult(res, (payload) => {
             if (payload.profile) {
-              router.push(Paths.login);
+              if(Capacitor.isNativePlatform()){
+                showPrompt({message:"Thanks! Now go to the app",agree:()=>{
+    router.push(Paths.login);
+                },agreeText:"Cool!"})
+
+              }else{
+                
+              }
+          
             } else {
           
             showAlert({message:  
