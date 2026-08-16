@@ -141,10 +141,10 @@ useEffect(() => {
 const completeSignUp = async () => {
  try {
     // try {
-    if (!agreedToTerms) {
-      showAlert({ message: "Please agree to the Terms of Service to continue", type: AlertType.error });
-      return;
-    }
+    // if (!agreedToTerms) {
+    //   showAlert({ message: "Please agree to the Terms of Service to continue", type: AlertType.error });
+    //   return;
+    // }
     if (!usernameUnique) {
       showAlert({ message: "Username is already taken", type: AlertType.error });
       return;
