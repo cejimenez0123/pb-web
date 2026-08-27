@@ -2,7 +2,7 @@
 import { useContext, useRef, useEffect, useState } from 'react';
 import { useAlert } from '../../core/useAlert.jsx';
 import AlertType from '../../core/AlertType.js';
-import { registerUser, postActiveUser, findWorkshopGroup, findWorkshopGroups, fetchWorkshopGroups } from "../../actions/WorkshopActions";
+import { registerUser, findWorkshopGroup, findWorkshopGroups, fetchWorkshopGroups } from "../../actions/WorkshopActions";
 import { useSelector, useDispatch } from 'react-redux';
 import checkResult from '../../core/checkResult';
 import Paths from '../../core/paths';

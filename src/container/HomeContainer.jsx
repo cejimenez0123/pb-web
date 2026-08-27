@@ -156,37 +156,7 @@ const handleJoinClick = (e) => {
     )}
   </button>
 </div>)
-  // return (
-  //   <div onClick={handleCardClick} className={`${CARD} ${CARD_PAD} w-[100%] cursor-pointer`}>
-  //     <div>
-  //       <h2 className="text-md font-semibold dark:text-cream text-soft truncate">
-  //         {shortName(item.title, 30)}
-  //       </h2>
-  //       <div className="flex justify-between items-center text-xs dark:text-cream text-gray-500 mt-1">
-  //         <span>{item?.location?.city || "Online / TBD"}</span>
-  //         {/* {item.participants ? (
-  //           <span className="font-bold dark:text-cream text-soft">
-  //             {item.participants} participants
-  //           </span>
-  //         ) : null} */}
-  //       </div>
-  //       <button
-  //         onClick={handleJoinClick}
-  //         disabled={joining}
-  //         className="btn btn-sm btn-outline mt-2"
-  //       >
-  //         {joining ? (
-  //           <>
-  //             <span className="loading loading-spinner loading-xs"></span>
-  //             Joining...
-  //           </>
-  //         ) : (
-  //           "Join"
-  //         )}
-  //       </button>
-  //     </div>
-  //   </div>
-  // );
+
 };
 function HomeEmbed({workshops,stories,prompts,isGlobal,setIsGlobal}) {
 
