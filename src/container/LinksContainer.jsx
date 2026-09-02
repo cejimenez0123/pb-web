@@ -99,19 +99,7 @@ export default function LinksContainer(props){
                     description={"Need a place to be, find it in real life through our calendar of NYC and Virtual events."}/>
                     </li>
                  
-                   {/* <li>
-               <LinkNode links={[{name:"Discover Plumbum",url:"https://plumbum.app"+Paths.discovery}]}
-               image={logo}
-                    title={"Discover Plumbum"}
-                    description={"Check some recent shared work"}/>
-                    </li> */}
-                    {/* <li>
-                    <LinkNode links={[{name:"Apply to be a user today",url:`https://plumbum.app/${Paths.onboard}`}]}
-                    image={logo}
-                    title={"Apply to be a user today"}
-                    description={"Become a user and support us from the ground."}/>
-                    
-                </li> */}
+               
                <li>
                <LinkNode links={[{name:"Buy Today!",url:"https://www.lulu.com/shop/sol-emilio/good-hell/paperback/product-45q8j8v.html?q=good+hell&page=1&pageSize=4"}]}
                   

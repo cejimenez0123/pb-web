@@ -55,7 +55,7 @@ const [referralToken, setReferralTokenState] = useState(null);
   const {showAlert}=useAlert()
   const [agreedToTerms, setAgreedToTerms] = useState(false);
 const [showTerms, setShowTerms] = useState(false);
-
+const {showPrompt }=useAlert()
 const router = useIonRouter();
 const searchParams = new URLSearchParams(router.routeInfo.search);
 
@@ -140,11 +140,7 @@ useEffect(() => {
 }, [pictureUrl]);
 const completeSignUp = async () => {
  try {
-    // try {
-    if (!agreedToTerms) {
-      showAlert({ message: "Please agree to the Terms of Service to continue", type: AlertType.error });
-      return;
-    }
+
     if (!usernameUnique) {
       showAlert({ message: "Username is already taken", type: AlertType.error });
       return;
@@ -188,7 +184,15 @@ const params = {
 
           await checkResult(res, (payload) => {
             if (payload.profile) {
-              router.push(Paths.login);
+              if(!Capacitor.isNativePlatform()){
+                showPrompt({message:"Thanks! Now go to the app",agree:()=>{
+    router.push(Paths.login);
+                },agreeText:"Cool!"})
+
+              }else{
+                router.push(Paths.login)
+              }
+          
             } else {
           
             showAlert({message:  
@@ -230,7 +234,10 @@ const params = {
 
         await checkResult(res, async (payload) => {
           if (payload.profile) {
-            router.push(Paths.login);
+            showPrompt({message:"Go to the App or Download on App Store",agree:()=>{
+window.location.href = "https://apps.apple.com/us/app/plumbum-writers/id6751230895"
+            },agreeText:"Yes!!",disagreeText:"Go Back"})
+ 
           } else {
    
             showAlert({message:
@@ -281,9 +288,10 @@ useEffect(() => {
 useEffect(() => {
   if (username.length > 0) debouncedCheck(username);
 }, [username]);
+      // <IonContent ></IonContent>
 return(<IonContent
-  fullscreen
-  className="ion-padding bg-base-100"
+  color="light" fullscreen={true} className="ion-padding page-content"
+  // className="ion-padding bg-base-100"
   style={{
     "--padding-top": "0px",
     "--padding-bottom": "env(safe-area-inset-bottom)"
@@ -509,15 +517,15 @@ const SPRINT_SLOTS = [
             </p>
           </div>
         </div>
-<div className="flex items-start gap-2 pt-2">
+{/* <div className="flex items-start gap-2 pt-2">
           <input
             type="checkbox"
             checked={agreedToTerms}
             readOnly
             onClick={openTerms}
             className="mt-1"
-          />
-          <p className="text-xs text-neutral-500">
+          /> */}
+          {/* <p className="text-xs text-neutral-500">
             I agree to the{" End User License Agreement and Terms & Conditions."}
             <button type="button" onClick={()=>window.open(Enviroment.domain+"/eula")} className="underline text-neutral-700">
               End User License Agreement
@@ -526,8 +534,8 @@ const SPRINT_SLOTS = [
             <button type="button" onClick={()=>window.open(Enviroment.domain+"/terms")} className="underline text-neutral-700">
               Terms & Conditions
             </button>
-          </p>
-        </div>
+          </p> */}
+        {/* </div> */}
         {/* Submit Button */}
         <button
           onClick={onSubmit}

@@ -75,12 +75,13 @@ import ReportsReviewPage from './container/auth/ReportReviewContainer.jsx';
 import CURRENT_TERMS_VERSION from './core/CURRENT_TERMS_VERSION.jsx';
 import { useDialog } from './domain/usecases/useDialog.jsx';
 import { getPublicLibraries } from './actions/LibraryActions.jsx';
-
+// import { isNative } from 'lodash';
+// 
 
 function PushNotificationHandler() {
   usePushNotificationListener();
   const router = useIonRouter();
-
+const isNative = Capacitor.isNativePlatform()
   const pendingRouteRef = useRef(null);
   const listenerReadyRef = useRef(false);
   const appReadyRef = useRef(false);
@@ -113,8 +114,9 @@ function PushNotificationHandler() {
 
   useEffect(() => {
     let mounted = true;
-
+if(isNative){
     const onAction = (action) => {
+     
       const route = action.notification.data?.route?.replace(/\s+/g, '');
       if (!route) return;
 
@@ -137,6 +139,7 @@ function PushNotificationHandler() {
       clearTimeout(timer);
       retryTimeoutRef.current && clearTimeout(retryTimeoutRef.current);
     };
+  }
   }, [router]);
 
   return null;
@@ -316,7 +319,7 @@ const showBottomNavbar = (!hiddenPaths.includes(location)) && isMobileOrTablet
 
   <IonApp>
   <IonReactRouter>
-     <PushNotificationHandler />
+    {isNative && <PushNotificationHandler />}
       {showTopNavbar && (
         <div className="w-[100%] z-50 flex-shrink-0">
           <NavbarContainer isDesktop={isDesktop} currentProfile={currentProfile} />

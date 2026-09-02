@@ -553,39 +553,7 @@ function ProblemTriptych() {
   );
 }
 
-  // const stayInLoop = () => (
-  //   <div className="p-3 flex flex-col">
-  //     <h1 className="text-[3rem] mx-auto lora-bold">Stay in the Loop</h1>
-  //     <h2 className="mx-4 my-2 open-sans-medium text-l">Be the first to know about new features, workshops, and events.</h2>
-  //     <h2 className="mx-4 my-2 open-sans-medium text-l">Follow the Journey</h2>
-  //     <a
-  //       className="flex flex-col text-center my-4 mx-auto cursor-pointer"
-  //       href="https://www.instagram.com/channel/AbaI9yaoN4KfPze_/"
-  //       target="_blank" rel="noreferrer"
-  //     >
-  //       <p className="open-sans-medium mx-4 my-4 text-emerald-600">Join the Instagram Channel. Today!</p>
-  //       <img className="mx-auto w-[8em]" src={ig} alt="Slack invite" />
-  //     </a>
-  //     <p
-  //       className="flex open-sans-medium my-4 mx-auto text-center cursor-pointer"
-  //       onClick={() => router.push(Paths.calendar())}
-  //     >
-  //       Check out the Calendar for NYC Writing Scene
-  //     </p>
-  //     <img
-  //       onClick={() => router.push(Paths.calendar())}
-  //       className="h-[8em] mx-auto w-[8em] cursor-pointer"
-  //       src={events}
-  //       alt="Calendar icon"
-  //     />
-  //     <div className="flex my-4 open-sans-medium mx-auto text-lg text-left leading-loose tracking-loose">
-  //       <p>
-  //         <a href="https://www.instagram.com/plumbumapp" target="_blank" rel="noreferrer">@plumbumapp</a> 
-  //       </p>
-  //     </div>
-  
-  //   </div>
-  // );
+
 
   const userTestimonial = () => (
     <div>
@@ -618,16 +586,7 @@ function ProblemTriptych() {
   </p>
 </div>
 
-          {/* <IonRow className="items-center">  */}
-            {/* {md && (
-              <>
-               <IonCol>
-                <div ><BookCarousel images={secImages} /></div>
-                {findCreatives()}
-               </IonCol>
-              </>
-            )} */}
-            {/* <IonCol > */}
+       
              <div ><BookCarousel images={firstImages} /></div> 
             {/* </IonCol>
             

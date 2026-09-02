@@ -100,7 +100,7 @@ function Step1({ formData, updateFormData, setActiveTab, error, setError }) {
   const validateEmail = email => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   const next = () => {
-    if (!validateEmail(local.email)) { setError("Enter a valid email"); return; }
+    // if (!validateEmail(local.email)) { setError("Enter a valid email"); return; }
     setError("");
     updateFormData(local);
     setActiveTab("tab2");
@@ -327,7 +327,7 @@ export default function OnboardingContainer() {
       setUser(data?.user ?? data);
     } catch (err) {
       if(err.status){
-          setError("You may have applied already. Give more time for a response")
+          setError(err.message? err.message :"You may have applied already. Give more time for a response")
       }else{
       setError(err?.message || "Something went wrong");
       }
