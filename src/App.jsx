@@ -75,6 +75,8 @@ import ReportsReviewPage from './container/auth/ReportReviewContainer.jsx';
 import CURRENT_TERMS_VERSION from './core/CURRENT_TERMS_VERSION.jsx';
 import { useDialog } from './domain/usecases/useDialog.jsx';
 import { getPublicLibraries } from './actions/LibraryActions.jsx';
+import { HomePage } from './components/lovehome/HomePage.jsx';
+import WriteContainer from './components/page/WriteContainer.jsx';
 // import { isNative } from 'lodash';
 // 
 
@@ -337,11 +339,14 @@ const showBottomNavbar = (!hiddenPaths.includes(location)) && isMobileOrTablet
     <IonRouterOutlet>   
        <Route exact path="/" render={() => 
   <PageWrapper>{
-    !authResolved ? <LoadingPlaceholder/> :
-    currentProfile && isNative ? <ContentHubContainer/> :
-    currentProfile ? <Redirect to={Paths.home} /> :
-    isFirstLaunch && isNative ? <Redirect to={Paths.onboard}/> : <Redirect to={Paths.about()}/>
-  }</PageWrapper>}
+  //   !authResolved ? <LoadingPlaceholder/> :
+  //   currentProfile && isNative ? <ContentHubContainer/> :
+  //   currentProfile ? <Redirect to={Paths.home} /> :
+  //   isFirstLaunch && isNative ? <Redirect to={Paths.onboard}/> : <Redirect to={Paths.about()}/>
+  // }
+  <HomePage/>
+       }
+  </PageWrapper>}
 />
   
 
@@ -514,6 +519,18 @@ const showBottomNavbar = (!hiddenPaths.includes(location)) && isMobileOrTablet
       </PrivateRoute>
       </PageWrapper> 
         }/>
+<Route
+ exact path={"/write"}
+  render={() =>
+    <PageWrapper>
+    <PrivateRoute>
+      
+       <WriteContainer stories={[]} loading={false}/>
+ 
+    </PrivateRoute>
+         </PageWrapper>
+  
+  }/>
 <Route
  exact path={Paths.editPage.route}
   render={() =>

@@ -4,20 +4,28 @@
 
 /* 🌑 Plumbum Dark Mode */
 
+:root{
+  --text-color:#02120A;
+  --tertiary: #f4f4e0;
+  --dark:#183306;
+  --primaryMain:#1b5e20;
+  /* --medium:#375E1D; */
+    --medium:#50874F;
+  --light:#6C965C;
+  --slightly-yellow:#f4f4e0;
+  --secondary: #67914A;
+  --background-light:#646363e2;
+  --background-secondary-light:#f4f4e0;
+  --background-tertiary-light:#f4f4e0;
+  --background-secondary:rgba(141, 141, 141, 0.533);
+  --large-list-item-width: 40em;
+  --small-list-item-width:10em;
+  --some-box-shadow:  0 1px 1px hsl(0deg 0% 0% / 0.075),
+  0 2px 2px hsl(0deg 0% 0% / 0.075),
+  0 4px 4px hsl(0deg 0% 0% / 0.075),
+  0 8px 8px hsl(0deg 0% 0% / 0.075),
+  0 16px 16px hsl(0deg 0% 0% / 0.075);
 
-:root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
- 
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 

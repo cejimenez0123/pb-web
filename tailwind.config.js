@@ -29,8 +29,12 @@ export default {
       'grid-mobile-content':"45.8vw"
 
     },
-    colors:{
-      ...colors,
+    colors: {plumb: {
+    paper: '#faf7f0',   // or a CSS var
+    line: '#d4c8b0'},
+       ...colors,
+  paper: '#f4f4e0',
+    
       "cream":"#f4f4e0",
       
     "base": {

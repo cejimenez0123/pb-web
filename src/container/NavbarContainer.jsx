@@ -28,6 +28,7 @@ import { SocialLogin } from '@capgo/capacitor-social-login'
 import CreateDropdown from '../components/CreateDropdown.jsx'
 
 const PageName = {
+  events: "Events",
   home: "Home",
   about:"About",
   create: "Create",
@@ -49,10 +50,11 @@ const pages = isClip?[...[
     
                 ]]:[...[ 
                 PageName.about,
-                PageName.discovery,
+                PageName.events,
+                // PageName.discovery,
                 PageName.workshop,
                 PageName.search,
-                PageName.create, 
+                // PageName.create, 
                 PageName.login,
                 PageName.apply,
         
@@ -355,6 +357,10 @@ function MenuHorizontal({ pages, currentProfile }) {
       case "Workshop":
         dispatch(setPageInView({ page: null }));
         router.push(Paths.workshop.reader(), "forward");
+        break;
+      case PageName.events:
+
+        router.push(Paths.calendar(), "forward");
         break;
       case "Log In":
         router.push(Paths.login, "forward");

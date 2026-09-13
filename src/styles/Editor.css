@@ -225,7 +225,7 @@
 /* ─── REPLACE the existing annotation block at the bottom with this ──────── */
 
 /* Ionic full chain — covers ion-app → ion-router-outlet → ion-content */
-ion-app,
+/* ion-app,
 ion-router-outlet,
 ion-nav,
 ion-content,
@@ -234,7 +234,7 @@ ion-content,
   user-select: text !important;
   touch-action: auto !important;
   -webkit-touch-callout: default !important;
-}
+} */
 /* ion-content {
 
   --background: #f4f4e0;
