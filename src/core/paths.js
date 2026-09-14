@@ -11,6 +11,7 @@ const Paths ={
     calendar:()=>"/events",
     dashboard:"/dashboard",
     onboard:"/onboard",
+    write: "/write",
     library: {
         route: ()=>`/library/:id`,
         createRoute:(id)=>{return `/library/${id}`;}},

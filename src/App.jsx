@@ -322,11 +322,9 @@ const showBottomNavbar = (!hiddenPaths.includes(location)) && isMobileOrTablet
   <IonApp>
   <IonReactRouter>
     {isNative && <PushNotificationHandler />}
-      {showTopNavbar && (
-        <div className="w-[100%] z-50 flex-shrink-0">
-          <NavbarContainer isDesktop={isDesktop} currentProfile={currentProfile} />
-        </div>
-      )}
+  <NavbarContainer isDesktop={isDesktop} currentProfile={currentProfile} />
+
+
 
         <div className="flex-1 relative">
  
@@ -339,11 +337,7 @@ const showBottomNavbar = (!hiddenPaths.includes(location)) && isMobileOrTablet
     <IonRouterOutlet>   
        <Route exact path="/" render={() => 
   <PageWrapper>{
-  //   !authResolved ? <LoadingPlaceholder/> :
-  //   currentProfile && isNative ? <ContentHubContainer/> :
-  //   currentProfile ? <Redirect to={Paths.home} /> :
-  //   isFirstLaunch && isNative ? <Redirect to={Paths.onboard}/> : <Redirect to={Paths.about()}/>
-  // }
+
   <HomePage/>
        }
   </PageWrapper>}
@@ -575,15 +569,8 @@ const showBottomNavbar = (!hiddenPaths.includes(location)) && isMobileOrTablet
   )}
 />
    </IonRouterOutlet>
-</div>
-
-       {showBottomNavbar&&
-          <IonFooter>
-   <div className=" dark:bg-base-bgDark bg-base-surface">
-  <NavbarContainer isDesktop={isDesktop} currentProfile={currentProfile} />
-</div>
-</IonFooter>
-     }   
+</div> 
+  
      </div>
 {/* </IonPage>  */}
       </IonReactRouter>
