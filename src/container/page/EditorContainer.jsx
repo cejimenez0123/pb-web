@@ -1,473 +1,1228 @@
 import "../../styles/Editor.css";
 import "../../App.css";
+
 import { useDispatch, useSelector } from "react-redux";
-import { useState, useEffect, useContext, useRef } from "react";
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { useParams } from "react-router";
-import { IonContent, useIonRouter, IonImg } from "@ionic/react";
-import { Capacitor } from "@capacitor/core";
+import { IonContent, useIonRouter } from "@ionic/react";
+import { Preferences } from "@capacitor/preferences";
+import axios from "axios";
+
 import Paths from "../../core/paths";
 import { PageType } from "../../core/constants";
-import { createStory, deleteStory, getStory, updateStory } from "../../actions/StoryActions";
-import { setEditingPage, setHtmlContent, setPageInView, removeFromPaginatedKey, setPageType, } from "../../actions/PageActions.jsx";
+
+import {
+  createStory,
+  deleteStory,
+  getStory,
+  updateStory,
+} from "../../actions/StoryActions";
+
+import {
+  removeFromPaginatedKey,
+  setEditingPage,
+  setHtmlContent,
+  setPageInView,
+  setPageType,
+} from "../../actions/PageActions.jsx";
+
 import checkResult from "../../core/checkResult";
 import debounce from "../../core/debounce.js";
 import Context from "../../context";
 import { useAlert } from "../../core/useAlert.jsx";
 import AlertType from "../../core/AlertType.js";
+
 import EditorContext from "./EditorContext";
-import HashtagForm from "../../components/hashtag/HashtagForm";
 import FeedbackDialog from "../../components/page/FeedbackDialog";
 import { useDialog } from "../../domain/usecases/useDialog.jsx";
 import EditorDiv from "../../components/page/EditorDiv.jsx";
-import { motion, AnimatePresence } from "framer-motion";
-import Enviroment from "../../core/Enviroment.js";
-import { Preferences } from "@capacitor/preferences";
-import axios from "axios";
 import TopBarDropdown from "../../components/page/TopBarDropdown.jsx";
 import EditorFooter from "../../components/page/EditorFooter.jsx";
-import getBackground from "../../core/getbackground.jsx";
 
-const CONTAINER = "mx-auto w-full max-w-3xl p-4 md:p-6 bg-base-bg rounded-lg shadow-sm";
+import Enviroment from "../../core/Enviroment.js";
 
-export default function EditorContainer({ presentingElement }) {
-  const router = useIonRouter();
-  const { id, type: paramType } = useParams();
-  const dispatch = useDispatch();
+const CONTAINER =
+  "mx-auto w-full max-w-3xl rounded-lg bg-base-bg p-4 shadow-sm md:p-6";
 
-  const currentProfile = useSelector((state) => state.users.currentProfile);
-  const { editPage, pageInView, pageType: sliceType } = useSelector((state) => state.pages);
-  // let type =
-  let type=   paramType || sliceType;
-    if(type=="text"){
-      type = PageType.text
-    }
-  const { showAlert } = useAlert();
-  const [files, setFiles] = useState([]);
-  const isNative = Capacitor.isNativePlatform();
-  const htmlContent = useSelector(state => state.pages.editorHtmlContent);
-  const hasInitialized = useRef(false);
-  const isMediaType = type === PageType.picture || type === PageType.link;
+const DRIVE_TOKEN_KEY = "googledrivetoken";
 
-  const [parameters, setParameters] = useState({
-    isPrivate: true,
+const STATUS_OPTIONS = [
+  { value: "draft", label: "Draft" },
+  { value: "fragment", label: "Fragment" },
+  { value: "workshop", label: "Workshop" },
+  { value: "finished", label: "Published" },
+];
+
+function normalizeType(value) {
+  if (value === "text") {
+    return PageType.text;
+  }
+
+  return value || PageType.text;
+}
+
+function createEmptyParameters({
+  routeId,
+  type,
+  currentProfile,
+}) {
+  return {
+    id:
+      routeId && routeId !== "new"
+        ? routeId
+        : null,
     data: "",
     title: "",
-    id: id || null,
-    needsFeedback: false,
-    status: "draft",
     description: "",
+    status: "draft",
+    isPrivate: true,
     commentable: true,
-    authorId: currentProfile?.id,
-    profile: currentProfile,
+    needsFeedback: false,
+    type,
+    authorId: currentProfile?.id ?? null,
     profileId: currentProfile?.id ?? "",
-    type: type,
-  });
+    profile: currentProfile ?? null,
+    page: null,
+  };
+}
 
-  const effectiveId = parameters.id || id;
-  const [openHashtag, setOpenHashtag] = useState(false);
-  const { openDialog, closeDialog, resetDialog } = useDialog();
+export default function EditorContainer() {
+  const dispatch = useDispatch();
+  const router = useIonRouter();
+
+  const {
+    id: routeId,
+    type: paramType,
+  } = useParams();
+
+  const { showAlert } = useAlert();
   const { isPhone } = useContext(Context);
-  const [isSaved, setIsSaved] = useState(false);
-  const lastSavedRef = useRef(null);
-  const hasLoaded = useRef(false);
-  const hasCreated = useRef(false); // ← tracks if text story has been created this session
 
-  const debouncedSave = useRef(
-    debounce((payload) => {
-      dispatch(updateStory(payload)).then(res =>
-        checkResult(res,
-          (data) =>{
-         
+  const {
+    openDialog,
+    closeDialog,
+    resetDialog,
+  } = useDialog();
 
-         setIsSaved(true)
-     
+  const currentProfile = useSelector(
+    (state) => state.users.currentProfile
+  );
 
-         
-          },
-          (err) => { showAlert({ message: err.message, type: AlertType.error }); }
-        )
-      );
-    }, 500)
-  ).current;
+  const {
+    editPage,
+    pageInView,
+    pageType: sliceType,
+  } = useSelector((state) => state.pages);
 
-  useEffect(() => {
-    setParameters((prev) => ({
-      ...prev,
-      id: id ?? prev.id ?? null,
+  const type = normalizeType(paramType || sliceType);
+
+  const isNewStory =
+    !routeId || routeId === "new";
+
+  const isMediaType =
+    type === PageType.picture ||
+    type === PageType.link;
+
+  const [parameters, setParameters] = useState(() =>
+    createEmptyParameters({
+      routeId,
       type,
-      authorId: currentProfile?.id,
-      profile: currentProfile,
-      profileId: currentProfile?.id || "",
-    }));
-  }, [type, id, currentProfile]);
+      currentProfile,
+    })
+  );
 
-  // Clear state on new story
+  const [files, setFiles] = useState([]);
+  const [accessToken, setAccessToken] = useState(null);
+  const [isSaved, setIsSaved] = useState(true);
+  const [openHashtag, setOpenHashtag] = useState(false);
+
+  const hasCreatedRef = useRef(false);
+  const hasLoadedRef = useRef(false);
+  const lastSavedRef = useRef(null);
+  const activeRequestIdRef = useRef(null);
+  const debouncedSaveRef = useRef(null);
+
+  const effectiveId =
+    parameters.id || routeId;
+
+  const showError = useCallback(
+    (error) => {
+      showAlert({
+        message:
+          error?.message ||
+          "Something went wrong.",
+        type: AlertType.error,
+      });
+    },
+    [showAlert]
+  );
+
+  const handleChange = useCallback(
+    (key, value) => {
+      setParameters((previous) => ({
+        ...previous,
+        [key]: value,
+      }));
+    },
+    []
+  );
+
+  /*
+   * One debounced update pipeline.
+   *
+   * This does not interact with editor DOM content. It only persists
+   * a fully resolved story payload.
+   */
   useEffect(() => {
-    if (!id || id === "new") {
-      dispatch(setEditingPage({ page: null }));
-      dispatch(setPageInView({ page: null }));
-      dispatch(setHtmlContent(""));
-      setParameters(prev => ({ ...prev, id: null, data: "" }));
-      hasCreated.current = false;
-    }
-  }, []);
+    const debouncedSave = debounce(
+      (payload) => {
+        dispatch(updateStory(payload)).then((result) =>
+          checkResult(
+            result,
+            () => {
+              setIsSaved(true);
+            },
+            (error) => {
+              setIsSaved(false);
+              showError(error);
+            }
+          )
+        );
+      },
+      500
+    );
 
-  // Clear data when navigating to a new type without an id
-  useEffect(() => {
-    if (!id && type) {
-      dispatch(setPageInView({ page: null }));
-      dispatch(setHtmlContent(""));
-      setParameters(prev => ({ ...prev, data: "", type }));
-      hasCreated.current = false;
-    }
-  }, [type]);
+    debouncedSaveRef.current = debouncedSave;
 
-  // Sync type into parameters
-  useEffect(() => {
-    setParameters(prev => prev.type === type ? prev : { ...prev, type });
-  }, [type]);
+    return () => {
+      if (
+        typeof debouncedSave.cancel ===
+        "function"
+      ) {
+        debouncedSave.cancel();
+      }
+    };
+  }, [dispatch, showError]);
 
+  /*
+   * Close any open dialog once when the editor first mounts.
+   */
   useEffect(() => {
     closeDialog();
-    if (!hasInitialized.current) {
-      hasInitialized.current = true;
-    }
-  }, []);
+  }, [closeDialog]);
 
-useEffect(() => {
-  if (!id || id === "new") return;
-  if (pageInView?.id === id) {
-    // already in slice — no fetch needed
-    setStory(pageInView);
-    return;
-  }
-  fetchStory();
-}, [id]);
-
-  // ── Text autosave: create on first content, then debounce updates ──
+  /*
+   * Reset all state for a new story.
+   *
+   * This is intentionally based on route identity, not on animations,
+   * component keys, or a Framer Motion lifecycle.
+   */
   useEffect(() => {
-    if (isMediaType && !id) return;
+    if (!isNewStory) return;
+
+    hasCreatedRef.current = false;
+    hasLoadedRef.current = false;
+    lastSavedRef.current = null;
+    activeRequestIdRef.current = null;
+
+    dispatch(setEditingPage({ page: null }));
+    dispatch(setPageInView({ page: null }));
+    dispatch(setHtmlContent(""));
+    dispatch(setPageType({ type }));
+
+    setParameters(
+      createEmptyParameters({
+        routeId: null,
+        type,
+        currentProfile,
+      })
+    );
+
+    setIsSaved(true);
+  }, [
+    currentProfile,
+    dispatch,
+    isNewStory,
+    type,
+  ]);
+
+  /*
+   * When moving to an existing story, immediately blank local content
+   * before its fetch finishes. This prevents old editor content from
+   * remaining visible during a route transition.
+   */
+  useEffect(() => {
+    if (isNewStory || !routeId) return;
+
+    hasCreatedRef.current = false;
+    hasLoadedRef.current = false;
+    lastSavedRef.current = null;
+    activeRequestIdRef.current = routeId;
+
+    setParameters((previous) => ({
+      ...previous,
+      id: routeId,
+      data: "",
+      title: "",
+      description: "",
+      page: null,
+      type,
+    }));
+
+    setIsSaved(true);
+  }, [
+    isNewStory,
+    routeId,
+    type,
+  ]);
+
+  /*
+   * Keep current-user data and route type fresh, while preserving the
+   * current draft data/title.
+   */
+  useEffect(() => {
+    setParameters((previous) => ({
+      ...previous,
+      type,
+      authorId: currentProfile?.id ?? null,
+      profileId: currentProfile?.id ?? "",
+      profile: currentProfile ?? null,
+    }));
+  }, [currentProfile, type]);
+
+  /*
+   * Applies loaded server data to application state.
+   *
+   * `parameters.data` is the content source EditorDiv should render.
+   * Redux editorHtmlContent is updated only as a compatibility mirror for
+   * other parts of your application that might still read it.
+   */
+  const setStory = useCallback(
+    (story) => {
+      if (!story?.id) return;
+
+      const storyType = normalizeType(
+        story.type || type
+      );
+
+      const storyData = story.data || "";
+
+      dispatch(setEditingPage({ page: story }));
+      dispatch(setPageInView({ page: story }));
+      dispatch(
+        setPageType({
+          type: storyType,
+        })
+      );
+
+      dispatch(setHtmlContent(storyData));
+
+      setParameters((previous) => ({
+        ...previous,
+        id: story.id,
+        data: storyData,
+        title: story.title || "",
+        description: story.description || "",
+        status: story.status || "draft",
+        isPrivate: story.isPrivate ?? true,
+        commentable: story.commentable ?? true,
+        needsFeedback: story.needsFeedback ?? false,
+        type: storyType,
+        page: story,
+      }));
+
+      hasCreatedRef.current = true;
+      hasLoadedRef.current = true;
+      lastSavedRef.current = null;
+      setIsSaved(true);
+    },
+    [dispatch, type]
+  );
+
+  /*
+   * Fetch a story only when a real story ID is in the route.
+   *
+   * The cancellation flag prevents a delayed response from a previous route
+   * from injecting old data into the current editor.
+   */
+  useEffect(() => {
+    if (isNewStory || !routeId) return;
+
+    if (pageInView?.id === routeId) {
+      setStory(pageInView);
+      return;
+    }
+
+    let cancelled = false;
+
+    activeRequestIdRef.current = routeId;
+
+    dispatch(getStory({ id: routeId })).then(
+      (result) => {
+        if (cancelled) return;
+
+        if (
+          activeRequestIdRef.current !== routeId
+        ) {
+          return;
+        }
+
+        checkResult(
+          result,
+          (payload) => {
+            if (payload?.story) {
+              setStory(payload.story);
+            }
+          },
+          (error) => {
+            showError(error);
+          }
+        );
+      }
+    );
+
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    dispatch,
+    isNewStory,
+    pageInView,
+    routeId,
+    setStory,
+    showError,
+  ]);
+
+  const saveStory = useCallback(
+    async (incoming = {}) => {
+      if (!currentProfile?.id) return null;
+
+      const resolvedId =
+        incoming.id ??
+        parameters.id ??
+        routeId ??
+        null;
+
+      const payload = {
+        ...parameters,
+        ...incoming,
+        id: resolvedId,
+        type:
+          incoming.type ??
+          parameters.type ??
+          type,
+        authorId: currentProfile.id,
+        profileId: currentProfile.id,
+        profile: currentProfile,
+      };
+
+      const shouldCreate =
+        !resolvedId ||
+        resolvedId === "new";
+
+      if (shouldCreate) {
+        const result = await dispatch(
+          createStory({
+            ...payload,
+            id: null,
+          })
+        );
+
+        return checkResult(
+          result,
+          (response) => {
+            const story = response?.story;
+
+            if (!story?.id) {
+              hasCreatedRef.current = false;
+
+              showError(
+                new Error(
+                  "The story was created, but no story ID was returned."
+                )
+              );
+
+              return null;
+            }
+
+            hasCreatedRef.current = true;
+
+            /*
+             * Apply all returned story data, including data/title/type.
+             */
+            setStory(story);
+
+            /*
+             * Replace the URL without creating an extra animation/remount
+             * wrapper around the editor.
+             */
+            window.history.replaceState(
+              null,
+              "",
+              Paths.editPage.createRoute(
+                story.id,
+                story.type
+              )
+            );
+
+            return story;
+          },
+          (error) => {
+            hasCreatedRef.current = false;
+            setIsSaved(false);
+            showError(error);
+
+            return null;
+          }
+        );
+      }
+
+      const result = await dispatch(
+        updateStory({
+          ...payload,
+          id: resolvedId,
+        })
+      );
+
+      return checkResult(
+        result,
+        (response) => {
+          setIsSaved(true);
+
+          return response?.story ?? response;
+        },
+        (error) => {
+          setIsSaved(false);
+          showError(error);
+
+          return null;
+        }
+      );
+    },
+    [
+      currentProfile,
+      dispatch,
+      parameters,
+      routeId,
+      setStory,
+      showError,
+      type,
+    ]
+  );
+
+  /*
+   * Autosave policy:
+   *
+   * - New text stories create once after title/content appears.
+   * - Existing stories update only after server data has loaded.
+   * - Repeated identical payloads do not schedule another update.
+   */
+  useEffect(() => {
     if (!currentProfile?.id) return;
-    if (!parameters.data?.trim() && !parameters.title?.trim()) return;
 
-    const resolvedId = parameters.id || id;
+    if (isMediaType && isNewStory) return;
 
-    if (!resolvedId || resolvedId === "new") {
-      // First content entered — create the story
-      if (hasCreated.current) return;
-      hasCreated.current = true;
-      saveStory(parameters);
+    const hasMeaningfulContent =
+      Boolean(parameters.data?.trim()) ||
+      Boolean(parameters.title?.trim());
+
+    if (!hasMeaningfulContent) return;
+
+    const resolvedId =
+      parameters.id || routeId;
+
+    if (
+      !resolvedId ||
+      resolvedId === "new"
+    ) {
+      if (hasCreatedRef.current) return;
+
+      hasCreatedRef.current = true;
+      setIsSaved(false);
+
+      saveStory();
+
       return;
     }
 
-    // Already exists — debounce update
-    if (!hasLoaded.current) {
-      hasLoaded.current = true;
-      return;
-    }
+    if (!hasLoadedRef.current) return;
 
     const payload = {
       ...parameters,
       id: resolvedId,
-      profileId: currentProfile?.id,
+      type,
+      authorId: currentProfile.id,
+      profileId: currentProfile.id,
+      profile: currentProfile,
     };
 
-    const isSame = JSON.stringify(payload) === JSON.stringify(lastSavedRef.current);
-    if (isSame) return;
+    const currentPayload =
+      JSON.stringify(payload);
+
+    const previousPayload = JSON.stringify(
+      lastSavedRef.current
+    );
+
+    if (currentPayload === previousPayload) {
+      return;
+    }
+
     lastSavedRef.current = payload;
     setIsSaved(false);
-    debouncedSave({ ...payload })
 
+    debouncedSaveRef.current?.(payload);
+  }, [
+    currentProfile,
+    isMediaType,
+    isNewStory,
+    parameters.commentable,
+    parameters.data,
+    parameters.id,
+    parameters.isPrivate,
+    parameters.status,
+    parameters.title,
+    routeId,
+    saveStory,
+    type,
+  ]);
 
-  }, [parameters.data, parameters.title, parameters.status, parameters.isPrivate, parameters.commentable, parameters.id]);
+  /*
+   * This can be passed to EditorDiv when it creates a story itself.
+   */
+  const createPageAction = useCallback(
+    async (data) => {
+      if (hasCreatedRef.current) return;
 
-  const createPageAction = async (data) => {
-    setIsSaved(false);
-    await saveStory({ data });
-    setIsSaved(true);
-  };
+      hasCreatedRef.current = true;
+      setIsSaved(false);
 
-  const setStory = (story) => {
-    dispatch(setHtmlContent(story?.data));
-    dispatch(setPageInView({ page: story }));
-    dispatch(setPageType({ type: story?.type ?? type ?? PageType.text }));
-    setParameters((prev) => ({
-      ...prev,
-      id: id,
-      data: story.data,
-      commentable: story?.commentable ?? false,
-      page: story,
-      isPrivate: story?.isPrivate ?? true,
-      title: story?.title ?? "Untitled",
-      type: story?.type ?? type ?? PageType.text,
-    }));
-    hasCreated.current = true;
-  };
+      await saveStory({
+        data,
+      });
+    },
+    [saveStory]
+  );
 
-  const fetchStory = () => {
-    if (!id) return;
-    dispatch(getStory({ id })).then((res) =>
-      checkResult(res,
-        (payload) => { setStory(payload.story); },
-        (err) => showAlert({ message: err.message, type: AlertType.error })
-      )
-    );
-  };
-
-  const saveStory = async (incoming) => {
-    if (!currentProfile?.id) return;
-  
-    const payload = {
-      ...parameters,
-      ...incoming,
-      profileId: currentProfile?.id,
-      type: type
-    };
-
-    const resolvedId = payload.id || id;
-    const shouldCreate = !resolvedId || resolvedId === "new";
-
-    if (shouldCreate) {
-      const res = await dispatch(createStory(payload));
-      return checkResult(res, (data) => {
-        const story = data.story;
-        setIsSaved(true);
-        dispatch(setEditingPage({ page: story }));
-        dispatch(setPageInView({ page: story }));
-        dispatch(setHtmlContent(story.data));
-        setParameters((prev) => ({ ...prev, id: story.id }));
-        window.history.replaceState(null, "", Paths.editPage.createRoute(story.id, story.type));
-      }, (err) => showAlert({ message: err.message, type: AlertType.error }));
-    }
-
-    const res = await dispatch(updateStory({ ...payload, id: resolvedId }));
-    return checkResult(res,
-      (data) => {
-  
-        setIsSaved(true)},
-      (err) => { setIsSaved(false); showAlert({ message: err.message, type: AlertType.error }); }
-    );
-  };
-
-  const driveTokenKey = "googledrivetoken";
-  const TOKEN_EXPIRY_KEY = "googledrivetoken_expiry";
-  const [accessToken, setAccessToken] = useState(null);
-
-  useEffect(() => {
-    try { fetchFiles(); } catch (err) { 
-
-      
-    }
-  }, [accessToken]);
-
-  const fetchFiles = async () => {
-    const token = (await Preferences.get({ key: driveTokenKey })).value;
+  const fetchFiles = useCallback(async () => {
     try {
-      if (!token) return;
-      fetch('https://www.googleapis.com/drive/v3/files?q=mimeType="application/vnd.google-apps.document"&fields=files(id,name,mimeType,iconLink)', {
-        headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' },
-      })
-        .then(res => {
-          if (res.status === 401) throw new Error('Unauthorized');
-          return res.json();
-        })
-        .then(data => setFiles(data.files || []))
-        .catch(err => { console.error('Google Drive API error:', err); setAccessToken(null); });
-    } catch (err) {
-      console.error("Error in fetchFiles:", err);
+      const { value: token } =
+        await Preferences.get({
+          key: DRIVE_TOKEN_KEY,
+        });
+
+      if (!token) {
+        setFiles([]);
+        setAccessToken(null);
+
+        return;
+      }
+
+      const response = await fetch(
+        'https://www.googleapis.com/drive/v3/files?q=mimeType="application/vnd.google-apps.document"&fields=files(id,name,mimeType,iconLink)',
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        }
+      );
+
+      if (response.status === 401) {
+        throw new Error(
+          "Your Google Drive session has expired."
+        );
+      }
+
+      if (!response.ok) {
+        throw new Error(
+          "Unable to load Google Drive documents."
+        );
+      }
+
+      const data = await response.json();
+
+      setFiles(data.files || []);
+      setAccessToken(token);
+    } catch (error) {
+      console.error(
+        "Google Drive API error:",
+        error
+      );
+
+      setFiles([]);
       setAccessToken(null);
     }
-  };
+  }, []);
 
-  const onFilePicked = async (file) => {
-    try {
-      if (!file?.id || !accessToken) return;
-      const url = `https://www.googleapis.com/drive/v3/files/${file.id}/export?mimeType=text/html`;
-      const response = await axios.get(url, {
-        headers: { Authorization: `Bearer ${accessToken}` },
-        responseType: 'text'
+  useEffect(() => {
+    fetchFiles();
+  }, [fetchFiles]);
+
+  /*
+   * Critical behavior:
+   * Imported content replaces parameters.data.
+   *
+   * It is intentionally NOT passed to `debouncedSave` directly, because
+   * direct saving bypasses React state and can leave EditorDiv with stale or
+   * independently appended content.
+   */
+  const onFilePicked = useCallback(
+    async (file) => {
+      try {
+        if (!file?.id || !accessToken) return;
+
+        const url =
+          "https://www.googleapis.com/drive/v3/files/" +
+          `${file.id}/export?mimeType=text/html`;
+
+        const response = await axios.get(url, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+          responseType: "text",
+        });
+
+        setParameters((previous) => ({
+          ...previous,
+          data: response.data || "",
+          status: "draft",
+          needsFeedback: true,
+          type: PageType.text,
+        }));
+
+        resetDialog();
+      } catch (error) {
+        console.error(
+          "Error importing Google document:",
+          error
+        );
+
+        showError(error);
+      }
+    },
+    [
+      accessToken,
+      resetDialog,
+      showError,
+    ]
+  );
+
+  const openGoogleDrive = useCallback(() => {
+    if (!accessToken) {
+      showAlert({
+        message:
+          "No Google Drive access token was found.",
+        type: AlertType.error,
       });
-      debouncedSave({ ...parameters, data: response.data, status: "draft", id: effectiveId, needsFeedback: true, type: PageType.text });
-    } catch (error) {
-      console.error("Error fetching Google Doc:", error);
-    }
-    resetDialog();
-  };
 
-  const openGoogleDrive = async () => {
-    const accessToken = (await Preferences.get({ key: driveTokenKey })).value;
-    if (!accessToken) { showAlert({ message: "No Access Token", type: AlertType.error }); return; }
+      return;
+    }
+
     openDialog({
       title: null,
       text: (
-        <div style={{ "--background": Enviroment.palette.base.surface }} className="bg-cream p-3 rounded-xl">
-          <div className={`overflow-y-auto ${isPhone ? "grid grid-cols-2 gap-3" : "grid grid-cols-3 gap-4"}`} style={{ maxHeight: "70vh", padding: "0.5rem" }}>
-            {files.map((file) => (
-              <button key={file.id} onClick={() => onFilePicked(file)}
-                className="flex flex-col justify-center items-center px-3 py-3 bg-base-bg rounded-xl shadow-md border border-blueSea border-opacity-20 hover:border-blueSea hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-emerald-300 transition-all duration-150"
-              >
-                <img src={file.iconLink} alt="file icon" className="w-10 h-10 mb-2 rounded" />
-                <span className="text-center text-sm text-emerald-800 w-full break-words">{file.name}</span>
-              </button>
-            ))}
+        <div
+          style={{
+            "--background":
+              Enviroment.palette.base.surface,
+          }}
+          className="rounded-xl bg-cream p-3"
+        >
+          <div
+            className={
+              isPhone
+                ? "grid grid-cols-2 gap-3 overflow-y-auto"
+                : "grid grid-cols-3 gap-4 overflow-y-auto"
+            }
+            style={{
+              maxHeight: "70vh",
+              padding: "0.5rem",
+            }}
+          >
+            {files.length === 0 ? (
+              <p className="col-span-full p-4 text-center text-sm text-slate-500">
+                No Google Docs were found.
+              </p>
+            ) : (
+              files.map((file) => (
+                <button
+                  key={file.id}
+                  type="button"
+                  onClick={() => onFilePicked(file)}
+                  className="
+                    flex flex-col items-center justify-center
+                    rounded-xl border border-blueSea
+                    border-opacity-20 bg-base-bg px-3 py-3
+                    shadow-md transition-all duration-150
+                    hover:border-blueSea hover:shadow-lg
+                    focus:outline-none focus:ring-2
+                    focus:ring-emerald-300
+                  "
+                >
+                  <img
+                    src={file.iconLink}
+                    alt=""
+                    className="mb-2 h-10 w-10 rounded"
+                  />
+
+                  <span className="w-full break-words text-center text-sm text-emerald-800">
+                    {file.name}
+                  </span>
+                </button>
+              ))
+            )}
           </div>
         </div>
       ),
     });
-  };
+  }, [
+    accessToken,
+    files,
+    isPhone,
+    onFilePicked,
+    openDialog,
+    showAlert,
+  ]);
 
-  const handleView = () => router.push(Paths.page.createRoute(effectiveId));
+  const handleView = useCallback(() => {
+    if (!effectiveId || effectiveId === "new") {
+      return;
+    }
 
-  const handleChange = (key, value) => {
-    setParameters((prev) => ({ ...prev, [key]: value }));
-  };
-
-  const handlePostPublic = (desc) => {
-    const payload = { ...parameters, id: effectiveId, description: desc, isPrivate: false, status: "finished", needsFeedback: true };
-    dispatch(updateStory(payload)).then(res =>
-      
-      checkResult(res, (data) => { 
-         setIsSaved(true)       
-  
-        resetDialog(); 
-        router.push(Paths.page.createRoute(effectiveId), "forward"); }, (err) => showAlert({ message: err.message, type: AlertType.error }))
+    router.push(
+      Paths.page.createRoute(effectiveId),
+      "forward"
     );
-  };
+  }, [effectiveId, router]);
 
-  const handleFeedback = (feedbackDesc) => {
-    const payload = { ...parameters, id: effectiveId, description: feedbackDesc, status: "workshop", needsFeedback: true };
-    dispatch(updateStory(payload)).then(res => {
-      resetDialog();
-      checkResult(res, (data) => {
-        setIsSaved(true)
-        router.push(Paths.workshop.createRoute(effectiveId), "forward")}, (err) => showAlert({ message: err.message, type: AlertType.error }));
-    });
-  };
+  const handlePostPublic = useCallback(
+    (description) => {
+      if (
+        !effectiveId ||
+        effectiveId === "new"
+      ) {
+        return;
+      }
 
-  const openFeedback = (isFeedback) => {
+      const payload = {
+        ...parameters,
+        id: effectiveId,
+        description,
+        isPrivate: false,
+        status: "finished",
+        needsFeedback: true,
+      };
+
+      dispatch(updateStory(payload)).then(
+        (result) =>
+          checkResult(
+            result,
+            () => {
+              setIsSaved(true);
+              resetDialog();
+
+              router.push(
+                Paths.page.createRoute(effectiveId),
+                "forward"
+              );
+            },
+            (error) => {
+              showError(error);
+            }
+          )
+      );
+    },
+    [
+      dispatch,
+      effectiveId,
+      parameters,
+      resetDialog,
+      router,
+      showError,
+    ]
+  );
+
+  const handleFeedback = useCallback(
+    (description) => {
+      if (
+        !effectiveId ||
+        effectiveId === "new"
+      ) {
+        return;
+      }
+
+      const payload = {
+        ...parameters,
+        id: effectiveId,
+        description,
+        status: "workshop",
+        needsFeedback: true,
+      };
+
+      dispatch(updateStory(payload)).then(
+        (result) =>
+          checkResult(
+            result,
+            () => {
+              setIsSaved(true);
+              resetDialog();
+
+              router.push(
+                Paths.workshop.createRoute(
+                  effectiveId
+                ),
+                "forward"
+              );
+            },
+            (error) => {
+              showError(error);
+            }
+          )
+      );
+    },
+    [
+      dispatch,
+      effectiveId,
+      parameters,
+      resetDialog,
+      router,
+      showError,
+    ]
+  );
+
+  const openFeedback = useCallback(
+    (isFeedback) => {
+      openDialog({
+        disagree: closeDialog,
+        disagreeText: "Close",
+        scrollY: false,
+        text: (
+          <FeedbackDialog
+            page={editPage}
+            isFeedback={isFeedback}
+            handleChange={(value) =>
+              handleChange("description", value)
+            }
+            handleFeedback={handleFeedback}
+            handlePostPublic={handlePostPublic}
+            handleClose={closeDialog}
+          />
+        ),
+      });
+    },
+    [
+      closeDialog,
+      editPage,
+      handleChange,
+      handleFeedback,
+      handlePostPublic,
+      openDialog,
+    ]
+  );
+
+  const handleDelete = useCallback(() => {
+    const storyId =
+      parameters.id || routeId;
+
+    if (!storyId || storyId === "new") {
+      return;
+    }
+
+    dispatch(
+      deleteStory({
+        ...parameters,
+        id: storyId,
+      })
+    ).then((result) =>
+      checkResult(
+        result,
+        () => {
+          dispatch(
+            removeFromPaginatedKey({
+              key: "stories",
+              id: storyId,
+            })
+          );
+
+          dispatch(
+            removeFromPaginatedKey({
+              key: "recommended",
+              id: storyId,
+            })
+          );
+
+          closeDialog();
+          router.push(Paths.home, "root");
+        },
+        (error) => {
+          showError(error);
+        }
+      )
+    );
+  }, [
+    closeDialog,
+    dispatch,
+    parameters,
+    routeId,
+    router,
+    showError,
+  ]);
+
+  const openConfirmDeleteDialog = useCallback(() => {
     openDialog({
-      disagree:closeDialog,
-      disagreeText: "Close",
-      scrollY: false,
-      text: (
-        <FeedbackDialog
-          page={editPage}
-          isFeedback={isFeedback}
-          handleChange={(e) => handleChange("description", e)}
-          handleFeedback={(feedbackDesc) => handleFeedback(feedbackDesc)}
-          handlePostPublic={(desc) => handlePostPublic(desc)}
-          handleClose={() => closeDialog()}
-        />
-      ),
-    });
-  };
-
-  const handleDelete = () => {
-    dispatch(deleteStory(parameters)).then(() => {
-      dispatch(removeFromPaginatedKey({ key: "stories", id }));
-dispatch(removeFromPaginatedKey({ key: "recommended", id }));
-
-    
-      router.push(Paths.home, "root");
-      closeDialog();
-    });
-  };
-
-  const openConfirmDeleteDialog = () => {
-    openDialog({
-      title: "Are you sure you want to delete this page?",
-      text: `${parameters?.title}`,
-      onClose: () => closeDialog(),
+      title:
+        "Are you sure you want to delete this page?",
+      text: parameters.title || "Untitled",
+      onClose: closeDialog,
       agreeText: "Delete",
-      agree: () => handleDelete(),
+      agree: handleDelete,
       disagreeText: "Close",
-      disagree: () => closeDialog(),
+      disagree: closeDialog,
     });
-  };
-
-  const STATUS_OPTIONS = [
-    { value: "draft", label: "Draft" },
-    { value: "fragment", label: "Fragment" },
-    { value: "workshop", label: "Workshop" },
-    { value: "finished", label: "Published" },
-  ];
+  }, [
+    closeDialog,
+    handleDelete,
+    openDialog,
+    parameters.title,
+  ]);
 
   return (
-    <EditorContext.Provider value={{ page: editPage, parameters, setParameters }}>
-      <IonContent fullscreen className="page-content">
-        <div className="bg-cream flex flex-col min-h-[100dvh] overflow-y-auto dark:bg-base-bgDark">
-          <AnimatePresence>
-            <motion.div key="topbar" initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.05 }}>
-              <div className="rounded-lg my-1 w-full max-w-3xl dark:bg-base-bgDark bg-cream min-h-[100%] mx-auto p-2 bg-emerald-50 border border-emerald-200 flex flex-col gap-1">
-                <div className="flex flex-row gap-2 items-center w-full">
-                  <div className="flex flex-col w-[100%]">
-                    <input
-                      type="text"
-                      className="p-2 flex-grow bg-base-bg dark:text-cream text-emerald-800 text-[1rem] rounded-md border border-emerald-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-bold"
-                      value={parameters.title}
-                      onChange={(e) => handleChange("title", e.target.value)}
-                      placeholder="Untitled"
+    <EditorContext.Provider
+      value={{
+        page: editPage,
+        parameters,
+        setParameters,
+      }}
+    >
+      <IonContent
+        fullscreen
+        className="page-content"
+      >
+        <div
+          className="
+            flex min-h-[100dvh] flex-col
+            bg-cream dark:bg-base-bgDark
+          "
+        >
+          <header className="w-full px-2 pt-2 md:px-4 md:pt-4">
+            <div
+              className="
+                mx-auto flex w-full max-w-3xl
+                flex-col gap-1 rounded-lg
+                border border-emerald-200
+                bg-emerald-50 p-2
+                dark:border-base-borderDark
+                dark:bg-base-bgDark
+              "
+            >
+              <div className="flex w-full items-center gap-2">
+                <div className="flex w-full flex-col">
+                  <input
+                    type="text"
+                    value={parameters.title}
+                    onChange={(event) =>
+                      handleChange(
+                        "title",
+                        event.target.value
+                      )
+                    }
+                    placeholder="Untitled"
+                    aria-label="Story title"
+                    className="
+                      flex-grow rounded-md border
+                      border-emerald-300 bg-base-bg
+                      p-2 text-[1rem] font-bold
+                      text-emerald-800 outline-none
+                      focus:ring-2 focus:ring-emerald-500
+                      dark:text-cream
+                    "
+                  />
+
+                  <div className="mt-1 flex items-center gap-2">
+                    {isSaved ? (
+                      <span className="flex items-center gap-1 font-semibold text-emerald-700">
+                        ✅ Saved
+                      </span>
+                    ) : (
+                      <span className="flex items-center gap-1 font-semibold text-yellow-600">
+                        💾 Saving...
+                      </span>
+                    )}
+
+                    <VisibilityBadge
+                      isPrivate={parameters.isPrivate}
+                      toggle={() =>
+                        handleChange(
+                          "isPrivate",
+                          !parameters.isPrivate
+                        )
+                      }
                     />
-                    <div className="flex items-center gap-2 mt-1">
-                      {isSaved ? (
-                        <span className="text-emerald-700 font-semibold flex items-center gap-1">✅ Saved</span>
-                      ) : (
-                        <span className="text-yellow-600 font-semibold flex items-center gap-1">💾 Saving...</span>
-                      )}
-                      <VisibilityBadge isPrivate={parameters.isPrivate} toggle={() => handleChange("isPrivate", !parameters.isPrivate)} />
-                      {effectiveId && effectiveId !== "new" && (
-                        <button onClick={handleView} className="inline-flex items-center gap-1 px-2 py-[3px] rounded-full text-xs font-medium bg-transparent border border-emerald-300 dark:border-emerald-600 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 transition-colors">
-                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg>
+
+                    {effectiveId &&
+                      effectiveId !== "new" && (
+                        <button
+                          type="button"
+                          onClick={handleView}
+                          className="
+                            inline-flex items-center gap-1
+                            rounded-full border
+                            border-emerald-300 px-2 py-[3px]
+                            text-xs font-medium text-emerald-700
+                            transition-colors
+                            hover:bg-emerald-50
+                            dark:border-emerald-600
+                            dark:text-emerald-300
+                            dark:hover:bg-emerald-900/30
+                          "
+                        >
+                          <svg
+                            width="12"
+                            height="12"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            aria-hidden="true"
+                          >
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                            <circle
+                              cx="12"
+                              cy="12"
+                              r="3"
+                            />
+                          </svg>
+
                           Preview
                         </button>
                       )}
-                    </div>
                   </div>
+                </div>
+
+                <div className="shrink-0">
                   <TopBarDropdown
-                    router={router} id={id} handleView={handleView} editPage={pageInView}
-                    handleChange={handleChange} openFeedback={openFeedback} parameters={parameters}
-                    openGoogleDrive={openGoogleDrive} setOpenHashtag={setOpenHashtag}
-                    openHashtag={openHashtag} openConfirmDeleteDialog={openConfirmDeleteDialog}
+                    router={router}
+                    id={effectiveId}
+                    handleView={handleView}
+                    editPage={pageInView}
+                    handleChange={handleChange}
+                    openFeedback={openFeedback}
+                    parameters={parameters}
+                    openGoogleDrive={openGoogleDrive}
+                    setOpenHashtag={setOpenHashtag}
+                    openHashtag={openHashtag}
+                    openConfirmDeleteDialog={
+                      openConfirmDeleteDialog
+                    }
                   />
                 </div>
               </div>
-            </motion.div>
-          </AnimatePresence>
-<div className="max-w-3xl mx-auto ">
-          <AnimatePresence>
-            <motion.div key="editor" initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.05 }}>
+            </div>
+          </header>
+
+          <main className="w-full px-2 pb-24 pt-2 md:px-4 md:pb-10 md:pt-4">
+            <div className="mx-auto w-full max-w-3xl">
               <div className={CONTAINER}>
-                <div className="flex gap-1 bg-gray-100 justify-around dark:bg-base-surfaceDark p-1 rounded-full w-fit">
+                <div
+                  className="
+                    mb-4 flex w-fit gap-1
+                    rounded-full bg-gray-100 p-1
+                    dark:bg-base-surfaceDark
+                  "
+                >
                   {STATUS_OPTIONS.map((option) => {
-                    const isActive = parameters.status === option.value;
+                    const isActive =
+                      parameters.status ===
+                      option.value;
+
                     return (
-                      <button key={option.value} onClick={() => handleChange("status", option.value)}
-                        className={`px-3 py-1 text-xs font-semibold rounded-full transition-all duration-150 ${isActive ? "bg-soft text-white shadow-sm" : "text-soft dark:text-cream dark:bg-base-bgDark bg-base-bg"}`}
+                      <button
+                        key={option.value}
+                        type="button"
+                        onClick={() =>
+                          handleChange(
+                            "status",
+                            option.value
+                          )
+                        }
+                        className={`
+                          rounded-full px-3 py-1
+                          text-xs font-semibold
+                          transition-all duration-150
+                          ${
+                            isActive
+                              ? "bg-soft text-white shadow-sm"
+                              : "bg-base-bg text-soft dark:bg-base-bgDark dark:text-cream"
+                          }
+                        `}
                       >
                         {option.label}
                       </button>
                     );
                   })}
                 </div>
-                <EditorDiv page={editPage} isSaved={isSaved} setIsSaved={setIsSaved} handleChange={handleChange} parameters={parameters} type={type} createPageAction={createPageAction} />
+
+                <div className="editor-toolbar-wrapper">
+                  <EditorDiv
+                    page={editPage}
+                    isSaved={isSaved}
+                    setIsSaved={setIsSaved}
+                    handleChange={handleChange}
+                    parameters={parameters}
+                    type={type}
+                    createPageAction={
+                      createPageAction
+                    }
+                  />
+                </div>
               </div>
-            </motion.div>
-           
-              <EditorFooter pageInView={pageInView} effectiveId={effectiveId} openConfirmDeleteDialog={openConfirmDeleteDialog} />
-         
-          </AnimatePresence>
-        </div>
+
+              <EditorFooter
+                pageInView={pageInView}
+                effectiveId={effectiveId}
+                openConfirmDeleteDialog={
+                  openConfirmDeleteDialog
+                }
+              />
+            </div>
+          </main>
         </div>
       </IonContent>
     </EditorContext.Provider>
   );
 }
 
-function VisibilityBadge({ isPrivate, toggle }) {
-  const base = "flex items-center gap-1 px-2 py-[2px] rounded-full text-xs font-semibold transition";
-  if (isPrivate) {
-    return <span onClick={toggle} className={`${base} bg-gray-100 text-gray-600`}>🔒 Private</span>;
-  }
-  return <span onClick={toggle} className={`${base} bg-emerald-100 text-emerald-700`}>🌍 Public</span>;
-}
+function VisibilityBadge({
+  isPrivate,
+  toggle,
+}) {
+  const base =
+    "inline-flex items-center gap-1 rounded-full px-2 py-[2px] text-xs font-semibold transition";
 
+  return (
+    <button
+      type="button"
+      onClick={toggle}
+      aria-label="Change visibility"
+      className={
+        isPrivate
+          ? `${base} bg-gray-100 text-gray-600 hover:bg-gray-200`
+          : `${base} bg-emerald-100 text-emerald-700 hover:bg-emerald-200`
+      }
+    >
+      <span aria-hidden="true">
+        {isPrivate ? "🔒" : "🌍"}
+      </span>
+
+      {isPrivate ? "Private" : "Public"}
+    </button>
+  );
+}

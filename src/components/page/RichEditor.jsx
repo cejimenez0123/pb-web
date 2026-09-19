@@ -302,48 +302,7 @@ const applySize = useCallback((px) => {
   updateFormatState();
   emitChange();
 }, [restoreSelection, updateFormatState, emitChange]);
-// const applySize = useCallback((size) => {
-//   editorRef.current?.focus();
-//   restoreSelection();
-//   wrapSelectionInline({ fontSize: size });   // now sees the real selection
-//   updateFormatState();
-//   emitChange();
-// }, [restoreSelection, updateFormatState, emitChange]);
-// const restoreSelection = useCallback(() => {
-//   const sel = window.getSelection();
-//   if (savedRange.current) {
-//     sel.removeAllRanges();
-//     sel.addRange(savedRange.current);
-//   }
-// }, []);
-  // ── Font size: inline span wrap ─────────────────────────────────────────
-  // const applySize = useCallback((size) => {
-  //   editorRef.current?.focus();
-  //   if (!wrapSelectionInline({ fontSize: size })) {
-  //     // Nothing selected — just set for next typed character
-  //     document.execCommand("fontSize", false, "3");
-  //   }
-  //   emitChange();
-  // }, [emitChange]);
 
-  // const applyFont = useCallback((font) => {
-  //   exec("fontName", font === "Default" ? "inherit" : font);
-  // }, [exec]);
-// const applyFont = useCallback((font) => {
-//   editorRef.current?.focus();
-//   restoreSelection();
-//   document.execCommand("fontName", false, font === "Default" ? "inherit" : font);
-//   updateFormatState();
-//   emitChange();
-// }, [restoreSelection, updateFormatState, emitChange]);
-
-// const applySize = useCallback((size) => {
-//   editorRef.current?.focus();
-//   restoreSelection();
-//   wrapSelectionInline({ fontSize: size });   // now sees the real selection
-//   updateFormatState();
-//   emitChange();
-// }, [restoreSelection, updateFormatState, emitChange]);
   const insertLink = useCallback(() => {
     const url = window.prompt("Enter URL:", "https://");
     if (url) exec("createLink", url);

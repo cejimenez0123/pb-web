@@ -19,7 +19,7 @@ export default {
     width: {
       '128': '48rem',
       'page':"50em",
-        // 'page-content':"49.8em",
+      
         'page-mobile':"97vw",
         'page-mobile-content':"95vw",
       'info':"55rem",

@@ -492,15 +492,7 @@ ion-textarea textarea {
   min-width: 2.2rem!important;
   min-height: 2.2rem!important;
 }
-#root {
-  display: flex;
-  overflow-y: scroll;
-  overflow-x: hidden;
-  width: 100vw;
-  min-height: 100vh;
-  height: 100%
 
-}
 
 .isGrid p,div,span{
   font-size: 0.8rem !important;

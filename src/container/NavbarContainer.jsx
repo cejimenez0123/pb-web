@@ -179,7 +179,7 @@ function DesktopNavItem({
       type="button"
       onClick={onClick}
       className={`
-     text-lg
+     text-[1.2em]
         leading-none
         tracking-[-0.02em]
         transition-colors
@@ -219,15 +219,14 @@ function MobileNavbar({ currentProfile }) {
 
       <header
         className="
-          w-full
-           h-36
-           bg-paper
+          w-[100%]
+       
           border-b
           border-border-default
           flex
           items-center
           justify-between
-          px-[48px]
+          px-2
         "
       >
         <button
@@ -265,15 +264,15 @@ function MobileNavbar({ currentProfile }) {
           left-0
           right-0
           z-50
-        h-36
-          bg-paper
+`         min-h-[2.4rem]
+       
           border-t
           border-border-default
           flex
           items-center
           justify-around
-          px-[24px]
-          pb-[4px]
+ 
+   
         "
         aria-label="Mobile navigation"
       >
@@ -323,7 +322,7 @@ function MobileNavItem({
         items-center
         justify-center
         min-w-[72px]
-        min-h-36
+
        text-lg
         leading-none
         tracking-[-0.02em]
