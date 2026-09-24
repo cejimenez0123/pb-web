@@ -1,7 +1,7 @@
-import { useEffect, useState, useRef, useCallback, useMemo } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { initKey, setPageData, setPaginationLoading } from "../../actions/PageActions";
+
+
 import PaginationControls from "../PaginationControls";
+import usePaginatedResource from "../../core/usePaginatedResource";
 
 export default function PaginatedList({
   cacheKey,
@@ -9,103 +9,97 @@ export default function PaginatedList({
   pageSize = 20,
   renderItem,
   params = {},
-  enableInternalSearch = false,
-  search: externalSearch = "",
+  search = "",
   emptyState = null,
   className = "",
   enabled = true,
+
+  // "controls" | "infinite" | "none"
+  pagination = "controls",
 }) {
-  const dispatch = useDispatch();
-  const [page, setPage] = useState(1);
-  const [internalQuery, setInternalQuery] = useState("");
-  const [debouncedQuery, setDebouncedQuery] = useState("");
-  const debounceTimer = useRef(null);
+  const {
+    page,
+    setPage,
+    items,
+    totalPages,
+    loading,
+    hasMore,
+  } = usePaginatedResource({
+    cacheKey,
+    fetcher,
+    pageSize,
+    params,
+    search,
+    enabled,
+    infinite: pagination === "infinite",
+  });
 
-  const activeSearch = enableInternalSearch ? debouncedQuery : externalSearch;
+  const loadMore = () => {
+    if (loading || !hasMore) return;
 
-  const cache = useSelector((s) => s.pagination.byKey?.[cacheKey]?.pages || {});
-  const totalCount = useSelector((s) => s.pagination.byKey?.[cacheKey]?.totalCount || 0);
-
-  const items = cache[page] || [];
-  const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
-
-  const handleSearchChange = useCallback((e) => {
-    const val = e.target.value;
-    setInternalQuery(val);
-    clearTimeout(debounceTimer.current);
-    debounceTimer.current = setTimeout(() => setDebouncedQuery(val), 350);
-  }, []);
-
-  useEffect(() => () => clearTimeout(debounceTimer.current), []);
-
-  // Reset on search or key change
-  useEffect(() => {
-    dispatch(initKey({ key: cacheKey }));
-    setPage(1);
-  }, [activeSearch, cacheKey]);
-
-  const fetchPage = async (p) => {
-    if (!enabled) return;
-    dispatch(setPaginationLoading({ key: cacheKey, loading: true }));
-    try {
-      const res = await dispatch(
-        fetcher({
-          skip: (p - 1) * pageSize,
-          take: pageSize,
-          ...params,
-          search: activeSearch,
-        })
-      ).unwrap();
-      dispatch(setPageData({
-        key: cacheKey,
-        page: p,
-        items: res.pageList || res.items || res.collections || [],
-        totalCount: res.totalCount,
-      }));
-    } finally {
-      dispatch(setPaginationLoading({ key: cacheKey, loading: false }));
-    }
+    setPage(page + 1);
   };
 
-  useEffect(() => {
-    fetchPage(page);
-  }, [page, activeSearch, JSON.stringify(params)]);
-
   return (
-    <div className={`space-y-2 bg-cream dark:bg-base-bgDark ${className}`}>
-      {enableInternalSearch && (
-        <div className="relative mb-2">
-          <input
-            type="text"
-            value={internalQuery}
-            onChange={handleSearchChange}
-            placeholder="Search..."
-            className="w-full px-4 dark:text-cream py-2 input rounded-xl border border-soft bg-base-bg text-soft focus:outline-none focus:ring-1 focus:ring-purple"
-          />
+    <div
+      className={`
+        space-y-2
+        bg-cream
+        dark:bg-base-bgDark
+        ${className}
+      `}
+    >
+      {loading && !items.length && (
+        <div className="p-4 text-gray-400">
+          Loading...
         </div>
       )}
 
-      {!items.length && !cache[page]
-        ? emptyState || <div className="p-4 text-gray-400 dark:text-cream animate-pulse">Loading...</div>
-        : (cache[page] || items).map((item, index) => (
-            <div key={item.id ?? index}>{renderItem(item, index)}</div>
-          ))
-      }
-
-      {!items.length && cache[page] && (
-        <div className="p-4 text-gray-400 dark:text-cream">
-          {enableInternalSearch && debouncedQuery
-            ? `No results for "${debouncedQuery}"`
-            : "Nothing here yet"}
-        </div>
+      {!loading && !items.length && (
+        emptyState || (
+          <div className="p-4 text-gray-400">
+            Nothing here yet.
+          </div>
+        )
       )}
 
-      <PaginationControls
-        page={page}
-        totalPages={totalPages}
-        setPage={setPage}
-        className="bg-cream dark:bg-base-bgDark"
-      />
+      {items.map((item, index) => (
+        <div key={item.id ?? index}>
+          {renderItem(item, index)}
+        </div>
+      ))}
+
+      {items.length > 0 && pagination === "controls" && (
+        <PaginationControls
+          page={page}
+          totalPages={totalPages}
+          setPage={setPage}
+          className="bg-cream dark:bg-base-bgDark"
+        />
+      )}
+
+      {items.length > 0 && pagination === "infinite" && hasMore && (
+        <div className="flex justify-center py-8">
+          <button
+            type="button"
+            onClick={loadMore}
+            disabled={loading}
+            className="
+              border-b
+              border-gray-300
+              pb-1
+              text-sm
+              text-gray-600
+              transition-colors
+              hover:border-emerald-700
+              hover:text-emerald-800
+              disabled:opacity-40
+            "
+          >
+            {loading ? "Loading…" : "Load more"}
+          </button>
+        </div>
+      )}
     </div>
   );
 }

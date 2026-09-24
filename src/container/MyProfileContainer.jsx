@@ -1,354 +1,528 @@
-import { useContext, useEffect, useMemo, useState } from "react";
-import { IonContent, useIonRouter} from "@ionic/react";
+
+
+
+import { useContext, useMemo, useState } from "react";
+import { IonContent, useIonRouter } from "@ionic/react";
 import { useSelector } from "react-redux";
+
 import Context from "../context";
-import Enviroment from "../core/Enviroment";
 import ErrorBoundary from "../ErrorBoundary";
 import ProfileInfo from "../components/profile/ProfileInfo";
 import Paths from "../core/paths";
-import TabBar from "../components/TabBar";
-import settings from "../images/icons/settings.svg"
-import ExploreList from "../components/collection/ExploreList";
 import Pill from "../components/Pill";
-import CommunitiesPanel from "../components/profile/CommunitiesPanel";
 import AboutPanel from "../components/profile/AboutPanel";
-import PageProfileList from "../components/page/PageProfileList";
-
 import EmptyState from "../components/EmptyState";
-import { getMyCollections, getProfileRecommendations } from "../actions/CollectionActions";
-import { getMyStories } from "../actions/StoryActions";
 import PaginatedList from "../components/page/PaginatedList";
-import usePaginatedResource from "../core/usePaginatedResource";
 import ListPill from "../components/page/ListPill";
-import SectionHeader from "../components/SectionHeader";
-import useDebounce from "../core/useDebounce";
 
+import {
+  getMyCollections,
+} from "../actions/CollectionActions";
+
+import {
+  getMyStories,
+} from "../actions/StoryActions";
+
+import usePaginatedResource from "../core/usePaginatedResource";
+import useDebounce from "../core/useDebounce";
+import ProfileSectionTabs from "../components/profile/ProfileSectionTabs";
+import EventsSection from "../components/collection/EventsSection";
+import PortfolioSection from "../components/collection/PortfolioSection";
 
 const TABS = {
-  POSTS: "pages",
+  PORTFOLIO: "portfolio",
+  ARCHIVE: "archive",
   COLLECTIONS: "collections",
-  COMMUNITIES: "communities",
-  ABOUT: "about",
+  EVENTS: "events",
+  DETAILS: "details",
 };
-const WRAP = "w-[100%] max-w-[50em] px-4 mx-auto ";
-const tabWrapper = "max-w-lg mx-auto px-4 pb-4"; // same for both containers
+
+
+
+const PAGE_SIZE = 8;
+
+
 function MyProfileContainer() {
-
-
-  const { setSeo  } = useContext(Context);
-  const profile = useSelector((state) => state.users.currentProfile);
-  const purposeCollections = useMemo(() => {
-  const rows = profile?.profileToCollections ?? [];
-
-  return rows
-    .filter((row) =>
-      ["home", "archive", "events", "portfolio"].includes(row.type)
-    )
-    .map((row) => row.collection)
-    .filter(Boolean);
-}, [profile]);
-const storiesCache = useSelector((state) => 
-  state.pagination.byKey?.["stories"]?.pages?.[1] ?? []
-);
-const collectionsCache = useSelector((state) => 
-  state.pagination.byKey?.["collections"]?.pages?.[1] ?? []
-);
-const librariesCache = useSelector((state) => state.pagination.byKey?.["libraries"]?.pages?.[1] ?? []);
-const { items: explorList, page: explorePage, setPage: setExplorePage, totalCount: exploreTotalCount} = usePaginatedResource({
-    cacheKey: "profile:recommendations",
-    fetcher: getProfileRecommendations,
-    pageSize: 10,
-    enabled: !!profile?.id,
-    select: (res) => ({ items: res.groups, totalCount: res.totalCount })})
-const recentPosts = storiesCache.slice(0, 5);
-// const recentCollections = collectionsCache.slice(0, 5);
-const communities = { items: librariesCache };
-   const pageSize = 8;
-
-
-
-
-
-
-
+  const { setSeo } = useContext(Context);
   const router = useIonRouter();
-const [searchInput, setSearchInput] = useState("");
-const [search, setSearch] = useState("");
-const debouncedSearch = useDebounce(search, 300);
- 
-  const [tab, setTab] = useState(TABS.POSTS);
 
-
-
-
-
-const tabs = [
-  { key: TABS.POSTS, label: "Pages" },
-  { key: TABS.COLLECTIONS, label: "Collections" },
-  { key: TABS.COMMUNITIES, label: "Communities" },
-  { key: TABS.ABOUT, label: "About" },
-];
-
-
-
-
-
-// ── Minimal Empty State ──────────────────────────────
-
-
-
-
-const IndexList = ({ items, profile,router }) => (
-  <div className="space-y-2">
-    {items.map((i) => (
-      <ListPill key={i.id} item={i} profile={profile} onClick={()=>router.push(Paths.collection.createRoute(i.id))}
-   />
-    ))}
-  </div>
-)
-const storiesParams = useMemo(() => ({ type: "" }), []);
-const StatChip = ({ value, label }) => (
-  <div className="flex flex-col text-center">
-    <span className="font-bold dark:text-cream">{value}</span>
-    <span className="text-xs dark:text-cream text-gray-400">{label}</span>
-  </div>
-);
-
-
-  
-  
-
-// const [search, setSearch] = useState("");
-
-
-const authResolved = useSelector((state) => state.users.authResolved);
-
-
-if (!authResolved) return <IonContent  scrollY={true}
-className='page-content' fullscreen />;// blank while auth checks
-if (!profile) return <EmptyProfileState />; // only show this when truly logged out;
-  return (
-
-      <IonContent  scrollY={true}
-className='page-content' fullscreen 
-
->
-      <ErrorBoundary>
-        <div className="  overflow-y-auto bg-cream  dark:bg-base-bgDark space-y-8">
-<div className='flex sm:pt-16 flex-col justify-center'>
-<div className=" p-4 ">
-  {/* {Enviroment.palette.button.} */}
-<button  onClick={() => router.push(Paths.editProfile)}
-className="bg-soft rounded-full p-2"><img src={settings} /></button>
-</div>
-                  
-            </div>
-          {/* Header */}
-          <div className={`${WRAP} max-w-[50em] px-4 pt-8 space-y-6`}>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <ProfileInfo profile={profile} compact />
-                    <h5 className="text-xl dark:text-cream text-emerald-800">{profile?.username?.toLowerCase()}</h5>
-              </div>
-         
-            </div>
-
-          
-
-            {(profile?.bio || profile?.selfStatement) && (
-              <p className="text-sm text-gray-700 dark:text-cream leading-relaxed">
-                {profile.bio ?? profile.selfStatement}
-              </p>
-            )}
-
-            {profile?.hashtag?.length > 0 && (<div className="space-y-2 px-4">
-              <p className="text-xs text-gray-400 uppercase">❤️ Hashtags</p>
-        
-              <div className="flex flex-wrap gap-2">
-                 
-                {[...profile.hashtag].slice(0, 5).map((tag, i) => {
-                  
-                  return<Pill key={i} onClick={()=>router.push(Paths.hashtag.createRoute(tag.hashtag.id))}
-                  label={`#${tag.hashtag.name ?? tag.tag}`} />
-})}
-              </div>
-                  </div>
-            )}
-
-            {(communities.items?.length ?? 0) > 0 && (
-              <div className="space-y-2 px-4">
-                <p className="text-xs text-gray-400 uppercase">Communities</p>
-                <div className="flex flex-wrap gap-2 ">
-        {communities?.items?.slice(0, 3).map((c) => {
-  const path = Paths.collection.createRoute(c.id);
-
-  return (
-    <Pill
-      key={c.id}
-      baseClass="border-blue bg-base-bg"
-      onClick={() => router.push(path, "forward")}
-      label={c.title}
-    />
+  const profile = useSelector(
+    (state) => state.users.currentProfile
   );
-})}
-                </div>
-              </div>
-            )}
-          </div>
 
-          {/* Search + Tabs */}
-          <div className={`${WRAP} space-y-4`}>
-
-    <div className="max-w-xl mx-auto">
-                    <div className="w-full">
- 
-<input
-  value={searchInput}
-  onChange={(e) => {
-    const val = e.target.value;
-    setSearchInput(val);
-    setSearch(val); // immediate or controlled elsewhere
-  }}
-      placeholder="Search"
-      className="
-  
-      border-soft border rounded-full
-        w-full px-4 py-2
-        mx-4
-          bg-cream
-        dark:bg-base-bgDark 
-        dark:border-cream
-        
-
-        text-sm text-soft
-        placeholder-gray-400
-        focus:outline-none focus:ring-1 focus:ring-gray-300
-        mb-4 
-      "
-    />
-
-  </div>
-  <div className={tabWrapper}> 
-           <TabBar tabs={tabs} active={tab} onChange={setTab} />
-      </div>    
-
-          {/* Content */}
-         <div className={`${WRAP} space-y-10 min-h-[40rem]`}>
-            {tab === TABS.POSTS && (
-              <>
-                {search.length==0 && recentPosts.length > 0 && (
-                  <section className="space-y-4">
-         
-                    <SectionHeader title={"Recent"}/>
-                    <PageProfileList items={recentPosts} type={"story"}  router={router}/>
-                  </section>
-                )}
-
-            
-      <SectionHeader title={"All Pages"}/>
-    
-<PaginatedList
-  cacheKey="stories"
-  params={storiesParams}
-  fetcher={getMyStories}
-  pageSize={pageSize}
-  enabled={!!profile?.id}
-  search={debouncedSearch}
-  emptyState={<EmptyState text={search ? "No matching Stories." : "No Stories yet."} />}
-  renderItem={(i) => (
-    <ListPill key={i.id} item={i} profile={profile} onClick={() => router.push(Paths.page.createRoute(i.id))} />
-  )}
-/>
- 
-
-       
-         </>
-            )}    
-        
-
-            
-
-           {tab === TABS.COLLECTIONS && (
-  <>
-    {search.length === 0 && purposeCollections.length > 0 && (
-      <section className="space-y-4">
-        <SectionHeader title="Recent" />
-        <IndexList items={purposeCollections} profile={profile} router={router} />
-      </section>
-    )}
-
-    <SectionHeader title="All Collections" />
-    <PaginatedList
-      cacheKey="collections"
-      params={{ type: "book" }}
-      fetcher={getMyCollections}
-      pageSize={pageSize}
-      search={debouncedSearch}
-      emptyState={<EmptyState text={search ? "No matching collections." : "No collections yet."} />}
-      renderItem={(i) => (
-        <ListPill key={i.id} item={i} profile={profile} onClick={() => router.push(Paths.collection.createRoute(i.id))} />
-      )}
-    />
-  </>)
-
-
-          }
-
-            {tab === TABS.COMMUNITIES && <CommunitiesPanel  fetch={getMyCollections} router={router} communities={communities.items} />}
-            {tab === TABS.ABOUT && <AboutPanel router={router} profile={profile}  />}
-          </div>
-</div>
-</div>
-     <div className=' bg-cream '>
-            <ExploreList items={explorList} page={explorePage} totalCount={exploreTotalCount} setPage={setExplorePage}/>
-          </div>
-     
-   </div>
-          {/* Explore */}
-
-           </ErrorBoundary>
-      </IonContent>
- 
+  const authResolved = useSelector(
+    (state) => state.users.authResolved
   );
-}
-
-export default MyProfileContainer;
 
 
-function EmptyProfileState() {
-  const router = useIonRouter();
+  const librariesCache = useSelector(
+    (state) =>
+      state.pagination.byKey?.["libraries"]?.pages?.[1] ?? []
+  );
+
+  const [tab, setTab] = useState(TABS.PORTFOLIO);
+
+
+  const [searchInput, setSearchInput] = useState("");
+  const [search, setSearch] = useState("");
+
+  const debouncedSearch = useDebounce(search, 300);
+
+
+
+
+
+
+  
+  const communities = {
+    items: librariesCache,
+  };
+
+
+
+  const storiesParams = useMemo(
+    () => ({
+      type: "",
+    }),
+    []
+  );
+
+  if (!authResolved) {
+    return (
+      <IonContent
+        scrollY={true}
+        className="page-content"
+        fullscreen
+      />
+    );
+  }
+
+  if (!profile) {
+    return <EmptyProfileState />;
+  }
 
   return (
     <IonContent
+      scrollY={true}
+      className="page-content"
       fullscreen
-   
-  
     >
-      <div className="max-w-[50em] mx-auto px-4 pt-16 space-y-6 text-center">
-
-        <h1 className="text-2xl font-semibold text-emerald-800">
-          Welcome to Plumbum
-        </h1>
-
-        <p className="text-gray-600 text-sm leading-relaxed">
-          Sign in to view your profile, stories, collections, and communities.
-        </p>
-
-        <div
-          onClick={() => router.push(Paths.login)}
+      <ErrorBoundary>
+        <main
           className="
-            mx-auto w-fit px-6 py-3
-            rounded-full
-            bg-emerald-700 text-white
-            shadow-md active:scale-95 transition
+            min-h-full
+            bg-cream
+            text-gray-800
           "
         >
-          Log in / Sign up
-        </div>
+          <div
+            className="
+              mx-auto
+              w-full
+              max-w-[76rem]
+              px-6
+              pb-20
+              pt-16
+              sm:px-10
+              lg:px-12
+            "
+          >
+            {/* PROFILE HEADER */}
 
-      </div>
+            <section
+              className="
+                flex
+                flex-col
+                gap-8
+                sm:flex-row
+                sm:items-center
+              "
+            >
+              <ProfileInfo profile={profile} />
+
+              <div className="min-w-0">
+                <h1
+                  className="
+                    font-serif
+                    text-[2.5rem]
+                    leading-tight
+                    text-gray-900
+                    sm:text-[3rem]
+                  "
+                >
+                  {profile?.name ||
+                    profile?.username ||
+                    "Your Profile"}
+                </h1>
+
+                {profile?.username && (
+                  <p className="mt-1 text-sm text-gray-500">
+                    @{profile.username}
+                  </p>
+                )}
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    router.push(
+                      Paths.profile?.createRoute
+                        ? Paths.profile.createRoute(profile.id)
+                        : "/profile"
+                    )
+                  }
+                  className="
+                    mt-4
+                    text-sm
+                    text-emerald-800
+                    transition
+                    hover:text-emerald-950
+                  "
+                >
+                  See what other people see →
+                </button>
+              </div>
+            </section>
+<section className="mt-10 w-[100%] mx-auto max-w-[48rem]">
+<section className="mt-14 sm:mt-16">
+
+  <ProfileSectionTabs
+  active={tab}
+  onChange={setTab}
+/>
+</section>
+
+
+          
+
+           
+<section className="mt-10 w-[100%]  max-w-[48rem]">
+        {tab === TABS.PORTFOLIO && (
+  <PortfolioSection
+    profile={profile}
+    router={router}
+  />
+)}
+
+              {tab === TABS.ARCHIVE && (
+                <ArchiveSection
+                  profile={profile}
+                  router={router}
+                  search={search}
+                  setSearch={setSearch}
+                  searchInput={searchInput}
+                  setSearchInput={setSearchInput}
+                  debouncedSearch={debouncedSearch}
+                  storiesParams={storiesParams}
+                />
+              )}
+
+              {tab === TABS.COLLECTIONS && (
+                <CollectionsSection
+                  profile={profile}
+                  router={router}
+                  search={search}
+                  debouncedSearch={debouncedSearch}
+                />
+              )}
+
+        {tab === TABS.EVENTS && (
+  <EventsSection
+    profile={profile}
+    router={router}
+  />
+)}
+
+              {tab === TABS.DETAILS && (
+                <DetailsSection
+                  profile={profile}
+                  router={router}
+                  communities={communities.items}
+                />
+              )}
+            </section>
+            </section>
+          </div>
+        </main>
+      </ErrorBoundary>
     </IonContent>
   );
 }
 
 
+
+function ArchiveSection({
+  profile,
+  router,
+  search,
+  setSearch,
+  searchInput,
+  setSearchInput,
+  debouncedSearch,
+  storiesParams,
+}) {
+  return (
+    <section>
+      <div
+        className="
+          flex
+          flex-col
+          gap-5
+          border-b
+          border-soft
+          pb-5
+          sm:flex-row
+          sm:items-end
+          sm:justify-between
+        "
+      >
+        <div>
+          <h2 className="font-serif text-2xl text-gray-900">
+            Archive
+          </h2>
+
+          <p className="mt-1 text-sm text-gray-500">
+            Everything I've written.
+          </p>
+        </div>
+
+        <input
+          value={searchInput}
+          onChange={(e) => {
+            const value = e.target.value;
+            setSearchInput(value);
+            setSearch(value);
+          }}
+          placeholder="Search"
+          className="
+            w-full
+            rounded-full
+            border
+            border-soft
+            bg-cream
+            px-4
+            py-2
+            text-sm
+            text-gray-800
+            placeholder-gray-400
+            outline-none
+            focus:border-emerald-700
+            sm:max-w-[18rem]
+          "
+        />
+      </div>
+
+      <div className="mt-6">
+        <PaginatedList
+          cacheKey="stories"
+          params={storiesParams}
+          fetcher={getMyStories}
+          pageSize={PAGE_SIZE}
+          enabled={!!profile?.id}
+          search={debouncedSearch}
+          emptyState={
+            <EmptyState
+              text={
+                search
+                  ? "No matching stories."
+                  : "No stories yet."
+              }
+            />
+          }
+          renderItem={(item) => (
+            <ListPill
+              key={item.id}
+              item={item}
+              profile={profile}
+              onClick={() =>
+                router.push(
+                  Paths.page.createRoute(item.id)
+                )
+              }
+            />
+          )}
+        />
+      </div>
+    </section>
+  );
+}
+
+function CollectionsSection({
+  profile,
+  router,
+  search,
+  debouncedSearch,
+}) {
+  return (
+    <section>
+      <div className="border-b border-soft pb-5">
+        <h2 className="font-serif text-2xl text-gray-900">
+          Collections
+        </h2>
+
+        <p className="mt-1 text-sm text-gray-500">
+          Groups of work I've gathered together.
+        </p>
+      </div>
+
+      <div className="mt-6">
+        <PaginatedList
+          cacheKey="collections"
+          params={{ type: "book" }}
+          fetcher={getMyCollections}
+          pageSize={PAGE_SIZE}
+          search={debouncedSearch}
+          emptyState={
+            <EmptyState
+              text={
+                search
+                  ? "No matching collections."
+                  : "No collections yet."
+              }
+            />
+          }
+          renderItem={(item) => (
+            <ListPill
+              key={item.id}
+              item={item}
+              profile={profile}
+              onClick={() =>
+                router.push(
+                  Paths.collection.createRoute(item.id)
+                )
+              }
+            />
+          )}
+        />
+      </div>
+    </section>
+  );
+}
+
+function DetailsSection({
+  profile,
+  router,
+  communities,
+}) {
+  return (
+    <section>
+      <div className="border-b border-soft pb-5">
+        <h2 className="font-serif text-2xl text-gray-900">
+          Details
+        </h2>
+
+        <p className="mt-1 text-sm text-gray-500">
+          A little more about me.
+        </p>
+      </div>
+
+      <div className="mt-6 max-w-[48rem]">
+        <AboutPanel
+          router={router}
+          profile={profile}
+        />
+
+        {profile?.hashtag?.length > 0 && (
+          <div className="mt-10">
+            <p className="text-xs uppercase text-gray-400">
+              Hashtags
+            </p>
+
+            <div className="mt-3 flex flex-wrap gap-2">
+              {[...profile.hashtag]
+                .slice(0, 10)
+                .map((tag, index) => (
+                  <Pill
+                    key={index}
+                    onClick={() =>
+                      router.push(
+                        Paths.hashtag.createRoute(
+                          tag.hashtag.id
+                        )
+                      )
+                    }
+                    label={`#${
+                      tag.hashtag.name ?? tag.tag
+                    }`}
+                  />
+                ))}
+            </div>
+          </div>
+        )}
+
+        {communities?.length > 0 && (
+          <div className="mt-10">
+            <p className="text-xs uppercase text-gray-400">
+              Communities
+            </p>
+
+            <div className="mt-3 flex flex-wrap gap-2">
+              {communities.slice(0, 10).map((community) => (
+                <Pill
+                  key={community.id}
+                  baseClass="border-blue bg-base-bg"
+                  onClick={() =>
+                    router.push(
+                      Paths.collection.createRoute(
+                        community.id
+                      ),
+                      "forward"
+                    )
+                  }
+                  label={community.title}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+export default MyProfileContainer;
+
+function EmptyProfileState() {
+  const router = useIonRouter();
+
+  return (
+    <IonContent fullscreen>
+      <div
+        className="
+          mx-auto
+          max-w-[50rem]
+          px-6
+          pt-16
+          text-center
+        "
+      >
+        <h1 className="font-serif text-2xl text-emerald-800">
+          Welcome to Plumbum
+        </h1>
+
+        <p className="mt-3 text-sm leading-relaxed text-gray-600">
+          Sign in to view your profile, stories, collections,
+          and communities.
+        </p>
+
+        <button
+          type="button"
+          onClick={() => router.push(Paths.login)}
+          className="
+            mt-6
+            rounded-full
+            bg-emerald-700
+            px-6
+            py-3
+            text-sm
+            text-white
+            shadow-md
+            transition
+            active:scale-95
+          "
+        >
+          Log in / Sign up
+        </button>
+      </div>
+    </IonContent>
+  );
+}
