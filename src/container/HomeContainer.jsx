@@ -8,8 +8,7 @@ import { sendGAEvent } from '../core/ga4.js';
 import Paths from '../core/paths';
 import checkResult from '../core/checkResult';
 import { PageType } from '../core/constants';
-import Context from '../context';
-import { IonText,  IonSpinner, IonLabel, IonToggle, useIonRouter, useIonViewWillEnter } from '@ionic/react';
+import { IonText,  IonSpinner, IonLabel, IonToggle, useIonRouter, } from '@ionic/react';
 import { debounce } from 'lodash';
 import ErrorBoundary from '../ErrorBoundary.jsx';
 import StoryItem from '../components/page/StoryItem.jsx';
@@ -20,7 +19,6 @@ import AlertType from '../core/AlertType.js';
 import { useAlert } from '../core/useAlert.jsx';
 import CreateCollectionForm from '../components/collection/CreateCollectionForm.jsx';
 import { fetchCollectionFeedStories, fetchCollectionFeedSubCollections } from '../actions/CollectionActions.js';
-import CollectionFeed from '../components/collection/CommunitiesPanel.jsx';
 import { postCollectionRole } from '../actions/RoleActions.jsx';
 import { useDialog } from '../domain/usecases/useDialog.jsx';
 

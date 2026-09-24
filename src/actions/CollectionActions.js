@@ -258,21 +258,26 @@ const fetchCollectionProtected = createAsyncThunk("collection/fetchCollectionPro
       
     
   })
-
 const getMyCollections = createAsyncThunk(
   "collections/getMyCollections",
   async (params, thunkApi) => {
     try {
-        
-      const data = await collectionRepo.getMyCollections(params);
+      const data =
+        await collectionRepo.getMyCollections(
+          params
+        );
 
       return {
         collections: data.collections,
         totalCount: data.totalCount,
+        skip: data.skip,
+        take: data.take,
+        hasMore: data.hasMore,
       };
     } catch (e) {
       return thunkApi.rejectWithValue(
-        e?.response?.data || e.message
+        e?.response?.data ||
+          e.message
       );
     }
   }

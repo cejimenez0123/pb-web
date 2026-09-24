@@ -35,6 +35,7 @@ const Paths ={
         route: ()=>{return `/book/:id`;},
         createRoute:(id)=>{return `/book/${id}`
     } },
+    collections: "/collections",
     collection:{
         route: ()=>{return '/collection/:id/view'},
         createRoute:(id)=>{return "/collection/"+id+"/view"}

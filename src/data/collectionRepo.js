@@ -27,24 +27,83 @@ import { Preferences } from "@capacitor/preferences";
         let res = await axios.get(this.url+"/public/library",this.headers)
         return res.data
     }
-   async getMyCollections({ skip = 0, take = 20, type,search="",isWorkshop=false } = {}) {
-  const headers = await this.getAuthHeaders();
+//    async getMyCollections({ skip = 0, take = 20, type,search="",isWorkshop=false } = {}) {
+//   const headers = await this.getAuthHeaders();
 
-  const res = await axios.get(this.url + "/profile/protected", {
-    headers,
-    params: {
-      search,
-      skip,
-      take,
-      type, // 👈 add this
-      isWorkshop
-    },
-  });
+//   const res = await axios.get(this.url + "/profile/protected", {
+//     headers,
+//     params: {
+//       search,
+//       skip,
+//       take,
+//       type, // 👈 add this
+//       isWorkshop
+//     },
+//   });
+
+//   return res.data;
+// }
+async getMyCollections({
+  skip = 0,
+  take = 20,
+  type,
+  search = "",
+  isWorkshop,
+  scope,
+} = {}) {
+  const headers =
+    await this.getAuthHeaders();
+
+  const params = {
+    search,
+    skip,
+    take,
+    type,
+    scope,
+  };
+
+  // Only send this when explicitly provided.
+  // This is important because false should mean
+  // "only non-workshops", while undefined means
+  // "don't filter by workshop status".
+  if (isWorkshop !== undefined) {
+    params.isWorkshop = isWorkshop;
+  }
+
+  const res = await axios.get(
+    this.url + "/profile/protected",
+    {
+      headers,
+      params,
+    }
+  );
 
   return res.data;
 }
+// async getMyCollections({
+//   skip = 0,
+//   take = 20,
+//   type,
+//   search = "",
+//   isWorkshop = false,
+//   scope,
+// } = {}) {
+//   const headers = await this.getAuthHeaders();
 
+//   const res = await axios.get(this.url + "/profile/protected", {
+//     headers,
+//     params: {
+//       search,
+//       skip,
+//       take,
+//       type,
+//       isWorkshop,
+//       scope,
+//     },
+//   });
 
+//   return res.data;
+// }
 
 async getPublicProfileCollections({ id, skip = 0, take = 20 }) {
   const res = await axios.get(this.url + `/profile/${id}/public`, {
