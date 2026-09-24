@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import fetchCity from "../../core/fetchCity";
 import Paths from "../../core/paths";
 import SectionHeader from "../SectionHeader";
+import Pill from "../Pill";
 
 const AboutPanel = ({ profile, router }) => {
   const [locationName, setLocationName] = useState("Location not specified");
