@@ -1223,7 +1223,7 @@ const openConfirmDeleteDialog = useCallback(() => {
               "
             >
               <div className="flex w-full items-center gap-2">
-                <div className="flex w-full flex-col">
+                <div className="flex    w-[100%] flex-col">
                   <input
                     type="text"
                     value={parameters.title}
@@ -1236,6 +1236,7 @@ const openConfirmDeleteDialog = useCallback(() => {
                     placeholder="Untitled"
                     aria-label="Story title"
                     className="
+                 
                       flex-grow rounded-md border
                       border-emerald-300 bg-base-bg
                       p-2 text-[1rem] font-bold
