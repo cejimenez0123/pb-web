@@ -71,11 +71,16 @@ const appendToPagesInView = createAction("pages/appendToPagesInView", (params)=>
   const {pages} = params
   return  {payload:
     pages}})
-const appendToMyStories = createAction("pages/appendToMyStories", (params)=> {
+const appendToMyStories = createAction(
+  "pages/appendToMyStories",
+  (params) => {
+    const { pages } = params;
 
-  const {pages} = params
-  return  {payload:
-    pages}})
+    return {
+      payload: pages,
+    };
+  }
+);
 const setPageInView = createAction("pages/setPageInView", (params)=> {
 
   const {page} = params

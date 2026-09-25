@@ -21,7 +21,8 @@ import {
         
 import { createSlice} from "@reduxjs/toolkit"
 import {  getStory,createStory, fetchRecommendedStories,
-  updateStory, deleteStory, getCollectionStoriesProtected,getCollectionStoriesPublic} from "../actions/StoryActions"
+  updateStory, deleteStory, getCollectionStoriesProtected,getCollectionStoriesPublic,
+  getMyStories} from "../actions/StoryActions"
 import { PageType } from "../core/constants.js"
 import { removeContentByProfileId } from "../actions/ModerationAcitons.jsx"
 
@@ -198,6 +199,24 @@ const pageSlice = createSlice({
   state.recommendedStories = state.recommendedStories.filter(
     (story) => story.id !== payload.id
   );
+}).addCase(getMyStories.pending, (state) => {
+  state.loading = true;
+})
+.addCase(getMyStories.fulfilled, (state, { payload }) => {
+  state.loading = false;
+
+  state.myPages = payload.pageList || [];
+
+  state.pagination = {
+    skip: payload.skip,
+    take: payload.take,
+    totalCount: payload.totalCount,
+    hasMore: payload.hasMore,
+  };
+})
+.addCase(getMyStories.rejected, (state, { payload }) => {
+  state.loading = false;
+  state.error = payload?.message || payload || "Failed to fetch stories";
 })
 //       .addCase(deleteStory.fulfilled, (state, { payload }) => {
 //   state.pageInView = null;
