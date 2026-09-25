@@ -411,77 +411,9 @@ if (storyList.length > 0) {
     setSaving(false);
   }
 };
-  // const save = async () => {
-  //   if (!colInView || saving) {
-  //     return;
-  //   }
 
-  //   const storyIdList = newStories
-  //     .filter(Boolean)
-  //     .map((story) => story.id);
 
-  //   const collectionIdList =
-  //     newCollections
-  //       .filter(Boolean)
-  //       .map((collection) => collection.id);
 
-  //   /*
-  //    * Nothing selected:
-  //    * simply return to the Room.
-  //    */
-  //   if (
-  //     storyIdList.length === 0 &&
-  //     collectionIdList.length === 0
-  //   ) {
-  //     router.push(
-  //       Paths.collection.createRoute(
-  //         colInView.id
-  //       )
-  //     );
-
-  //     return;
-  //   }
-
-  //   setSaving(true);
-
-  //   try {
-  //     const operations = [];
-
-  //     if (collectionIdList.length > 0) {
-  //       operations.push(
-  //         dispatch(
-  //           addCollectionListToCollection({
-  //             id: colInView.id,
-  //             list: collectionIdList,
-  //             profile: currentProfile,
-  //           })
-  //         )
-  //       );
-  //     }
-
-  //     if (storyIdList.length > 0) {
-  //       operations.push(
-  //         dispatch(
-  //           addStoryListToCollection({
-  //             id: colInView.id,
-  //             list: storyIdList,
-  //             profile: currentProfile,
-  //           })
-  //         )
-  //       );
-  //     }
-
-  //     await Promise.all(operations);
-
-  //     router.push(
-  //       Paths.collection.createRoute(
-  //         colInView.id
-  //       )
-  //     );
-  //   } finally {
-  //     setSaving(false);
-  //   }
-  // };
 
   if (!canSee || !canAdd) {
     return <NoPermissionUI />;
