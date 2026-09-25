@@ -362,35 +362,8 @@ useEffect(() => {
     });
   };
 
-  const handleDelete = () => {
-    dispatch(deleteStory(parameters)).then(() => {
-      dispatch(removeFromPaginatedKey({ key: "stories", id }));
-dispatch(removeFromPaginatedKey({ key: "recommended", id }));
 
-    
-      router.push(Paths.home, "root");
-      closeDialog();
-    });
-  };
 
-  const openConfirmDeleteDialog = () => {
-    openDialog({
-      title: "Are you sure you want to delete this page?",
-      text: `${parameters?.title}`,
-      onClose: () => closeDialog(),
-      agreeText: "Delete",
-      agree: () => handleDelete(),
-      disagreeText: "Close",
-      disagree: () => closeDialog(),
-    });
-  };
-
-  const STATUS_OPTIONS = [
-    { value: "draft", label: "Draft" },
-    { value: "fragment", label: "Fragment" },
-    { value: "workshop", label: "Workshop" },
-    { value: "finished", label: "Published" },
-  ];
 
   return (
     <EditorContext.Provider

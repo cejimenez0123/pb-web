@@ -61,17 +61,37 @@ const paginationSlice = createSlice({
             const { key, loading } = action.payload;
             ensureKey(state, key);
             state.byKey[key].loading = loading;
-        }).addCase(removeFromPaginatedKey, (state, action) => {
+        })
+        .addCase(removeFromPaginatedKey, (state, action) => {
   const { key, id } = action.payload;
+
   if (!state.byKey[key]) return;
+
   const pages = state.byKey[key].pages;
+  let removed = false;
+
   for (const p in pages) {
-    if (!Array.isArray(pages[p])) continue; // ← guard
-    pages[p] = pages[p].filter((item) => item.id !== id);
+    if (!Array.isArray(pages[p])) continue;
+
+    const previousLength = pages[p].length;
+
+    pages[p] = pages[p].filter(
+      (item) => item.id !== id
+    );
+
+    if (pages[p].length < previousLength) {
+      removed = true;
+    }
   }
-  if (typeof state.byKey[key].totalCount === "number") {
+
+  if (
+    removed &&
+    typeof state.byKey[key].totalCount === "number"
+  ) {
     state.byKey[key].totalCount -= 1;
   }
-})}})
+})
+
+}})
 
 export default paginationSlice;

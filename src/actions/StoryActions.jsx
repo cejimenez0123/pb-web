@@ -25,31 +25,33 @@ const getStory = createAsyncThunk("story/getStory",async ({id},thunkApi)=>{
     return {error}
   }
 })
-const deleteStory = createAsyncThunk("pages/deleteStory",async (params,thunkApi)=>{
-try{
-  const {page}=params
-try{
-       if(page && page.type==PageType.picture){
-  
-  await FirebaseStorage.deleteFile({
-    path: page.data,
-  });
 
+const deleteStory = createAsyncThunk(
+  "pages/deleteStory",
+  async (params, thunkApi) => {
+    try {
+      const { page } = params;
+
+      if (page && page.type === PageType.picture) {
+        try {
+          await FirebaseStorage.deleteFile({
+            path: page.data,
+          });
+        } catch (err) {
+          // Ignore storage deletion failure
+        }
+      }
+
+      await storyRepo.deleteStory({
+        id: page.id,
+      });
+
+      return page;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
   }
-}catch(err){
-  
-}
- storyRepo.deleteStory({id:page.id})
-    return page
-
-
-}catch(error){
-
-  return {
-    error
-  }
-}
-})
+);
 const fetchRecommendedStories = createAsyncThunk(
   'pages/fetchRecommendedStories',
   async (params,thunkApi) => {

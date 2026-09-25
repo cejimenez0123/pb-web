@@ -24,19 +24,7 @@ function PortfolioSection({
           pb-4
         "
       >
-        {/* <div>
-          <h2
-            className="
-              font-serif
-              text-2xl
-              text-gray-900
-            "
-          >
-            Selected work
-          </h2>
-
-        
-        </div> */}
+       
 
         <button
           type="button"
@@ -52,27 +40,7 @@ function PortfolioSection({
       </div>
 
       <div className="mt-6">
-        {/* <PaginatedList
-          cacheKey="profile:portfolio"
-          params={{
-            type: "portfolio",
-          }}
-          fetcher={getMyStories}
-          pageSize={PAGE_SIZE}
-          pagination="infinite"
-          enabled={!!profile?.id}
-          emptyState={
-            <PortfolioEmptyState
-              router={router}
-            />
-          }
-          renderItem={(item) => (
-            <PortfolioListItem
-              item={item}
-              profile={profile}
-              router={router}
-            />
-          )} */}
+
           <PaginatedList
   cacheKey="profile:portfolio"
   params={{ type: "portfolio" }}
@@ -194,11 +162,11 @@ function PortfolioListItem({
                 border-soft
                 py-3
                 text-left
-                last:border-b-0
+           
               "
             >
               <div className="min-w-0">
-                <p
+                {/* <p
                   className="
                     font-serif
                     text-base
@@ -209,8 +177,35 @@ function PortfolioListItem({
                   "
                 >
                   {story.title}
-                </p>
-
+                </p> */}
+{story.title?.trim() ? (
+  <p
+    className="
+      font-serif
+      text-base
+      leading-snug
+      text-gray-900
+      transition-colors
+      group-hover:text-emerald-800
+    "
+  >
+    {story.title}
+  </p>
+) : (
+  <p
+    className="
+      font-serif
+      text-base
+      italic
+      leading-snug
+      text-gray-400
+      transition-colors
+      group-hover:text-emerald-800
+    "
+  >
+    Untitled
+  </p>
+)}
                 {story.description && (
                   <p
                     className="
@@ -253,31 +248,6 @@ function PortfolioListItem({
     </article>
   );
 }
-// function PortfolioListItem({
-//   item,
-//   profile,
-//   router,
-// }) {
-//   const collection = item?.collection;
-
-//   if (!collection) {
-//     return null;
-//   }
-
-//   return (
-//     <ListPill
-//       item={collection}
-//       profile={profile}
-//       onClick={() =>
-//         router.push(
-//           Paths.collection.createRoute(
-//             collection.id
-//           )
-//         )
-//       }
-//     />
-//   );
-// }
 
 function PortfolioEmptyState({ router }) {
   return (

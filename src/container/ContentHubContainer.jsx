@@ -1,10 +1,9 @@
 import React, { useMemo } from "react";
-import { useSelector } from "react-redux";
+import { useSelector ,useDispatch} from "react-redux";
 import useProfileDependentEffects from "../core/useProfileDependentEffects.jsx";
 import Paths from "../core/paths.js";
 import { PageType } from "../core/constants.js";
 import { IonContent, useIonRouter } from "@ionic/react";
-
 
 /*
 |--------------------------------------------------------------------------
@@ -123,37 +122,50 @@ export default function ContentHubContainer() {
    * The complete room management experience belongs on the Rooms page.
    */
   const homeRooms = useMemo(() => {
-    const rooms = [];
+  const relationships =
+    currentProfile?.profileToCollections || [];
 
-    /*
-     * Home is a known system room.
-     */
-    if (homeRoom) {
-      rooms.push(homeRoom);
-    }
+  return relationships
+    .filter(
+      (item) =>
+        item?.collection?.id
+    )
+    .slice(0, 4);
+}, [
+  currentProfile?.profileToCollections,
+]);
+  // const homeRooms = useMemo(() => {
+  //   const rooms = [];
 
-    /*
-     * The profile's other profile-to-collection relationships can be
-     * surfaced here without assuming a particular backend collection
-     * shape beyond the existing profile relationship.
-     */
-    const relatedRooms =
-      currentProfile?.profileToCollections
-        ?.map((item) => item?.collection)
-        ?.filter(Boolean)
-        ?.filter((room) => {
-          if (!room?.id) return false;
+  //   /*
+  //    * Home is a known system room.
+  //    */
+  //   if (homeRoom) {
+  //     rooms.push(homeRoom);
+  //   }
 
-          return !rooms.some(
-            (existing) => existing?.id === room.id
-          );
-        }) || [];
+  //   /*
+  //    * The profile's other profile-to-collection relationships can be
+  //    * surfaced here without assuming a particular backend collection
+  //    * shape beyond the existing profile relationship.
+  //    */
+  //   const relatedRooms =
+  //     currentProfile?.profileToCollections
+  //       ?.map((item) => item?.collection)
+  //       ?.filter(Boolean)
+  //       ?.filter((room) => {
+  //         if (!room?.id) return false;
 
-    return [...rooms, ...relatedRooms].slice(0, 4);
-  }, [
-    currentProfile?.profileToCollections,
-    homeRoom,
-  ]);
+  //         return !rooms.some(
+  //           (existing) => existing?.id === room.id
+  //         );
+  //       }) || [];
+
+  //   return [...rooms, ...relatedRooms].slice(0, 4);
+  // }, [
+  //   currentProfile?.profileToCollections,
+  //   homeRoom,
+  // ]);
 
   if (!currentProfile) {
     return null;
@@ -162,7 +174,18 @@ export default function ContentHubContainer() {
   const goToWrite = () => {
     router.push(Paths.write)
   };
+const goToRoom = (profileToCollection) => {
+  const collection =
+    profileToCollection?.collection;
 
+  if (!collection?.id) return;
+
+  router.push(
+    Paths.collection.createRoute(
+      collection.id
+    )
+  );
+};
   const goToRooms = () => {
     /*
      * The complete Rooms route should be wired here when the new
@@ -171,6 +194,7 @@ export default function ContentHubContainer() {
      * For now we intentionally do not invent a Paths property that
      * has not been established in the existing application.
      */
+    console.log(homeRoom)
     router.push("/collections");
   };
 
@@ -254,11 +278,15 @@ export default function ContentHubContainer() {
         />
 
 
-        <RoomsPreviewSection
+        {/* <RoomsPreviewSection
           rooms={homeRooms}
           onViewRooms={goToRooms}
-        />
-
+        /> */}
+<RoomsPreviewSection
+  rooms={homeRooms}
+  onViewRooms={goToRooms}
+  onSelectRoom={goToRoom}
+/>
 
         <UpcomingEventsSection
           events={upcomingEvents}
@@ -660,10 +688,10 @@ function WorkRow({
 | "Your rooms" / "See all" takes them to the full Rooms experience.
 |
 */
-
 function RoomsPreviewSection({
   rooms,
   onViewRooms,
+  onSelectRoom,
 }) {
   return (
     <section className="mt-14">
@@ -674,7 +702,10 @@ function RoomsPreviewSection({
       />
 
       {rooms.length > 0 ? (
-        <RoomGrid rooms={rooms} />
+        <RoomGrid
+          rooms={rooms}
+          onSelectRoom={onSelectRoom}
+        />
       ) : (
         <EmptyState
           title="No rooms yet."
@@ -686,10 +717,39 @@ function RoomsPreviewSection({
     </section>
   );
 }
+// function RoomsPreviewSection({
+//   rooms,
+//   onViewRooms,
+// }) {
+//   return (
+//     <section className="mt-14">
+//       <SectionHeader
+//         title="Your rooms"
+//         actionLabel="See all"
+//         onAction={onViewRooms}
+//       />
+
+//       {rooms.length > 0 ? (
+//        <RoomGrid
+//   rooms={rooms}
+//   onSelectRoom={onSelectRoom}
+// />
+//       ) : (
+//         <EmptyState
+//           title="No rooms yet."
+//           description="Make a room for things you want to keep together."
+//           action="Make a room"
+//           onAction={onViewRooms}
+//         />
+//       )}
+//     </section>
+//   );
+// }
 
 
 function RoomGrid({
   rooms,
+  onSelectRoom,
 }) {
   return (
     <div
@@ -700,20 +760,29 @@ function RoomGrid({
         sm:grid-cols-2
       "
     >
-      {rooms.map((room) => (
-        <RoomCard
-          key={room.id}
-          room={room}
-        />
-      ))}
+   {rooms.map((profileToCollection) => (
+  <RoomCard
+    key={profileToCollection.id}
+    profileToCollection={profileToCollection}
+    onClick={() =>
+      onSelectRoom(profileToCollection)
+    }
+  />
+))}
     </div>
   );
 }
-
-
 function RoomCard({
-  room,
+  profileToCollection,
+  onClick,
 }) {
+  const room =
+    profileToCollection?.collection;
+
+  if (!room?.id) {
+    return null;
+  }
+
   const pieceCount =
     room?.storyCount ??
     room?.stories?.length ??
@@ -721,72 +790,175 @@ function RoomCard({
     null;
 
   return (
-    <article
-      className="
-        min-h-36
-        border
-        border-border-soft
-        bg-base-surface
-        p-5
-        transition-colors
-        hover:border-base-soft
-      "
-    >
-      <p
+
+      <button
+        type="button"
+        onClick={onClick}
         className="
-          text-xs
-          font-medium
-          uppercase
-          tracking-[0.1em]
-          text-text-secondary
+          flex
+          min-h-36
+          w-full
+          flex-col
+          p-5
+          text-left
+          focus:outline-none
+          focus:ring-2
+          focus:ring-base-soft
+          focus:ring-inset
         "
       >
-        Room
-      </p>
-
-      <h3
-        className="
-          mt-2
-          font-serif
-          text-xl
-          font-semibold
-          text-text-primary
-        "
-      >
-        {room?.title ||
-          room?.name ||
-          "Untitled room"}
-      </h3>
-
-      {room?.description && (
         <p
           className="
-            mt-2
-            line-clamp-2
-            text-sm
-            leading-relaxed
-            text-text-secondary
-          "
-        >
-          {room.description}
-        </p>
-      )}
-
-      {pieceCount !== null && (
-        <p
-          className="
-            mt-4
             text-xs
+            font-medium
+            uppercase
+            tracking-[0.1em]
             text-text-secondary
           "
         >
-          {pieceCount}{" "}
-          {pieceCount === 1 ? "piece" : "pieces"}
+          Room
         </p>
-      )}
-    </article>
+
+        <div className="flex items-start justify-between gap-4">
+          <h3
+            className="
+              mt-2
+              font-serif
+              text-xl
+              font-semibold
+              text-text-primary
+            "
+          >
+            {room.title ||
+              room.name ||
+              "Untitled room"}
+          </h3>
+
+          <span
+            aria-hidden="true"
+            className="
+              mt-2
+              shrink-0
+              text-xl
+              text-text-secondary
+              transition-transform
+              group-hover:translate-x-1
+            "
+          >
+            →
+          </span>
+        </div>
+
+        {room.description && (
+          <p
+            className="
+              mt-2
+              line-clamp-2
+              text-sm
+              leading-relaxed
+              text-text-secondary
+            "
+          >
+            {room.description}
+          </p>
+        )}
+
+        {pieceCount !== null && (
+          <p
+            className="
+              mt-auto
+              pt-4
+              text-xs
+              text-text-secondary
+            "
+          >
+            {pieceCount}{" "}
+            {pieceCount === 1
+              ? "piece"
+              : "pieces"}
+          </p>
+        )}
+      </button>
+    // </article>
   );
 }
+
+// function RoomCard({
+//   room,
+// }) {
+//   const pieceCount =
+//     room?.storyCount ??
+//     room?.stories?.length ??
+//     room?.storyIdList?.length ??
+//     null;
+
+//   return (
+//     <article
+//       className="
+//         min-h-36
+//         border
+//         border-border-soft
+//         bg-base-surface
+//         p-5
+//         transition-colors
+//         hover:border-base-soft
+//       "
+//     >
+//       <p
+//         className="
+//           text-xs
+//           font-medium
+//           uppercase
+//           tracking-[0.1em]
+//           text-text-secondary
+//         "
+//       >
+//         Room
+//       </p>
+
+//       <h3
+//         className="
+//           mt-2
+//           font-serif
+//           text-xl
+//           font-semibold
+//           text-text-primary
+//         "
+//       >
+//         {room?.title ||
+//           room?.name ||
+//           "Untitled room"}
+//       </h3>
+
+//       {room?.description && (
+//         <p
+//           className="
+//             mt-2
+//             line-clamp-2
+//             text-sm
+//             leading-relaxed
+//             text-text-secondary
+//           "
+//         >
+//           {room.description}
+//         </p>
+//       )}
+
+//       {pieceCount !== null && (
+//         <p
+//           className="
+//             mt-4
+//             text-xs
+//             text-text-secondary
+//           "
+//         >
+//           {pieceCount}{" "}
+//           {pieceCount === 1 ? "piece" : "pieces"}
+//         </p>
+//       )}
+//     </article>
+//   );
+// }
 
 
 /*
@@ -999,6 +1171,7 @@ function HomeAction({
   onClick,
   variant = "secondary",
 }) {
+
   const base = `
     inline-flex
     min-h-11
