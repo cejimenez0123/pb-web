@@ -103,6 +103,7 @@ import EditorContainer from "./container/page/EditorContainer";
 import OAuthCallback from "./container/page/OauthCallback.jsx";
 import PageViewContainer from "./container/page/PageViewContainer";
 import CollectionsContainer from "./container/collection/CollectionsContainer.jsx";
+import WriteContainer from "./components/page/WriteContainer.jsx";
 
 const CLIENT_ID = import.meta.env.VITE_OAUTH2_CLIENT_ID;
 const IOS_CLIENT_ID = import.meta.env.VITE_IOS_CLIENT_ID;
@@ -729,14 +730,25 @@ function App(props) {
                       </PageWrapper>
                     )}
                   />
-
+       <Route
+                    path={Paths.home}
+                    render={() => (
+                      <PageWrapper
+                        showBackbutton={false}
+                      >
+                        <PrivateRoute>
+                          <ContentHubContainer />
+                        </PrivateRoute>
+                      </PageWrapper>
+                    )}
+                  />
                   <Route
                     exact
-                    path={Paths.dashboard}
+                    path={Paths.write}
                     render={() => (
                       <PageWrapper>
                         <PrivateRoute>
-                          <DashboardContainer />
+                          <WriteContainer />
                         </PrivateRoute>
                       </PageWrapper>
                     )}

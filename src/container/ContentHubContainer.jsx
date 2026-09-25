@@ -1,10 +1,9 @@
 import React, { useMemo } from "react";
 import { useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
-
 import useProfileDependentEffects from "../core/useProfileDependentEffects.jsx";
 import Paths from "../core/paths.js";
 import { PageType } from "../core/constants.js";
+import { IonContent, useIonRouter } from "@ionic/react";
 
 
 /*
@@ -31,12 +30,12 @@ import { PageType } from "../core/constants.js";
 
 
 export default function ContentHubContainer() {
-  const history = useHistory();
+
 
   const currentProfile = useSelector(
     (state) => state.users.currentProfile
   );
-
+  const router = useIonRouter()
   /*
    * Keep the existing data hook for now.
    *
@@ -161,7 +160,7 @@ export default function ContentHubContainer() {
   }
 
   const goToWrite = () => {
-    history.push(Paths.editor.text);
+    router.push(Paths.write)
   };
 
   const goToRooms = () => {
@@ -172,7 +171,7 @@ export default function ContentHubContainer() {
      * For now we intentionally do not invent a Paths property that
      * has not been established in the existing application.
      */
-    history.push("/collections");
+    router.push("/collections");
   };
 
   const goToWorkshop = () => {
@@ -182,15 +181,15 @@ export default function ContentHubContainer() {
      * older implementation, so prefer it when available.
      */
     if (Paths.workshop?.reader) {
-      history.push(Paths.workshop.reader());
+      router.push(Paths.workshop.reader());
       return;
     }
 
-    history.push("/workshop");
+    router.push("/workshop");
   };
 
   const goToEvents = () => {
-    history.push("/events");
+    router.push("/events");
   };
 
   const goToStory = (story) => {
@@ -199,21 +198,26 @@ export default function ContentHubContainer() {
     const type = story.type || PageType.text;
 
     if (Paths.editPage?.createRoute) {
-      history.push(
+      router.push(
         Paths.editPage.createRoute(story.id, type)
       );
       return;
     }
 
     if (Paths.page?.createRoute) {
-      history.push(
+      router.push(
         Paths.page.createRoute(story.id)
       );
     }
   };
 
   return (
-    <main className="min-h-[100dvh] bg-base-bg text-text-primary">
+        <IonContent
+          scrollY={true}
+          className="page-content"
+          fullscreen
+        >
+    <main className="h-[100%] overflow-scroll bg-base-bg text-text-primary">
       <div
         className="
           mx-auto
@@ -275,6 +279,7 @@ export default function ContentHubContainer() {
          */}
       </div>
     </main>
+    </IonContent>
   );
 }
 
@@ -562,7 +567,7 @@ function WorkList({
   onSelectStory,
 }) {
   return (
-    <div className="border-y border-border-soft">
+    <div className="border-y space-y-4 border-border-soft">
       {stories.map((story) => (
         <WorkRow
           key={story.id}
@@ -587,7 +592,7 @@ function WorkRow({
         group
         flex
         min-h-16
-        w-full
+        w-[100%]
         items-center
         justify-between
         gap-5

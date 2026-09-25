@@ -197,14 +197,33 @@ const userSlice = createSlice({
           state.alert = payload ?? { isOpen: false, message: null, type: null,agree: null, agreeText: null, disagreeText: null, disagree:null }
         })
         .addCase(setDialog.type, (state, { payload }) => {
-            if (payload) {
-                if (payload.isOpen == false) {
-                    state.dialog.isOpen = false
-                } else {
-                    state.dialog = payload ?? { text: "", title: "", agree: () => {}, onClose: () => {}, isOpen: false, agreeText: "agree", disagreeText: "Close" }
-                }
-            }
-        }).addCase(fetchProfileRecommendations.pending, (state) => {
+  if (!payload) return;
+
+  if (payload.isOpen === false) {
+    state.dialog = {
+      ...state.dialog,
+      isOpen: false,
+    };
+
+    return;
+  }
+
+  state.dialog = {
+    ...state.dialog,
+    ...payload,
+    isOpen: true,
+  };
+})
+        // .addCase(setDialog.type, (state, { payload }) => {
+        //     if (payload) {
+        //         if (payload.isOpen == false) {
+        //             state.dialog.isOpen = false
+        //         } else {
+        //             state.dialog = payload ?? { text: "", title: "", agree: () => {}, onClose: () => {}, isOpen: false, agreeText: "agree", disagreeText: "Close" }
+        //         }
+        //     }
+        // })
+        .addCase(fetchProfileRecommendations.pending, (state) => {
         state.recommendationsStatus = "loading";
         state.recommendationsError = null;
       })

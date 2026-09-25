@@ -1,10 +1,88 @@
+// function computePermissions(resource, profile, config = {}) {
+//   const {
+//     getOwnerId = (r) => r.profileId,
+//     getAccessList = (r) => r.roles || [],
+//     getAccessRole = (entry) => entry.role,
+//     isPrivate = (r) => r.isPrivate,
+//     isOpen = (r) => r.isOpenCollaboration,
+//     canWriteRoles = [],
+//     canEditRoles = [],
+//   } = config;
+
+//   let canSee = false;
+//   let canAdd = false;
+//   let canEdit = false;
+//   let role = null;
+
+//   if (!resource) {
+//     return { canSee, canAdd, canEdit, role };
+//   }
+
+//   // ------------------ PRIVATE + NO USER ------------------
+//   if (!profile && isPrivate(resource)) {
+//     return { canSee: false, canAdd: false, canEdit: false, role: null };
+//   }
+
+//   // ------------------ OWNER ------------------
+//   if (profile && getOwnerId(resource) === profile.id) {
+//     return {
+//       canSee: true,
+//       canAdd: true,
+//       canEdit: true,
+//       role: "owner",
+//     };
+//   }
+
+//   // ------------------ ACCESS LIST (roles, betaReaders, etc) ------------------
+//   let found = null;
+
+//   if (profile) {
+//     const accessList = getAccessList(resource);
+
+//     found = accessList?.find((entry) => entry?.profileId === profile.id);
+
+//     if (found) {
+//       const userRole = getAccessRole(found);
+//       role = userRole;
+
+//       canSee = true;
+
+//       if (canWriteRoles.includes(userRole) || isOpen(resource)) {
+//         canAdd = true;
+//       }
+
+//       if (canEditRoles.includes(userRole)) {
+//         canEdit = true;
+//       }
+
+//       return { canSee, canAdd, canEdit, role };
+//     }
+//   }
+
+//   // ------------------ OPEN ACCESS ------------------
+//   if (isOpen(resource)) {
+//     canAdd = true;
+//   }
+
+//   // ------------------ PUBLIC ------------------
+//   if (!isPrivate(resource)) {
+//     canSee = true;
+//   }
+
+//   return { canSee, canAdd, canEdit, role };
+// }
+// export default computePermissions
 function computePermissions(resource, profile, config = {}) {
   const {
     getOwnerId = (r) => r.profileId,
+    isOwner: customIsOwner = null,
+
     getAccessList = (r) => r.roles || [],
     getAccessRole = (entry) => entry.role,
+
     isPrivate = (r) => r.isPrivate,
     isOpen = (r) => r.isOpenCollaboration,
+
     canWriteRoles = [],
     canEditRoles = [],
   } = config;
@@ -15,39 +93,89 @@ function computePermissions(resource, profile, config = {}) {
   let role = null;
 
   if (!resource) {
-    return { canSee, canAdd, canEdit, role };
-  }
-
-  // ------------------ PRIVATE + NO USER ------------------
-  if (!profile && isPrivate(resource)) {
-    return { canSee: false, canAdd: false, canEdit: false, role: null };
-  }
-
-  // ------------------ OWNER ------------------
-  if (profile && getOwnerId(resource) === profile.id) {
     return {
-      canSee: true,
-      canAdd: true,
-      canEdit: true,
-      role: "owner",
+      canSee,
+      canAdd,
+      canEdit,
+      role,
     };
   }
 
-  // ------------------ ACCESS LIST (roles, betaReaders, etc) ------------------
+  /*
+   * -------------------------------------------------------------------------
+   * PRIVATE + NO USER
+   * -------------------------------------------------------------------------
+   */
+  if (!profile && isPrivate(resource)) {
+    return {
+      canSee: false,
+      canAdd: false,
+      canEdit: false,
+      role: null,
+    };
+  }
+
+  /*
+   * -------------------------------------------------------------------------
+   * OWNER
+   * -------------------------------------------------------------------------
+   *
+   * Resources do not all represent ownership in the same way.
+   *
+   * Most resources use:
+   *
+   *   resource.profileId
+   *
+   * Stories may instead expose:
+   *
+   *   resource.author.id
+   *
+   * A caller can therefore provide:
+   *
+   *   isOwner: (resource, profile) => ...
+   *
+   * without changing the default behavior for other resources.
+   */
+  if (profile) {
+    const owner =
+      typeof customIsOwner === "function"
+        ? customIsOwner(resource, profile)
+        : getOwnerId(resource) === profile.id;
+
+    if (owner) {
+      return {
+        canSee: true,
+        canAdd: true,
+        canEdit: true,
+        role: "owner",
+      };
+    }
+  }
+
+  /*
+   * -------------------------------------------------------------------------
+   * ACCESS LIST
+   * -------------------------------------------------------------------------
+   */
   let found = null;
 
   if (profile) {
     const accessList = getAccessList(resource);
 
-    found = accessList?.find((entry) => entry?.profileId === profile.id);
+    found = accessList?.find(
+      (entry) => entry?.profileId === profile.id
+    );
 
     if (found) {
       const userRole = getAccessRole(found);
-      role = userRole;
 
+      role = userRole;
       canSee = true;
 
-      if (canWriteRoles.includes(userRole) || isOpen(resource)) {
+      if (
+        canWriteRoles.includes(userRole) ||
+        isOpen(resource)
+      ) {
         canAdd = true;
       }
 
@@ -55,20 +183,39 @@ function computePermissions(resource, profile, config = {}) {
         canEdit = true;
       }
 
-      return { canSee, canAdd, canEdit, role };
+      return {
+        canSee,
+        canAdd,
+        canEdit,
+        role,
+      };
     }
   }
 
-  // ------------------ OPEN ACCESS ------------------
+  /*
+   * -------------------------------------------------------------------------
+   * OPEN ACCESS
+   * -------------------------------------------------------------------------
+   */
   if (isOpen(resource)) {
     canAdd = true;
   }
 
-  // ------------------ PUBLIC ------------------
+  /*
+   * -------------------------------------------------------------------------
+   * PUBLIC
+   * -------------------------------------------------------------------------
+   */
   if (!isPrivate(resource)) {
     canSee = true;
   }
 
-  return { canSee, canAdd, canEdit, role };
+  return {
+    canSee,
+    canAdd,
+    canEdit,
+    role,
+  };
 }
-export default computePermissions
+
+export default computePermissions;

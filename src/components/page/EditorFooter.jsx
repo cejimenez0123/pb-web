@@ -45,18 +45,41 @@ return(<AnimatePresence><motion.div
 
   {/* Trash inline */}
   {/* <div> */}
-  {effectiveId && id && effectiveId !== "new" && (
+{effectiveId &&
+  id &&
+  effectiveId !== "new" && (
     <button
+      type="button"
       onClick={openConfirmDeleteDialog}
-      className="flex flex-col items-center rounded-2xl dark:bg-text-primary bg-golden gap-1.5 group"
-      style={{ WebkitTapHighlightColor: "transparent" }}
+      aria-label="Delete story"
+      className="
+        group flex flex-col items-center
+        gap-1.5 rounded-2xl
+        bg-golden
+        dark:bg-text-primary
+      "
+      style={{
+        WebkitTapHighlightColor: "transparent",
+      }}
     >
-  
-        <img src={deleteIcon} className="max-h-8 max-w-8"/>
-      {/* </div> */}
-      <span className="text-[11px] text-white group-hover:text-red-400 transition-colors">Delete</span>
+      <img
+        src={deleteIcon}
+        alt=""
+        aria-hidden="true"
+        className="h-8 w-8 max-h-8 max-w-8"
+      />
+
+      <span
+        className="
+          text-[11px] text-white
+          transition-colors
+          group-hover:text-red-400
+        "
+      >
+        Delete
+      </span>
     </button>
-  )}
+)}
 {/* </div> */}
   </div>
   <div className="mt-2">

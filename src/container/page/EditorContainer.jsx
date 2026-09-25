@@ -119,7 +119,9 @@ export default function EditorContainer() {
     pageInView,
     pageType: sliceType,
   } = useSelector((state) => state.pages);
-
+  const story = editPage || pageInView || {};
+   const storyData = editPage?.data || pageInView?.data || "";
+const pageInViewId = pageInView?.id;
   const type = normalizeType(paramType || sliceType);
 
   const isNewStory =
@@ -141,12 +143,188 @@ export default function EditorContainer() {
   const [accessToken, setAccessToken] = useState(null);
   const [isSaved, setIsSaved] = useState(true);
   const [openHashtag, setOpenHashtag] = useState(false);
+const hasCreatedRef = useRef(false);
+const hasLoadedRef = useRef(false);
+const lastSavedRef = useRef(null);
+const activeRequestIdRef = useRef(null);
+const debouncedSaveRef = useRef(null);
 
-  const hasCreatedRef = useRef(false);
-  const hasLoadedRef = useRef(false);
-  const lastSavedRef = useRef(null);
-  const activeRequestIdRef = useRef(null);
-  const debouncedSaveRef = useRef(null);
+const isDeletedRef = useRef(false);
+//  const storyType = normalizeType(
+//       story.type || type
+//     );
+   
+// const loadedPayload = {
+//   id: pageInViewId,
+//   data: storyData,
+//   title: story.title || "",
+//   description: story.description || "",
+//   status: story.status || "draft",
+//   isPrivate: story.isPrivate ?? true,
+//   commentable: story.commentable ?? true,
+//   needsFeedback: story.needsFeedback ?? false,
+//   type: storyType,
+// };
+
+// lastSavedRef.current = loadedPayload;
+
+// setParameters((previous) => ({
+//   ...previous,
+//   ...loadedPayload,
+//   profile: previous.profile,
+//   page: story,
+// }));
+
+// setIsSaved(true);
+//   const setStory = useCallback(
+//   (story) => {
+//     if (!story?.id) return;
+
+//     /*
+//      * Never re-apply the same story to the editor.
+//      */
+//     if (
+//       hasLoadedRef.current &&
+//       parametersRef.current.id === story.id
+//     ) {
+//       return;
+//     }
+
+   
+
+
+
+//     /*
+//      * Mark these BEFORE dispatching.
+//      *
+//      * Redux dispatches are synchronous, so this prevents
+//      * another part of the lifecycle from seeing the editor
+//      * as unloaded while these actions are being dispatched.
+//      */
+//     hasCreatedRef.current = true;
+//     hasLoadedRef.current = true;
+//     activeRequestIdRef.current = story.id;
+
+//     /*
+//      * Keep the Redux mirrors synchronized ONCE.
+//      */
+//     dispatch(
+//       setEditingPage({
+//         page: story,
+//       })
+//     );
+
+//     dispatch(
+//       setPageInView({
+//         page: story,
+//       })
+//     );
+
+//     dispatch(
+//       setPageType({
+//         type: storyType,
+//       })
+//     );
+
+//     dispatch(
+//       setHtmlContent(storyData)
+//     );
+
+//     /*
+//      * Then populate the editor's local state.
+//      */
+//     setParameters((previous) => ({
+//       ...previous,
+//       id: story.id,
+//       data: storyData,
+//       title: story.title || "",
+//       description: story.description || "",
+//       status: story.status || "draft",
+//       isPrivate:
+//         story.isPrivate ?? true,
+//       commentable:
+//         story.commentable ?? true,
+//       needsFeedback:
+//         story.needsFeedback ?? false,
+//       type: storyType,
+//       page: story,
+//     }));
+
+//     setIsSaved(true);
+//   },
+//   [dispatch, type]
+// );
+
+// const isDeletedRef = useRef(false);
+
+const setStory = useCallback(
+  (story) => {
+    if (!story?.id) return;
+
+    if (
+      hasLoadedRef.current &&
+      parametersRef.current.id === story.id
+    ) {
+      return;
+    }
+
+    const storyType = normalizeType(story.type || type);
+    const storyData = story.data || "";
+
+    hasCreatedRef.current = true;
+    hasLoadedRef.current = true;
+    activeRequestIdRef.current = story.id;
+
+    const loadedPayload = {
+      id: story.id,
+      data: storyData,
+      title: story.title || "",
+      description: story.description || "",
+      status: story.status || "draft",
+      isPrivate: story.isPrivate ?? true,
+      commentable: story.commentable ?? true,
+      needsFeedback: story.needsFeedback ?? false,
+      type: storyType,
+    };
+
+    lastSavedRef.current = loadedPayload;
+
+    dispatch(
+      setEditingPage({
+        page: story,
+      })
+    );
+
+    dispatch(
+      setPageInView({
+        page: story,
+      })
+    );
+
+    dispatch(
+      setPageType({
+        type: storyType,
+      })
+    );
+
+    dispatch(setHtmlContent(storyData));
+
+    setParameters((previous) => ({
+      ...previous,
+      ...loadedPayload,
+      page: story,
+    }));
+
+    setIsSaved(true);
+  },
+  [dispatch, type]
+);
+
+const parametersRef = useRef(parameters);
+
+useEffect(() => {
+  parametersRef.current = parameters;
+}, [parameters]);
 
   const effectiveId =
     parameters.id || routeId;
@@ -180,42 +358,50 @@ export default function EditorContainer() {
    * a fully resolved story payload.
    */
   useEffect(() => {
-    const debouncedSave = debounce(
-      (payload) => {
-        dispatch(updateStory(payload)).then((result) =>
-          checkResult(
-            result,
-            () => {
-              setIsSaved(true);
-            },
-            (error) => {
-              setIsSaved(false);
-              showError(error);
-            }
-          )
+  const debouncedSave = debounce(
+    async (payload) => {
+      if (isDeletedRef.current) return;
+      if (!payload?.id || payload.id === "new") return;
+
+      // isSavingRef.current = true;
+
+      try {
+        const result = await dispatch(
+          updateStory(payload)
         );
-      },
-      500
-    );
 
-    debouncedSaveRef.current = debouncedSave;
-
-    return () => {
-      if (
-        typeof debouncedSave.cancel ===
-        "function"
-      ) {
-        debouncedSave.cancel();
+        checkResult(
+          result,
+          () => {
+            setIsSaved(true);
+          },
+          (error) => {
+            setIsSaved(false);
+            showError(error);
+          }
+        );
+      } finally {
+        // isSavingRef.current = false;
       }
-    };
-  }, [dispatch, showError]);
+    },
+    750
+  );
 
+  debouncedSaveRef.current =
+    debouncedSave;
+
+  return () => {
+    if (
+      typeof debouncedSave.cancel ===
+      "function"
+    ) {
+      debouncedSave.cancel();
+    }
+  };
+}, [dispatch, showError]);
   /*
    * Close any open dialog once when the editor first mounts.
    */
-  useEffect(() => {
-    closeDialog();
-  }, [closeDialog]);
 
   /*
    * Reset all state for a new story.
@@ -252,50 +438,32 @@ export default function EditorContainer() {
     type,
   ]);
 
-  /*
-   * When moving to an existing story, immediately blank local content
-   * before its fetch finishes. This prevents old editor content from
-   * remaining visible during a route transition.
-   */
-  useEffect(() => {
-    if (isNewStory || !routeId) return;
 
-    hasCreatedRef.current = false;
-    hasLoadedRef.current = false;
-    lastSavedRef.current = null;
-    activeRequestIdRef.current = routeId;
+useEffect(() => {
+  const profileId =
+    currentProfile?.id ?? null;
 
-    setParameters((previous) => ({
-      ...previous,
-      id: routeId,
-      data: "",
-      title: "",
-      description: "",
-      page: null,
-      type,
-    }));
+  const profileChanged =
+    parametersRef.current.authorId !==
+      profileId ||
+    parametersRef.current.profileId !==
+      (profileId ?? "");
 
-    setIsSaved(true);
-  }, [
-    isNewStory,
-    routeId,
+  const typeChanged =
+    parametersRef.current.type !== type;
+
+  if (!profileChanged && !typeChanged) {
+    return;
+  }
+
+  setParameters((previous) => ({
+    ...previous,
     type,
-  ]);
-
-  /*
-   * Keep current-user data and route type fresh, while preserving the
-   * current draft data/title.
-   */
-  useEffect(() => {
-    setParameters((previous) => ({
-      ...previous,
-      type,
-      authorId: currentProfile?.id ?? null,
-      profileId: currentProfile?.id ?? "",
-      profile: currentProfile ?? null,
-    }));
-  }, [currentProfile, type]);
-
+    authorId: profileId,
+    profileId: profileId ?? "",
+    profile: currentProfile ?? null,
+  }));
+}, [currentProfile, type]);
   /*
    * Applies loaded server data to application state.
    *
@@ -303,47 +471,8 @@ export default function EditorContainer() {
    * Redux editorHtmlContent is updated only as a compatibility mirror for
    * other parts of your application that might still read it.
    */
-  const setStory = useCallback(
-    (story) => {
-      if (!story?.id) return;
+ 
 
-      const storyType = normalizeType(
-        story.type || type
-      );
-
-      const storyData = story.data || "";
-
-      dispatch(setEditingPage({ page: story }));
-      dispatch(setPageInView({ page: story }));
-      dispatch(
-        setPageType({
-          type: storyType,
-        })
-      );
-
-      dispatch(setHtmlContent(storyData));
-
-      setParameters((previous) => ({
-        ...previous,
-        id: story.id,
-        data: storyData,
-        title: story.title || "",
-        description: story.description || "",
-        status: story.status || "draft",
-        isPrivate: story.isPrivate ?? true,
-        commentable: story.commentable ?? true,
-        needsFeedback: story.needsFeedback ?? false,
-        type: storyType,
-        page: story,
-      }));
-
-      hasCreatedRef.current = true;
-      hasLoadedRef.current = true;
-      lastSavedRef.current = null;
-      setIsSaved(true);
-    },
-    [dispatch, type]
-  );
 
   /*
    * Fetch a story only when a real story ID is in the route.
@@ -352,137 +481,151 @@ export default function EditorContainer() {
    * from injecting old data into the current editor.
    */
   useEffect(() => {
-    if (isNewStory || !routeId) return;
+  if (isNewStory || !routeId) return;
 
-    if (pageInView?.id === routeId) {
-      setStory(pageInView);
+  // Already loaded into this editor.
+  if (
+    hasLoadedRef.current &&
+    parametersRef.current.id === routeId
+  ) {
+    return;
+  }
+
+  // Redux already has this story.
+  if (pageInViewId === routeId && pageInView) {
+    setStory(pageInView);
+    return;
+  }
+
+  let cancelled = false;
+
+  activeRequestIdRef.current = routeId;
+
+  dispatch(
+    getStory({
+      id: routeId,
+    })
+  ).then((result) => {
+    if (cancelled) return;
+
+    if (
+      activeRequestIdRef.current !== routeId
+    ) {
       return;
     }
 
-    let cancelled = false;
-
-    activeRequestIdRef.current = routeId;
-
-    dispatch(getStory({ id: routeId })).then(
-      (result) => {
-        if (cancelled) return;
-
-        if (
-          activeRequestIdRef.current !== routeId
-        ) {
-          return;
+    checkResult(
+      result,
+      (payload) => {
+        if (!cancelled && payload?.story) {
+          setStory(payload.story);
         }
-
-        checkResult(
-          result,
-          (payload) => {
-            if (payload?.story) {
-              setStory(payload.story);
-            }
-          },
-          (error) => {
-            showError(error);
-          }
-        );
+      },
+      (error) => {
+        if (!cancelled) {
+          showError(error);
+        }
       }
     );
+  });
 
-    return () => {
-      cancelled = true;
-    };
-  }, [
-    dispatch,
-    isNewStory,
-    pageInView,
-    routeId,
-    setStory,
-    showError,
-  ]);
+  return () => {
+    cancelled = true;
+  };
+}, [
+  dispatch,
+  isNewStory,
+  routeId,
+  pageInViewId,
+  pageInView,
+  setStory,
+  showError,
+]);
 
   const saveStory = useCallback(
-    async (incoming = {}) => {
-      if (!currentProfile?.id) return null;
+  async (incoming = {}) => {
+    if (!currentProfile?.id) return null;
+    if (isDeletedRef.current) return null;
 
-      const resolvedId =
-        incoming.id ??
-        parameters.id ??
-        routeId ??
-        null;
+    const currentParameters =
+      parametersRef.current;
 
-      const payload = {
-        ...parameters,
-        ...incoming,
-        id: resolvedId,
-        type:
-          incoming.type ??
-          parameters.type ??
-          type,
-        authorId: currentProfile.id,
-        profileId: currentProfile.id,
-        profile: currentProfile,
-      };
+    const resolvedId =
+      incoming.id ??
+      currentParameters.id ??
+      routeId ??
+      null;
 
-      const shouldCreate =
-        !resolvedId ||
-        resolvedId === "new";
+    const payload = {
+      ...currentParameters,
+      ...incoming,
+      id: resolvedId,
+      type:
+        incoming.type ??
+        currentParameters.type ??
+        type,
+      authorId: currentProfile.id,
+      profileId: currentProfile.id,
+      profile: currentProfile,
+    };
 
-      if (shouldCreate) {
-        const result = await dispatch(
-          createStory({
-            ...payload,
-            id: null,
-          })
-        );
+    const shouldCreate =
+      !resolvedId ||
+      resolvedId === "new";
 
-        return checkResult(
-          result,
-          (response) => {
-            const story = response?.story;
+    if (shouldCreate) {
+      const result = await dispatch(
+        createStory({
+          ...payload,
+          id: null,
+        })
+      );
 
-            if (!story?.id) {
-              hasCreatedRef.current = false;
+      return checkResult(
+        result,
+        (response) => {
+          const story = response?.story;
 
-              showError(
-                new Error(
-                  "The story was created, but no story ID was returned."
-                )
-              );
+          if (!story?.id) {
+            hasCreatedRef.current = false;
 
-              return null;
-            }
-
-            hasCreatedRef.current = true;
-
-            /*
-             * Apply all returned story data, including data/title/type.
-             */
-            setStory(story);
-
-            /*
-             * Replace the URL without creating an extra animation/remount
-             * wrapper around the editor.
-             */
-            window.history.replaceState(
-              null,
-              "",
-              Paths.editPage.createRoute(
-                story.id,
-                story.type
+            showError(
+              new Error(
+                "The story was created, but no story ID was returned."
               )
             );
 
-            return story;
-          },
-          (error) => {
-            hasCreatedRef.current = false;
-            setIsSaved(false);
-            showError(error);
-
             return null;
           }
-        );
-      }
 
+          hasCreatedRef.current = true;
+
+          setStory(story);
+
+          window.history.replaceState(
+            null,
+            "",
+            Paths.editPage.createRoute(
+              story.id,
+              story.type
+            )
+          );
+
+          return story;
+        },
+        (error) => {
+          hasCreatedRef.current = false;
+          setIsSaved(false);
+          showError(error);
+
+          return null;
+        }
+      );
+    }
+
+    // isSavingRef.current = true;
+
+    try {
       const result = await dispatch(
         updateStory({
           ...payload,
@@ -504,94 +647,120 @@ export default function EditorContainer() {
           return null;
         }
       );
-    },
-    [
-      currentProfile,
-      dispatch,
-      parameters,
-      routeId,
-      setStory,
-      showError,
-      type,
-    ]
-  );
+    } finally {
+      // isSavingRef.current = false;
+    }
+  },
+  [
+    currentProfile,
+    dispatch,
+    routeId,
+    setStory,
+    showError,
+    type,
+  ]
+);
+useEffect(() => {
+  if (!currentProfile?.id) return;
+  if (isDeletedRef.current) return;
+
+  if (isMediaType && isNewStory) return;
+
+  const hasMeaningfulContent =
+    Boolean(parameters.data?.trim()) ||
+    Boolean(parameters.title?.trim());
+
+  if (!hasMeaningfulContent) return;
+
+  const resolvedId =
+    parameters.id || routeId;
 
   /*
-   * Autosave policy:
-   *
-   * - New text stories create once after title/content appears.
-   * - Existing stories update only after server data has loaded.
-   * - Repeated identical payloads do not schedule another update.
+   * ---------------------------------------------------------
+   * CREATE
+   * ---------------------------------------------------------
    */
-  useEffect(() => {
-    if (!currentProfile?.id) return;
+  if (!resolvedId || resolvedId === "new") {
+    if (hasCreatedRef.current) return;
 
-    if (isMediaType && isNewStory) return;
-
-    const hasMeaningfulContent =
-      Boolean(parameters.data?.trim()) ||
-      Boolean(parameters.title?.trim());
-
-    if (!hasMeaningfulContent) return;
-
-    const resolvedId =
-      parameters.id || routeId;
-
-    if (
-      !resolvedId ||
-      resolvedId === "new"
-    ) {
-      if (hasCreatedRef.current) return;
-
-      hasCreatedRef.current = true;
-      setIsSaved(false);
-
-      saveStory();
-
-      return;
-    }
-
-    if (!hasLoadedRef.current) return;
-
-    const payload = {
-      ...parameters,
-      id: resolvedId,
-      type,
-      authorId: currentProfile.id,
-      profileId: currentProfile.id,
-      profile: currentProfile,
-    };
-
-    const currentPayload =
-      JSON.stringify(payload);
-
-    const previousPayload = JSON.stringify(
-      lastSavedRef.current
-    );
-
-    if (currentPayload === previousPayload) {
-      return;
-    }
-
-    lastSavedRef.current = payload;
+    hasCreatedRef.current = true;
     setIsSaved(false);
 
-    debouncedSaveRef.current?.(payload);
-  }, [
-    currentProfile,
-    isMediaType,
-    isNewStory,
-    parameters.commentable,
-    parameters.data,
-    parameters.id,
-    parameters.isPrivate,
-    parameters.status,
-    parameters.title,
-    routeId,
-    saveStory,
-    type,
-  ]);
+    saveStory();
 
+    return;
+  }
+
+  /*
+   * Don't autosave the story until its server version
+   * has actually been loaded.
+   */
+  if (!hasLoadedRef.current) return;
+
+  /*
+   * Build a fingerprint of the editable story state.
+   *
+   * Only these values should cause an autosave.
+   */
+  const payload = {
+    id: resolvedId,
+    data: parameters.data || "",
+    title: parameters.title || "",
+    description: parameters.description || "",
+    status: parameters.status || "draft",
+    isPrivate:
+      parameters.isPrivate ?? true,
+    commentable:
+      parameters.commentable ?? true,
+    needsFeedback:
+      parameters.needsFeedback ?? false,
+    type,
+  };
+
+  const currentPayload =
+    JSON.stringify(payload);
+
+  const previousPayload =
+    JSON.stringify(lastSavedRef.current);
+
+  /*
+   * Nothing actually changed.
+   */
+  if (currentPayload === previousPayload) {
+    return;
+  }
+
+  /*
+   * Don't schedule another save while the exact same
+   * payload is already waiting in the debounce.
+   */
+  lastSavedRef.current = payload;
+
+  setIsSaved(false);
+
+  debouncedSaveRef.current?.({
+    ...parametersRef.current,
+    ...payload,
+    authorId: currentProfile.id,
+    profileId: currentProfile.id,
+    profile: currentProfile,
+  });
+}, [
+  currentProfile?.id,
+  isMediaType,
+  isNewStory,
+  parameters.data,
+  parameters.title,
+  parameters.description,
+  parameters.status,
+  parameters.isPrivate,
+  parameters.commentable,
+  parameters.needsFeedback,
+  parameters.id,
+  routeId,
+  saveStory,
+  type,
+]);
   /*
    * This can be passed to EditorDiv when it creates a story itself.
    */
@@ -925,73 +1094,105 @@ export default function EditorContainer() {
       openDialog,
     ]
   );
-
   const handleDelete = useCallback(() => {
-    const storyId =
-      parameters.id || routeId;
+  const storyId =
+    parametersRef.current.id ||
+    routeId;
 
-    if (!storyId || storyId === "new") {
-      return;
-    }
+  if (!storyId || storyId === "new") {
+    return;
+  }
 
-    dispatch(
-      deleteStory({
-        ...parameters,
-        id: storyId,
-      })
-    ).then((result) =>
-      checkResult(
-        result,
-        () => {
-          dispatch(
-            removeFromPaginatedKey({
-              key: "stories",
-              id: storyId,
-            })
-          );
+  const storyToDelete = {
+    ...parametersRef.current,
+    id: storyId,
+  };
 
-          dispatch(
-            removeFromPaginatedKey({
-              key: "recommended",
-              id: storyId,
-            })
-          );
+  // Stop pending autosave.
+  debouncedSaveRef.current?.cancel?.();
 
-          closeDialog();
-          router.push(Paths.home, "root");
-        },
-        (error) => {
-          showError(error);
-        }
-      )
+  // Prevent any future autosave.
+  isDeletedRef.current = true;
+
+  // Prevent creation/update logic.
+  hasCreatedRef.current = true;
+
+  dispatch(
+    deleteStory(storyToDelete)
+  ).then((result) => {
+    checkResult(
+      result,
+      () => {
+        dispatch(
+          removeFromPaginatedKey({
+            key: "stories",
+            id: storyId,
+          })
+        );
+
+        dispatch(
+          removeFromPaginatedKey({
+            key: "recommended",
+            id: storyId,
+          })
+        );
+
+        dispatch(
+          setEditingPage({
+            page: null,
+          })
+        );
+
+        dispatch(
+          setPageInView({
+            page: null,
+          })
+        );
+
+        dispatch(
+          setHtmlContent("")
+        );
+
+        closeDialog();
+
+        router.push(
+          Paths.home,
+          "root"
+        );
+      },
+      (error) => {
+        isDeletedRef.current = false;
+        hasCreatedRef.current = false;
+
+        showError(error);
+      }
     );
-  }, [
-    closeDialog,
-    dispatch,
-    parameters,
-    routeId,
-    router,
-    showError,
-  ]);
+  });
+}, [
+  closeDialog,
+  dispatch,
+  routeId,
+  router,
+  showError,
+]);
 
-  const openConfirmDeleteDialog = useCallback(() => {
-    openDialog({
-      title:
-        "Are you sure you want to delete this page?",
-      text: parameters.title || "Untitled",
-      onClose: closeDialog,
-      agreeText: "Delete",
-      agree: handleDelete,
-      disagreeText: "Close",
-      disagree: closeDialog,
-    });
-  }, [
-    closeDialog,
-    handleDelete,
-    openDialog,
-    parameters.title,
-  ]);
 
+const openConfirmDeleteDialog = useCallback(() => {
+  openDialog({
+    title: "Are you sure you want to delete this page?",
+    text: parametersRef.current.title || "Untitled",
+
+    disagreeText: "Close",
+    disagree: closeDialog,
+
+    agreeText: "Delete",
+    agree: handleDelete,
+  });
+}, [
+  closeDialog,
+  handleDelete,
+  openDialog,
+]);
   return (
     <EditorContext.Provider
       value={{

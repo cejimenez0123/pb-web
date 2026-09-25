@@ -208,25 +208,6 @@ const annotatedHtml = useMemo(() => {
 const renderedHtml = shortenTo
   ? truncate(annotatedHtml, 400, {})
   : annotatedHtml;
-  // ── Inject <mark> tags ──────────────────────────────────────────────────
-  // const annotatedHtml = useCallback(() => {
-  //   let source = html ?? `<div>${page?.data ?? ""}</div>`;
-
-  //   if (!showAnnotations) return source
-  //   comments
-  //     .filter((c) => c.anchorText?.trim())
-  //     .forEach((c) => {
-  //       const escaped = c.anchorText.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  //       source = source.replace(
-  //         new RegExp(`(?![^<]*>)(${escaped})`),
-  //         `<mark class="annotation-mark" data-comment-id="${c.id}" ` +
-  //         `style="background:#a7f3d0cc;border-radius:2px;cursor:pointer;position:relative;">` +
-  //         `$1<span style="position:absolute;top:-4px;right:-4px;width:8px;height:8px;` +
-  //         `border-radius:50%;background:#10b981;display:inline-block;pointer-events:none;"></span></mark>`
-  //       );
-  //     });
-  //   return source;
-  // }, [html, page?.data, comments, showAnnotations]);
 
   // ── Show toolbar above selection ────────────────────────────────────────
   const showToolbar = useCallback(() => {
