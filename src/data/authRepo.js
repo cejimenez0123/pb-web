@@ -35,10 +35,31 @@ async acceptTerms({ version }) {
     );
     return res.data;
 }
-    async apply(form){
-       let res = await axios.post(Enviroment.url+"/auth/apply",form,{headers:this.headers})
-       return res.data
-    }
+    // async apply(form){
+    //    let res = await axios.post(Enviroment.url+"/auth/apply",form,{headers:this.headers})
+    //    return res.data
+    // }
+    async apply(form) {
+  try {
+    const res = await axios.post(
+      Enviroment.url + "/auth/apply",
+      form,
+      { headers: this.headers }
+    );
+
+    return res.data;
+  } catch (err) {
+    const error = new Error(
+      err?.response?.data?.message ||
+        "Unable to submit your application."
+    );
+
+    error.status = err?.response?.status;
+    error.code = err?.response?.data?.code;
+
+    throw error;
+  }
+}
     async applyFromNewsletter(form){
         let res = await axios.post(Enviroment.url+"/auth/newsletter/apply",form,{headers:this.headers})
         return res.data

@@ -368,5 +368,6 @@ const promoteCommentToStory = createAsyncThunk(
        setPageData,
          setCurrentPage,
          initKey,
-         updatePaginatedItem
+         updatePaginatedItem,
+    
         } 
