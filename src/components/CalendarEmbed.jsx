@@ -11,6 +11,7 @@ import { sendGAEvent } from "../core/ga4";
 import Context from "../context";
 import AlertType from "../core/AlertType";
 import Paths from "../core/paths";
+import { useMediaQuery } from "react-responsive";
 
 const INK = "#12261f";
 const MUTED = "#6b6f63";

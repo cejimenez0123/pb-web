@@ -1,24 +1,41 @@
-import { IonImg } from '@ionic/react';
-import { memo } from 'react';
+import { memo } from "react";
 import search from "../images/icons/search.svg";
-import Enviroment from '../core/Enviroment';
 
 const SearchButton = memo(({ onClick }) => (
-  <div
+  <button
+    type="button"
     onClick={onClick}
-    className="flex flex-col my-auto items-center cursor-pointer"
+    aria-label="Search"
+    className="
+      flex
+      items-center
+      justify-center
+      
+      rounded-full
+      text-text-secondary
+      hover:text-text-primary
+      hover:bg-card-background
+      transition-all
+      duration-150
+      focus:outline-none
+      focus:ring-2
+      focus:ring-button-primary-bg/30
+    "
   >
-    <IonImg
+    <h1 className="m-auto text-[2em]">⌕</h1>
+    {/* <img
       src={search}
-      style={{
-        width: "2.5em",
-        height: "2.5em",
-        '--background': Enviroment.palette.base.soft,
-    '--color': Enviroment.palette.base.text || '#000'}
-        }
-    />
-    {/* <h6 className="text-emerald-800 text-xs mt-1">Search</h6> */}
-  </div>
+      alt=""
+      aria-hidden="true"
+      className="
+        w-5
+        h-5
+        opacity-70
+        transition-opacity
+        duration-150
+      "
+    /> */}
+  </button>
 ));
 
 export default SearchButton;

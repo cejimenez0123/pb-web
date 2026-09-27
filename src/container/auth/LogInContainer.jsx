@@ -3,7 +3,7 @@ import { useContext, useEffect, useState } from "react";
 import { useAlert } from "../../core/useAlert.jsx";
 import AlertType from "../../core/AlertType.js";
 import "../../App.css";
-import { acceptTerms, logIn, signOutAction } from "../../actions/UserActions";
+import {  logIn } from "../../actions/UserActions";
 import { useDispatch } from "react-redux";
 import Paths from "../../core/paths";
 import checkResult from "../../core/checkResult";
@@ -13,9 +13,8 @@ import AppleSignInButton from "../../components/auth/AppleSignInButton";
 import GoogleLogin from "../../components/GoogleLogin";
 import { Capacitor } from "@capacitor/core";
 import { useDialog } from "../../domain/usecases/useDialog.jsx";
-import EULATERMS from "./Agreement.jsx";
-import CURRENT_TERMS_VERSION from "../../core/CURRENT_TERMS_VERSION.jsx";
 
+import useTermsAcceptance from "../../core/useTermsAcceptance.jsx";
 export default function LogInContainer({ currentProfile }) {
   const { showAlert, closeAlert, showPrompt } = useAlert();
   const router = useIonRouter();
@@ -52,7 +51,7 @@ export default function LogInContainer({ currentProfile }) {
 function LogInCard({ setSigningIn, setLogInError }) {
   const dispatch = useDispatch();
   const router = useIonRouter();
-
+const promptTermsAcceptance = useTermsAcceptance();
   const { showAlert, closeAlert, showPrompt } = useAlert();
 
   const {

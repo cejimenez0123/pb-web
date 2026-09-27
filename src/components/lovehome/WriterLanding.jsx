@@ -12,7 +12,7 @@ export default function WriteLanding({
   const [view, setView] = useState("grid");
 
   return (
-    <main className="min-h-[100dvh] bg-cream text-soft dark:bg-base-bgDark dark:text-cream">
+    <main className="min-h-[100%] bg-cream text-soft dark:bg-base-bgDark dark:text-cream">
       <div className="mx-auto w-[100%] max-w-5xl px-6 py-16 sm:px-10 sm:py-20 lg:px-12 lg:py-24">
 
         {/* Header */}

@@ -46,6 +46,7 @@ import TopBarDropdown from "../../components/page/TopBarDropdown.jsx";
 import EditorFooter from "../../components/page/EditorFooter.jsx";
 
 import Enviroment from "../../core/Enviroment.js";
+import { useMediaQuery } from "react-responsive";
 
 const CONTAINER =
   "mx-auto w-full max-w-3xl rounded-lg bg-base-bg p-4 shadow-sm md:p-6";

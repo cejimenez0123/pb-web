@@ -1,6 +1,6 @@
+
 import { useLocation } from "react-router";
 import NavbarContainer from "../container/NavbarContainer";
-import { IonFooter } from "@ionic/react";
 
 function AppNavigationChrome({
   isDesktop,
@@ -26,12 +26,12 @@ function AppNavigationChrome({
   );
 
   const showTopNavbar = isDesktop;
-
   const showBottomNavbar =
     isMobileOrTablet && !shouldHideBottomNavbar;
 
   return (
     <>
+      {/* Desktop */}
       {showTopNavbar && (
         <div className="z-50 flex w-full shrink-0">
           <NavbarContainer
@@ -41,15 +41,14 @@ function AppNavigationChrome({
         </div>
       )}
 
+      {/* Mobile / Tablet */}
       {showBottomNavbar && (
-        <IonFooter>
-          <div className="bg-base-surface dark:bg-base-bgDark">
-            <NavbarContainer
-              isDesktop={isDesktop}
-              currentProfile={currentProfile}
-            />
-          </div>
-        </IonFooter>
+        <div className="z-50 w-full">
+          <NavbarContainer
+            isDesktop={false}
+            currentProfile={currentProfile}
+          />
+        </div>
       )}
     </>
   );

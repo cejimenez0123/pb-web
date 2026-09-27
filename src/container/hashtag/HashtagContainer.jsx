@@ -1,27 +1,84 @@
+import {
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState,
+} from "react";
 
-import { useSelector, useDispatch } from "react-redux";
-import { useState, useEffect, useLayoutEffect, useContext, useMemo } from "react";
-import { IonContent, useIonRouter } from "@ionic/react";
-import ErrorBoundary from "../../ErrorBoundary";
-import checkResult from "../../core/checkResult";
+import {
+  useDispatch,
+  useSelector,
+} from "react-redux";
+
+import {
+  useIonRouter,
+  IonContent,
+} from "@ionic/react";
+
 import { useMediaQuery } from "react-responsive";
+import { useParams } from "react-router";
+
+import ErrorBoundary from "../../ErrorBoundary";
+
+import {
+  fetchHashtag,
+  followHashtag,
+  getRecommendedHashtagCollections,
+  unfollowHashtag,
+} from "../../actions/HashtagActions";
+
+import { setCollections } from "../../actions/CollectionActions";
+
+import {
+  appendToPagesInView,
+  setPagesInView,
+} from "../../actions/PageActions.jsx";
+
 import { BookListItem } from "../../components/collection/BookListItem";
 import DashboardItem from "../../components/page/DashboardItem";
-import { initGA, sendGAEvent } from "../../core/ga4.js";
-import { fetchHashtag, followHashtag, getRecommendedHashtagCollections, unfollowHashtag } from "../../actions/HashtagActions";
-import { setCollections } from "../../actions/CollectionActions";
-import { appendToPagesInView, setPagesInView } from "../../actions/PageActions.jsx";
-import Context from "../../context";
-import { useAlert } from "../../core/useAlert.jsx";
-import AlertType from "../../core/AlertType.js";
-import useScrollTracking from "../../core/useScrollTracking.jsx";
+import ExploreList from "../../components/collection/ExploreList.jsx";
+
 import Paths from "../../core/paths.js";
+import checkResult from "../../core/checkResult";
+import AlertType from "../../core/AlertType.js";
+import { useAlert } from "../../core/useAlert.jsx";
+import useScrollTracking from "../../core/useScrollTracking.jsx";
+import usePaginatedResource from "../../core/usePaginatedResource.jsx";
+
 import grid from "../../images/grid.svg";
 import stream from "../../images/stream.svg";
-import { useParams } from "react-router";
-import SectionHeader from "../../components/SectionHeader.jsx";
-import ExploreList from "../../components/collection/ExploreList.jsx";
-import usePaginatedResource from "../../core/usePaginatedResource.jsx";
+
+
+// ---------------------------------------------------------
+// Layout
+// ---------------------------------------------------------
+
+const PAGE =
+  "w-full max-w-[52rem] mx-auto px-4 sm:px-6 lg:px-8";
+
+const SECTION =
+  "py-8 sm:py-10";
+
+const BUTTON =
+  "inline-flex items-center justify-center h-11 px-5 rounded-full " +
+  "text-sm font-medium transition-all duration-200 " +
+  "focus:outline-none focus:ring-2 focus:ring-button-primary-bg/30 " +
+  "disabled:opacity-50 disabled:pointer-events-none";
+
+const PRIMARY_BUTTON =
+  `${BUTTON} bg-button-primary-bg text-white hover:bg-button-primary-hover`;
+
+const SECONDARY_BUTTON =
+  `${BUTTON} border border-card-border bg-card-background ` +
+  `text-text-primary hover:border-button-primary-bg ` +
+  `hover:text-text-brand`;
+
+const PAGE_SIZE = 20;
+
+
+// ---------------------------------------------------------
+// Main
+// ---------------------------------------------------------
 
 export default function HashtagContainer() {
   const { id } = useParams();
@@ -29,209 +86,1028 @@ export default function HashtagContainer() {
   const router = useIonRouter();
 
   const { showAlert } = useAlert();
-  const currentProfile = useSelector(state => state.users.currentProfile);
-  const collections = useSelector((state) => state.books.collections);
-  const pagesInView = useSelector((state) => state.pages.pagesInView);
+
+  const currentProfile = useSelector(
+    (state) => state.users.currentProfile
+  );
+
+  const collections = useSelector(
+    (state) => state.books.collections ?? []
+  );
+
+  const pagesInView = useSelector(
+    (state) => state.pages.pagesInView ?? []
+  );
+
   const [hashtag, setHashtag] = useState(null);
-  const [pending, setPending] = useState(false);
+  const [loading, setLoading] = useState(true);
+
   const [following, setFollowing] = useState(false);
   const [followPending, setFollowPending] = useState(false);
+
   const [isGrid, setIsGrid] = useState(false);
-  const isNotPhone = useMediaQuery({ query: "(min-width: 999px)" });
-  const pageSize = 20
 
-const { items, totalCount, page, setPage, totalPages } = usePaginatedResource({
-  cacheKey: "collectionRecommendations",
-  fetcher:   getRecommendedHashtagCollections,
-  params:   { hashtagIds: [id] },
-  pageSize: pageSize,
-  select:   (res) => ({ items: res.collections, totalCount: res.totalCount }),
-});
-  useScrollTracking({ name: id });
+  const isNotPhone = useMediaQuery({
+    query: "(min-width: 999px)",
+  });
 
-  const books = useMemo(
-    () => collections.filter((col) => col && col.childCollections?.length === 0),
-    [collections]
-  );
+
+  // -------------------------------------------------------
+  // Recommended collections
+  // -------------------------------------------------------
+
+  const {
+    items,
+    totalCount,
+    page,
+    setPage,
+  } = usePaginatedResource({
+    cacheKey: `hashtag-recommendations:${id}`,
+    fetcher: getRecommendedHashtagCollections,
+    params: {
+      hashtagIds: [id],
+    },
+    pageSize: PAGE_SIZE,
+    enabled: !!id,
+    select: (res) => ({
+      items: res?.collections ?? [],
+      totalCount: res?.totalCount ?? 0,
+    }),
+  });
+
+
+  // -------------------------------------------------------
+  // Derived content
+  // -------------------------------------------------------
+
   const libraries = useMemo(
-    () => collections.filter((col) => col && col.childCollections?.length > 0),
+    () =>
+      collections.filter(
+        (collection) =>
+          collection &&
+          collection.childCollections?.length > 0
+      ),
     [collections]
   );
 
- 
+  const regularCollections = useMemo(
+    () =>
+      collections.filter(
+        (collection) =>
+          collection &&
+          collection.childCollections?.length === 0
+      ),
+    [collections]
+  );
 
-  useLayoutEffect(() => { getHashtag(); }, [id]);
-  useEffect(() => { if (!isNotPhone) setIsGrid(false); }, [isNotPhone]);
+  const stories = useMemo(
+    () =>
+      pagesInView.filter(Boolean),
+    [pagesInView]
+  );
 
-  const getHashtag = async () => {
-    setPending(true);
-    dispatch(setCollections({ collections: [] }));
-    dispatch(setPagesInView({ pages: [] }));
-    try {
-      const res = await dispatch(fetchHashtag({ id }));
-      checkResult(res, (payload) => {
-        const { hashtag } = payload;
-        if (!hashtag) return showAlert({ message: "No hashtag found", type: AlertType.error });
-        setHashtag(hashtag);
-        setFollowing(!!hashtag.followers?.some(f => f.followerId === currentProfile?.id));
-        dispatch(setPagesInView({ pages: hashtag.stories.map((s) => s.story) }));
-        dispatch(setCollections({ collections: hashtag.collections.map((c) => c.collection) }));
-        hashtag.collections.forEach((c) => {
-          dispatch(appendToPagesInView({ pages: c.collection.storyIdList.map((s) => s.story) }));
-        });
-        setPending(false);
-      }, (err) => {
-        showAlert({ message: err.message ?? err, type: AlertType.error });
-        setPending(false);
-      });
-    } catch (err) {
-      showAlert({ message: err.message, type: AlertType.error });
-      setPending(false);
+
+  // -------------------------------------------------------
+  // Scroll / responsive behavior
+  // -------------------------------------------------------
+
+  useScrollTracking({
+    contentType: "hashtag",
+    contentId: id,
+  });
+
+  useEffect(() => {
+    if (!isNotPhone) {
+      setIsGrid(false);
     }
-  };
+  }, [isNotPhone]);
+
+
+  // -------------------------------------------------------
+  // Load hashtag
+  // -------------------------------------------------------
+
+  useLayoutEffect(() => {
+    if (!id) return;
+
+    let cancelled = false;
+
+    async function loadHashtag() {
+      setLoading(true);
+
+      /*
+       * Clear stale room content when moving
+       * from one hashtag to another.
+       */
+      dispatch(
+        setCollections({
+          collections: [],
+        })
+      );
+
+      dispatch(
+        setPagesInView({
+          pages: [],
+        })
+      );
+
+      try {
+        const result = await dispatch(
+          fetchHashtag({ id })
+        );
+
+        if (cancelled) return;
+
+        checkResult(
+          result,
+          (payload) => {
+            if (cancelled) return;
+
+            const fetchedHashtag =
+              payload?.hashtag;
+
+            if (!fetchedHashtag) {
+              showAlert({
+                message: "No hashtag found",
+                type: AlertType.error,
+              });
+
+              setLoading(false);
+              return;
+            }
+
+            setHashtag(fetchedHashtag);
+
+            setFollowing(
+              !!fetchedHashtag.followers?.some(
+                (follower) =>
+                  follower.followerId ===
+                  currentProfile?.id
+              )
+            );
+
+
+            // ---------------------------------------------
+            // Direct hashtag stories
+            // ---------------------------------------------
+
+            const directStories =
+              fetchedHashtag.stories
+                ?.map((item) => item?.story)
+                .filter(Boolean) ?? [];
+
+            dispatch(
+              setPagesInView({
+                pages: directStories,
+              })
+            );
+
+
+            // ---------------------------------------------
+            // Direct hashtag collections
+            // ---------------------------------------------
+
+            const hashtagCollections =
+              fetchedHashtag.collections
+                ?.map(
+                  (item) =>
+                    item?.collection
+                )
+                .filter(Boolean) ?? [];
+
+            dispatch(
+              setCollections({
+                collections:
+                  hashtagCollections,
+              })
+            );
+
+
+            // ---------------------------------------------
+            // Stories inside hashtag collections
+            // ---------------------------------------------
+
+            fetchedHashtag.collections?.forEach(
+              (relationship) => {
+                const storyList =
+                  relationship?.collection
+                    ?.storyIdList ?? [];
+
+                storyList.forEach(
+                  (storyRelationship) => {
+                    if (
+                      storyRelationship?.story
+                    ) {
+                      dispatch(
+                        appendToPagesInView({
+                          pages: [
+                            storyRelationship.story,
+                          ],
+                        })
+                      );
+                    }
+                  }
+                );
+              }
+            );
+
+            setLoading(false);
+          },
+          (error) => {
+            if (cancelled) return;
+
+            setLoading(false);
+
+            showAlert({
+              message:
+                error?.message ??
+                "Unable to load hashtag.",
+              type: AlertType.error,
+            });
+          }
+        );
+      } catch (error) {
+        if (cancelled) return;
+
+        setLoading(false);
+
+        showAlert({
+          message:
+            error?.message ??
+            "Unable to load hashtag.",
+          type: AlertType.error,
+        });
+      }
+    }
+
+    loadHashtag();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    id,
+    currentProfile?.id,
+  ]);
+
+
+  // -------------------------------------------------------
+  // Follow
+  // -------------------------------------------------------
 
   const handleFollow = async () => {
-    if (!currentProfile) return router.push(Paths.login);
+    if (!currentProfile) {
+      router.push(Paths.login);
+      return;
+    }
+
+    if (!hashtag?.id || followPending) {
+      return;
+    }
+
     setFollowPending(true);
+
     try {
       if (following) {
-        await dispatch(unfollowHashtag({ hashtagId: hashtag.id }));
-        setFollowing(false);
+        const result = await dispatch(
+          unfollowHashtag({
+            hashtagId: hashtag.id,
+          })
+        );
+
+        checkResult(
+          result,
+          () => {
+            setFollowing(false);
+          },
+          (error) => {
+            showAlert({
+              message:
+                error?.message ??
+                "Unable to unfollow hashtag.",
+              type: AlertType.error,
+            });
+          }
+        );
       } else {
-        await dispatch(followHashtag({ hashtagId: hashtag.id }));
-        setFollowing(true);
+        const result = await dispatch(
+          followHashtag({
+            hashtagId: hashtag.id,
+          })
+        );
+
+        checkResult(
+          result,
+          () => {
+            setFollowing(true);
+          },
+          (error) => {
+            showAlert({
+              message:
+                error?.message ??
+                "Unable to follow hashtag.",
+              type: AlertType.error,
+            });
+          }
+        );
       }
-    } catch (e) {
-      showAlert({ message: e.message, type: AlertType.error });
     } finally {
       setFollowPending(false);
     }
   };
 
+
+  // -------------------------------------------------------
+  // Loading
+  // -------------------------------------------------------
+
+  if (loading || !hashtag) {
+    return <HashtagLoading />;
+  }
+
+
+  // -------------------------------------------------------
+  // Main
+  // -------------------------------------------------------
+
   return (
+    <IonContent
+      fullscreen
+      className="page-content"
+    >
+      <ErrorBoundary>
+         <main className=" h-[100%]  w-[100%]  overflow-scroll bg-base-surface text-text-primary">
    
-      <IonContent
-        fullscreen
-       className="page-content"
-      >
-        <ErrorBoundary>
-        <div className="text-left bg-cream dark:bg-base-bgDark pb-34 pt-20">
+{/* 
+        <main
+          className="
+            min-h-[100%]
+            overflow-y-scroll
+            overscroll-contain
+            bg-base-surface
+            text-text-primary
+            dark:bg-base-bgDark
+            dark:text-cream
+          "
+        > */}
 
-          {/* Header */}
-          <div className="flex items-center justify-between px-4 pb-4">
-            <h1 className="text-2xl font-bold text-soft dark:text-cream">
-              #{hashtag?.name}
-            </h1>
-            {currentProfile && (
-              <button
-                onClick={handleFollow}
-                disabled={followPending}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all active:scale-95
-                  ${followPending ? "opacity-50 pointer-events-none" : ""}
-                  ${following
-                    ? "bg-base-surface dark:bg-transparent border border-soft text-soft dark:text-cream"
-                    : "bg-blue dark:bg-transparent border border-blue text-cream"
-                  }`}
-                style={{ WebkitTapHighlightColor: "transparent" }}
-              >
-                {followPending ? "..." : following ? "Following" : "Follow"}
-              </button>
-            )}
-          </div>
+          {/* ================================================= */}
+          {/* Hashtag identity */}
+          {/* ================================================= */}
 
-          {/* Libraries */}
-          {libraries.length > 0 && (
-            <div className="w-full min-h-[14rem]">
-              <SectionHeader title="Libraries" />
-              <div className="flex flex-row overflow-x-auto space-x-4 px-4 no-scrollbar pb-2">
-                {libraries.map((library) => (
-                  <BookListItem key={library.id} book={library} />
-                ))}
+          <section
+            className="
+              border-b
+              border-card-border
+              dark:border-white/10
+            "
+          >
+            <div
+              className={`
+                ${PAGE}
+                pt-10
+                sm:pt-14
+                pb-10
+              `}
+            >
+
+              <div className="
+                flex
+                flex-col
+                sm:flex-row
+                sm:items-end
+                sm:justify-between
+                gap-6
+              ">
+
+                <div className="min-w-0">
+
+                  <p className="
+                    text-xs
+                    uppercase
+                    tracking-[0.18em]
+                    text-text-secondary
+                    mb-4
+                  ">
+                    Hashtag
+                  </p>
+
+                  <h1
+                    className="
+                      font-serif
+                      text-4xl
+                      sm:text-5xl
+                      lg:text-6xl
+                      leading-[1.05]
+                      tracking-tight
+                      text-text-primary
+                      dark:text-cream
+                      break-words
+                    "
+                  >
+                    #{hashtag.name}
+                  </h1>
+
+                  <p
+                    className="
+                      mt-5
+                      max-w-2xl
+                      text-base
+                      sm:text-lg
+                      leading-relaxed
+                      text-text-secondary
+                      dark:text-gray-300
+                    "
+                  >
+                    A place for writing and rooms
+                    gathered around the same idea.
+                  </p>
+
+                </div>
+
+
+                {currentProfile && (
+                  <button
+                    type="button"
+                    onClick={handleFollow}
+                    disabled={followPending}
+                    className={
+                      following
+                        ? SECONDARY_BUTTON
+                        : PRIMARY_BUTTON
+                    }
+                  >
+                    {followPending
+                      ? "..."
+                      : following
+                        ? "Following"
+                        : "Follow"}
+                  </button>
+                )}
+
               </div>
+
             </div>
+          </section>
+
+
+          {/* ================================================= */}
+          {/* Libraries */}
+          {/* ================================================= */}
+
+          {libraries.length > 0 && (
+            <section
+              className="
+                border-b
+                border-card-border
+                dark:border-white/10
+              "
+            >
+              <div
+                className={`${PAGE} ${SECTION}`}
+              >
+
+                <SectionHeading
+                  eyebrow="Rooms"
+                  title="Libraries"
+                  description="Larger rooms gathered around this idea."
+                />
+
+                <div
+                  className="
+                    mt-7
+                    flex
+                    gap-4
+                    overflow-x-auto
+                    no-scrollbar
+                    pb-2
+                    -mx-1
+                    px-1
+                  "
+                >
+                  {libraries.map((library) => (
+                    <div
+                      key={library.id}
+                      className="
+                        shrink-0
+                        w-[17rem]
+                        sm:w-[20rem]
+                      "
+                    >
+                      <BookListItem
+                        book={library}
+                      />
+                    </div>
+                  ))}
+                </div>
+
+              </div>
+            </section>
           )}
 
+
+          {/* ================================================= */}
           {/* Collections */}
-          <div className="w-full min-h-[14rem]">
-            <SectionHeader title="Collections" />
-            {pending ? <SkeletonList /> : books.length === 0 ? (
-              <EmptyState hashtag={hashtag} />
-            ) : (
-              <div className="space-y-3">
-                {books.map((book, i) => (
-                  <div className="my-2 mx-4" key={`${book.id}_${i}`}>
-                    <BookListItem book={book} />
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          {/* ================================================= */}
 
-          {/* Pages */}
-          <div className="flex flex-col max-w-[96vw] md:w-page mx-auto">
-            <SectionHeader title="Pages" />
-            {isNotPhone && (
-              <div className="flex flex-row pb-4 px-4 gap-2">
-                <button
-                  onClick={() => setIsGrid(true)}
-                  className={`p-2 rounded-lg transition-colors ${isGrid ? "bg-base-soft" : "bg-transparent"}`}
-                >
-                  <img src={grid} className="w-5 h-5" alt="grid view" />
-                </button>
-                <button
-                  onClick={() => setIsGrid(false)}
-                  className={`p-2 rounded-lg transition-colors ${!isGrid ? "bg-base-soft" : "bg-transparent"}`}
-                >
-                  <img src={stream} className="w-5 h-5" alt="stream view" />
-                </button>
-              </div>
-            )}
-          </div>
+          <section
+            className={`${PAGE} ${SECTION}`}
+          >
 
-          <div className="max-w-screen ">
-            {pending ? <SkeletonList /> : pagesInView.length === 0 ? (
-              <EmptyState hashtag={hashtag} />
-            ) : (
-              <div className={`px-4 ${isGrid ? "grid grid-cols-2 gap-2" : "space-y-3"}`}>
-                {pagesInView.filter(Boolean).map((page, i) => (
-                  <div key={`${page.id}_${i}`} className="break-inside-avoid mb-4">
-                    <DashboardItem item={page} index={i} isGrid={isGrid} page={page} />
-                  </div>
-                ))}
+            <SectionHeading
+              eyebrow="Rooms"
+              title="Collections"
+              description={
+                regularCollections.length > 0
+                  ? "Places writers have intentionally gathered their work."
+                  : "Collections gathered around this idea will appear here."
+              }
+            />
+
+
+            {regularCollections.length > 0 ? (
+
+              <div
+                className="
+                  mt-7
+                  grid
+                  grid-cols-1
+                  sm:grid-cols-2
+                  gap-4
+                "
+              >
+                {regularCollections.map(
+                  (collection) => (
+                    <div
+                      key={collection.id}
+                      className="min-w-0"
+                    >
+                      <BookListItem
+                        book={collection}
+                      />
+                    </div>
+                  )
+                )}
               </div>
+
+            ) : (
+
+              <EmptySection
+                title="No collections yet."
+                description="Someone might make the first one."
+              />
+
             )}
-          </div>
-            <div className="pb-24">
-              <ExploreList items={items} totalCount={totalCount}  page={page} setPage={setPage} />
+
+          </section>
+
+
+          {/* ================================================= */}
+          {/* Stories */}
+          {/* ================================================= */}
+
+          <section
+            className="
+              border-t
+              border-card-border
+              dark:border-white/10
+            "
+          >
+
+            <div
+              className={`${PAGE} ${SECTION}`}
+            >
+
+              <div
+                className="
+                  flex
+                  items-end
+                  justify-between
+                  gap-4
+                "
+              >
+
+                <SectionHeading
+                  eyebrow="Writing"
+                  title="Stories"
+                  description={
+                    stories.length > 0
+                      ? "Writing gathered around this idea."
+                      : "The first story could start the conversation."
+                  }
+                />
+
+
+                {isNotPhone &&
+                  stories.length > 0 && (
+
+                    <div
+                      className="
+                        flex
+                        items-center
+                        gap-1
+                        shrink-0
+                      "
+                    >
+
+                      <ViewButton
+                        active={isGrid}
+                        onClick={() =>
+                          setIsGrid(true)
+                        }
+                        icon={grid}
+                        label="Grid view"
+                      />
+
+                      <ViewButton
+                        active={!isGrid}
+                        onClick={() =>
+                          setIsGrid(false)
+                        }
+                        icon={stream}
+                        label="List view"
+                      />
+
+                    </div>
+
+                  )}
+
+              </div>
+
+
+              {stories.length > 0 ? (
+
+                <div
+                  className={`
+                    mt-7
+                    ${
+                      isGrid
+                        ? "grid grid-cols-1 sm:grid-cols-2 gap-4"
+                        : "space-y-4"
+                    }
+                  `}
+                >
+                  {stories.map(
+                    (story, index) => (
+                      <div
+                        key={`${story.id}_${index}`}
+                        className="
+                          break-inside-avoid
+                        "
+                      >
+                        <DashboardItem
+                          item={story}
+                          index={index}
+                          isGrid={isGrid}
+                          page={story}
+                        />
+                      </div>
+                    )
+                  )}
+                </div>
+
+              ) : (
+
+                <EmptySection
+                  title="No stories yet."
+                  description="Maybe yours will be the first."
+                />
+
+              )}
+
             </div>
-        </div>
-        </ErrorBoundary>
-      </IonContent>
 
+          </section>
+
+
+          {/* ================================================= */}
+          {/* Explore */}
+          {/* ================================================= */}
+
+          {items?.length > 0 && (
+
+            <section
+              className="
+                border-t
+                border-card-border
+                dark:border-white/10
+              "
+            >
+
+              <div
+                className={`${PAGE} ${SECTION}`}
+              >
+{/* 
+                <SectionHeading
+                  eyebrow="Beyond this room"
+                  title="Explore"
+                  description="A few other places you might wander into."
+                /> */}
+
+                <div className="mt-7">
+                  <ExploreList
+                    items={items}
+                    totalCount={totalCount}
+                    page={page}
+                    setPage={setPage}
+                  />
+                </div>
+
+              </div>
+
+            </section>
+
+          )}
+
+        </main>
+
+      </ErrorBoundary>
+    </IonContent>
   );
 }
 
-const EmptyState = ({ hashtag }) => (
-  <div className="flex flex-col items-center justify-center text-center py-12">
-    <h2 className="text-lg font-medium text-soft dark:text-cream">
-      No posts for #{hashtag?.name}
-    </h2>
-    <p className="text-sm text-soft dark:text-cream opacity-60 mt-1 max-w-sm">
-      Be the first to start the conversation.
-    </p>
-  </div>
-);
 
-const SkeletonItem = () => (
-  <div className="bg-base-bg rounded-xl border border-soft p-4 animate-pulse">
-    <div className="h-4 bg-base-soft rounded w-2/3 mb-3" />
-    <div className="h-3 bg-base-soft rounded w-1/2 mb-2" />
-    <div className="h-3 bg-base-soft rounded w-1/3" />
-  </div>
-);
+// =========================================================
+// SECTION HEADING
+// =========================================================
 
-const SkeletonList = () => (
-  <div className="space-y-3 px-4">
-    {[...Array(5)].map((_, i) => <SkeletonItem key={i} />)}
-  </div>
-);
+function SectionHeading({
+  eyebrow,
+  title,
+  description,
+}) {
+  return (
+    <div className="max-w-2xl">
+
+      {eyebrow && (
+        <p
+          className="
+            text-xs
+            uppercase
+            tracking-[0.18em]
+            text-text-secondary
+            mb-2
+          "
+        >
+          {eyebrow}
+        </p>
+      )}
+
+      <h2
+        className="
+          font-serif
+          text-2xl
+          sm:text-3xl
+          text-text-primary
+          dark:text-cream
+        "
+      >
+        {title}
+      </h2>
+
+      {description && (
+        <p
+          className="
+            mt-2
+            text-sm
+            leading-relaxed
+            text-text-secondary
+            dark:text-gray-300
+          "
+        >
+          {description}
+        </p>
+      )}
+
+    </div>
+  );
+}
+
+
+// =========================================================
+// VIEW BUTTON
+// =========================================================
+
+function ViewButton({
+  active,
+  onClick,
+  icon,
+  label,
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={label}
+      aria-pressed={active}
+      className={`
+        p-2
+        rounded-lg
+        transition-colors
+        ${
+          active
+            ? "bg-base-soft"
+            : "bg-transparent opacity-50 hover:opacity-100"
+        }
+      `}
+    >
+      <img
+        src={icon}
+        className="w-5 h-5"
+        alt=""
+      />
+    </button>
+  );
+}
+
+
+// =========================================================
+// EMPTY SECTION
+// =========================================================
+
+function EmptySection({
+  title,
+  description,
+}) {
+  return (
+    <div
+      className="
+        mt-7
+        rounded-2xl
+        border
+        border-dashed
+        border-card-border
+        dark:border-white/10
+        px-6
+        py-10
+        sm:py-12
+        text-center
+      "
+    >
+
+      <h3
+        className="
+          font-serif
+          text-xl
+          sm:text-2xl
+          text-text-primary
+          dark:text-cream
+        "
+      >
+        {title}
+      </h3>
+
+      {description && (
+        <p
+          className="
+            mt-2
+            text-sm
+            leading-relaxed
+            text-text-secondary
+            dark:text-gray-300
+          "
+        >
+          {description}
+        </p>
+      )}
+
+    </div>
+  );
+}
+
+
+// =========================================================
+// LOADING
+// =========================================================
+
+function HashtagLoading() {
+  return (
+    <IonContent
+      fullscreen
+      className="page-content"
+    >
+      <main
+        className="
+          min-h-[100%]
+          bg-base-surface
+          dark:bg-base-bgDark
+        "
+      >
+
+        {/* Hero */}
+
+        <section
+          className="
+            border-b
+            border-card-border
+            dark:border-white/10
+          "
+        >
+          <div
+            className={`${PAGE} pt-10 sm:pt-14 pb-10`}
+          >
+
+            <div
+              className="
+                h-3
+                w-20
+                rounded
+                bg-base-soft
+                animate-pulse
+                mb-5
+              "
+            />
+
+            <div
+              className="
+                h-12
+                sm:h-16
+                w-3/4
+                max-w-xl
+                rounded
+                bg-base-soft
+                animate-pulse
+              "
+            />
+
+            <div className="mt-5 space-y-2 max-w-xl">
+              <div
+                className="
+                  h-4
+                  w-full
+                  rounded
+                  bg-base-soft
+                  animate-pulse
+                "
+              />
+
+              <div
+                className="
+                  h-4
+                  w-4/5
+                  rounded
+                  bg-base-soft
+                  animate-pulse
+                "
+              />
+            </div>
+
+          </div>
+        </section>
+
+
+        {/* Content */}
+
+        <div className={`${PAGE} py-10`}>
+
+          <div
+            className="
+              h-4
+              w-24
+              rounded
+              bg-base-soft
+              animate-pulse
+              mb-3
+            "
+          />
+
+          <div
+            className="
+              h-8
+              w-40
+              rounded
+              bg-base-soft
+              animate-pulse
+            "
+          />
+
+          <div
+            className="
+              mt-7
+              grid
+              grid-cols-1
+              sm:grid-cols-2
+              gap-4
+            "
+          >
+            {[1, 2, 3, 4].map(
+              (item) => (
+                <div
+                  key={item}
+                  className="
+                    h-40
+                    rounded-2xl
+                    bg-base-soft
+                    animate-pulse
+                  "
+                />
+              )
+            )}
+          </div>
+
+        </div>
+
+      </main>
+    </IonContent>
+  );
+}
