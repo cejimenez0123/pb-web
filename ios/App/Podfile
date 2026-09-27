@@ -1,6 +1,6 @@
 require_relative '../../node_modules/@capacitor/ios/scripts/pods_helpers'
 
-platform :ios, '15.0'
+platform :ios, '14.0'
 use_frameworks!
 
 # workaround to avoid Xcode caching of Pods that requires
@@ -24,7 +24,7 @@ end
 
 target 'App' do
   capacitor_pods
-  pod 'Firebase/Messaging' 
+  # Add your Pods here
 end
 
 post_install do |installer|
