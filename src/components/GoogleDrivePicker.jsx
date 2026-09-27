@@ -10,7 +10,8 @@ import Enviroment from '../core/Enviroment';
 export default function GoogleDrivePicker({ onFilePicked, onReauthenticateNeeded }) {
 
 
-  const {  isPhone, } = useContext(Context);
+  const isPhone = useMediaQuery({ query: '(max-width: 750px)' });
+
   const [files, setFiles] = useState([]);
   const [accessToken, setAccessToken] = useState(null);
    const driveTokenKey = "googledrivetoken";

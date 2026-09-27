@@ -27,7 +27,7 @@ export default function HashtagContainer() {
   const { id } = useParams();
   const dispatch = useDispatch();
   const router = useIonRouter();
-  // const { seo, setSeo, isPhone } = useContext(Context);
+
   const { showAlert } = useAlert();
   const currentProfile = useSelector(state => state.users.currentProfile);
   const collections = useSelector((state) => state.books.collections);

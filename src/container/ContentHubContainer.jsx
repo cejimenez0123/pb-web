@@ -241,7 +241,7 @@ const goToRoom = (profileToCollection) => {
           className="page-content"
           fullscreen
         >
-    <main className="h-[100%] overflow-scroll bg-base-bg text-text-primary">
+    <main className="h-[100%] overflow-scroll bg-base-surface text-text-primary">
       <div
         className="
           mx-auto
@@ -461,7 +461,7 @@ function FeaturedEventCard({
         w-full
         border
         border-border-soft
-        bg-base-surface
+        bg-base-bg
         p-6
         text-left
         transition-all
@@ -1243,8 +1243,9 @@ function EmptyState({
         border
         border-dashed
         border-border-soft
-        bg-base-surface
+        bg-base-bg
         px-6
+        
         py-10
         text-center
         sm:min-h-48

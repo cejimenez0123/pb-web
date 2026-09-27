@@ -38,14 +38,7 @@ const postCollectionRole = createAsyncThunk(
     }
   }
 );
-// const postCollectionRole=createAsyncThunk("books/postCollectionRoles",async ({type,profileId,collectionId},thunkApi)=>{
 
-//     let data = await roleRepo.postCollectionRole({type,profileId,collectionId})
-//     return {
-//      message: "Success",
-//      collection: data.collection
-//     }
-// })
 const deleteCollectionRole=createAsyncThunk("books/deleteCollectionRoles",async ({id,role},thunkApi)=>{
 try{
     let data = await roleRepo.deleteCollectionRole({id,role})

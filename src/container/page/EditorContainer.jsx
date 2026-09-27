@@ -102,7 +102,8 @@ export default function EditorContainer() {
   } = useParams();
 
   const { showAlert } = useAlert();
-  const { isPhone } = useContext(Context);
+  const isPhone = useMediaQuery({ query: '(max-width: 750px)' });
+
 
   const {
     openDialog,

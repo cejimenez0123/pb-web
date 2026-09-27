@@ -34,7 +34,8 @@ const AREAS = [
 function CalendarEmbed() {
   const { showAlert } = useAlert();
   const [loading, setLoading] = useState(true);
-  const { isPhone } = useContext(Context);
+  const isPhone = useMediaQuery({ query: '(max-width: 750px)' });
+
   const { openDialog, closeDialog } = useDialog();
   const router = useIonRouter();
 

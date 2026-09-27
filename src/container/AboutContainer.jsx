@@ -19,7 +19,9 @@ export default function AboutContainer() {
   }, []);
 
   return (
-    <IonContent color="light" fullscreen className="ion-padding page-content">
+    <IonContent color="light" fullscreen className="ion-padding h-[100%]  w-[100%] page-content">
+      
+    <main className=" h-[100%]  w-[100%]  overflow-scroll bg-base-surface text-text-primary">
       <div className="bg-[#f4f4e0] max-w-3xl mx-auto py-10 px-2">
         <p className="open-sans-medium text-xs tracking-widest uppercase text-[#6b6f63] mb-4">
           About
@@ -76,6 +78,7 @@ export default function AboutContainer() {
           <ScrollDown text="↓ See what's on" visible={true} />
         )}
       </div>
+      </main>
     </IonContent>
   );
 }

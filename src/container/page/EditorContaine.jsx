@@ -64,9 +64,10 @@ export default function EditorContainer({ presentingElement }) {
   });
 
   const effectiveId = parameters.id || id;
-  const [openHashtag, setOpenHashtag] = useState(false);
+  
   const { openDialog, closeDialog, resetDialog } = useDialog();
-  const { isPhone } = useContext(Context);
+  const isPhone = useMediaQuery({ query: '(max-width: 750px)' });
+
   const [isSaved, setIsSaved] = useState(false);
   const lastSavedRef = useRef(null);
   const hasLoaded = useRef(false);

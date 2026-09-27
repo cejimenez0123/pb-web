@@ -207,6 +207,7 @@ export default function SignUpContainer(props) {
 
   const {
     openDialog,
+    closeDialog,
     resetDialog,
   } = useDialog();
 
@@ -275,10 +276,10 @@ export default function SignUpContainer(props) {
               CURRENT_TERMS_VERSION,
           })
         );
-
+        closeDialog();
         setAgreedToTerms(true);
 
-        resetDialog();
+       
       },
 
       agreeText: "I Agree",
@@ -376,39 +377,7 @@ export default function SignUpContainer(props) {
     }, 300)
   ).current;
 
-useEffect(() => {
-  const params = new URLSearchParams(router.routeInfo.search);
-  const token = params.get("token");
 
-  console.log("SIGNUP TOKEN:", token);
-
-  if (!token) {
-    console.log("NO TOKEN FOUND");
-    return;
-  }
-
-  const tokenPayload = getTokenPayload(token);
-
-  console.log("TOKEN PAYLOAD:", tokenPayload);
-  console.log("TOKEN EMAIL:", tokenPayload?.email);
-
-  if (tokenPayload?.email) {
-    setEmail(
-      String(tokenPayload.email)
-        .trim()
-        .toLowerCase()
-    );
-  } else {
-    console.log("TOKEN DOES NOT CONTAIN EMAIL");
-  }
-
-  Preferences.set({
-    key: "token",
-    value: token,
-  });
-
-  setReferralTokenState(token);
-}, []);
   useEffect(() => {
     if (
       username.trim().length >= 4
@@ -1023,7 +992,7 @@ function IOSFormTemplate({
 
 
           {/* APPROVED EMAIL */}
-
+{/* 
           <div className="mb-5">
 
             <label
@@ -1104,7 +1073,7 @@ function IOSFormTemplate({
 
             </div>
 
-          </div>
+          </div> */}
 
 
           {/* USERNAME */}

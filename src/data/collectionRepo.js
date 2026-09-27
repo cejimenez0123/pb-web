@@ -279,14 +279,7 @@ async getProtectedProfileCollections({ id, skip = 0, take = 20 }) {
   )
   return res.data
 }
-  //   async deleteStoryToCollection({stId}){
-  // const headers = await this.getAuthHeaders()
-  //       let res=  await axios.delete(this.url+"/storyToCol/"+stId,
-  //            {headers:headers}
-  //        )
- 
-  //        return res.data
-  //    }
+
     async fetchSubCollectionsProtected({id}){
           const headers = await this.getAuthHeaders()
         const res = await axios.get(this.url+"/"+id+"/collection/protected",{headers:headers})

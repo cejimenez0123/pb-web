@@ -2,6 +2,7 @@ import { IonPage } from '@ionic/react';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { Capacitor } from '@capacitor/core';
 
+
 import Context from '../context';
 import NavbarContainer from '../container/NavbarContainer';
 
@@ -24,7 +25,7 @@ const PageWrapper = ({
 }) => {
 
   const pageRef = useRef(null);
-  const { setPresentingEl } = useContext(Context);
+  // const { setPresentingEl } = useContext(Context);
 
   const [isOnline, setIsOnline] = useState(
     typeof navigator !== 'undefined'
@@ -32,7 +33,7 @@ const PageWrapper = ({
       : true
   );
 
-  const isNative = Capacitor.isNativePlatform();
+
 
 
   /* =========================================================
@@ -57,11 +58,11 @@ const PageWrapper = ({
      PRESENTING ELEMENT
   ========================================================= */
 
-  useEffect(() => {
-    if (pageRef.current && setPresentingEl) {
-      setPresentingEl(pageRef.current);
-    }
-  }, [setPresentingEl]);
+  // useEffect(() => {
+  //   if (pageRef.current && setPresentingEl) {
+  //     setPresentingEl(pageRef.current);
+  //   }
+  // }, [setPresentingEl]);
 
 
   /* =========================================================
@@ -168,3 +169,12 @@ const PageWrapper = ({
 
 
 export default PageWrapper;
+// const PageWrapper = ({ children }) => {
+//   return (
+//     <IonPage className="bg-paper">
+//       {children}
+//     </IonPage>
+//   );
+// };
+
+// export default PageWrapper;

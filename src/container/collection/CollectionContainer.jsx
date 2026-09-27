@@ -2,7 +2,7 @@
 
 import {
   useEffect,
-  useLayoutEffect,
+
   useMemo,
   useRef,
   useState,
@@ -105,17 +105,17 @@ export default function CollectionContainer() {
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState("inside");
 
-  const [homeCol, setHomeCol] = useState(null);
-  const [archiveCol, setArchiveCol] = useState(null);
 
-  const [isBookmarked, setIsBookmarked] = useState(null);
-  const [isArchived, setIsArchived] = useState(null);
+
+  // const [isBookmarked, setIsBookmarked] = useState(null);
+  // const [isArchived, setIsArchived] = useState(null);
 
   const [bookmarkLoading, setBookmarkLoading] = useState(false);
   const [sentHistory, setSentHistory] = useState(false);
 
   const actionLock = useRef(false);
 
+  const sentHistoryRef = useRef(false);
 
   // -------------------------------------------------------
   // Permissions
@@ -252,99 +252,144 @@ export default function CollectionContainer() {
   // Home / Archive system rooms
   // -------------------------------------------------------
 
-  useLayoutEffect(() => {
-    const profileCollections =
-      currentProfile?.profileToCollections;
+  // useLayoutEffect(() => {
+  //   const profileCollections =
+  //     currentProfile?.profileToCollections;
 
-    if (!profileCollections) {
-      setHomeCol(null);
-      setArchiveCol(null);
-      return;
-    }
+  //   if (!profileCollections) {
+  //     setHomeCol(null);
+  //     setArchiveCol(null);
+  //     return;
+  //   }
 
-    const home =
-      profileCollections.find(
-        (item) => item.type === "home"
-      )?.collection || null;
+  //   const home =
+  //     profileCollections.find(
+  //       (item) => item.type === "home"
+  //     )?.collection || null;
 
-    const archive =
-      profileCollections.find(
-        (item) => item.type === "archive"
-      )?.collection || null;
+  //   const archive =
+  //     profileCollections.find(
+  //       (item) => item.type === "archive"
+  //     )?.collection || null;
 
-    setHomeCol(home);
-    setArchiveCol(archive);
-  }, [currentProfile]);
+  //   setHomeCol(home);
+  //   setArchiveCol(archive);
+  // }, [currentProfile]);
+const homeCol = useMemo(() => {
+  const profileCollections =
+    currentProfile?.profileToCollections;
 
+  if (!profileCollections) return null;
+
+  return (
+    profileCollections.find(
+      (item) => item.type === "home"
+    )?.collection || null
+  );
+}, [currentProfile?.profileToCollections]);
+
+const archiveCol = useMemo(() => {
+  const profileCollections =
+    currentProfile?.profileToCollections;
+
+  if (!profileCollections) return null;
+
+  return (
+    profileCollections.find(
+      (item) => item.type === "archive"
+    )?.collection || null
+  );
+}, [currentProfile?.profileToCollections]);
 
   // -------------------------------------------------------
   // Determine saved state
   // -------------------------------------------------------
 
-  useEffect(() => {
-    if (!collection) return;
+  // useEffect(() => {
+  //   if (!collection) return;
 
-    const parents =
-      collection.parentCollections ?? [];
+  //   const parents =
+  //     collection.parentCollections ?? [];
 
-    if (homeCol) {
-      const homeRelationship = parents.find(
-        (item) =>
-          item.parentCollectionId === homeCol.id
-      );
+  //   if (homeCol) {
+  //     const homeRelationship = parents.find(
+  //       (item) =>
+  //         item.parentCollectionId === homeCol.id
+  //     );
 
-      setIsBookmarked(
-        homeRelationship || null
-      );
-    }
+  //     setIsBookmarked(
+  //       homeRelationship || null
+  //     );
+  //   }
 
-    if (archiveCol) {
-      const archiveRelationship = parents.find(
-        (item) =>
-          item.parentCollectionId === archiveCol.id
-      );
+  //   if (archiveCol) {
+  //     const archiveRelationship = parents.find(
+  //       (item) =>
+  //         item.parentCollectionId === archiveCol.id
+  //     );
 
-      setIsArchived(
-        archiveRelationship || null
-      );
-    }
+  //     setIsArchived(
+  //       archiveRelationship || null
+  //     );
+  //   }
 
-    setBookmarkLoading(false);
-  }, [
-    collection,
-    homeCol,
-    archiveCol,
-  ]);
+  //   setBookmarkLoading(false);
+  // }, [
+  //   collection,
+  //   homeCol,
+  //   archiveCol,
+  // ]);
 
 
   // -------------------------------------------------------
   // History
   // -------------------------------------------------------
 
-  useEffect(() => {
-    if (
-      sentHistory ||
-      !currentProfile?.id ||
-      !collection?.id
-    ) {
-      return;
-    }
+  // useEffect(() => {
+  //   if (
+  //     sentHistory ||
+  //     !currentProfile?.id ||
+  //     !collection?.id
+  //   ) {
+  //     return;
+  //   }
 
-    setSentHistory(true);
+  //   setSentHistory(true);
 
-    dispatch(
-      postCollectionHistory({
-        profile: currentProfile,
-        collection,
-      })
-    );
-  }, [
-    currentProfile?.id,
-    collection?.id,
-    sentHistory,
-  ]);
+  //   dispatch(
+  //     postCollectionHistory({
+  //       profile: currentProfile,
+  //       collection,
+  //     })
+  //   );
+  // }, [
+  //   currentProfile?.id,
+  //   collection?.id,
+  //   sentHistory,
+  // ]);
 
+useEffect(() => {
+  if (
+    sentHistoryRef.current ||
+    !currentProfile?.id ||
+    !collection?.id
+  ) {
+    return;
+  }
 
+  sentHistoryRef.current = true;
+
+  dispatch(
+    postCollectionHistory({
+      profile: currentProfile,
+      collection,
+    })
+  );
+}, [
+  currentProfile?.id,
+  collection?.id,
+  dispatch,
+]);
   // -------------------------------------------------------
   // Scroll tracking
   // -------------------------------------------------------
@@ -362,27 +407,29 @@ export default function CollectionContainer() {
   // -------------------------------------------------------
 
   const pageSize = 10;
+const recommended = {
+  items: [],
+};
+  // const recommended = usePaginatedResource({
+  //   cacheKey:
+  //     `recommended-collections:${collection?.id}`,
 
-  const recommended = usePaginatedResource({
-    cacheKey:
-      `recommended-collections:${collection?.id}`,
+  //   fetcher: getRecommendedCollections,
 
-    fetcher: getRecommendedCollections,
+  //   pageSize,
 
-    pageSize,
+  //   enabled: !!collection?.id,
 
-    enabled: !!collection?.id,
+  //   params: {
+  //     colId: collection?.id,
+  //     type: collection?.type,
+  //   },
 
-    params: {
-      colId: collection?.id,
-      type: collection?.type,
-    },
-
-    select: (res) => ({
-      items: res.collections,
-      totalCount: res.totalCount,
-    }),
-  });
+  //   select: (res) => ({
+  //     items: res.collections,
+  //     totalCount: res.totalCount,
+  //   }),
+  // });
 
 
   // -------------------------------------------------------
@@ -499,7 +546,33 @@ export default function CollectionContainer() {
       );
     });
   };
+const isBookmarked = useMemo(() => {
+  if (!collection || !homeCol) return null;
 
+  return (
+    collection.parentCollections?.find(
+      (item) =>
+        item.parentCollectionId === homeCol.id
+    ) || null
+  );
+}, [
+  collection,
+  homeCol,
+]);
+
+const isArchived = useMemo(() => {
+  if (!collection || !archiveCol) return null;
+
+  return (
+    collection.parentCollections?.find(
+      (item) =>
+        item.parentCollectionId === archiveCol.id
+    ) || null
+  );
+}, [
+  collection,
+  archiveCol,
+]);
 
   // -------------------------------------------------------
   // Save / unsave Home
@@ -519,8 +592,8 @@ export default function CollectionContainer() {
 
     setBookmarkLoading(true);
 
-    if (!isBookmarked) {
-      setIsBookmarked(true);
+if (!isBookmarked) {
+
 
       dispatch(
         addCollectionListToCollection({
@@ -540,7 +613,7 @@ export default function CollectionContainer() {
             setBookmarkLoading(false);
           },
           (error) => {
-            setIsBookmarked(null);
+            // setIsBookmarked(null);
 
             showAlert({
               message:
@@ -554,9 +627,8 @@ export default function CollectionContainer() {
         );
       });
     } else {
-      const relationship = isBookmarked;
-
-      setIsBookmarked(null);
+     const relationship = isBookmarked;
+      // setIsBookmarked(null);
 
       dispatch(
         deleteCollectionFromCollection({
@@ -574,7 +646,7 @@ export default function CollectionContainer() {
             setBookmarkLoading(false);
           },
           () => {
-            setIsBookmarked(relationship);
+            // setIsBookmarked(relationship);
             setBookmarkLoading(false);
           }
         );
@@ -867,7 +939,7 @@ export default function CollectionContainer() {
         {/* Actions */}
         {/* --------------------------------------------- */}
 
-        <section className="border-b border-card-border dark:border-white/10">
+        {/* <section className="border-b border-card-border dark:border-white/10">
           <div
             className={`${PAGE} py-4`}
           >
@@ -926,7 +998,20 @@ export default function CollectionContainer() {
                 </button>
               )}
 
-
+{canEdit && (
+  <button
+    onClick={() =>
+      history.push(
+        Paths.editCollection.createRoute(
+          collection.id
+        )
+      )
+    }
+    className={SECONDARY_BUTTON}
+  >
+    Edit room
+  </button>
+)}
               {canAdd && (
                 <button
                   onClick={() =>
@@ -947,9 +1032,6 @@ export default function CollectionContainer() {
         </section>
 
 
-        {/* --------------------------------------------- */}
-        {/* Tabs */}
-        {/* --------------------------------------------- */}
 
         <section>
           <div className={`${PAGE}`}>
@@ -989,10 +1071,6 @@ export default function CollectionContainer() {
         </section>
 
 
-        {/* --------------------------------------------- */}
-        {/* Recommended */}
-        {/* --------------------------------------------- */}
-
         {recommended.items?.length > 0 && (
           <section
             className="
@@ -1020,7 +1098,7 @@ export default function CollectionContainer() {
 
             </div>
           </section>
-        )}
+        )} */}
 
       </main>
     </ErrorBoundary>

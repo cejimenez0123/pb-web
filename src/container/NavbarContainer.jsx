@@ -384,6 +384,7 @@ function SignOutButton({ mobile = false }) {
         duration-150
         tracking-[-0.02em]
       text-md
+                whitespace-nowrap
       `}
     >
       Sign out
@@ -404,8 +405,9 @@ function SignInButton({ mobile = false }) {
         hover:text-text-primary
         transition-colors
         duration-150
+      whitespace-nowrap
         tracking-[-0.02em]
-        ${mobile ? '     text-lg' : '     text-lg'}
+        ${mobile ? '     text-md' : '     text-md'}
       `}
     >
       Sign in

@@ -15,7 +15,7 @@ import {
   IonRouterOutlet,
   IonSpinner,
   setupIonicReact,
-  useIonRouter,
+  // useIonRouter,
   useIonViewWillEnter,
 } from "@ionic/react";
 
@@ -24,7 +24,8 @@ import { IonReactRouter } from "@ionic/react-router";
 import {
   Redirect,
   Route,
-  useLocation,
+  useHistory,
+  // useLocation,
 } from "react-router-dom";
 
 import { LoadScript } from "@react-google-maps/api";
@@ -104,6 +105,9 @@ import OAuthCallback from "./container/page/OauthCallback.jsx";
 import PageViewContainer from "./container/page/PageViewContainer";
 import CollectionsContainer from "./container/collection/CollectionsContainer.jsx";
 import WriteContainer from "./components/page/WriteContainer.jsx";
+import { useDialog } from "./domain/usecases/useDialog.jsx";
+import AppNavigationChrome from "./components/AppNavigationChrome.jsx";
+import useTermsAcceptance from "./core/useTermsAcceptance.jsx";
 
 const CLIENT_ID = import.meta.env.VITE_OAUTH2_CLIENT_ID;
 const IOS_CLIENT_ID = import.meta.env.VITE_IOS_CLIENT_ID;
@@ -121,12 +125,11 @@ function LoadingPlaceholder() {
     </IonContent>
   );
 }
-
 function PushNotificationHandler() {
   usePushNotificationListenerSafely();
 
-  const router = useIonRouter();
   const isNative = Capacitor.isNativePlatform();
+  const history = useHistory();
 
   const pendingRouteRef = useRef(null);
   const appReadyRef = useRef(false);
@@ -158,7 +161,7 @@ function PushNotificationHandler() {
 
       pendingRouteRef.current = null;
 
-      router.push(route, "forward");
+      history.push(route);
     } catch (error) {
       console.error(
         "Failed to navigate from a push notification:",
@@ -167,7 +170,7 @@ function PushNotificationHandler() {
     } finally {
       flushingRef.current = false;
     }
-  }, [isNative, router]);
+  }, [isNative, history]);
 
   useEffect(() => {
     if (!isNative) return undefined;
@@ -177,8 +180,7 @@ function PushNotificationHandler() {
 
     const onAction = (action) => {
       const route =
-        action?.notification?.data?.route
-          ?.replace(/\s+/g, "") || null;
+        action?.notification?.data?.route?.trim() || null;
 
       if (!route) return;
 
@@ -186,67 +188,18 @@ function PushNotificationHandler() {
       flushRoute();
     };
 
-    const subscribe = async () => {
-      try {
-        listenerHandle =
-          await PushNotifications.addListener(
-            "pushNotificationActionPerformed",
-            onAction
-          );
-      } catch (error) {
-        console.error(
-          "Failed to add push notification listener:",
-          error
-        );
-      }
-    };
-
-    subscribe();
-
-    const readyTimer = window.setTimeout(() => {
-      if (!active) return;
-
-      appReadyRef.current = true;
-      flushRoute();
-    }, 0);
-
-    return () => {
-      active = false;
-
-      window.clearTimeout(readyTimer);
-
-      if (listenerHandle?.remove) {
-        listenerHandle.remove();
-      }
-    };
+    // ...rest stays the same
   }, [flushRoute, isNative]);
 
   return null;
 }
-
-/*
- * Your project already imports a push-notification hook in the old App file.
- * This wrapper preserves that behavior without crashing this replacement file
- * if that hook is not currently needed here.
- *
- * If you do use a real hook named usePushNotificationListener, replace this
- * function and its invocation with:
- *
- * import usePushNotificationListener from
- *   "./domain/usecases/usePushNotificationListener.jsx";
- *
- * then call:
- *
- * usePushNotificationListener();
- */
 function usePushNotificationListenerSafely() {
   return null;
 }
 
 function App(props) {
   const dispatch = useDispatch();
-  const ionRouter = useIonRouter();
-  // const location = useLocation();
+
 
   const {
     authResolved,
@@ -257,7 +210,8 @@ function App(props) {
   const {
     resetDialog,
     openDialog,
-  } = useDialogSafely();
+    closeDialog
+  } = useDialog()
 
   const isNative = Capacitor.isNativePlatform();
 
@@ -413,77 +367,30 @@ function App(props) {
     );
   }, [currentProfile, dispatch]);
 
-  const promptTermsAcceptance = useCallback(
-    (onAccepted) => {
-      openDialog({
-        title: "Updated Terms & Conditions",
-        height: 90,
-        breakpoint: 1,
-        text: <EULATERMS />,
-        agree: async () => {
-          try {
-            await dispatch(
-              acceptTerms({
-                version: CURRENT_TERMS_VERSION,
-              })
-            );
+const promptTermsAcceptance = useTermsAcceptance();
+useEffect(() => {
+  if (!currentProfile?.user) return;
+  if (dialog?.isOpen) return;
 
-            resetDialog();
+  const termsAcceptedAt =
+    currentProfile.user.termsAcceptedAt;
 
-            if (typeof onAccepted === "function") {
-              onAccepted();
-            }
-          } catch (error) {
-            console.error(
-              "Could not accept terms:",
-              error
-            );
-          }
-        },
-        agreeText: "I Agree",
-        disagree: () => {
-          resetDialog();
-          dispatch(signOutAction());
-        },
-        disagreeText: "Decline",
-      });
-    },
-    [
-      dispatch,
-      openDialog,
-      resetDialog,
-    ]
-  );
+  const termsVersion =
+    currentProfile.user.termsVersion;
 
-  /*
-   * Prompt only after user/profile data is ready.
-   */
-  useEffect(() => {
-    if (!currentProfile?.user) return;
+  const hasAcceptedCurrentTerms =
+    Boolean(termsAcceptedAt) &&
+    termsVersion === CURRENT_TERMS_VERSION;
 
-    const {
-      termsAcceptedAt,
-      termsVersion,
-    } = currentProfile.user;
+  if (hasAcceptedCurrentTerms) return;
 
-    const hasAcceptedCurrentTerms =
-      Boolean(termsAcceptedAt) &&
-      termsVersion === CURRENT_TERMS_VERSION;
 
-    if (hasAcceptedCurrentTerms) return;
-
-    promptTermsAcceptance(() => {
-      ionRouter.push(Paths.home, "forward");
-    });
-  }, [
-    currentProfile,
-    ionRouter,
-    promptTermsAcceptance,
-  ]);
-
-  /*
-   * Native launch/onboarding check.
-   */
+}, [
+  currentProfile?.user?.termsAcceptedAt,
+  currentProfile?.user?.termsVersion,
+  dialog?.isOpen,
+  promptTermsAcceptance,
+]);
   useIonViewWillEnter(() => {
     let active = true;
 
@@ -575,8 +482,8 @@ function App(props) {
   const showTopNavbar = isDesktop;
 
   const showBottomNavbar =
-    isMobileOrTablet &&
-    !shouldHideBottomNavbar;
+    isMobileOrTablet
+  
 
   /*
    * The EditorContainer reads profile/content through Redux.
@@ -597,9 +504,7 @@ function App(props) {
         value={{
           setPresentingEl,
           isDesktop,
-          isTablet: isMobileOrTablet,
-          isPhone: isMobileOrTablet,
-          isNotPhone: !isMobileOrTablet,
+     
           isHorizPhone,
           seo,
           setSeo,
@@ -621,15 +526,19 @@ function App(props) {
                 <PushNotificationHandler />
               )}
 
-              {showTopNavbar && (
+              {/* {showTopNavbar && (
                 <div className="z-50 flex w-full shrink-0">
                   <NavbarContainer
                     isDesktop={isDesktop}
                     currentProfile={currentProfile}
                   />
                 </div>
-              )}
-
+              )} */}
+  <AppNavigationChrome
+    isDesktop={isDesktop}
+    isMobileOrTablet={isMobileOrTablet}
+    currentProfile={currentProfile}
+  />
               <div className="relative flex-1">
                 <Dialog
                   dialog={dialog}
@@ -718,18 +627,6 @@ function App(props) {
                     )}
                   />
 
-                  <Route
-                    path={Paths.home}
-                    render={() => (
-                      <PageWrapper
-                        showBackbutton={false}
-                      >
-                        <PrivateRoute>
-                          <ContentHubContainer />
-                        </PrivateRoute>
-                      </PageWrapper>
-                    )}
-                  />
        <Route
                     path={Paths.home}
                     render={() => (
@@ -1108,7 +1005,7 @@ function App(props) {
                   />
                 </IonRouterOutlet>
 
-                {showBottomNavbar && (
+                {/* {showBottomNavbar && (
                   <IonFooter>
                     <div className="bg-base-surface dark:bg-base-bgDark">
                       <NavbarContainer
@@ -1119,7 +1016,7 @@ function App(props) {
                       />
                     </div>
                   </IonFooter>
-                )}
+                )} */}
               </div>
             </IonReactRouter>
           </IonApp>
@@ -1129,30 +1026,7 @@ function App(props) {
   );
 }
 
-/*
- * This small wrapper retains the API you used in the original file.
- *
- * Replace this with your direct import if desired:
- *
- * import { useDialog } from "./domain/usecases/useDialog.jsx";
- */
-function useDialogSafely() {
-  const [dialogState, setDialogState] = useState(null);
 
-  const openDialog = useCallback((nextDialog) => {
-    setDialogState(nextDialog);
-  }, []);
-
-  const resetDialog = useCallback(() => {
-    setDialogState(null);
-  }, []);
-
-  return {
-    dialog: dialogState,
-    openDialog,
-    resetDialog,
-  };
-}
 
 function mapDispatchToProps(dispatch) {
   return {
