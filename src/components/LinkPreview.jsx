@@ -6,6 +6,7 @@ import Enviroment from "../core/Enviroment";
 import Context from "../context";
 import SpotifyEmbed from "./SpotifyEmbed";
 import SoundCloudEmbed from "./page/SoundcloudEmbed";
+import { useMediaQuery } from "react-responsive";
 
 function normalizeUrl(url) {
   if (!url) return "";

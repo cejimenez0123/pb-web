@@ -186,10 +186,17 @@ const fetchCollection = createAsyncThunk("collection/getCollectionPublic",async(
     collection:data.collection
    }
 })
-const deleteStoryFromCollection = createAsyncThunk("collection/deleteStoryFromCollection", async ({ storyId, collectionId }, thunkApi) => {
-  let data = await collectionRepo.deleteStoryToCollection({ storyId, collectionId })
-  return data
-})
+const deleteStoryFromCollection = createAsyncThunk(
+  "collection/deleteStoryFromCollection",
+  async ({ stId }, thunkApi) => {
+    let data = await collectionRepo.deleteStoryToCollection({ stId })
+    return data
+  }
+)
+// const deleteStoryFromCollection = createAsyncThunk("collection/deleteStoryFromCollection", async ({ storyId, collectionId }, thunkApi) => {
+//   let data = await collectionRepo.deleteStoryToCollection({ storyId, collectionId })
+//   return data
+// })
  const deleteCollectionFromCollection = createAsyncThunk("collection/deleteCollectionFromCollection",async({tcId},thunkApi)=>{
    try{
     let data = await collectionRepo.deleteCollectionToCollection({tcId:tcId})
@@ -353,20 +360,60 @@ const patchCollectionRoles = createAsyncThunk("collection/patchCollectionRoles",
         collection:data.collection??[]
     }
 })
-const patchCollectionContent=createAsyncThunk("collection/patchCollectionContent",
-    async ({id,title,purpose,isPrivate,isOpenCollaboration,storyToCol,colToCol,col,profile},thunkApi)=>{
-        let data = await collectionRepo.updateCollectionContent({id,title,purpose,isPrivate,isOpenCollaboration,storyToCol,colToCol,col,profile})
-        if(!isPrivate){
-          await algoliaRepo.partialUpdateObject("collection", id, { title: title })
-               }else{
+const patchCollectionContent = createAsyncThunk(
+  "collection/patchCollectionContent",
+  async (
+    {
+      id,
+      title,
+      purpose,
+      isPrivate,
+      isOpenCollaboration,
+      storyToCol,
+      colToCol,
+    },
+    thunkApi
+  ) => {
+    const data =
+      await collectionRepo.updateCollectionContent({
+        id,
+        title,
+        purpose,
+        isPrivate,
+        isOpenCollaboration,
+        storyToCol,
+        colToCol,
+      });
+
+    if (!isPrivate) {
+      await algoliaRepo.partialUpdateObject(
+        "collection",
+        id,
+        {
+          title,
+        }
+      );
+    }
+
+    return {
+      collection: data.collection,
+    };
+  }
+);
+// const patchCollectionContent=createAsyncThunk("collection/patchCollectionContent",
+//     async ({id,title,purpose,isPrivate,isOpenCollaboration,storyToCol,colToCol,col,profile},thunkApi)=>{
+//         let data = await collectionRepo.updateCollectionContent({id,title,purpose,isPrivate,isOpenCollaboration,storyToCol,colToCol,col,profile})
+//         if(!isPrivate){
+//           await algoliaRepo.partialUpdateObject("collection", id, { title: title })
+//                }else{
 
        
           
-            }  
-        return {collection:data.collection}
-    }
+//             }  
+//         return {collection:data.collection}
+//     }
 
-)
+// )
 const getCollectionRecommendations = createAsyncThunk(
     'collections/getCollectionRecommendations',
     async ({ colId, skip = 0, take = 10, type }, thunkApi) => {

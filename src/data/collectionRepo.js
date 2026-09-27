@@ -200,14 +200,42 @@ async getProtectedProfileCollections({ id, skip = 0, take = 20 }) {
 
         return res.data
     }
-    async updateCollectionContent({id,title,purpose,isPrivate,isOpenCollaboration,storyToCol,colToCol,col,profile}){
-              const headers = await this.getAuthHeaders()    
-            let res = await axios.patch(this.url+"/"+id,
-            {id,title,purpose,isPrivate,isOpenCollaboration,storyToCol,colToCol,col,profile},
-            {headers:headers})
+    async updateCollectionContent({
+  id,
+  title,
+  purpose,
+  isPrivate,
+  isOpenCollaboration,
+  storyToCol,
+  colToCol,
+}) {
+  const headers = await this.getAuthHeaders();
+
+  const res = await axios.patch(
+    this.url + "/" + id,
+    {
+      title,
+      purpose,
+      isPrivate,
+      isOpenCollaboration,
+      storyToCol,
+      colToCol,
+    },
+    {
+      headers,
+    }
+  );
+
+  return res.data;
+}
+    // async updateCollectionContent({id,title,purpose,isPrivate,isOpenCollaboration,storyToCol,colToCol,col,profile}){
+    //           const headers = await this.getAuthHeaders()    
+    //         let res = await axios.patch(this.url+"/"+id,
+    //         {id,title,purpose,isPrivate,isOpenCollaboration,storyToCol,colToCol,col,profile},
+    //         {headers:headers})
            
-            return res.data
-        }
+    //         return res.data
+    //     }
 
     async addCollectionListToCollection({id,list,profile}){
           const headers = await this.getAuthHeaders()
@@ -272,13 +300,23 @@ async getProtectedProfileCollections({ id, skip = 0, take = 20 }) {
 
         return res.data
     }
-    async deleteStoryToCollection({ storyId, collectionId }) {
+async deleteStoryToCollection({ stId }) {
   const headers = await this.getAuthHeaders()
-  let res = await axios.delete(this.url + "/storyToCol/" + collectionId + "/" + storyId,
+
+  let res = await axios.delete(
+    this.url + "/storyToCol/" + stId,
     { headers: headers }
   )
+
   return res.data
 }
+//     async deleteStoryToCollection({ storyId, collectionId }) {
+//   const headers = await this.getAuthHeaders()
+//   let res = await axios.delete(this.url + "/storyToCol/" + collectionId + "/" + storyId,
+//     { headers: headers }
+//   )
+//   return res.data
+// }
 
     async fetchSubCollectionsProtected({id}){
           const headers = await this.getAuthHeaders()

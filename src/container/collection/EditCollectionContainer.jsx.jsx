@@ -113,10 +113,10 @@ export default function EditCollectionContainer() {
     RoleType.commenter
   );
 
-  const [newPages, setNewPages] = useState([]);
-  const [newCollections, setNewCollections] = useState([]);
-
-  const [activeTab, setActiveTab] = useState("pages");
+  // const [newPages, setNewPages] = useState([]);
+  // const [newCollections, setNewCollections] = useState([]);
+const [content, setContent] = useState([]);
+  // const [activeTab, setActiveTab] = useState("pages");
   const [search, setSearch] = useState("");
   const [openHashtag, setOpenHashtag] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -294,112 +294,259 @@ export default function EditCollectionContainer() {
             (b.index ?? 0)
         );
 
-    setNewPages(pages);
-    setNewCollections(childCollections);
+   setContent([
+  ...pages.map((item) => ({
+    ...item,
+    kind: "page",
+  })),
+  ...childCollections.map((item) => ({
+    ...item,
+    kind: "room",
+  })),
+].sort(
+  (a, b) =>
+    (a.index ?? Number.MAX_SAFE_INTEGER) -
+    (b.index ?? Number.MAX_SAFE_INTEGER)
+));
   }, [
     id,
     colInView?.id,
     currentProfile?.id,
   ]);
 
-
   // =======================================================
   // FILTERING
   // =======================================================
 
-  const filteredPages = useMemo(() => {
-    const query = search.trim().toLowerCase();
+  // const filteredPages = useMemo(() => {
+  //   const query = search.trim().toLowerCase();
 
-    if (!query) {
-      return newPages;
-    }
+  //   if (!query) {
+  //     return newPages;
+  //   }
 
-    return newPages.filter((item) =>
-      item?.story?.title
-        ?.toLowerCase()
-        .includes(query)
-    );
-  }, [newPages, search]);
+  //   return newPages.filter((item) =>
+  //     item?.story?.title
+  //       ?.toLowerCase()
+  //       .includes(query)
+  //   );
+  // }, [newPages, search]);
 
 
-  const filteredCollections = useMemo(() => {
-    const query = search.trim().toLowerCase();
+  // const filteredCollections = useMemo(() => {
+  //   const query = search.trim().toLowerCase();
 
-    if (!query) {
-      return newCollections;
-    }
+  //   if (!query) {
+  //     return newCollections;
+  //   }
 
-    return newCollections.filter((item) =>
-      item?.childCollection?.title
-        ?.toLowerCase()
-        .includes(query)
-    );
-  }, [newCollections, search]);
+  //   return newCollections.filter((item) =>
+  //     item?.childCollection?.title
+  //       ?.toLowerCase()
+  //       .includes(query)
+  //   );
+  // }, [newCollections, search]);
+  // =======================================================
+// FILTERING
+// =======================================================
 
+const filteredContent = useMemo(() => {
+  const query = search.trim().toLowerCase();
+
+  if (!query) {
+    return content;
+  }
+
+  return content.filter((item) => {
+    const title =
+      item.kind === "room"
+        ? item?.childCollection?.title
+        : item?.story?.title;
+
+    return title
+      ?.toLowerCase()
+      .includes(query);
+  });
+}, [content, search]);
+// const filteredContent = useMemo(() => {
+//   const query = search.trim().toLowerCase();
+
+//   if (!query) {
+//     return content;
+//   }
+
+//   return content.filter((item) => {
+//     const title =
+//       item.kind === "room"
+//         ? item?.childCollection?.title
+//         : item?.story?.title;
+
+//     return title
+//       ?.toLowerCase()
+//       .includes(query);
+//   });
+// }, [content, search]);
 
   // =======================================================
   // SAVE
   // =======================================================
+// =======================================================
+// SAVE
+// =======================================================
 
-  const handleSave = async () => {
-    if (!colInView || !currentProfile) {
-      return;
-    }
+const handleSave = async () => {
+  if (!colInView || !currentProfile) {
+    return;
+  }
 
-    setSaving(true);
+  setSaving(true);
 
-    try {
-      const result = await dispatch(
-        patchCollectionContent({
-          id,
-          isPrivate,
-          isOpenCollaboration: isOpen,
-          title: title.trim(),
-          purpose: purpose.trim(),
-          storyToCol: newPages,
-          colToCol: newCollections,
-          col: colInView,
-          profile: currentProfile,
-        })
-      );
+  try {
+    const storyToCol = [];
+    const colToCol = [];
 
-      checkResult(
-        result,
-        (payload) => {
-          if (payload?.collection) {
-            dispatch(
-              updatePaginatedItem({
-                key: "collections",
-                item: payload.collection,
-              })
-            );
-          }
+    content.forEach((item, index) => {
+      if (
+        item.kind === "page" &&
+        item.story
+      ) {
+        const {
+          kind,
+          ...relationship
+        } = item;
 
-          showAlert({
-            message: "Room updated.",
-            type: AlertType.success,
-          });
-        },
-        (error) => {
-          showAlert({
-            message:
-              error?.message ||
-              "Unable to save this room.",
-            type: AlertType.error,
-          });
+        storyToCol.push({
+          ...relationship,
+          index,
+        });
+      }
+
+      if (
+        item.kind === "room" &&
+        item.childCollection
+      ) {
+        const {
+          kind,
+          ...relationship
+        } = item;
+
+        colToCol.push({
+          ...relationship,
+          index,
+        });
+      }
+    });
+
+    const result = await dispatch(
+      patchCollectionContent({
+        id,
+        isPrivate,
+        isOpenCollaboration: isOpen,
+        title: title.trim(),
+        purpose: purpose.trim(),
+        storyToCol,
+        colToCol,
+        col: colInView,
+        profile: currentProfile,
+      })
+    );
+
+    checkResult(
+      result,
+      (payload) => {
+        if (payload?.collection) {
+          dispatch(
+            updatePaginatedItem({
+              key: "collections",
+              item: payload.collection,
+            })
+          );
         }
-      );
-    } catch (error) {
-      showAlert({
-        message:
-          error?.message ||
-          "Unable to save this room.",
-        type: AlertType.error,
-      });
-    } finally {
-      setSaving(false);
-    }
-  };
+
+        showAlert({
+          message: "Room updated.",
+          type: AlertType.success,
+        });
+      },
+      (error) => {
+        showAlert({
+          message:
+            error?.message ||
+            "Unable to save this room.",
+          type: AlertType.error,
+        });
+      }
+    );
+  } catch (error) {
+    showAlert({
+      message:
+        error?.message ||
+        "Unable to save this room.",
+      type: AlertType.error,
+    });
+  } finally {
+    setSaving(false);
+  }
+};
+  // const handleSave = async () => {
+  //   if (!colInView || !currentProfile) {
+  //     return;
+  //   }
+
+  //   setSaving(true);
+
+  //   try {
+  //     const result = await dispatch(
+  //       patchCollectionContent({
+  //         id,
+  //         isPrivate,
+  //         isOpenCollaboration: isOpen,
+  //         title: title.trim(),
+  //         purpose: purpose.trim(),
+  //         storyToCol: newPages,
+  //         colToCol: newCollections,
+  //         col: colInView,
+  //         profile: currentProfile,
+  //       })
+  //     );
+
+  //     checkResult(
+  //       result,
+  //       (payload) => {
+  //         if (payload?.collection) {
+  //           dispatch(
+  //             updatePaginatedItem({
+  //               key: "collections",
+  //               item: payload.collection,
+  //             })
+  //           );
+  //         }
+
+  //         showAlert({
+  //           message: "Room updated.",
+  //           type: AlertType.success,
+  //         });
+  //       },
+  //       (error) => {
+  //         showAlert({
+  //           message:
+  //             error?.message ||
+  //             "Unable to save this room.",
+  //           type: AlertType.error,
+  //         });
+  //       }
+  //     );
+  //   } catch (error) {
+  //     showAlert({
+  //       message:
+  //         error?.message ||
+  //         "Unable to save this room.",
+  //       type: AlertType.error,
+  //     });
+  //   } finally {
+  //     setSaving(false);
+  //   }
+  // };
 
 
   // =======================================================
@@ -1037,7 +1184,7 @@ export default function EditCollectionContainer() {
                         event.target.value
                       )
                     }
-                    placeholder={`Search ${activeTab === "pages" ? "pages" : "rooms"}...`}
+                 placeholder="Search pages and rooms..."
                     className="
                       w-full
                       rounded-xl
@@ -1064,7 +1211,7 @@ export default function EditCollectionContainer() {
 
                 <div className="px-5 sm:px-6 border-b border-card-border dark:border-white/10">
 
-                  <TabBar
+                  {/* <TabBar
                     tabs={[
                       {
                         key: "pages",
@@ -1077,54 +1224,117 @@ export default function EditCollectionContainer() {
                     ]}
                     active={activeTab}
                     onChange={setActiveTab}
-                  />
+                  /> */}
 
                 </div>
 
 
                 {/* List */}
+                {/* List */}
 
-                <div className="p-5 sm:p-6">
+<div className="p-5 sm:p-6">
+  <SortableList
+  items={filteredContent}
+  isFiltered={search.trim().length > 0}
+  onOrderChange={setContent}
+  // onDelete={async (item) => {
+  //   try {
+  //     let result;
 
-                  {activeTab === "pages" && (
-                    <SortableList
-                      items={filteredPages}
-                      onOrderChange={
-                        setNewPages
-                      }
-                      onDelete={(item) =>
-                        dispatch(
-                          deleteStoryFromCollection({
-                            storyId:
-                              item.story.id,
-                            collectionId:
-                              item.collectionId,
-                          })
-                        )
-                      }
-                    />
-                  )}
+  //     if (item.kind === "page") {
+  //       result = await dispatch(
+  //         deleteStoryFromCollection({
+  //           storyId: item.story.id,
+  //           collectionId: item.collectionId,
+  //         })
+  //       );
+  //     }
 
+  //     if (item.kind === "room") {
+  //       result = await dispatch(
+  //         deleteCollectionFromCollection({
+  //           tcId: item.id,
+  //         })
+  //       );
+  //     }
 
-                  {activeTab === "collections" && (
-                    <SortableList
-                      items={
-                        filteredCollections
-                      }
-                      onOrderChange={
-                        setNewCollections
-                      }
-                      onDelete={(item) =>
-                        dispatch(
-                          deleteCollectionFromCollection({
-                            tcId: item.id,
-                          })
-                        )
-                      }
-                    />
-                  )}
+  //     checkResult(
+  //       result,
+  //       () => {
+  //         setContent((current) =>
+  //           current.filter(
+  //             (entry) => entry.id !== item.id
+  //           )
+  //         );
+  //       },
+  //       (error) => {
+  //         showAlert({
+  //           message:
+  //             error?.message ||
+  //             "Unable to remove this item.",
+  //           type: AlertType.error,
+  //         });
+  //       }
+  //     );
+  //   } catch (error) {
+  //     showAlert({
+  //       message:
+  //         error?.message ||
+  //         "Unable to remove this item.",
+  //       type: AlertType.error,
+  //     });
+  //   }
+  // }}
+  onDelete={async (item) => {
+  try {
+    let result;
 
-                </div>
+    if (item.kind === "page") {
+      result = await dispatch(
+        deleteStoryFromCollection({
+          stId: item.id,
+        })
+      );
+    }
+
+    if (item.kind === "room") {
+      result = await dispatch(
+        deleteCollectionFromCollection({
+          tcId: item.id,
+        })
+      );
+    }
+
+    checkResult(
+      result,
+      () => {
+        setContent((current) =>
+          current.filter(
+            (entry) => entry.id !== item.id
+          )
+        );
+      },
+      (error) => {
+        showAlert({
+          message:
+            error?.message ||
+            "Unable to remove this item.",
+          type: AlertType.error,
+        });
+      }
+    );
+  } catch (error) {
+    showAlert({
+      message:
+        error?.message ||
+        "Unable to remove this item.",
+      type: AlertType.error,
+    });
+  }
+}}
+/>
+</div>
+             
 
               </section>
 

@@ -1,106 +1,518 @@
 
+import React, {
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
-import React, { useEffect, useState, useMemo } from "react";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import { IonImg, IonText, useIonRouter } from "@ionic/react";
+import {
+  DragDropContext,
+  Droppable,
+  Draggable,
+} from "react-beautiful-dnd";
+
+import {
+  useIonRouter,
+} from "@ionic/react";
+
 import dragHandle from "../images/icons/drag_handle.svg";
 import Paths from "../core/paths";
 
-export default function SortableList({ items, type, onOrderChange, onDelete }) {
+
+export default function SortableList({
+  items,
+  onOrderChange,
+  onDelete,
+  disableDrag = false,
+  isFiltered = false,
+}) {
   const router = useIonRouter();
-  const memoizedItems = useMemo(() => items ?? [], [items]);
-  const [listItems, setListItems] = useState(memoizedItems);
 
-  // Sync local state with props
+  const memoizedItems = useMemo(
+    () => items ?? [],
+    [items]
+  );
+
+  const [listItems, setListItems] =
+    useState(memoizedItems);
+
+
+  // =======================================================
+  // SYNC FROM PARENT
+  // =======================================================
+
   useEffect(() => {
-    const same =
-      listItems.length === memoizedItems.length &&
-      listItems.every((it, i) => it.id === memoizedItems[i].id);
-    if (!same) setListItems(memoizedItems);
-  }, [memoizedItems, listItems]);
+    setListItems(
+      memoizedItems
+    );
+  }, [memoizedItems]);
 
-  const handleOnDragEnd = (result) => {
-    if (!result.destination) return;
-    const newList = Array.from(listItems);
-    const [movedItem] = newList.splice(result.source.index, 1);
-    newList.splice(result.destination.index, 0, movedItem);
-    setListItems(newList);
-    onOrderChange(newList);
-  };
 
-  const handleDelete = (e, index) => {
-    e.preventDefault();
-    onDelete(listItems[index]);
-    const newList = listItems.filter((_, i) => i !== index);
-    setListItems(newList);
-    onOrderChange(newList);
-  };
+  // =======================================================
+  // DRAG END
+  // =======================================================
+const handleOnDragEnd = (result) => {
+  if (disableDrag || isFiltered) {
+    return;
+  }
 
-  const handleNavigate = (item) => {
-    if (item.childCollection) router.push(Paths.collection.createRoute(item.childCollection.id));
-    else router.push(Paths.page.createRoute(item.story.id));
-  };
+  if (!result.destination) {
+    return;
+  }
+
+  const newList = Array.from(listItems);
+
+  const [movedItem] = newList.splice(
+    result.source.index,
+    1
+  );
+
+  newList.splice(
+    result.destination.index,
+    0,
+    movedItem
+  );
+
+  const normalized = newList.map(
+    (entry, index) => ({
+      ...entry,
+      index,
+      item: {
+        ...entry.item,
+        index,
+      },
+    })
+  );
+
+  setListItems(normalized);
+
+  onOrderChange(normalized);
+};
+  // const handleOnDragEnd = (
+  //   result
+  // ) => {
+  //   if (disableDrag) {
+  //     return;
+  //   }
+
+  //   if (!result.destination) {
+  //     return;
+  //   }
+
+  //   const newList =
+  //     Array.from(listItems);
+
+  //   const [movedItem] =
+  //     newList.splice(
+  //       result.source.index,
+  //       1
+  //     );
+
+  //   newList.splice(
+  //     result.destination.index,
+  //     0,
+  //     movedItem
+  //   );
+
+  //   /*
+  //    * Re-index the COMPLETE list.
+  //    *
+  //    * This is important because the list can contain both
+  //    * Rooms and Pages.
+  //    */
+  //   const normalized =
+  //     newList.map(
+  //       (entry, index) => ({
+  //         ...entry,
+
+  //         index,
+
+  //         item: {
+  //           ...entry.item,
+  //           index,
+  //         },
+  //       })
+  //     );
+
+  //   setListItems(
+  //     normalized
+  //   );
+
+  //   onOrderChange(
+  //     normalized
+  //   );
+  // };
+
+
+  // =======================================================
+  // DELETE
+  // =======================================================
+const handleDelete = (event, entry) => {
+  event.preventDefault();
+  event.stopPropagation();
+
+  onDelete(entry);
+};
+const handleNavigate = (entry) => {
+  console.log("ENTRY:", entry);
+  console.log("story:", entry?.story);
+  console.log("childCollection:", entry?.childCollection);
+
+  if (entry?.childCollection?.id) {
+    router.push(
+      Paths.collection.createRoute(
+        entry.childCollection.id
+      )
+    );
+
+    return;
+  }
+
+  if (entry?.story?.id) {
+    router.push(
+      Paths.page.createRoute(
+        entry.story.id
+      )
+    );
+  }
+};
+  // =======================================================
+  // NAVIGATION
+  // =======================================================
+// const handleNavigate = (entry) => {
+//   console.log("SortableList entry:", entry);
+
+//   if (!entry?.item) {
+//     return;
+//   }
+
+//   const childCollection =
+//     entry.item.childCollection;
+
+//   if (childCollection?.id) {
+//     router.push(
+//       Paths.collection.createRoute(
+//         childCollection.id
+//       )
+//     );
+
+//     return;
+//   }
+
+//   const story =
+//     entry.item.story;
+
+//   if (story?.id) {
+//     router.push(
+//       Paths.page.createRoute(
+//         story.id
+//       )
+//     );
+//   }
+// };
+  // const handleNavigate = (
+  //   entry
+  // ) => {
+  //   console.log(entry)
+  //   if (!entry) {
+  //     return;
+  //   }
+
+  //   if (
+  //     // entry.type === "room" &&
+  //     entry.item?.childCollection?.id
+  //   ) {
+  //     router.push(
+  //       Paths.collection.createRoute(
+  //         entry.item
+  //           .childCollection.id
+  //       )
+  //     );
+
+  //     return;
+  //   }
+
+  //   if (
+  //     // entry.type === "page" &&
+  //     entry.item?.story?.id
+  //   ) {
+  //     router.push(
+  //       Paths.page.createRoute(
+  //         entry.item.story.id
+  //       )
+  //     );
+  //   }
+  // };
+
+
+  // =======================================================
+  // EMPTY
+  // =======================================================
 
   if (!listItems.length) {
     return (
-      <div className="my-4 h-[20em] px-2 sm:h-page flex items-center justify-center bg-emerald-100 bg-opacity-30 rounded-xl">
-        <IonText className="text-emerald-800 text-center text-2xl font-medium">
-          Add something
-        </IonText>
+      <div
+        className="
+          my-4
+          h-[20em]
+          flex
+          items-center
+          justify-center
+          rounded-2xl
+          border
+          border-dashed
+          border-card-border
+          dark:border-white/10
+        "
+      >
+        <div className="text-center px-6">
+
+          <p className="font-serif text-xl text-text-primary dark:text-cream">
+            Nothing here yet.
+          </p>
+
+          <p className="mt-2 text-sm text-text-secondary">
+            Add a page or room to begin.
+          </p>
+
+        </div>
       </div>
     );
   }
 
+
+  // =======================================================
+  // LIST
+  // =======================================================
+
   return (
     <div className="py-4 mx-auto max-w-lg">
-      <DragDropContext onDragEnd={handleOnDragEnd}>
-        <Droppable droppableId="sortableList">
+
+      <DragDropContext
+        onDragEnd={
+          handleOnDragEnd
+        }
+      >
+
+        <Droppable
+          droppableId="sortableList"
+        >
           {(provided) => (
-            <ul {...provided.droppableProps} ref={provided.innerRef} className="space-y-[1.618rem]">
-              {listItems.map((item, index) => (
-                <Draggable key={item.id} draggableId={item.id} index={index}>
-                  {(provided, snapshot) => (
-                    <li
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                      className={`
-                        flex items-center justify-between p-4 
-                        rounded-2xl shadow-lg 
-                        bg-base-bg hover:shadow-xl 
-                        transition-shadow duration-150
-                        border border-gray-200
-                        ${snapshot.isDragging ? "bg-gray-50 shadow-2xl" : ""}
-                      `}
-                    >
-                      {/* Drag handle */}
-                      <img src={dragHandle} className="w-5 dark:bg-cream rounded-2xl h-5 mr-4 cursor-grab" />
+            <ul
+              {...provided.droppableProps}
+              ref={
+                provided.innerRef
+              }
+              className="space-y-[1.618rem]"
+            >
 
-                      {/* Title */}
-                      <h6
-                        onClick={() => handleNavigate(item)}
-                        className="flex-1 text-left text-soft dark:text-cream font-medium truncate cursor-pointer"
-                        style={{ maxWidth: "calc(100% - 100px)" }}
-                      >
-                        {item?.story?.title?.slice(0, 30) || item?.childCollection?.title?.slice(0, 30) || "Untitled"}
-                      </h6>
+          {listItems.map(
+  (entry, index) => {
+    const isRoom =
+      Boolean(entry.childCollection);
 
-                      {/* Delete button */}
-                      <button
-                        onClick={(e) => handleDelete(e, index)}
-                        className="ml-4 px-3 py-1 text-red-500 font-medium rounded-full border border-red-400 hover:bg-red-500 hover:text-white transition"
-                      >
-                        Delete
-                      </button>
-                    </li>
-                  )}
-                </Draggable>
-              ))}
-              {provided.placeholder}
+    console.log("entrycc:", entry);
+
+    const title =
+      isRoom
+        ? entry.childCollection?.title
+        : entry.story?.title;
+
+    const purpose =
+      isRoom
+        ? entry.childCollection?.purpose
+        : null;
+
+    return (
+      <Draggable
+        key={entry.id}
+        draggableId={String(entry.id)}
+        index={index}
+       isDragDisabled={
+  disableDrag || isFiltered
+}
+      >
+                      {(
+                        provided,
+                        snapshot
+                      ) => (
+                        <li
+                          ref={
+                            provided.innerRef
+                          }
+                          {...provided.draggableProps}
+                          className={[
+                            "group",
+                            "rounded-2xl",
+                            "border",
+                            "border-card-border",
+                            "bg-card-background",
+                            "dark:border-white/10",
+                            "dark:bg-base-surfaceDark",
+                            "transition-all",
+                            snapshot.isDragging
+                              ? "shadow-xl"
+                              : "",
+                          ].join(" ")}
+                        >
+
+                          <div className="flex items-center gap-3 p-4">
+
+                            {/* -------------------------------- */}
+                            {/* DRAG HANDLE */}
+                            {/* -------------------------------- */}
+
+                            {!disableDrag ? (
+                              <div
+                                {...provided.dragHandleProps}
+                                className="
+                                  flex
+                                  h-9
+                                  w-8
+                                  shrink-0
+                                  cursor-grab
+                                  items-center
+                                  justify-center
+                                  rounded-lg
+                                  text-text-secondary
+                                  hover:bg-base-surface
+                                  active:cursor-grabbing
+                                "
+                              >
+                                <img
+                                  src={
+                                    dragHandle
+                                  }
+                                  alt=""
+                                  className="
+                                    h-5
+                                    w-5
+                                    opacity-60
+                                  "
+                                />
+                              </div>
+                            ) : (
+                              <div className="h-9 w-8 shrink-0" />
+                            )}
+
+
+                            {/* -------------------------------- */}
+                            {/* ITEM */}
+                            {/* -------------------------------- */}
+
+                            <button
+                              type="button"
+                              onClick={() =>
+                                handleNavigate(
+                                  entry
+                                )
+                              }
+                              className="
+                                min-w-0
+                                flex-1
+                                text-left
+                              "
+                            >
+
+                              <div className="flex items-center gap-2">
+
+                                <span
+                                  className="
+                                    text-[10px]
+                                    uppercase
+                                    tracking-[0.14em]
+                                    text-text-secondary
+                                  "
+                                >
+                                  {isRoom
+                                    ? "Room"
+                                    : "Page"}
+                                </span>
+
+                              </div>
+
+
+                              <h6
+                                className="
+                                  mt-1
+                                  truncate
+                                  font-serif
+                                  text-lg
+                                  text-text-primary
+                                  dark:text-cream
+                                "
+                              >
+                                {title ||
+                                  "Untitled"}
+                              </h6>
+
+
+                              {purpose && (
+                                <p
+                                  className="
+                                    mt-1
+                                    line-clamp-2
+                                    text-sm
+                                    leading-5
+                                    text-text-secondary
+                                  "
+                                >
+                                  {purpose}
+                                </p>
+                              )}
+
+                            </button>
+
+
+                            {/* -------------------------------- */}
+                            {/* DELETE */}
+                            {/* -------------------------------- */}
+
+                            <button
+                              type="button"
+                              onClick={(
+                                event
+                              ) =>
+                                handleDelete(
+                                  event,
+                                  entry
+                                )
+                              }
+                              className="
+                                shrink-0
+                                rounded-full
+                                px-3
+                                py-2
+                                text-xs
+                                text-text-secondary
+                                transition-colors
+                                hover:bg-red-50
+                                hover:text-red-600
+                                dark:hover:bg-red-400/10
+                              "
+                            >
+                              Delete
+                            </button>
+
+                          </div>
+
+                        </li>
+                      )}
+                    </Draggable>
+                  );
+                }
+              )}
+
+              {
+                provided.placeholder
+              }
+
             </ul>
           )}
         </Droppable>
+
       </DragDropContext>
+
     </div>
   );
 }

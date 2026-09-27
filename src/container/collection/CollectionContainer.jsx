@@ -1,8 +1,6 @@
-
-
 import {
+  useCallback,
   useEffect,
-
   useMemo,
   useRef,
   useState,
@@ -51,7 +49,10 @@ import usePaginatedResource from "../../core/usePaginatedResource.jsx";
 import useScrollTracking from "../../core/useScrollTracking.jsx";
 
 import { motion } from "framer-motion";
-import { IonContent } from "@ionic/react";
+import {
+  IonContent,
+  useIonViewWillEnter,
+} from "@ionic/react";
 
 
 // ---------------------------------------------------------
@@ -105,17 +106,13 @@ export default function CollectionContainer() {
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState("inside");
 
-
-
-  // const [isBookmarked, setIsBookmarked] = useState(null);
-  // const [isArchived, setIsArchived] = useState(null);
-
   const [bookmarkLoading, setBookmarkLoading] = useState(false);
-  const [sentHistory, setSentHistory] = useState(false);
+  const [isArchived, setIsArchived] = useState(null);
 
   const actionLock = useRef(false);
 
   const sentHistoryRef = useRef(false);
+
 
   // -------------------------------------------------------
   // Permissions
@@ -149,15 +146,22 @@ export default function CollectionContainer() {
 
   // -------------------------------------------------------
   // Load collection
+  //
+  // Important:
+  // Ionic can keep this page mounted while navigating to
+  // the edit page. useIonViewWillEnter makes sure we fetch
+  // the Room again when returning to it.
   // -------------------------------------------------------
 
-  useEffect(() => {
-    if (!id) return;
+  const loadCollection = useCallback(
+    async ({
+      showSpinner = true,
+    } = {}) => {
+      if (!id) return;
 
-    let cancelled = false;
-
-    async function loadCollection() {
-      setLoading(true);
+      if (showSpinner) {
+        setLoading(true);
+      }
 
       try {
         const action = currentProfile
@@ -165,8 +169,6 @@ export default function CollectionContainer() {
           : fetchCollection({ id });
 
         const result = await dispatch(action);
-
-        if (cancelled) return;
 
         checkResult(
           result,
@@ -194,6 +196,14 @@ export default function CollectionContainer() {
               })
             );
 
+            setIsArchived(
+              col.parentCollections?.find(
+                (item) =>
+                  item.parentCollectionId ===
+                  archiveCol?.id
+              ) || null
+            );
+
             setLoading(false);
           },
           (error) => {
@@ -210,8 +220,6 @@ export default function CollectionContainer() {
           }
         );
       } catch (error) {
-        if (cancelled) return;
-
         setLoading(false);
 
         showAlert({
@@ -219,14 +227,18 @@ export default function CollectionContainer() {
           type: AlertType.error,
         });
       }
-    }
+    },
+    [
+      id,
+      currentProfile?.id,
+      dispatch,
+      showAlert,
+    ]
+  );
 
+  useIonViewWillEnter(() => {
     loadCollection();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [id, currentProfile?.id]);
+  });
 
 
   // -------------------------------------------------------
@@ -245,151 +257,70 @@ export default function CollectionContainer() {
         pages: [],
       })
     );
-  }, [id]);
+
+    sentHistoryRef.current = false;
+  }, [id, dispatch]);
 
 
   // -------------------------------------------------------
   // Home / Archive system rooms
   // -------------------------------------------------------
 
-  // useLayoutEffect(() => {
-  //   const profileCollections =
-  //     currentProfile?.profileToCollections;
+  const homeCol = useMemo(() => {
+    const profileCollections =
+      currentProfile?.profileToCollections;
 
-  //   if (!profileCollections) {
-  //     setHomeCol(null);
-  //     setArchiveCol(null);
-  //     return;
-  //   }
+    if (!profileCollections) return null;
 
-  //   const home =
-  //     profileCollections.find(
-  //       (item) => item.type === "home"
-  //     )?.collection || null;
+    return (
+      profileCollections.find(
+        (item) => item.type === "home"
+      )?.collection || null
+    );
+  }, [currentProfile?.profileToCollections]);
 
-  //   const archive =
-  //     profileCollections.find(
-  //       (item) => item.type === "archive"
-  //     )?.collection || null;
+  const archiveCol = useMemo(() => {
+    const profileCollections =
+      currentProfile?.profileToCollections;
 
-  //   setHomeCol(home);
-  //   setArchiveCol(archive);
-  // }, [currentProfile]);
-const homeCol = useMemo(() => {
-  const profileCollections =
-    currentProfile?.profileToCollections;
+    if (!profileCollections) return null;
 
-  if (!profileCollections) return null;
-
-  return (
-    profileCollections.find(
-      (item) => item.type === "home"
-    )?.collection || null
-  );
-}, [currentProfile?.profileToCollections]);
-
-const archiveCol = useMemo(() => {
-  const profileCollections =
-    currentProfile?.profileToCollections;
-
-  if (!profileCollections) return null;
-
-  return (
-    profileCollections.find(
-      (item) => item.type === "archive"
-    )?.collection || null
-  );
-}, [currentProfile?.profileToCollections]);
-
-  // -------------------------------------------------------
-  // Determine saved state
-  // -------------------------------------------------------
-
-  // useEffect(() => {
-  //   if (!collection) return;
-
-  //   const parents =
-  //     collection.parentCollections ?? [];
-
-  //   if (homeCol) {
-  //     const homeRelationship = parents.find(
-  //       (item) =>
-  //         item.parentCollectionId === homeCol.id
-  //     );
-
-  //     setIsBookmarked(
-  //       homeRelationship || null
-  //     );
-  //   }
-
-  //   if (archiveCol) {
-  //     const archiveRelationship = parents.find(
-  //       (item) =>
-  //         item.parentCollectionId === archiveCol.id
-  //     );
-
-  //     setIsArchived(
-  //       archiveRelationship || null
-  //     );
-  //   }
-
-  //   setBookmarkLoading(false);
-  // }, [
-  //   collection,
-  //   homeCol,
-  //   archiveCol,
-  // ]);
+    return (
+      profileCollections.find(
+        (item) => item.type === "archive"
+      )?.collection || null
+    );
+  }, [currentProfile?.profileToCollections]);
 
 
   // -------------------------------------------------------
   // History
   // -------------------------------------------------------
 
-  // useEffect(() => {
-  //   if (
-  //     sentHistory ||
-  //     !currentProfile?.id ||
-  //     !collection?.id
-  //   ) {
-  //     return;
-  //   }
+  useEffect(() => {
+    if (
+      sentHistoryRef.current ||
+      !currentProfile?.id ||
+      !collection?.id
+    ) {
+      return;
+    }
 
-  //   setSentHistory(true);
+    sentHistoryRef.current = true;
 
-  //   dispatch(
-  //     postCollectionHistory({
-  //       profile: currentProfile,
-  //       collection,
-  //     })
-  //   );
-  // }, [
-  //   currentProfile?.id,
-  //   collection?.id,
-  //   sentHistory,
-  // ]);
+    dispatch(
+      postCollectionHistory({
+        profile: currentProfile,
+        collection,
+      })
+    );
+  }, [
+    currentProfile?.id,
+    collection?.id,
+    dispatch,
+  ]);
 
-useEffect(() => {
-  if (
-    sentHistoryRef.current ||
-    !currentProfile?.id ||
-    !collection?.id
-  ) {
-    return;
-  }
 
-  sentHistoryRef.current = true;
-
-  dispatch(
-    postCollectionHistory({
-      profile: currentProfile,
-      collection,
-    })
-  );
-}, [
-  currentProfile?.id,
-  collection?.id,
-  dispatch,
-]);
   // -------------------------------------------------------
   // Scroll tracking
   // -------------------------------------------------------
@@ -407,9 +338,11 @@ useEffect(() => {
   // -------------------------------------------------------
 
   const pageSize = 10;
-const recommended = {
-  items: [],
-};
+
+  const recommended = {
+    items: [],
+  };
+
   // const recommended = usePaginatedResource({
   //   cacheKey:
   //     `recommended-collections:${collection?.id}`,
@@ -546,33 +479,48 @@ const recommended = {
       );
     });
   };
-const isBookmarked = useMemo(() => {
-  if (!collection || !homeCol) return null;
 
-  return (
-    collection.parentCollections?.find(
-      (item) =>
-        item.parentCollectionId === homeCol.id
-    ) || null
-  );
-}, [
-  collection,
-  homeCol,
-]);
 
-const isArchived = useMemo(() => {
-  if (!collection || !archiveCol) return null;
+  // -------------------------------------------------------
+  // Determine saved state
+  // -------------------------------------------------------
 
-  return (
-    collection.parentCollections?.find(
-      (item) =>
-        item.parentCollectionId === archiveCol.id
-    ) || null
-  );
-}, [
-  collection,
-  archiveCol,
-]);
+  const isBookmarked = useMemo(() => {
+    if (!collection || !homeCol) return null;
+
+    return (
+      collection.parentCollections?.find(
+        (item) =>
+          item.parentCollectionId === homeCol.id
+      ) || null
+    );
+  }, [
+    collection,
+    homeCol,
+  ]);
+
+
+  const derivedArchived = useMemo(() => {
+    if (!collection || !archiveCol) return null;
+
+    return (
+      collection.parentCollections?.find(
+        (item) =>
+          item.parentCollectionId === archiveCol.id
+      ) || null
+    );
+  }, [
+    collection,
+    archiveCol,
+  ]);
+
+
+  // Keep Archive state synchronized with the
+  // currently loaded collection.
+  useEffect(() => {
+    setIsArchived(derivedArchived);
+  }, [derivedArchived]);
+
 
   // -------------------------------------------------------
   // Save / unsave Home
@@ -592,9 +540,7 @@ const isArchived = useMemo(() => {
 
     setBookmarkLoading(true);
 
-if (!isBookmarked) {
-
-
+    if (!isBookmarked) {
       dispatch(
         addCollectionListToCollection({
           id: homeCol.id,
@@ -611,10 +557,12 @@ if (!isBookmarked) {
             });
 
             setBookmarkLoading(false);
+
+            loadCollection({
+              showSpinner: false,
+            });
           },
           (error) => {
-            // setIsBookmarked(null);
-
             showAlert({
               message:
                 error?.message ||
@@ -627,8 +575,7 @@ if (!isBookmarked) {
         );
       });
     } else {
-     const relationship = isBookmarked;
-      // setIsBookmarked(null);
+      const relationship = isBookmarked;
 
       dispatch(
         deleteCollectionFromCollection({
@@ -644,9 +591,12 @@ if (!isBookmarked) {
             });
 
             setBookmarkLoading(false);
+
+            loadCollection({
+              showSpinner: false,
+            });
           },
           () => {
-            // setIsBookmarked(relationship);
             setBookmarkLoading(false);
           }
         );
@@ -692,6 +642,10 @@ if (!isBookmarked) {
             });
 
             setBookmarkLoading(false);
+
+            loadCollection({
+              showSpinner: false,
+            });
           },
           (error) => {
             setIsArchived(null);
@@ -726,6 +680,10 @@ if (!isBookmarked) {
             });
 
             setBookmarkLoading(false);
+
+            loadCollection({
+              showSpinner: false,
+            });
           },
           () => {
             setIsArchived(relationship);
@@ -743,41 +701,42 @@ if (!isBookmarked) {
 
   if (!loading && collection && !canSee) {
     return (
-            <IonContent
-      scrollY={true}
-      className="page-content"
-      fullscreen
-    >
-      <ErrorBoundary>
-    
-        <main className="h-[100%] bg-base-surface dark:bg-base-bgDark">
-          <div className={`${PAGE} py-24`}>
-            <div className="max-w-xl mx-auto text-center">
-              <p className="text-xs uppercase tracking-[0.18em] text-text-secondary mb-4">
-                Room
-              </p>
+      <IonContent
+        scrollY={true}
+        className="page-content"
+        fullscreen
+      >
+        <ErrorBoundary>
 
-              <h1 className="font-serif text-3xl sm:text-4xl text-text-primary dark:text-cream mb-4">
-                This room is private.
-              </h1>
+          <main className="h-[100%] bg-base-surface dark:bg-base-bgDark">
+            <div className={`${PAGE} py-24`}>
+              <div className="max-w-xl mx-auto text-center">
+                <p className="text-xs uppercase tracking-[0.18em] text-text-secondary mb-4">
+                  Room
+                </p>
 
-              <p className="text-text-secondary dark:text-gray-400 mb-8">
-                You do not have permission to view
-                what is inside this room.
-              </p>
+                <h1 className="font-serif text-3xl sm:text-4xl text-text-primary dark:text-cream mb-4">
+                  This room is private.
+                </h1>
 
-              <button
-                onClick={() =>
-                  history.push(Paths.collections.path)
-                }
-                className={PRIMARY_BUTTON}
-              >
-                Back to Rooms
-              </button>
+                <p className="text-text-secondary dark:text-gray-400 mb-8">
+                  You do not have permission to view
+                  what is inside this room.
+                </p>
+
+                <button
+                  onClick={() =>
+                    history.push(Paths.collections)
+                  }
+                  className={PRIMARY_BUTTON}
+                >
+                  Back to Rooms
+                </button>
+              </div>
             </div>
-          </div>
-        </main>
-      </ErrorBoundary>
+          </main>
+
+        </ErrorBoundary>
       </IonContent>
     );
   }
@@ -800,16 +759,18 @@ if (!isBookmarked) {
 
   return (
     <ErrorBoundary>
-      
-      <main className="    h-[100%]
-     
-        overflow-y-auto
-        overscroll-contain
-        bg-base-surface
-        text-text-primary
-        dark:bg-base-bgDark
-        dark:text-cream
-    ">
+
+      <main
+        className="
+          h-[100%]
+          overflow-y-auto
+          overscroll-contain
+          bg-base-surface
+          text-text-primary
+          dark:bg-base-bgDark
+          dark:text-cream
+        "
+      >
 
         {/* --------------------------------------------- */}
         {/* Header / Room identity */}
@@ -820,7 +781,7 @@ if (!isBookmarked) {
 
             <button
               onClick={() =>
-                history.push(Paths.collections.path)
+                history.push(Paths.collections)
               }
               className="
                 inline-flex items-center gap-2
@@ -939,7 +900,7 @@ if (!isBookmarked) {
         {/* Actions */}
         {/* --------------------------------------------- */}
 
-        {/* <section className="border-b border-card-border dark:border-white/10">
+        <section className="border-b border-card-border dark:border-white/10">
           <div
             className={`${PAGE} py-4`}
           >
@@ -998,20 +959,23 @@ if (!isBookmarked) {
                 </button>
               )}
 
-{canEdit && (
-  <button
-    onClick={() =>
-      history.push(
-        Paths.editCollection.createRoute(
-          collection.id
-        )
-      )
-    }
-    className={SECONDARY_BUTTON}
-  >
-    Edit room
-  </button>
-)}
+
+              {canEdit && (
+                <button
+                  onClick={() =>
+                    history.push(
+                      Paths.editCollection.createRoute(
+                        collection.id
+                      )
+                    )
+                  }
+                  className={SECONDARY_BUTTON}
+                >
+                  Edit room
+                </button>
+              )}
+
+
               {canAdd && (
                 <button
                   onClick={() =>
@@ -1098,7 +1062,7 @@ if (!isBookmarked) {
 
             </div>
           </section>
-        )} */}
+        )}
 
       </main>
     </ErrorBoundary>
@@ -1116,10 +1080,6 @@ function InsideRoom({
   canAdd,
   history,
 }) {
-  const pagesInView = useSelector(
-    (state) => state.pages.pagesInView
-  );
-
   const isOwner =
     collection?.profileId ===
     useSelector(
@@ -1127,20 +1087,64 @@ function InsideRoom({
     );
 
 
-  const childRooms = useMemo(() => {
-    return (collection?.childCollections ?? [])
-      .map((item) =>
-        item?.childCollection || item
-      )
-      .filter(Boolean);
+  // -------------------------------------------------------
+  // Pages + Rooms are one ordered sequence.
+  //
+  // We intentionally use the actual relationship shape:
+  //
+  // Page:
+  //   item.story
+  //
+  // Room:
+  //   item.childCollection
+  //
+  // Both use item.index for their position.
+  // -------------------------------------------------------
+
+  const orderedContent = useMemo(() => {
+    const pages = (
+      collection?.storyIdList ?? []
+    )
+      .filter((item) => item?.story)
+      .map((item) => ({
+        relationship: item,
+        kind: "page",
+        content: item.story,
+        index: item.index,
+      }));
+
+    const rooms = (
+      collection?.childCollections ?? []
+    )
+      .filter((item) => item?.childCollection)
+      .map((item) => ({
+        relationship: item,
+        kind: "room",
+        content: item.childCollection,
+        index: item.index,
+      }));
+
+    return [
+      ...pages,
+      ...rooms,
+    ].sort((a, b) => {
+      const aIndex =
+        a.index == null
+          ? Number.POSITIVE_INFINITY
+          : a.index;
+
+      const bIndex =
+        b.index == null
+          ? Number.POSITIVE_INFINITY
+          : b.index;
+
+      return aIndex - bIndex;
+    });
   }, [collection]);
 
 
-  const hasRooms =
-    childRooms.length > 0;
-
-  const hasPages =
-    pagesInView?.length > 0;
+  const hasContent =
+    orderedContent.length > 0;
 
 
   const canModify =
@@ -1148,78 +1152,123 @@ function InsideRoom({
     collection?.isOpenCollaboration;
 
 
+  // -------------------------------------------------------
+  // Split only consecutive Pages into PageList blocks.
+  //
+  // This lets us preserve the existing PageList UI while
+  // still allowing Rooms to appear anywhere in the sequence.
+  //
+  // Example:
+  //
+  // Page
+  // Page
+  // Room
+  // Page
+  // Room
+  // Page
+  // Page
+  // -------------------------------------------------------
+
+  const contentBlocks = useMemo(() => {
+    const blocks = [];
+    let pageBuffer = [];
+
+    const flushPages = () => {
+      if (pageBuffer.length === 0) return;
+
+      blocks.push({
+        kind: "pages",
+        items: pageBuffer,
+      });
+
+      pageBuffer = [];
+    };
+
+    orderedContent.forEach((item) => {
+      if (item.kind === "page") {
+        pageBuffer.push(item.content);
+        return;
+      }
+
+      flushPages();
+
+      blocks.push({
+        kind: "room",
+        room: item.content,
+        relationship: item.relationship,
+      });
+    });
+
+    flushPages();
+
+    return blocks;
+  }, [orderedContent]);
+
+
   return (
     <div className="space-y-12">
 
       {/* ------------------------------------------- */}
-      {/* Child rooms */}
+      {/* Ordered Room + Page content */}
       {/* ------------------------------------------- */}
 
-      {hasRooms && (
-        <section className="pt-8">
-
-          <RoomSectionHeading
-            eyebrow="Rooms"
-            title="Inside this room"
-            description="Other rooms collected here."
-          />
-
-          <div
-            className="
-              grid
-              grid-cols-1
-              sm:grid-cols-2
-              gap-4
-              mt-6
-            "
-          >
-            {childRooms.map((room) => (
-              <RoomPreview
-                key={room.id}
-                room={room}
-                history={history}
-              />
-            ))}
-          </div>
-
-        </section>
-      )}
-
-
-      {/* ------------------------------------------- */}
-      {/* Pages */}
-      {/* ------------------------------------------- */}
-
-      <section
-        className={
-          hasRooms
-            ? "border-t border-card-border dark:border-white/10 pt-10"
-            : "pt-8"
-        }
-      >
+      <section className="pt-8">
 
         <RoomSectionHeading
-          eyebrow="Writing"
-          title="Pages"
-          description="Writing that lives in this room."
+          eyebrow="Inside"
+          title="Inside this room"
+          description="Pages and rooms, in the order they were placed here."
         />
 
 
-        {hasPages ? (
-          <div className="mt-6">
-            <PageList
-              items={pagesInView}
-              isGrid={false}
-              hasMore={false}
-              getMore={() => {}}
-              forFeedback={false}
-            />
+        {hasContent ? (
+          <div className="mt-6 space-y-8">
+
+            {contentBlocks.map((block, index) => {
+
+              // -----------------------------------------
+              // Room
+              // -----------------------------------------
+
+              if (block.kind === "room") {
+                return (
+                  <RoomPreview
+                    key={
+                      block.relationship?.id ||
+                      `room-${index}`
+                    }
+                    room={block.room}
+                    history={history}
+                  />
+                );
+              }
+
+
+              // -----------------------------------------
+              // Pages
+              // -----------------------------------------
+
+              return (
+                <div
+                  key={`pages-${index}`}
+                >
+                  <PageList
+                    items={block.items}
+                    isGrid={false}
+                    hasMore={false}
+                    getMore={() => {}}
+                    forFeedback={false}
+                  />
+                </div>
+              );
+            })}
+
           </div>
         ) : (
           <EmptyRoomContent
-            message="No pages in this room yet."
+            message="Nothing lives here yet."
             canAdd={canModify || canAdd}
-            buttonLabel="Add a Page"
+            buttonLabel="Add something"
             onClick={() =>
               history.push(
                 Paths.addToCollection.createRoute(
@@ -1237,7 +1286,7 @@ function InsideRoom({
       {/* Completely empty room */}
       {/* ------------------------------------------- */}
 
-      {!hasRooms && !hasPages && (
+      {!hasContent && (
         <section className="pt-8">
           <div
             className="
