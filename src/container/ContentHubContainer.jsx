@@ -241,7 +241,7 @@ const goToRoom = (profileToCollection) => {
           className="page-content"
           fullscreen
         >
-    <main className="h-[100%] overflow-scroll bg-base-surface text-text-primary">
+    <main className="h-[100vh] overflow-scroll bg-base-surface text-text-primary">
       <div
         className="
           mx-auto
@@ -717,34 +717,7 @@ function RoomsPreviewSection({
     </section>
   );
 }
-// function RoomsPreviewSection({
-//   rooms,
-//   onViewRooms,
-// }) {
-//   return (
-//     <section className="mt-14">
-//       <SectionHeader
-//         title="Your rooms"
-//         actionLabel="See all"
-//         onAction={onViewRooms}
-//       />
 
-//       {rooms.length > 0 ? (
-//        <RoomGrid
-//   rooms={rooms}
-//   onSelectRoom={onSelectRoom}
-// />
-//       ) : (
-//         <EmptyState
-//           title="No rooms yet."
-//           description="Make a room for things you want to keep together."
-//           action="Make a room"
-//           onAction={onViewRooms}
-//         />
-//       )}
-//     </section>
-//   );
-// }
 
 
 function RoomGrid({
@@ -882,83 +855,6 @@ function RoomCard({
     // </article>
   );
 }
-
-// function RoomCard({
-//   room,
-// }) {
-//   const pieceCount =
-//     room?.storyCount ??
-//     room?.stories?.length ??
-//     room?.storyIdList?.length ??
-//     null;
-
-//   return (
-//     <article
-//       className="
-//         min-h-36
-//         border
-//         border-border-soft
-//         bg-base-surface
-//         p-5
-//         transition-colors
-//         hover:border-base-soft
-//       "
-//     >
-//       <p
-//         className="
-//           text-xs
-//           font-medium
-//           uppercase
-//           tracking-[0.1em]
-//           text-text-secondary
-//         "
-//       >
-//         Room
-//       </p>
-
-//       <h3
-//         className="
-//           mt-2
-//           font-serif
-//           text-xl
-//           font-semibold
-//           text-text-primary
-//         "
-//       >
-//         {room?.title ||
-//           room?.name ||
-//           "Untitled room"}
-//       </h3>
-
-//       {room?.description && (
-//         <p
-//           className="
-//             mt-2
-//             line-clamp-2
-//             text-sm
-//             leading-relaxed
-//             text-text-secondary
-//           "
-//         >
-//           {room.description}
-//         </p>
-//       )}
-
-//       {pieceCount !== null && (
-//         <p
-//           className="
-//             mt-4
-//             text-xs
-//             text-text-secondary
-//           "
-//         >
-//           {pieceCount}{" "}
-//           {pieceCount === 1 ? "piece" : "pieces"}
-//         </p>
-//       )}
-//     </article>
-//   );
-// }
 
 
 /*

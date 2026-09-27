@@ -19,15 +19,15 @@ export default function AboutContainer() {
   }, []);
 
   return (
-    <IonContent color="light" fullscreen className="ion-padding h-[100%]  w-[100%] page-content">
+    <IonContent color="light" fullscreen className=" ">
       
-    <main className=" h-[100%]  w-[100%]  overflow-scroll bg-base-surface text-text-primary">
-      <div className="bg-[#f4f4e0] max-w-3xl mx-auto py-10 px-2">
+    <main className=" h-[100%] pb-12  ">
+      <div className="bg-[#f4f4e0] py-12 px-12 mx-auto px-2">
         <p className="open-sans-medium text-xs tracking-widest uppercase text-[#6b6f63] mb-4">
           About
         </p>
 
-        <h1 className="lora-bold text-4xl sm:text-5xl leading-tight text-[#12261f] mb-6">
+        <h1 className="lora-bold text-4xl py-12 sm:text-5xl leading-tight text-[#12261f] mb-6">
           The physical experience gets someone into a room. Plumbum gives that
           relationship somewhere to continue.
         </h1>
@@ -38,7 +38,7 @@ export default function AboutContainer() {
           people you trust with it, and the rooms you show up in.
         </p>
 
-        <div className="grid sm:grid-cols-2 gap-x-10 gap-y-8 mb-12">
+        <div className="grid sm:grid-cols-2 pb-12 gap-x-10 gap-y-8 ">
           <FeatureBlock title="Collections, not feeds">
             A collection holds work and other collections. It can be a book, a
             library, a workshop table, or a place you keep things while you

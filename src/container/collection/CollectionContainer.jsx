@@ -52,6 +52,7 @@ import useScrollTracking from "../../core/useScrollTracking.jsx";
 
 import { motion } from "framer-motion";
 import { IonContent } from "@ionic/react";
+import RoomPreview from "../../components/room/RoomPreview.jsx";
 
 
 // ---------------------------------------------------------

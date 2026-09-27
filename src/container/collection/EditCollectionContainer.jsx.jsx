@@ -60,7 +60,7 @@ const CARD =
   "dark:bg-base-surfaceDark dark:border-white/10";
 
 const PRIMARY_BUTTON =
-  "inline-flex items-center justify-center h-11 px-5 rounded-full " +
+  "inline-flex items-center justify-center h-11 px-5 mt-4  mb-1 rounded-full " +
   "bg-button-primary-bg text-white text-sm font-medium " +
   "transition-all duration-200 hover:bg-button-primary-hover " +
   "focus:outline-none focus:ring-2 focus:ring-button-primary-bg/30 " +
@@ -850,20 +850,32 @@ const handleSave = async () => {
               {/* BASIC INFORMATION */}
               {/* --------------------------------------- */}
 
-              <section className={`${CARD} p-5 sm:p-6`}>
-
+              <section className={`${CARD}  p-5 sm:p-6`}>
+{/* <div className="flex flex-row space between"> */}
                 <div className="mb-6">
-                  <p className="text-xs uppercase tracking-[0.16em] text-text-secondary mb-2">
+                  <p className="text-xs uppercase  tracking-[0.16em] text-text-secondary mb-2">
                     Room identity
                   </p>
 
                   <h2 className="font-serif text-2xl text-text-primary dark:text-cream">
                     What is this room?
                   </h2>
-                </div>
+                   <button
+                  onClick={() =>
+                    history.push(
+                      Paths.addToCollection.createRoute(
+                        collection.id
+                      )
+                    )
+                  }
+                  className={PRIMARY_BUTTON}
+                >
+                  Add to Room
+                </button>
+                {/* </div> */}
+</div>
 
-
-                <div className="space-y-6">
+                <div className="space-y-6 py-4">
 
                   <label className="block">
                     <span className="block text-sm font-medium text-text-primary dark:text-cream mb-2">
@@ -877,7 +889,7 @@ const handleSave = async () => {
                       }
                       placeholder="Room title"
                       className="
-                        w-full
+              
                         rounded-xl
                         border
                         border-card-border
@@ -911,7 +923,7 @@ const handleSave = async () => {
                       placeholder="What is this room for?"
                       rows={5}
                       className="
-                        w-full
+                        w-[100%]
                         resize-y
                         rounded-xl
                         border
@@ -1186,7 +1198,7 @@ const handleSave = async () => {
                     }
                  placeholder="Search pages and rooms..."
                     className="
-                      w-full
+                      w-[100%]
                       rounded-xl
                       border
                       border-card-border

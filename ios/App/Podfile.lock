@@ -10,11 +10,11 @@ PODS:
     - GoogleUtilities/Environment (~> 8.0)
     - GoogleUtilities/UserDefaults (~> 8.0)
     - PromisesObjC (~> 2.4)
-  - Capacitor (7.6.8):
+  - Capacitor (7.6.9):
     - CapacitorCordova
   - CapacitorCamera (7.0.5):
     - Capacitor
-  - CapacitorCordova (7.6.8)
+  - CapacitorCordova (7.6.9)
   - CapacitorFirebaseMessaging (7.5.0):
     - Capacitor
     - FirebaseMessaging (~> 11.7.0)
@@ -195,9 +195,9 @@ SPEC CHECKSUMS:
   Alamofire: 7193b3b92c74a07f85569e1a6c4f4237291e7496
   AppAuth: 1c1a8afa7e12f2ec3a294d9882dfa5ab7d3cb063
   AppCheckCore: cc8fd0a3a230ddd401f326489c99990b013f0c4f
-  Capacitor: ff6bf01336ac353098378828aff465095a89e459
+  Capacitor: 46067d1c8df89760dbed78780d436327d588c726
   CapacitorCamera: 9e952270be355797f769aa835bb7643a96c871fe
-  CapacitorCordova: e61ee8c40101b8cd011d0224261606a290c082cf
+  CapacitorCordova: 2080fc0d6bfbc9dcc0e6d88e77fa624190d343ca
   CapacitorFirebaseMessaging: 1ac12c0dab16d1e4edcf9cb878620507ac868a4e
   CapacitorFirebaseStorage: 4b438b83cb6ce20679b9ad97c2f25f894c1e0a01
   CapacitorGeolocation: ab54d708e2fcf99a7bafe0219eaa6f7a932f001a
@@ -228,6 +228,6 @@ SPEC CHECKSUMS:
   nanopb: fad817b59e0457d11a5dfbde799381cd727c1275
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
 
-PODFILE CHECKSUM: 74870ba0aac413e1b2197bf709b7c7b047114a57
+PODFILE CHECKSUM: 3d1cc7c59ef8e1decb382c9494e2816cb0b45f7e
 
 COCOAPODS: 1.16.2
