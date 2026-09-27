@@ -139,15 +139,7 @@ const PageWrapper = ({
       ref={pageRef}
       className="bg-paper"
     >
-
-      {/* =====================================================
-          APPLICATION CHROME
-      ===================================================== */}
-
-      {presentHeader && showHeader && (
-        <NavbarContainer />
-      )}
-
+  
 
 
 

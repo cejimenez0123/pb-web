@@ -526,14 +526,7 @@ useEffect(() => {
                 <PushNotificationHandler />
               )}
 
-              {/* {showTopNavbar && (
-                <div className="z-50 flex w-full shrink-0">
-                  <NavbarContainer
-                    isDesktop={isDesktop}
-                    currentProfile={currentProfile}
-                  />
-                </div>
-              )} */}
+           
   <AppNavigationChrome
     isDesktop={isDesktop}
     isMobileOrTablet={isMobileOrTablet}
@@ -1005,18 +998,6 @@ useEffect(() => {
                   />
                 </IonRouterOutlet>
 
-                {/* {showBottomNavbar && (
-                  <IonFooter>
-                    <div className="bg-base-surface dark:bg-base-bgDark">
-                      <NavbarContainer
-                        isDesktop={isDesktop}
-                        currentProfile={
-                          currentProfile
-                        }
-                      />
-                    </div>
-                  </IonFooter>
-                )} */}
               </div>
             </IonReactRouter>
           </IonApp>
