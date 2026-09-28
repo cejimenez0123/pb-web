@@ -4,6 +4,8 @@ import useProfileDependentEffects from "../core/useProfileDependentEffects.jsx";
 import Paths from "../core/paths.js";
 import { PageType } from "../core/constants.js";
 import { IonContent, useIonRouter } from "@ionic/react";
+import { useDialog } from "../domain/usecases/useDialog.jsx";
+import CreateCollectionForm from "../components/collection/CreateCollectionForm.jsx";
 
 /*
 |--------------------------------------------------------------------------
@@ -52,7 +54,7 @@ export default function ContentHubContainer() {
     true,
     isTablet ? 3 : 1
   );
-
+const {openDialog , closeDialog,resetDialog}=useDialog()
   const homeRoom = useMemo(() => {
     return currentProfile?.profileToCollections?.find(
       (item) => item?.type === "home"
@@ -134,39 +136,7 @@ export default function ContentHubContainer() {
 }, [
   currentProfile?.profileToCollections,
 ]);
-  // const homeRooms = useMemo(() => {
-  //   const rooms = [];
-
-  //   /*
-  //    * Home is a known system room.
-  //    */
-  //   if (homeRoom) {
-  //     rooms.push(homeRoom);
-  //   }
-
-  //   /*
-  //    * The profile's other profile-to-collection relationships can be
-  //    * surfaced here without assuming a particular backend collection
-  //    * shape beyond the existing profile relationship.
-  //    */
-  //   const relatedRooms =
-  //     currentProfile?.profileToCollections
-  //       ?.map((item) => item?.collection)
-  //       ?.filter(Boolean)
-  //       ?.filter((room) => {
-  //         if (!room?.id) return false;
-
-  //         return !rooms.some(
-  //           (existing) => existing?.id === room.id
-  //         );
-  //       }) || [];
-
-  //   return [...rooms, ...relatedRooms].slice(0, 4);
-  // }, [
-  //   currentProfile?.profileToCollections,
-  //   homeRoom,
-  // ]);
-
+ 
   if (!currentProfile) {
     return null;
   }
@@ -186,17 +156,24 @@ const goToRoom = (profileToCollection) => {
     )
   );
 };
-  const goToRooms = () => {
-    /*
-     * The complete Rooms route should be wired here when the new
-     * collection/room route is established.
-     *
-     * For now we intentionally do not invent a Paths property that
-     * has not been established in the existing application.
-     */
-    console.log(homeRoom)
-    router.push("/collections");
-  };
+const goToRooms = () => {
+  openDialog({
+    title: "Create Collection",
+    scrollY: false,
+    text: (
+      <CreateCollectionForm
+        onClose={()=>{
+          console.log("Top")
+          closeDialog}}
+      />
+    ),
+    disagree:()=>{ 
+      console.log("SD")
+      closeDialog()},
+    disagreeText: "Close",
+    breakpoint: 1,
+  });
+};
 
   const goToWorkshop = () => {
     /*
@@ -697,7 +674,7 @@ function RoomsPreviewSection({
     <section className="mt-14">
       <SectionHeader
         title="Your rooms"
-        actionLabel="See all"
+        actionLabel="+ Make A Room"
         onAction={onViewRooms}
       />
 

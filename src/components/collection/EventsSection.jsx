@@ -1,3 +1,5 @@
+
+
 import EmptyState from "../EmptyState";
 import PaginatedList from "../page/PaginatedList";
 import Paths from "../../core/paths";
@@ -10,42 +12,110 @@ const PAGE_SIZE = 8;
 export default function EventsSection({
   profile,
   router,
+  search,
+  setSearch,
+  searchInput,
+  setSearchInput,
+  debouncedSearch,
 }) {
+  const id = profile.profileToCollections.find(ptc=>ptc.type=="events").collection.id
   return (
     <section>
-  
+      <div
+        className="
+          flex
+          flex-col
+          gap-5
+          border-b
+          border-card-border
+          pb-5
+          sm:flex-row
+          sm:items-end
+          sm:justify-between
+        "
+      >
+        <div>
+          {/* <p
+            className="
+              mb-2
+              text-xs
+              uppercase
+              tracking-[0.18em]
+              text-text-secondary
+            "
+          >
+            Events
+          </p> */}
+{/*    
+          <h2
+            className="
+              font-serif
+              text-2xl
+              sm:text-3xl
+              text-text-primary
+              dark:text-cream
+            "
+          >
+            Where the writing meets the world
+          </h2> */}
 
-      <div className="mt-6">
+     <SectionHeader
+        eyebrow="Your Calendar"
+        title="Events"
+        actionLabel="Where the writing meets the world"
+        onAction={()=>{
+          router.push(Paths.collection.createRoute(id))
+        }}
+      />
+        </div>
+
+        <input
+          value={searchInput}
+          onChange={(e) => {
+            const value = e.target.value;
+            setSearchInput(value);
+            setSearch(value);
+          }}
+          placeholder="Search"
+          className="
+            w-full
+            rounded-full
+            border
+            border-card-border
+            bg-base-surface
+            px-4
+            py-2
+            text-sm
+            text-text-primary
+            placeholder:text-text-secondary
+            outline-none
+            transition-colors
+            focus:border-button-primary-bg
+            sm:max-w-[18rem]
+            dark:bg-base-bgDark
+          "
+        />
+      </div>
+
+      <div className="mt-8">
         <PaginatedList
-  cacheKey="profile:events"
-  params={{
-    type: "events",
-  }}
-  fetcher={getMyStories}
-  pageSize={8}
-  pagination="infinite"
-  enabled={!!profile?.id}
-  emptyState={
-    <EmptyState text="No events yet." />
-  }
-  renderItem={(item) => (
-    <EventListItem
-      key={item.collection?.id}
-      item={item}
-      router={router}
-    />
-  )}
-/>
-        {/* <PaginatedList
           cacheKey="profile:events"
           params={{
             type: "events",
           }}
           fetcher={getMyStories}
           pageSize={PAGE_SIZE}
+          pagination="infinite"
           enabled={!!profile?.id}
+          search={debouncedSearch}
           emptyState={
-            <EmptyState text="No events yet." />
+            <EmptyState
+              text={
+                search
+                  ? "No matching events."
+                  : "No events yet."
+              }
+            />
           }
           renderItem={(item) => (
             <EventListItem
@@ -54,7 +124,7 @@ export default function EventsSection({
               router={router}
             />
           )}
-        /> */}
+        />
       </div>
     </section>
   );
@@ -79,7 +149,7 @@ function EventListItem({ item, router }) {
       "
     >
       {/* COLLECTION / EVENT */}
-      <button
+      {/* <button
         type="button"
         onClick={() =>
           router.push(
@@ -95,9 +165,9 @@ function EventListItem({ item, router }) {
           gap-4
           text-left
         "
-      >
-        <div className="min-w-0">
-          <h3
+      > */}
+        {/* <div className="min-w-0"> */}
+          {/* <h3
             className="
               font-serif
               text-xl
@@ -108,9 +178,9 @@ function EventListItem({ item, router }) {
             "
           >
             {collection.title}
-          </h3>
+          </h3> */}
 
-          {collection.purpose && (
+          {/* {collection.purpose && (
             <p
               className="
                 mt-1
@@ -122,8 +192,8 @@ function EventListItem({ item, router }) {
 
            Events and the work connected to them.
             </p>
-          )}
-        </div>
+          )} */}
+        {/* </div>
 
         <span
           aria-hidden="true"
@@ -137,8 +207,8 @@ function EventListItem({ item, router }) {
           "
         >
           →
-        </span>
-      </button>
+        </span> */}
+      {/* </button> */}
 
       {/* STORIES INSIDE EVENT */}
       {stories.length > 0 && (
@@ -222,5 +292,93 @@ function EventListItem({ item, router }) {
         </p>
       )}
     </article>
+  );
+}
+function SectionHeader({
+  eyebrow,
+  title,
+  description,
+  actionLabel,
+  onAction,
+}) {
+  return (
+    <div
+      className="
+        mb-4
+        border-b
+        border-border-soft
+        pb-3
+      "
+    >
+      <div
+        className="
+          flex
+          items-end
+          justify-between
+          gap-4
+        "
+      >
+        <div className="min-w-0">
+          {eyebrow && (
+            <p
+              className="
+                mb-1
+                text-xs
+                font-medium
+                uppercase
+                tracking-[0.12em]
+                text-text-secondary
+              "
+            >
+              {eyebrow}
+            </p>
+          )}
+
+          <h2
+            className="
+              font-serif
+              text-2xl
+              font-semibold
+              leading-tight
+              text-text-primary
+              sm:text-3xl
+            "
+          >
+            {title}
+          </h2>
+
+          {description && (
+            <p
+              className="
+                mt-1
+                max-w-xl
+                text-sm
+                leading-relaxed
+                text-text-secondary
+              "
+            >
+              {description}
+            </p>
+          )}
+        </div>
+
+        {actionLabel && onAction && (
+          <button
+            type="button"
+            onClick={onAction}
+            className="
+              shrink-0
+              text-sm
+              font-medium
+              text-text-brand
+              transition-opacity
+              hover:opacity-70
+            "
+          >
+            {actionLabel}
+          </button>
+        )}
+      </div>
+    </div>
   );
 }

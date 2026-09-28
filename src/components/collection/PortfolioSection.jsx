@@ -1,74 +1,110 @@
 import EmptyState from "../EmptyState";
 import PaginatedList from "../page/PaginatedList";
-import ListPill from "../page/ListPill";
-
 import Paths from "../../core/paths";
+
 import { getMyStories } from "../../actions/StoryActions";
+import shortName from "../../core/shortName";
 
 const PAGE_SIZE = 8;
 
-function PortfolioSection({
+export default function PortfolioSection({
   profile,
   router,
+  search,
+  setSearch,
+  searchInput,
+  setSearchInput,
+  debouncedSearch,
 }) {
+  const id = profile.profileToCollections.find(ptc=>ptc.type=="portfolio").collection.id
   return (
     <section>
       <div
         className="
           flex
-          items-end
-          justify-between
-          gap-6
+          flex-col
+          gap-5
           border-b
-          border-soft
-          pb-4
+          border-card-border
+          pb-5
+          sm:flex-row
+          sm:items-end
+          sm:justify-between
         "
       >
-       
+        <div>
+          <SectionHeader
+            eyebrow="Your Work"
+            title="Portfolio"
+            actionLabel="What I've chosen to share"
+            onAction={() => {
+              router.push(Paths.collection.createRoute(id));
+            }}
+          />
+        </div>
 
-        <button
-          type="button"
+        <input
+          value={searchInput}
+          onChange={(e) => {
+            const value = e.target.value;
+            setSearchInput(value);
+            setSearch(value);
+          }}
+          placeholder="Search"
           className="
-            hidden
+            w-full
+            rounded-full
+            border
+            border-card-border
+            bg-base-surface
+            px-4
+            py-2
             text-sm
-            text-emerald-800
-            sm:block
+            text-text-primary
+            placeholder:text-text-secondary
+            outline-none
+            transition-colors
+            focus:border-button-primary-bg
+            sm:max-w-[18rem]
+            dark:bg-base-bgDark
           "
-        >
-          Arrange
-        </button>
+        />
       </div>
 
-      <div className="mt-6">
-
-          <PaginatedList
-  cacheKey="profile:portfolio"
-  params={{ type: "portfolio" }}
-  fetcher={getMyStories}
-  pageSize={PAGE_SIZE}
-  pagination="infinite"
-  enabled={!!profile?.id}
-  emptyState={
-    <PortfolioEmptyState router={router} />
-  }
-  renderItem={(item) => (
-    <PortfolioListItem
-      item={item}
-      profile={profile}
-      router={router}
-    />
-  )}
-/>
-        {/* /> */}
+      <div className="mt-8">
+        <PaginatedList
+          cacheKey="profile:portfolio"
+          params={{
+            type: "portfolio",
+          }}
+          fetcher={getMyStories}
+          pageSize={PAGE_SIZE}
+          pagination="infinite"
+          enabled={!!profile?.id}
+          search={debouncedSearch}
+          emptyState={
+            <EmptyState
+              text={
+                search
+                  ? "No matching work."
+                  : "No portfolio work yet."
+              }
+            />
+          }
+          renderItem={(item) => (
+            <PortfolioListItem
+              key={item.collection?.id}
+              item={item}
+              router={router}
+            />
+          )}
+        />
       </div>
     </section>
   );
 }
-function PortfolioListItem({
-  item,
-  profile,
-  router,
-}) {
+
+function PortfolioListItem({ item, router }) {
   const collection = item?.collection;
   const stories = item?.stories || [];
 
@@ -79,70 +115,18 @@ function PortfolioListItem({
   return (
     <article
       className="
-        w-[100%]
+   
         border-b
-        border-soft
+        border-card-border
         py-6
         first:pt-0
+        dark:border-white/10
       "
     >
-      {/* COLLECTION */}
-      <button
-        type="button"
-        onClick={() =>
-          router.push(
-            Paths.collection.createRoute(collection.id)
-          )
-        }
-        className="
-          group
-          flex
-          w-[100%]
-          items-center
-          justify-between
-          gap-4
-          text-left
-        "
-      >
-        <div className="min-w-0">
-          <h3
-            className="
-              font-serif
-              text-xl
-              leading-snug
-              text-gray-900
-              transition-colors
-              group-hover:text-emerald-800
-            "
-          >
-            {collection.title}
-          </h3>
-
-          {collection.purpose && (
-  <p className="mt-1 text-sm text-gray-500">
-            What I want other people to read first.
-          </p>
-          )}
-        </div>
-
-        <span
-          aria-hidden="true"
-          className="
-            shrink-0
-            text-lg
-            text-gray-300
-            transition-all
-            group-hover:translate-x-1
-            group-hover:text-emerald-700
-          "
-        >
-          →
-        </span>
-      </button>
-
+  
       {/* STORIES INSIDE PORTFOLIO COLLECTION */}
       {stories.length > 0 && (
-        <div className="space-y-4">
+        <div className="mt-3 space-y-4">
           {stories.map((story) => (
             <button
               key={story.id}
@@ -158,64 +142,41 @@ function PortfolioListItem({
                 w-[100%]
                 items-start
                 justify-between
+                gap-4
+              
                 border-b
-                border-soft
+                border-card-border
                 py-3
                 text-left
-           
+                last:border-b-0
+                dark:border-white/10
               "
             >
               <div className="min-w-0">
-                {/* <p
+                <p
                   className="
                     font-serif
                     text-base
                     leading-snug
-                    text-gray-900
+                    text-text-primary
                     transition-colors
-                    group-hover:text-emerald-800
+                    group-hover:text-text-brand
+                    dark:text-cream
                   "
                 >
-                  {story.title}
-                </p> */}
-{story.title?.trim() ? (
-  <p
-    className="
-      font-serif
-      text-base
-      leading-snug
-      text-gray-900
-      transition-colors
-      group-hover:text-emerald-800
-    "
-  >
-    {story.title}
-  </p>
-) : (
-  <p
-    className="
-      font-serif
-      text-base
-      italic
-      leading-snug
-      text-gray-400
-      transition-colors
-      group-hover:text-emerald-800
-    "
-  >
-    Untitled
-  </p>
-)}
+                  {story.title?.trim() || "Untitled"}
+                </p>
+
                 {story.description && (
                   <p
                     className="
                       mt-1
                       text-sm
                       leading-relaxed
-                      text-gray-500
+                      text-text-secondary
                     "
                   >
-                    {story.description}
+                    {shortName(story.description, 80)}
                   </p>
                 )}
               </div>
@@ -226,10 +187,10 @@ function PortfolioListItem({
                   shrink-0
                   pt-0.5
                   text-base
-                  text-gray-300
+                  text-text-secondary
                   transition-all
                   group-hover:translate-x-1
-                  group-hover:text-emerald-700
+                  group-hover:text-text-brand
                 "
               >
                 →
@@ -241,11 +202,109 @@ function PortfolioListItem({
 
       {/* EMPTY COLLECTION */}
       {stories.length === 0 && (
-        <p className="mt-4 ml-4 text-sm italic text-gray-400 sm:ml-5">
+        <p
+          className="
+            mt-4
+            ml-4
+            text-sm
+            italic
+            text-text-secondary
+            sm:ml-5
+          "
+        >
           No work in this collection yet.
         </p>
       )}
     </article>
+  );
+}
+
+function SectionHeader({
+  eyebrow,
+  title,
+  description,
+  actionLabel,
+  onAction,
+}) {
+  return (
+    <div
+      className="
+        mb-4
+        border-b
+        border-card-border
+        pb-3
+      "
+    >
+      <div
+        className="
+          flex
+          items-end
+          justify-between
+          gap-4
+        "
+      >
+        <div className="min-w-0">
+          {eyebrow && (
+            <p
+              className="
+                mb-1
+                text-xs
+                font-medium
+                uppercase
+                tracking-[0.12em]
+                text-text-secondary
+              "
+            >
+              {eyebrow}
+            </p>
+          )}
+
+          <h2
+            className="
+              font-serif
+              text-2xl
+              font-semibold
+              leading-tight
+              text-text-primary
+              sm:text-3xl
+            "
+          >
+            {title}
+          </h2>
+
+          {description && (
+            <p
+              className="
+                mt-1
+                max-w-xl
+                text-sm
+                leading-relaxed
+                text-text-secondary
+              "
+            >
+              {description}
+            </p>
+          )}
+        </div>
+
+        {actionLabel && onAction && (
+          <button
+            type="button"
+            onClick={onAction}
+            className="
+              shrink-0
+              text-sm
+              font-medium
+              text-text-brand
+              transition-opacity
+              hover:opacity-70
+            "
+          >
+            {actionLabel}
+          </button>
+        )}
+      </div>
+    </div>
   );
 }
 
@@ -298,4 +357,4 @@ function PortfolioEmptyState({ router }) {
   );
 }
 
-export default PortfolioSection;
+// export default PortfolioSection;

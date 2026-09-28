@@ -22,6 +22,7 @@ function usePaginatedResource({
   pageSize = 20,
   enabled = true,
   params = {},
+  search = "",
   select,
   infinite = false,
 }) {
@@ -31,8 +32,13 @@ function usePaginatedResource({
     () => params,
     [JSON.stringify(params)]
   );
-
-  const key = `${cacheKey}`;
+const normalizedSearch =
+  typeof search === "string"
+    ? search.trim()
+    : "";
+const key = normalizedSearch
+  ? `${cacheKey}:search:${normalizedSearch.toLowerCase()}`
+  : cacheKey;
 
   const page = useSelector(
     (s) =>
@@ -69,17 +75,26 @@ function usePaginatedResource({
   const inFlight = useRef(new Set());
 
   const isFirstMount = useRef(true);
+useEffect(() => {
+  if (isFirstMount.current) {
+    dispatch(initKey({ key }));
+    isFirstMount.current = false;
+  } else {
+    inFlight.current.clear();
 
-  useEffect(() => {
-    if (isFirstMount.current) {
-      dispatch(initKey({ key }));
-      isFirstMount.current = false;
-    } else {
-      inFlight.current.clear();
+    dispatch(resetKey({ key }));
+  }
+}, [key, dispatch]);
+  // useEffect(() => {
+  //   if (isFirstMount.current) {
+  //     dispatch(initKey({ key }));
+  //     isFirstMount.current = false;
+  //   } else {
+  //     inFlight.current.clear();
 
-      dispatch(resetKey({ key }));
-    }
-  }, [key, dispatch]);
+  //     dispatch(resetKey({ key }));
+  //   }
+  // }, [key, dispatch]);
 
   /*
    * Fetch a specific page.
@@ -102,13 +117,16 @@ function usePaginatedResource({
       );
 
       try {
-        const res = await dispatch(
-          fetcher({
-            skip: (p - 1) * pageSize,
-            take: pageSize,
-            ...stableParams,
-          })
-        ).unwrap();
+       const res = await dispatch(
+  fetcher({
+    skip: (p - 1) * pageSize,
+    take: pageSize,
+    ...stableParams,
+    ...(normalizedSearch
+      ? { search: normalizedSearch }
+      : {}),
+  })
+).unwrap();
 
         const parsed = select
           ? select(res)
