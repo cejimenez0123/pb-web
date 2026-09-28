@@ -6,6 +6,10 @@ import { PageType } from "../core/constants.js";
 import { IonContent, useIonRouter } from "@ionic/react";
 import { useDialog } from "../domain/usecases/useDialog.jsx";
 import CreateCollectionForm from "../components/collection/CreateCollectionForm.jsx";
+import UpcomingEventsSection from "../components/events/UpcomingEventsSection.jsx";
+import EmptyState from "../components/EmptyState.jsx";
+import SectionHeader from "../components/pieces/SectionHeader.jsx";
+
 
 /*
 |--------------------------------------------------------------------------
@@ -218,7 +222,7 @@ const goToRooms = () => {
           className="page-content"
           fullscreen
         >
-    <main className="h-[100vh] overflow-scroll bg-base-surface text-text-primary">
+    {/* <main className="h-[100vh] overflow-scroll bg-base-surface text-text-primary"> */}
       <div
         className="
           mx-auto
@@ -266,6 +270,7 @@ const goToRooms = () => {
 />
 
         <UpcomingEventsSection
+        profile={currentProfile}
           events={upcomingEvents}
           onViewEvents={goToEvents}
         />
@@ -283,7 +288,7 @@ const goToRooms = () => {
          * not require another architectural rewrite.
          */}
       </div>
-    </main>
+    {/* </main> */}
     </IonContent>
   );
 }
@@ -413,8 +418,8 @@ function FeaturedEventSection({
         />
       ) : (
         <EmptyState
-          title="Find something to enter."
-          description="See what's happening around Plumbum."
+          title="  Quiet calendar"
+          description="Nothing scheduled right now."
           action="Browse events"
           onAction={onViewEvents}
         />
@@ -836,201 +841,9 @@ function RoomCard({
 
 /*
 |--------------------------------------------------------------------------
-| COMING UP
-|--------------------------------------------------------------------------
-*/
-
-function UpcomingEventsSection({
-  events,
-  onViewEvents,
-}) {
-  return (
-    <section className="mt-14">
-      <SectionHeader
-        title="Coming up"
-        actionLabel="All events"
-        onAction={onViewEvents}
-      />
-
-      {events.length > 0 ? (
-        <EventList
-          events={events}
-          onSelect={onViewEvents}
-        />
-      ) : (
-        <EmptyState
-          title="Quiet calendar."
-          description="Nothing scheduled right now."
-        />
-      )}
-    </section>
-  );
-}
-
-
-function EventList({
-  events,
-  onSelect,
-}) {
-  return (
-    <div className="border-y border-border-soft">
-      {events.map((event) => (
-        <button
-          key={event.id}
-          type="button"
-          onClick={onSelect}
-          className="
-            group
-            flex
-            w-full
-            items-center
-            justify-between
-            gap-5
-            border-b
-            border-border-soft
-            py-4
-            text-left
-            last:border-b-0
-          "
-        >
-          <div className="min-w-0">
-            <p
-              className="
-                text-xs
-                uppercase
-                tracking-[0.08em]
-                text-text-secondary
-              "
-            >
-              {formatEventDate(event)}
-            </p>
-
-            <h3
-              className="
-                mt-1
-                truncate
-                font-serif
-                text-lg
-                text-text-primary
-              "
-            >
-              {event?.title || "Untitled event"}
-            </h3>
-          </div>
-
-          <span
-            aria-hidden="true"
-            className="
-              shrink-0
-              text-xl
-              text-text-secondary
-              transition-transform
-              group-hover:translate-x-1
-            "
-          >
-            →
-          </span>
-        </button>
-      ))}
-    </div>
-  );
-}
-
-
-/*
-|--------------------------------------------------------------------------
 | SHARED SECTION HEADER
 |--------------------------------------------------------------------------
 */
-
-function SectionHeader({
-  eyebrow,
-  title,
-  description,
-  actionLabel,
-  onAction,
-}) {
-  return (
-    <div
-      className="
-        mb-4
-        border-b
-        border-border-soft
-        pb-3
-      "
-    >
-      <div
-        className="
-          flex
-          items-end
-          justify-between
-          gap-4
-        "
-      >
-        <div className="min-w-0">
-          {eyebrow && (
-            <p
-              className="
-                mb-1
-                text-xs
-                font-medium
-                uppercase
-                tracking-[0.12em]
-                text-text-secondary
-              "
-            >
-              {eyebrow}
-            </p>
-          )}
-
-          <h2
-            className="
-              font-serif
-              text-2xl
-              font-semibold
-              leading-tight
-              text-text-primary
-              sm:text-3xl
-            "
-          >
-            {title}
-          </h2>
-
-          {description && (
-            <p
-              className="
-                mt-1
-                max-w-xl
-                text-sm
-                leading-relaxed
-                text-text-secondary
-              "
-            >
-              {description}
-            </p>
-          )}
-        </div>
-
-        {actionLabel && onAction && (
-          <button
-            type="button"
-            onClick={onAction}
-            className="
-              shrink-0
-              text-sm
-              font-medium
-              text-text-brand
-              transition-opacity
-              hover:opacity-70
-            "
-          >
-            {actionLabel}
-          </button>
-        )}
-      </div>
-    </div>
-  );
-}
 
 
 /*
@@ -1099,88 +912,6 @@ function HomeAction({
 |--------------------------------------------------------------------------
 */
 
-function EmptyState({
-  title,
-  description,
-  action,
-  onAction,
-}) {
-  return (
-    <div
-      className="
-        flex
-        min-h-44
-        flex-col
-        items-center
-        justify-center
-        border
-        border-dashed
-        border-border-soft
-        bg-base-bg
-        px-6
-        
-        py-10
-        text-center
-        sm:min-h-48
-      "
-    >
-      <h3
-        className="
-          font-serif
-          text-xl
-          font-semibold
-          text-text-primary
-        "
-      >
-        {title}
-      </h3>
-
-      {description && (
-        <p
-          className="
-            mt-2
-            max-w-md
-            text-sm
-            leading-relaxed
-            text-text-secondary
-          "
-        >
-          {description}
-        </p>
-      )}
-
-      {action && onAction && (
-        <button
-          type="button"
-          onClick={onAction}
-          className="
-            mt-5
-            inline-flex
-            min-h-10
-            items-center
-            justify-center
-            rounded-full
-            border
-            border-border-soft
-            px-5
-            py-2
-            text-sm
-            font-medium
-            text-text-primary
-            transition-colors
-            hover:border-base-soft
-            hover:text-text-brand
-            focus:outline-none
-            focus:ring-2
-            focus:ring-base-soft
-          "
-        >
-          {action}
-        </button>
-      )}
-    </div>
-  );
-}
 
 
 /*

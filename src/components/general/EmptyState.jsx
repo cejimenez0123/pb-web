@@ -80,5 +80,4 @@ function EmptyState({
     </div>
   );
 }
-
 export default EmptyState

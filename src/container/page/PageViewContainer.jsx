@@ -45,7 +45,7 @@ export default function PageViewContainer() {
   const router = useIonRouter();
   const currentProfile = useSelector((state) => state.users.currentProfile);
   const page = useSelector((state) => state.pages.pageInView);
-
+console.log("FATA",page)
 const { canSee, canAdd, canEdit } = useMemo(
   () => computePermissions(page, currentProfile, STORY_CONFIG),
   [page, currentProfile]  // ← add page
@@ -160,7 +160,7 @@ const { canSee, canAdd, canEdit } = useMemo(
       ? router.goBack()
       : router.push(Paths.discovery, "back");
   };
-// PageViewItem.jsx
+
 const ready = !pending && page && String(page.id) === String(id);
   return (
     <ErrorBoundary>

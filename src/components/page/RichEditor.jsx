@@ -17,8 +17,8 @@ import insetLink from "../../images/editor/insert-link-svgrepo-com.svg"
 import Enviroment from "../../core/Enviroment";
 
 const FONTS = ["Default", "Georgia", "Courier New", "Arial"];
-const SIZES = ["12px", "14px", "16px", "18px", "20px", "24px", "32px"];
-
+const SIZES = [ "16px", "18px", "20px", "24px", "32px","36px",];
+const DEFAULT_FONT = "Trebuchet MS";
 const iconStyle = () =>
   window.matchMedia("(prefers-color-scheme: dark)").matches
     ? { filter: "invert(100%)"}
@@ -29,22 +29,6 @@ function Icon({ src }) {
   return <img src={src} className="max-w-4 max-h-4 block" style={iconStyle()} />;
 }
 
-// ─── ToolbarButton ─────────────────────────────────────────────────────────
-// function ToolbarButton({ title, icon, action, active, disabled }) {
-//   return (
-//     <div
-//       title={title}
-//       onMouseDown={(e) => { e.preventDefault(); if (!disabled) action(); }}
-//       className={[
-//         "flex items-center justify-center min-w-8 min-h-8 rounded-lg text-sm transition-all duration-150",
-//         active ? "bg-base-soft text-cream" : "text-text-primary hover:bg-base-surface",
-//         disabled ? "opacity-30 cursor-not-allowed" : "cursor-pointer",
-//       ].join(" ")}
-//     >
-//       {icon}
-//     </div>
-//   );
-// }
 function ToolbarButton({ title, icon, action, active, disabled }) {
   return (
     <div
@@ -198,7 +182,7 @@ export default function RichEditor({ handleChange }) {
       code:          isInsideTag("PRE") || isInsideTag("CODE"),
       align: isCenter ? "center" : isRight ? "right" : isFull ? "justify" : isLeft ? "left" : "none",
       font:  document.queryCommandValue("fontName") || "Default",
-      size:  document.queryCommandValue("fontSize") || "16px",
+      size:  document.queryCommandValue("fontSize") || "18px",
     });
   }, [isInsideTag]);
 
@@ -276,10 +260,24 @@ const restoreSelection = useCallback(() => {
 //   document.addEventListener("selectionchange", handler);
 //   return () => document.removeEventListener("selectionchange", handler);
 // }, []);
+// const applyFont = useCallback((font) => {
+//   editorRef.current?.focus();
+//   restoreSelection();
+//   document.execCommand("fontName", false, font === "Default" ? "inherit" : font);
+//   updateFormatState();
+//   emitChange();
+// }, [restoreSelection, updateFormatState, emitChange]);
 const applyFont = useCallback((font) => {
   editorRef.current?.focus();
   restoreSelection();
-  document.execCommand("fontName", false, font === "Default" ? "inherit" : font);
+
+  const fontFamily =
+    font === "Default"
+      ? DEFAULT_FONT
+      : font;
+
+  document.execCommand("fontName", false, fontFamily);
+
   updateFormatState();
   emitChange();
 }, [restoreSelection, updateFormatState, emitChange]);
@@ -375,11 +373,27 @@ const applySize = useCallback((px) => {
           onKeyUp={updateFormatState}
           onMouseUp={updateFormatState}
           onPaste={handlePaste}
-          className="rich-editor__body dark:text-cream bg-cream text-soft dark:bg-base-surfaceDark min-h-[220px] px-5 py-4 focus:outline-none prose prose-sm sm:prose-base max-w-none"
-          style={{
-             WebkitUserSelect: "text",
-            userSelect: "text",
-          }}
+          className="
+  rich-editor__body
+  bg-cream
+  text-text-primary
+  dark:bg-base-surfaceDark
+  dark:text-cream
+  min-h-[220px]
+  px-5
+  py-4
+  focus:outline-none
+  prose
+  prose-sm
+  sm:prose-base
+  max-w-none
+" style={{
+  fontWeight:"600",
+  fontFamily: "Arial, sans-serif",
+fontSize: "18px",
+letterSpacing: "0.135em",
+lineHeight: 1.65,
+}}
         />
       </div>
     </ErrorBoundary>

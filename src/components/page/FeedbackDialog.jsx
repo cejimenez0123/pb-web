@@ -118,6 +118,7 @@ export default function FeedbackDialog({
           border-emerald-600
           bg-emerald-600
           px-5
+          mx-4
           py-4
           text-left
           transition-all

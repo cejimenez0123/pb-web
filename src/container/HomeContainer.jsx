@@ -13,7 +13,7 @@ import { debounce } from 'lodash';
 import ErrorBoundary from '../ErrorBoundary.jsx';
 import StoryItem from '../components/page/StoryItem.jsx';
 import PageList from '../components/page/PageList.jsx';
-import SectionHeader from '../components/SectionHeader.jsx';
+
 import shortName from '../core/shortName.jsx';
 import AlertType from '../core/AlertType.js';
 import { useAlert } from '../core/useAlert.jsx';

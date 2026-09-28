@@ -62,41 +62,74 @@ function CalendarEmbed() {
 
   useScrollTracking({ name: "Calendar Embed" });
 
-  const handleAddEvent = async (e, event) => {
-    e.stopPropagation();
+  // const handleAddEvent = async (e, event) => {
+  //   e.stopPropagation();
 
-    sendGAEvent("navigate_event", {
-      event_summary: event.summary,
-      hashtags: event.hashtags,
-      hashtags_count: event.hashtags?.length ?? 0,
-      source: "event_click",
+  //   sendGAEvent("navigate_event", {
+  //     event_summary: event.summary,
+  //     hashtags: event.hashtags,
+  //     hashtags_count: event.hashtags?.length ?? 0,
+  //     source: "event_click",
+  //   });
+
+  //   const eidMatch = event.googleLink?.match(/[?&]eid=([^&]+)/);
+  //   const gid = event.googleCalendarId || (eidMatch ? eidMatch[1] : "");
+
+  //   const { value: token } = await Preferences.get({ key: "token" });
+
+  //   if (!token || !gid) {
+  //     window.open(event.googleLink);
+  //     return;
+  //   }
+
+  //   try {
+  //     const data = await storyRepo.saveEvent({
+  //       event: { ...event, googleCalendarId: gid },
+  //     });
+
+  //     showAlert({ message: "Saved in your Events", type: AlertType.success });
+
+  //     if (data?.story?.id) {
+  //       router.push(Paths.page.createRoute(data.story.id));
+  //     }
+  //   } catch (err) {
+  //     window.open(event.googleLink);
+  //   }
+  // };
+const handleAddEvent = async (e, event) => {
+  e.stopPropagation();
+
+  sendGAEvent("navigate_event", {
+    event_summary: event.summary,
+    hashtags: event.hashtags,
+    hashtags_count: event.hashtags?.length ?? 0,
+    source: "event_click",
+  });
+
+  const eidMatch = event.googleLink?.match(/[?&]eid=([^&]+)/);
+  const gid = event.googleCalendarId || (eidMatch ? eidMatch[1] : "");
+
+  const { value: token } = await Preferences.get({ key: "token" });
+
+  if (!token || !gid) {
+    window.open(event.googleLink);
+    return;
+  }
+
+  try {
+    const data = await storyRepo.saveEvent({
+      event: { ...event, googleCalendarId: gid },
     });
 
-    const eidMatch = event.googleLink?.match(/[?&]eid=([^&]+)/);
-    const gid = event.googleCalendarId || (eidMatch ? eidMatch[1] : "");
+    showAlert({ message: "Saved in your Events", type: AlertType.success });
 
-    const { value: token } = await Preferences.get({ key: "token" });
-
-    if (!token || !gid) {
-      window.open(event.googleLink);
-      return;
+    if (data?.story?.id) {
+      router.push(Paths.page.createRoute(data.story.id));
     }
-
-    try {
-      const data = await storyRepo.saveEvent({
-        event: { ...event, googleCalendarId: gid },
-      });
-
-      showAlert({ message: "Saved in your Events", type: AlertType.success });
-
-      if (data?.story?.id) {
-        router.push(Paths.page.createRoute(data.story.id));
-      }
-    } catch (err) {
-      window.open(event.googleLink);
-    }
-  };
-
+  } catch (err) {
+    window.open(event.googleLink);
+  }
+};
   function formatDate(dateStr) {
     const date = new Date(dateStr);
     const weekday = date.toLocaleDateString("en-US", { weekday: "short" });

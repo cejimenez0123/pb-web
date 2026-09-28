@@ -23,7 +23,7 @@ import {
   deleteCollectionFromCollection,
   fetchCollection,
   fetchCollectionProtected,
-  getRecommendedCollections,
+
   setCollections,
 } from "../../actions/CollectionActions";
 
