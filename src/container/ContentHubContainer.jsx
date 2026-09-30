@@ -77,7 +77,7 @@ const {openDialog , closeDialog,resetDialog}=useDialog()
    * so the data source can be connected without redesigning the page.
    */
   const featuredEvent = null;
-  const upcomingEvents = [];
+
 
   /*
    * The existing hook gives us stories. Home only wants active/open work,
@@ -193,9 +193,7 @@ const goToRooms = () => {
     router.push("/workshop");
   };
 
-  const goToEvents = () => {
-    router.push("/events");
-  };
+ 
 
   const goToStory = (story) => {
     if (!story?.id) return;
@@ -215,7 +213,9 @@ const goToRooms = () => {
       );
     }
   };
-
+ const goToEvents = () => {
+    router.push("/events");
+  };
   return (
         <IonContent
           scrollY={true}
@@ -248,6 +248,7 @@ const goToRooms = () => {
 
         <FeaturedEventSection
           event={featuredEvent}
+          currentProfile={currentProfile}
           onViewEvents={goToEvents}
         />
 
@@ -259,22 +260,14 @@ const goToRooms = () => {
         />
 
 
-        {/* <RoomsPreviewSection
-          rooms={homeRooms}
-          onViewRooms={goToRooms}
-        /> */}
+     
 <RoomsPreviewSection
   rooms={homeRooms}
   onViewRooms={goToRooms}
   onSelectRoom={goToRoom}
 />
 
-        <UpcomingEventsSection
-        profile={currentProfile}
-          events={upcomingEvents}
-          onViewEvents={goToEvents}
-        />
-
+      
 
         {/*
          * Prompts remain a first-class Plumbum feature.
@@ -401,29 +394,32 @@ function HomeHeader({
 function FeaturedEventSection({
   event,
   onViewEvents,
+  currentProfile
+
 }) {
+    const upcomingEvents = [];
+     const goToEvents = () => {
+    router.push("/events");
+  };
   return (
     <section className="mt-14">
-      <SectionHeader
-        eyebrow="For you"
-        title="Something happening"
-        actionLabel="See all events"
-        onAction={onViewEvents}
-      />
+      <UpcomingEventsSection
+        profile={currentProfile}
+          events={upcomingEvents}
+          onViewEvents={goToEvents}
+        />
 
-      {event ? (
+
+      {/* {event ? (
         <FeaturedEventCard
           event={event}
+        
           onClick={onViewEvents}
         />
-      ) : (
-        <EmptyState
-          title="  Quiet calendar"
-          description="Nothing scheduled right now."
-          action="Browse events"
-          onAction={onViewEvents}
-        />
-      )}
+      ) 
+      : (
+        
+      )} */}
     </section>
   );
 }
