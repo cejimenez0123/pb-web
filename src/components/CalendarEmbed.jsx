@@ -14,8 +14,10 @@ import Paths from "../core/paths";
 import { useMediaQuery } from "react-responsive";
 
 const INK = "#12261f";
-const MUTED = "#6b6f63";
-const BORDER = "#ddd8c4";
+const MUTED = "#12261f"
+// "#6b6f63";
+const BORDER = "#40906f"
+// "#ddd8c4";
 const ACTIVE_BG = "#cfe8d9";
 
 const FILTERS = [
@@ -55,47 +57,12 @@ function CalendarEmbed() {
     currentPage * PAGE_SIZE
   );
 
-  // Assumption: state.users.events holds events the current user has saved,
-  // based on the saveEvent() call in handleAddEvent below. Confirm this is
-  // right for your data model before shipping.
+  
   const savedEvents = useSelector((state) => state.users.events) || [];
 
   useScrollTracking({ name: "Calendar Embed" });
 
-  // const handleAddEvent = async (e, event) => {
-  //   e.stopPropagation();
 
-  //   sendGAEvent("navigate_event", {
-  //     event_summary: event.summary,
-  //     hashtags: event.hashtags,
-  //     hashtags_count: event.hashtags?.length ?? 0,
-  //     source: "event_click",
-  //   });
-
-  //   const eidMatch = event.googleLink?.match(/[?&]eid=([^&]+)/);
-  //   const gid = event.googleCalendarId || (eidMatch ? eidMatch[1] : "");
-
-  //   const { value: token } = await Preferences.get({ key: "token" });
-
-  //   if (!token || !gid) {
-  //     window.open(event.googleLink);
-  //     return;
-  //   }
-
-  //   try {
-  //     const data = await storyRepo.saveEvent({
-  //       event: { ...event, googleCalendarId: gid },
-  //     });
-
-  //     showAlert({ message: "Saved in your Events", type: AlertType.success });
-
-  //     if (data?.story?.id) {
-  //       router.push(Paths.page.createRoute(data.story.id));
-  //     }
-  //   } catch (err) {
-  //     window.open(event.googleLink);
-  //   }
-  // };
 const handleAddEvent = async (e, event) => {
   e.stopPropagation();
 
@@ -259,7 +226,7 @@ const handleAddEvent = async (e, event) => {
     <div
       key={i}
       onClick={() => handleDialogOpen(event)}
-      className="rounded-2xl border p-4 active:scale-[0.98] transition-transform"
+      className="rounded-2xl border p-4 active:scale-[0.98] bg-base-surface transition-transform"
       style={{ borderColor: BORDER, WebkitTapHighlightColor: "transparent" }}
     >
       <div className="flex justify-between gap-3">
@@ -425,7 +392,7 @@ const handleAddEvent = async (e, event) => {
           </p>
         </div>
       ) : (
-        <IonList className="space-y-3">
+        <IonList className="space-y-3  bg-base-surface ">
           {paginatedEvents.map(renderEvent)}
         </IonList>
       )}

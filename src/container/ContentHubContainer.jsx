@@ -410,16 +410,7 @@ function FeaturedEventSection({
         />
 
 
-      {/* {event ? (
-        <FeaturedEventCard
-          event={event}
-        
-          onClick={onViewEvents}
-        />
-      ) 
-      : (
-        
-      )} */}
+ 
     </section>
   );
 }
