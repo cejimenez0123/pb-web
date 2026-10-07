@@ -29,109 +29,102 @@ export default {
       'grid-mobile-content':"45.8vw"
 
     },
-    colors: {plumb: {
-    paper: '#faf7f0',   // or a CSS var
-    line: '#d4c8b0'},
-       ...colors,
-  paper: '#f4f4e0',
-    
-      "cream":"#f4f4e0",
-      
-    "base": {
-      "bgDark": "#1c1f1a",  // warm dark, complements cream
-  "surfaceDark": "#252922",   
-      "bg":"#f8f6f1", // App background (main canvas, warm cream)
-      "surface": "#f4f4e0", // Cards, modals, sheets (elevated surfaces)
-      "soft": "#40906f" // Brand base tone (used for highlights, accents)
+    colors: {
+  ...colors,
+
+  plumb: {
+    // Core surfaces
+    paper: "#f4f4e0",
+    canvas: "#f8f6f1",
+    surface: "#eeeeda",
+    elevated: "#fffef5",
+
+    // Dark mode
+    dark: {
+      canvas: "#171c19",
+      paper: "#1d231f",
+      surface: "#252c27",
+      elevated: "#2c342e",
     },
 
-    "text": {
-      "dark":"#ffffff",
-      "primary": "#1f2937", // Main readable text (titles, body)
-      "secondary": "#6b7280", // Subtext, metadata, timestamps
-      "inverse": "#ffffff", // Text on dark buttons/backgrounds
-      "brand": "#40906f" // Links, emphasized brand text
-    },
+    // Typography
+    ink: "#12261f",
+    text: "#1f2937",
+    muted: "#5f675f",
+    subtle: "#7b827b",
 
-    "button": {
-      "primary": {
-        "bg": "#40906f", // Main CTA (Save, Add, Publish)
-        "text": "#ffffff", // Text on primary button
-        "hover": "#347a5e" // Hover/pressed state
+    darkText: "#f3f1df",
+    darkMuted: "#b9beb3",
+    darkSubtle: "#969d94",
+
+    // Brand
+    mint: "#40906f",
+    mintHover: "#347a5e",
+    mintLight: "#8fd8b5",
+
+    // Borders
+    line: "#d4c8b0",
+    border: "#ddd8c4",
+
+    darkLine: "#39423b",
+    darkBorder: "#465048",
+
+    // Buttons
+    button: {
+      primary: {
+        bg: "#40906f",
+        text: "#ffffff",
+        hover: "#347a5e",
       },
-      "secondary": {
-        "bg": "#0097b2", // Secondary actions (View, Navigate)
-        "text": "#ffffff",
-        "hover": "#007c92"
+
+      secondary: {
+        bg: "#0097b2",
+        text: "#ffffff",
+        hover: "#007c92",
       },
-      "accent": {
-        "bg": "#ffde59", // Highlight actions (Explore, Discover)
-        "text": "#1f2937",
-        "hover": "#e6c94f"
+
+      accent: {
+        bg: "#ffde59",
+        text: "#12261f",
+        hover: "#e6c94f",
       },
-      "danger": {
-        "bg": "#d62d15", // Destructive actions (Delete)
-        "text": "#ffffff",
-        "hover": "#b62511"
-      }
+
+      danger: {
+        bg: "#d62d15",
+        text: "#ffffff",
+        hover: "#b62511",
+      },
     },
 
-    "card": {
-      "background": "#ffffff", // Card background
-      "border": "#e5e7eb", // Subtle card border
-      "highlight": "#7ed957" // Selected/active card accent
+    // Supporting colors
+    accent: {
+      blue: "#0097b2",
+      purple: "#8d6aaa",
+      pink: "#d967ad",
+      orange: "#e85d32",
+      yellow: "#ffde59",
     },
 
-    "border": {
-      "default": "#e5e7eb", // Standard borders/dividers
-      "soft": "#d1d5db", // Lighter borders (inputs, subtle UI)
-      "focus": "#40906f" // Focus state (inputs, selected elements)
+    // Tags / categories
+    tag: {
+      green: "#4f9d69",
+      blue: "#598ec8",
+      purple: "#8d7fba",
+      earth: "#b8784e",
     },
 
-    "shadow": {
-      "sm": "rgba(0,0,0,0.05)", // Small cards
-      "md": "rgba(0,0,0,0.08)", // Floating elements
-      "lg": "rgba(0,0,0,0.12)" // Modals, overlays
+    // System states
+    states: {
+      success: "#4f9d69",
+      warning: "#b86b16",
+      error: "#c93620",
+      info: "#4d8fb0",
     },
 
-    "accent": {
-      "blue": "#0097b2", // Navigation, links, secondary emphasis
-      "purple": "#9b67b6", // Depth, hierarchy, creative elements
-      "pink": "#e96fbd", // Emotional highlights, reactions
-      "orange": "#f85e30" // Energy, alerts, strong emphasis
-    },
-
-    "tag": {
-      "green": "#7ed957", // Positive tags, growth, success
-      "blue": "#598ec8", // Informational tags
-      "purple": "#a9a1d4", // Creative categories
-      "earth": "#c28558" // Grounded, neutral tags
-    },
-
-    "states": {
-      "success": "#7ed957", // Success messages, confirmations
-      "warning": "#ff914d", // Warnings, caution states
-      "error": "#d62d15", // Errors, destructive feedback
-      "info": "#0097b2" // Informational messages
-    },
-      "softBlue":"#bae6fe",
-      "blueSea":"#0097b2",
-      "soft":"#40906f",
-      "golden":"#f85e30",
-        "border-default": "#e5e7eb",
-"border-soft": "#d1d5db",
-"border-focus": "#40906f",
-teal:"#007c92",
-  "blue": "#0097b2", // Navigation, links, secondary emphasis
-      "purple": "#9b67b6", // Depth, hierarchy, creative elements
-      "pink": "#e96fbd", // Emotional highlights, reactions
-      "orange": "#f85e30" ,// Energy, alerts, strong emphasis
-        "vert": "#7ed957", // Positive tags, growth, success
-      "info-blue": "#598ec8", // Informational tags
-      "purple": "#a9a1d4", // Creative categories
-      "earth": "#c28558" // Grounded, neutral tags
-      
-    },
+    // Focus
+    focus: "#8fd8b5",
+  },
+},
 
     height:{
       "info":"18rem",

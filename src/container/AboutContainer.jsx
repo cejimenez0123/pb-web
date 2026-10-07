@@ -5,8 +5,7 @@ import Context from "../context";
 import { initGA, sendGAEvent } from "../core/ga4";
 import useScrollTracking from "../core/useScrollTracking";
 import ScrollDown from "../components/ScrollDownButton";
-// import FeatureBlock from "../components/about/FeatureBlock";
-// import AboutCTA from "../components/about/AboutCTA";
+
 
 export default function AboutContainer() {
   const { currentProfile } = useContext(Context);
@@ -24,21 +23,74 @@ export default function AboutContainer() {
     <main className=" h-[100%] bg-base-surface pb-12  ">
       <div className=" w-[100%]">
       <div className="bg-[#f4f4e0] py-12 px-8 lg:px-24 mx-auto px-2">
-        <p className="open-sans-medium text-xs tracking-widest uppercase text-[#6b6f63] mb-4">
+        {/* <p className="open-sans-medium text-xs tracking-widest uppercase text-[#6b6f63] mb-4">
           About
-        </p>
-
+        </p> */}
+{/* 
         <h1 className="lora-bold text-4xl py-12 sm:text-5xl leading-tight text-[#12261f] mb-6">
           The physical experience gets someone into a room. Plumbum gives that
           relationship somewhere to continue.
-        </h1>
+        </h1> */}
 
-        <p className="open-sans-medium text-[#6b6f63] max-w-xl mb-12">
-          Plumbum is a small creative community for people who write. No
+        {/* <p className="open-sans-medium text-[#6b6f63] max-w-xl mb-12">
+          Plumbum is a growing creative community for people who write. No
           follower counts, no algorithmic feed, no streaks. Just work, the
           people you trust with it, and the rooms you show up in.
-        </p>
+        </p> */}
+<p className="open-sans-medium text-xs tracking-widest uppercase text-[#6b6f63] mb-4">
+  About
+</p>
 
+<h1 className="lora-bold text-4xl py-12 sm:text-5xl leading-tight text-[#12261f] mb-6">
+  Find a room. Meet people. Keep the connection going.
+</h1>
+
+<p className="open-sans-medium text-[#6b6f63] max-w-xl mb-12">
+  You might find Plumbum at a reading, a workshop, a mixer, or through
+  someone you know. Come as you are. The <a 
+  
+  href={Paths.calendar()}>event calendar</a> is free to browse,
+  and you don't need an account to see what's happening.
+</p>
+{/* BOOGIE*/}
+<section className="pb-12 flex-row flex flex-wrap">
+  <div className="border-t border-[#ddd8c4] pt-6">
+    <p className="open-sans-medium text-xs tracking-widest uppercase text-[#6b6f63] mb-3">
+      Start here
+    </p>
+
+    <h2 className="lora-bold text-2xl sm:text-3xl text-[#12261f] mb-3">
+      See what's happening.
+    </h2>
+
+    <p className="open-sans-medium text-sm leading-relaxed text-[#6b6f63] max-w-xl mb-6">
+      Browse readings, workshops, mixers, and other creative events.
+      The calendar is free to browse, so you can look around before you
+      decide to join.
+    </p>
+
+    <div className="flex flex-wrap gap-3">
+      <button
+        onClick={() => router.push(Paths.calendar())}
+        className="
+          open-sans-medium
+          text-sm
+          rounded-full
+          px-5
+          py-3
+          bg-[#12261f]
+          text-[#f4f4e0]
+          min-h-11
+        "
+      >
+        See what's on
+      </button>
+
+    </div>
+
+  </div>
+</section>
+{/* BOOGIE*/}
         <div className="grid sm:grid-cols-2 pb-12 gap-x-10 gap-y-8 ">
           <FeatureBlock title="Collections, not feeds">
             A collection holds work and other collections. It can be a book, a
@@ -48,10 +100,10 @@ export default function AboutContainer() {
           </FeatureBlock>
 
           <FeatureBlock title="Writing has states">
-            A piece can be a draft nobody sees, a fragment shared on purpose,
+            A piece can be a draft nobody sees. A fragment is a draft shared on purpose,
             a finished thing, or work open to a small room. The state is a
-            decision you make when you're ready, not a publish button you're
-            pushed toward.
+            decision you make when you're ready to share, no pressure for public or private.
+            You choose.
           </FeatureBlock>
 
           <FeatureBlock title="Roles, not followers">

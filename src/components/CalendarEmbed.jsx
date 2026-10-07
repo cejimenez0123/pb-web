@@ -12,6 +12,7 @@ import Context from "../context";
 import AlertType from "../core/AlertType";
 import Paths from "../core/paths";
 import { useMediaQuery } from "react-responsive";
+import styles from "../styles/style";
 
 const INK = "#12261f";
 const MUTED = "#12261f"
@@ -117,7 +118,7 @@ const handleAddEvent = async (e, event) => {
   const addEvents = () => {
     try {
       setLoading(true);
-      storyRepo.fetchEvents({ days: 28 }).then((res) => {
+      storyRepo.fetchEvents({ days: 14 }).then((res) => {
         const rawEvents = res.events.flatMap((e) => e.events);
 
         const eventList = rawEvents
@@ -198,18 +199,18 @@ const handleAddEvent = async (e, event) => {
           <h2 className="lora-bold text-lg" style={{ color: INK }}>
             {event.summary}
           </h2>
-          <p className="open-sans-medium text-sm" style={{ color: MUTED }}>
+          <p className="open-sans-medium text-base" style={{ color: MUTED }}>
             {event.location}
           </p>
 
-          <p className="open-sans-medium mt-3 text-sm" style={{ color: INK }}>
+          <p className="open-sans-medium mt-3 text-base" style={{ color: INK }}>
             {event.description}
           </p>
 
           {event.organizerLink && (
             <button
               onClick={() => window.open(event.organizerLink)}
-              className="open-sans-medium mt-4 w-full rounded-full py-2 text-sm"
+              className="open-sans-medium mt-4 w-full rounded-full py-2 text-base"
               style={{ backgroundColor: INK, color: "#f4f4e0" }}
             >
               View Organizer
@@ -221,89 +222,236 @@ const handleAddEvent = async (e, event) => {
       disagree: closeDialog,
     });
   }
+const renderEvent = (event, i) => (
+  <div
+    key={i}
+    onClick={() => handleDialogOpen(event)}
+    // className="
+    //   rounded-2xl
+    //   border border-plumb-border dark:border-plumb-darkBorder
+    //   bg-plumb-surface dark:bg-plumb-dark-surface
+    //   p-4
+    //   transition-transform
+    //   active:scale-[0.98]
+    // "
+    className={styles.event.card}
+    style={{ WebkitTapHighlightColor: "transparent" }}
+  >
+    <div className="flex justify-between gap-4">
+      {/* Event information */}
+      <div className="flex min-w-0 flex-1 flex-col">
+        <span
+          className="
+            lora-bold text-base
+            text-plumb-ink dark:text-plumb-darkText
+            truncate
+          "
+        >
+          {event.summary}
+        </span>
 
-  const renderEvent = (event, i) => (
-    <div
-      key={i}
-      onClick={() => handleDialogOpen(event)}
-      className="rounded-2xl border p-4 active:scale-[0.98] bg-base-surface transition-transform"
-      style={{ borderColor: BORDER, WebkitTapHighlightColor: "transparent" }}
-    >
-      <div className="flex justify-between gap-3">
-        <div className="flex flex-col flex-1 min-w-0">
-          <span
-            className="lora-bold text-base truncate"
-            style={{ color: INK }}
-          >
-            {event.summary}
-          </span>
-
-          {event.location && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                openGooglemaps(event);
-              }}
-              className="flex items-center gap-1 mt-1 text-left w-fit"
-              style={{ WebkitTapHighlightColor: "transparent" }}
-            >
-              <svg
-                width="12"
-                height="12"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke={MUTED}
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="flex-shrink-0"
-              >
-                <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z" />
-                <circle cx="12" cy="10" r="3" />
-              </svg>
-              <span
-                className="open-sans-medium text-xs underline underline-offset-2"
-                style={{ color: MUTED }}
-              >
-                {event.location}
-              </span>
-            </button>
-          )}
-
-          {event.hashtags?.length > 0 && (
-            <div className="flex gap-1.5 flex-wrap mt-2">
-              {event.hashtags.slice(0, 4).map((tag, idx) => (
-                <span
-                  key={idx}
-                  className="open-sans-medium text-xs px-2 py-0.5 rounded-full"
-                  style={{ backgroundColor: ACTIVE_BG, color: INK }}
-                >
-                  #{tag}
-                </span>
-              ))}
-            </div>
-          )}
-        </div>
-
-        <div className="flex flex-col items-end justify-between gap-2 flex-shrink-0">
-          <IonText
-            className="open-sans-medium text-xs"
-            style={{ color: MUTED }}
-            dangerouslySetInnerHTML={{ __html: event.startTime }}
-          />
+        {event.location && (
           <button
-            onClick={(e) => handleAddEvent(e, event)}
-            className="flex flex-col items-center gap-0.5 active:scale-95 transition-transform"
+            onClick={(e) => {
+              e.stopPropagation();
+              openGooglemaps(event);
+            }}
+            aria-label={`View ${event.location} on map`}
+            className="
+              mt-1 flex w-fit items-center gap-1
+              text-left
+              rounded
+              focus-visible:outline-none
+              focus-visible:ring-2
+              focus-visible:ring-plumb-focus
+              focus-visible:ring-offset-2
+              dark:focus-visible:ring-offset-plumb-dark-surface
+            "
+            style={{ WebkitTapHighlightColor: "transparent" }}
           >
-            <IonImg className="w-8 h-8" src={calendar} />
-            <span className="open-sans-medium text-[10px]" style={{ color: MUTED }}>
-              Add
+            <svg
+              width="13"
+              height="13"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="
+                flex-shrink-0
+                text-plumb-mint
+              "
+              aria-hidden="true"
+            >
+              <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z" />
+              <circle cx="12" cy="10" r="3" />
+            </svg>
+
+            <span
+              className="
+                open-sans-medium text-xs
+                text-plumb-muted dark:text-plumb-darkMuted
+                underline underline-offset-2
+              "
+            >
+              {event.location}
             </span>
           </button>
-        </div>
+        )}
+
+        {event.hashtags?.length > 0 && (
+          <div className="mt-3 flex flex-wrap gap-1.5">
+            {event.hashtags.slice(0, 4).map((tag, idx) => (
+              <span
+                key={idx}
+                className="
+                  open-sans-medium text-xs
+                  rounded-full
+                  px-2 py-0.5
+                  bg-plumb-mint/10
+                  text-plumb-ink
+                  dark:bg-plumb-mint/15
+                  dark:text-plumb-darkText
+                "
+              >
+                #{tag}
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Date + save */}
+      <div className="flex flex-shrink-0 flex-col items-end justify-between gap-3">
+        <IonText
+          className="
+            open-sans-medium text-xs text-right
+            leading-relaxed
+            text-plumb-muted dark:text-plumb-darkMuted
+          "
+          dangerouslySetInnerHTML={{ __html: event.startTime }}
+        />
+
+        <button
+          onClick={(e) => handleAddEvent(e, event)}
+          aria-label={`Add ${event.summary} to your events`}
+          className="
+            flex min-h-11 min-w-11
+            flex-col items-center justify-center
+            gap-0.5
+            rounded-xl
+            px-2
+            transition-transform
+            active:scale-95
+            focus-visible:outline-none
+            focus-visible:ring-2
+            focus-visible:ring-plumb-focus
+            focus-visible:ring-offset-2
+            dark:focus-visible:ring-offset-plumb-dark-surface
+          "
+        >
+          <IonImg
+            className="h-7 w-7"
+            src={calendar}
+            alt=""
+          />
+
+          <span
+            className="
+              open-sans-medium text-xs
+              text-plumb-muted dark:text-plumb-darkMuted
+            "
+          >
+            Add
+          </span>
+        </button>
       </div>
     </div>
-  );
+  </div>
+);
+  // const renderEvent = (event, i) => (
+  //   <div
+  //     key={i}
+  //     onClick={() => handleDialogOpen(event)}
+  //     className="rounded-2xl border p-4 active:scale-[0.98] bg-base-surface transition-transform"
+  //     style={{ borderColor: BORDER, WebkitTapHighlightColor: "transparent" }}
+  //   >
+  //     <div className="flex justify-between gap-3">
+  //       <div className="flex flex-col flex-1 min-w-0">
+  //         <span
+  //           className="lora-bold text-base truncate"
+  //           style={{ color: INK }}
+  //         >
+  //           {event.summary}
+  //         </span>
+
+  //         {event.location && (
+  //           <button
+  //             onClick={(e) => {
+  //               e.stopPropagation();
+  //               openGooglemaps(event);
+  //             }}
+  //             className="flex items-center gap-1 mt-1 text-left w-fit"
+  //             style={{ WebkitTapHighlightColor: "transparent" }}
+  //           >
+  //             <svg
+  //               width="12"
+  //               height="12"
+  //               viewBox="0 0 24 24"
+  //               fill="none"
+  //               stroke={MUTED}
+  //               strokeWidth="2"
+  //               strokeLinecap="round"
+  //               strokeLinejoin="round"
+  //               className="flex-shrink-0"
+  //             >
+  //               <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z" />
+  //               <circle cx="12" cy="10" r="3" />
+  //             </svg>
+  //             <span
+  //               className="open-sans-medium text-xs underline underline-offset-2"
+  //               style={{ color: MUTED }}
+  //             >
+  //               {event.location}
+  //             </span>
+  //           </button>
+  //         )}
+
+  //         {event.hashtags?.length > 0 && (
+  //           <div className="flex gap-1.5 flex-wrap mt-2">
+  //             {event.hashtags.slice(0, 4).map((tag, idx) => (
+  //               <span
+  //                 key={idx}
+  //                 className="open-sans-medium text-xs px-2 py-0.5 rounded-full"
+  //                 style={{ backgroundColor: ACTIVE_BG, color: INK }}
+  //               >
+  //                 #{tag}
+  //               </span>
+  //             ))}
+  //           </div>
+  //         )}
+  //       </div>
+
+  //       <div className="flex flex-col items-end justify-between gap-2 flex-shrink-0">
+  //         <IonText
+  //           className="open-sans-medium text-xs"
+  //           style={{ color: MUTED }}
+  //           dangerouslySetInnerHTML={{ __html: event.startTime }}
+  //         />
+  //         <button
+  //           onClick={(e) => handleAddEvent(e, event)}
+  //           className="flex flex-col items-center gap-0.5 active:scale-95 transition-transform"
+  //         >
+  //           <IonImg className="w-8 h-8" src={calendar} />
+  //           <span className="open-sans-medium text-[10px]" style={{ color: MUTED }}>
+  //             Add
+  //           </span>
+  //         </button>
+  //       </div>
+  //     </div>
+  //   </div>
+  // );
 
   return (
     <div className="space-y-6">
@@ -365,7 +513,7 @@ const handleAddEvent = async (e, event) => {
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         placeholder="Search events"
-        className="open-sans-medium w-full max-w-sm rounded-full px-4 py-2 text-sm outline-none"
+        className="open-sans-medium w-full max-w-sm rounded-full px-4 py-2 text-base outline-none"
         style={{ border: `1px solid ${BORDER}`, color: INK, backgroundColor: "transparent" }}
       />
 
@@ -373,7 +521,7 @@ const handleAddEvent = async (e, event) => {
         <h2 className="lora-bold text-2xl" style={{ color: INK }}>
           Coming up
         </h2>
-        <p className="open-sans-medium text-sm" style={{ color: MUTED }}>
+        <p className="open-sans-medium text-base" style={{ color: MUTED }}>
           {events.length} listed
         </p>
       </div>
@@ -387,14 +535,14 @@ const handleAddEvent = async (e, event) => {
           <p className="lora-bold text-lg" style={{ color: INK }}>
             No events listed yet.
           </p>
-          <p className="open-sans-medium text-sm mt-2" style={{ color: MUTED }}>
+          <p className="open-sans-medium text-base mt-2" style={{ color: MUTED }}>
             When a reading or workshop is scheduled, it shows up here.
           </p>
         </div>
       ) : (
-        <IonList className="space-y-3  bg-base-surface ">
+        <ul className="space-y-3 bg-plumb-surface dark:bg-plumb-dark-surface ">
           {paginatedEvents.map(renderEvent)}
-        </IonList>
+        </ul>
       )}
 
       {totalPages > 1 && (
@@ -405,7 +553,7 @@ const handleAddEvent = async (e, event) => {
               setCurrentPage((p) => Math.max(1, p - 1));
               window.scrollTo({ top: 0, behavior: "smooth" });
             }}
-            className="open-sans-medium px-4 py-2 rounded-full text-sm"
+            className="open-sans-medium px-4 py-2 rounded-full text-base"
             style={{
               color: currentPage === 1 ? "#b9b6a3" : INK,
               border: currentPage === 1 ? "none" : `1px solid ${BORDER}`,
@@ -414,7 +562,7 @@ const handleAddEvent = async (e, event) => {
             Prev
           </button>
 
-          <div className="open-sans-medium text-sm" style={{ color: MUTED }}>
+          <div className="open-sans-medium text-base" style={{ color: MUTED }}>
             {currentPage} / {totalPages}
           </div>
 
@@ -424,7 +572,7 @@ const handleAddEvent = async (e, event) => {
               setCurrentPage((p) => Math.min(totalPages, p + 1));
               window.scrollTo({ top: 0, behavior: "smooth" });
             }}
-            className="open-sans-medium px-4 py-2 rounded-full text-sm"
+            className="open-sans-medium px-4 py-2 rounded-full text-base"
             style={{
               color: currentPage === totalPages ? "#b9b6a3" : INK,
               border: currentPage === totalPages ? "none" : `1px solid ${BORDER}`,
