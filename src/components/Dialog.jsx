@@ -443,7 +443,7 @@ function DialogPanel({
             rounded-3xl
             border
             border-gray-200
-            bg-cream
+            bg-plumb-surface
             shadow-2xl
             dark:border-gray-700
             dark:bg-base-bgDark
@@ -452,6 +452,7 @@ function DialogPanel({
             flex
             max-h-[95dvh]
             flex-col
+             bg-plumb-surface
             overflow-hidden
             rounded-t-3xl
             bg-cream
