@@ -258,9 +258,9 @@ const promptTermsAcceptance = useTermsAcceptance();
               placeholder="example@email.com"
               className="
                 w-[100%]
-                bg-base-bg
+                bg-transparent
                 border
-                border-emerald-800/20
+              border-emerald-800/80
                 rounded-xl
                 px-4
                 py-3
@@ -292,7 +292,7 @@ const promptTermsAcceptance = useTermsAcceptance();
                 items-center
                  bg-transparent
                 border
-                border-emerald-800/20
+                border-emerald-800/80
                 rounded-xl
                 focus-within:border-soft
                 focus-within:ring-1
