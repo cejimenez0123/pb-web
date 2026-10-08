@@ -290,7 +290,7 @@ const promptTermsAcceptance = useTermsAcceptance();
                 relative
                 flex
                 items-center
-                bg-base-bg
+                 bg-transparent
                 border
                 border-emerald-800/20
                 rounded-xl
@@ -308,12 +308,13 @@ const promptTermsAcceptance = useTermsAcceptance();
                 placeholder="••••••••"
                 className="
                   w-full
-                  bg-transparent
+                 
                   border-0
                   rounded-xl
                   px-4
                   py-3
                   pr-16
+                bg-transparent
                   text-emerald-800
                   placeholder:text-emerald-800/35
                   focus:outline-none
@@ -329,6 +330,7 @@ const promptTermsAcceptance = useTermsAcceptance();
                 className="
                   absolute
                   right-3
+           
                   text-xs
                   text-soft
                   hover:text-emerald-700
@@ -352,7 +354,7 @@ const promptTermsAcceptance = useTermsAcceptance();
               py-3
               mt-2
               rounded-full
-              bg-soft
+              bg-emerald-800
               text-white
               text-base
               border

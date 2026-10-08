@@ -579,6 +579,7 @@ useEffect(() => {
                     )}
                   />
 
+
                   <Route
                     exact
                     path="/search"
