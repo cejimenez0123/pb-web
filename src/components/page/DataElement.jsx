@@ -327,12 +327,7 @@ const renderedHtml = shortenTo
   style={{ WebkitUserSelect: "text", userSelect: "text" }}
   dangerouslySetInnerHTML={{ __html: renderedHtml }}
 />
-      {/* <div
-        className="ql-editor prose prose-sm max-w-none text-sky-900 dark:text-sky-100"
-        style={{ WebkitUserSelect: "text", userSelect: "text" }}
-        dangerouslySetInnerHTML={{ __html: shortenTo?truncate(annotatedHtml(),400,{}): annotatedHtml() // ← skip when hidden
- }}
-      /> */}
+
 
       {activeComment && (
         <CommentPopover

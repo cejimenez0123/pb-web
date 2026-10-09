@@ -374,7 +374,7 @@ const renderEvent = (event, i) => (
   //   <div
   //     key={i}
   //     onClick={() => handleDialogOpen(event)}
-  //     className="rounded-2xl border p-4 active:scale-[0.98] bg-base-surface transition-transform"
+  //     className="rounded-2xl border p-4 active:scale-[0.98] bg-plumb-surface  transition-transform"
   //     style={{ borderColor: BORDER, WebkitTapHighlightColor: "transparent" }}
   //   >
   //     <div className="flex justify-between gap-3">

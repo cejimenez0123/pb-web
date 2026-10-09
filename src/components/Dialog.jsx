@@ -10,6 +10,7 @@ import {
 
 import { useDialog } from "../domain/usecases/useDialog";
 import SectionHeader from "./SectionHeader";
+import styles from "../styles/style";
 
 const FOCUSABLE_SELECTOR = [
   "a[href]",
@@ -519,40 +520,6 @@ function DialogPanel({
           ) : null}
         </div>
 
-        {/* <button
-          type="button"
-          onClick={onClose}
-          aria-label="Close dialog"
-          className="
-            flex
-            h-10
-            w-10
-            shrink-0
-            items-center
-            justify-center
-            rounded-full
-            border
-            border-gray-300
-            bg-base-bg
-            text-xl
-            leading-none
-            text-gray-600
-            transition
-            hover:border-blueSea
-            hover:text-blueSea
-            focus-visible:outline
-            focus-visible:outline-2
-            focus-visible:outline-offset-2
-            focus-visible:outline-blueSea
-            dark:border-gray-700
-            dark:bg-base-surfaceDark
-            dark:text-cream
-          "
-        >
-          <span aria-hidden="true">
-            ×
-          </span>
-        </button> */}
       </header>
 
       {/* Content */}
@@ -595,7 +562,9 @@ function DialogPanel({
               onClick={
                 dialog.disagree
               }
-              className="
+              className={`
+${styles.button.secondary}
+
                 flex
                 min-h-[3rem]
                 items-center
@@ -606,8 +575,9 @@ function DialogPanel({
                 bg-base-bg
                 px-5
                 text-sm
+               
                 font-medium
-                text-gray-700
+                text-white
                 transition
                 hover:border-blueSea
                 hover:text-blueSea
@@ -616,9 +586,9 @@ function DialogPanel({
                 focus-visible:outline-offset-2
                 focus-visible:outline-blueSea
                 dark:border-gray-700
-                dark:bg-base-surfaceDark
+                dark:bg-plumb-surface Dark
                 dark:text-cream
-              "
+              `}
             >
               {dialog.disagreeText ||
                 "Cancel"}
@@ -631,7 +601,9 @@ function DialogPanel({
               onClick={
                 dialog.agree
               }
-              className="
+              className={`
+${styles.button.primary}
+
                 flex
                 min-h-[3rem]
                 items-center
@@ -649,7 +621,7 @@ function DialogPanel({
                 focus-visible:outline-offset-2
                 focus-visible:outline-blueSea
                 active:scale-[0.99]
-              "
+              `}
             >
               {dialog.agreeText ||
                 "Continue"}

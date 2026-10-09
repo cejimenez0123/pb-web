@@ -101,7 +101,7 @@ const { showAlert } =useAlert()
       {pending ? (
         <IonLoading isOpen={true} message={"Loading your referral..."} spinner="crescent" />
       ) : referralLink ? (
-        <div className="flex items-center gap-2 bg-base-bg dark:bg-base-surfaceDark rounded-xl px-3 py-2">
+        <div className="flex items-center gap-2 bg-base-bg dark:bg-plumb-surface Dark rounded-xl px-3 py-2">
           <input
             value={referralLink}
             disabled
@@ -126,7 +126,7 @@ const { showAlert } =useAlert()
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="name..."
-            className="w-full mt-1 px-3 py-3 rounded-full border border-gray-200 dark:border-gray-700 bg-base-bg dark:bg-base-surfaceDark text-soft dark:text-cream outline-none placeholder:text-gray-400 dark:placeholder:text-gray-600"
+            className="w-full mt-1 px-3 py-3 rounded-full border border-gray-200 dark:border-gray-700 bg-base-bg dark:bg-plumb-surface Dark text-soft dark:text-cream outline-none placeholder:text-gray-400 dark:placeholder:text-gray-600"
           />
         </div>
 
@@ -136,7 +136,7 @@ const { showAlert } =useAlert()
             value={email}
             onChange={(e) => setEmail(e.target.value.toLowerCase().trim())}
             placeholder="example@example.com"
-            className="w-full mt-1 px-3 py-3 rounded-full border border-gray-200 dark:border-gray-700 bg-base-bg dark:bg-base-surfaceDark text-soft dark:text-cream outline-none placeholder:text-gray-400 dark:placeholder:text-gray-600"
+            className="w-full mt-1 px-3 py-3 rounded-full border border-gray-200 dark:border-gray-700 bg-base-bg dark:bg-plumb-surface Dark text-soft dark:text-cream outline-none placeholder:text-gray-400 dark:placeholder:text-gray-600"
           />
         </div>
       </div>

@@ -57,7 +57,7 @@ export default function PortfolioSection({
             rounded-full
             border
             border-card-border
-            bg-base-surface
+            bg-plumb-surface 
             px-4
             py-2
             text-sm

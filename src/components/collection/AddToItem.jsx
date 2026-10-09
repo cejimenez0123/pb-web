@@ -200,7 +200,7 @@ export default function AddToItem({
   return (
     <div
       className="
-        bg-base-bg dark:bg-base-surfaceDark
+        bg-base-bg dark:bg-plumb-surface Dark
         rounded-full
         px-4 sm:px-6
         py-3

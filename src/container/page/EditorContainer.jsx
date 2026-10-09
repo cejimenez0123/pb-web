@@ -1234,7 +1234,7 @@ const openConfirmDeleteDialog = useCallback(() => {
                   className="
                     mb-4 flex w-fit gap-1
                     rounded-full bg-gray-100 p-1
-                    dark:bg-base-surfaceDark
+                    dark:bg-plumb-surface Dark
                   "
                 >
                   {STATUS_OPTIONS.map((option) => {

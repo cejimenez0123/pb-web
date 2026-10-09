@@ -254,9 +254,9 @@ function UpcomingEventCard({ event }) {
         rounded-2xl
         border
         border-card-border
-        bg-base-surface
+        bg-plumb-surface 
         p-5
-        dark:bg-base-surfaceDark
+        dark:bg-plumb-surface Dark
       "
     >
       <div className="flex items-start justify-between gap-4">

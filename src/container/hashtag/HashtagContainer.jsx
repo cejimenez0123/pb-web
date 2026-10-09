@@ -436,7 +436,7 @@ export default function HashtagContainer() {
       className="page-content"
     >
       <ErrorBoundary>
-         <main className=" h-[100%]  w-[100%]  overflow-scroll bg-base-surface text-text-primary">
+         <main className=" h-[100%]  w-[100%]  overflow-scroll bg-plumb-surface  text-text-primary">
    
 {/* 
         <main
@@ -444,7 +444,7 @@ export default function HashtagContainer() {
             min-h-[100%]
             overflow-y-scroll
             overscroll-contain
-            bg-base-surface
+            bg-plumb-surface 
             text-text-primary
             dark:bg-base-bgDark
             dark:text-cream
@@ -989,7 +989,7 @@ function HashtagLoading() {
       <main
         className="
           min-h-[100%]
-          bg-base-surface
+          bg-plumb-surface 
           dark:bg-base-bgDark
         "
       >

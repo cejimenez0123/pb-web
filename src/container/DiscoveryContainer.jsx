@@ -15,13 +15,13 @@ import { IonContent, useIonRouter } from "@ionic/react";
 import PageList from "../components/page/PageList.jsx";
 
 const PAGE_WRAP =
-  "mx-auto min-h-screen bg-base-surface pb-28 pt-10 text-base-content dark:bg-base-bgDark";
+  "mx-auto min-h-screen bg-plumb-surface  pb-28 pt-10 text-base-content dark:bg-base-bgDark";
 
 const CONTENT_WRAP =
   "mx-auto w-[100%] max-w-6xl px-5 sm:px-8 lg:px-10";
 
 const SEARCH_INPUT =
-  "w-[100%] rounded-full border border-base-content/15 bg-base-surface px-5 py-4 text-base-content outline-none transition placeholder:text-base-content/45 focus:border-soft focus:ring-2 focus:ring-soft/20 dark:border-white/15 dark:bg-base-bgDark";
+  "w-[100%] rounded-full border border-base-content/15 bg-plumb-surface  px-5 py-4 text-base-content outline-none transition placeholder:text-base-content/45 focus:border-soft focus:ring-2 focus:ring-soft/20 dark:border-white/15 dark:bg-base-bgDark";
 
 const PILL =
   "rounded-full border border-base-content/15 px-4 py-2 text-sm transition dark:border-white/15";

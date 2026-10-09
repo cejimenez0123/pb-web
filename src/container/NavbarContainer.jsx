@@ -346,7 +346,7 @@ function MobileNavbar({
           right-0
           z-50
           min-h-[2.4rem]
-          bg-base-surface
+          bg-plumb-surface 
           dark:bg-base-bgDark
           border-t
           border-border-default

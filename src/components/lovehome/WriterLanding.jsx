@@ -1,5 +1,6 @@
 
 import React, { useState } from "react";
+import styles from "../../styles/style";
 
 export default function WriteLanding({
   stories = [],
@@ -34,15 +35,16 @@ export default function WriteLanding({
         <button
           type="button"
           onClick={onBegin}
-          className="
+             // text-base
+            // font-medium
+            // text-cream    bg-soft   rounded-full
+          className={`
             mt-10
-            rounded-full
-            bg-soft
+          
+         
             px-7
             py-4
-            text-base
-            font-medium
-            text-cream
+         ${styles.button.primary}
             transition-all
             duration-200
             hover:-translate-y-0.5
@@ -53,7 +55,7 @@ export default function WriteLanding({
             focus:ring-offset-2
             focus:ring-offset-cream
             dark:focus:ring-offset-base-bgDark
-          "
+          `}
         >
           Begin something new
         </button>

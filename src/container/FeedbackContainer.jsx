@@ -12,7 +12,7 @@ const CARD  = "rounded-2xl p-5 flex flex-col gap-5";
 
 // ── Field styles ─────────────────────────────────────
 const LABEL = "text-sm text-soft dark:text-cream/60 mb-1";
-const INPUT = "w-full mt-1 px-4 py-3 rounded-xl text-sm text-soft dark:text-cream bg-sky-50 dark:bg-base-surfaceDark outline-none focus:ring-2 focus:ring-emerald-500 dark:focus:ring-emerald-400 placeholder-gray-400 dark:placeholder-gray-500";
+const INPUT = "w-full mt-1 px-4 py-3 rounded-xl text-sm text-soft dark:text-cream bg-sky-50 dark:bg-plumb-surface Dark outline-none focus:ring-2 focus:ring-emerald-500 dark:focus:ring-emerald-400 placeholder-gray-400 dark:placeholder-gray-500";
 
 export default function FeedbackContainer() {
   // const { setSeo } = useContext(Context);

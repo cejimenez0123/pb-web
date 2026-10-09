@@ -57,7 +57,7 @@ const PAGE =
 
 const CARD =
   "rounded-2xl border border-card-border bg-card-background " +
-  "dark:bg-base-surfaceDark dark:border-white/10";
+  "dark:bg-plumb-surface Dark dark:border-white/10";
 
 const PRIMARY_BUTTON =
   "inline-flex items-center justify-center h-11 px-5 mt-4  mb-1 rounded-full " +
@@ -72,7 +72,7 @@ const SECONDARY_BUTTON =
   "text-sm font-medium transition-all duration-200 " +
   "hover:border-button-primary-bg hover:text-text-brand " +
   "focus:outline-none focus:ring-2 focus:ring-button-primary-bg/30 " +
-  "dark:bg-base-surfaceDark dark:border-white/10 dark:text-cream";
+  "dark:bg-plumb-surface Dark dark:border-white/10 dark:text-cream";
 
 const DANGER_BUTTON =
   "inline-flex items-center justify-center h-11 px-5 rounded-full " +
@@ -672,7 +672,7 @@ const handleSave = async () => {
         <main
           className="
             min-h-full
-            bg-base-surface
+            bg-plumb-surface 
             text-text-primary
             dark:bg-base-bgDark
             dark:text-cream
@@ -1068,7 +1068,7 @@ const handleSave = async () => {
                           text-text-primary
                           outline-none
                           focus:border-button-primary-bg
-                          dark:bg-base-surfaceDark
+                          dark:bg-plumb-surface Dark
                           dark:border-white/10
                           dark:text-cream
                         "
@@ -1483,7 +1483,7 @@ function CollectionEditNoAccess({
       <main
         className="
           min-h-full
-          bg-base-surface
+          bg-plumb-surface 
           dark:bg-base-bgDark
         "
       >
@@ -1540,7 +1540,7 @@ function EditCollectionSkeleton() {
       <main
         className="
           min-h-full
-          bg-base-surface
+          bg-plumb-surface 
           dark:bg-base-bgDark
         "
       >

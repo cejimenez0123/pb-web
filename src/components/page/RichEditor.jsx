@@ -38,7 +38,7 @@ function ToolbarButton({ title, icon, action, active, disabled }) {
         "flex items-center justify-center min-w-8 min-h-8 rounded-lg text-sm transition-all duration-150",
         active
           ? "bg-base-soft text-cream"
-          : "text-text-primary dark:text-text-dark hover:bg-base-surface dark:hover:bg-base-surfaceDark",
+          : "text-text-primary dark:text-text-dark hover:bg-plumb-surface  dark:hover:bg-plumb-surface Dark",
         disabled ? "opacity-30 cursor-not-allowed" : "cursor-pointer",
       ].join(" ")}
     >
@@ -60,7 +60,7 @@ function ToolbarSelect({ value, options, onChange, title, className = "" }) {
       onMouseDown={(e) => e.stopPropagation()}
       className={[
         "text-xs px-1 py-1 rounded-lg border border-border-default",
-        "bg-base-surface text-text-primary",
+        "bg-plumb-surface  text-text-primary",
         "focus:outline-none focus:ring-2 focus:ring-soft cursor-pointer",
         className,
       ].join(" ")}
@@ -377,7 +377,7 @@ const applySize = useCallback((px) => {
   rich-editor__body
   bg-cream
   text-text-primary
-  dark:bg-base-surfaceDark
+  dark:bg-plumb-surface Dark
   dark:text-cream
   min-h-[220px]
   px-5

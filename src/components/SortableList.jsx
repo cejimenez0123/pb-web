@@ -88,61 +88,6 @@ const handleOnDragEnd = (result) => {
 
   onOrderChange(normalized);
 };
-  // const handleOnDragEnd = (
-  //   result
-  // ) => {
-  //   if (disableDrag) {
-  //     return;
-  //   }
-
-  //   if (!result.destination) {
-  //     return;
-  //   }
-
-  //   const newList =
-  //     Array.from(listItems);
-
-  //   const [movedItem] =
-  //     newList.splice(
-  //       result.source.index,
-  //       1
-  //     );
-
-  //   newList.splice(
-  //     result.destination.index,
-  //     0,
-  //     movedItem
-  //   );
-
-  //   /*
-  //    * Re-index the COMPLETE list.
-  //    *
-  //    * This is important because the list can contain both
-  //    * Rooms and Pages.
-  //    */
-  //   const normalized =
-  //     newList.map(
-  //       (entry, index) => ({
-  //         ...entry,
-
-  //         index,
-
-  //         item: {
-  //           ...entry.item,
-  //           index,
-  //         },
-  //       })
-  //     );
-
-  //   setListItems(
-  //     normalized
-  //   );
-
-  //   onOrderChange(
-  //     normalized
-  //   );
-  // };
-
 
   // =======================================================
   // DELETE
@@ -280,7 +225,7 @@ const handleNavigate = (entry) => {
                             "border-card-border",
                             "bg-card-background",
                             "dark:border-white/10",
-                            "dark:bg-base-surfaceDark",
+                            "dark:bg-plumb-surface Dark",
                             "transition-all",
                             snapshot.isDragging
                               ? "shadow-xl"
@@ -307,7 +252,7 @@ const handleNavigate = (entry) => {
                                   justify-center
                                   rounded-lg
                                   text-text-secondary
-                                  hover:bg-base-surface
+                                  hover:bg-plumb-surface 
                                   active:cursor-grabbing
                                 "
                               >

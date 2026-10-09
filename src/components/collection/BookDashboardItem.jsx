@@ -23,7 +23,7 @@ import AlertType from "../../core/AlertType";
 
 const theme = {
   card: `
-    bg-base-bg dark:bg-base-surface
+    bg-base-bg dark:bg-plumb-surface 
     border border-border-default dark:border-border-soft
   `,
 

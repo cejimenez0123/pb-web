@@ -57,7 +57,7 @@ const SKELETON_STACK   = "space-y-8";
 const Pill = ({ label, onClick }) => (
   <span
     onClick={onClick}
-    className="text-xs px-3 py-1 rounded-full bg-gray-100 dark:bg-base-surfaceDark text-gray-700 dark:text-cream cursor-pointer"
+    className="text-xs px-3 py-1 rounded-full bg-gray-100 dark:bg-plumb-surface Dark text-gray-700 dark:text-cream cursor-pointer"
   >
     {label}
   </span>
@@ -349,7 +349,7 @@ if (!profile || isLoading) {
                         <div
                           key={p.id}
                           onClick={() => router.push(Paths.page.createRoute(p.id))}
-                          className="px-3 py-3 rounded-full border border-blue bg-base-bg dark:bg-base-surfaceDark backdrop-blur-sm shadow-sm active:scale-[0.98] transition"
+                          className="px-3 py-3 rounded-full border border-blue bg-base-bg dark:bg-plumb-surface Dark backdrop-blur-sm shadow-sm active:scale-[0.98] transition"
                         >
                           <span className="text-[0.95rem] dark:text-cream font-medium text-gray-800">
                             {p?.title?.length > 0 ? p.title : "Untitled"}
@@ -372,7 +372,7 @@ if (!profile || isLoading) {
                     renderItem={(p) => (
                       <div
                         onClick={() => router.push(Paths.collection.createRoute(p.id))}
-                        className="px-3 py-3 rounded-full border border-purple bg-base-bg dark:bg-base-surfaceDark dark:text-cream"
+                        className="px-3 py-3 rounded-full border border-purple bg-base-bg dark:bg-plumb-surface Dark dark:text-cream"
                       >
                         {p.title}
                       </div>

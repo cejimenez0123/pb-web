@@ -3,13 +3,13 @@ import { IonImg, useIonRouter } from "@ionic/react";
 import { useEffect, useState } from "react";
 import bookmarkfill from "../../images/bookmarkfill.svg"
 import bookmarkoutline from "../../images/bookmarkadd.svg"
-import Paths from "../../core/paths";
 import { useDialog } from "../../domain/usecases/useDialog";
 import ShareList from "./ShareList";
 import { useDispatch } from "react-redux";
 import { addStoryListToCollection } from "../../actions/CollectionActions";
 import checkResult from "../../core/checkResult";
 import { useAlert } from "../../core/useAlert";
+import styles from "../../styles/style";
 export default function PageViewButtonRow({ page, authorProfile ,profile, setCommenting }) {
   const [likeFound, setLikeFound] = useState(false);
   const [bookmarked, setBookmarked] = useState(false);
@@ -73,21 +73,24 @@ if(!page || !profile) return null;
       <div className="flex gap-4">
         <button
           onClick={handleApprovalClick}
-          className={`rounded-full px-4 py-2 transition active:scale-95 ${
-            likeFound ? "bg-emerald-600 text-white" : "bg-emerald-100 text-emerald-800"
-          }`}
+          className={styles.button.base + " " + (likeFound ? styles.button.agree : styles.button.secondary)}
+          // className={`rounded-full px-4 py-2 transition active:scale-95 ${
+          //   likeFound ? "bg-emerald-600 text-white" : "bg-emerald-100 text-emerald-800"
+          // }`}
         >
           Yea
         </button>
         <button
           onClick={handleClickComment}
-          className="rounded-full px-3 py-2 bg-sky-50 text-sky-700 transition active:scale-95"
+             className={styles.button.secondary+" "+styles.button.base}
+         
         >
           Comment
         </button>
         <button
           onClick={onClickShare}
-          className="rounded-full px-3 py-2 bg-sky-50 text-sky-700 transition active:scale-95"
+                className={styles.button.secondary+" "+styles.button.base}
+          // className="rounded-full px-3 py-2 bg-sky-50 text-sky-700 transition active:scale-95"
         >
           ⤴
         </button>

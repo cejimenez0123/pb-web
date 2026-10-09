@@ -62,7 +62,7 @@ const SCROLL_ROW = "flex gap-4 px-4 overflow-x-auto pb-2 min-h-fit  mx-0 ";
 const GRID = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4";
 
 // ── Cards ───────────────────────────────────────
-const CARD = "bg-cream border-purple border-1 border dark:bg-base-surfaceDark rounded-2xl shadow-sm w-full";
+const CARD = "bg-cream border-purple border-1 border dark:bg-plumb-surface Dark rounded-2xl shadow-sm w-full";
 const CARD_PAD = "p-4 sm:p-5";
 
 // ── Skeleton ────────────────────────────────────
@@ -273,7 +273,7 @@ const fetchSubCollections = useCallback(async (skip, take) => {
  
   return (
     <ErrorBoundary>
-  <div className="flex flex-col items-center gap-3  w-full dark:bg-base-bgDark bg-base-surface md:max-w-[40em] mx-auto px-4">
+  <div className="flex flex-col items-center gap-3  w-full dark:bg-base-bgDark bg-plumb-surface  md:max-w-[40em] mx-auto px-4">
 
   {/* Primary: Write — full width, most prominent */}
   <ButtonWrapper
@@ -310,7 +310,7 @@ const fetchSubCollections = useCallback(async (skip, take) => {
         <div className={`${WRAP} ${PAGE_Y} ${STACK_LG}`} >
         <div className={SECTION}>
           {/* Stories */}
-           <div className=" overflow-y-auto  bg-base-surface dark:bg-base-bgDark md:max-w-[52em] mx-auto">
+           <div className=" overflow-y-auto  bg-plumb-surface  dark:bg-base-bgDark md:max-w-[52em] mx-auto">
           <SectionHeader title="What's happening in your communities" />
       </div>
 </div>
@@ -333,7 +333,7 @@ const fetchSubCollections = useCallback(async (skip, take) => {
           {/* Workshops */}
           <div className={`${WRAP} ${PAGE_Y} ${STACK_LG}`} >
            <div className={SECTION}>
-             <div className=" overflow-y-auto  bg-base-surface dark:bg-base-bgDark md:max-w-[52em] mx-auto">
+             <div className=" overflow-y-auto  bg-plumb-surface  dark:bg-base-bgDark md:max-w-[52em] mx-auto">
           <SectionHeader
             title="Workshops near you"
             right={
@@ -377,8 +377,8 @@ const fetchSubCollections = useCallback(async (skip, take) => {
         {/* Prompts */}
         <div className={`${WRAP} ${PAGE_Y} ${STACK_LG}`} >
         <div className={SECTION}>
-       <div className=" overflow-y-auto  bg-base-surface dark:bg-base-bgDark md:max-w-[52em] mx-auto">
-      <div className=" overflow-y-auto  bg-base-surface dark:bg-base-bgDark md:max-w-[52em] mx-auto">
+       <div className=" overflow-y-auto  bg-plumb-surface  dark:bg-base-bgDark md:max-w-[52em] mx-auto">
+      <div className=" overflow-y-auto  bg-plumb-surface  dark:bg-base-bgDark md:max-w-[52em] mx-auto">
 <SectionHeader title="Writing Prompts for you" />
 </div>
 </div>
@@ -418,7 +418,7 @@ const fetchSubCollections = useCallback(async (skip, take) => {
         {/* What's new */}
         <div className={`${WRAP} ${PAGE_Y} ${STACK_LG}`} >
         <div className={SECTION}>
-           <div className=" overflow-y-auto  bg-base-surface dark:bg-base-bgDark md:max-w-[52em] mx-auto">
+           <div className=" overflow-y-auto  bg-plumb-surface  dark:bg-base-bgDark md:max-w-[52em] mx-auto">
          <SectionHeader title="What's new" />
          </div>
          <div className='px-3'>

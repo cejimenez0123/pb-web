@@ -992,7 +992,7 @@ function ChildCollectionCard({
         min-h-36
         border
         border-border-soft
-        bg-base-surface
+        bg-plumb-surface 
         p-5
         text-left
         transition-all
@@ -1091,7 +1091,7 @@ function EmptyCollectionState({
         border
         border-dashed
         border-border-soft
-        bg-base-surface
+        bg-plumb-surface 
         px-6
         py-10
         text-center
@@ -1304,7 +1304,7 @@ function RoomSkeletonList() {
               animate-pulse
               border
               border-border-soft
-              bg-base-surface
+              bg-plumb-surface 
             "
           />
         )

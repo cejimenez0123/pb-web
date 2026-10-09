@@ -20,7 +20,7 @@ export default function AboutContainer() {
   return (
     <IonContent color="light" fullscreen className=" ">
       
-    <main className=" h-[100%] bg-base-surface pb-12  ">
+    <main className=" h-[100%] bg-plumb-surface  pb-12  ">
       <div className=" w-[100%]">
       <div className="bg-[#f4f4e0] py-12 px-8 lg:px-24 mx-auto px-2">
         {/* <p className="open-sans-medium text-xs tracking-widest uppercase text-[#6b6f63] mb-4">

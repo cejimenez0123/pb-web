@@ -36,7 +36,7 @@ export default function RoomPreview({
         hover:-translate-y-0.5
         hover:border-button-primary-bg
         hover:shadow-sm
-        dark:bg-base-surfaceDark
+        dark:bg-plumb-surface Dark
         dark:border-white/10
       "
     >

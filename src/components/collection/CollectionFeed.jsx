@@ -239,7 +239,7 @@ const CollectionFeed = ({
   }
 
   return (
-    <div className="bg-base-surface max-w-2xl mx-auto dark:bg-base-bgDark">
+    <div className="bg-plumb-surface  max-w-2xl mx-auto dark:bg-base-bgDark">
       <motion.div variants={containerVariants} initial="hidden" animate="show">
         {feed.map((item, i) => (
           <motion.div key={`${item._feedType}-${item.id}`} variants={itemVariants}>

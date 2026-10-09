@@ -450,7 +450,7 @@ export default function RoleForm({ item }) {
               text-white
               font-semibold
               text-text-brand
-              dark:bg-base-surfaceDark
+              dark:bg-plumb-surface Dark
             "
           >
             {activeCount}{" "}
@@ -505,7 +505,7 @@ export default function RoleForm({ item }) {
           bg-base-bg
           px-3
           py-2.5
-          dark:bg-base-surfaceDark
+          dark:bg-plumb-surface Dark
         "
       >
         <div className="flex flex-wrap gap-x-3 gap-y-1.5">
@@ -574,8 +574,8 @@ export default function RoleForm({ item }) {
                     duration-150
                     ${
                       hasAccess
-                        ? "border-border-focus bg-base-bg dark:bg-base-surfaceDark"
-                        : "border-border-soft/60 bg-base-bg/60 dark:bg-base-surfaceDark/60"
+                        ? "border-border-focus bg-base-bg dark:bg-plumb-surface Dark"
+                        : "border-border-soft/60 bg-base-bg/60 dark:bg-plumb-surface Dark/60"
                     }
                   `}
                 >

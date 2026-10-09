@@ -53,6 +53,7 @@ import useScrollTracking from "../../core/useScrollTracking.jsx";
 import { motion } from "framer-motion";
 import { IonContent } from "@ionic/react";
 import RoomPreview from "../../components/room/RoomPreview.jsx";
+import styles from "../../styles/style.js";
 
 
 // ---------------------------------------------------------
@@ -70,14 +71,14 @@ const BUTTON =
   "text-sm font-medium transition-all duration-200 " +
   "focus:outline-none focus:ring-2 focus:ring-button-primary-bg/30";
 
-const SECONDARY_BUTTON =
-  `${BUTTON} border border-card-border bg-card-background ` +
-  `text-text-primary hover:border-button-primary-bg ` +
-  `hover:text-text-brand`;
+const SECONDARY_BUTTON = styles.button.secondary
+  // `${BUTTON} border border-card-border bg-card-background ` +
+  // `text-text-primary hover:border-button-primary-bg ` +
+  // `hover:text-text-brand`;
 
-const PRIMARY_BUTTON =
-  `${BUTTON} bg-button-primary-bg text-white ` +
-  `hover:bg-button-primary-hover`;
+const PRIMARY_BUTTON = styles.button.primary
+  // `${BUTTON} bg-button-primary-bg text-white ` +
+  // `hover:bg-button-primary-hover`;
 
 
 // ---------------------------------------------------------
@@ -664,7 +665,7 @@ if (!isBookmarked) {
     >
       <ErrorBoundary>
     
-        <main className="h-[100%] bg-base-surface dark:bg-base-bgDark">
+        <main className="h-[100%] bg-plumb-surface  dark:bg-base-bgDark">
           <div className={`${PAGE} py-24`}>
             <div className="max-w-xl mx-auto text-center">
               <p className="text-xs uppercase tracking-[0.18em] text-text-secondary mb-4">
@@ -684,7 +685,8 @@ if (!isBookmarked) {
                 onClick={() =>
                   history.push(Paths.collections.path)
                 }
-                className={PRIMARY_BUTTON}
+                className={styles.button.primary}
+                // className={PRIMARY_BUTTON}
               >
                 Back to Rooms
               </button>
@@ -719,7 +721,7 @@ if (!isBookmarked) {
      
         overflow-y-auto
         overscroll-contain
-        bg-base-surface
+        bg-plumb-surface 
         text-text-primary
         dark:bg-base-bgDark
         dark:text-cream
@@ -1171,9 +1173,6 @@ function InsideRoom({
 
 
 
-//             <p className="font-serif text-2xl text-text-primary dark:text-cream">
-//               Nothing lives here yet.
-//             </p>
 
 
 
@@ -1242,7 +1241,10 @@ function MemberTab({
                 )
               }
               className="
-                w-full
+                w-[100%]
+                my-4
+                px-8
+                rounded-2xl
                 py-4
                 flex
                 items-center
@@ -1275,7 +1277,7 @@ function MemberTab({
 
         </div>
       ) : (
-        <div className="mt-6">
+        <div className={styles.tabs.container}>
           <EmptyRoomContent
             message="No members yet."
           />
@@ -1388,24 +1390,11 @@ function RoomTabs({
     },
   ];
 
-
+  
   return (
-    <div
-      className="
-        sticky
-        top-0
-        z-10
-        -mx-4
-        px-4
-        bg-base-surface/95
-        dark:bg-base-bgDark/95
-        backdrop-blur
-        border-b
-        border-card-border
-        dark:border-white/10
-      "
-    >
-      <div className="flex gap-6 overflow-x-auto">
+    <div className={styles.tabs.container}>
+  <div className={styles.tabs.wrapper}>
+  
 
         {tabs.map((item) => {
           const active =
@@ -1417,33 +1406,28 @@ function RoomTabs({
               onClick={() =>
                 setTab(item.id)
               }
-              className={`
-                relative
-                py-4
-                text-sm
-                whitespace-nowrap
-                transition-colors
-                ${
-                  active
-                    ? "text-text-primary dark:text-cream font-medium"
-                    : "text-text-secondary hover:text-text-primary"
-                }
-              `}
+                   className={"  whitespace-nowrap  relative "+[
+            styles.tabs.tab,
+            active ? styles.tabs.active : styles.tabs.inactive,
+          ].join(" ")}
+   
             >
               {item.label}
 
               {active && (
                 <motion.span
                   layoutId="room-tab-indicator"
-                  className="
+                  className={`
                     absolute
                     left-0
                     right-0
                     bottom-0
                     h-0.5
                     rounded-full
-                    bg-button-primary-bg
-                  "
+                    ${styles.tabs.tab}
+         
+                  `}
+                            //  bg-button-primary-bg
                 />
               )}
             </button>
@@ -1572,7 +1556,8 @@ function EmptyRoomContent({
         onClick && (
           <button
             onClick={onClick}
-            className={`${SECONDARY_BUTTON} mt-5`}
+            className={styles.button.secondary+" mt-5"}
+            // className={`${SECONDARY_BUTTON} mt-5`}
           >
             {buttonLabel}
           </button>
@@ -1588,7 +1573,7 @@ function EmptyRoomContent({
 
 function CollectionLoading() {
   return (
-    <main className="min-h-screen bg-base-surface dark:bg-base-bgDark">
+    <main className="min-h-screen bg-plumb-surface  dark:bg-base-bgDark">
 
       <div className={`${PAGE} pt-10 sm:pt-14`}>
 

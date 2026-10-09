@@ -73,8 +73,8 @@ const router = useIonRouter()
           handleClose={closeDialog}
         />
       ),
-      disagreeText: null,
-      disagree: null,
+      disagreeText: "Close",
+      disagree: closeDialog
     });
   };
 
@@ -90,8 +90,8 @@ const router = useIonRouter()
           handleClose={closeDialog}
         />
       ),
-      disagreeText: null,
-      disagree: null,
+      disagreeText: "Close",
+      disagree: closeDialog
     });
   };
 

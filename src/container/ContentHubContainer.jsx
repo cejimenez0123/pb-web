@@ -9,6 +9,7 @@ import CreateCollectionForm from "../components/collection/CreateCollectionForm.
 import UpcomingEventsSection from "../components/events/UpcomingEventsSection.jsx";
 import EmptyState from "../components/EmptyState.jsx";
 import SectionHeader from "../components/pieces/SectionHeader.jsx";
+import styles from "../styles/style.js";
 
 
 /*
@@ -222,7 +223,7 @@ const goToRooms = () => {
           className="page-content"
           fullscreen
         >
-    {/* <main className="h-[100vh] overflow-scroll bg-base-surface text-text-primary"> */}
+    {/* <main className="h-[100vh] overflow-scroll bg-plumb-surface  text-text-primary"> */}
       <div
         className="
           mx-auto
@@ -844,48 +845,50 @@ function HomeAction({
   onClick,
   variant = "secondary",
 }) {
+  // const base = styles.button.primary
+  const base = " min-h-11"
+  // const base = `
+  //   inline-flex
+  //   min-h-11
+  //   items-center
+  //   justify-center
+  //   rounded-full
+  //   px-5
+  //   py-2.5
+  //   text-sm
+  //   font-medium
+  //   transition-all
+  //   duration-200
+  //   focus:outline-none
+  //   focus:ring-2
+  //   focus:ring-base-soft
+  //   focus:ring-offset-2
+  //   focus:ring-offset-base-bg
+  // `;
 
-  const base = `
-    inline-flex
-    min-h-11
-    items-center
-    justify-center
-    rounded-full
-    px-5
-    py-2.5
-    text-sm
-    font-medium
-    transition-all
-    duration-200
-    focus:outline-none
-    focus:ring-2
-    focus:ring-base-soft
-    focus:ring-offset-2
-    focus:ring-offset-base-bg
-  `;
+  // const variants = {
+  //   primary: `
+  //     bg-base-soft
+  //     text-white
+  //     hover:bg-button-primary-hover
+  //   `,
 
-  const variants = {
-    primary: `
-      bg-base-soft
-      text-white
-      hover:bg-button-primary-hover
-    `,
-
-    secondary: `
-      border
-      border-border-soft
-      bg-transparent
-      text-text-primary
-      hover:border-base-soft
-      hover:text-text-brand
-    `,
-  };
+  //   secondary: `
+  //     border
+  //     border-border-soft
+  //     bg-transparent
+  //     text-text-primary
+  //     hover:border-base-soft
+  //     hover:text-text-brand
+  //   `,
+  // };
 
   return (
     <button
       type="button"
       onClick={onClick}
-      className={`${base} ${variants[variant]}`}
+      // className={`${base} ${variants[variant]}`}
+      className={`${base} ${variant === "primary" ? styles.button.primary : styles.button.secondary}`}
     >
       {children}
     </button>

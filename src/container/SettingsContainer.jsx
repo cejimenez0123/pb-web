@@ -458,7 +458,7 @@ dispatch(updateProfile({
               }, err => showAlert({ message: err.message, type: AlertType.error }))
             );
           }}
-          className="btn mx-4 bg-base-bg dark:bg-base-surfaceDark border border-soft/20 dark:text-cream text-soft flex w-full"
+          className="btn mx-4 bg-base-bg dark:bg-plumb-surface Dark border border-soft/20 dark:text-cream text-soft flex w-full"
         >
           <h4 className="mx-auto my-auto">Log Out</h4>
         </div>
@@ -470,7 +470,7 @@ dispatch(updateProfile({
           </label>
           <input
             type="text"
-            className="input bg-base-bg dark:bg-base-surfaceDark dark:text-cream text-soft input-bordered border-soft/20"
+            className="input bg-base-bg dark:bg-plumb-surface Dark dark:text-cream text-soft input-bordered border-soft/20"
             value={form.username}
             onChange={(e) => handleChange("username", e.target.value)}
           />
@@ -486,7 +486,7 @@ dispatch(updateProfile({
           <input
             type="file"
             accept="image/*"
-            className="file-input bg-base-bg dark:bg-base-surfaceDark dark:text-cream text-soft file-input-bordered border-soft/20 w-full"
+            className="file-input bg-base-bg dark:bg-plumb-surface Dark dark:text-cream text-soft file-input-bordered border-soft/20 w-full"
             onChange={handleImage}
           />
         </div>
@@ -514,7 +514,7 @@ dispatch(updateProfile({
             <span className="label-text dark:text-cream">Self Statement</span>
           </label>
           <textarea
-            className="textarea bg-base-bg dark:bg-base-surfaceDark dark:text-cream text-soft textarea-bordered border-soft/20 h-32"
+            className="textarea bg-base-bg dark:bg-plumb-surface Dark dark:text-cream text-soft textarea-bordered border-soft/20 h-32"
             value={form.selfStatement}
             onChange={(e) => {
               if (e.target.value.length <= 120) {
@@ -565,7 +565,7 @@ dispatch(updateProfile({
               className={`flex items-center justify-between px-4 py-3 rounded-xl border transition-all
                 ${selected
                   ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400'
-                  : 'border-soft/20 bg-base-bg dark:bg-base-surfaceDark text-soft dark:text-cream/70'
+                  : 'border-soft/20 bg-base-bg dark:bg-plumb-surface Dark text-soft dark:text-cream/70'
                 }`}
             >
               <div className="flex items-center gap-2">

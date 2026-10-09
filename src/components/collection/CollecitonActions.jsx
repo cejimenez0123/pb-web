@@ -22,14 +22,14 @@ return(<div className="flex flex-wrap sm:flex-nowrap items-center justify-betwee
   <div className="dropdown dropdown-end">
     <label
       tabIndex={0}
-      className="btn h-10  px-5 rounded-full  dark:bg-base-surfaceDark border-purple border shadow-md border-1 btn bg-purple text-cream hover:bg-cyan-500 flex items-center justify-center gap-2 transition"
+      className="btn h-10  px-5 rounded-full  dark:bg-plumb-surface Dark border-purple border shadow-md border-1 btn bg-purple text-cream hover:bg-cyan-500 flex items-center justify-center gap-2 transition"
     >
       Actions
 
     </label>
 <ul
   tabIndex={0}
-  className="dropdown-content z-50 bg-base-bg dark:bg-base-surfaceDark menu p-2 shadow-xl rounded-box w-48 border border-border-default dark:border-white/10"
+  className="dropdown-content z-50 bg-base-bg dark:bg-plumb-surface Dark menu p-2 shadow-xl rounded-box w-48 border border-border-default dark:border-white/10"
 >
       {/* Bookmark */}
       <li>

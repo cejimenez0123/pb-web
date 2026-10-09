@@ -92,7 +92,7 @@ export default function ReportContentDialog({
             </label>
             <textarea
               rows={4}
-              className="rounded-lg w-[100%] border-2 border-blueSea bg-base-bg dark:bg-base-surfaceDark dark:bg-cream shadow-sm border-opacity-30 min-h-[6em] text-blueSea p-3"
+              className="rounded-lg w-[100%] border-2 border-blueSea bg-base-bg dark:bg-plumb-surface Dark dark:bg-cream shadow-sm border-opacity-30 min-h-[6em] text-blueSea p-3"
               placeholder="Add any context that might help"
               defaultValue={detailsRef.current}
               onChange={(e) => {

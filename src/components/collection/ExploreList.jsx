@@ -19,7 +19,7 @@ const SkeletonCard = () => (
       bg-card-background
       p-5
       sm:p-6
-      dark:bg-base-surfaceDark
+      dark:bg-plumb-surface Dark
       dark:border-white/10
       animate-pulse
     "

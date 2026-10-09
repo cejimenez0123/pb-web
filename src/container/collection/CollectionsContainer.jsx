@@ -224,7 +224,7 @@ router.push(
         min-h-0
         overflow-y-auto
         overscroll-contain
-        bg-base-surface
+        bg-plumb-surface 
         text-text-primary
         dark:bg-base-bgDark
         dark:text-cream
@@ -572,7 +572,7 @@ function RoomCard({
           hover:border-base-soft
           hover:shadow-md
           dark:border-gray-700
-          dark:bg-base-surfaceDark
+          dark:bg-plumb-surface Dark
         "
       >
 
@@ -580,7 +580,7 @@ function RoomCard({
 
           <div className="flex items-start justify-between gap-4">
 
-            <span className="rounded-full bg-base-surface px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.12em] text-text-secondary dark:bg-base-bgDark dark:text-gray-300">
+            <span className="rounded-full bg-plumb-surface  px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.12em] text-text-secondary dark:bg-base-bgDark dark:text-gray-300">
               {getRoomTypeLabel(room?.type)}
             </span>
 
@@ -689,8 +689,8 @@ function SystemRoomCard({
           transition
           ${
             disabled
-              ? "border-card-border bg-card-background/60 dark:border-gray-800 dark:bg-base-surfaceDark/60"
-              : "border-card-border bg-card-background hover:-translate-y-0.5 hover:border-base-soft hover:shadow-md dark:border-gray-700 dark:bg-base-surfaceDark"
+              ? "border-card-border bg-card-background/60 dark:border-gray-800 dark:bg-plumb-surface Dark/60"
+              : "border-card-border bg-card-background hover:-translate-y-0.5 hover:border-base-soft hover:shadow-md dark:border-gray-700 dark:bg-plumb-surface Dark"
           }
         `}
       >
@@ -735,9 +735,9 @@ function EmptyRooms({
   onAction,
 }) {
   return (
-    <div className="rounded-2xl border border-dashed border-card-border bg-base-bg/40 px-6 py-10 text-center dark:border-gray-700 dark:bg-base-surfaceDark/40">
+    <div className="rounded-2xl border border-dashed border-card-border bg-base-bg/40 px-6 py-10 text-center dark:border-gray-700 dark:bg-plumb-surface Dark/40">
 
-      <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-base-surface text-xl dark:bg-base-bgDark">
+      <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-plumb-surface  text-xl dark:bg-base-bgDark">
         +
       </div>
 
@@ -784,7 +784,7 @@ function RoomGridSkeleton({
             bg-card-background
             p-5
             dark:border-gray-700
-            dark:bg-base-surfaceDark
+            dark:bg-plumb-surface Dark
           "
         >
           <div className="h-6 w-20 rounded-full bg-gray-200 dark:bg-gray-700" />

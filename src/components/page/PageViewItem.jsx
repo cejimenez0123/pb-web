@@ -16,7 +16,7 @@ import { setHtmlContent } from "../../actions/PageActions";
 export default function PageViewItem({ page, canEdit }) {
   const router = useIonRouter();
   const currentProfile = useSelector((state) => state.users.currentProfile);
-  const { openDialog } = useDialog();
+  const { openDialog,closeDialog } = useDialog();
 const dispatch =useDispatch()
   useLayoutEffect(() => {
     initGA();
@@ -55,13 +55,13 @@ const dispatch =useDispatch()
       title: "",
       height: 60,
       text: <CommentInput page={page} anchorText={anchorText} />,
-      disagreeText: null,
-      disagree: null,
+     disagreeText: "Close",
+      disagree: closeDialog
     });
   };
 
   const header = () => (
-    <div className="bg-base-surface dark:bg-base-bgDark border-b border-base-border dark:border-soft rounded-xl shadow-sm px-4 flex items-start justify-between gap-4">
+    <div className="bg-plumb-surface  dark:bg-base-bgDark border-b border-base-border dark:border-soft rounded-xl shadow-sm px-4 flex items-start justify-between gap-4">
       <div className="flex flex-col flex-1 min-w-0">
         <div className="flex items-center gap-3">
           {page?.author && (

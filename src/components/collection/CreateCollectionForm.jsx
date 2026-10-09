@@ -87,7 +87,7 @@ function SettingRow({
         px-4
         py-4
         dark:border-gray-700
-        dark:bg-base-surfaceDark
+        dark:bg-plumb-surface Dark
       "
     >
       <div className="min-w-0">
@@ -450,7 +450,7 @@ const {closeDialog}=useDialog()
             focus:ring-2
             focus:ring-blueSea/20
             dark:border-gray-700
-            dark:bg-base-surfaceDark
+            dark:bg-plumb-surface Dark
             dark:text-cream
           "
         />
@@ -493,7 +493,7 @@ const {closeDialog}=useDialog()
             focus:ring-2
             focus:ring-blueSea/20
             dark:border-gray-700
-            dark:bg-base-surfaceDark
+            dark:bg-plumb-surface Dark
             dark:text-cream
           "
         />
@@ -536,7 +536,7 @@ const {closeDialog}=useDialog()
               px-4
               py-4
               dark:border-gray-700
-              dark:bg-base-surfaceDark
+              dark:bg-plumb-surface Dark
             "
           >
             <input
@@ -584,7 +584,7 @@ const {closeDialog}=useDialog()
               bg-base-bg
               px-4
               py-4
-              dark:bg-base-surfaceDark
+              dark:bg-plumb-surface Dark
             "
           >
             <input
@@ -668,7 +668,7 @@ const {closeDialog}=useDialog()
             bg-softBlue/20
             px-4
             py-4
-            dark:bg-base-surfaceDark
+            dark:bg-plumb-surface Dark
           "
           aria-labelledby="initial-writing-title"
         >

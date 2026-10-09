@@ -28,7 +28,7 @@ import { useDialog } from "../../domain/usecases/useDialog";
 
 const WRAP = "mx-auto w-full max-w-[50em] px-4 sm:px-6";
 const CARD =
-  "rounded-2xl border border-gray-200 bg-white/60 shadow-sm dark:border-gray-700 dark:bg-base-surfaceDark/60";
+  "rounded-2xl border border-gray-200 bg-white/60 shadow-sm dark:border-gray-700 dark:bg-plumb-surface Dark/60";
 
 const filterTypes = {
   filter: "Filter",
@@ -85,7 +85,7 @@ function ItemPreview({ item, type }) {
               ? null
               : null
           }
-          className="shrink-0 rounded-full border border-gray-300 bg-base-bg px-3 py-1.5 text-xs text-gray-600 dark:border-gray-700 dark:bg-base-surfaceDark dark:text-gray-300"
+          className="shrink-0 rounded-full border border-gray-300 bg-base-bg px-3 py-1.5 text-xs text-gray-600 dark:border-gray-700 dark:bg-plumb-surface Dark dark:text-gray-300"
         >
           {isStory ? "Writing" : "Room"}
         </button>
@@ -114,13 +114,13 @@ function CollectionHeader() {
 
 function LoadingState() {
   return (
-    <main className="min-h-[100dvh] bg-base-surface dark:bg-base-bgDark">
+    <main className="min-h-[100dvh] bg-plumb-surface  dark:bg-base-bgDark">
       <div className={`${WRAP} py-12`}>
         <div className="animate-pulse space-y-4">
-          <div className="h-8 rounded-xl bg-gray-200 dark:bg-base-surfaceDark" />
-          <div className="h-32 rounded-2xl bg-gray-200 dark:bg-base-surfaceDark" />
-          <div className="h-20 rounded-2xl bg-gray-200 dark:bg-base-surfaceDark" />
-          <div className="h-20 rounded-2xl bg-gray-200 dark:bg-base-surfaceDark" />
+          <div className="h-8 rounded-xl bg-gray-200 dark:bg-plumb-surface Dark" />
+          <div className="h-32 rounded-2xl bg-gray-200 dark:bg-plumb-surface Dark" />
+          <div className="h-20 rounded-2xl bg-gray-200 dark:bg-plumb-surface Dark" />
+          <div className="h-20 rounded-2xl bg-gray-200 dark:bg-plumb-surface Dark" />
         </div>
       </div>
     </main>
@@ -129,7 +129,7 @@ function LoadingState() {
 
 function EmptyCollections() {
   return (
-    <div className="rounded-2xl border border-dashed border-gray-300 bg-base-bg px-6 py-10 text-center dark:border-gray-700 dark:bg-base-surfaceDark">
+    <div className="rounded-2xl border border-dashed border-gray-300 bg-base-bg px-6 py-10 text-center dark:border-gray-700 dark:bg-plumb-surface Dark">
       <p className="text-sm text-gray-500 dark:text-gray-400">
         You don't have any Rooms to add this to yet.
       </p>
@@ -141,7 +141,7 @@ function NotFoundState({ type }) {
   const router = useIonRouter();
 
   return (
-    <main className="min-h-[100dvh] bg-base-surface dark:bg-base-bgDark">
+    <main className="min-h-[100dvh] bg-plumb-surface  dark:bg-base-bgDark">
       <div
         className={`${WRAP} flex min-h-[70dvh] flex-col items-center justify-center text-center`}
       >
@@ -162,7 +162,7 @@ function NotFoundState({ type }) {
           <Pill
             label="Go Back"
             onClick={() => router.goBack()}
-            baseClass="border border-gray-300 bg-gray-100 text-gray-700 dark:border-gray-700 dark:bg-base-surfaceDark dark:text-cream"
+            baseClass="border border-gray-300 bg-gray-100 text-gray-700 dark:border-gray-700 dark:bg-plumb-surface Dark dark:text-cream"
           />
         </div>
       </div>
@@ -174,11 +174,11 @@ function NoPermissionUI() {
   const router = useIonRouter();
 
   return (
-    <main className="min-h-[100dvh] bg-base-surface dark:bg-base-bgDark">
+    <main className="min-h-[100dvh] bg-plumb-surface  dark:bg-base-bgDark">
       <div
         className={`${WRAP} flex min-h-[70dvh] flex-col items-center justify-center text-center`}
       >
-        <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-gray-100 dark:bg-base-surfaceDark">
+        <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-gray-100 dark:bg-plumb-surface Dark">
           <span className="text-xl">↗</span>
         </div>
 
@@ -199,7 +199,7 @@ function NoPermissionUI() {
           <Pill
             label="Go Back"
             onClick={() => router.goBack()}
-            baseClass="border border-gray-300 bg-gray-100 text-gray-700 dark:border-gray-700 dark:bg-base-surfaceDark dark:text-cream"
+            baseClass="border border-gray-300 bg-gray-100 text-gray-700 dark:border-gray-700 dark:bg-plumb-surface Dark dark:text-cream"
           />
         </div>
       </div>
@@ -370,7 +370,7 @@ const renderCollection = useCallback(
 
   if (loading) {
     return (
-      <IonContent className="bg-base-surface dark:bg-base-bgDark">
+      <IonContent className="bg-plumb-surface  dark:bg-base-bgDark">
         <LoadingState />
       </IonContent>
     );
@@ -378,7 +378,7 @@ const renderCollection = useCallback(
 
   if (!item || error) {
     return (
-      <IonContent className="bg-base-surface dark:bg-base-bgDark">
+      <IonContent className="bg-plumb-surface  dark:bg-base-bgDark">
         <NotFoundState type={itemType} />
       </IonContent>
     );
@@ -394,8 +394,8 @@ const renderCollection = useCallback(
    */
 
   return (
-    <IonContent className="bg-base-surface dark:bg-base-bgDark">
-      <main className="min-h-[100dvh] bg-base-surface dark:bg-base-bgDark">
+    <IonContent className="bg-plumb-surface  dark:bg-base-bgDark">
+      <main className="min-h-[100dvh] bg-plumb-surface  dark:bg-base-bgDark">
         <ErrorBoundary>
           <div className={`${WRAP} pb-24 pt-8`}>
             {/* Header */}
@@ -421,7 +421,7 @@ const renderCollection = useCallback(
                   onClick={() =>
                     router.goBack()
                   }
-                  className="shrink-0 rounded-full border border-gray-300 bg-base-bg px-4 py-2 text-sm font-medium text-gray-700 transition hover:border-blueSea hover:text-blueSea dark:border-gray-700 dark:bg-base-surfaceDark dark:text-cream"
+                  className="shrink-0 rounded-full border border-gray-300 bg-base-bg px-4 py-2 text-sm font-medium text-gray-700 transition hover:border-blueSea hover:text-blueSea dark:border-gray-700 dark:bg-plumb-surface Dark dark:text-cream"
                 >
                   Back
                 </button>
@@ -472,7 +472,7 @@ const renderCollection = useCallback(
                       event.target.value
                     )
                   }
-                  className="select w-full rounded-full border border-emerald-300 bg-base-bg text-sm text-emerald-800 shadow-sm focus:border-soft focus:outline-none focus:ring-1 focus:ring-soft dark:bg-base-surfaceDark dark:text-cream sm:w-40"
+                  className="select w-full rounded-full border border-emerald-300 bg-base-bg text-sm text-emerald-800 shadow-sm focus:border-soft focus:outline-none focus:ring-1 focus:ring-soft dark:bg-plumb-surface Dark dark:text-cream sm:w-40"
                 >
                   {Object.entries(
                     filterTypes
@@ -486,7 +486,7 @@ const renderCollection = useCallback(
                   ))}
                 </select>
 
-                <label className="flex min-w-0 flex-1 items-center rounded-full border border-emerald-300 bg-base-bg px-4 shadow-sm focus-within:border-soft focus-within:ring-1 focus-within:ring-soft dark:bg-base-surfaceDark">
+                <label className="flex min-w-0 flex-1 items-center rounded-full border border-emerald-300 bg-base-bg px-4 shadow-sm focus-within:border-soft focus-within:ring-1 focus-within:ring-soft dark:bg-plumb-surface Dark">
                   <span className="mr-2 shrink-0 text-xs font-semibold uppercase tracking-wide text-soft">
                     Search
                   </span>

@@ -6,8 +6,9 @@ import { acceptTerms, signOutAction } from "../actions/UserActions";
 
 import EULATERMS from "../container/auth/Agreement";
 import { useDialog } from "../domain/usecases/useDialog";
+import CURRENT_TERMS_VERSION from "./CURRENT_TERMS_VERSION";
 
-const CURRENT_TERMS_VERSION = "2026-09";
+
 
 export default function useTermsAcceptance() {
   const dispatch = useDispatch();

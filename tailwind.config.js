@@ -61,7 +61,12 @@ export default {
     mint: "#40906f",
     mintHover: "#347a5e",
     mintLight: "#8fd8b5",
-
+coral: "#F06449",
+coralHover: "#D94D35",
+coralLight: "#FF8A70",
+// yea: "#199b6bff",
+// yeaHover: "#E8B83D",
+// yeaLight: "#F6C453",
     // Borders
     line: "#d4c8b0",
     border: "#ddd8c4",

@@ -112,7 +112,7 @@ export default function LinkPreview({ url, compact }) {
   return (
     <div
       onClick={handleClick}
-      className="rounded-xl border border-soft bg-base-surface dark:bg-base-bgDark shadow-sm overflow-hidden cursor-pointer active:scale-[0.98] transition"
+      className="rounded-xl border border-soft bg-plumb-surface  dark:bg-base-bgDark shadow-sm overflow-hidden cursor-pointer active:scale-[0.98] transition"
     >
       {previewData.image && (
         <IonImg src={previewData.image} className="w-full h-40 object-cover" alt="Link preview" />

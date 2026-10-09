@@ -64,7 +64,7 @@ function SelectableItem({
         "flex items-center gap-3 rounded-2xl border",
         "bg-base-bg px-4 py-3 shadow-sm",
         "transition hover:shadow-md",
-        "dark:bg-base-surfaceDark",
+        "dark:bg-plumb-surface Dark",
         borderClass,
       ].join(" ")}
     >
@@ -90,7 +90,7 @@ function SelectableItem({
         variant="primary"
         baseClass={
           actionLabel === "Undo"
-            ? "shrink-0 border border-gray-300 bg-gray-100 text-gray-700 dark:border-gray-600 dark:bg-base-surfaceDark dark:text-cream"
+            ? "shrink-0 border border-gray-300 bg-gray-100 text-gray-700 dark:border-gray-600 dark:bg-plumb-surface Dark dark:text-cream"
             : "shrink-0 border border-blueSea bg-blueSea text-white"
         }
       />
@@ -144,7 +144,7 @@ function SelectedItems({
   }
 
   return (
-    <div className="mb-6 rounded-2xl border border-blueSea/20 bg-softBlue/20 p-3 dark:bg-base-surfaceDark">
+    <div className="mb-6 rounded-2xl border border-blueSea/20 bg-softBlue/20 p-3 dark:bg-plumb-surface Dark">
       <div className="mb-2 flex items-center justify-between">
         <p className="text-xs font-semibold uppercase tracking-[0.14em] text-blueSea">
           Added
@@ -181,7 +181,7 @@ function SelectedItems({
 
 function EmptySelection({ children }) {
   return (
-    <div className="rounded-2xl border border-dashed border-gray-300 bg-base-bg px-6 py-10 text-center dark:border-gray-700 dark:bg-base-surfaceDark">
+    <div className="rounded-2xl border border-dashed border-gray-300 bg-base-bg px-6 py-10 text-center dark:border-gray-700 dark:bg-plumb-surface Dark">
       <p className="text-sm text-gray-500 dark:text-gray-400">
         {children}
       </p>
@@ -421,13 +421,13 @@ if (storyList.length > 0) {
 
   if (!colInView) {
     return (
-      <IonContent className="bg-base-surface dark:bg-base-bgDark">
-      <main className="min-h-[100dvh] bg-base-surface dark:bg-base-bgDark">
+      <IonContent className="bg-plumb-surface  dark:bg-base-bgDark">
+      <main className="min-h-[100dvh] bg-plumb-surface  dark:bg-base-bgDark">
         <div className="mx-auto max-w-[50em] px-4 py-12">
           <div className="animate-pulse space-y-4">
-            <div className="h-8 rounded-xl bg-gray-200 dark:bg-base-surfaceDark" />
-            <div className="h-32 rounded-2xl bg-gray-200 dark:bg-base-surfaceDark" />
-            <div className="h-32 rounded-2xl bg-gray-200 dark:bg-base-surfaceDark" />
+            <div className="h-8 rounded-xl bg-gray-200 dark:bg-plumb-surface Dark" />
+            <div className="h-32 rounded-2xl bg-gray-200 dark:bg-plumb-surface Dark" />
+            <div className="h-32 rounded-2xl bg-gray-200 dark:bg-plumb-surface Dark" />
           </div>
         </div>
       </main>
@@ -440,8 +440,8 @@ if (storyList.length > 0) {
     newCollections.length;
 
   return (
-          <IonContent className="bg-base-surface dark:bg-base-bgDark">
-    <main className="min-h-[100%] overflow-y-auto bg-base-surface dark:bg-base-bgDark">
+          <IonContent className="bg-plumb-surface  dark:bg-base-bgDark">
+    <main className="min-h-[100%] overflow-y-auto bg-plumb-surface  dark:bg-base-bgDark">
       <ErrorBoundary>
         <div className="mx-auto w-full max-w-[50em] px-4 pb-24 pt-8 sm:px-6">
 
@@ -473,14 +473,14 @@ if (storyList.length > 0) {
                     )
                   )
                 }
-                className="shrink-0 rounded-full border border-gray-300 bg-base-bg px-4 py-2 text-sm font-medium text-gray-700 transition hover:border-blueSea hover:text-blueSea dark:border-gray-700 dark:bg-base-surfaceDark dark:text-cream"
+                className="shrink-0 rounded-full border border-gray-300 bg-base-bg px-4 py-2 text-sm font-medium text-gray-700 transition hover:border-blueSea hover:text-blueSea dark:border-gray-700 dark:bg-plumb-surface Dark dark:text-cream"
               >
                 View Room
               </button>
             </div>
 
             {/* Save */}
-            <div className="mt-6 flex items-center justify-between gap-4 rounded-2xl border border-gray-200 bg-white/60 px-4 py-3 dark:border-gray-700 dark:bg-base-surfaceDark/60">
+            <div className="mt-6 flex items-center justify-between gap-4 rounded-2xl border border-gray-200 bg-white/60 px-4 py-3 dark:border-gray-700 dark:bg-plumb-surface Dark/60">
               <div>
                 <p className="text-sm font-medium text-gray-800 dark:text-cream">
                   {selectedCount === 0
@@ -520,7 +520,7 @@ if (storyList.length > 0) {
                     event.target.value
                   )
                 }
-                className="select w-full rounded-full border border-emerald-300 bg-base-bg text-sm text-emerald-800 shadow-sm focus:border-soft focus:outline-none focus:ring-1 focus:ring-soft dark:bg-base-surfaceDark dark:text-cream sm:w-40"
+                className="select w-full rounded-full border border-emerald-300 bg-base-bg text-sm text-emerald-800 shadow-sm focus:border-soft focus:outline-none focus:ring-1 focus:ring-soft dark:bg-plumb-surface Dark dark:text-cream sm:w-40"
               >
                 {Object.entries(
                   filterTypes
@@ -534,7 +534,7 @@ if (storyList.length > 0) {
                 ))}
               </select>
 
-              <label className="flex min-w-0 flex-1 items-center rounded-full border border-emerald-300 bg-base-bg px-4 shadow-sm focus-within:border-soft focus-within:ring-1 focus-within:ring-soft dark:bg-base-surfaceDark">
+              <label className="flex min-w-0 flex-1 items-center rounded-full border border-emerald-300 bg-base-bg px-4 shadow-sm focus-within:border-soft focus-within:ring-1 focus-within:ring-soft dark:bg-plumb-surface Dark">
                 <span className="mr-2 shrink-0 text-xs font-semibold uppercase tracking-wide text-soft">
                   Search
                 </span>
@@ -555,7 +555,7 @@ if (storyList.length > 0) {
           </section>
 
           {/* Main selector */}
-          <section className="rounded-3xl border border-gray-200 bg-white/50 p-3 shadow-sm dark:border-gray-700 dark:bg-base-surfaceDark/40 sm:p-5">
+          <section className="rounded-3xl border border-gray-200 bg-white/50 p-3 shadow-sm dark:border-gray-700 dark:bg-plumb-surface Dark/40 sm:p-5">
 
          <StoryCollectionTabs
   tab={tab}
@@ -797,9 +797,9 @@ function NoPermissionUI() {
   const router = useIonRouter();
 
   return (
-    <main className="min-h-[100dvh] bg-base-surface dark:bg-base-bgDark">
+    <main className="min-h-[100dvh] bg-plumb-surface  dark:bg-base-bgDark">
       <div className="mx-auto flex min-h-[70dvh] max-w-md flex-col items-center justify-center px-6 text-center">
-        <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-gray-100 dark:bg-base-surfaceDark">
+        <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-gray-100 dark:bg-plumb-surface Dark">
           <span className="text-xl">↗</span>
         </div>
 
@@ -820,7 +820,7 @@ function NoPermissionUI() {
           <Pill
             label="Go Back"
             onClick={() => router.goBack()}
-            baseClass="border border-gray-300 bg-gray-100 text-gray-700 dark:border-gray-700 dark:bg-base-surfaceDark dark:text-cream"
+            baseClass="border border-gray-300 bg-gray-100 text-gray-700 dark:border-gray-700 dark:bg-plumb-surface Dark dark:text-cream"
           />
 
           <Pill

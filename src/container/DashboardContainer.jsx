@@ -48,8 +48,8 @@ function ButtonWrapper({ onClick, children, className = "", style = {}, tabIndex
     </span>
   );
 }
-const WRAP = "max-w-2xl mx-auto dark:bg-base-bgDark bg-base-surface ";
-const SECTION_GAP = "dark:bg-base-bgDark bg-base-surface ";  // applied to each section's root div
+const WRAP = "max-w-2xl mx-auto dark:bg-base-bgDark bg-plumb-surface  ";
+const SECTION_GAP = "dark:bg-base-bgDark bg-plumb-surface  ";  // applied to each section's root div
 const SECTION_HEADING = "text-xl lora-medium";          // text style only
 const SECTION_HEADER_ROW = "flex mt-6 mb-2 max-w-xl mx-auto items-center flex-row justify-between px-4"; // row layout
 const LIST_WRAP = "flex flex-col gap-4";  // Saves
@@ -339,7 +339,7 @@ scrollY: false,
  return (
         <ErrorBoundary>
 
-          <div className="flex flex-col items-center gap-3  w-full dark:bg-base-bgDark bg-base-surface md:max-w-[40em] mx-auto px-4">
+          <div className="flex flex-col items-center gap-3  w-full dark:bg-base-bgDark bg-plumb-surface  md:max-w-[40em] mx-auto px-4">
 
   {/* Primary: Write — full width, most prominent */}
   <ButtonWrapper
