@@ -7,9 +7,10 @@ import { IonContent, useIonRouter } from "@ionic/react";
 import { useDialog } from "../domain/usecases/useDialog.jsx";
 import CreateCollectionForm from "../components/collection/CreateCollectionForm.jsx";
 import UpcomingEventsSection from "../components/events/UpcomingEventsSection.jsx";
-import EmptyState from "../components/EmptyState.jsx";
+
 import SectionHeader from "../components/pieces/SectionHeader.jsx";
 import styles from "../styles/style.js";
+import EmptyState from "../components/general/EmptyState.jsx";
 
 
 /*

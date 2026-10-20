@@ -345,6 +345,7 @@ function MobileNavbar({
           left-0
           right-0
           z-50
+       
           min-h-[2.4rem]
           bg-plumb-surface 
           dark:bg-base-bgDark
@@ -410,6 +411,7 @@ function MobileNavItem({
       onClick={onClick}
       className={`
         flex
+           pb-20
         items-center
         justify-center
         min-w-[72px]

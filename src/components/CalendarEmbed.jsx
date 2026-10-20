@@ -226,14 +226,7 @@ const renderEvent = (event, i) => (
   <div
     key={i}
     onClick={() => handleDialogOpen(event)}
-    // className="
-    //   rounded-2xl
-    //   border border-plumb-border dark:border-plumb-darkBorder
-    //   bg-plumb-surface dark:bg-plumb-dark-surface
-    //   p-4
-    //   transition-transform
-    //   active:scale-[0.98]
-    // "
+
     className={styles.event.card}
     style={{ WebkitTapHighlightColor: "transparent" }}
   >
@@ -370,88 +363,6 @@ const renderEvent = (event, i) => (
     </div>
   </div>
 );
-  // const renderEvent = (event, i) => (
-  //   <div
-  //     key={i}
-  //     onClick={() => handleDialogOpen(event)}
-  //     className="rounded-2xl border p-4 active:scale-[0.98] bg-plumb-surface  transition-transform"
-  //     style={{ borderColor: BORDER, WebkitTapHighlightColor: "transparent" }}
-  //   >
-  //     <div className="flex justify-between gap-3">
-  //       <div className="flex flex-col flex-1 min-w-0">
-  //         <span
-  //           className="lora-bold text-base truncate"
-  //           style={{ color: INK }}
-  //         >
-  //           {event.summary}
-  //         </span>
-
-  //         {event.location && (
-  //           <button
-  //             onClick={(e) => {
-  //               e.stopPropagation();
-  //               openGooglemaps(event);
-  //             }}
-  //             className="flex items-center gap-1 mt-1 text-left w-fit"
-  //             style={{ WebkitTapHighlightColor: "transparent" }}
-  //           >
-  //             <svg
-  //               width="12"
-  //               height="12"
-  //               viewBox="0 0 24 24"
-  //               fill="none"
-  //               stroke={MUTED}
-  //               strokeWidth="2"
-  //               strokeLinecap="round"
-  //               strokeLinejoin="round"
-  //               className="flex-shrink-0"
-  //             >
-  //               <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z" />
-  //               <circle cx="12" cy="10" r="3" />
-  //             </svg>
-  //             <span
-  //               className="open-sans-medium text-xs underline underline-offset-2"
-  //               style={{ color: MUTED }}
-  //             >
-  //               {event.location}
-  //             </span>
-  //           </button>
-  //         )}
-
-  //         {event.hashtags?.length > 0 && (
-  //           <div className="flex gap-1.5 flex-wrap mt-2">
-  //             {event.hashtags.slice(0, 4).map((tag, idx) => (
-  //               <span
-  //                 key={idx}
-  //                 className="open-sans-medium text-xs px-2 py-0.5 rounded-full"
-  //                 style={{ backgroundColor: ACTIVE_BG, color: INK }}
-  //               >
-  //                 #{tag}
-  //               </span>
-  //             ))}
-  //           </div>
-  //         )}
-  //       </div>
-
-  //       <div className="flex flex-col items-end justify-between gap-2 flex-shrink-0">
-  //         <IonText
-  //           className="open-sans-medium text-xs"
-  //           style={{ color: MUTED }}
-  //           dangerouslySetInnerHTML={{ __html: event.startTime }}
-  //         />
-  //         <button
-  //           onClick={(e) => handleAddEvent(e, event)}
-  //           className="flex flex-col items-center gap-0.5 active:scale-95 transition-transform"
-  //         >
-  //           <IonImg className="w-8 h-8" src={calendar} />
-  //           <span className="open-sans-medium text-[10px]" style={{ color: MUTED }}>
-  //             Add
-  //           </span>
-  //         </button>
-  //       </div>
-  //     </div>
-  //   </div>
-  // );
 
   return (
     <div className="space-y-6">

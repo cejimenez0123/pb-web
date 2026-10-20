@@ -13,15 +13,16 @@ import useScrollTracking from "../core/useScrollTracking.jsx";
 import sortItems from "../core/sortItems.js";
 import { IonContent, useIonRouter } from "@ionic/react";
 import PageList from "../components/page/PageList.jsx";
+import styles from "../styles/style.js";
 
 const PAGE_WRAP =
-  "mx-auto min-h-screen bg-plumb-surface  pb-28 pt-10 text-base-content dark:bg-base-bgDark";
+   styles.content.surface+"bg-plumb-dark-surface"+"mx-auto min-h-screen bg-plumb-surface  pb-28 pt-10 text-base-content dark:bg-base-bgDark";
 
 const CONTENT_WRAP =
   "mx-auto w-[100%] max-w-6xl px-5 sm:px-8 lg:px-10";
 
-const SEARCH_INPUT =
-  "w-[100%] rounded-full border border-base-content/15 bg-plumb-surface  px-5 py-4 text-base-content outline-none transition placeholder:text-base-content/45 focus:border-soft focus:ring-2 focus:ring-soft/20 dark:border-white/15 dark:bg-base-bgDark";
+const SEARCH_INPUT = 
+styles.input + "w-[100%] rounded-full border border-base-content/15 bg-plumb-surface  px-5 py-4 text-base-content outline-none transition placeholder:text-base-content/45 focus:border-soft focus:ring-2 focus:ring-soft/20 dark:border-white/15 dark:bg-base-bgDark";
 
 const PILL =
   "rounded-full border border-base-content/15 px-4 py-2 text-sm transition dark:border-white/15";
@@ -224,7 +225,10 @@ function DiscoveryContainer() {
   };
 
   return (
-    <IonContent className="page-content">
+    <IonContent 
+
+    // className="page-content">
+    >
       <main className={PAGE_WRAP}>
         <div className={CONTENT_WRAP}>
 
@@ -234,13 +238,19 @@ function DiscoveryContainer() {
               Discover
             </p>
 
-            <h1 className="mt-4 max-w-3xl font-serif text-[2.9rem] font-bold leading-[1] tracking-tight sm:text-[4.5rem] lg:text-[5rem]">
+            <h1 
+            className={styles.content.text.super}
+            >
+            {/* // className="mt-4 max-w-3xl font-serif text-[2.9rem] font-bold leading-[1] tracking-tight sm:text-[4.5rem] lg:text-[5rem]"> */}
               Find something
               <br />
               to fall into.
             </h1>
 
-            <p className="mt-7 max-w-2xl font-serif text-lg leading-relaxed text-base-content/65 sm:text-xl">
+            <p 
+            className={styles.content.text.body}
+            >
+            {/* // className="mt-7 max-w-2xl font-serif text-lg leading-relaxed text-base-content/90 sm:text-xl"> */}
               Wander through writing, collections, and Rooms.
               Start with a story. See where it takes you.
             </p>
@@ -331,8 +341,10 @@ function DiscoveryContainer() {
                       Start somewhere.
                     </h2>
 
-                    <p className="mt-2 max-w-xl font-serif text-base text-base-content/60">
-                      A few pieces people have intentionally
+                    <p
+                      className={styles.content.text.body}
+                    >
+                    A few pieces people have intentionally
                       left open.
                     </p>
                   </div>

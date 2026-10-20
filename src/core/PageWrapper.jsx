@@ -5,6 +5,7 @@ import { Capacitor } from '@capacitor/core';
 
 import Context from '../context';
 import NavbarContainer from '../container/NavbarContainer';
+import styles from '../styles/style';
 
 
 const PageWrapper = ({
@@ -82,7 +83,8 @@ const PageWrapper = ({
     return (
       <IonPage
         ref={pageRef}
-        className="bg-paper"
+        className={styles.content.surface}
+        // className="bg-paper"
       >
         <div className="min-h-screen bg-paper flex flex-col items-center justify-center text-center px-6">
 
@@ -134,29 +136,36 @@ const PageWrapper = ({
      PAGE
   ========================================================= */
 
-  return (
-    <IonPage
-      ref={pageRef}
-      className="bg-paper"
+// Normal page
+return (
+  <IonPage
+    ref={pageRef}
+    className={styles.about.page}
+    // className="
+    //   bg-paper
+    //   text-plumb-ink
+    //   dark:bg-plumb-dark-surface
+    //   dark:text-plumb-darkText
+    // "
+  >
+    <main
+      className="
+        relative
+        flex-1
+        min-h-0
+        w-full
+        bg-paper
+        text-plumb-ink
+        dark:bg-plumb-dark-surface
+        dark:text-plumb-darkText
+      "
     >
-  
+      {children}
+    </main>
+  </IonPage>
+);
 
 
-
-      <main
-        className="
-          relative
-          flex-1
-          min-h-0
-          w-full
-          bg-paper
-        "
-      >
-        {children}
-      </main>
-
-    </IonPage>
-  );
 };
 
 

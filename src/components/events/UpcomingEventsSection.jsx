@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
-import EmptyState from "../EmptyState";
+// import EmptyState from "../EmptyState";
 import SectionHeader from "../pieces/SectionHeader";
 import { fetchCollection } from "../../actions/CollectionActions";
 import checkResult from "../../core/checkResult";
 import shortName from "../../core/shortName";
+import EmptyState from "../general/EmptyState";
 
 export default function UpcomingEventsSection({
   profile,

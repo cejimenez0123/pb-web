@@ -34,45 +34,76 @@ export default {
 
   plumb: {
     // Core surfaces
-    paper: "#f4f4e0",
-    canvas: "#f8f6f1",
-    surface: "#eeeeda",
-    elevated: "#fffef5",
+   // Core surfaces — preserve the existing design
+paper: "#f4f4e0",
+canvas: "#f8f6f1",
+surface: "#eeeeda",
+elevated: "#fffef5",
 
-    // Dark mode
-    dark: {
-      canvas: "#171c19",
-      paper: "#1d231f",
-      surface: "#252c27",
-      elevated: "#2c342e",
-    },
+// Dark surfaces
+dark: {
+  canvas:"#2c342e",
+  //  "#171c19",
+  paper: "#1d231f",
+  surface: "#252c27",
+  elevated: "#171c19",
+},
 
-    // Typography
-    ink: "#12261f",
-    text: "#1f2937",
-    muted: "#5f675f",
-    subtle: "#7b827b",
+// Typography
+ink: "#12261f",
+text: "#1f2937",
+muted: "#505950",
+subtle: "#626b62",
 
-    darkText: "#f3f1df",
-    darkMuted: "#b9beb3",
-    darkSubtle: "#969d94",
+darkText: "#f3f1df",
+darkMuted: "#c4cbbf",
+darkSubtle: "#adb5a9",
 
-    // Brand
-    mint: "#40906f",
-    mintHover: "#347a5e",
-    mintLight: "#8fd8b5",
+// Brand
+mint: "#40906f",
+mintHover: "#347a5e",
+mintLight: "#8fd8b5",
+
 coral: "#F06449",
 coralHover: "#D94D35",
 coralLight: "#FF8A70",
-// yea: "#199b6bff",
-// yeaHover: "#E8B83D",
-// yeaLight: "#F6C453",
-    // Borders
-    line: "#d4c8b0",
-    border: "#ddd8c4",
 
-    darkLine: "#39423b",
-    darkBorder: "#465048",
+// Borders and dividers
+line: "#b8b19b",
+border: "#c5bea8",
+borderStrong: "#898873",
+
+darkLine: "#59645a",
+darkBorder: "#505c52",
+darkBorderStrong: "#68766a",
+
+// Focus
+focus: "#8fd8b5",
+focusLight: "#347a5e",
+
+    // Typography
+    // ink: "#12261f",
+    // text: "#1f2937",
+    // muted: "#5f675f",
+    // subtle: "#7b827b",
+
+    // darkText: "#f3f1df",
+    // darkMuted: "#b9beb3",
+    // darkSubtle: "#969d94",
+
+    // Brand
+//     mint: "#40906f",
+//     mintHover: "#347a5e",
+//     mintLight: "#8fd8b5",
+// coral: "#F06449",
+// coralHover: "#D94D35",
+// coralLight: "#FF8A70",
+
+//     line: "#d4c8b0",
+//     border: "#ddd8c4",
+
+//     darkLine: "#39423b",
+//     darkBorder: "#465048",
 
     // Buttons
     button: {

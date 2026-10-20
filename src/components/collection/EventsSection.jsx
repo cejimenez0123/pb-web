@@ -1,12 +1,13 @@
 
 
-import EmptyState from "../EmptyState";
+// import EmptyState from "../EmptyState";
 import PaginatedList from "../page/PaginatedList";
 import Paths from "../../core/paths";
 
 import { getMyStories } from "../../actions/StoryActions";
 import shortName from "../../core/shortName";
 import SectionHeader from "../pieces/SectionHeader";
+import EmptyState from "../general/EmptyState";
 
 const PAGE_SIZE = 8;
 

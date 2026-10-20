@@ -1,9 +1,10 @@
 import Paths from "../../core/paths";
-import EmptyState from "../EmptyState";
+// import EmptyState from "../EmptyState";
 import PaginatedList from "../page/PaginatedList";
 import { getMyCollections } from "../../actions/CollectionActions";
 import { useSelector } from "react-redux";
-
+import EmptyState from "../general/EmptyState";
+// 
 const CommunitiesPanel = ({fetch,id, router }) => {
   const profile = useSelector((state) => state.users.currentProfile);
 

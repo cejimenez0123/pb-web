@@ -4,7 +4,8 @@ import Paths from "../core/paths";
 import Context from "../context";
 import { initGA, sendGAEvent } from "../core/ga4";
 import useScrollTracking from "../core/useScrollTracking";
-import ScrollDown from "../components/ScrollDownButton";
+import ScrollDownButton from "../components/ScrollDownButton";
+import styles from "../styles/style";
 
 
 export default function AboutContainer() {
@@ -18,33 +19,18 @@ export default function AboutContainer() {
   }, []);
 
   return (
-    <IonContent color="light" fullscreen className=" ">
-      
-    <main className=" h-[100%] bg-plumb-surface  pb-12  ">
-      <div className=" w-[100%]">
-      <div className="bg-[#f4f4e0] py-12 px-8 lg:px-24 mx-auto px-2">
-        {/* <p className="open-sans-medium text-xs tracking-widest uppercase text-[#6b6f63] mb-4">
-          About
-        </p> */}
-{/* 
-        <h1 className="lora-bold text-4xl py-12 sm:text-5xl leading-tight text-[#12261f] mb-6">
-          The physical experience gets someone into a room. Plumbum gives that
-          relationship somewhere to continue.
-        </h1> */}
+    <IonContent
 
-        {/* <p className="open-sans-medium text-[#6b6f63] max-w-xl mb-12">
-          Plumbum is a growing creative community for people who write. No
-          follower counts, no algorithmic feed, no streaks. Just work, the
-          people you trust with it, and the rooms you show up in.
-        </p> */}
-<p className="open-sans-medium text-xs tracking-widest uppercase text-[#6b6f63] mb-4">
-  About
-</p>
+>
+  <main className={styles.about.page +" "}>
+    <div className={styles.about.inner+""}>
+      <p className={styles.about.eyebrow}>
+        About
+      </p>
 
-<h1 className="lora-bold text-4xl py-12 sm:text-5xl leading-tight text-[#12261f] mb-6">
-  Find a room. Meet people. Keep the connection going.
-</h1>
-
+      <h1 className={styles.about.welcome}>
+        Find a room. Meet people. Keep the connection going.
+      </h1>
 <p className="open-sans-medium text-[#6b6f63] max-w-xl mb-12">
   You might find Plumbum at a reading, a workshop, a mixer, or through
   someone you know. Come as you are. The <a 
@@ -53,43 +39,38 @@ export default function AboutContainer() {
   and you don't need an account to see what's happening.
 </p>
 {/* BOOGIE*/}
-<section className="pb-12 flex-row flex flex-wrap">
-  <div className="border-t border-[#ddd8c4] pt-6">
-    <p className="open-sans-medium text-xs tracking-widest uppercase text-[#6b6f63] mb-3">
-      Start here
-    </p>
+   <section className={styles.about.start}>
+        <div className={styles.about.section}>
+          <p className={styles.about.sectionLabel}>
+            Start here
+          </p>
 
-    <h2 className="lora-bold text-2xl sm:text-3xl text-[#12261f] mb-3">
-      See what's happening.
-    </h2>
+          <h2 className={styles.about.sectionTitle}>
+            See what's happening.
+          </h2>
 
-    <p className="open-sans-medium text-sm leading-relaxed text-[#6b6f63] max-w-xl mb-6">
-      Browse readings, workshops, mixers, and other creative events.
-      The calendar is free to browse, so you can look around before you
-      decide to join.
-    </p>
+          <p className={styles.about.sectionBody}>
+            Browse readings, workshops, mixers, and other creative events.
+            The calendar is free to browse, so you can look around before you
+            decide to join.
+          </p>
 
-    <div className="flex flex-wrap gap-3">
-      <button
-        onClick={() => router.push(Paths.calendar())}
-        className="
-          open-sans-medium
-          text-sm
-          rounded-full
-          px-5
-          py-3
-          bg-[#12261f]
-          text-[#f4f4e0]
-          min-h-11
-        "
-      >
-        See what's on
-      </button>
+          <div className="flex flex-wrap gap-3">
+            <button
+              type="button"
+              onClick={() => router.push(Paths.calendar())}
+              className={[
+                styles.button.base,
+                styles.button.primary,
+                "min-h-11 px-5 py-3 text-sm",
+              ].join(" ")}
+            >
+              See what's on
+            </button>
+          </div>
+        </div>
+      </section>
 
-    </div>
-
-  </div>
-</section>
 {/* BOOGIE*/}
         <div className="grid sm:grid-cols-2 pb-12 gap-x-10 gap-y-8 ">
           <FeatureBlock title="Collections, not feeds">
@@ -128,24 +109,30 @@ export default function AboutContainer() {
         />
 
         {!currentProfile && (
-          <ScrollDown text="↓ See what's on" visible={true} />
+          <ScrollDownButton text="↓ See what's on" visible={true} />
         )}
       </div>
-      </div>
+     
       </main>
     </IonContent>
   );
 }
- function FeatureBlock({ title, children }) {
+function FeatureBlock({ title, children }) {
   return (
-    <div className="border-t border-[#ddd8c4] pt-6">
-      <h3 className="lora-bold text-lg text-[#12261f] mb-2">{title}</h3>
-      <p className="open-sans-medium text-sm leading-relaxed text-[#6b6f63]">
+    <div className={styles.about.section
+
+    }>
+      <h3 className={styles.about.featureTitle}>
+        {title}
+      </h3>
+
+      <p className={styles.about.featureBody}>
         {children}
       </p>
     </div>
   );
 }
+
 function AboutCTA({
   primaryLabel,
   secondaryLabel,
@@ -153,24 +140,37 @@ function AboutCTA({
   onSecondary,
 }) {
   return (
-    <div className="border border-soft rounded-2xl p-8">
-      <h3 className="lora-bold text-xl text-[#12261f] mb-2">
+    <div className={styles.about.cta}>
+      <h3 className={styles.about.ctaTitle}>
         Anyone can look before joining
       </h3>
-      <p className="open-sans-medium text-sm text-[#6b6f63] mb-6 max-w-md">
+
+      <p className={styles.about.ctaBody}>
         Events and public collections are readable without an account. You only
         need one when you want to keep something, write, or be in a room.
       </p>
+
       <div className="flex flex-wrap gap-3">
         <button
+          type="button"
           onClick={onPrimary}
-          className="open-sans-medium text-sm rounded-full px-5 py-3 bg-[#12261f] text-[#f4f4e0] min-h-11"
+          className={[
+            styles.button.base,
+            styles.button.primary,
+            "min-h-11 px-5 py-3 text-sm",
+          ].join(" ")}
         >
           {primaryLabel}
         </button>
+
         <button
+          type="button"
           onClick={onSecondary}
-          className="open-sans-medium text-sm rounded-full px-5 py-3 border border-[#ddd8c4] text-[#12261f] min-h-11"
+          className={[
+            styles.button.base,
+            styles.button.cancel,
+            "min-h-11 px-5 py-3 text-sm",
+          ].join(" ")}
         >
           {secondaryLabel}
         </button>
@@ -178,3 +178,4 @@ function AboutCTA({
     </div>
   );
 }
+

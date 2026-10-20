@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-
+import styles from "../styles/style";
 export default function ScrollDownButton({text="↓ Scroll for more",onClick,onBottomClick,visible=true}) {
   const [isVisible, setIsVisible] = useState(visible);
 
@@ -26,9 +26,9 @@ export default function ScrollDownButton({text="↓ Scroll for more",onClick,onB
   return isVisible ? (
     <button
       onClick={onClick?onClick:scrollToBottom}
-      className="fixed bottom-6  right-6 z-50 bg-cream hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-full shadow-lg transition-all duration-300 "
-    >
-      {/* ↓ Scroll for more */}
+      className={styles.scrollDown.button}
+      >
+      
       {text}
     </button>
   ) : null;

@@ -6,6 +6,7 @@ import BookDashboardItem from "../collection/BookDashboardItem";
 import { motion } from "framer-motion";
 import Paths from "../../core/paths";
 import { useIonRouter } from "@ionic/react";
+import styles from "../../styles/style";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -37,7 +38,10 @@ const PageList = ({
   const router = useIonRouter();
 
   return (
-    <div className="bg-plumb-surface  max-w-2xl mx-auto dark:bg-base-bgDark">
+    <div
+    className={styles.page.list}
+    //  className="bg-plumb-surface  max-w-2xl mx-auto dark:bg-base-bgDark"
+     >
       <motion.div variants={containerVariants} initial="hidden" animate="show">
         {items.map((item, i) => {
           const isCollection = !!item?.storyIdList;

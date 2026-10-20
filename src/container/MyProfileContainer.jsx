@@ -11,7 +11,6 @@ import ProfileInfo from "../components/profile/ProfileInfo";
 import Paths from "../core/paths";
 import Pill from "../components/Pill";
 import AboutPanel from "../components/profile/AboutPanel";
-import EmptyState from "../components/EmptyState";
 import PaginatedList from "../components/page/PaginatedList";
 import ListPill from "../components/page/ListPill";
 
@@ -28,6 +27,7 @@ import useDebounce from "../core/useDebounce";
 import ProfileSectionTabs from "../components/profile/ProfileSectionTabs";
 import EventsSection from "../components/collection/EventsSection";
 import PortfolioSection from "../components/collection/PortfolioSection";
+import EmptyState from "../components/general/EmptyState";
 
 const TABS = {
   PORTFOLIO: "portfolio",
