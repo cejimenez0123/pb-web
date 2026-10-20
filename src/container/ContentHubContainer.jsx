@@ -216,7 +216,7 @@ const goToRooms = () => {
     }
   };
  const goToEvents = () => {
-    router.push("/events");
+    router.push(Paths.calendar())
   };
   return (
         <IonContent
@@ -408,7 +408,7 @@ function FeaturedEventSection({
       <UpcomingEventsSection
         profile={currentProfile}
           events={upcomingEvents}
-          onViewEvents={goToEvents}
+          onViewEvents={onViewEvents}
         />
 
 
@@ -846,49 +846,16 @@ function HomeAction({
   onClick,
   variant = "secondary",
 }) {
-  // const base = styles.button.primary
+
   const base = " min-h-11"
-  // const base = `
-  //   inline-flex
-  //   min-h-11
-  //   items-center
-  //   justify-center
-  //   rounded-full
-  //   px-5
-  //   py-2.5
-  //   text-sm
-  //   font-medium
-  //   transition-all
-  //   duration-200
-  //   focus:outline-none
-  //   focus:ring-2
-  //   focus:ring-base-soft
-  //   focus:ring-offset-2
-  //   focus:ring-offset-base-bg
-  // `;
+  
 
-  // const variants = {
-  //   primary: `
-  //     bg-base-soft
-  //     text-white
-  //     hover:bg-button-primary-hover
-  //   `,
-
-  //   secondary: `
-  //     border
-  //     border-border-soft
-  //     bg-transparent
-  //     text-text-primary
-  //     hover:border-base-soft
-  //     hover:text-text-brand
-  //   `,
-  // };
 
   return (
     <button
       type="button"
       onClick={onClick}
-      // className={`${base} ${variants[variant]}`}
+      
       className={`${base} ${variant === "primary" ? styles.button.primary : styles.button.secondary}`}
     >
       {children}
