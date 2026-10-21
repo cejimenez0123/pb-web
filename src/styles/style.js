@@ -1,6 +1,75 @@
 
 
 const styles = {
+
+  importWork: {
+    section: [
+      "mt-16 max-w-3xl",
+    ].join(" "),
+
+    intro: [
+      "mb-5",
+    ].join(" "),
+
+    label: [
+      "mb-3 font-open-sans text-xs font-medium",
+      "uppercase tracking-widest",
+      "text-plumb-muted dark:text-plumb-darkMuted",
+    ].join(" "),
+
+    description: [
+      "mt-2 max-w-xl font-lora text-base leading-relaxed",
+      "text-plumb-text dark:text-plumb-darkText",
+    ].join(" "),
+
+    grid: [
+      "grid grid-cols-1 gap-4 sm:grid-cols-2",
+    ].join(" "),
+
+    card: [
+      "group min-h-[150px] rounded-2xl border p-6 text-left",
+      "border-plumb-borderStrong bg-plumb-paper",
+      "transition-all duration-200",
+      "hover:-translate-y-0.5 hover:border-plumb-mintHover",
+      "hover:bg-plumb-surface",
+      "dark:border-plumb-darkBorderStrong",
+      "dark:bg-plumb-dark-surface",
+      "dark:hover:border-plumb-mintLight",
+      "dark:hover:bg-plumb-dark-canvas",
+      "focus-visible:outline-none focus-visible:ring-2",
+      "focus-visible:ring-plumb-focus focus-visible:ring-offset-2",
+      "focus-visible:ring-offset-plumb-paper",
+      "dark:focus-visible:ring-offset-plumb-dark-canvas",
+      "motion-reduce:transform-none motion-reduce:transition-none",
+    ].join(" "),
+
+    cardDragging: [
+      "border-plumb-mintHover bg-plumb-surface",
+      "dark:border-plumb-mintLight dark:bg-plumb-dark-canvas",
+    ].join(" "),
+
+    cardTitle: [
+      "font-serif text-xl font-semibold",
+      "text-plumb-ink dark:text-plumb-darkText",
+    ].join(" "),
+
+    cardDescription: [
+      "mt-2 max-w-sm font-open-sans text-sm leading-relaxed",
+      "text-plumb-muted dark:text-plumb-darkMuted",
+    ].join(" "),
+
+    cardAction: [
+      "text-sm font-medium",
+      "text-plumb-mintHover dark:text-plumb-mintLight",
+      "group-hover:underline underline-offset-4",
+    ].join(" "),
+
+    error: [
+      "mt-3 font-open-sans text-sm",
+      "text-red-700 dark:text-red-300",
+    ].join(" "),
+  },
+
   about: {
     
   page: [
@@ -99,10 +168,11 @@ const styles = {
 },
 content: {
   surface: [
+    // "className="pb-20 ""
     "mx-auto min-h-screen",
     "bg-paper text-plumb-ink",
     "dark:bg-plumb-dark-canvas dark:text-plumb-darkText",
-    "pb-28 pt-10",
+    "pb-28 md:pb-0 pt-10",
   ].join(" "),
 
   text: {

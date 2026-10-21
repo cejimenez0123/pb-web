@@ -1,6 +1,7 @@
 
 import React, { useState } from "react";
 import styles from "../../styles/style";
+import ImportWorkSection from "../page/ImportWorkSection";
 
 export default function WriteLanding({
   stories = [],
@@ -9,6 +10,8 @@ export default function WriteLanding({
   onSearch,
   onBegin,
   onSelectStory,
+    onFileSelected,
+  onGoogleFilePicked,
 }) {
   const [view, setView] = useState("grid");
 
@@ -59,7 +62,10 @@ export default function WriteLanding({
         >
           Begin something new
         </button>
-
+{/* <ImportWorkSection
+  onFileSelected={onFileSelected}
+  onGoogleFilePicked={onGoogleFilePicked}
+/> */}
         {/* Existing work */}
         <section className="mt-28 sm:mt-32">
 

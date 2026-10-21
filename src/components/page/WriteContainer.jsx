@@ -80,6 +80,8 @@ useEffect(() => {
       stories={stories}
       loading={loading}
       onBegin={handleBegin}
+      // onFileSelected={}
+      // onGoogleFilePicked={}
       onSelectStory={handleSelectStory}
     />
     </IonContent>

@@ -3,7 +3,7 @@ import { useIonRouter } from '@ionic/react';
 import { useLocation } from 'react-router';
 import { Capacitor } from '@capacitor/core';
 import { SocialLogin } from '@capgo/capacitor-social-login';
-
+import React, { useEffect, useRef, useState } from 'react';
 import { signOutAction } from '../actions/UserActions';
 import Paths from '../core/paths';
 import SearchButton from '../components/SearchButton';
@@ -260,11 +260,48 @@ function DesktopNavItem({
 /* =========================================================
    MOBILE NAVBAR
 ========================================================= */
+function useMobileViewportInset() {
+  useEffect(() => {
+    const viewport = window.visualViewport;
 
+    if (!viewport) return undefined;
+
+    const updateViewportInset = () => {
+      const bottomInset = Math.max(
+        0,
+        window.innerHeight -
+          (viewport.offsetTop + viewport.height)
+      );
+
+      document.documentElement.style.setProperty(
+        '--plumbum-visual-bottom-inset',
+        `${bottomInset}px`
+      );
+    };
+
+    updateViewportInset();
+
+    viewport.addEventListener('resize', updateViewportInset);
+    viewport.addEventListener('scroll', updateViewportInset);
+    window.addEventListener('resize', updateViewportInset);
+
+    return () => {
+      viewport.removeEventListener('resize', updateViewportInset);
+      viewport.removeEventListener('scroll', updateViewportInset);
+      window.removeEventListener('resize', updateViewportInset);
+
+      document.documentElement.style.removeProperty(
+        '--plumbum-visual-bottom-inset'
+      );
+    };
+  }, []);
+}
 function MobileNavbar({
   currentProfile,
   showSearch = true,
 }) {
+   useMobileViewportInset();
+
   const {
     handleHome,
     handleDiscover,
@@ -338,7 +375,68 @@ function MobileNavbar({
           Mobile bottom navigation
       ------------------------------------------------ */}
 
-      <nav
+<nav
+  className="
+    md:hidden
+    fixed
+    left-0
+    right-0
+    z-50
+    min-h-14
+    bg-plumb-surface
+    dark:bg-base-bgDark
+    border-t
+    border-border-default
+    flex
+    items-center
+    justify-around
+    pb-[env(safe-area-inset-bottom)]
+  "
+  style={{
+    bottom:
+      'var(--plumbum-visual-bottom-inset, env(safe-area-inset-bottom, 0px))',
+  }}
+  aria-label="Mobile navigation"
+>
+  <MobileNavItem
+    label="Home"
+    onClick={handleHome}
+  />
+
+  <MobileNavItem
+    label="Discover"
+    onClick={handleDiscover}
+  />
+
+  {isLoggedIn && (
+    <MobileNavItem
+      label="Write"
+      onClick={handleWrite}
+      active
+    />
+  )}
+
+  <MobileNavItem
+    label="Events"
+    onClick={handleEvents}
+  />
+
+  {isLoggedIn && (
+    <MobileNavItem
+      label="You"
+      onClick={handleProfile}
+    />
+  )}
+
+  {!isLoggedIn && (
+    <MobileNavItem
+      label="About"
+      onClick={handleAbout}
+    />
+  )}
+</nav>
+
+      {/* <nav
         className="
           fixed
           bottom-0
@@ -393,12 +491,11 @@ function MobileNavbar({
             onClick={handleAbout}
           />
         )}
-      </nav>
+      </nav> */}
 
     </div>
   );
 }
-
 
 function MobileNavItem({
   label,
@@ -409,14 +506,18 @@ function MobileNavItem({
     <button
       type="button"
       onClick={onClick}
+      aria-current={active ? 'page' : undefined}
       className={`
         flex
-           pb-20
+        flex-1
+        min-w-0
+        min-h-14
         items-center
         justify-center
-        min-w-[72px]
+        px-1
         py-3
-        text-lg
+        text-sm
+        sm:text-base
         leading-none
         tracking-[-0.02em]
         transition-colors
@@ -431,6 +532,39 @@ function MobileNavItem({
     </button>
   );
 }
+
+
+// function MobileNavItem({
+//   label,
+//   onClick,
+//   active = false,
+// }) {
+//   return (
+//     <button
+//       type="button"
+//       onClick={onClick}
+//       className={`
+//         flex
+//            pb-20
+//         items-center
+//         justify-center
+//         min-w-[72px]
+//         py-3
+//         text-lg
+//         leading-none
+//         tracking-[-0.02em]
+//         transition-colors
+//         ${
+//           active
+//             ? 'text-text-primary'
+//             : 'text-text-secondary hover:text-text-primary'
+//         }
+//       `}
+//     >
+//       {label}
+//     </button>
+//   );
+// }
 
 
 /* =========================================================
