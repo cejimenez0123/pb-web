@@ -7,6 +7,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { signOutAction } from '../actions/UserActions';
 import Paths from '../core/paths';
 import SearchButton from '../components/SearchButton';
+import styles from '../styles/style';
+import SignOutButton from '../components/buttons/SignOutButton';
 
 function NavbarContainer({ isDesktop }) {
   const currentProfile = useSelector(
@@ -17,7 +19,7 @@ function NavbarContainer({ isDesktop }) {
 
   const isSearchPage =
     location?.pathname === '/search';
-
+    const isNative = Capacitor.isNativePlatform()
   return (
     <>
       {isDesktop ? (
@@ -26,10 +28,10 @@ function NavbarContainer({ isDesktop }) {
           showSearch={!isSearchPage}
         />
       ) : (
-        <MobileNavbar
+        isNative?<MobileNavbar
           currentProfile={currentProfile}
           showSearch={!isSearchPage}
-        />
+        />:<BrowserMobileNavbar  showSearch={!isSearchPage} currentProfile={currentProfile}/>
       )}
     </>
   );
@@ -115,41 +117,20 @@ function DesktopNavbar({
 
   return (
     <header
-      className="
-        hidden
-        md:flex
-        w-full
-        h-36
-        bg-paper
-        border-b
-        border-border-default
-        items-center
-      "
+
+  
     >
       <div
-        className="
-          w-full
-          px-[6.5%]
-          flex
-          items-center
-          justify-between
-        "
+     className={styles.navbar.desktop}
       >
 
         {/* Wordmark */}
         <button
+        cl
           type="button"
           onClick={handleHome}
-          className="
-            font-serif
-            text-lg
-            leading-none
-            font-semibold
-            text-text-primary
-            tracking-[-0.02em]
-            hover:opacity-75
-            transition-opacity
-          "
+          className={styles.navbar.wordmark}
+     
           aria-label="Go to Plumbum home"
         >
           Plumbum
@@ -158,14 +139,8 @@ function DesktopNavbar({
 
         {/* Main navigation */}
         <nav
-          className="
-            absolute
-            left-1/2
-            -translate-x-1/2
-            flex
-            items-center
-            gap-[42px]
-          "
+        className={styles.navbar.desktopNav}
+     
           aria-label="Main navigation"
         >
           <DesktopNavItem onClick={handleHome}>
@@ -315,35 +290,40 @@ function MobileNavbar({
   const isLoggedIn = !!currentProfile;
 
   return (
-    <div className="md:hidden w-full">
+    <div 
+    
+    className="md:hidden w-full"
+    >
 
       {/* -----------------------------------------------
           Mobile top bar
       ------------------------------------------------ */}
 
       <header
-        className="
-          w-full
-          border-b
-          border-border-default
-          flex
-          items-center
-          justify-between
-          px-4
-          py-3
-        "
+      className={styles.navbar.mobileNative}
+        // className="
+        //   w-full
+        //   border-b
+        //   border-border-default
+        //   flex
+        //   items-center
+        //   justify-between
+        //   px-4
+        //   py-3
+        // "
       >
         <button
           type="button"
           onClick={handleHome}
-          className="
-            font-serif
-            text-md
-            leading-none
-            font-semibold
-            text-text-primary
-            tracking-[-0.025em]
-          "
+          className={styles.navbar.mobileNativeItem}
+          // className="
+          //   font-serif
+          //   text-md
+          //   leading-none
+          //   font-semibold
+          //   text-text-primary
+          //   tracking-[-0.025em]
+          // "
           aria-label="Go to Plumbum home"
         >
           Plumbum
@@ -436,63 +416,6 @@ function MobileNavbar({
   )}
 </nav>
 
-      {/* <nav
-        className="
-          fixed
-          bottom-0
-          left-0
-          right-0
-          z-50
-       
-          min-h-[2.4rem]
-          bg-plumb-surface 
-          dark:bg-base-bgDark
-          border-t
-          border-border-default
-          flex
-          items-center
-          justify-around
-        "
-        aria-label="Mobile navigation"
-      >
-        <MobileNavItem
-          label="Home"
-          onClick={handleHome}
-        />
-
-        <MobileNavItem
-          label="Discover"
-          onClick={handleDiscover}
-        />
-
-        {isLoggedIn && (
-          <MobileNavItem
-            label="Write"
-            onClick={handleWrite}
-            active
-          />
-        )}
-
-        <MobileNavItem
-          label="Events"
-          onClick={handleEvents}
-        />
-
-        {isLoggedIn && (
-          <MobileNavItem
-            label="You"
-            onClick={handleProfile}
-          />
-        )}
-
-        {!isLoggedIn && (
-          <MobileNavItem
-            label="About"
-            onClick={handleAbout}
-          />
-        )}
-      </nav> */}
-
     </div>
   );
 }
@@ -534,91 +457,14 @@ function MobileNavItem({
 }
 
 
-// function MobileNavItem({
-//   label,
-//   onClick,
-//   active = false,
-// }) {
-//   return (
-//     <button
-//       type="button"
-//       onClick={onClick}
-//       className={`
-//         flex
-//            pb-20
-//         items-center
-//         justify-center
-//         min-w-[72px]
-//         py-3
-//         text-lg
-//         leading-none
-//         tracking-[-0.02em]
-//         transition-colors
-//         ${
-//           active
-//             ? 'text-text-primary'
-//             : 'text-text-secondary hover:text-text-primary'
-//         }
-//       `}
-//     >
-//       {label}
-//     </button>
-//   );
-// }
+
 
 
 /* =========================================================
    AUTH
 ========================================================= */
 
-function SignOutButton({ mobile = false }) {
-  const dispatch = useDispatch();
-  const router = useIonRouter();
 
-  const currentProfile = useSelector(
-    (state) => state.users.currentProfile
-  );
-
-  const handleSignOut = async () => {
-    try {
-      if (Capacitor.isNativePlatform()) {
-        await SocialLogin.logout({
-          provider: 'google',
-        });
-      }
-    } catch (error) {
-      console.error(
-        'Social login logout failed:',
-        error
-      );
-    }
-
-    dispatch(
-      signOutAction({
-        profile: currentProfile,
-      })
-    ).then(() => {
-      router.push(Paths.login, 'root');
-    });
-  };
-
-  return (
-    <button
-      type="button"
-      onClick={handleSignOut}
-      className="
-        text-text-secondary
-        hover:text-text-primary
-        transition-colors
-        tracking-[-0.02em]
-        text-md
-        whitespace-nowrap
-      "
-    >
-      Sign out
-    </button>
-  );
-}
 
 
 function SignInButton({ mobile = false }) {
@@ -640,6 +486,207 @@ function SignInButton({ mobile = false }) {
       "
     >
       Sign in
+    </button>
+  );
+}
+
+
+/* =========================================================
+   MOBILE BROWSER NAVBAR
+========================================================= */
+
+function BrowserMobileNavbar({
+  currentProfile,
+  showSearch = true,
+}) {
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const {
+    handleHome,
+    handleDiscover,
+    handleWrite,
+    handleEvents,
+    handleProfile,
+    handleAbout,
+    handleSearch,
+  } = useNavbarNavigation();
+
+  const isLoggedIn = !!currentProfile;
+
+  const closeMenu = () => {
+    setMenuOpen(false);
+  };
+
+  const navigateAndClose = (handler) => {
+    closeMenu();
+    handler();
+  };
+
+  return (
+    <div    >
+
+      {/* -----------------------------------------------
+          Mobile browser top bar
+      ------------------------------------------------ */}
+
+      <header
+   className={styles.navbar.mobileBrowser}
+
+      >
+
+<button
+  type="button"
+  onClick={() => setMenuOpen((open) => !open)}
+  className={styles.navbar.mobileBrowserMenu}
+  aria-label={
+    menuOpen
+      ? 'Close navigation menu'
+      : 'Open navigation menu'
+  }
+  aria-expanded={menuOpen}
+  aria-controls="mobile-browser-navigation"
+>
+  <div className={styles.navbar.menuBrowserIconLine}/>
+  <div className={styles.navbar.menuBrowserIconLine}/>
+      <div className={styles.navbar.menuBrowserIconLine}/>
+     <div className={styles.navbar.menuBrowserIconLine}/>
+  {/* </span> */}
+</button>
+
+        {/* Hamburger */}
+      
+
+
+        {/* Wordmark */}
+        <button
+          type="button"
+          onClick={() =>
+            navigateAndClose(handleHome)
+          }
+          className={styles.navbar.wordmark}
+     
+          aria-label="Go to Plumbum home"
+        >
+          Plumbum
+        </button>
+
+
+        {/* Utility actions */}
+        <div
+        className='flex flex-row  justify-between w-[80%] '
+   
+        >
+          {showSearch && (
+            <SearchButton
+              onClick={handleSearch}
+            />
+          )}
+
+          {isLoggedIn ? (
+            <SignOutButton mobile />
+          ) : (
+            <SignInButton mobile />
+          )}
+        </div>
+
+      </header>
+
+
+      {/* -----------------------------------------------
+          Hamburger navigation
+      ------------------------------------------------ */}
+
+      {menuOpen && (
+        <nav
+          id="mobile-browser-navigation"
+     
+          aria-label="Mobile navigation"
+        >
+          <MobileBrowserNavItem
+            label="Home"
+            onClick={() =>
+              navigateAndClose(handleHome)
+            }
+          />
+
+          <MobileBrowserNavItem
+            label="Discover"
+            onClick={() =>
+              navigateAndClose(handleDiscover)
+            }
+          />
+
+          {isLoggedIn && (
+            <MobileBrowserNavItem
+              label="Write"
+              onClick={() =>
+                navigateAndClose(handleWrite)
+              }
+              active
+            />
+          )}
+
+          <MobileBrowserNavItem
+            label="Events"
+            onClick={() =>
+              navigateAndClose(handleEvents)
+            }
+          />
+
+          {isLoggedIn && (
+            <MobileBrowserNavItem
+              label="You"
+              onClick={() =>
+                navigateAndClose(handleProfile)
+              }
+            />
+          )}
+
+          {!isLoggedIn && (
+            <MobileBrowserNavItem
+              label="About"
+              onClick={() =>
+                navigateAndClose(handleAbout)
+              }
+            />
+          )}
+        </nav>
+      )}
+
+    </div>
+  );
+}
+
+
+function MobileBrowserNavItem({
+  label,
+  onClick,
+  active = false,
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`
+        w-full
+        flex
+        items-center
+        px-2
+        py-3
+        text-base
+        leading-none
+        text-left
+        tracking-[-0.02em]
+        transition-colors
+        ${
+          active
+            ? 'text-text-primary'
+            : 'text-text-secondary hover:text-text-primary'
+        }
+      `}
+      aria-current={active ? 'page' : undefined}
+    >
+      {label}
     </button>
   );
 }

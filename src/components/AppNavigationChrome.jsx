@@ -33,12 +33,12 @@ function AppNavigationChrome({
     <>
       {/* Desktop */}
       {showTopNavbar && (
-        <div className="z-50 flex w-[100%] shrink-0">
+        // <div className="z-50 flex w-[100%] shrink-0">
           <NavbarContainer
             isDesktop={isDesktop}
             currentProfile={currentProfile}
           />
-        </div>
+        // </div>
       )}
 
       {/* Mobile / Tablet */}
@@ -48,7 +48,7 @@ function AppNavigationChrome({
             isDesktop={false}
             currentProfile={currentProfile}
           />
-        </div>
+       </div>
       )}
     </>
   );

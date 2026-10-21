@@ -60,9 +60,20 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Plumbum uses your location to show you writers workshops and groups happening near you. For example, opening studio you can find and join workshops and groups based on how close they are to you.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Plumbum uses your photo library so you can select an existing photo to use as your profile picture or to include when creating a story. For example, tapping &quot;Choose Photo&quot; during story creation opens your library so you can pick an image to attach.</string>
+	<string>Plumbum uses your photo library so you can select an existing photo to use as your profile picture or to include when creating a story. For example, tapping "Choose Photo" during story creation opens your library so you can pick an image to attach.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Plumbum uses your photo library so you can select an existing photo to use as your profile picture or to include when creating a story. For example, tapping &quot;Choose Photo&quot; during story creation opens your library so you can pick an image to attach.</string>
+	<string>Plumbum uses your photo library so you can select an existing photo to use as your profile picture or to include when creating a story. For example, tapping "Choose Photo" during story creation opens your library so you can pick an image to attach.</string>
+	<key>NSPrivacyAccessedAPITypes</key>
+	<array>
+		<dict>
+			<key>NSPrivacyAccessedAPIType</key>
+			<string>NSPrivacyAccessedAPICategoryFileTimestamp</string>
+			<key>NSPrivacyAccessedAPITypeReasons</key>
+			<array>
+				<string>C617.1</string>
+			</array>
+		</dict>
+	</array>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>
@@ -90,17 +101,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
-        <key>NSPrivacyAccessedAPITypes</key>
-        <array>
-          
-          <dict>
-            <key>NSPrivacyAccessedAPIType</key>
-            <string>NSPrivacyAccessedAPICategoryFileTimestamp</string>
-            <key>NSPrivacyAccessedAPITypeReasons</key>
-            <array>
-              <string>C617.1</string>
-            </array>
-          </dict>
-        </array>
-      </dict>
+</dict>
 </plist>

@@ -2,6 +2,192 @@
 
 const styles = {
 
+navbar: {
+  desktop: [
+    "w-full h-36",
+    "flex items-center",
+    "bg-plumb-mintHover",
+    "border-b border-plumb-mint",
+  ].join(" "),
+menuButton: [
+  "flex items-center justify-center",
+  "w-11 h-11",
+  "shrink-0",
+  "rounded-full bg-transparent",
+  "dark:text-plumb-darkText",
+  "transition-colors duration-150",
+  "hover:bg-white/10 dark:hover:bg-plumb-mint/15",
+  "focus-visible:outline-none",
+  "focus-visible:ring-2",
+  "focus-visible:ring-plumb-focus",
+  "focus-visible:ring-offset-2",
+  "focus-visible:ring-offset-plumb-mintHover",
+  "dark:focus-visible:ring-offset-plumb-dark-surface",
+].join(" "),
+
+
+
+
+  mobileBrowser: [
+    "relative min-w-10",
+    "flex py-1  my-auto items-center",
+    "bg-plumb-mintHover",
+    "border-b border-plumb-mint",
+    "z-50",
+  ].join(" "),
+ menuBrowserIconLine: [
+    "block min-w-5 max-w-12 mt-1 rounded-full h-[2px]",
+    "bg-white"
+
+  ].join(" "),
+  mobileBrowserMenu: [
+    "w-full min-w-12",
+    "bg-plumb-mintHover",
+   
+    "z-40",
+  ].join(" "),
+
+  inner: [
+    "w-full",
+    "flex items-center justify-between",
+    "px-[6.5%]",
+  ].join(" "),
+
+  mobileInner: [
+    "w-full",
+    "flex items-center justify-between",
+    "px-4 py-3",
+  ].join(" "),
+
+  wordmark: [
+    "font-serif",
+    "font-semibold",
+    "leading-none",
+    "tracking-[-0.025em]",
+    "text-white bg-transparent",
+    "transition-opacity",
+    "hover:opacity-80",
+    "focus-visible:outline-none",
+    "focus-visible:ring-2",
+    "focus-visible:ring-plumb-focus",
+    "focus-visible:ring-offset-2",
+    "focus-visible:ring-offset-plumb-mintHover",
+  ].join(" "),
+
+  desktopNav: [
+    "bg-plumb",
+    "absolute",
+    "left-1/2",
+    "-translate-x-1/2",
+    "flex items-center",
+    "gap-[42px]",
+  ].join(" "),
+
+  desktopItem: [
+    "text-[1.2em]",
+    "leading-none",
+    "tracking-[-0.02em]",
+    "text-plumb-mintLight",
+    "transition-colors duration-150",
+    "hover:text-white",
+    "focus-visible:outline-none",
+    "focus-visible:ring-2",
+    "focus-visible:ring-plumb-focus",
+    "focus-visible:ring-offset-2",
+    "focus-visible:ring-offset-plumb-mintHover",
+  ].join(" "),
+
+  desktopItemActive: [
+    "text-white",
+    "font-medium",
+  ].join(" "),
+
+  utility: [
+    "flex items-center",
+    "gap-5",
+  ].join(" "),
+
+  utilityButton: [
+    "text-plumb-mintLight",
+    "hover:text-white",
+    "transition-colors",
+    "whitespace-nowrap",
+    "tracking-[-0.02em]",
+    "focus-visible:outline-none",
+    "focus-visible:ring-2",
+    "focus-visible:ring-plumb-focus",
+    "focus-visible:ring-offset-2",
+    "focus-visible:ring-offset-plumb-mintHover",
+  ].join(" "),
+
+
+  menuIcon: [
+    "flex flex-col",
+    "items-center justify-center",
+    "gap-[5px]",
+  ].join(" "),
+
+  menuIconLine: [
+    "block w-5 h-[10px]",
+    "bg-white",
+  ].join(" "),
+
+  mobileItem: [
+
+    "flex items-center",
+
+    "text-base",
+    "leading-none",
+    "text-left",
+    "tracking-[-0.02em]",
+    "text-plumb-mintLight bg-transparent",
+    "transition-colors duration-150",
+    "hover:bg-white/10",
+    "hover:text-white",
+    "focus-visible:outline-none",
+    "focus-visible:ring-2",
+    "focus-visible:ring-inset",
+    "focus-visible:ring-plumb-focus",
+  ].join(" "),
+
+  mobileItemActive: [
+    "text-white",
+    "font-medium",
+  ].join(" "),
+
+  mobileNative: [
+    "fixed",
+    "left-0 right-0",
+    "z-50",
+    "min-h-14",
+    "bg-plumb-mintHover",
+    "border-t border-plumb-mint",
+    "flex items-center justify-around",
+    "pb-[env(safe-area-inset-bottom)]",
+  ].join(" "),
+
+  mobileNativeItem: [
+    "flex flex-1",
+    "min-w-0 min-h-14",
+    "items-center justify-center",
+    "px-1 py-3",
+    "text-sm sm:text-base",
+    "leading-none",
+    "tracking-[-0.02em]",
+    "text-plumb-mintLight",
+    "transition-colors duration-150",
+    "hover:text-white",
+    "focus-visible:outline-none",
+    "focus-visible:ring-2",
+    "focus-visible:ring-inset",
+    "focus-visible:ring-plumb-focus",
+  ].join(" "),
+
+  mobileNativeItemActive: [
+    "text-white",
+    "font-medium",
+  ].join(" "),
+},
   importWork: {
     section: [
       "mt-16 max-w-3xl",
@@ -79,7 +265,7 @@ const styles = {
 
   inner: [
     "mx-auto w-[100%]",
-    "bg-plumb-paper dark:bg-plumb-dark-canvas",
+    "bg-transparent dark:bg-plumb-dark-canvas",
     "px-8 py-12 lg:px-24",
   ].join(" "),
 
@@ -390,10 +576,7 @@ primary: [
   "active:shadow-sm",
 ].join(" "),
 
-filterActive: [
-  "bg-plumb-mintHover text-white",
-  "hover:bg-plumb-mint",
-].join(" "),
+
 
   
 secondary: [
@@ -473,11 +656,11 @@ ghost: [
     "focus-visible:ring-offset-2",
   ].join(" "),
 
-  filterActive: [
-    "bg-plumb-mint",
-    "text-white",
-    "hover:bg-plumb-mintHover",
-  ].join(" "),
+filterActive: [
+  "bg-plumb-mint",
+  "text-white",
+  "hover:bg-plumb-mintHover",
+].join(" "),
 
   filterInactive: [
     "border border-plumb-border",
