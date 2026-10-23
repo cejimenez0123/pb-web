@@ -4,17 +4,10 @@ import LinkNode from "../components/LinkNode";
 import Paths from "../core/paths";
 import logo from "../images/icon.ico"
 import events from "../images/icons/event.svg"
-import clinic from "../images/icons/clinic.png"
-import { initGA} from "../core/ga4";
-import Context from "../context";
-import flare from "../images/icons/flare.svg"
 import pen from "../images/icons/pen.svg"
-import form from "../images/icons/form.png"
 import anvil from "../images/icons/anvil.png"
 import { IonContent } from "@ionic/react";
-import bxFuture from "../images/events/bxfutures.png"
 import ErrorBoundary from "../ErrorBoundary";
-import cafe from "../images/icons/coffee.png" 
 let domain = import.meta.env.VITE_DOMAIN
 if(import.meta.env.VITE_NODE_ENV=="dev"){
   domain=import.meta.env.VITE_DEV_DOMAIN

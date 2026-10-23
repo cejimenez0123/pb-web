@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import { IonImg } from "@ionic/react";
 import Context from "../context";
-import { initGA, sendGAEvent } from "../core/ga4";
+// import { initGA, sendGAEvent } from "../core/ga4";
 import ErrorBoundary from "../ErrorBoundary";
 import SpotifyEmbed from "./SpotifyEmbed";
 
@@ -11,7 +11,7 @@ function LinkNode({ title, description, image, links = [], isGrid }) {
   const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
-    initGA();
+    // initGA();
   }, []);
 
   const handleClick = (link) => {

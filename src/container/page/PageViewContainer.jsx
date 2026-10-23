@@ -12,8 +12,7 @@ import { useAlert } from "../../core/useAlert.jsx";
 import AlertType from "../../core/AlertType.js";
 import useScrollTracking from "../../core/useScrollTracking.jsx";
 import checkResult from "../../core/checkResult.js";
-import { initGA, sendGAEvent } from "../../core/ga4.js";
-import Enviroment from "../../core/Enviroment.js";
+
 import computePermissions from "../../core/compusePermissions.jsx";
 
 // ── Module level — stable references, never recreated ─────────────────────────
@@ -82,7 +81,7 @@ const { canSee, canAdd, canEdit } = useMemo(
 
 
   useLayoutEffect(() => {
-  initGA();
+  // initGA();
 
   dispatch(setPageInView({ page: null })); // drop stale editor state
   fetchStory();

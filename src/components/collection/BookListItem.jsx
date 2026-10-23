@@ -5,7 +5,7 @@ import { clearPagesInView } from "../../actions/PageActions.jsx";
 import { setCollectionInView, setCollections } from "../../actions/CollectionActions";
 import { useDispatch } from "react-redux";
 import { useLayoutEffect } from "react";
-import { initGA, sendGAEvent } from "../../core/ga4.js";
+// import { initGA, sendGAEvent } from "../../core/ga4.js";
 import { useIonRouter } from "@ionic/react";
 import shortName from "../../core/shortName.jsx";
 
@@ -13,9 +13,9 @@ function BookListItem({ book }) {
   const dispatch = useDispatch();
   const router = useIonRouter();
 
-  useLayoutEffect(() => {
-    initGA();
-  }, []);
+  // useLayoutEffect(() => {
+  //   initGA();
+  // }, []);
 
   const navigateToBook = async () => {
     if (!book) return;

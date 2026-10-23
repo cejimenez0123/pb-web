@@ -2,7 +2,6 @@ import { useContext, useLayoutEffect } from "react";
 import { IonContent, useIonRouter } from "@ionic/react";
 import Paths from "../core/paths";
 import Context from "../context";
-import { initGA, sendGAEvent } from "../core/ga4";
 import useScrollTracking from "../core/useScrollTracking";
 import ScrollDownButton from "../components/ScrollDownButton";
 import styles from "../styles/style";
@@ -13,10 +12,6 @@ export default function AboutContainer() {
   const router = useIonRouter();
 
   useScrollTracking({ name: "About" });
-  useLayoutEffect(() => {
-    initGA();
-    sendGAEvent("Page View", "View About Page");
-  }, []);
 
   return (
     <IonContent

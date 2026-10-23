@@ -10,8 +10,10 @@ const Paths ={
     links:()=>`/links`,
     calendar:()=>"/events",
     dashboard:"/dashboard",
-    onboard:"/onboard",
+    onboard:"/apply",
     write: "/write",
+    signup: "/signup",
+    register:"/register",
     library: {
         route: ()=>`/library/:id`,
         createRoute:(id)=>{return `/library/${id}`;}},

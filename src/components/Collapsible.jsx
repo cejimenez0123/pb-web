@@ -1,5 +1,5 @@
 import { useState,useEffect } from "react";
-import { initGA,sendGAEvent } from "../core/ga4";
+// import { initGA,sendGAEvent } from "../core/ga4";
 export default function Collapsible({children,buttonText,sendGA=sendGAEvent}){
     const [isOpen, setIsOpen] = useState(false);
     useEffect(()=>{
@@ -8,8 +8,8 @@ export default function Collapsible({children,buttonText,sendGA=sendGAEvent}){
       }
     },[isOpen])
     const handleOpen=()=>{
-    initGA()
-      sendGA("View Collapse",`${isOpen?"Closing":"Opening"} Collapsible ${buttonText}`,buttonText,0,false) 
+    // initGA()
+      // sendGA("View Collapse",`${isOpen?"Closing":"Opening"} Collapsible ${buttonText}`,buttonText,0,false) 
   
       setIsOpen(!isOpen)
         }

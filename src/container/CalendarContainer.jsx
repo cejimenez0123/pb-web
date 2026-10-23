@@ -1,8 +1,9 @@
 import { useEffect } from "react";
-import { initGA } from "../core/ga4";
+// import { initGA } from "../core/ga4";
 import { IonContent, useIonRouter } from "@ionic/react";
 import CalendarEmbed from "../components/CalendarEmbed";
 import { useSelector } from "react-redux";
+import Paths from "../core/paths";
 
 const INK = "#12261f";
 const MUTED = "#6b6f63";
@@ -15,9 +16,9 @@ export default function CalendarContainer() {
   const currentProfile = isClip ? null : useSelector((state) => state.users.currentProfile);
   const router = useIonRouter();
 
-  useEffect(() => {
-    initGA();
-  }, []);
+  // useEffect(() => {
+  //   initGA();
+  // }, []);
 
   return (
     <IonContent className="page-content" fullscreen={true}>
@@ -46,7 +47,7 @@ export default function CalendarContainer() {
             Get weekly writing events in your inbox, or go deeper — apply to
             become a user and share your writing and feedback.{" "}
             <span
-              onClick={() => router.push("/onboard")}
+              onClick={() => router.push(Paths.onboard)}
               className="underline cursor-pointer"
               style={{ color: INK }}
             >

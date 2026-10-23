@@ -260,7 +260,7 @@ function NavButtons({
 function Why({ setActiveTab, onLogin }) {
   return (
     <StepTransition step="intro">
-      <div className="px-5 pt-10 pb-12 max-w-xl mx-auto">
+      <div className="px-5 pt-16 pb-12 max-w-xl mx-auto">
         <div className="flex justify-center mb-8">
           <div className="relative">
             <div className="absolute inset-0 bg-emerald-200 rounded-full blur-2xl opacity-40" />
@@ -312,10 +312,10 @@ function Why({ setActiveTab, onLogin }) {
             </p>
           </div>
         </div>
-
+<div className="text-center">
         <button
           type="button"
-          className={`${primaryButton} mt-7`}
+          className={`${primaryButton} mx-auto mt-7`}
           onClick={() => setActiveTab("tab1")}
         >
           Join Plumbum
@@ -328,6 +328,7 @@ function Why({ setActiveTab, onLogin }) {
         >
           Already have an account? Log in
         </button>
+        </div>
       </div>
     </StepTransition>
   );

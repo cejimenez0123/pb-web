@@ -1,6 +1,7 @@
 
 import { useLocation } from "react-router";
 import NavbarContainer from "../container/NavbarContainer";
+import Paths from "../core/paths";
 
 function AppNavigationChrome({
   isDesktop,
@@ -10,11 +11,11 @@ function AppNavigationChrome({
   const location = useLocation();
 
   const hiddenPaths = [
-    "/onboard",
-    "/apply",
-    "/login",
-    "/signup",
-    "/register",
+   Paths.onboard,
+    // "/apply",
+    Paths.onboard,
+    Paths.signup,
+    Paths.register,
     "/reset-password",
     "/oauth2callback",
   ];

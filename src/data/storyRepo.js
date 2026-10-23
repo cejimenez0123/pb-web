@@ -138,7 +138,7 @@ async getProtectedProfileStories({ profileId, skip = 0, take = 20 } = {}) {
         profileId,
         data,
         isPrivate,
-        approvalScore,
+        // approvalScore,
         type,
         title,
         commentable}){

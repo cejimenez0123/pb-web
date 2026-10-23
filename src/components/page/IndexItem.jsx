@@ -5,7 +5,7 @@ import {  RoleType } from "../../core/constants";
 import addBox from "../../images/icons/add_circle.svg"
 import edit from "../../images/icons/edit.svg"
 import Paths from "../../core/paths";
-import { initGA,sendGAEvent } from "../../core/ga4.js";
+// import { initGA,sendGAEvent } from "../../core/ga4.js";
 import { setCollectionInView } from "../../actions/CollectionActions";
 import Enviroment from "../../core/Enviroment.js";
 import { IonImg, IonText, useIonRouter } from "@ionic/react";
@@ -20,9 +20,9 @@ export default function IndexItem({item,type}) {
   let collectionStr ="collection"
   const {openDialog,resetDialog,dialog,closeDialog}=useDialog()
  const {showAlert}=useAlert()
-    useLayoutEffect(()=>{
-      initGA()
-    },[])
+    // useLayoutEffect(()=>{
+    //   initGA()
+    // },[])
     const {currentProfile} =useSelector(state=>state.users)
      const dispatch = useDispatch()
     const router = useIonRouter()

@@ -10,13 +10,13 @@ import SearchButton from '../components/SearchButton';
 import styles from '../styles/style';
 import SignOutButton from '../components/buttons/SignOutButton';
 
-function NavbarContainer({ isDesktop }) {
-  const currentProfile = useSelector(
-    (state) => state.users.currentProfile
-  );
+function NavbarContainer({ isDesktop,currentProfile }) {
+  // const currentProfile = useSelector(
+  //   (state) => state.users.currentProfile
+  // );
 
   const location = useLocation();
-
+  const isLoggedIn = !!currentProfile;
   const isSearchPage =
     location?.pathname === '/search';
     const isNative = Capacitor.isNativePlatform()
@@ -28,7 +28,7 @@ function NavbarContainer({ isDesktop }) {
           showSearch={!isSearchPage}
         />
       ) : (
-        isNative?<MobileNavbar
+       isNative?isLoggedIn && <MobileNavbar
           currentProfile={currentProfile}
           showSearch={!isSearchPage}
         />:<BrowserMobileNavbar  showSearch={!isSearchPage} currentProfile={currentProfile}/>

@@ -8,7 +8,7 @@ import { getPublicLibraries } from '../actions/LibraryActions.jsx';
 import checkResult from '../core/checkResult.js';
 import { useMediaQuery } from 'react-responsive';
 import {BookListItem} from '../components/BookListItem.jsx';
-import { initGA, sendGAEvent } from '../core/ga4.js';
+// import { initGA, sendGAEvent } from '../core/ga4.js';
 import ListView from '../components/page/ListView.jsx';
 import ScrollDownButton from '../components/ScrollDownButton.jsx';
 import Context from '../context.jsx';
@@ -40,9 +40,9 @@ const {
   const isNotPhone = useMediaQuery({ query: '(min-width: 999px)' });
 
   useScrollTracking({ name: 'discovery' });
-  useLayoutEffect(() => {
-    initGA();
-  }, []);
+  // useLayoutEffect(() => {
+  //   initGA();
+  // }, []);
 
 
   useLayoutEffect(() => {

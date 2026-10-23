@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
 import { HelmetProvider } from "react-helmet-async";
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
-import logger from "redux-logger";
+import { default as logger } from "redux-logger";
 import * as Sentry from "@sentry/react";
 
 import "./index.css";
@@ -42,14 +42,19 @@ const reducer = combineReducers({
   pagination: paginationSlice.reducer,
   moderation: moderationSlice.reducer,
 });
-
+console.log("logger:", logger);
+console.log("typeof logger:", typeof logger);
+console.log("default export:", typeof logger?.default);
 const store = configureStore({
   reducer,
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
+  middleware: (getDefaultMiddleware) => {
+    return getDefaultMiddleware({
       serializableCheck: false,
-    }).concat(logger),
+    })
+    // .concat(logger);
+  },
 });
+
 
 if (import.meta.env.VITE_SENTRY_DSN) {
   Sentry.init({

@@ -476,6 +476,7 @@ tabs: {
   list: {
 container: [
 "divide-y",
+"text-center",
 "divide-plumb-border",
 "dark:divide-plumb-darkBorder",
 "border-y",
@@ -486,7 +487,7 @@ container: [
   },
   text: {
     heading: [
-      "font-serif text-3xl font-semibold",
+      "font-serif text-3xl mx-auto w-fit font-semibold",
       "text-plumb-ink dark:text-plumb-darkText",
     ].join(" "),
 
@@ -507,8 +508,6 @@ container: [
   },
 
 
-  // Keep your existing container, wrapper, tab,
-  // active, and inactive definitions.
 },
 
 scrollDown: {

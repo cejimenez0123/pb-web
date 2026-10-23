@@ -1,7 +1,7 @@
 
 import { createSlice } from "@reduxjs/toolkit"
 import {    logIn ,
-            signUp,
+     
             getCurrentProfile,
             fetchProfile,
             setProfileInView,
@@ -23,7 +23,7 @@ import {    logIn ,
         } from "../actions/UserActions"
 
 import {  addNotification, createProfile, fetchNotifcations, fetchProfileRecommendations, fetchProfiles } from "../actions/ProfileActions"
-import { createPageApproval, deletePageApproval } from "../actions/PageActions.jsx" 
+import { deletePageApproval } from "../actions/PageActions.jsx" 
 import { postCollectionHistory, postStoryHistory } from "../actions/HistoryActions"
 import { createFollow, deleteFollow } from "../actions/FollowAction"
 import { postActiveUser } from "../actions/WorkshopActions"

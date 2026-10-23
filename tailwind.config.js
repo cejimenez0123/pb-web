@@ -13,9 +13,7 @@ export default {
   
   theme: {
   
-    // maxWidth:{
-    //     'page':"50em"
-    // },
+  
     width: {
       '128': '48rem',
       'page':"50em",
@@ -26,8 +24,23 @@ export default {
       'grid':"31.6vw",
       'grid-content':"31vw",
       'grid-mobile':"48.6vw",
-      'grid-mobile-content':"45.8vw"
+      'grid-mobile-content':"45.8vw",
 
+  // New standardized widths
+  'content-narrow': '31rem',
+  'content-standard': '48rem',
+  'content-wide': '55rem',
+
+  // Page layout
+  'page-max': '50em',
+  'page-fluid': '97vw',
+  'page-content-fluid': '95vw',
+
+  // Grid layout
+  'grid-column': '31.6vw',
+  'grid-column-content': '31vw',
+  'grid-column-mobile': '48.6vw',
+  'grid-column-mobile-content': '45.8vw',
     },
     colors: {
   ...colors,
@@ -161,7 +174,18 @@ focusLight: "#347a5e",
       '6': '6px',
       '8': '8px',
     },
-    extend: { keyframes: {
+    extend: { 
+      keyframes: {
+        fadeOut: {
+        '0%': { opacity: 1 ,
+          display:"content"
+        },
+        '100%': { opacity: 0,
+          display:"hidden"
+         
+         },
+      
+      },
       shine: {
         '0%': { transform: 'translateX(-100%)' },
         '100%': { transform: 'translateX(100%)' },
@@ -172,18 +196,7 @@ focusLight: "#347a5e",
       
       'fade-out': 'fadeOut 4s ease-out forwards',
     },
-    keyframes: {
-      fadeOut: {
-        '0%': { opacity: 1 ,
-          display:"content"
-        },
-        '100%': { opacity: 0,
-          display:"hidden"
-         
-         },
-      
-      },
-    },
+ 
   },
   },
   plugins: [

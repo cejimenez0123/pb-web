@@ -467,11 +467,11 @@ useEffect(() => {
   }, [isNative]);
 
   const hiddenPaths = [
-    "/onboard",
-    "/apply",
-    "/login",
-    "/signup",
-    "/register",
+
+    Paths.onboard,
+    Paths.login,
+    Paths.register
+   
   ];
 
   const shouldHideBottomNavbar =
@@ -522,9 +522,9 @@ useEffect(() => {
         >
           <IonApp>
             <IonReactRouter>
-              {isNative && (
+              {/* {isNative && (
                 <PushNotificationHandler />
-              )}
+              )} */}
 
            
   <AppNavigationChrome
@@ -746,7 +746,7 @@ useEffect(() => {
 
                   <Route
                     exact
-                    path="/register"
+                    path={Paths.register}
                     render={() => (
                       <PageWrapper>
                         <UserReferralContainer />

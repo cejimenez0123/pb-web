@@ -12,30 +12,31 @@ PODS:
     - PromisesObjC (~> 2.4)
     - PromisesSwift (~> 2.4)
     - RecaptchaInterop (~> 101.0)
-  - Capacitor (7.6.9):
+  - Capacitor (8.5.3):
     - CapacitorCordova
-  - CapacitorCamera (7.0.5):
+  - CapacitorCamera (8.2.6):
     - Capacitor
-  - CapacitorCordova (7.6.9)
-  - CapacitorFilesystem (7.1.9):
+    - IONCameraLib (~> 2.0.0)
+  - CapacitorCordova (8.5.3)
+  - CapacitorFilesystem (8.1.5):
     - Capacitor
-    - IONFilesystemLib (~> 1.1.4)
+    - IONFilesystemLib (= 2.0.1)
   - CapacitorFirebaseMessaging (7.5.0):
     - Capacitor
     - FirebaseMessaging (~> 11.7.0)
   - CapacitorFirebaseStorage (7.5.0):
     - Capacitor
     - FirebaseStorage (~> 11.7.0)
-  - CapacitorGeolocation (7.1.8):
+  - CapacitorGeolocation (8.2.4):
     - Capacitor
-    - IONGeolocationLib (= 1.0.1)
-  - CapacitorNetwork (7.0.4):
+    - IONGeolocationLib (= 3.0.0)
+  - CapacitorNetwork (8.0.1):
     - Capacitor
-  - CapacitorPreferences (7.0.4):
+  - CapacitorPreferences (8.0.1):
     - Capacitor
-  - CapacitorPushNotifications (7.0.7):
+  - CapacitorPushNotifications (8.1.3):
     - Capacitor
-  - CapacitorSplashScreen (7.0.5):
+  - CapacitorSplashScreen (8.0.2):
     - Capacitor
   - CapawesomeCapacitorFilePicker (7.2.0):
     - Capacitor
@@ -97,36 +98,37 @@ PODS:
     - AppCheckCore (~> 11.0)
     - GTMAppAuth (~> 5.0)
     - GTMSessionFetcher/Core (~> 3.3)
-  - GoogleUtilities/AppDelegateSwizzler (8.1.3):
+  - GoogleUtilities/AppDelegateSwizzler (8.1.5):
     - GoogleUtilities/Environment
     - GoogleUtilities/Logger
     - GoogleUtilities/Network
     - GoogleUtilities/Privacy
-  - GoogleUtilities/Environment (8.1.3):
+  - GoogleUtilities/Environment (8.1.5):
     - GoogleUtilities/Privacy
-  - GoogleUtilities/Logger (8.1.3):
+  - GoogleUtilities/Logger (8.1.5):
     - GoogleUtilities/Environment
     - GoogleUtilities/Privacy
-  - GoogleUtilities/Network (8.1.3):
+  - GoogleUtilities/Network (8.1.5):
     - GoogleUtilities/Logger
     - "GoogleUtilities/NSData+zlib"
     - GoogleUtilities/Privacy
     - GoogleUtilities/Reachability
-  - "GoogleUtilities/NSData+zlib (8.1.3)":
+  - "GoogleUtilities/NSData+zlib (8.1.5)":
     - GoogleUtilities/Privacy
-  - GoogleUtilities/Privacy (8.1.3)
-  - GoogleUtilities/Reachability (8.1.3):
+  - GoogleUtilities/Privacy (8.1.5)
+  - GoogleUtilities/Reachability (8.1.5):
     - GoogleUtilities/Logger
     - GoogleUtilities/Privacy
-  - GoogleUtilities/UserDefaults (8.1.3):
+  - GoogleUtilities/UserDefaults (8.1.5):
     - GoogleUtilities/Logger
     - GoogleUtilities/Privacy
   - GTMAppAuth (5.0.0):
     - AppAuth/Core (~> 2.0)
     - GTMSessionFetcher/Core (< 4.0, >= 3.3)
   - GTMSessionFetcher/Core (3.5.0)
-  - IONFilesystemLib (1.1.4)
-  - IONGeolocationLib (1.0.1)
+  - IONCameraLib (2.0.0)
+  - IONFilesystemLib (2.0.1)
+  - IONGeolocationLib (3.0.0)
   - nanopb (3.30910.0):
     - nanopb/decode (= 3.30910.0)
     - nanopb/encode (= 3.30910.0)
@@ -176,6 +178,7 @@ SPEC REPOS:
     - GoogleUtilities
     - GTMAppAuth
     - GTMSessionFetcher
+    - IONCameraLib
     - IONFilesystemLib
     - IONGeolocationLib
     - nanopb
@@ -215,17 +218,17 @@ SPEC CHECKSUMS:
   Alamofire: 7193b3b92c74a07f85569e1a6c4f4237291e7496
   AppAuth: ef4da5a3fc2e10b90c09a0a94a9baeaedc0341d5
   AppCheckCore: be8fce5469f68d7f6a29aa94b25f097409ff7fdc
-  Capacitor: 46067d1c8df89760dbed78780d436327d588c726
-  CapacitorCamera: 9e952270be355797f769aa835bb7643a96c871fe
-  CapacitorCordova: 2080fc0d6bfbc9dcc0e6d88e77fa624190d343ca
-  CapacitorFilesystem: 35da521d3fc5159ecaf4ae0b877ec3db7f4adb0d
+  Capacitor: 2f67eaeb8ed79909cd35b5e7439a5c2a9ca58e0f
+  CapacitorCamera: 09e51f52c079eaf731a5528a1c3455c074ccc24c
+  CapacitorCordova: 0b7326439c7a09fc5d20eced5e0dab986327a493
+  CapacitorFilesystem: e3bc7123acb1554df1b7b099fa5847064b9e1bd4
   CapacitorFirebaseMessaging: 1ac12c0dab16d1e4edcf9cb878620507ac868a4e
   CapacitorFirebaseStorage: 4b438b83cb6ce20679b9ad97c2f25f894c1e0a01
-  CapacitorGeolocation: ab54d708e2fcf99a7bafe0219eaa6f7a932f001a
-  CapacitorNetwork: b719d692a8d1310da8d26d6648d3aa1ef1e100e1
-  CapacitorPreferences: 69d9991307507aeab8ef8019c10b9babfda0e9ca
-  CapacitorPushNotifications: 0527809a9619ed775439d5ab2c2d996122b48319
-  CapacitorSplashScreen: 409eeaaeac603d264f209c0fcb718aa22fe1f7bb
+  CapacitorGeolocation: 9b8fbd3156fc5d4d24df150760e2b8e39a0bf214
+  CapacitorNetwork: 8812ce60d11fb63d8f2e4ba51a49b2e59892ebe2
+  CapacitorPreferences: cca2021f386efb75947c850334447d9ff22b14f1
+  CapacitorPushNotifications: a31b62e18764ab855537dfcdade1e6ecf5aba29f
+  CapacitorSplashScreen: 7bf61c2001557ff9e195e601c6b87344480d3c65
   CapawesomeCapacitorFilePicker: 0f4a913a00e39dd77213449f0d917e92f35a5ca9
   CapgoCapacitorSocialLogin: a6084e910ce61d78173fa215460c00523a6c4536
   FBAEMKit: e34530df538b8eb8aeb53c35867715ba6c63ef0c
@@ -243,16 +246,17 @@ SPEC CHECKSUMS:
   FirebaseStorage: d35da127dd49edcbd07b8c07cf651a70161558b2
   GoogleDataTransport: a24e58982ab3ba2f64d79613e027fe7f57e88539
   GoogleSignIn: c7f09cfbc85a1abf69187be091997c317cc33b77
-  GoogleUtilities: 4e0c2ad9fa0d0d18b5c4df8bf57b461cba35b0bb
+  GoogleUtilities: 7dc09b3fa9ecb5c2298b952313d14628b61b9da3
   GTMAppAuth: 217a876b249c3c585a54fd6f73e6b58c4f5c4238
   GTMSessionFetcher: 5aea5ba6bd522a239e236100971f10cb71b96ab6
-  IONFilesystemLib: e6610c2b260d15e4b9cb9d5e37a87095479b669e
-  IONGeolocationLib: 20f9d0248a0b5264511fb57a37e25dd2badf797a
+  IONCameraLib: 729cae576e1a952602ce750a9790b6dc7d7e2e95
+  IONFilesystemLib: 306469e4c563f61de82d7bca2bbfed9e64d1b2d2
+  IONGeolocationLib: a125d4f91ea353652026e5da6e5bee0414a57d37
   nanopb: fad817b59e0457d11a5dfbde799381cd727c1275
   PromisesObjC: 752c3227f599e3467650e47ea36f433eeb10c273
   PromisesSwift: 217dea0fd5d2ad65222a109c48698add13cc1c5b
   RecaptchaInterop: 11e0b637842dfb48308d242afc3f448062325aba
 
-PODFILE CHECKSUM: 3c366bf298c2f9a305592888cf2fc775c4067c64
+PODFILE CHECKSUM: a2b7ab286fc91c5b628aedb47b181666677620d1
 
 COCOAPODS: 1.16.2
