@@ -31,7 +31,7 @@ export default function LogInContainer({ currentProfile }) {
 
   return (
     <IonContent className="page-content" fullscreen>
-      <div className="min-h-full flex items-start justify-center px-6 py-12 md:py-20">
+      <div className="min-h-full flex items-start justify-center px-6 pt-16 pb-30 md:py-20">
         <LogInCard
           setSigningIn={setSigningIn}
           setLogInError={(msg) =>

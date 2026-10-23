@@ -8,7 +8,7 @@ import styles from "../styles/style";
 
 
 export default function AboutContainer() {
-  const { currentProfile } = useContext(Context);
+
   const router = useIonRouter();
 
   useScrollTracking({ name: "About" });
@@ -16,9 +16,10 @@ export default function AboutContainer() {
   return (
     <IonContent
 
+fullscreen
 >
-  <main className={styles.about.page +" "}>
-    <div className={styles.about.inner+""}>
+  <div className={styles.about.page+" pb-20"}>
+    <div className={styles.about.inner}>
       <p className={styles.about.eyebrow}>
         About
       </p>
@@ -95,20 +96,18 @@ export default function AboutContainer() {
             person you kept talking to, the collection that came out of it.
           </FeatureBlock>
         </div>
-
+<div className=" h-48  ">
         <AboutCTA
           primaryLabel="See what's on"
           secondaryLabel="Make an account"
           onPrimary={() => router.push(Paths.calendar())}
           onSecondary={() => router.push(Paths.onboard)}
         />
-
-        {!currentProfile && (
-          <ScrollDownButton text="↓ See what's on" visible={true} />
-        )}
+<AboutLegalFooter />
+      </div>
       </div>
      
-      </main>
+      </div>
     </IonContent>
   );
 }
@@ -174,3 +173,49 @@ function AboutCTA({
   );
 }
 
+
+
+function AboutLegalFooter() {
+  const legalLinks = [
+    // { label: "Copyright & Publishing", href: "/copyright" },
+    // { label: "Privacy", href: "/privacy" },
+    { label: "Terms of Service", href: Paths.terms },
+    // { label: "Contact", href: "mailto:hello@plumbum.app" },
+  ];
+
+  return (
+    <footer className="mt-12 border-t border-current/15 pt-20 pb-8">
+      <div className="flex flex-col gap-5 text-center sm:flex-row sm:items-end sm:justify-between">
+        <div className="max-w-sm">
+          <p className="text-sm font-medium">
+            Plumbum
+          </p>
+
+          <p className="mt-1 text-xs leading-relaxed opacity-70">
+            A place to find your people, make room for your work,
+            and keep the connection going.
+          </p>
+
+          <p className="mt-3 text-xs opacity-60">
+            © {new Date().getFullYear()} Plumbum. All rights reserved.
+          </p>
+        </div>
+
+        <nav
+          aria-label="Legal and company information"
+          className="flext text-center flex-wrap gap-x-5 gap-y-3 text-xs"
+        >
+          {legalLinks.map((link) => (
+            <a
+              key={link.label}
+              href={link.href}
+              className="underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 rounded-sm"
+            >
+              {link.label}
+            </a>
+          ))}
+        </nav>
+      </div>
+    </footer>
+  );
+}

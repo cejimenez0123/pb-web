@@ -140,21 +140,15 @@ const PageWrapper = ({
 return (
   <IonPage
     ref={pageRef}
-    className={styles.about.page}
-    // className="
-    //   bg-paper
-    //   text-plumb-ink
-    //   dark:bg-plumb-dark-surface
-    //   dark:text-plumb-darkText
-    // "
+
   >
     <main
       className="
         relative
         flex-1
-        min-h-0
-        w-full
-        bg-paper
+       overflow-auto
+              bg-plumb-surface
+     
         text-plumb-ink
         dark:bg-plumb-dark-surface
         dark:text-plumb-darkText
@@ -170,12 +164,3 @@ return (
 
 
 export default PageWrapper;
-// const PageWrapper = ({ children }) => {
-//   return (
-//     <IonPage className="bg-paper">
-//       {children}
-//     </IonPage>
-//   );
-// };
-
-// export default PageWrapper;

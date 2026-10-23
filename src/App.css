@@ -1388,9 +1388,7 @@ textarea.sc-ion-textarea {
    --background: #f4f4e0;
   padding-bottom: 12rem;
 }
- ion-content .inner-scroll {
-    --background: #f4f4e0;
-}
+
 * ion-content {
 
   --background: #f4f4e0;
@@ -1435,9 +1433,7 @@ ion-content.page-content::part(scroll) {
   #background-content{
    --background:#1c1f1a;
 }
-  ion-content .inner-scroll {
-     --background: #1c1f1a;
-}
+
 .list-bottom-padding{
   --background: #1c1f1a;
   padding-bottom: 12rem;

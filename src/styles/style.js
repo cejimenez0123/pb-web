@@ -263,14 +263,14 @@ menuButton: [
   about: {
     
   page: [
-    "h-[100vh] overflow-scroll ",
-    "bg-plumb-surface dark:bg-plumb-dark-canvas",
+    " overflow-auto min-h-[100vh] ",
+    "bg-plumb-surface px-8 py-12 dark:bg-plumb-dark-canvas",
   ].join(" "),
 
   inner: [
-    "mx-auto w-[100%]",
-    "bg-transparent dark:bg-plumb-dark-canvas",
-    "px-8 py-12 lg:px-24",
+    "mx-auto h-full overflow-auto w-[100%]",
+   "bg-plumb-surface dark:bg-plumb-dark-canvas",
+    " lg:px-24",
   ].join(" "),
 
   eyebrow: [
@@ -306,12 +306,14 @@ menuButton: [
 
   section: [
     "border-t border-plumb-borderStrong",
+       "bg-plumb-surface dark:bg-plumb-dark-canvas",
     "pt-6 dark:border-plumb-darkBorderStrong",
   ].join(" "),
 
   sectionLabel: [
     "mb-3 font-open-sans text-xs font-medium",
     "uppercase tracking-widest",
+       "bg-plumb-surface dark:bg-plumb-dark-canvas",
     "text-plumb-muted dark:text-plumb-darkMuted",
   ].join(" "),
 
