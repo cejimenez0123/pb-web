@@ -79,7 +79,9 @@ function useNavbarNavigation() {
   const handleAbout = () => {
     navigate(Paths.about(), 'forward');
   };
-
+ const handleLogin = () => {
+    navigate(Paths.login, 'forward');
+  };
   return {
     router,
     dispatch,
@@ -91,6 +93,7 @@ function useNavbarNavigation() {
     handleEvents,
     handleProfile,
     handleAbout,
+    handleLogin
   };
 }
 
@@ -511,6 +514,7 @@ function BrowserMobileNavbar({
     handleProfile,
     handleAbout,
     handleSearch,
+    handleLogin
   } = useNavbarNavigation();
 
   const isLoggedIn = !!currentProfile;
@@ -523,7 +527,9 @@ function BrowserMobileNavbar({
     closeMenu();
     handler();
   };
+  const dispatch = useDispatch()
   const handleSignOut = async () => {
+
     try {
       if (Capacitor.isNativePlatform()) {
         await SocialLogin.logout({
@@ -661,6 +667,15 @@ function BrowserMobileNavbar({
               }
             />
           )}
+
+          {!isLoggedIn && (
+            <MobileBrowserNavItem
+              label="Sign in"
+              onClick={() =>
+                navigateAndClose(handleLogin)
+              }
+            />
+          )}
        {isLoggedIn &&  <MobileBrowserNavItem label={"Sign Out"} onClick={handleSignOut}/>}
      
         </nav>
@@ -674,7 +689,7 @@ function BrowserMobileNavbar({
 function MobileBrowserNavItem({
   label,
   onClick,
-  active = false,
+  active = true,
 }) {
   return (
     <div className='    "hover:bg-white/10 dark:hover:bg-plumb-mint/15 bg-plumb-mint w-[100%] hover:bg-plumb-mintHover'>
