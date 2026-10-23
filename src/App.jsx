@@ -970,7 +970,7 @@ useEffect(() => {
 
                   <Route
                     exact
-                    path="/terms"
+                  path={Paths.terms}
                     render={() => (
                       <PageWrapper>
                         <TermsContainer />
