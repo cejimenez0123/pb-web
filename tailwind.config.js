@@ -81,29 +81,6 @@ darkBorderStrong: "#68766a",
 focus: "#8fd8b5",
 focusLight: "#347a5e",
 
-    // Typography
-    // ink: "#12261f",
-    // text: "#1f2937",
-    // muted: "#5f675f",
-    // subtle: "#7b827b",
-
-    // darkText: "#f3f1df",
-    // darkMuted: "#b9beb3",
-    // darkSubtle: "#969d94",
-
-    // Brand
-//     mint: "#40906f",
-//     mintHover: "#347a5e",
-//     mintLight: "#8fd8b5",
-// coral: "#F06449",
-// coralHover: "#D94D35",
-// coralLight: "#FF8A70",
-
-//     line: "#d4c8b0",
-//     border: "#ddd8c4",
-
-//     darkLine: "#39423b",
-//     darkBorder: "#465048",
 
     // Buttons
     button: {

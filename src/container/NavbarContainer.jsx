@@ -216,6 +216,8 @@ function DesktopNavItem({
       className={`
         text-[1.2em]
         leading-none
+        bg-transparent
+        text-white
         tracking-[-0.02em]
         transition-colors
         duration-150
@@ -521,19 +523,38 @@ function BrowserMobileNavbar({
     closeMenu();
     handler();
   };
+  const handleSignOut = async () => {
+    try {
+      if (Capacitor.isNativePlatform()) {
+        await SocialLogin.logout({
+          provider: 'google',
+        });
+      }
+    } catch (error) {
+      console.error(
+        'Social login logout failed:',
+        error
+      );
+    }
 
+    dispatch(
+      signOutAction({
+        profile: currentProfile,
+      })
+    ).then(() => {
+      router.push(Paths.login, 'root');
+    });
+  };
   return (
     <div    >
 
-      {/* -----------------------------------------------
-          Mobile browser top bar
-      ------------------------------------------------ */}
 
       <header
+
    className={styles.navbar.mobileBrowser}
 
       >
-
+<div className='flex-1 my-auto'>
 <button
   type="button"
   onClick={() => setMenuOpen((open) => !open)}
@@ -552,43 +573,33 @@ function BrowserMobileNavbar({
      <div className={styles.navbar.menuBrowserIconLine}/>
   {/* </span> */}
 </button>
-
-        {/* Hamburger */}
+</div>
+<div className='flex-2 my-auto text-center'>
       
-
-
-        {/* Wordmark */}
         <button
           type="button"
           onClick={() =>
             navigateAndClose(handleHome)
           }
-          className={styles.navbar.wordmark}
+          className={styles.navbar.wordmark+" my-auto py-4"}
      
           aria-label="Go to Plumbum home"
         >
-          Plumbum
+          <h2 className='text-[1.3em]'>Plumbum</h2>
         </button>
 
-
-        {/* Utility actions */}
-        <div
-        className='flex flex-row  justify-between w-[80%] '
-   
-        >
-          {showSearch && (
+</div>
+    
+    <div className='flex-1   text-right'>
+      
             <SearchButton
               onClick={handleSearch}
             />
-          )}
-
-          {isLoggedIn ? (
-            <SignOutButton mobile />
-          ) : (
-            <SignInButton mobile />
-          )}
-        </div>
-
+          
+     
+</div>
+        
+  
       </header>
 
 
@@ -598,8 +609,8 @@ function BrowserMobileNavbar({
 
       {menuOpen && (
         <nav
-          id="mobile-browser-navigation"
-     
+          // id="mobile-browser-navigation"
+        className='w-[100%]  '
           aria-label="Mobile navigation"
         >
           <MobileBrowserNavItem
@@ -650,6 +661,8 @@ function BrowserMobileNavbar({
               }
             />
           )}
+       {isLoggedIn &&  <MobileBrowserNavItem label={"Sign Out"} onClick={handleSignOut}/>}
+     
         </nav>
       )}
 
@@ -664,16 +677,19 @@ function MobileBrowserNavItem({
   active = false,
 }) {
   return (
+    <div className='    "hover:bg-white/10 dark:hover:bg-plumb-mint/15 bg-plumb-mint w-[100%] hover:bg-plumb-mintHover'>
     <button
       type="button"
       onClick={onClick}
+            // text-base
       className={`
-        w-full
+ 
         flex
         items-center
         px-2
-        py-3
-        text-base
+        py-1
+        text-white
+ bg-transparent
         leading-none
         text-left
         tracking-[-0.02em]
@@ -686,7 +702,8 @@ function MobileBrowserNavItem({
       `}
       aria-current={active ? 'page' : undefined}
     >
-      {label}
+      <h6 className='text-[1rem]'>{label}</h6>
     </button>
+    </div>
   );
 }

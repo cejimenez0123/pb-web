@@ -452,91 +452,9 @@ function Step1({
   );
 }
 
-/* =========================================================
-   STEP 2 — WRITING
-   ========================================================= */
 
-// function Step2({
-//   formData,
-//   updateFormData,
-//   setActiveTab,
-// }) {
-//   const [local, setLocal] = useState({
-//     writingNow: formData.writingNow || "",
-//     writingBarriers: formData.writingBarriers || [],
-//   });
 
-//   const toggleBarrier = (option) => {
-//     setLocal((prev) => {
-//       const current = prev.writingBarriers || [];
 
-//       return {
-//         ...prev,
-//         writingBarriers: current.includes(option)
-//           ? current.filter((item) => item !== option)
-//           : [...current, option],
-//       };
-//     });
-//   };
-
-//   const next = () => {
-//     updateFormData(local);
-//     setActiveTab("tab3");
-//   };
-
-//   return (
-//     <StepTransition step="tab2">
-//       <div className={pageClass}>
-//         <div className="mb-7">
-//           <p className="text-xs uppercase tracking-[0.18em] font-semibold text-emerald-600 mb-2">
-//             Your writing
-//           </p>
-
-//           <h1 className={headingClass}>
-//             What's on the page?
-//           </h1>
-
-//           <p className="text-emerald-600 mt-2 leading-relaxed text-sm">
-//             Wherever you are with it is fine.
-//           </p>
-//         </div>
-
-//         <div className="space-y-7">
-//           <Question label="What are you writing these days?">
-//             <textarea
-//               className={textareaClass}
-//               rows={4}
-//               value={local.writingNow}
-//               onChange={(e) =>
-//                 setLocal({
-//                   ...local,
-//                   writingNow: e.target.value,
-//                 })
-//               }
-//               placeholder="A novel, poems, essays, a screenplay, something you haven't named yet..."
-//             />
-//           </Question>
-
-//           <Question label="What's been getting in the way of writing lately?">
-//             <OptionChips
-//               options={WRITING_BARRIERS}
-//               selected={local.writingBarriers}
-//               onToggle={toggleBarrier}
-//             />
-//           </Question>
-//         </div>
-
-//         <NavButtons
-//           onBack={() => {
-//             updateFormData(local);
-//             setActiveTab("tab1");
-//           }}
-//           onNext={next}
-//         />
-//       </div>
-//     </StepTransition>
-//   );
-// }
 function Step2({
   formData,
   updateFormData,
@@ -792,120 +710,11 @@ function Step3({
     </StepTransition>
   );
 }
-// function Step3({
-//   formData,
-//   updateFormData,
-//   setActiveTab,
-// }) {
-//   const [local, setLocal] = useState({
-//     sharingReasons: formData.sharingReasons || [],
-//     sharingWays: formData.sharingWays || [],
-//     sharingOutcomes: formData.sharingOutcomes || [],
-//     sharingStory: formData.sharingStory || "",
-//   });
 
-//   const toggle = (field, option) => {
-//     setLocal((prev) => {
-//       const current = prev[field] || [];
 
-//       return {
-//         ...prev,
-//         [field]: current.includes(option)
-//           ? current.filter((item) => item !== option)
-//           : [...current, option],
-//       };
-//     });
-//   };
 
-//   const next = () => {
-//     updateFormData(local);
-//     setActiveTab("tab4");
-//   };
 
-//   return (
-//     <StepTransition step="tab3">
-//       <div className={pageClass}>
-//         <div className="mb-7">
-//           <p className="text-xs uppercase tracking-[0.18em] font-semibold text-emerald-600 mb-2">
-//             Sharing & community
-//           </p>
 
-//           <h1 className={headingClass}>
-//             Share on your terms.
-//           </h1>
-
-//           <p className="text-emerald-600 mt-2 leading-relaxed text-sm">
-//             There's no right amount of participation.
-//           </p>
-//         </div>
-
-//         <div className="space-y-8">
-//           <Question
-//             label="What makes you decide to share something you've written?"
-//             helper="Select all that apply."
-//           >
-//             <OptionChips
-//               options={SHARING_REASONS}
-//               selected={local.sharingReasons}
-//               onToggle={(option) =>
-//                 toggle("sharingReasons", option)
-//               }
-//             />
-//           </Question>
-
-//           <Question
-//             label="How do you like to share your writing and participate in creative community?"
-//             helper="Select all that apply."
-//           >
-//             <OptionChips
-//               options={SHARING_WAYS}
-//               selected={local.sharingWays}
-//               onToggle={(option) =>
-//                 toggle("sharingWays", option)
-//               }
-//             />
-//           </Question>
-
-//           <Question
-//             label="What happened after you shared it?"
-//             helper="Select all that apply."
-//           >
-//             <OptionChips
-//               options={SHARING_OUTCOMES}
-//               selected={local.sharingOutcomes}
-//               onToggle={(option) =>
-//                 toggle("sharingOutcomes", option)
-//               }
-//             />
-//           </Question>
-
-//           <Question label="Tell us about a time you shared something you wrote. What made you decide to share it, and what happened afterward?">
-//             <textarea
-//               className={textareaClass}
-//               rows={5}
-//               value={local.sharingStory}
-//               onChange={(e) =>
-//                 setLocal({
-//                   ...local,
-//                   sharingStory: e.target.value,
-//                 })
-//               }
-//               placeholder="Whatever comes to mind..."
-//             />
-//           </Question>
-//         </div>
-
-//         <NavButtons
-//           onBack={() => {
-//             updateFormData(local);
-//             setActiveTab("tab2");
-//           }}
-//           onNext={next}
-//         />
-//       </div>
-//     </StepTransition>
-//   );
-// }
 
 /* =========================================================
    STEP 4 — PLUMBUM

@@ -6,7 +6,8 @@ navbar: {
   desktop: [
     "w-full h-36",
     "flex items-center",
-    "bg-plumb-mintHover",
+    "bg-plumb-mintHover dark:bg-plumb-dark-surface",
+  "border-b border-plumb-mint dark:border-plumb-darkBorder",
     "border-b border-plumb-mint",
   ].join(" "),
 menuButton: [
@@ -29,20 +30,22 @@ menuButton: [
 
 
   mobileBrowser: [
-    "relative min-w-10",
-    "flex py-1  my-auto items-center",
-    "bg-plumb-mintHover",
-    "border-b border-plumb-mint",
+    "relative  ",
+    "flex flex-row  my-auto",
+     "bg-plumb-mintHover dark:bg-plumb-dark-surface",
+  "border-b border-plumb-mint dark:border-plumb-darkBorder",
     "z-50",
   ].join(" "),
  menuBrowserIconLine: [
-    "block min-w-5 max-w-12 mt-1 rounded-full h-[2px]",
+    "block min-w-5 max-w-12 my-auto rounded-full h-[1px]",
     "bg-white"
 
   ].join(" "),
   mobileBrowserMenu: [
-    "w-full min-w-12",
-    "bg-plumb-mintHover",
+    " gap-1 flex flex-col",
+    "bg-plumb-mintHover dark:bg-plumb-dark-surface",
+    // border-b border-plumb-mint dark:border-plumb-darkBorder 
+  "min-h-8 ",
    
     "z-40",
   ].join(" "),
@@ -60,6 +63,7 @@ menuButton: [
   ].join(" "),
 
   wordmark: [
+  
     "font-serif",
     "font-semibold",
     "leading-none",

@@ -7,12 +7,11 @@ const SearchButton = memo(({ onClick }) => (
     type="button"
     onClick={onClick}
     aria-label="Search"
-    className="bg-transparent text-white mx-auto my-auto bottom-8"
-  // className={styles.navbar.mobileItem}
-    // className={"bg-transparent text-white bottom-4"}
+    className="bg-transparent pb-5 text-white "
+
 
   >
-    <h1 className="h-10 w-10">⌕</h1>
+    <h1 className="h-8 max-h-10  my-auto w-8">⌕</h1>
 
   </button>
 ));
