@@ -11,7 +11,7 @@ import {
 import { useDialog } from "../domain/usecases/useDialog";
 import SectionHeader from "./SectionHeader";
 import styles from "../styles/style";
-
+import clear from "../images/icons/clear.svg"
 const FOCUSABLE_SELECTOR = [
   "a[href]",
   "area[href]",
@@ -30,6 +30,8 @@ const Dialog = () => {
   const {
     dialog,
     resetDialog,
+    closeDialog,
+    openDialog
   } = useDialog();
 
   const [visible, setVisible] =
@@ -239,19 +241,19 @@ const Dialog = () => {
   }, []);
 
   const handleClose = () => {
-    if (resetTimerRef.current) {
-      clearTimeout(
-        resetTimerRef.current
-      );
-    }
+    // if (resetTimerRef.current) {
+    //   clearTimeout(
+    //     resetTimerRef.current
+    //   );
+    // }
 
-    setVisible(false);
-
-    resetTimerRef.current =
-      setTimeout(() => {
-        resetDialog();
-        resetTimerRef.current = null;
-      }, 250);
+    // setVisible(false);
+closeDialog()
+    // resetTimerRef.current =
+    //   setTimeout(() => {
+    //     resetDialog();
+    //     resetTimerRef.current = null;
+    //   }, 250);
   };
 
   if (!dialog && !visible) {
@@ -500,6 +502,9 @@ function DialogPanel({
         <div className="min-w-0 flex-1">
           <SectionHeader
             title={dialog.title}
+            right={<><div onClick={onClose}>
+              <img src={clear} />
+           </div> </>}
           />
 
           {typeof dialog.description ===

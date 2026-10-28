@@ -5,7 +5,7 @@ import Context from "../../context";
 import { useAlert } from "../../core/useAlert.jsx";
 import AlertType from "../../core/AlertType.js";
 import clear from "../../images/icons/clear.svg";
-import { initGA, sendGAEvent } from "../../core/ga4";
+// import { initGA, sendGAEvent } from "../../core/ga4";
 import { IonContent} from "@ionic/react";
 import ErrorBoundary from "../../ErrorBoundary";
 import { useDialog } from "../../domain/usecases/useDialog";
@@ -18,7 +18,7 @@ const{openDialog,closeDialog,dialog}=useDialog()
 
   // ---------- GA INITIALIZATION ----------
   useLayoutEffect(() => {
-    initGA();
+    // initGA();
     sendGAEvent("View Newsletter Apply Page", "View Newsletter Apply Page:", "", 0, false);
   }, []);
 
