@@ -15,9 +15,8 @@
     "build": "npx vite build",
     "build:clip": "npx vite build --mode clip",
     "build:main": "npx vite build --mode main",
-    "run-ios": "npx vite build --mode main && npx cap sync ios && npx cap open ios ",
-
-    "run-android": "npx vite build --mode main && npx cap sync ios && npx cap run android"
+    "run-ios": "npx vite build --mode main && npx cap sync ios && npx cap open ios",
+"run-android": "npx vite build --mode main && npx cap sync android && npx cap run android"
   },
   "dependencies": {
     "@capacitor-firebase/messaging": "^7.5.0",
@@ -66,6 +65,7 @@
     "use-places-autocomplete": "^4.0.1"
   },
   "devDependencies": {
+    "@babel/core": "^7.29.0",
     "@capacitor/assets": "^3.0.5",
     "@capacitor/cli": "^8.0.0",
     "@emotion/react": "^11.11.3",
@@ -81,7 +81,6 @@
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
-    "gh-pages": "^6.2.0",
     "lottie-react": "^2.4.0",
     "postcss": "^8.4.49",
     "react-redux": "^9.1.0",
