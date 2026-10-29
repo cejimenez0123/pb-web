@@ -1450,7 +1450,13 @@ ion-content {
 }
 
 
+:root {
+  --plumb-icon-color: #347a5e;
+}
 
+.dark {
+  --plumb-icon-color: #8fd8b5;
+}
 ion-content::part(scroll) {
  
     padding-bottom: 18em;

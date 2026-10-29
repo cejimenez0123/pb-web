@@ -150,67 +150,7 @@ function EventListItem({ item, router }) {
         first:pt-0
       "
     >
-      {/* COLLECTION / EVENT */}
-      {/* <button
-        type="button"
-        onClick={() =>
-          router.push(
-            Paths.collection.createRoute(collection.id)
-          )
-        }
-        className="
-          group
-          flex
-          w-[100%]
-          items-center
-          justify-between
-          gap-4
-          text-left
-        "
-      > */}
-        {/* <div className="min-w-0"> */}
-          {/* <h3
-            className="
-              font-serif
-              text-xl
-              leading-snug
-              text-gray-900
-              transition-colors
-              group-hover:text-emerald-800
-            "
-          >
-            {collection.title}
-          </h3> */}
 
-          {/* {collection.purpose && (
-            <p
-              className="
-                mt-1
-                text-sm
-                leading-relaxed
-                text-gray-500
-              "
-            >
-
-           Events and the work connected to them.
-            </p>
-          )} */}
-        {/* </div>
-
-        <span
-          aria-hidden="true"
-          className="
-            shrink-0
-            text-lg
-            text-gray-300
-            transition-all
-            group-hover:translate-x-1
-            group-hover:text-emerald-700
-          "
-        >
-          →
-        </span> */}
-      {/* </button> */}
 
       {/* STORIES INSIDE EVENT */}
       {stories.length > 0 && (
@@ -250,7 +190,7 @@ function EventListItem({ item, router }) {
                       group-hover:text-emerald-800
                     "
                   >
-                    {story.title}
+                  {story.title}
                   </p>
 
                   {story.description && (

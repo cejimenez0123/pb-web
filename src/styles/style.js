@@ -764,8 +764,9 @@ event: {
     "font-lora",
     "font-bold",
     "text-base",
-    "text-plumb-ink dark:text-plumb-darkText",
+    "text-plumb-dark dark:text-plumb-darkText",
     "leading-snug",
+    "flex flex-row items-center "
     // "text-plumb-ink",
     // "dark:text-plumb-darkText",
   ].join(" "),
