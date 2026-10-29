@@ -8,7 +8,7 @@ import PageViewButtonRow from "./PageViewButtonRow";
 import CommentInput from "../comment/CommentInput";
 import ProfileCircle from "../profile/ProfileCircle";
 import DataElement from "./DataElement";
-import { initGA, sendGAEvent } from "../../core/ga4";
+// import { initGA, sendGAEvent } from "../../core/ga4";
 import { useDialog } from "../../domain/usecases/useDialog";
 import { useDispatch } from "react-redux";
 import { setHtmlContent } from "../../actions/PageActions";
@@ -18,10 +18,10 @@ export default function PageViewItem({ page, canEdit }) {
   const currentProfile = useSelector((state) => state.users.currentProfile);
   const { openDialog,closeDialog } = useDialog();
 const dispatch =useDispatch()
-  useLayoutEffect(() => {
-    initGA();
-    sendGAEvent("View Story", JSON.stringify(page));
-  }, []);
+  // useLayoutEffect(() => {
+  //   initGA();
+  //   // sendGAEvent("View Story", JSON.stringify(page));
+  // }, []);
 
   useEffect(() => {
     const unlock = () => {

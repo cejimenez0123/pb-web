@@ -1,41 +1,40 @@
 
-import { IonContent, useIonViewDidLeave, useIonViewWillEnter } from '@ionic/react';
-import { useContext, useEffect, useMemo, useState } from 'react';
-import { createFollow, deleteFollow } from '../../actions/FollowAction';
-import Context from '../../context';
+import { IonContent, useIonViewDidLeave, useIonViewWillEnter, useIonRouter } from "@ionic/react";
+import { useEffect, useMemo, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router";
+
+import { createFollow, deleteFollow } from "../../actions/FollowAction";
 import { fetchProfile } from "../../actions/UserActions";
-import { getPublicProfilePages, setPagesInView } from "../../actions/PageActions";
-import { getPublicProfileCollections, setCollections } from "../../actions/CollectionActions";
-import Enviroment from '../../core/Enviroment';
+import {
+  getPublicProfilePages,
+  setPagesInView,
+} from "../../actions/PageActions";
+import {
+  getPublicProfileCollections,
+  setCollections,
+} from "../../actions/CollectionActions";
+
 import ErrorBoundary from "../../ErrorBoundary";
 import ProfileInfo from "../../components/profile/ProfileInfo";
+import FollowButton from "../../components/profile/FollowButton";
+import TabBar from "../../components/TabBar";
+import PageProfileList from "../../components/page/PageProfileList";
+import PaginatedList from "../../components/page/PaginatedList";
+import SectionHeader from "../../components/SectionHeader";
+import CommunitiesPanel from "../../components/profile/CommunitiesPanel";
+import AboutPanel from "../../components/profile/AboutPanel";
+import RecommendedProfiles from "../../components/page/RecommendedProfile";
+import ReportContentDialog from "../../components/auth/ReportProfileDialog";
+
 import fetchCity from "../../core/fetchCity";
-import { useDispatch, useSelector } from 'react-redux';
-import { useIonRouter } from '@ionic/react';
-import { useParams } from 'react-router';
-import debounce from '../../core/debounce';
-import Paths from '../../core/paths';
-import checkResult from '../../core/checkResult';
-import TabBar from '../../components/TabBar';
-import PageProfileList from '../../components/page/PageProfileList';
-import FollowButton from '../../components/profile/FollowButton';
-import CommunitiesPanel from '../../components/profile/CommunitiesPanel';
-import AboutPanel from '../../components/profile/AboutPanel';
-import PaginatedList from '../../components/page/PaginatedList';
-import SectionHeader from '../../components/SectionHeader';
-import RecommendedProfiles from '../../components/page/RecommendedProfile';
+import debounce from "../../core/debounce";
+import Paths from "../../core/paths";
+import checkResult from "../../core/checkResult";
+import styles from "../../styles/style";
 
-import horiz from "../../images/icons/more_vert.svg"
-import { IonImg } from '@ionic/react';
-import { useDialog } from '../../domain/usecases/useDialog';
-import ReportProfileDialog from '../../components/auth/ReportProfileDialog';
-import { blockProfile, reportContent } from '../../actions/ModerationAcitons';
-import ReportContentDialog from '../../components/auth/ReportProfileDialog';
+import horiz from "../../images/icons/more_vert.svg";
 
-
-
-
-// ── Constants ───────────────────────────────────────────
 const TABS = {
   POSTS: "pages",
   COLLECTIONS: "collections",
@@ -43,116 +42,146 @@ const TABS = {
   ABOUT: "about",
 };
 
-const WRAP           = "max-w-2xl mx-auto px-4";
-const PAGE_PADDING_Y = "pb-24 pt-safe";
-const HEADER_PADDING = "py-8";
-const HEADER_STACK   = "space-y-6";
-const STATS_GAP      = "flex gap-8";
-const SEARCH_ROW     = "flex items-center py-8 flex-row gap-3";
-const TAB_WRAPPER    = "max-w-lg mx-auto px-4 pb-4";
-const SKELETON_PADDING = "px-4 py-8";
-const SKELETON_STACK   = "space-y-8";
-
-// ── Sub-components (outside to avoid re-creation) ───────
 const Pill = ({ label, onClick }) => (
-  <span
+  <button
+    type="button"
     onClick={onClick}
-    className="text-xs px-3 py-1 rounded-full bg-gray-100 dark:bg-plumb-surface Dark text-gray-700 dark:text-cream cursor-pointer"
+    className={styles.profile.pill}
   >
     {label}
-  </span>
+  </button>
 );
 
 const StatChip = ({ value, label }) => (
-  <div className="flex flex-col text-center">
-    <span className="font-bold text-gray-900 dark:text-cream">{value}</span>
-    <span className="text-xs text-gray-400 dark:text-cream/50">{label}</span>
+  <div className={styles.profile.stat}>
+    <span className={styles.profile.statValue}>{value ?? 0}</span>
+    <span className={styles.profile.statLabel}>{label}</span>
   </div>
 );
 
 const EmptyState = ({ text }) => (
-  <div className="text-center py-12">
-    <p className="text-sm text-gray-400 dark:text-cream/40">{text}</p>
-  </div>
+  <div className={styles.profile.empty}>{text}</div>
 );
 
-// ── Main Component ───────────────────────────────────────
 function ProfileContainer() {
-  // const { setSeo } = useContext(Context);
-  const { profileInView: profile, currentProfile } = useSelector((state) => state.users);
-  const pagesRaw      = useSelector((state) => state.pages.pagesInView ?? []);
-  const collectionsRaw = useSelector((state) => state.books.collections ?? []);
+  const { profileInView: profile, currentProfile } = useSelector(
+    (state) => state.users
+  );
 
-  const [search, setSearch]           = useState("");
-  const [tab, setTab]                 = useState(TABS.POSTS);
-  const [isLoading, setIsLoading]     = useState(true);
-  const [isReady, setIsReady]         = useState(false);
-  const [following, setFollowing]     = useState(null);
-  const [followerCount, setFollowerCount]   = useState(0);
+  const pagesRaw = useSelector(
+    (state) => state.pages.pagesInView ?? []
+  );
+
+  const collectionsRaw = useSelector(
+    (state) => state.books.collections ?? []
+  );
+
+  const dispatch = useDispatch();
+  const router = useIonRouter();
+  const { id } = useParams();
+
+  const [search, setSearch] = useState("");
+  const [tab, setTab] = useState(TABS.POSTS);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isReady, setIsReady] = useState(false);
+  const [following, setFollowing] = useState(null);
+  const [followerCount, setFollowerCount] = useState(0);
   const [followingCount, setFollowingCount] = useState(0);
-  const [isSelf, setIsSelf]           = useState(false);
+  const [isSelf, setIsSelf] = useState(false);
+  const [locationName, setLocationName] = useState(
+    "Location not specified"
+  );
+  const [isReportDialogOpen, setReportDialogOpen] = useState(false);
+  const [isBlockDialogOpen, setBlockDialogOpen] = useState(false);
+  const [success, setSuccess] = useState(null);
 
-const [error, setError] = useState(null); // if you don’t already have this
-  const [locationName, setLocationName] = useState("Location not specified");
-const { openDialog, closeDialog } = useDialog();
-const dispatch = useDispatch();
-  const router   = useIonRouter();
-  const { id }   = useParams();
-const [isReportDialogOpen, setReportDialogOpen] = useState(false);
-const [isBlockDialogOpen, setBlockDialogOpen] = useState(false);
-
-
-  // ── Derived lists ──────────────────────────────────────
   const collections = useMemo(
-    () => collectionsRaw
-      .filter(Boolean)
-      .filter((col) => col?.childCollections?.length === 0)
-      .filter((col) => !search || col.title?.toLowerCase().includes(search.toLowerCase())),
+    () =>
+      collectionsRaw
+        .filter(Boolean)
+        .filter((col) => col?.childCollections?.length === 0)
+        .filter(
+          (col) =>
+            !search ||
+            col.title?.toLowerCase().includes(search.toLowerCase())
+        ),
     [collectionsRaw, search]
   );
 
   const communities = useMemo(
-    () => collectionsRaw
-      .filter((col) => col && (col.type === "library" || col?.childCollections?.length > 0))
-      .filter((col) => !search || col.title?.toLowerCase().includes(search.toLowerCase())),
+    () =>
+      collectionsRaw
+        .filter(
+          (col) =>
+            col &&
+            (col.type === "library" || col?.childCollections?.length > 0)
+        )
+        .filter(
+          (col) =>
+            !search ||
+            col.title?.toLowerCase().includes(search.toLowerCase())
+        ),
     [collectionsRaw, search]
   );
 
   const pages = useMemo(
-    () => pagesRaw
-      .filter(Boolean)
-      .filter((page) => !search || page.title?.toLowerCase().includes(search.toLowerCase())),
+    () =>
+      pagesRaw
+        .filter(Boolean)
+        .filter(
+          (page) =>
+            !search ||
+            page.title?.toLowerCase().includes(search.toLowerCase())
+        ),
     [pagesRaw, search]
   );
 
   const recentPosts = useMemo(
-    () => [...pagesRaw]
-      .filter(Boolean)
-      .sort((a, b) => new Date(b.updated ?? b.created) - new Date(a.updated ?? a.created))
-      .slice(0, 5),
+    () =>
+      [...pagesRaw]
+        .filter(Boolean)
+        .sort(
+          (a, b) =>
+            new Date(b.updated ?? b.created) -
+            new Date(a.updated ?? a.created)
+        )
+        .slice(0, 5),
     [pagesRaw]
   );
 
   const tabs = [
-    { key: TABS.POSTS,       label: "Pages" },
+    { key: TABS.POSTS, label: "Pages" },
     { key: TABS.COLLECTIONS, label: "Collections" },
     { key: TABS.COMMUNITIES, label: "Communities" },
-    { key: TABS.ABOUT,       label: "About" },
+    { key: TABS.ABOUT, label: "About" },
   ];
 
-  // ── Effects ────────────────────────────────────────────
+  // Loading state
   useEffect(() => {
     if (!profile) return;
-    const t = setTimeout(() => { setIsLoading(false); setIsReady(true); }, 120);
-    return () => clearTimeout(t);
+
+    const timeout = setTimeout(() => {
+      setIsLoading(false);
+      setIsReady(true);
+    }, 120);
+
+    return () => clearTimeout(timeout);
   }, [profile]);
 
+  // Populate the profile's pages, collections, and counts.
   useEffect(() => {
     if (!profile) return;
-    if (profile.stories)     dispatch(setPagesInView({ pages: profile.stories }));
-    if (profile.collections) dispatch(setCollections({ collections: profile.collections }));
-    setFollowerCount(profile["_count"]?.followers);
-    setFollowingCount(profile["_count"]?.following);
+
+    if (profile.stories) {
+      dispatch(setPagesInView({ pages: profile.stories }));
+    }
+
+    if (profile.collections) {
+      dispatch(setCollections({ collections: profile.collections }));
+    }
+
+    setFollowerCount(profile._count?.followers ?? 0);
+    setFollowingCount(profile._count?.following ?? 0);
   }, [profile, dispatch]);
 
   useEffect(() => {
@@ -160,36 +189,49 @@ const [isBlockDialogOpen, setBlockDialogOpen] = useState(false);
     setIsSelf(profile.id === currentProfile.id);
   }, [profile, currentProfile]);
 
-  
-
+  // Resolve the profile's location.
   useEffect(() => {
-    if (!profile?.location) return;
+    if (!profile?.location) {
+      setLocationName("Location not specified");
+      return;
+    }
+
     if (profile.location.city) {
       setLocationName(profile.location.city);
       return;
     }
+
     fetchCity(profile.location).then(setLocationName);
   }, [profile?.location]);
 
+  // Fetch the requested profile when the Ionic view enters.
   useIonViewWillEnter(() => {
     dispatch(fetchProfile({ id }));
   }, [id, dispatch]);
 
+  // Clear profile-specific lists when leaving the view.
   useIonViewDidLeave(() => {
     dispatch(setPagesInView({ pages: [] }));
     dispatch(setCollections({ collections: [] }));
   });
 
-  // ── Follow ─────────────────────────────────────────────
+  // Follow / unfollow
   const onClickFollow = debounce(() => {
+    if (!profile || !currentProfile) return;
     if (profile.id === currentProfile.id) return;
+
     if (following) {
       dispatch(deleteFollow({ follow: following })).then(() => {
-        setFollowerCount((prev) => prev - 1);
+        setFollowerCount((prev) => Math.max(0, prev - 1));
         setFollowing(null);
       });
     } else {
-      dispatch(createFollow({ follower: currentProfile, following: profile })).then((res) => {
+      dispatch(
+        createFollow({
+          follower: currentProfile,
+          following: profile,
+        })
+      ).then((res) => {
         checkResult(res, (payload) => {
           setFollowerCount((prev) => prev + 1);
           setFollowing(payload.follow);
@@ -197,199 +239,318 @@ const [isBlockDialogOpen, setBlockDialogOpen] = useState(false);
       });
     }
   }, 200);
-if (!profile || isLoading) {
-  return (
-    <ErrorBoundary>
-      <IonContent fullscreen>
-        <div className={`${WRAP} ${PAGE_PADDING_Y} bg-cream dark:bg-base-bgDark`}>
-          <ProfileSkeleton />
-        </div>
-      </IonContent>
-    </ErrorBoundary>
-  );
-}
-  // ── Render ─────────────────────────────────────────────
-  return (
-    <ErrorBoundary>
-      <IonContent fullscreen>
-        <div className={`${WRAP} ${PAGE_PADDING_Y} bg-cream dark:bg-base-bgDark`}>
 
-          {/* Skeleton */}
-          <div className={`absolute inset-0 transition-opacity duration-300 ${isLoading ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
+  if (!profile || isLoading) {
+    return (
+      <ErrorBoundary>
+        <IonContent fullscreen>
+          <main className={`${styles.profile.page} min-h-screen`}>
             <ProfileSkeleton />
-          </div>
+          </main>
+        </IonContent>
+      </ErrorBoundary>
+    );
+  }
 
-          {/* Real Content */}
-          <div className={`transition-opacity duration-300 ${isReady ? "opacity-100" : "opacity-0"}`}>
+  return (
+    <ErrorBoundary>
+     <IonContent fullscreen>
+         <main className={`${styles.profile.page} min-h-screen`}>
+          <div className={styles.profile.content}>
+            {/* Profile header */}
+            <header className={styles.profile.header}>
+              <div className={styles.profile.identity}>
+                <ProfileInfo profile={profile} compact />
 
-            {/* Header */}
-            <div className={`${HEADER_PADDING} ${HEADER_STACK}`}>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <ProfileInfo profile={profile} compact />
-                  <h6 className="text-[1rem] text-soft dark:text-cream">
-                    @{profile?.username?.toLowerCase()}
-                  </h6>
-                </div>
+                <h2 className={styles.profile.username}>
+                  @{profile?.username?.toLowerCase()}
+                </h2>
               </div>
 
-              {communities?.length > 0 && (
-                <div className="space-y-2">
-                  <p className="text-xs text-gray-400 dark:text-cream/50 uppercase">Communities</p>
+              {communities.length > 0 && (
+                <section className="space-y-2">
+                  <p className={styles.profile.sectionLabel}>
+                    Communities
+                  </p>
+
                   <div className="flex flex-wrap gap-2">
-                    {communities.slice(0, 3).map((c, i) => (
-                      <Pill key={i} label={c.title} onClick={() => router.push(Paths.collection.createRoute(c.id))} />
+                    {communities.slice(0, 3).map((community) => (
+                      <Pill
+                        key={community.id}
+                        label={community.title}
+                        onClick={() =>
+                          router.push(
+                            Paths.collection.createRoute(community.id)
+                          )
+                        }
+                      />
                     ))}
                   </div>
-                </div>
+                </section>
               )}
 
-              <div className={STATS_GAP}>
-                <StatChip value={followerCount}  label="Followers" />
+              <div className={styles.profile.stats}>
+                <StatChip value={followerCount} label="Followers" />
                 <StatChip value={followingCount} label="Following" />
               </div>
 
-              {(profile?.bio || profile?.selfStatement) && (
-                <p className="text-sm text-gray-700 dark:text-cream leading-relaxed">
+              {(profile.bio || profile.selfStatement) && (
+                <p className={styles.profile.body}>
                   {profile.bio ?? profile.selfStatement}
                 </p>
               )}
 
-              {(profile?.hashtags ?? profile?.tags)?.length > 0 && (
+              {(profile.hashtags ?? profile.tags)?.length > 0 && (
                 <div className="flex flex-wrap gap-2">
-                  {(profile.hashtags ?? profile.tags).slice(0, 5).map((tag, i) => (
-                    <Pill
-                      key={i}
-                      onClick={() => router.push(Paths.collection.createRoute(tag.id))}
-                      label={`#${typeof tag === "string" ? tag : tag.name ?? tag.tag}`}
-                    />
-                  ))}
+                  {(profile.hashtags ?? profile.tags)
+                    .slice(0, 5)
+                    .map((tag, index) => {
+                      const label =
+                        typeof tag === "string"
+                          ? tag
+                          : tag.name ?? tag.tag;
+
+                      return (
+                        <Pill
+                          key={tag.id ?? `${label}-${index}`}
+                          label={`#${label}`}
+                          onClick={() => {
+                            if (tag.id) {
+                              router.push(
+                                Paths.collection.createRoute(tag.id)
+                              );
+                            }
+                          }}
+                        />
+                      );
+                    })}
                 </div>
               )}
+            </header>
+
+            {/* Report / block dialogs */}
+            <ReportContentDialog
+              contentType="profile"
+              contentId={profile.id}
+              mode="report"
+              reportedProfileId={profile.id}
+              isOpen={isReportDialogOpen}
+              onClose={() => setReportDialogOpen(false)}
+              onSuccess={() => setSuccess("Report submitted")}
+            />
+
+            <ReportContentDialog
+              contentType="profile"
+              mode="block"
+              contentId={profile.id}
+              reportedProfileId={profile.id}
+              isOpen={isBlockDialogOpen}
+              onClose={() => setBlockDialogOpen(false)}
+              onSuccess={() => setSuccess("Profile blocked")}
+            />
+
+            {success && (
+              <div
+                role="status"
+                className={styles.profile.status}
+              >
+                <div className="flex items-center justify-between gap-3">
+                  <span>{success}</span>
+                  <button
+                    type="button"
+                    onClick={() => setSuccess(null)}
+                    className="shrink-0 rounded-full px-2 py-1"
+                    aria-label="Dismiss notification"
+                  >
+                    ×
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Search, follow, and profile actions */}
+            <div className={styles.profile.searchRow}>
+              <input
+                type="search"
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
+                placeholder="Search this profile"
+                aria-label="Search this profile"
+                className={styles.profile.search}
+              />
+
+              <div className={styles.profile.actions}>
+                <FollowButton
+                  isSelf={isSelf}
+                  prof={profile}
+                  onClick={onClickFollow}
+                  follow={following}
+                  current={currentProfile}
+                />
+
+                {!isSelf && (
+                  <div className="dropdown dropdown-end shrink-0">
+                    <button
+                      type="button"
+                      className={styles.profile.menuButton}
+                      aria-label="Profile actions"
+                      aria-haspopup="menu"
+                    >
+                      <img
+                        src={horiz}
+                        alt=""
+                        aria-hidden="true"
+                        className="h-5 w-5"
+                      />
+                    </button>
+
+                    <ul
+                      tabIndex={0}
+                      role="menu"
+                      className={`dropdown-content menu ${styles.profile.menu}`}
+                    >
+                      <li role="none">
+                        <button
+                          type="button"
+                          role="menuitem"
+                          className={styles.profile.menuItem}
+                          onClick={() => setReportDialogOpen(true)}
+                        >
+                          Report
+                        </button>
+                      </li>
+
+                      <li role="none">
+                        <button
+                          type="button"
+                          role="menuitem"
+                          className={`${styles.profile.menuItem} ${styles.profile.menuItemDanger}`}
+                          onClick={() => setBlockDialogOpen(true)}
+                        >
+                          Block
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+                )}
+              </div>
             </div>
 
-{profile && (
-  <ReportContentDialog
-    contentType="profile"
-    contentId={profile.id}
-    mode='report'
-    reportedProfileId={profile.id}
-    isOpen={isReportDialogOpen}
-    onClose={() => setReportDialogOpen(false)}
-    onSuccess={() => setSuccess("Report submitted")}
-  />
-)}
-{profile && (
-  <ReportContentDialog
-    contentType="profile"
-    mode='block'
-    contentId={profile.id}
-    reportedProfileId={profile.id}
-    isOpen={isBlockDialogOpen}
-    onClose={() => setBlockDialogOpen(false)}
-    onSuccess={() => setSuccess("Report submitted")}
-  />
-)}
-
-<div className={SEARCH_ROW}>
-  <input
-    value={search}
-    onChange={(e) => setSearch(e.target.value)}
-    placeholder="Search"
-    className="border-soft border rounded-full w-full px-4 py-2 bg-cream dark:bg-base-bgDark dark:border-cream/30 dark:text-cream text-sm text-soft placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-300"
-  />
-  <FollowButton isSelf={isSelf} prof={profile} onClick={onClickFollow} follow={following} current={currentProfile} />
-  {!isSelf && (
-    <div className="relative dropdown dropdown-left">
-      <div tabIndex={0} role="button">
-        <img src={horiz} className="max-w-5 max-h-5 cursor-pointer" />
-      </div>
-      <ul tabIndex={0} className="dropdown-content bg-base-bg menu text-emerald-800 rounded-box z-[1] w-52 p-2 shadow">
-<li
-  className="p-2 bg-base-bg hover:bg-sky-100 rounded cursor-pointer"
-  onClick={() => setReportDialogOpen(true)}
->
-  Report
-
-</li>
-        <li className="p-2 bg-base-bg hover:bg-sky-100 rounded cursor-pointer text-red-600" 
-        
-     onClick={() => setBlockDialogOpen(true)}
-        >
-          Block
-        </li>
-      </ul>
-    </div>
-  )}
-</div>
-  
-            <div className={TAB_WRAPPER}>
-              <TabBar tabs={tabs} active={tab} onChange={setTab} />
+            {/* Profile tabs */}
+            <div className={styles.profile.tabWrapper}>
+              <TabBar
+                tabs={tabs}
+                active={tab}
+                onChange={setTab}
+              />
             </div>
 
-            {/* Tab Content */}
-            <div className={`${WRAP} space-y-10 min-h-[40rem]`}>
+            {/* Tab content */}
+            <div className={styles.profile.tabContent}>
               {tab === TABS.POSTS && (
                 <>
-                  {search.length === 0 && recentPosts.length > 0 && (
-                    <section className="space-y-4">
+                  {!search && recentPosts.length > 0 && (
+                    <section className={styles.profile.section}>
                       <SectionHeader title="Recent" />
-                      <PageProfileList items={recentPosts} router={router} />
+                      <PageProfileList
+                        items={recentPosts}
+                        router={router}
+                      />
                     </section>
                   )}
-                  <section className="space-y-4">
+
+                  <section className={styles.profile.section}>
                     <SectionHeader title="All Pages" />
+
                     <PaginatedList
                       cacheKey={`stories:${id}`}
                       key="getPublicProfilePages"
                       fetcher={getPublicProfilePages}
                       params={{ profileId: id }}
                       pageSize={8}
-                      renderItem={(p) => (
-                        <div
-                          key={p.id}
-                          onClick={() => router.push(Paths.page.createRoute(p.id))}
-                          className="px-3 py-3 rounded-full border border-blue bg-base-bg dark:bg-plumb-surface Dark backdrop-blur-sm shadow-sm active:scale-[0.98] transition"
+                      renderItem={(page) => (
+                        <button
+                          key={page.id}
+                          type="button"
+                          onClick={() =>
+                            router.push(
+                              Paths.page.createRoute(page.id)
+                            )
+                          }
+                          className={styles.profile.listItem}
                         >
-                          <span className="text-[0.95rem] dark:text-cream font-medium text-gray-800">
-                            {p?.title?.length > 0 ? p.title : "Untitled"}
-                          </span>
-                        </div>
+                          <div className="text-left mx-4">
+                            {page?.title?.length > 0
+                              ? page.title
+                              : "Untitled"}
+                          </div>
+                        </button>
                       )}
                     />
                   </section>
-                  {pages.length === 0 && <EmptyState text="No posts yet." />}
+
+                  {pages.length === 0 && (
+                    <EmptyState text="No posts yet." />
+                  )}
                 </>
               )}
 
               {tab === TABS.COLLECTIONS && (
-                <div className="pt-8">
+                <section className={`${styles.profile.section} pt-2`}>
                   <PaginatedList
-                    cacheKey="collections"
+                    cacheKey={`collections:${id}`}
                     fetcher={getPublicProfileCollections}
                     params={{ profileId: id }}
                     pageSize={8}
-                    renderItem={(p) => (
-                      <div
-                        onClick={() => router.push(Paths.collection.createRoute(p.id))}
-                        className="px-3 py-3 rounded-full border border-purple bg-base-bg dark:bg-plumb-surface Dark dark:text-cream"
+                    renderItem={(collection) => (
+                      <button
+                        key={collection.id}
+                        type="button"
+                        onClick={() =>
+                          router.push(
+                            Paths.collection.createRoute(collection.id)
+                          )
+                        }
+                        className={styles.profile.listItem}
                       >
-                        {p.title}
-                      </div>
+                        <div className="text-left mx-4">
+                                 {collection.title?.length > 0 ? collection.title : "Untitled"}
+                        </div>
+                      </button>
                     )}
                   />
-                </div>
+                </section>
               )}
 
-              {tab === TABS.COMMUNITIES && <CommunitiesPanel  id={id}fetch={(args) => getPublicProfileCollections({profileId:id,...args})}communities={communities} router={router} />}
-              {tab === TABS.ABOUT && <AboutPanel router={router} profile={profile} locationName={locationName} />}
+              {tab === TABS.COMMUNITIES && (
+                <CommunitiesPanel
+                  id={id}
+                  fetch={(args) =>
+                    getPublicProfileCollections({
+                      profileId: id,
+                      ...args,
+                    })
+                  }
+                  communities={communities}
+                  router={router}
+                />
+              )}
+
+              {tab === TABS.ABOUT && (
+                <AboutPanel
+                  router={router}
+                  profile={profile}
+                  locationName={locationName}
+                />
+              )}
             </div>
 
             {/* Recommendations */}
-            <RecommendedProfiles profileId={id} />
-
+            <section className="pb-6">
+              <RecommendedProfiles profileId={id} />
+            </section>
           </div>
-        </div>
+        </main>
       </IonContent>
     </ErrorBoundary>
   );
@@ -397,43 +558,56 @@ if (!profile || isLoading) {
 
 export default ProfileContainer;
 
-// ── Skeleton ─────────────────────────────────────────────
 function ProfileSkeleton() {
   return (
-    <div className={`animate-pulse ${SKELETON_PADDING} ${SKELETON_STACK}`}>
+    <div
+      className={`${styles.profile.skeleton} motion-reduce:animate-none`}
+      aria-label="Loading profile"
+      role="status"
+    >
       <div className="flex items-center gap-4">
-        <div className="w-14 h-14 rounded-full bg-base-300 skeleton" />
-        <div className="flex flex-col gap-2">
-          <div className="h-4 w-32 bg-base-300 rounded skeleton" />
-          <div className="h-3 w-24 bg-base-200 rounded skeleton" />
+        <div className={styles.profile.skeletonCircle} />
+
+        <div className="flex min-w-0 flex-1 flex-col gap-2">
+          <div className={`${styles.profile.skeletonLine} w-32`} />
+          <div className={`${styles.profile.skeletonLine} w-24`} />
         </div>
       </div>
-      <div className="flex justify-between">
-        {[1, 2].map((i) => (
-          <div key={i} className="flex flex-col items-center gap-2">
-            <div className="h-4 w-10 bg-base-300 rounded skeleton" />
-            <div className="h-3 w-16 bg-base-200 rounded skeleton" />
+
+      <div className="flex gap-8">
+        {[1, 2].map((item) => (
+          <div
+            key={item}
+            className="flex flex-col items-center gap-2"
+          >
+            <div className={`${styles.profile.skeletonLine} w-10`} />
+            <div className={`${styles.profile.skeletonLine} w-16`} />
           </div>
         ))}
       </div>
+
       <div className="space-y-2">
-        <div className="h-3 w-full bg-base-200 rounded skeleton" />
-        <div className="h-3 w-5/6 bg-base-200 rounded skeleton" />
+        <div className={`${styles.profile.skeletonLine} w-full`} />
+        <div className={`${styles.profile.skeletonLine} w-5/6`} />
       </div>
-      <div className="flex gap-2">
-        {[1, 2, 3, 4].map((i) => (
-          <div key={i} className="h-8 w-20 rounded-full bg-base-300 skeleton" />
+
+      <div className="flex flex-wrap gap-2">
+        {[1, 2, 3, 4].map((item) => (
+          <div
+            key={item}
+            className="h-8 w-20 rounded-full bg-plumb-border dark:bg-plumb-dark-surface"
+          />
         ))}
       </div>
+
       <div className="space-y-4">
-        {[1, 2, 3].map((i) => (
-          <div key={i} className="h-24 w-full bg-base-200 rounded-xl skeleton" />
+        {[1, 2, 3].map((item) => (
+          <div
+            key={item}
+            className={styles.profile.skeletonCard}
+          />
         ))}
       </div>
     </div>
   );
 }
-
-
-
-

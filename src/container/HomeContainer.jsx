@@ -431,7 +431,7 @@ const fetchSubCollections = useCallback(async (skip, take) => {
     items={items}
     getMore={getMore}
     hasMore={hasMore}
-    shortenTo={400}
+    shortenTo={300}
   />
 )}
 </div>

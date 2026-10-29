@@ -20,7 +20,7 @@ const CommunitiesPanel = ({fetch,id, router }) => {
         <div
           key={c.id}
           onClick={() => router.push(Paths.collection.createRoute(c.id))}
-          className="p-4 rounded-xl bg-base-bg active:scale-[0.98] transition"
+          className="p-4 rounded-xl bg-base-bg text-left active:scale-[0.98] transition"
         >
           <p className="text-sm font-medium text-gray-900">
             {c.title?.length > 0 ? c.title : "Untitled"}

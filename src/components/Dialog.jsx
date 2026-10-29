@@ -295,13 +295,12 @@ closeDialog()
             transition={{
               duration: 0.2,
             }}
-            className="
-              fixed
-              inset-0
-              z-40
-              bg-black/40
-              backdrop-blur-sm
-            "
+        className="
+  fixed inset-0 z-40
+  bg-plumb-ink/40
+  backdrop-blur-sm
+  dark:bg-black/60
+"
           />
 
           {isModal ? (
@@ -410,8 +409,7 @@ function DialogPanel({
   isModal,
   onClose,
 }) {
-  const height =
-    dialog.height ?? 90;
+  const height = dialog.height ?? 90;
 
   return (
     <div
@@ -419,223 +417,162 @@ function DialogPanel({
       role="dialog"
       aria-modal="true"
       aria-labelledby={titleId}
-      {...(typeof dialog.description ===
-      "string"
-        ? {
-            "aria-describedby":
-              descriptionId,
-          }
+      {...(typeof dialog.description === "string"
+        ? { "aria-describedby": descriptionId }
         : {})}
       tabIndex={-1}
       style={
         isModal
           ? undefined
-          : {
-              height: `${height}vh`,
-            }
+          : { height: `${height}vh` }
       }
-      className={
-        isModal
-          ? `
-            flex
-            max-h-[min(90dvh,48rem)]
-            w-full
-            max-w-2xl
-            flex-col
-            overflow-hidden
-            rounded-3xl
-            border
-            border-gray-200
-            bg-plumb-surface
-            shadow-2xl
-            dark:border-gray-700
-            dark:bg-base-bgDark
-          `
-          : `
-            flex
-            max-h-[95dvh]
-            flex-col
-             bg-plumb-surface
-            overflow-hidden
-            rounded-t-3xl
-            bg-cream
-            px-4
-            pb-8
-            pt-3
-            shadow-xl
-            dark:bg-base-bgDark
-          `
-      }
+      className={`
+        flex flex-col overflow-hidden
+        text-plumb-ink dark:text-plumb-darkText
+        ${
+          isModal
+            ? `
+              max-h-[min(90dvh,48rem)]
+              w-full max-w-2xl
+              rounded-3xl border
+              border-plumb-border
+              bg-plumb-elevated
+              shadow-2xl
+              dark:border-plumb-darkBorder
+              dark:bg-plumb-dark-surface
+            `
+            : `
+              max-h-[95dvh]
+              rounded-t-3xl
+              border-t border-plumb-border
+              bg-plumb-paper
+              px-4 pb-8 pt-3
+              shadow-xl
+              dark:border-plumb-darkBorder
+              dark:bg-plumb-dark-paper
+            `
+        }
+      `}
     >
       {/* Sheet grabber */}
-      {!isModal ? (
+      {!isModal && (
         <div
           aria-hidden="true"
           className="
-            mx-auto
-            mb-3
-            h-1.5
-            w-10
-            shrink-0
-            rounded-full
-            bg-soft
-            opacity-30
+            mx-auto mb-3 h-1.5 w-10 shrink-0
+            rounded-full bg-plumb-muted/40
+            dark:bg-plumb-darkMuted/40
           "
         />
-      ) : null}
+      )}
 
       {/* Header */}
       <header
         className="
-          flex
-          shrink-0
-          items-start
-          gap-4
-          border-b
-          border-gray-200
-          px-4
-          pb-4
-          dark:border-gray-700
+          flex shrink-0 items-start gap-4
+          border-b border-plumb-border
+          px-4 pb-4 dark:border-plumb-darkBorder
           sm:px-6
         "
       >
         <div className="min-w-0 flex-1">
           <SectionHeader
             title={dialog.title}
-            right={<><div onClick={onClose}>
-              <img src={clear} />
-           </div> </>}
+            right={
+              <button
+                type="button"
+                onClick={onClose}
+                aria-label="Close dialog"
+                className={`
+                  ${styles.button.base}
+                  ${styles.button.ghost}
+                  flex h-10 w-10 shrink-0
+                  items-center justify-center
+                  rounded-full p-2
+                `}
+              >
+                <img
+                  src={clear}
+                  alt=""
+                  aria-hidden="true"
+                  className="
+                    h-5 w-5
+                    opacity-70
+                    dark:invert
+                  "
+                />
+              </button>
+            }
           />
 
-          {typeof dialog.description ===
-          "string" ? (
+          {typeof dialog.description === "string" && (
             <p
               id={descriptionId}
-              className="
-                mt-2
-                text-sm
-                leading-5
-                text-gray-500
-                dark:text-gray-400
-                mx-auto
-              "
+              className={`
+                ${styles.text.muted}
+                mx-auto mt-2 text-sm leading-6
+              `}
             >
               {dialog.description}
             </p>
-          ) : null}
+          )}
         </div>
-
       </header>
 
       {/* Content */}
       <div
         className="
-          min-h-0
-          flex-1
-          overflow-y-auto
-          px-4
-          py-5
-          sm:px-6
+          min-h-0 flex-1 overflow-y-auto
+          px-4 py-5 sm:px-6
         "
       >
-        {typeof dialog.text ===
-        "function"
+        {typeof dialog.text === "function"
           ? dialog.text()
           : dialog.text}
       </div>
 
       {/* Actions */}
-      {dialog.disagree ||
-      dialog.agree ? (
+      {(dialog.disagree || dialog.agree) && (
         <footer
           className="
-            flex
-            shrink-0
-            justify-end
-            gap-3
-            border-t
-            border-gray-200
-            px-4
-            py-4
-            dark:border-gray-700
+            flex shrink-0 flex-wrap justify-end gap-3
+            border-t border-plumb-border
+            px-4 py-4 dark:border-plumb-darkBorder
             sm:px-6
           "
         >
-          {dialog.disagree ? (
+          {dialog.disagree && (
             <button
               type="button"
-              onClick={
-                dialog.disagree
-              }
+              onClick={dialog.disagree}
               className={`
-${styles.button.secondary}
-
-                flex
-                min-h-[3rem]
-                items-center
-                justify-center
-                rounded-full
-                border
-                border-gray-300
-                bg-base-bg
-                px-5
-                text-sm
-               
-                font-medium
-                text-white
-                transition
-                hover:border-blueSea
-                hover:text-blueSea
-                focus-visible:outline
-                focus-visible:outline-2
-                focus-visible:outline-offset-2
-                focus-visible:outline-blueSea
-                dark:border-gray-700
-                dark:bg-plumb-surface Dark
-                dark:text-cream
+                ${styles.button.base}
+                ${styles.button.secondary}
+                ${styles.button.large}
               `}
             >
-              {dialog.disagreeText ||
-                "Cancel"}
+              {dialog.disagreeText || "Cancel"}
             </button>
-          ) : null}
+          )}
 
-          {dialog.agree ? (
+          {dialog.agree && (
             <button
               type="button"
-              onClick={
-                dialog.agree
-              }
+              onClick={dialog.agree}
               className={`
-${styles.button.primary}
-
-                flex
-                min-h-[3rem]
-                items-center
-                justify-center
-                rounded-full
-                bg-button-secondary-bg
-                px-5
-                text-sm
-                font-semibold
-                text-white
-                transition
-                hover:brightness-95
-                focus-visible:outline
-                focus-visible:outline-2
-                focus-visible:outline-offset-2
-                focus-visible:outline-blueSea
-                active:scale-[0.99]
+                ${styles.button.base}
+                ${styles.button.primary}
+                ${styles.button.large}
               `}
             >
-              {dialog.agreeText ||
-                "Continue"}
+              {dialog.agreeText || "Continue"}
             </button>
-          ) : null}
+          )}
         </footer>
-      ) : null}
+      )}
     </div>
   );
 }
+
 
 export default Dialog;

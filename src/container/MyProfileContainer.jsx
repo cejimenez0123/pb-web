@@ -494,57 +494,6 @@ function CollectionsSection({
     </section>
   );
 }
-// function CollectionsSection({
-//   profile,
-//   router,
-//   search,
-//   debouncedSearch,
-// }) {
-//   return (
-//     <section>
-//       <div className="border-b border-soft pb-5">
-//         <h2 className="font-serif text-2xl text-gray-900">
-//           Collections
-//         </h2>
-
-//         <p className="mt-1 text-sm text-gray-500">
-//           Places and groups of work I'm part of.
-//         </p>
-//       </div>
-
-//       <div className="mt-6">
-//         <PaginatedList
-//           cacheKey="collections"
-//           params={{ type: "book" }}
-//           fetcher={getMyCollections}
-//           pageSize={PAGE_SIZE}
-//           search={debouncedSearch}
-//           emptyState={
-//             <EmptyState
-//               text={
-//                 search
-//                   ? "No matching collections."
-//                   : "No collections yet."
-//               }
-//             />
-//           }
-//           renderItem={(item) => (
-//             <CollectionRoomCard
-//               key={item.id}
-//               item={item}
-//               profile={profile}
-//               onClick={() =>
-//                 router.push(
-//                   Paths.collection.createRoute(item.id)
-//                 )
-//               }
-//             />
-//           )}
-//         />
-//       </div>
-//     </section>
-//   );
-// }
 
 function CollectionRoomCard({
   item,
@@ -1177,57 +1126,6 @@ function formatRelativeDate(date) {
 
   return formatDate(date);
 }
-// function CollectionsSection({
-//   profile,
-//   router,
-//   search,
-//   debouncedSearch,
-// }) {
-//   return (
-//     <section>
-//       <div className="border-b border-soft pb-5">
-//         <h2 className="font-serif text-2xl text-gray-900">
-//           Collections
-//         </h2>
-
-//         <p className="mt-1 text-sm text-gray-500">
-// Places and groups of work I'm part of.
-//         </p>
-//       </div>
-
-//       <div className="mt-6">
-//         <PaginatedList
-//           cacheKey="collections"
-//           params={{ type: "book" }}
-//           fetcher={getMyCollections}
-//           pageSize={PAGE_SIZE}
-//           search={debouncedSearch}
-//           emptyState={
-//             <EmptyState
-//               text={
-//                 search
-//                   ? "No matching collections."
-//                   : "No collections yet."
-//               }
-//             />
-//           }
-//           renderItem={(item) => (
-//             <ListPill
-//               key={item.id}
-//               item={item}
-//               profile={profile}
-//               onClick={() =>
-//                 router.push(
-//                   Paths.collection.createRoute(item.id)
-//                 )
-//               }
-//             />
-//           )}
-//         />
-//       </div>
-//     </section>
-//   );
-// }
 
 function DetailsSection({
   profile,

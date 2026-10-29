@@ -1,5 +1,5 @@
 
-import { useContext, useRef, useEffect, useState } from "react";
+import { useContext, useRef, useEffect, useState, useCallback } from "react";
 import { useAlert } from "../../core/useAlert.jsx";
 import AlertType from "../../core/AlertType.js";
 import {
@@ -7,22 +7,35 @@ import {
   findWorkshopGroup,
   findWorkshopGroups,
 } from "../../actions/WorkshopActions";
+import {
+  getProfileCollections,
+  getRoomRecommendations,
+  getProfileRecommendations,
+  setCollections,
+} from "../../actions/CollectionActions";
 import { useSelector, useDispatch } from "react-redux";
 import checkResult from "../../core/checkResult";
 import Paths from "../../core/paths";
 import Context from "../../context";
 import check from "../../images/icons/check.svg";
-import { Geolocation } from "@capacitor/geolocation";
 import DeviceCheck from "../../components/DeviceCheck";
-import { IonContent, IonLoading, useIonRouter } from "@ionic/react";
-import { setCurrentPage, setPagesInView } from "../../actions/PageActions";
-import { getProfileRecommendations, setCollections } from "../../actions/CollectionActions";
+import {
+  IonContent,
+  IonLoading,
+  useIonRouter,
+} from "@ionic/react";
+import {
+  setCurrentPage,
+  setPagesInView,
+} from "../../actions/PageActions";
+
 import { useParams } from "react-router";
 import GoogleMapSearch from "../collection/GoogleMapSearch";
 import ExploreList from "../../components/collection/ExploreList";
 import fetchCity from "../../core/fetchCity";
 import { getStory } from "../../actions/StoryActions";
 import usePaginatedResource from "../../core/usePaginatedResource";
+import styles from "../../styles/style.js";
 
 const DEFAULT_LOCATION = {
   latitude: 40.818622458906425,
@@ -33,10 +46,34 @@ const PAGE_Y = "pt-14 pb-20";
 const WRAP = "mx-auto w-full max-w-[52em] px-5";
 const STACK = "space-y-10";
 
-const CARD =
-  "rounded-[1.75rem] border border-earth/70 bg-base-bg shadow-sm dark:border-earth/40 dark:bg-base-bgDark";
+const CARD = `
+  rounded-[1.75rem]
+  border border-plumb-border
+  bg-plumb-elevated shadow-sm
+  dark:border-plumb-darkBorder
+  dark:bg-plumb-dark-surface
+`;
 
 const INNER = "p-6 sm:p-8";
+
+const MUTED_SURFACE = `
+  border border-plumb-border
+  bg-plumb-surface/70
+  dark:border-plumb-darkBorder
+  dark:bg-plumb-dark-paper/70
+`;
+
+const FIELD_SURFACE = `
+  border border-plumb-border
+  bg-plumb-elevated
+  dark:border-plumb-darkBorder
+  dark:bg-plumb-dark-surface
+`;
+
+const EYEBROW = `
+  ${styles.text.metadata}
+  font-semibold uppercase tracking-[0.14em]
+`;
 
 const WorkshopContainer = () => {
   const dispatch = useDispatch();
@@ -51,8 +88,13 @@ const WorkshopContainer = () => {
   const [isGlobal, setIsGlobal] = useState(true);
   const [location, setLocation] = useState(DEFAULT_LOCATION);
 
-  const { currentProfile } = useSelector((state) => state.users);
-  const page = useSelector((state) => state.pages.pageInView);
+  const { currentProfile } = useSelector(
+    (state) => state.users
+  );
+
+  const page = useSelector(
+    (state) => state.pages.pageInView
+  );
 
   const { showAlert } = useAlert();
 
@@ -62,22 +104,55 @@ const WorkshopContainer = () => {
    * --------------------------------------------------------------------------
    */
 
-  const {
-    items: communities,
-    page: communityPage,
-    setPage: setCommunityPage,
-    totalPages: communityTotalPages,
-    totalCount: communityTotal,
-  } = usePaginatedResource({
-    cacheKey: "profile:recommendations",
-    fetcher: getProfileRecommendations,
-    pageSize: 10,
-    enabled: !!currentProfile?.id,
-    select: (res) => ({
-      items: res.groups,
-      totalCount: res.totalCount,
-    }),
-  });
+const selectCollections = useCallback(
+  (res) => ({
+    items: res?.collections ?? [],
+    totalCount: res?.totalCount ?? 0,
+  }),
+  []
+);
+const {
+  items: roomItems,
+  isLoading: roomsLoading,
+} = usePaginatedResource({
+  cacheKey: "profile-room-recommendations",
+  fetcher: getRoomRecommendations,
+  pageSize: 10,
+  enabled: !!currentProfile?.id,
+  select: (res) => ({
+    items: res?.collections ?? [],
+    totalCount: res?.totalCount ?? 0,
+  }),
+});
+// const {
+//   items: roomItems,
+//   isLoading: roomsLoading,
+// } = usePaginatedResource({
+//   cacheKey: "profile-rooms",
+//   fetcher: getProfileCollections,
+//   params: {
+//     isWorkshop: false,
+//   },
+//   pageSize: 10,
+//   select: selectCollections,
+// });
+
+const {
+  items: workshopItems,
+  isLoading: workshopsLoading,
+} = usePaginatedResource({
+  cacheKey: "profile-workshops",
+  fetcher: getProfileCollections,
+  params: {
+    isWorkshop: true,
+  },
+  pageSize: 10,
+  select: selectCollections,
+});
+
+
+
+
 
   /*
    * --------------------------------------------------------------------------
@@ -247,7 +322,8 @@ const WorkshopContainer = () => {
       }
 
       if (permStatus.location === "granted") {
-        const { coords } = await Geolocation.getCurrentPosition();
+        const { coords } =
+          await Geolocation.getCurrentPosition();
 
         const name = await fetchCity({
           latitude: coords.latitude,
@@ -321,7 +397,9 @@ const WorkshopContainer = () => {
         (payload) => {
           if (payload?.collection) {
             router.push(
-              Paths.collection.createRoute(payload.collection.id)
+              Paths.collection.createRoute(
+                payload.collection.id
+              )
             );
           }
         },
@@ -340,8 +418,7 @@ const WorkshopContainer = () => {
   /*
    * Legacy page state reset.
    *
-   * Keep this for other parts of the app that may still consume PageActions.
-   * The visible pagination itself is handled by usePaginatedResource.
+   * Retained for other parts of the app that consume PageActions.
    */
 
   useEffect(() => {
@@ -361,43 +438,59 @@ const WorkshopContainer = () => {
   }, [isGlobal, location, radius, dispatch]);
 
   const isLocationReady =
-    isGlobal || (location?.latitude && location?.longitude);
+    isGlobal ||
+    (location?.latitude && location?.longitude);
 
   return (
-    <IonContent className="page-content" fullscreen>
-      <div className={`page-content dark:bg-base-bgDark ${PAGE_Y}`}>
+      <IonContent
+
+fullscreen
+>
+  <div className={styles.about.page+" pb-20"}>
+
         <div className={WRAP}>
           <div className={STACK}>
-
-            {/* ----------------------------------------------------------------
-                Intro
-            ---------------------------------------------------------------- */}
+            {/* Intro */}
 
             <section className="px-1 pt-2">
               <div className="mb-3 flex items-center gap-2">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-600" />
-                <span className="text-xs font-semibold uppercase tracking-[0.16em] text-text-secondary">
+                <span
+                  aria-hidden="true"
+                  className="h-1.5 w-1.5 rounded-full bg-plumb-mint"
+                />
+
+                <span className={EYEBROW}>
                   Workshop
                 </span>
               </div>
 
-              <h1 className="max-w-xl text-3xl font-semibold leading-tight tracking-[-0.025em] text-text-primary dark:text-cream sm:text-4xl">
+              <h1
+                className={`
+                  ${styles.text.display}
+                  max-w-xl
+                  text-3xl sm:text-4xl
+                  leading-tight tracking-[-0.025em]
+                `}
+              >
                 Make space for the work.
               </h1>
 
-              <p className="mt-3 max-w-lg text-base leading-7 text-text-secondary dark:text-emerald-100/70">
+              <p
+                className={`
+                  ${styles.text.readable}
+                  mt-3 max-w-lg
+                  text-base leading-7
+                `}
+              >
                 Find a room of writers, bring something unfinished, and see
                 what happens when you let other people into the process.
               </p>
             </section>
 
-            {/* ----------------------------------------------------------------
-                Workshop entry card
-            ---------------------------------------------------------------- */}
+            {/* Workshop entry card */}
 
             <section className={CARD}>
               <div className={INNER}>
-
                 {/* Context from story */}
 
                 {page?.id && (
@@ -410,11 +503,16 @@ const WorkshopContainer = () => {
 
                 <div className="flex items-center justify-between gap-4">
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-text-secondary">
+                    <p className={EYEBROW}>
                       Your room
                     </p>
 
-                    <h2 className="mt-1 text-xl font-semibold text-text-primary dark:text-cream">
+                    <h2
+                      className={`
+                        ${styles.text.title}
+                        mt-1 text-xl
+                      `}
+                    >
                       {currentProfile?.username
                         ? currentProfile.username.toLowerCase()
                         : "Writer"}
@@ -422,15 +520,19 @@ const WorkshopContainer = () => {
                   </div>
 
                   <div
-                    className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${
-                      isLocationReady
-                        ? "bg-emerald-600"
-                        : "bg-yellow-500"
-                    }`}
+                    className={`
+                      flex h-10 w-10 shrink-0
+                      items-center justify-center rounded-full
+                      ${
+                        isLocationReady
+                          ? "bg-plumb-mint"
+                          : "bg-amber-500 dark:bg-amber-600"
+                      }
+                    `}
                   >
                     <img
                       src={check}
-                      alt="Ready"
+                      alt={isLocationReady ? "Ready" : "Location needed"}
                       className="h-5 w-5"
                     />
                   </div>
@@ -438,18 +540,18 @@ const WorkshopContainer = () => {
 
                 {/* Divider */}
 
-                <div className="my-7 h-px bg-earth/60 dark:bg-earth/30" />
+                <div className="my-7 h-px bg-plumb-border dark:bg-plumb-darkBorder" />
 
                 {/* Global / Local */}
 
                 <div>
                   <div className="flex items-center justify-between gap-5">
                     <div>
-                      <p className="text-base font-medium text-text-primary dark:text-cream">
+                      <p className={`${styles.text.body} font-medium`}>
                         Where should we look?
                       </p>
 
-                      <p className="mt-1 text-sm leading-6 text-text-secondary dark:text-emerald-100/60">
+                      <p className={`${styles.text.muted} mt-1 leading-6`}>
                         {isGlobal
                           ? "Anywhere writers are gathering."
                           : "Writers near the place you choose."}
@@ -458,14 +560,30 @@ const WorkshopContainer = () => {
 
                     <input
                       type="checkbox"
-                      className="toggle toggle-success shrink-0"
+                      className="
+                        toggle toggle-success shrink-0
+                        focus-visible:outline-none
+                        focus-visible:ring-2
+                        focus-visible:ring-plumb-focus
+                        focus-visible:ring-offset-2
+                        focus-visible:ring-offset-plumb-elevated
+                        dark:focus-visible:ring-offset-plumb-dark-surface
+                      "
                       checked={isGlobal}
                       onChange={clickGlobal}
                       aria-label="Toggle global or local workshops"
                     />
                   </div>
 
-                  <div className="mt-4 inline-flex items-center rounded-full border border-earth/70 bg-base-soft px-3 py-1.5 text-xs font-medium text-text-secondary dark:border-earth/40">
+                  <div
+                    className={`
+                      mt-4 inline-flex items-center
+                      rounded-full px-3 py-1.5
+                      text-xs font-medium
+                      ${MUTED_SURFACE}
+                      ${styles.text.muted}
+                    `}
+                  >
                     {isGlobal ? "Global" : "Local"}
                   </div>
                 </div>
@@ -473,13 +591,23 @@ const WorkshopContainer = () => {
                 {/* Local controls */}
 
                 {!isGlobal && (
-                  <div className="mt-7 rounded-2xl border border-earth/60 bg-base-soft/50 p-5 dark:border-earth/30 dark:bg-base-bgDark/50">
+                  <div
+                    className={`
+                      ${MUTED_SURFACE}
+                      mt-7 rounded-2xl p-5
+                    `}
+                  >
                     <div className="mb-5">
-                      <p className="text-sm font-semibold text-text-primary dark:text-cream">
+                      <p
+                        className={`
+                          ${styles.text.body}
+                          font-semibold
+                        `}
+                      >
                         Choose your area
                       </p>
 
-                      <p className="mt-1 text-sm leading-6 text-text-secondary dark:text-emerald-100/60">
+                      <p className={`${styles.text.muted} mt-1 leading-6`}>
                         Set a place and decide how far you're willing to go.
                       </p>
                     </div>
@@ -489,23 +617,45 @@ const WorkshopContainer = () => {
                         onLocationSelected={setLocation}
                       />
 
-                      <div className="flex items-center justify-between rounded-xl border border-earth/60 bg-base-bg px-4 py-3 dark:border-earth/30 dark:bg-base-bgDark">
-                        <span className="text-sm text-text-secondary dark:text-cream/70">
+                      <div
+                        className={`
+                          ${FIELD_SURFACE}
+                          flex items-center justify-between
+                          rounded-xl px-4 py-3
+                        `}
+                      >
+                        <label
+                          htmlFor="workshop-radius"
+                          className={styles.text.muted}
+                        >
                           Radius
-                        </span>
+                        </label>
 
                         <div className="flex items-center gap-2">
                           <input
+                            id="workshop-radius"
                             type="number"
                             min="1"
                             value={radius}
                             onChange={(e) =>
                               setRadius(e.target.value)
                             }
-                            className="w-16 bg-transparent text-right text-sm font-medium text-text-primary outline-none dark:text-cream"
+                            className="
+                              w-16 rounded-lg
+                              border border-plumb-border
+                              bg-plumb-canvas
+                              px-2 py-1 text-right text-sm
+                              text-plumb-ink
+                              focus:outline-none
+                              focus-visible:ring-2
+                              focus-visible:ring-plumb-focus
+                              dark:border-plumb-darkBorder
+                              dark:bg-plumb-dark-canvas
+                              dark:text-plumb-darkText
+                            "
                           />
 
-                          <span className="text-sm text-text-secondary">
+                          <span className={styles.text.muted}>
                             mi
                           </span>
                         </div>
@@ -517,35 +667,50 @@ const WorkshopContainer = () => {
                 {/* Join */}
 
                 <button
+                  type="button"
                   onClick={handleGroupClick}
                   disabled={!isLocationReady || loading}
-                  className="mt-7 w-full rounded-full bg-emerald-600 px-6 py-4 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-emerald-700 dark:hover:bg-emerald-600"
+                  className={`
+                    ${styles.button.base}
+                    ${styles.button.primary}
+                    ${styles.button.large}
+                    mt-7 w-full
+                  `}
                 >
                   Join a Workshop
                 </button>
 
-                <p className="mt-3 text-center text-xs leading-5 text-text-secondary dark:text-emerald-100/50">
+                <p
+                  className={`
+                    ${styles.text.metadata}
+                    mt-3 text-center leading-5
+                  `}
+                >
                   You don't need a finished piece. Bring whatever you're
                   working on.
                 </p>
               </div>
             </section>
 
-            {/* ----------------------------------------------------------------
-                Discovery
-            ---------------------------------------------------------------- */}
+            {/* Discovery */}
 
             <section>
               <div className="mb-5 px-1">
-                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-text-secondary">
+                <p className={EYEBROW}>
                   Explore
                 </p>
 
-                <h2 className="mt-1 text-2xl font-semibold tracking-[-0.02em] text-text-primary dark:text-cream">
+                <h2
+                  className={`
+                    ${styles.text.heading}
+                    mt-1 text-2xl
+                    tracking-[-0.02em]
+                  `}
+                >
                   Find your people.
                 </h2>
 
-                <p className="mt-2 max-w-xl text-sm leading-6 text-text-secondary dark:text-emerald-100/60">
+                <p className={`${styles.text.muted} mt-2 max-w-xl leading-6`}>
                   Browse libraries and workshops created by writers in the
                   community.
                 </p>
@@ -553,24 +718,17 @@ const WorkshopContainer = () => {
 
               <div className="space-y-10">
                 <ExploreList
-                  label="Libraries"
-                  items={communities}
-                  page={communityPage}
-                  totalPages={communityTotalPages}
-                  setPage={setCommunityPage}
-                  totalCount={communityTotal}
-                  pageSize={10}
-                />
+                label="Room"
+  items={roomItems}
+  isLoading={roomsLoading}
+/>
 
-                <ExploreList
-                  label="Workshops"
-                  items={workshops}
-                  totalPages={workshopTotalPages}
-                  page={workshopPage}
-                  setPage={setWorkshopPage}
-                  totalCount={workshopTotal}
-                  pageSize={10}
-                />
+<ExploreList
+label="Workshops"
+  items={workshopItems}
+  isLoading={workshopsLoading}
+/>
+  
               </div>
             </section>
           </div>
@@ -588,10 +746,9 @@ const WorkshopContainer = () => {
 
 export default WorkshopContainer;
 
-
 /*
 |--------------------------------------------------------------------------
-| Workshop Context
+| WORKSHOP CONTEXT
 |--------------------------------------------------------------------------
 */
 
@@ -602,29 +759,53 @@ const WorkshopContextCard = ({ page }) => {
     page.title?.length > 40
       ? `${page.title.slice(0, 47)}...`
       : page.title?.length > 0
-      ? page.title
-      : "Untitled Story";
+        ? page.title
+        : "Untitled Story";
 
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-earth/60 bg-base-soft/60 p-5 dark:border-earth/30 dark:bg-base-bgDark/60">
-      <div className="absolute left-0 top-0 h-full w-1 bg-emerald-600" />
+    <div
+      className={`
+        relative overflow-hidden rounded-2xl
+        ${MUTED_SURFACE}
+        p-5
+      `}
+    >
+      <div
+        aria-hidden="true"
+        className="
+          absolute left-0 top-0 h-full w-1
+          bg-plumb-mint
+        "
+      />
 
       <div className="pl-3">
         <div className="flex items-center justify-between gap-4">
-          <span className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-text-secondary">
+          <span className={EYEBROW}>
             Workshop context
           </span>
 
-          <span className="text-[0.65rem] font-medium uppercase tracking-[0.1em] text-text-brand">
+          <span
+            className="
+              text-[0.65rem] font-medium uppercase
+              tracking-[0.1em]
+              text-plumb-mintHover
+              dark:text-plumb-mintLight
+            "
+          >
             Active
           </span>
         </div>
 
-        <h3 className="mt-3 text-lg font-semibold leading-snug text-text-primary dark:text-cream">
+        <h3
+          className={`
+            ${styles.text.subheading}
+            mt-3 text-lg leading-snug
+          `}
+        >
           {title}
         </h3>
 
-        <p className="mt-2 text-xs leading-5 text-text-secondary dark:text-emerald-100/50">
+        <p className={`${styles.text.muted} mt-2 text-xs leading-5`}>
           Bring this piece into the room and let your voice meet other voices.
         </p>
       </div>

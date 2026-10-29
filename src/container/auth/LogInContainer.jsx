@@ -15,6 +15,7 @@ import { Capacitor } from "@capacitor/core";
 import { useDialog } from "../../domain/usecases/useDialog.jsx";
 
 import useTermsAcceptance from "../../core/useTermsAcceptance.jsx";
+import styles from "../../styles/style.js";
 export default function LogInContainer({ currentProfile }) {
   const { showAlert, closeAlert, showPrompt } = useAlert();
   const router = useIonRouter();
@@ -217,18 +218,17 @@ const promptTermsAcceptance = useTermsAcceptance();
         {/* Header */}
         <header className="space-y-3 text-center">
 
-          <p className="text-xs uppercase tracking-[0.14em] text-soft">
+          {/* <p lassName={styles.text.display}>
             Welcome back
-          </p>
+          </p> */}
 
-          <h1 className="mont-medium text-4xl md:text-5xl text-emerald-800 tracking-tight">
-            Log in
-          </h1>
+        <h1 className={styles.text.display}>
+  Log in
+</h1>
 
-          <p className="text-sm md:text-base text-emerald-800/65 leading-relaxed max-w-sm mx-auto">
-            Return to your writing, your people, and the work
-            you’re making.
-          </p>
+<p className={styles.text.body}>
+  Return to your writing, your people, and the work you’re making.
+</p>
         </header>
 
         {/* Login form */}
@@ -240,14 +240,24 @@ const promptTermsAcceptance = useTermsAcceptance();
 
 
           {/* Email */}
-          <div className="space-y-2">
+       <div className="mt-6 space-y-2">
             <label
               htmlFor="login-email"
-              className="block text-sm text-emerald-800"
+      className={styles.text.body}
             >
               Email
             </label>
-
+  <div
+    className="
+      relative flex w-full min-w-0 items-center
+      rounded-xl border border-plumb-borderStrong
+      bg-paper transition-colors
+      focus-within:border-plumb-focus
+      focus-within:ring-2 focus-within:ring-plumb-focus/30
+      dark:border-plumb-darkBorderStrong
+      dark:bg-plumb-dark-surface
+    "
+  >
             <input
               id="login-email"
               type="text"
@@ -256,115 +266,79 @@ const promptTermsAcceptance = useTermsAcceptance();
                 setEmail(e.target.value.toLowerCase())
               }
               placeholder="example@email.com"
-              className="
-                w-[100%]
-                bg-transparent
-                border
-              border-emerald-800/80
-                rounded-xl
-                px-4
-                py-3
-                text-emerald-800
-                placeholder:text-emerald-800/35
-                focus:outline-none
-                focus:border-soft
-                focus:ring-1
-                focus:ring-soft/40
-                text-base
-                transition
-              "
+             className={`${styles.input} w-[100%] min-w-0 flex-1 w-full rounded-xl max-w-none`}
+     
             />
-          </div>
-
-          {/* Password */}
-          <div className="space-y-2">
-            <label
-              htmlFor="login-password"
-              className="block text-sm text-emerald-800"
-            >
-              Password
-            </label>
-
-            <div
-              className="
-                relative
-                flex
-                items-center
-                 bg-transparent
-                border
-                border-emerald-800/80
-                rounded-xl
-                focus-within:border-soft
-                focus-within:ring-1
-                focus-within:ring-soft/40
-                transition
-              "
-            >
-              <input
-                id="login-password"
-                type={showPassword ? "text" : "password"}
-                value={password}
-                onInput={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="
-                  w-full
-                 
-                  border-0
-                  rounded-xl
-                  px-4
-                  py-3
-                  pr-16
-                bg-transparent
-                  text-emerald-800
-                  placeholder:text-emerald-800/35
-                  focus:outline-none
-                  text-base
-                "
-              />
-
-              <button
-                type="button"
-                onClick={() =>
-                  setShowPassword(!showPassword)
-                }
-                className="
-                  absolute
-                  right-3
-           
-                  text-xs
-                  text-soft
-                  hover:text-emerald-700
-                  transition-colors
-                  px-2
-                  py-1
-                "
-              >
-                {showPassword ? "Hide" : "Show"}
-              </button>
             </div>
           </div>
+{/* Password */}
+<div className="mt-6 space-y-2">
+  <label
+    htmlFor="login-password"
+    className={styles.text.body}
+  >
+    Password
+  </label>
+
+  <div
+    className="
+      relative flex w-full min-w-0 items-center
+      rounded-xl border border-plumb-borderStrong
+      bg-paper transition-colors
+      focus-within:border-plumb-focus
+      focus-within:ring-2 focus-within:ring-plumb-focus/30
+      dark:border-plumb-darkBorderStrong
+      dark:bg-plumb-dark-surface
+    "
+  >
+    <input
+      id="login-password"
+      type={showPassword ? "text" : "password"}
+      value={password}
+      onChange={(e) => setPassword(e.target.value)}
+      placeholder="••••••••"
+      autoComplete="current-password"
+      className="
+        min-w-0 flex-1 w-full
+        border-0 bg-transparent
+        rounded-xl py-3 pl-4 pr-20
+        text-plumb-ink placeholder:text-plumb-muted
+        dark:text-plumb-darkText dark:placeholder:text-plumb-darkMuted
+        focus:outline-none focus:ring-0
+      "
+    />
+
+    <button
+      type="button"
+      onClick={() => setShowPassword((visible) => !visible)}
+      aria-label={showPassword ? "Hide password" : "Show password"}
+      aria-pressed={showPassword}
+      className={`
+      
+        ${styles.button.ghost}
+        px-3 py-2 text-sm
+      `}
+    >
+      {showPassword ? "Hide" : "Show"}
+    </button>
+  </div>
+</div>
+
 
           {/* Primary action */}
           <button
             type="button"
             onClick={handleLogIn}
             disabled={pending}
-            className="
-              w-full
-              py-3
-              mt-2
-              rounded-full
-              bg-emerald-800
-              text-white
-              text-base
-              border
-              border-soft
-              transition-all
-              duration-200
-              hover:bg-emerald-700
-              disabled:opacity-50
-              disabled:cursor-not-allowed
-            "
+              className={`
+                mt-4
+    ${styles.button.base}
+    ${styles.button.primary}
+    ${styles.button.large}
+    w-[100%]
+  `}
+
+   
           >
             {pending ? "Logging in..." : "Log In"}
           </button>
@@ -374,7 +348,10 @@ const promptTermsAcceptance = useTermsAcceptance();
         <div className="flex items-center gap-4">
           <div className="h-px flex-1 bg-emerald-800/15" />
 
-          <span className="text-xs text-emerald-800/45">
+          <span 
+          className={styles.text.display}
+          // className="text-xs text-emerald-800/45"
+          >
             or
           </span>
 
@@ -416,18 +393,18 @@ const promptTermsAcceptance = useTermsAcceptance();
         </div>
 
         {/* Secondary actions */}
-        <div className="pt-1 text-center space-y-3">
+        <div className="pt-1 text-cente flex flex-col space-y-3">
           <button
             type="button"
             onClick={() => router.push(Paths.onboard)}
-            className="
-              block
-              mx-auto
-              text-sm
-              text-soft
-              hover:text-emerald-700
-              transition-colors
-            "
+              className={`
+    ${styles.button.base}
+    ${styles.button.ghost}
+    ${styles.button.medium}
+   w-72
+    mx-auto
+  `}
+      
           >
             First time here?
           </button>
@@ -435,14 +412,8 @@ const promptTermsAcceptance = useTermsAcceptance();
           <button
             type="button"
             onClick={handleForgotPasswordDialog}
-            className="
-              block
-              mx-auto
-              text-xs
-              text-emerald-800/55
-              hover:text-emerald-800
-              transition-colors
-            "
+            className={styles.button.primary+" w-72 mx-auto"}
+      
           >
             Forgot password?
           </button>

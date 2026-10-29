@@ -104,6 +104,35 @@ import { Preferences } from "@capacitor/preferences";
 
 //   return res.data;
 // }
+async getProfileCollections({
+  skip = 0,
+  take = 10,
+  type,
+  search,
+  isWorkshop,
+  scope,
+} = {}) {
+  const headers = await this.getAuthHeaders();
+
+  const res = await axios.get(
+    `${this.url}/profile/protected`,
+    {
+      headers,
+      params: {
+        skip,
+        take,
+        ...(type ? { type } : {}),
+        ...(search ? { search } : {}),
+        ...(isWorkshop !== undefined
+          ? { isWorkshop }
+          : {}),
+        ...(scope ? { scope } : {}),
+      },
+    }
+  );
+
+  return res.data;
+}
 async getMyCollections({
   skip = 0,
   take = 20,
@@ -393,6 +422,7 @@ async fetchCollectionFeedSubCollections({ id, skip = 0, take = 20 }) {
   });
   return res.data; // { items: Collection[], totalCount: number }
 }
+
 async getProfileRecommendations({ skip = 0, take = 10, type } = {}) {
     const headers = await this.getAuthHeaders();
     const res = await axios.get(`${this.url}/recommendations/profile`, {
@@ -401,5 +431,19 @@ async getProfileRecommendations({ skip = 0, take = 10, type } = {}) {
     });
     return res.data;
 }
+async getRoomRecommendations({ skip = 0, take = 10 } = {}) {
+  const headers = await this.getAuthHeaders();
+
+  const res = await axios.get(
+    `${this.url}/recommendations/rooms`,
+    {
+      headers,
+      params: { skip, take },
+    }
+  );
+
+  return res.data;
+}
+
 }
 export default new CollectionRepo()

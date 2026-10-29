@@ -1,9 +1,6 @@
-
-
 import React, {
   useContext,
   useEffect,
-  useMemo,
   useState,
 } from "react";
 
@@ -20,6 +17,7 @@ import {
 } from "../../actions/CollectionActions";
 
 import { useDispatch, useSelector } from "react-redux";
+import { IonImg } from "@ionic/react";
 
 import bookmarkfill from "../../images/bookmarkfill.svg";
 import bookmarkoutline from "../../images/bookmarkadd.svg";
@@ -29,8 +27,6 @@ import Paths from "../../core/paths";
 
 import ProfileCircle from "../profile/ProfileCircle";
 import Context from "../../context";
-
-import { sendGAEvent } from "../../core/ga4";
 import ShareList from "./ShareList";
 
 import { useIonRouter } from "@ionic/react";
@@ -39,6 +35,45 @@ import computePermissions from "../../core/compusePermissions";
 import DataElement from "./DataElement";
 import { useAlert } from "../../core/useAlert";
 import AlertType from "../../core/AlertType";
+import styles from "../../styles/style";
+import StoryPreview from "./StoryPreview";
+import { PageType } from "../../core/constants";
+
+const DEFAULT_PREVIEW_LENGTH = 500;
+
+const getPreviewLength = (value) => {
+  const length = Number(value);
+
+  return Number.isFinite(length) && length > 0
+    ? Math.floor(length)
+    : DEFAULT_PREVIEW_LENGTH;
+};
+
+const theme = styles.dashboardItem;
+
+/**
+ * Get the readable text length without counting HTML markup.
+ * DataElement remains responsible for rendering the actual story content.
+ */
+const getStoryTextLength = (data) => {
+  if (typeof data !== "string") {
+    return 0;
+  }
+
+  return data
+    .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, " ")
+    .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, " ")
+    .replace(/<[^>]*>/g, " ")
+    .replace(/&nbsp;|&#160;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/&lt;/gi, "<")
+    .replace(/&gt;/gi, ">")
+    .replace(/&quot;|&#34;/gi, '"')
+    .replace(/&#39;|&apos;/gi, "'")
+    .replace(/&#\d+;|&#x[\da-f]+;/gi, " ")
+    .replace(/\s+/g, " ")
+    .trim().length;
+};
 
 function DashboardItem({
   page,
@@ -52,12 +87,6 @@ function DashboardItem({
   const [likeFound, setLikeFound] = useState(null);
   const [bookmarked, setBookmarked] = useState(null);
 
-  /*
-   * Future permission-request UI state.
-   *
-   * This is deliberately local for now because the actual
-   * permission-request endpoint has not been implemented.
-   */
   const [permissionRequestState, setPermissionRequestState] =
     useState("idle");
 
@@ -75,21 +104,8 @@ function DashboardItem({
    * -------------------------------------------------------------------------
    * PRIVACY / PERMISSIONS
    * -------------------------------------------------------------------------
-   *
-   * Story ownership is explicitly determined from the author as well as
-   * the possible profileId / authorId fields.
-   *
-   * This is important because a Story's author is the person who should
-   * always be able to see their own Story.
    */
   const { canSee } = computePermissions(page, currentProfile, {
-    /*
-     * Story owner.
-     *
-     * author.id is the strongest semantic signal here.
-     * profileId / authorId are retained for compatibility with different
-     * Story payloads.
-     */
     isOwner: (story, profile) => {
       if (!story || !profile) return false;
 
@@ -100,65 +116,14 @@ function DashboardItem({
       );
     },
 
-    /*
-     * Story-specific access list.
-     */
-    getAccessList: (story) =>
-      story.betaReaders ?? [],
-
-    getAccessRole: (entry) =>
-      entry.permission,
-
-    isPrivate: (story) =>
-      story.isPrivate,
-
-    /*
-     * Stories in this dashboard do not automatically become open
-     * collaboration resources.
-     */
+    getAccessList: (story) => story.betaReaders ?? [],
+    getAccessRole: (entry) => entry.permission,
+    isPrivate: (story) => story.isPrivate,
     isOpen: () => false,
 
-    canWriteRoles: [
-      "commenter",
-      "editor",
-    ],
-
-    canEditRoles: [
-      "editor",
-    ],
+    canWriteRoles: ["commenter", "editor"],
+    canEditRoles: ["editor"],
   });
-
-  /*
-   * -------------------------------------------------------------------------
-   * STORY SOURCE
-   * -------------------------------------------------------------------------
-   */
-  const storySource = useMemo(() => {
-    const pathname =
-      router.routeInfo?.pathname || "";
-
-    if (pathname.startsWith("/profile")) {
-      return "profile_page";
-    }
-
-    if (pathname.startsWith("/dashboard")) {
-      return "dashboard";
-    }
-
-    if (pathname.startsWith("/discovery")) {
-      return "discovery";
-    }
-
-    if (pathname.startsWith("/collection")) {
-      return "collection";
-    }
-
-    if (pathname.startsWith("/library")) {
-      return "library";
-    }
-
-    return "unknown";
-  }, [router.routeInfo?.pathname]);
 
   /*
    * -------------------------------------------------------------------------
@@ -175,9 +140,7 @@ function DashboardItem({
         (ptc) => ptc?.type === "archive"
       );
 
-    setArchive(
-      archivePtc?.collection || null
-    );
+    setArchive(archivePtc?.collection || null);
   };
 
   /*
@@ -187,25 +150,18 @@ function DashboardItem({
    */
   useEffect(() => {
     if (!currentProfile?.id || !page) {
+      setLikeFound(null);
+      setBookmarked(null);
       return;
     }
 
-    /*
-     * Like
-     */
-    if (currentProfile.likedStories) {
-      const found =
-        currentProfile.likedStories.find(
-          (like) =>
-            like?.storyId === page.id
-        );
+    const foundLike =
+      currentProfile.likedStories?.find(
+        (like) => like?.storyId === page.id
+      );
 
-      setLikeFound(found ?? null);
-    }
+    setLikeFound(foundLike ?? null);
 
-    /*
-     * Bookmarks
-     */
     const bookmarkCollections =
       currentProfile.profileToCollections || [];
 
@@ -216,8 +172,7 @@ function DashboardItem({
 
     const archiveStc =
       archivePtc?.collection?.storyIdList?.find(
-        (story) =>
-          story.storyId === page.id
+        (story) => story.storyId === page.id
       );
 
     const homePtc =
@@ -227,22 +182,19 @@ function DashboardItem({
 
     const homeStc =
       homePtc?.collection?.storyIdList?.find(
-        (story) =>
-          story.storyId === page.id
+        (story) => story.storyId === page.id
       );
 
     setBookmarked(
       archiveStc
         ? {
             ...archiveStc,
-            collectionId:
-              archivePtc.collectionId,
+            collectionId: archivePtc.collectionId,
           }
         : homeStc
         ? {
             ...homeStc,
-            collectionId:
-              homePtc.collectionId,
+            collectionId: homePtc.collectionId,
           }
         : null
     );
@@ -262,25 +214,21 @@ function DashboardItem({
     }
 
     if (likeFound) {
+      const previousLike = likeFound;
       setLikeFound(null);
 
       dispatch(
         deletePageApproval({
-          id: likeFound.id,
+          id: previousLike.id,
         })
       ).then((res) =>
         checkResult(
           res,
-          () =>
-            sendGAEvent(
-              "story_unlike",
-              {
-                story_id: page.id,
-                source: storySource,
-              }
-            ),
-          (err) =>
-            console.error(err)
+          () => {},
+          (err) => {
+            setLikeFound(previousLike);
+            console.error(err);
+          }
         )
       );
 
@@ -298,26 +246,17 @@ function DashboardItem({
       checkResult(
         res,
         (payload) => {
-          sendGAEvent(
-            "story_like",
-            {
-              story_id: page.id,
-              source: storySource,
-            }
-          );
-
           const found =
             payload.profile?.likedStories?.find(
-              (like) =>
-                like?.storyId === page.id
+              (like) => like?.storyId === page.id
             );
 
-          setLikeFound(
-            found ?? true
-          );
+          setLikeFound(found ?? true);
         },
-        (err) =>
-          console.error(err)
+        (err) => {
+          setLikeFound(null);
+          console.error(err);
+        }
       )
     );
   };
@@ -329,6 +268,7 @@ function DashboardItem({
    */
   const handleBookmark = (event) => {
     event?.preventDefault();
+    event?.stopPropagation();
 
     if (!currentProfile) {
       return setError("Please Sign Up");
@@ -347,17 +287,11 @@ function DashboardItem({
         (ptc) => ptc?.type === "home"
       );
 
-    /*
-     * Remove bookmark.
-     */
     if (bookmarked) {
       dispatch(
         deleteStoryFromCollection({
-          storyId:
-            bookmarked.storyId ||
-            page.id,
-          collectionId:
-            bookmarked.collectionId,
+          storyId: bookmarked.storyId || page.id,
+          collectionId: bookmarked.collectionId,
         })
       ).then((res) =>
         checkResult(
@@ -368,8 +302,7 @@ function DashboardItem({
           },
           (err) =>
             setError(
-              "Error removing bookmark: " +
-                err.message
+              "Error removing bookmark: " + err.message
             )
         )
       );
@@ -377,12 +310,8 @@ function DashboardItem({
       return;
     }
 
-    /*
-     * Preserve existing behavior:
-     * Archive first, then Home.
-     */
-    const targetPtc =
-      archivePtc || homePtc;
+    // Preserve the existing preference: Archive first, then Home.
+    const targetPtc = archivePtc || homePtc;
 
     if (!targetPtc?.collectionId) {
       return;
@@ -400,60 +329,41 @@ function DashboardItem({
         (payload) => {
           const stc =
             payload.collection?.storyIdList?.find(
-              (story) =>
-                story.storyId === page.id
+              (story) => story.storyId === page.id
             );
 
           setBookmarked(
             stc
               ? {
                   ...stc,
-                  collectionId:
-                    targetPtc.collectionId,
+                  collectionId: targetPtc.collectionId,
                 }
               : null
           );
 
-          setSuccess(
-            "Added Successfully"
-          );
-
-          sendGAEvent(
-            "story_bookmark",
-            {
-              story_id: page.id,
-              source: storySource,
-            }
-          );
+          setSuccess("Added Successfully");
         },
-        () =>
-          setError(
-            "Error Bookmarking"
-          )
+        () => setError("Error Bookmarking")
       )
     );
   };
 
   /*
    * -------------------------------------------------------------------------
-   * OPEN STORY / COMMENT
+   * OPEN STORY
    * -------------------------------------------------------------------------
    */
-  const handleClickComment = () => {
-    if (!page) {
+  const handleClickComment = (event) => {
+    event?.preventDefault();
+    event?.stopPropagation();
+
+    if (!page?.id) {
       return;
     }
 
-    sendGAEvent(
-      "story_review_open",
-      {
-        story_id: page.id,
-        source: storySource,
-      }
-    );
-
     router.push(
-      Paths.page.createRoute(page.id)
+      Paths.page.createRoute(page.id),
+      "forward"
     );
   };
 
@@ -462,7 +372,10 @@ function DashboardItem({
    * SHARE
    * -------------------------------------------------------------------------
    */
-  const onClickShare = () => {
+  const onClickShare = (event) => {
+    event?.preventDefault();
+    event?.stopPropagation();
+
     getArchive();
 
     openDialog({
@@ -491,50 +404,23 @@ function DashboardItem({
 
   /*
    * -------------------------------------------------------------------------
-   * FUTURE PERMISSION REQUEST
+   * PERMISSION REQUEST
    * -------------------------------------------------------------------------
    *
-   * This is only the UI seam for now.
+   * UI-only placeholder until the request endpoint exists.
    */
   const handleRequestPermission = () => {
     if (!currentProfile) {
       return showAlert({
-        message:
-          "Please Sign Up to Request Access",
+        message: "Please Sign Up to Request Access",
         type: AlertType.success,
       });
     }
 
-    setPermissionRequestState(
-      "pending"
-    );
+    setPermissionRequestState("pending");
 
-    sendGAEvent(
-      "story_permission_request_start",
-      {
-        story_id: page.id,
-        source: storySource,
-      }
-    );
-
-    /*
-     * Temporary UI-only state.
-     *
-     * Replace this with the actual permission request
-     * dispatch once the backend exists.
-     */
     setTimeout(() => {
-      setPermissionRequestState(
-        "requested"
-      );
-
-      sendGAEvent(
-        "story_permission_request_ui",
-        {
-          story_id: page.id,
-          source: storySource,
-        }
-      );
+      setPermissionRequestState("requested");
     }, 300);
   };
 
@@ -546,364 +432,231 @@ function DashboardItem({
   if (!page) {
     return (
       <div
-        className="mx-auto w-full max-w-2xl animate-pulse py-10"
+        className={theme.skeleton}
         aria-hidden="true"
-      >
-        <div className="h-3 w-24 rounded bg-base-soft/20" />
-
-        <div className="mt-5 h-8 w-3/4 rounded bg-base-soft/20" />
-
-        <div className="mt-3 h-4 w-full rounded bg-base-soft/10" />
-
-        <div className="mt-8 h-48 rounded bg-base-soft/10" />
-      </div>
+      />
     );
   }
 
+  const authorName =
+    page.author?.username ||
+    page.author?.name ||
+    "Writer";
+
+  const authorId =
+    page.author?.id ||
+    page.authorId ||
+    page.profileId;
+
+  const isPrivateStory = !canSee;
+
+  // const storyTextLength = getStoryTextLength(page.data);
+
+const previewLength =
+  Number.isFinite(Number(shortenTo)) && Number(shortenTo) > 0
+    ? Math.floor(Number(shortenTo))
+    : 300;
+
+const storyTextLength = getStoryTextLength(page.data);
+
+const hasMoreContent =
+  !isPrivateStory &&
+  page.type === PageType.text &&
+  storyTextLength > previewLength;
   /*
    * -------------------------------------------------------------------------
-   * PARTIALLY OBSCURED STORY
-   * -------------------------------------------------------------------------
-   *
-   * IMPORTANT:
-   *
-   * The author/header is completely outside the obscured area.
-   *
-   * We don't use page.author content inside the blurred area.
-   * The protected content is represented only by neutral placeholder
-   * lines.
-   */
-  if (!canSee) {
-    const authorName =
-      page.author?.username ||
-      page.author?.name ||
-      "Writer";
-
-    const authorId =
-      page.author?.id ||
-      page.authorId ||
-      page.profileId;
-
-    return (
-      <article className="w-full border-b border-border-default py-10 sm:py-12">
-        <div className="mx-auto max-w-2xl">
-          {/* ------------------------------------------------------------- */}
-          {/* AUTHOR — ALWAYS VISIBLE                                      */}
-          {/* ------------------------------------------------------------- */}
-          <div className="flex items-center gap-3">
-            <button
-              type="button"
-              disabled={!authorId}
-              onClick={() => {
-                if (!authorId) {
-                  return;
-                }
-
-                router.push(
-                  Paths.profile.createRoute(
-                    authorId
-                  )
-                );
-              }}
-              className="shrink-0 disabled:cursor-default"
-              aria-label={`View ${authorName}'s profile`}
-            >
-              <ProfileCircle
-                includeUsername={false}
-                profile={
-                  page.author || {
-                    id: authorId,
-                    username: authorName,
-                  }
-                }
-              />
-            </button>
-
-            <div className="min-w-0">
-              <p className="text-xs font-medium uppercase tracking-[0.12em] text-text-primary">
-                {authorName}
-              </p>
-
-              <p className="mt-0.5 text-xs text-text-secondary">
-                Private Story
-              </p>
-            </div>
-          </div>
-
-          {/* ------------------------------------------------------------- */}
-          {/* STORY TITLE — VISIBLE                                         */}
-          {/* ------------------------------------------------------------- */}
-          <div className="mt-7">
-            <h2 className="font-serif  font-medium  text-[1.2rem] sm:text-[1rem] leading-tight text-text-primary ">
-              {page.title || "Untitled"}
-            </h2>
-
-            {page.description && (
-              <p className="mt-4 max-w-xl text-base leading-7 text-text-secondary">
-                {page.description}
-              </p>
-            )}
-          </div>
-
-          {/* ------------------------------------------------------------- */}
-          {/* PROTECTED CONTENT PREVIEW                                     */}
-          {/* ------------------------------------------------------------- */}
-          <div
-            className="relative mt-9 overflow-hidden rounded-xl border border-border-default bg-base-bg"
-            aria-label="Protected Story content"
-          >
-            {/* Fake content only. No Story text is rendered here. */}
-            <div
-              aria-hidden="true"
-              className="pointer-events-none select-none p-6 sm:p-8"
-            >
-              <div className="space-y-3 opacity-35">
-                <div className="h-4 w-[92%] rounded bg-text-secondary/30" />
-
-                <div className="h-4 w-[86%] rounded bg-text-secondary/30" />
-
-                <div className="h-4 w-[96%] rounded bg-text-secondary/30" />
-
-                <div className="h-4 w-[72%] rounded bg-text-secondary/30" />
-
-                <div className="h-5" />
-
-                <div className="h-4 w-[88%] rounded bg-text-secondary/30" />
-
-                <div className="h-4 w-[94%] rounded bg-text-secondary/30" />
-
-                <div className="h-4 w-[79%] rounded bg-text-secondary/30" />
-
-                <div className="h-5" />
-
-                <div className="h-4 w-[95%] rounded bg-text-secondary/30" />
-
-                <div className="h-4 w-[83%] rounded bg-text-secondary/30" />
-
-                <div className="h-4 w-[68%] rounded bg-text-secondary/30" />
-              </div>
-            </div>
-
-            {/* Obscuring veil */}
-            <div
-              aria-hidden="true"
-              className="absolute inset-0 bg-base-bg/60 backdrop-blur-[2px]"
-            />
-
-            {/* ----------------------------------------------------------- */}
-            {/* ACCESS MESSAGE                                               */}
-            {/* ----------------------------------------------------------- */}
-            <div className="absolute inset-0 flex items-center justify-center p-6">
-              <div className="max-w-sm text-center">
-                <p className="font-serif text-xl text-text-primary">
-                  This Story is private.
-                </p>
-
-                <p className="mt-2 text-sm leading-6 text-text-secondary">
-                  Ask {authorName} for permission to
-                  read it.
-                </p>
-
-                {showPermissionRequest && (
-                  <button
-                    type="button"
-                    onClick={
-                      handleRequestPermission
-                    }
-                    disabled={
-                      permissionRequestState ===
-                        "pending" ||
-                      permissionRequestState ===
-                        "requested"
-                    }
-                    className="mt-5 inline-flex items-center justify-center rounded-lg bg-button-primary-bg px-4 py-2.5 text-sm font-medium text-button-primary-text transition hover:bg-button-primary-hover disabled:cursor-default disabled:opacity-70"
-                  >
-                    {permissionRequestState ===
-                    "pending"
-                      ? "Requesting…"
-                      : permissionRequestState ===
-                        "requested"
-                      ? "Request sent"
-                      : "Request permission"}
-                  </button>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* ------------------------------------------------------------- */}
-          {/* QUIET FOOTER                                                  */}
-          {/* ------------------------------------------------------------- */}
-          <div className="mt-5 flex items-center justify-between text-xs text-text-secondary">
-            <span>Private Story</span>
-
-            <button
-              type="button"
-              onClick={onClickShare}
-              className="transition hover:text-text-primary"
-            >
-              Share
-            </button>
-          </div>
-        </div>
-      </article>
-    );
-  }
-
-  /*
-   * -------------------------------------------------------------------------
-   * FULL STORY
+   * CARD
    * -------------------------------------------------------------------------
    */
   return (
-    <article className="w-full border-b border-border-default py-10 sm:py-12">
-      <div className="mx-auto max-w-2xl">
-        {/* --------------------------------------------------------------- */}
-        {/* AUTHOR                                                          */}
-        {/* --------------------------------------------------------------- */}
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={() => {
-              if (!page.author?.id) {
-                return;
-              }
-
-              router.push(
-                Paths.profile.createRoute(
-                  page.author.id
-                )
-              );
-            }}
-            className="shrink-0"
-            aria-label={`View ${
-              page.author?.username ||
-              "author"
-            }'s profile`}
-          >
-            <ProfileCircle
-              includeUsername={false}
-              profile={page.author}
-            />
-          </button>
-
-          <div className="min-w-0">
-            <p className="text-xs font-medium uppercase tracking-[0.12em] text-text-primary">
-              {page.author?.username}
-            </p>
-
-            <p className="mt-0.5 text-xs text-text-secondary">
-              {page.status || "Story"}
-            </p>
-          </div>
-        </div>
-
-        {/* --------------------------------------------------------------- */}
-        {/* STORY IDENTITY                                                  */}
-        {/* --------------------------------------------------------------- */}
-        {/* <button
-          type="button"
-          onClick={handleClickComment}
-          className="mt-7 block w-full text-left"
-        > */}
+    <article
+      className={`group ${theme.card}`}
+      style={{
+        WebkitTapHighlightColor: "transparent",
+      }}
+    >
+      {/* AUTHOR */}
+      <header className={theme.header}>
         <button
-  type="button"
-  onClick={handleClickComment}
-  className="mt-8 block w-full text-left"
->
-  <h2 className="font-serif  font-medium text-[1.2rem] sm:text-[1rem] leading-[1.15] tracking-[-0.015em] text-text-primary transition hover:text-text-brand ">
-  {page.title || "Untitled"}
-</h2>
+          type="button"
+          disabled={!authorId}
+          onClick={() => {
+            if (!authorId) return;
 
-{page.description && (
-  <p className="mt-3.5 max-w-2xl text-[0.95rem] leading-7 text-text-secondary">
-    {page.description}
-  </p>
-)}
-   
+            router.push(
+              Paths.profile.createRoute(authorId),
+              "forward"
+            );
+          }}
+          className={theme.authorButton}
+          aria-label={`View ${authorName}'s profile`}
+        >
+          <ProfileCircle
+            includeUsername={false}
+            profile={
+              page.author || {
+                id: authorId,
+                username: authorName,
+              }
+            }
+          />
+
+          <span className="min-w-0">
+            <span className={`block ${theme.authorName}`}>
+              {authorName}
+            </span>
+
+            <span className={`block ${theme.metadata}`}>
+              {isPrivateStory
+                ? "Private Story"
+                : page.status || "Story"}
+            </span>
+          </span>
         </button>
 
-        {/* --------------------------------------------------------------- */}
-        {/* ACTUAL WORK                                                     */}
-        {/* --------------------------------------------------------------- */}
-        <div className="mt-9">
-          <DataElement
-            isGrid={isGrid}
-            shortenTo={shortenTo}
-            page={page}
-          />
-        </div>
-
-        {/* --------------------------------------------------------------- */}
-        {/* PARTICIPATION                                                   */}
-        {/* --------------------------------------------------------------- */}
-        <div className="mt-8 flex items-center justify-between border-t border-border-default pt-4">
-          <div className="flex items-center gap-5">
-            <button
-              type="button"
-              onClick={handleApprovalClick}
-              className={`text-sm transition ${
-                likeFound
-                  ? "font-medium text-text-brand"
-                  : "text-text-secondary hover:text-text-primary"
-              }`}
-              aria-label={
-                likeFound
-                  ? "Remove yea"
-                  : "Give this Story a yea"
-              }
-            >
-              {likeFound
-                ? "Yea'd"
-                : "Yea"}
-            </button>
-
-            <button
-              type="button"
-              onClick={handleClickComment}
-              className="text-sm font-medium text-text-primary transition hover:text-text-brand"
-            >
-              Comment
-            </button>
-
-            <button
-              type="button"
-              onClick={onClickShare}
-              className="text-sm text-text-secondary transition hover:text-text-primary"
-            >
-              Share
-            </button>
-          </div>
-
+        {!isPrivateStory && (
           <button
             type="button"
             onClick={handleBookmark}
-            className="inline-flex items-center gap-2 text-sm text-text-secondary transition hover:text-text-primary"
+            className={theme.bookmark}
             aria-label={
               bookmarked
-                ? "Remove Story from saved items"
-                : "Save Story"
+                ? "Remove story from saved items"
+                : "Save story"
             }
+            aria-pressed={Boolean(bookmarked)}
           >
-            <img
+            <IonImg
+              className="h-5 w-5"
               src={
                 bookmarked
                   ? bookmarkfill
                   : bookmarkoutline
               }
               alt=""
-              aria-hidden="true"
-              className="h-4 w-4"
             />
-
-            <span className="hidden sm:inline">
-              {bookmarked
-                ? "Saved"
-                : "Save"}
-            </span>
           </button>
-        </div>
+        )}
+      </header>
+
+      {/* TITLE AND STORY PREVIEW */}
+      <div className={theme.content}>
+        <button
+          type="button"
+          onClick={handleClickComment}
+          className={theme.titleButton}
+        >
+          <p className={styles.text.subheading}>
+            {page.title  || "Untitled"}
+          </p>
+        </button>
+
+        {page.description && (
+          <p className={`${styles.text.muted} mt-2 text-sm leading-relaxed`}>
+            {page.description}
+          </p>
+        )}
+
+        {/* PRIVATE STORIES NEVER RENDER THEIR BODY */}
+        {isPrivateStory ? (
+          <div className={`${theme.privateCard} mt-4`}>
+            <h3 className={theme.privateTitle}>
+              This Story is private.
+            </h3>
+
+            <p className={theme.privateBody}>
+              Ask {authorName} for permission to read it.
+            </p>
+
+            {showPermissionRequest && (
+              <button
+                type="button"
+                onClick={handleRequestPermission}
+                disabled={
+                  permissionRequestState === "pending" ||
+                  permissionRequestState === "requested"
+                }
+                className={theme.permissionButton}
+              >
+                {permissionRequestState === "pending"
+                  ? "Requesting…"
+                  : permissionRequestState === "requested"
+                  ? "Request sent"
+                  : "Request permission"}
+              </button>
+            )}
+          </div>
+        ) : (
+          <>
+          <div className={theme.excerpt}>
+  {page.type === PageType.text ? (
+    <StoryPreview
+      page={page}
+      shortenTo={previewLength}
+    />
+  ) : (
+    <DataElement
+      isGrid={isGrid}
+      page={page}
+    />
+  )}
+</div>
+     
+
+            {hasMoreContent && (
+              <button
+                type="button"
+                onClick={handleClickComment}
+                className={theme.continue}
+                aria-label={`Continue reading ${page.title || "this story"}`}
+              >
+                Continue reading
+                <span aria-hidden="true">→</span>
+              </button>
+            )}
+          </>
+        )}
       </div>
+
+      {/* QUIET PARTICIPATION ACTIONS */}
+      <footer className={theme.actions}>
+        {!isPrivateStory && (
+          <>
+            <button
+              type="button"
+              onClick={handleApprovalClick}
+              className={`
+                ${theme.action}
+                ${likeFound ? theme.actionActive : ""}
+              `}
+              aria-label={
+                likeFound
+                  ? "Remove yea"
+                  : "Give this Story a yea"
+              }
+              aria-pressed={Boolean(likeFound)}
+            >
+              {likeFound ? "Yea'd" : "Yea"}
+            </button>
+
+            <button
+              type="button"
+              onClick={handleClickComment}
+              className={theme.action}
+            >
+              Comment
+            </button>
+          </>
+        )}
+
+        <button
+          type="button"
+          onClick={onClickShare}
+          className={theme.action}
+        >
+          Share
+        </button>
+      </footer>
     </article>
   );
 }

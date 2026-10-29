@@ -1,17 +1,20 @@
-import React, { useMemo } from "react";
-import { useSelector ,useDispatch} from "react-redux";
+
+
+import React, { useEffect, useMemo, useState } from "react";
+import { useSelector } from "react-redux";
+import { IonContent, useIonRouter } from "@ionic/react";
+
 import useProfileDependentEffects from "../core/useProfileDependentEffects.jsx";
 import Paths from "../core/paths.js";
 import { PageType } from "../core/constants.js";
-import { IonContent, useIonRouter } from "@ionic/react";
 import { useDialog } from "../domain/usecases/useDialog.jsx";
+
 import CreateCollectionForm from "../components/collection/CreateCollectionForm.jsx";
 import UpcomingEventsSection from "../components/events/UpcomingEventsSection.jsx";
-
 import SectionHeader from "../components/pieces/SectionHeader.jsx";
-import styles from "../styles/style.js";
 import EmptyState from "../components/general/EmptyState.jsx";
 
+import styles from "../styles/style.js";
 
 /*
 |--------------------------------------------------------------------------
@@ -20,103 +23,58 @@ import EmptyState from "../components/general/EmptyState.jsx";
 |
 | Home is the user's personal front door to Plumbum.
 |
-| It answers:
-|
-|   "What should I do or encounter right now?"
-|
-| It is intentionally different from:
-|
-|   Write    -> active writing practice
-|   Discover -> things beyond the user's own work
-|   Events   -> complete event/calendar experience
-|   You      -> complete body of work, rooms, portfolio, etc.
-|
-| Dashboard has been removed from this architecture.
+| Write    -> active writing practice
+| Discover -> things beyond the user's own work
+| Events   -> complete event/calendar experience
+| You      -> complete body of work and rooms
 |
 */
 
-
 export default function ContentHubContainer() {
-
-
   const currentProfile = useSelector(
     (state) => state.users.currentProfile
   );
-  const router = useIonRouter()
-  /*
-   * Keep the existing data hook for now.
-   *
-   * This avoids rewriting the existing data layer while the UI is
-   * being redesigned.
-   */
+
+  const router = useIonRouter();
   const isTablet = useMediaQuery("(min-width: 768px)");
 
-  const {
-    workshops = [],
-    stories = [],
-    prompts = [],
-  } = useProfileDependentEffects(
+  const { stories = [] } = useProfileDependentEffects(
     currentProfile,
     true,
     isTablet ? 3 : 1
   );
-const {openDialog , closeDialog,resetDialog}=useDialog()
-  const homeRoom = useMemo(() => {
-    return currentProfile?.profileToCollections?.find(
-      (item) => item?.type === "home"
-    )?.collection;
-  }, [currentProfile?.profileToCollections]);
+
+  const { openDialog, closeDialog } = useDialog();
 
   /*
-   * Until the event/calendar data source is connected to Home,
-   * this remains empty rather than fabricating event data.
-   *
-   * The UI is already structured for:
-   *
-   *   featuredEvent
-   *   upcomingEvents
-   *
-   * so the data source can be connected without redesigning the page.
-   */
-  const featuredEvent = null;
-
-
-  /*
-   * The existing hook gives us stories. Home only wants active/open work,
-   * not the writer's complete body of work.
+   * Home only surfaces work that is still in progress.
+   * Stories without a status remain visible.
    */
   const openStories = useMemo(() => {
     return [...stories]
       .filter((story) => {
         if (!story) return false;
-
-        /*
-         * Home should emphasize things that are still in process.
-         * If status is unavailable, retain the story rather than hiding it.
-         */
         if (!story.status) return true;
 
-        return [
-          "draft",
-          "fragment",
-          "workshop",
-        ].includes(String(story.status).toLowerCase());
+        return ["draft", "fragment", "workshop"].includes(
+          String(story.status).toLowerCase()
+        );
       })
       .sort((a, b) => {
         const aDate = new Date(
           a?.updated ||
-          a?.updatedAt ||
-          a?.created ||
-          a?.createdAt ||
-          0
+            a?.updatedAt ||
+            a?.created ||
+            a?.createdAt ||
+            0
         ).getTime();
 
         const bDate = new Date(
           b?.updated ||
-          b?.updatedAt ||
-          b?.created ||
-          b?.createdAt ||
-          0
+            b?.updatedAt ||
+            b?.created ||
+            b?.createdAt ||
+            0
         ).getTime();
 
         return bDate - aDate;
@@ -125,68 +83,52 @@ const {openDialog , closeDialog,resetDialog}=useDialog()
   }, [stories]);
 
   /*
-   * Home rooms are a preview of the user's rooms.
-   *
-   * The complete room management experience belongs on the Rooms page.
+   * Home shows a preview of the user's rooms.
+   * Full room management stays on the Rooms experience.
    */
   const homeRooms = useMemo(() => {
-  const relationships =
-    currentProfile?.profileToCollections || [];
+    const relationships =
+      currentProfile?.profileToCollections || [];
 
-  return relationships
-    .filter(
-      (item) =>
-        item?.collection?.id
-    )
-    .slice(0, 4);
-}, [
-  currentProfile?.profileToCollections,
-]);
- 
+    return relationships
+      .filter((item) => item?.collection?.id)
+      .slice(0, 4);
+  }, [currentProfile?.profileToCollections]);
+
   if (!currentProfile) {
     return null;
   }
 
   const goToWrite = () => {
-    router.push(Paths.write)
+    router.push(Paths.write);
   };
-const goToRoom = (profileToCollection) => {
-  const collection =
-    profileToCollection?.collection;
 
-  if (!collection?.id) return;
+  const goToRoom = (profileToCollection) => {
+    const collection = profileToCollection?.collection;
 
-  router.push(
-    Paths.collection.createRoute(
-      collection.id
-    )
-  );
-};
-const goToRooms = () => {
-  openDialog({
-    title: "Create Collection",
-    scrollY: false,
-    text: (
-      <CreateCollectionForm
-        onClose={()=>{
-          console.log("Top")
-          closeDialog}}
-      />
-    ),
-    disagree:()=>{ 
-      console.log("SD")
-      closeDialog()},
-    disagreeText: "Close",
-    breakpoint: 1,
-  });
-};
+    if (!collection?.id) return;
+
+    router.push(
+      Paths.collection.createRoute(collection.id)
+    );
+  };
+
+  const goToRooms = () => {
+    openDialog({
+      title: "Make a room",
+      scrollY: false,
+      text: (
+        <CreateCollectionForm
+          onClose={() => closeDialog()}
+        />
+      ),
+      disagree: () => closeDialog(),
+      disagreeText: "Close",
+      breakpoint: 1,
+    });
+  };
 
   const goToWorkshop = () => {
-    /*
-     * Existing application code uses collection routes for workshops.
-     * The dedicated Workshop reader route is already present in the
-     * older implementation, so prefer it when available.
-     */
     if (Paths.workshop?.reader) {
       router.push(Paths.workshop.reader());
       return;
@@ -194,8 +136,6 @@ const goToRooms = () => {
 
     router.push("/workshop");
   };
-
- 
 
   const goToStory = (story) => {
     if (!story?.id) return;
@@ -210,88 +150,69 @@ const goToRooms = () => {
     }
 
     if (Paths.page?.createRoute) {
-      router.push(
-        Paths.page.createRoute(story.id)
-      );
+      router.push(Paths.page.createRoute(story.id));
     }
   };
- const goToEvents = () => {
-    router.push(Paths.calendar())
+
+  const goToEvents = () => {
+    router.push(Paths.calendar());
   };
+
   return (
-        <IonContent
-          scrollY={true}
-          className="page-content"
-          fullscreen
-        >
-    {/* <main className="h-[100vh] overflow-scroll bg-plumb-surface  text-text-primary"> */}
-      <div
+    <IonContent
+      scrollY={true}
+      className="page-content"
+      fullscreen
+    >
+      <main
         className="
-          mx-auto
-          w-full
-          max-w-[50em]
-          px-4
-          pb-24
-          pt-12
-          sm:px-6
-          sm:pt-16
-          lg:px-8
-          lg:pt-20
+          min-h-full
+          bg-plumb-canvas
+          text-plumb-ink
+          dark:bg-plumb-dark-canvas
+          dark:text-plumb-darkText
         "
       >
+        <div
+          className="
+            mx-auto w-full max-w-[50em]
+            px-4 pb-24 pt-12
+            sm:px-6 sm:pt-16
+            lg:px-8 lg:pt-20
+          "
+        >
+          <HomeHeader
+            profile={currentProfile}
+            onWrite={goToWrite}
+            onRooms={goToRooms}
+            onWorkshop={goToWorkshop}
+          />
 
-        <HomeHeader
-          profile={currentProfile}
-          onWrite={goToWrite}
-          onRooms={goToRooms}
-          onWorkshop={goToWorkshop}
-        />
+          <FeaturedEventSection
+            currentProfile={currentProfile}
+            onViewEvents={goToEvents}
+          />
 
+          <OpenWorkSection
+            stories={openStories}
+            onWrite={goToWrite}
+            onSelectStory={goToStory}
+          />
 
-        <FeaturedEventSection
-          event={featuredEvent}
-          currentProfile={currentProfile}
-          onViewEvents={goToEvents}
-        />
-
-
-        <OpenWorkSection
-          stories={openStories}
-          onWrite={goToWrite}
-          onSelectStory={goToStory}
-        />
-
-
-     
-<RoomsPreviewSection
-  rooms={homeRooms}
-  onViewRooms={goToRooms}
-  onSelectRoom={goToRoom}
-/>
-
-      
-
-        {/*
-         * Prompts remain a first-class Plumbum feature.
-         *
-         * They are intentionally not turned into another large Home
-         * section here. Discover can own the broader prompt experience,
-         * while Home can later surface one prompt as a small daily
-         * interruption.
-         *
-         * Keeping prompts in the data layer means this decision does
-         * not require another architectural rewrite.
-         */}
-      </div>
-    {/* </main> */}
+          <RoomsPreviewSection
+            rooms={homeRooms}
+            onViewRooms={goToRooms}
+            onSelectRoom={goToRoom}
+          />
+        </div>
+      </main>
     </IonContent>
   );
 }
 
-
 /*
 |--------------------------------------------------------------------------
-| HEADER
+| HOME HEADER
 |--------------------------------------------------------------------------
 */
 
@@ -308,196 +229,151 @@ function HomeHeader({
     "there";
 
   return (
-    <header>
+    <header className="pb-2">
       <p
-        className="
-          text-xs
-          font-medium
-          uppercase
-          tracking-[0.14em]
-          text-text-secondary
-        "
+        className={`
+          ${styles.text.metadata}
+          uppercase tracking-[0.14em]
+        `}
       >
-        Home
+        YOUR SPACE
       </p>
 
       <h1
-        className="
-          mt-3
-          max-w-3xl
-          font-serif
-          text-4xl
-          font-semibold
-          leading-[1.05]
-          tracking-tight
-          text-text-primary
-          sm:text-5xl
-          lg:text-6xl
-        "
+        className={`
+          ${styles.text.display}
+          mt-3 max-w-3xl
+        `}
       >
-        Back again, {name}.
+        Good to have you back, {name}.
       </h1>
+
+      <p className={`${styles.text.readable} mt-4 max-w-2xl`}>
+        Pick up where you left off, make something new,
+        or find a little inspiration from another writer.
+      </p>
 
       <div
         className="
-          mt-7
-          flex
-          flex-col
-          gap-3
-          sm:flex-row
-          sm:flex-wrap
+          mt-7 flex flex-col gap-3
+          sm:flex-row sm:flex-wrap
         "
       >
         <HomeAction
           variant="primary"
           onClick={onWrite}
         >
-          Write something
+          Start writing
         </HomeAction>
 
         <HomeAction
           variant="secondary"
           onClick={onRooms}
         >
-          Your rooms
+          Make a room
         </HomeAction>
 
         <HomeAction
           variant="secondary"
           onClick={onWorkshop}
         >
-          Read someone else
+          Read with the community
         </HomeAction>
       </div>
     </header>
   );
 }
 
-
 /*
 |--------------------------------------------------------------------------
-| FEATURED EVENT
+| UPCOMING EVENTS
 |--------------------------------------------------------------------------
 |
-| This is intentionally first on Home after the personal greeting.
-|
-| It is the primary place where Plumbum can eventually promote:
-|
-|   - workshops
-|   - readings
-|   - mixers
-|   - community events
-|   - partner events
-|
-| The user can click through into the full Events experience.
+| The existing event component remains responsible for its own display.
+| Keep the list empty until the Home event data source is connected.
 |
 */
 
 function FeaturedEventSection({
-  event,
   onViewEvents,
-  currentProfile
-
+  currentProfile,
 }) {
-    const upcomingEvents = [];
-     const goToEvents = () => {
-    router.push("/events");
-  };
+  const upcomingEvents = [];
+
   return (
     <section className="mt-14">
       <UpcomingEventsSection
         profile={currentProfile}
-          events={upcomingEvents}
-          onViewEvents={onViewEvents}
-        />
-
-
- 
+        events={upcomingEvents}
+        onViewEvents={onViewEvents}
+      />
     </section>
   );
 }
 
+/*
+|--------------------------------------------------------------------------
+| OPTIONAL FEATURED EVENT CARD
+|--------------------------------------------------------------------------
+|
+| Retained for use if Home later surfaces a single featured event.
+|
+*/
 
-function FeaturedEventCard({
-  event,
-  onClick,
-}) {
+function FeaturedEventCard({ event, onClick }) {
   return (
     <button
       type="button"
       onClick={onClick}
       className="
-        group
-        block
-        w-full
-        border
-        border-border-soft
-        bg-base-bg
-        p-6
-        text-left
-        transition-all
-        duration-200
-        hover:border-base-soft
-        hover:shadow-sm
+        group block w-full rounded-2xl
+        border border-plumb-border
+        bg-plumb-elevated p-6 text-left
+        transition-all duration-200
+        hover:border-plumb-mintHover hover:shadow-sm
+        focus-visible:outline-none
+        focus-visible:ring-2 focus-visible:ring-plumb-focus
+        focus-visible:ring-offset-2
+        focus-visible:ring-offset-plumb-canvas
+        dark:border-plumb-darkBorder
+        dark:bg-plumb-dark-surface
+        dark:hover:border-plumb-mintLight
+        dark:focus-visible:ring-offset-plumb-dark-canvas
         sm:p-7
       "
     >
-      <p
-        className="
-          text-xs
-          font-medium
-          uppercase
-          tracking-[0.12em]
-          text-text-secondary
-        "
-      >
+      <p className={styles.text.metadata}>
         {formatEventDate(event)}
       </p>
 
       <h3
-        className="
-          mt-3
-          max-w-2xl
-          font-serif
-          text-2xl
-          font-semibold
-          leading-tight
-          text-text-primary
-          sm:text-3xl
-        "
+        className={`
+          ${styles.text.heading}
+          mt-3 max-w-2xl
+        `}
       >
         {event?.title || "Something happening"}
       </h3>
 
       {event?.description && (
-        <p
-          className="
-            mt-3
-            max-w-2xl
-            text-sm
-            leading-relaxed
-            text-text-secondary
-          "
-        >
+        <p className={`${styles.text.body} mt-3 max-w-2xl`}>
           {event.description}
         </p>
       )}
 
       <span
         className="
-          mt-5
-          inline-flex
-          text-sm
-          font-medium
-          text-text-brand
+          mt-5 inline-flex items-center
+          text-sm font-medium
+          text-plumb-mintHover
+          dark:text-plumb-mintLight
         "
       >
-        See event
+        See event details
         <span
           aria-hidden="true"
           className="
-            ml-2
-            transition-transform
+            ml-2 transition-transform
             group-hover:translate-x-1
           "
         >
@@ -507,7 +383,6 @@ function FeaturedEventCard({
     </button>
   );
 }
-
 
 /*
 |--------------------------------------------------------------------------
@@ -524,16 +399,12 @@ function OpenWorkSection({
     <section className="mt-14">
       <SectionHeader
         title="Still open"
-        description="Drafts and fragments you haven't decided about."
+        description="Drafts and fragments you're still finding your way through."
         actionLabel={
-          stories.length > 0
-            ? "See all work"
-            : undefined
+          stories.length > 0 ? "See all work" : undefined
         }
         onAction={
-          stories.length > 0
-            ? onWrite
-            : undefined
+          stories.length > 0 ? onWrite : undefined
         }
       />
 
@@ -544,8 +415,8 @@ function OpenWorkSection({
         />
       ) : (
         <EmptyState
-          title="Nothing half-written."
-          description="Begin anywhere — nobody sees a draft but you."
+          title="Nothing in progress just yet."
+          description="Start with a line, a fragment, or whatever is on your mind."
           action="Start writing"
           onAction={onWrite}
         />
@@ -554,19 +425,21 @@ function OpenWorkSection({
   );
 }
 
-
 /*
 |--------------------------------------------------------------------------
 | WORK LIST
 |--------------------------------------------------------------------------
 */
 
-function WorkList({
-  stories,
-  onSelectStory,
-}) {
+function WorkList({ stories, onSelectStory }) {
   return (
-    <div className="border-y space-y-4 border-border-soft">
+    <div
+      className="
+        mt-4 space-y-1
+        border-y border-plumb-border
+        dark:border-plumb-darkBorder
+      "
+    >
       {stories.map((story) => (
         <WorkRow
           key={story.id}
@@ -578,52 +451,41 @@ function WorkList({
   );
 }
 
-
-function WorkRow({
-  story,
-  onClick,
-}) {
+function WorkRow({ story, onClick }) {
   return (
     <button
       type="button"
       onClick={onClick}
       className="
-        group
-        flex
-        min-h-16
-        w-[100%]
-        items-center
-        justify-between
-        gap-5
-        border-b
-        border-border-soft
-        py-4
-        text-left
+        group flex min-h-16 w-[100%]
+        items-center justify-between gap-5
+        border-b border-plumb-border
+        py-4 text-left transition-colors
         last:border-b-0
-        hover:opacity-75
+        hover:bg-plumb-surface/70
+        focus-visible:outline-none
+        focus-visible:ring-2 focus-visible:ring-inset
+        focus-visible:ring-plumb-focus
+        dark:border-plumb-darkBorder
+        dark:hover:bg-plumb-dark-surface
       "
     >
       <div className="min-w-0">
         <h3
-          className="
-            truncate
-            font-serif
-            text-lg
-            text-text-primary
-          "
+          className={`
+            ${styles.text.subheading}
+            truncate font-serif
+          `}
         >
           {story?.title || "Untitled"}
         </h3>
 
         {story?.status && (
           <p
-            className="
-              mt-1
-              text-xs
-              uppercase
-              tracking-[0.08em]
-              text-text-secondary
-            "
+            className={`
+              ${styles.text.metadata}
+              mt-1 uppercase tracking-[0.08em]
+            `}
           >
             {formatStatus(story.status)}
           </p>
@@ -633,11 +495,10 @@ function WorkRow({
       <span
         aria-hidden="true"
         className="
-          shrink-0
-          text-xl
-          text-text-secondary
-          transition-transform
+          shrink-0 text-xl
+          text-plumb-muted transition-transform
           group-hover:translate-x-1
+          dark:text-plumb-darkMuted
         "
       >
         →
@@ -646,19 +507,12 @@ function WorkRow({
   );
 }
 
-
 /*
 |--------------------------------------------------------------------------
 | ROOMS PREVIEW
 |--------------------------------------------------------------------------
-|
-| This is deliberately NOT the full Rooms page.
-|
-| Home gives a glimpse of the rooms the user regularly keeps.
-|
-| "Your rooms" / "See all" takes them to the full Rooms experience.
-|
 */
+
 function RoomsPreviewSection({
   rooms,
   onViewRooms,
@@ -668,7 +522,8 @@ function RoomsPreviewSection({
     <section className="mt-14">
       <SectionHeader
         title="Your rooms"
-        actionLabel="+ Make A Room"
+        description="Places to gather the stories, ideas, and things you want to keep close."
+        actionLabel="+ Make a room"
         onAction={onViewRooms}
       />
 
@@ -680,7 +535,7 @@ function RoomsPreviewSection({
       ) : (
         <EmptyState
           title="No rooms yet."
-          description="Make a room for things you want to keep together."
+          description="Create a room to keep stories and ideas together."
           action="Make a room"
           onAction={onViewRooms}
         />
@@ -689,39 +544,22 @@ function RoomsPreviewSection({
   );
 }
 
-
-
-function RoomGrid({
-  rooms,
-  onSelectRoom,
-}) {
+function RoomGrid({ rooms, onSelectRoom }) {
   return (
-    <div
-      className="
-        grid
-        grid-cols-1
-        gap-4
-        sm:grid-cols-2
-      "
-    >
-   {rooms.map((profileToCollection) => (
-  <RoomCard
-    key={profileToCollection.id}
-    profileToCollection={profileToCollection}
-    onClick={() =>
-      onSelectRoom(profileToCollection)
-    }
-  />
-))}
+    <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+      {rooms.map((profileToCollection) => (
+        <RoomCard
+          key={profileToCollection.id}
+          profileToCollection={profileToCollection}
+          onClick={() => onSelectRoom(profileToCollection)}
+        />
+      ))}
     </div>
   );
 }
-function RoomCard({
-  profileToCollection,
-  onClick,
-}) {
-  const room =
-    profileToCollection?.collection;
+
+function RoomCard({ profileToCollection, onClick }) {
+  const room = profileToCollection?.collection;
 
   if (!room?.id) {
     return null;
@@ -734,106 +572,76 @@ function RoomCard({
     null;
 
   return (
-
-      <button
-        type="button"
-        onClick={onClick}
-        className="
-          flex
-          min-h-36
-          w-full
-          flex-col
-          p-5
-          text-left
-          focus:outline-none
-          focus:ring-2
-          focus:ring-base-soft
-          focus:ring-inset
-        "
+    <button
+      type="button"
+      onClick={onClick}
+      className="
+        group flex min-h-36 w-full flex-col
+        rounded-2xl border border-plumb-border
+        bg-plumb-surface p-5 text-left
+        transition-all duration-200
+        hover:border-plumb-mintHover hover:shadow-sm
+        focus-visible:outline-none
+        focus-visible:ring-2 focus-visible:ring-plumb-focus
+        focus-visible:ring-offset-2
+        focus-visible:ring-offset-plumb-canvas
+        dark:border-plumb-darkBorder
+        dark:bg-plumb-dark-surface
+        dark:hover:border-plumb-mintLight
+        dark:focus-visible:ring-offset-plumb-dark-canvas
+      "
+    >
+      <p
+        className={`
+          ${styles.text.metadata}
+          uppercase tracking-[0.1em]
+        `}
       >
-        <p
+        Room
+      </p>
+
+      <div className="flex items-start justify-between gap-4">
+        <h3
+          className={`
+            ${styles.text.subheading}
+            mt-2 font-serif
+          `}
+        >
+          {room.title || room.name || "Untitled room"}
+        </h3>
+
+        <span
+          aria-hidden="true"
           className="
-            text-xs
-            font-medium
-            uppercase
-            tracking-[0.1em]
-            text-text-secondary
+            mt-2 shrink-0 text-xl
+            text-plumb-muted transition-transform
+            group-hover:translate-x-1
+            dark:text-plumb-darkMuted
           "
         >
-          Room
+          →
+        </span>
+      </div>
+
+      {room.description && (
+        <p
+          className={`
+            ${styles.text.body}
+            mt-2 line-clamp-2
+          `}
+        >
+          {room.description}
         </p>
+      )}
 
-        <div className="flex items-start justify-between gap-4">
-          <h3
-            className="
-              mt-2
-              font-serif
-              text-xl
-              font-semibold
-              text-text-primary
-            "
-          >
-            {room.title ||
-              room.name ||
-              "Untitled room"}
-          </h3>
-
-          <span
-            aria-hidden="true"
-            className="
-              mt-2
-              shrink-0
-              text-xl
-              text-text-secondary
-              transition-transform
-              group-hover:translate-x-1
-            "
-          >
-            →
-          </span>
-        </div>
-
-        {room.description && (
-          <p
-            className="
-              mt-2
-              line-clamp-2
-              text-sm
-              leading-relaxed
-              text-text-secondary
-            "
-          >
-            {room.description}
-          </p>
-        )}
-
-        {pieceCount !== null && (
-          <p
-            className="
-              mt-auto
-              pt-4
-              text-xs
-              text-text-secondary
-            "
-          >
-            {pieceCount}{" "}
-            {pieceCount === 1
-              ? "piece"
-              : "pieces"}
-          </p>
-        )}
-      </button>
-    // </article>
+      {pieceCount !== null && (
+        <p className={`${styles.text.metadata} mt-auto pt-4`}>
+          {pieceCount} {pieceCount === 1 ? "piece" : "pieces"}
+        </p>
+      )}
+    </button>
   );
 }
-
-
-/*
-|--------------------------------------------------------------------------
-| SHARED SECTION HEADER
-|--------------------------------------------------------------------------
-*/
-
 
 /*
 |--------------------------------------------------------------------------
@@ -846,31 +654,24 @@ function HomeAction({
   onClick,
   variant = "secondary",
 }) {
-
-  const base = " min-h-11"
-  
-
-
   return (
     <button
       type="button"
       onClick={onClick}
-      
-      className={`${base} ${variant === "primary" ? styles.button.primary : styles.button.secondary}`}
+      className={`
+        ${styles.button.base}
+        ${variant === "primary"
+          ? styles.button.primary
+          : styles.button.secondary}
+        ${styles.button.medium}
+        min-h-11 w-full
+        sm:w-auto
+      `}
     >
       {children}
     </button>
   );
 }
-
-
-/*
-|--------------------------------------------------------------------------
-| EMPTY STATE
-|--------------------------------------------------------------------------
-*/
-
-
 
 /*
 |--------------------------------------------------------------------------
@@ -887,12 +688,8 @@ function formatStatus(status) {
     published: "Finished",
   };
 
-  return (
-    labels[String(status).toLowerCase()] ||
-    status
-  );
+  return labels[String(status).toLowerCase()] || status;
 }
-
 
 function formatEventDate(event) {
   if (!event) return "";
@@ -918,44 +715,38 @@ function formatEventDate(event) {
   }).format(date);
 }
 
-
 /*
 |--------------------------------------------------------------------------
-| SMALL RESPONSIVE MEDIA QUERY HOOK
+| RESPONSIVE MEDIA QUERY
 |--------------------------------------------------------------------------
-|
-| Keeps this page independent from Ionic and react-responsive.
-|
 */
 
 function useMediaQuery(query) {
-  const [matches, setMatches] =
-    React.useState(false);
+  const [matches, setMatches] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (typeof window === "undefined") {
       return undefined;
     }
 
-    const mediaQuery =
-      window.matchMedia(query);
-
-    const update = () => {
-      setMatches(mediaQuery.matches);
-    };
+    const mediaQuery = window.matchMedia(query);
+    const update = () => setMatches(mediaQuery.matches);
 
     update();
 
-    mediaQuery.addEventListener?.(
-      "change",
-      update
-    );
+    if (mediaQuery.addEventListener) {
+      mediaQuery.addEventListener("change", update);
+    } else {
+      // Compatibility fallback for older WebViews.
+      mediaQuery.addListener(update);
+    }
 
     return () => {
-      mediaQuery.removeEventListener?.(
-        "change",
-        update
-      );
+      if (mediaQuery.removeEventListener) {
+        mediaQuery.removeEventListener("change", update);
+      } else {
+        mediaQuery.removeListener(update);
+      }
     };
   }, [query]);
 

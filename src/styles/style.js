@@ -1,6 +1,197 @@
 
 
 const styles = {
+profile: {
+  page: [
+    "mx-auto  ",
+    "px-4 sm:px-5",
+    "pt-safe pb-24",
+    "bg-plumb-surface dark:bg-plumb-dark-canvas",
+    " text-plumb-text",
+    " dark:text-plumb-darkText",
+  ].join(" "),
+
+  content: "space-y-8 sm:space-y-10 max-w-2xl mx-auto",
+
+  header: "space-y-5 py-6 sm:space-y-6 sm:py-8",
+
+  identity: [
+    "flex min-w-0 flex-col gap-3",
+    "sm:flex-row sm:items-center sm:gap-4",
+  ].join(" "),
+
+  username: [
+    "break-words text-sm font-medium",
+    "text-plumb-muted dark:text-plumb-darkMuted",
+  ].join(" "),
+
+  sectionLabel: [
+    "text-xs font-semibold uppercase tracking-wider",
+    "text-plumb-muted dark:text-plumb-darkMuted",
+  ].join(" "),
+
+  body: [
+    "break-words text-sm leading-relaxed sm:text-base",
+    "text-plumb-text dark:text-plumb-darkText",
+  ].join(" "),
+
+  muted: "text-plumb-muted dark:text-plumb-darkMuted",
+
+  pill: [
+    "inline-flex max-w-full items-center",
+    "rounded-full border px-3 py-1",
+    "border-plumb-border bg-plumb-paper",
+    "text-xs text-plumb-text",
+    "transition-colors hover:border-plumb-mintHover",
+    "focus-visible:outline-none focus-visible:ring-2",
+    "focus-visible:ring-plumb-focus focus-visible:ring-offset-2",
+    "dark:border-plumb-darkBorder dark:bg-plumb-dark-surface",
+    "dark:text-plumb-darkText dark:hover:border-plumb-mintLight",
+    "dark:focus-visible:ring-offset-plumb-dark-canvas",
+  ].join(" "),
+
+  stats: "flex flex-wrap items-center gap-x-8 gap-y-4",
+
+  stat: "flex min-w-[4rem] flex-col items-center text-center",
+
+  statValue: "font-semibold text-plumb-ink dark:text-plumb-darkText",
+
+  statLabel: "text-xs text-plumb-muted dark:text-plumb-darkMuted",
+
+  searchRow: [
+    "flex flex-col gap-3 py-5",
+    "sm:flex-row sm:items-center",
+  ].join(" "),
+
+  search: [
+    "min-w-0 w-[100%] flex-1 rounded-full border px-4 py-2.5",
+    "border-plumb-borderStrong bg-plumb-paper",
+    "text-sm text-plumb-text placeholder:text-plumb-muted",
+    "focus:outline-none focus-visible:ring-2 focus-visible:ring-plumb-focus",
+    "dark:border-plumb-darkBorderStrong dark:bg-plumb-dark-surface",
+    "dark:text-plumb-darkText dark:placeholder:text-plumb-darkMuted",
+  ].join(" "),
+
+  actions: "flex min-w-0 items-center gap-3",
+
+  menuButton: [
+    "inline-flex h-10 w-10 shrink-0 items-center justify-center",
+    "rounded-full transition-colors",
+    "hover:bg-plumb-border/50 focus-visible:outline-none",
+    "focus-visible:ring-2 focus-visible:ring-plumb-focus",
+    "dark:hover:bg-plumb-dark-surface",
+  ].join(" "),
+
+  menu: [
+    "dropdown-content z-20 mt-2 w-44 rounded-2xl border p-2 shadow-lg",
+    "border-plumb-border bg-plumb-paper text-plumb-text",
+    "dark:border-plumb-darkBorder dark:bg-plumb-dark-surface",
+    "dark:text-plumb-darkText",
+  ].join(" "),
+
+  menuItem: [
+    "w-full rounded-xl px-3 py-2.5 text-left text-sm",
+    "transition-colors hover:bg-plumb-border/40",
+    "focus-visible:outline-none focus-visible:ring-2",
+    "focus-visible:ring-plumb-focus",
+    "dark:hover:bg-plumb-dark-canvas",
+  ].join(" "),
+
+  menuItemDanger: "text-red-600 dark:text-red-400",
+
+  tabWrapper: "mx-auto w-[100%] max-w-lg px-0 pb-4 sm:px-4",
+
+  tabContent: "min-h-[24rem] space-y-8 sm:min-h-[40rem] sm:space-y-10",
+
+  section: "space-y-4",
+
+  listItem: [
+    "w-[100%] min-w-0 rounded-2xl border px-4 py-3",
+    "border-plumb-borderStrong bg-plumb-paper",
+    "text-sm text-plumb-text shadow-sm",
+    "transition-colors hover:border-plumb-mintHover",
+    "focus-visible:outline-none focus-visible:ring-2",
+    "focus-visible:ring-plumb-focus",
+    "dark:border-plumb-darkBorderStrong dark:bg-plumb-dark-surface",
+    "dark:text-plumb-darkText dark:hover:border-plumb-mintLight",
+  ].join(" "),
+
+  empty: "py-10 text-center text-sm text-plumb-muted dark:text-plumb-darkMuted",
+
+  status: [
+    "rounded-xl border px-4 py-3 text-sm",
+    "border-plumb-borderStrong bg-plumb-paper",
+    "text-plumb-text dark:border-plumb-darkBorderStrong",
+    "dark:bg-plumb-dark-surface dark:text-plumb-darkText",
+  ].join(" "),
+
+  skeleton: "animate-pulse space-y-8 px-0 py-6 sm:px-2 sm:py-8",
+
+  skeletonBlock: "rounded-xl bg-plumb-border dark:bg-plumb-dark-surface",
+
+  skeletonCircle: "h-14 w-14 rounded-full bg-plumb-border dark:bg-plumb-dark-surface",
+
+  skeletonLine: "h-3 rounded-full bg-plumb-border dark:bg-plumb-dark-surface",
+
+  skeletonCard: "h-24 w-[100%] rounded-2xl bg-plumb-border dark:bg-plumb-dark-surface",
+
+  loadingLayer: [
+    "absolute inset-0 z-10 px-4",
+    "transition-opacity duration-300",
+  ].join(" "),
+
+  realContent: "relative transition-opacity duration-300",
+
+  pageTitle: "text-lg font-semibold text-plumb-ink dark:text-plumb-darkText",
+},
+collection: {
+  page: [
+    "  pb-20 overflow-y-auto ",
+    "bg-plumb-surface text-plumb-ink",
+    "dark:bg-plumb-dark-canvas dark:text-plumb-darkText",
+  ].join(" "),
+
+  section: [
+    "border-plumb-borderStrong",
+    "dark:border-plumb-darkBorderStrong",
+  ].join(" "),
+
+  card: [
+    "rounded-2xl border p-5",
+    "border-plumb-borderStrong bg-plumb-paper",
+    "transition-all duration-200",
+    "hover:-translate-y-0.5 hover:border-plumb-mintHover",
+    "dark:border-plumb-darkBorderStrong",
+    "dark:bg-plumb-dark-surface",
+    "dark:hover:border-plumb-mintLight",
+  ].join(" "),
+
+  heading: [
+    "font-serif text-2xl sm:text-3xl",
+    "text-plumb-ink dark:text-plumb-darkText",
+  ].join(" "),
+
+  body: [
+    "font-open-sans text-base leading-relaxed",
+    "text-plumb-text dark:text-plumb-darkText",
+  ].join(" "),
+
+  muted: [
+    "text-plumb-muted dark:text-plumb-darkMuted",
+  ].join(" "),
+
+  empty: [
+    "rounded-2xl border border-dashed p-8 text-center",
+    "border-plumb-borderStrong",
+    "dark:border-plumb-darkBorderStrong",
+  ].join(" "),
+
+  skeleton: [
+    "animate-pulse rounded-2xl",
+    "bg-plumb-border dark:bg-plumb-dark-surface",
+    "motion-reduce:animate-none",
+  ].join(" "),
+},
 
 navbar: {
   desktop: [
@@ -701,7 +892,7 @@ filterActive: [
 input: [
   "w-[100%] max-w-sm",
 
-  "border border-plumb-borderStrong",
+
   "bg-paper text-plumb-ink",
   "px-4 py-3",
   "placeholder:text-plumb-muted",
@@ -791,6 +982,152 @@ event: {
     "dark:text-plumb-darkText",
   ].join(" "),
 }
+,dashboardItem: {
+  card: [
+    "w-[100%] overflow-hidden rounded-2xl",
+    "border border-plumb-borderStrong",
+    "bg-plumb-surface dark:border-plumb-darkBorderStrong",
+    "dark:bg-plumb-dark-surface",
+    "transition-colors duration-200",
+    "motion-reduce:transition-none",
+  ].join(" "),
+
+  header: [
+    "flex items-center justify-between gap-3",
+    "px-4 pt-4 sm:px-5 sm:pt-5",
+  ].join(" "),
+
+  authorButton: [
+    "flex min-w-0 items-center gap-3 rounded-lg text-left",
+    "focus-visible:outline-none focus-visible:ring-2",
+    "focus-visible:ring-plumb-focus focus-visible:ring-offset-2",
+    "focus-visible:ring-offset-plumb-surface",
+    "dark:focus-visible:ring-offset-plumb-dark-surface",
+  ].join(" "),
+
+  authorName: [
+    "truncate font-open-sans text-sm font-medium",
+    "text-plumb-ink dark:text-plumb-darkText",
+  ].join(" "),
+
+  metadata: [
+    "mt-0.5 font-open-sans text-xs",
+    "text-plumb-muted dark:text-plumb-darkMuted",
+  ].join(" "),
+
+  title: [
+    "font-serif text-lg font-semibold leading-snug",
+    "text-plumb-ink dark:text-plumb-darkText",
+    "transition-colors duration-150",
+    "group-hover:text-plumb-mintHover",
+    "dark:group-hover:text-plumb-mintLight",
+  ].join(" "),
+
+  titleButton: [
+    "block w-fit max-w-full rounded-md text-left",
+    "focus-visible:outline-none focus-visible:ring-2",
+    "focus-visible:ring-plumb-focus focus-visible:ring-offset-2",
+    "focus-visible:ring-offset-plumb-surface",
+    "dark:focus-visible:ring-offset-plumb-dark-surface",
+  ].join(" "),
+
+  content: [
+    "px-4 pb-4 pt-4 sm:px-5 sm:pb-5",
+  ].join(" "),
+
+  excerpt: [
+    "mt-3 font-lora text-base leading-[1.8]",
+    "text-plumb-text dark:text-plumb-darkText",
+    "[&_p]:mb-3 [&_p:last-child]:mb-0",
+    "[&_a]:underline [&_a]:underline-offset-2",
+    "[&_a]:text-plumb-mintHover",
+    "dark:[&_a]:text-plumb-mintLight",
+  ].join(" "),
+
+  continue: [
+    "mt-3 inline-flex min-h-10 items-center gap-1.5",
+    "rounded-full px-3 py-2",
+    "font-open-sans text-sm font-medium",
+    "text-plumb-mintHover dark:text-plumb-mintLight",
+    "transition-colors duration-150",
+    "hover:bg-plumb-mint/10 dark:hover:bg-plumb-mint/15",
+    "focus-visible:outline-none focus-visible:ring-2",
+    "focus-visible:ring-plumb-focus focus-visible:ring-offset-2",
+    "focus-visible:ring-offset-plumb-surface",
+    "dark:focus-visible:ring-offset-plumb-dark-surface",
+    "motion-reduce:transition-none",
+  ].join(" "),
+
+  actions: [
+    "flex flex-wrap items-center gap-1",
+    "border-t border-plumb-borderStrong",
+    "px-3 py-2 dark:border-plumb-darkBorderStrong",
+  ].join(" "),
+
+  action: [
+    "inline-flex min-h-10 items-center justify-center",
+    "rounded-full px-3 py-2",
+    "font-open-sans text-sm",
+    "text-plumb-muted dark:text-plumb-darkMuted",
+    "transition-colors duration-150",
+    "hover:bg-plumb-mint/10 hover:text-plumb-ink",
+    "dark:hover:bg-plumb-mint/15 dark:hover:text-plumb-darkText",
+    "focus-visible:outline-none focus-visible:ring-2",
+    "focus-visible:ring-plumb-focus",
+    "motion-reduce:transition-none",
+  ].join(" "),
+
+  actionActive: [
+    "font-medium text-plumb-mintHover",
+    "dark:text-plumb-mintLight",
+  ].join(" "),
+
+  bookmark: [
+    "flex h-10 w-10 shrink-0 items-center justify-center",
+    "rounded-full transition-colors duration-150",
+    "hover:bg-plumb-mint/10 dark:hover:bg-plumb-mint/15",
+    "focus-visible:outline-none focus-visible:ring-2",
+    "focus-visible:ring-plumb-focus",
+    "motion-reduce:transition-none",
+  ].join(" "),
+
+  privateCard: [
+    "rounded-xl border border-plumb-borderStrong",
+    "bg-plumb-paper p-4",
+    "dark:border-plumb-darkBorderStrong",
+    "dark:bg-plumb-dark-canvas",
+  ].join(" "),
+
+  privateTitle: [
+    "font-serif text-lg font-semibold",
+    "text-plumb-ink dark:text-plumb-darkText",
+  ].join(" "),
+
+  privateBody: [
+    "mt-1 font-open-sans text-sm leading-relaxed",
+    "text-plumb-muted dark:text-plumb-darkMuted",
+  ].join(" "),
+
+  skeleton: [
+    "h-48 w-[100%] animate-pulse rounded-2xl",
+    "border border-plumb-borderStrong bg-plumb-mint/5",
+    "dark:border-plumb-darkBorderStrong dark:bg-plumb-dark-surface",
+    "motion-reduce:animate-none",
+  ].join(" "),
+
+  permissionButton: [
+    "mt-4 inline-flex min-h-10 items-center justify-center",
+    "rounded-full bg-plumb-mintHover px-4 py-2",
+    "font-open-sans text-sm font-medium text-white",
+    "transition-colors duration-150 hover:bg-plumb-mint",
+    "focus-visible:outline-none focus-visible:ring-2",
+    "focus-visible:ring-plumb-focus focus-visible:ring-offset-2",
+    "focus-visible:ring-offset-plumb-paper",
+    "dark:focus-visible:ring-offset-plumb-dark-canvas",
+    "disabled:cursor-default disabled:opacity-60",
+    "motion-reduce:transition-none",
+  ].join(" "),
+},
 }
 
 export default styles

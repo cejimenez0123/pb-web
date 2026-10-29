@@ -1,8 +1,6 @@
 
-
 import {
   useEffect,
-
   useMemo,
   useRef,
   useState,
@@ -23,7 +21,6 @@ import {
   deleteCollectionFromCollection,
   fetchCollection,
   fetchCollectionProtected,
-
   setCollections,
 } from "../../actions/CollectionActions";
 
@@ -47,14 +44,13 @@ import {
 import Paths from "../../core/paths.js";
 import checkResult from "../../core/checkResult.js";
 import computePermissions from "../../core/compusePermissions.jsx";
-import usePaginatedResource from "../../core/usePaginatedResource.jsx";
 import useScrollTracking from "../../core/useScrollTracking.jsx";
 
 import { motion } from "framer-motion";
 import { IonContent } from "@ionic/react";
+
 import RoomPreview from "../../components/room/RoomPreview.jsx";
 import styles from "../../styles/style.js";
-
 
 // ---------------------------------------------------------
 // Layout
@@ -69,17 +65,27 @@ const SECTION =
 const BUTTON =
   "inline-flex items-center justify-center h-11 px-5 rounded-full " +
   "text-sm font-medium transition-all duration-200 " +
-  "focus:outline-none focus:ring-2 focus:ring-button-primary-bg/30";
+  "focus-visible:outline-none focus-visible:ring-2 " +
+  "focus-visible:ring-button-primary-bg/40 " +
+  "focus-visible:ring-offset-2 " +
+  "focus-visible:ring-offset-plumb-surface " +
+  "dark:focus-visible:ring-offset-base-bgDark " +
+  "disabled:cursor-not-allowed disabled:opacity-60";
 
-const SECONDARY_BUTTON = styles.button.secondary
-  // `${BUTTON} border border-card-border bg-card-background ` +
-  // `text-text-primary hover:border-button-primary-bg ` +
-  // `hover:text-text-brand`;
+const SECONDARY_BUTTON =
+  `${styles.button.secondary} ${BUTTON}`;
 
-const PRIMARY_BUTTON = styles.button.primary
-  // `${BUTTON} bg-button-primary-bg text-white ` +
-  // `hover:bg-button-primary-hover`;
+const PRIMARY_BUTTON =
+  `${styles.button.primary} ${BUTTON}`;
 
+const TEXT_BUTTON =
+  "inline-flex items-center gap-2 text-sm " +
+  "text-text-secondary transition-colors " +
+  "hover:text-text-brand focus-visible:outline-none " +
+  "focus-visible:ring-2 focus-visible:ring-button-primary-bg/40 " +
+  "focus-visible:ring-offset-2 " +
+  "focus-visible:ring-offset-plumb-surface " +
+  "dark:focus-visible:ring-offset-base-bgDark";
 
 // ---------------------------------------------------------
 // Main page
@@ -105,19 +111,23 @@ export default function CollectionContainer() {
   );
 
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
   const [tab, setTab] = useState("inside");
-
-
-
-  // const [isBookmarked, setIsBookmarked] = useState(null);
-  // const [isArchived, setIsArchived] = useState(null);
-
   const [bookmarkLoading, setBookmarkLoading] = useState(false);
-  const [sentHistory, setSentHistory] = useState(false);
 
   const actionLock = useRef(false);
+  const sentHistoryRef = useRef(null);
 
-  const sentHistoryRef = useRef(false);
+  // -------------------------------------------------------
+  // Verify that the Redux collection belongs to this route
+  // -------------------------------------------------------
+
+  const isCurrentCollection =
+    Boolean(
+      id &&
+      collection?.id != null &&
+      String(collection.id) === String(id)
+    );
 
   // -------------------------------------------------------
   // Permissions
@@ -148,18 +158,22 @@ export default function CollectionContainer() {
     }
   );
 
-
   // -------------------------------------------------------
   // Load collection
   // -------------------------------------------------------
 
   useEffect(() => {
-    if (!id) return;
+    if (!id) {
+      setLoading(false);
+      setLoadError(true);
+      return;
+    }
 
     let cancelled = false;
 
     async function loadCollection() {
       setLoading(true);
+      setLoadError(false);
 
       try {
         const action = currentProfile
@@ -173,9 +187,12 @@ export default function CollectionContainer() {
         checkResult(
           result,
           (payload) => {
+            if (cancelled) return;
+
             const col = payload?.collection;
 
             if (!col) {
+              setLoadError(true);
               setLoading(false);
               return;
             }
@@ -199,6 +216,9 @@ export default function CollectionContainer() {
             setLoading(false);
           },
           (error) => {
+            if (cancelled) return;
+
+            setLoadError(true);
             setLoading(false);
 
             showAlert({
@@ -214,10 +234,13 @@ export default function CollectionContainer() {
       } catch (error) {
         if (cancelled) return;
 
+        setLoadError(true);
         setLoading(false);
 
         showAlert({
-          message: "Unexpected error occurred.",
+          message:
+            error?.message ||
+            "Unexpected error occurred.",
           type: AlertType.error,
         });
       }
@@ -230,9 +253,8 @@ export default function CollectionContainer() {
     };
   }, [id, currentProfile?.id]);
 
-
   // -------------------------------------------------------
-  // Clear stale content when changing rooms
+  // Clear stale lists when changing rooms
   // -------------------------------------------------------
 
   useEffect(() => {
@@ -247,105 +269,98 @@ export default function CollectionContainer() {
         pages: [],
       })
     );
-  }, [id]);
-
+  }, [id, dispatch]);
 
   // -------------------------------------------------------
   // Home / Archive system rooms
   // -------------------------------------------------------
 
+  const homeCol = useMemo(() => {
+    const profileCollections =
+      currentProfile?.profileToCollections;
 
-const homeCol = useMemo(() => {
-  const profileCollections =
-    currentProfile?.profileToCollections;
+    if (!profileCollections) return null;
 
-  if (!profileCollections) return null;
+    return (
+      profileCollections.find(
+        (item) => item.type === "home"
+      )?.collection || null
+    );
+  }, [currentProfile?.profileToCollections]);
 
-  return (
-    profileCollections.find(
-      (item) => item.type === "home"
-    )?.collection || null
-  );
-}, [currentProfile?.profileToCollections]);
+  const archiveCol = useMemo(() => {
+    const profileCollections =
+      currentProfile?.profileToCollections;
 
-const archiveCol = useMemo(() => {
-  const profileCollections =
-    currentProfile?.profileToCollections;
+    if (!profileCollections) return null;
 
-  if (!profileCollections) return null;
+    return (
+      profileCollections.find(
+        (item) => item.type === "archive"
+      )?.collection || null
+    );
+  }, [currentProfile?.profileToCollections]);
 
-  return (
-    profileCollections.find(
-      (item) => item.type === "archive"
-    )?.collection || null
-  );
-}, [currentProfile?.profileToCollections]);
+  // -------------------------------------------------------
+  // Collection history
+  // -------------------------------------------------------
 
+  useEffect(() => {
+    if (
+      !currentProfile?.id ||
+      !isCurrentCollection ||
+      !collection?.id
+    ) {
+      return;
+    }
 
+    const historyKey =
+      `${currentProfile.id}:${collection.id}`;
 
-useEffect(() => {
-  if (
-    sentHistoryRef.current ||
-    !currentProfile?.id ||
-    !collection?.id
-  ) {
-    return;
-  }
+    if (sentHistoryRef.current === historyKey) {
+      return;
+    }
 
-  sentHistoryRef.current = true;
+    sentHistoryRef.current = historyKey;
 
-  dispatch(
-    postCollectionHistory({
-      profile: currentProfile,
-      collection,
-    })
-  );
-}, [
-  currentProfile?.id,
-  collection?.id,
-  dispatch,
-]);
+    dispatch(
+      postCollectionHistory({
+        profile: currentProfile,
+        collection,
+      })
+    );
+  }, [
+    currentProfile?.id,
+    collection?.id,
+    id,
+    isCurrentCollection,
+    dispatch,
+  ]);
+
   // -------------------------------------------------------
   // Scroll tracking
   // -------------------------------------------------------
 
   useScrollTracking({
     contentType: "collection",
-    contentId: collection?.id,
-    authorId: collection?.profileId,
+    contentId: isCurrentCollection
+      ? collection?.id
+      : undefined,
+    authorId: isCurrentCollection
+      ? collection?.profileId
+      : undefined,
     enableCompletion: false,
   });
-
 
   // -------------------------------------------------------
   // Recommended rooms
   // -------------------------------------------------------
 
-  const pageSize = 10;
-const recommended = {
-  items: [],
-};
-  // const recommended = usePaginatedResource({
-  //   cacheKey:
-  //     `recommended-collections:${collection?.id}`,
-
-  //   fetcher: getRecommendedCollections,
-
-  //   pageSize,
-
-  //   enabled: !!collection?.id,
-
-  //   params: {
-  //     colId: collection?.id,
-  //     type: collection?.type,
-  //   },
-
-  //   select: (res) => ({
-  //     items: res.collections,
-  //     totalCount: res.totalCount,
-  //   }),
-  // });
-
+  // Keep the existing placeholder until the recommendation
+  // fetcher is connected.
+  const recommended = {
+    items: [],
+  };
 
   // -------------------------------------------------------
   // Follow
@@ -357,7 +372,7 @@ const recommended = {
     actionLock.current = true;
 
     try {
-      if (!currentProfile || !collection) {
+      if (!currentProfile || !isCurrentCollection) {
         showAlert({
           message: "Please sign in",
           type: AlertType.error,
@@ -403,17 +418,23 @@ const recommended = {
           });
         }
       );
+    } catch (error) {
+      showAlert({
+        message:
+          error?.message ||
+          "Unable to follow this room.",
+        type: AlertType.error,
+      });
     } finally {
       actionLock.current = false;
     }
   };
 
-
   // -------------------------------------------------------
   // Unfollow
   // -------------------------------------------------------
 
-  const handleUnfollow = () => {
+  const handleUnfollow = async () => {
     if (
       currentProfile?.id ===
       collection?.profile?.id
@@ -436,12 +457,14 @@ const recommended = {
       return;
     }
 
-    dispatch(
-      deleteCollectionRole({
-        id,
-        role,
-      })
-    ).then((result) => {
+    try {
+      const result = await dispatch(
+        deleteCollectionRole({
+          id,
+          role,
+        })
+      );
+
       checkResult(
         result,
         () => {
@@ -459,41 +482,59 @@ const recommended = {
           });
         }
       );
-    });
+    } catch (error) {
+      showAlert({
+        message:
+          error?.message ||
+          "Unable to unfollow this room.",
+        type: AlertType.error,
+      });
+    }
   };
-const isBookmarked = useMemo(() => {
-  if (!collection || !homeCol) return null;
 
-  return (
-    collection.parentCollections?.find(
-      (item) =>
-        item.parentCollectionId === homeCol.id
-    ) || null
-  );
-}, [
-  collection,
-  homeCol,
-]);
+  // -------------------------------------------------------
+  // Bookmark / Archive state
+  // -------------------------------------------------------
 
-const isArchived = useMemo(() => {
-  if (!collection || !archiveCol) return null;
+  const isBookmarked = useMemo(() => {
+    if (!isCurrentCollection || !homeCol) {
+      return null;
+    }
 
-  return (
-    collection.parentCollections?.find(
-      (item) =>
-        item.parentCollectionId === archiveCol.id
-    ) || null
-  );
-}, [
-  collection,
-  archiveCol,
-]);
+    return (
+      collection.parentCollections?.find(
+        (item) =>
+          item.parentCollectionId === homeCol.id
+      ) || null
+    );
+  }, [
+    collection,
+    isCurrentCollection,
+    homeCol,
+  ]);
+
+  const isArchived = useMemo(() => {
+    if (!isCurrentCollection || !archiveCol) {
+      return null;
+    }
+
+    return (
+      collection.parentCollections?.find(
+        (item) =>
+          item.parentCollectionId === archiveCol.id
+      ) || null
+    );
+  }, [
+    collection,
+    isCurrentCollection,
+    archiveCol,
+  ]);
 
   // -------------------------------------------------------
   // Save / unsave Home
   // -------------------------------------------------------
 
-  const handleBookmark = () => {
+  const handleBookmark = async () => {
     if (!currentProfile) {
       showAlert({
         message: "Please sign in",
@@ -503,20 +544,22 @@ const isArchived = useMemo(() => {
       return;
     }
 
-    if (!homeCol || !collection) return;
+    if (!homeCol || !isCurrentCollection) {
+      return;
+    }
 
     setBookmarkLoading(true);
 
-if (!isBookmarked) {
+    try {
+      if (!isBookmarked) {
+        const result = await dispatch(
+          addCollectionListToCollection({
+            id: homeCol.id,
+            list: [collection.id],
+            profile: currentProfile,
+          })
+        );
 
-
-      dispatch(
-        addCollectionListToCollection({
-          id: homeCol.id,
-          list: [collection.id],
-          profile: currentProfile,
-        })
-      ).then((result) => {
         checkResult(
           result,
           () => {
@@ -524,32 +567,23 @@ if (!isBookmarked) {
               message: "Saved to Home.",
               type: AlertType.success,
             });
-
-            setBookmarkLoading(false);
           },
           (error) => {
-            // setIsBookmarked(null);
-
             showAlert({
               message:
                 error?.message ||
                 "Unable to save to Home.",
               type: AlertType.error,
             });
-
-            setBookmarkLoading(false);
           }
         );
-      });
-    } else {
-     const relationship = isBookmarked;
-      // setIsBookmarked(null);
+      } else {
+        const result = await dispatch(
+          deleteCollectionFromCollection({
+            tcId: isBookmarked.id,
+          })
+        );
 
-      dispatch(
-        deleteCollectionFromCollection({
-          tcId: relationship.id,
-        })
-      ).then((result) => {
         checkResult(
           result,
           () => {
@@ -557,24 +591,34 @@ if (!isBookmarked) {
               message: "Removed from Home.",
               type: AlertType.success,
             });
-
-            setBookmarkLoading(false);
           },
-          () => {
-            // setIsBookmarked(relationship);
-            setBookmarkLoading(false);
+          (error) => {
+            showAlert({
+              message:
+                error?.message ||
+                "Unable to remove from Home.",
+              type: AlertType.error,
+            });
           }
         );
+      }
+    } catch (error) {
+      showAlert({
+        message:
+          error?.message ||
+          "Unable to update Home.",
+        type: AlertType.error,
       });
+    } finally {
+      setBookmarkLoading(false);
     }
   };
-
 
   // -------------------------------------------------------
   // Save / unsave Archive
   // -------------------------------------------------------
 
-  const handleArchive = () => {
+  const handleArchive = async () => {
     if (!currentProfile) {
       showAlert({
         message: "Please sign in",
@@ -584,20 +628,22 @@ if (!isBookmarked) {
       return;
     }
 
-    if (!archiveCol || !collection) return;
+    if (!archiveCol || !isCurrentCollection) {
+      return;
+    }
 
     setBookmarkLoading(true);
 
-    if (!isArchived) {
-      setIsArchived(true);
+    try {
+      if (!isArchived) {
+        const result = await dispatch(
+          addCollectionListToCollection({
+            id: archiveCol.id,
+            list: [collection.id],
+            profile: currentProfile,
+          })
+        );
 
-      dispatch(
-        addCollectionListToCollection({
-          id: archiveCol.id,
-          list: [collection.id],
-          profile: currentProfile,
-        })
-      ).then((result) => {
         checkResult(
           result,
           () => {
@@ -605,33 +651,23 @@ if (!isBookmarked) {
               message: "Saved to Archive.",
               type: AlertType.success,
             });
-
-            setBookmarkLoading(false);
           },
           (error) => {
-            setIsArchived(null);
-
             showAlert({
               message:
                 error?.message ||
                 "Unable to save to Archive.",
               type: AlertType.error,
             });
-
-            setBookmarkLoading(false);
           }
         );
-      });
-    } else {
-      const relationship = isArchived;
+      } else {
+        const result = await dispatch(
+          deleteCollectionFromCollection({
+            tcId: isArchived.id,
+          })
+        );
 
-      setIsArchived(null);
-
-      dispatch(
-        deleteCollectionFromCollection({
-          tcId: relationship.id,
-        })
-      ).then((result) => {
         checkResult(
           result,
           () => {
@@ -639,76 +675,137 @@ if (!isBookmarked) {
               message: "Removed from Archive.",
               type: AlertType.success,
             });
-
-            setBookmarkLoading(false);
           },
-          () => {
-            setIsArchived(relationship);
-            setBookmarkLoading(false);
+          (error) => {
+            showAlert({
+              message:
+                error?.message ||
+                "Unable to remove from Archive.",
+              type: AlertType.error,
+            });
           }
         );
+      }
+    } catch (error) {
+      showAlert({
+        message:
+          error?.message ||
+          "Unable to update Archive.",
+        type: AlertType.error,
       });
+    } finally {
+      setBookmarkLoading(false);
     }
   };
-
-
-  // -------------------------------------------------------
-  // Access denied
-  // -------------------------------------------------------
-
-  if (!loading && collection && !canSee) {
-    return (
-            <IonContent
-      scrollY={true}
-      className="page-content"
-      fullscreen
-    >
-      <ErrorBoundary>
-    
-        <main className="h-[100%] bg-plumb-surface  dark:bg-base-bgDark">
-          <div className={`${PAGE} py-24`}>
-            <div className="max-w-xl mx-auto text-center">
-              <p className="text-xs uppercase tracking-[0.18em] text-text-secondary mb-4">
-                Room
-              </p>
-
-              <h1 className="font-serif text-3xl sm:text-4xl text-text-primary dark:text-cream mb-4">
-                This room is private.
-              </h1>
-
-              <p className="text-text-secondary dark:text-gray-400 mb-8">
-                You do not have permission to view
-                what is inside this room.
-              </p>
-
-              <button
-                onClick={() =>
-                  history.push(Paths.collections.path)
-                }
-                className={styles.button.primary}
-                // className={PRIMARY_BUTTON}
-              >
-                Back to Rooms
-              </button>
-            </div>
-          </div>
-        </main>
-      </ErrorBoundary>
-      </IonContent>
-    );
-  }
-
 
   // -------------------------------------------------------
   // Loading
   // -------------------------------------------------------
 
-  if (loading || !collection) {
+  // Do not render the previous room while a new route is loading.
+  if (
+    loading ||
+    (collection && !isCurrentCollection && !loadError)
+  ) {
+    return <CollectionLoading />;
+  }
+
+  // -------------------------------------------------------
+  // Access denied
+  // -------------------------------------------------------
+
+  if (
+    isCurrentCollection &&
+    !loading &&
+    !canSee
+  ) {
     return (
-      <CollectionLoading />
+      <IonContent
+        scrollY={true}
+        className="page-content"
+        fullscreen
+      >
+        <ErrorBoundary>
+         <main className={styles.collection.page}>
+            <div className={`${PAGE} py-24`}>
+              <div className="mx-auto max-w-xl text-center">
+                <p className="mb-4 text-xs uppercase tracking-[0.18em] text-text-secondary">
+                  Room
+                </p>
+
+                <h1 className="mb-4 font-serif text-3xl sm:text-4xl text-text-primary dark:text-cream">
+                  This room is private.
+                </h1>
+
+                <p className="mb-8 text-text-secondary dark:text-gray-300">
+                  You do not have permission to view
+                  what is inside this room.
+                </p>
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    history.push(Paths.collections.path)
+                  }
+                  className={PRIMARY_BUTTON}
+                >
+                  Back to Rooms
+                </button>
+              </div>
+            </div>
+          </main>
+        </ErrorBoundary>
+      </IonContent>
     );
   }
 
+  // -------------------------------------------------------
+  // Unavailable / failed load
+  // -------------------------------------------------------
+
+  if (
+    loadError ||
+    !isCurrentCollection
+  ) {
+    return (
+      <IonContent
+        scrollY={true}
+        className="page-content"
+        fullscreen
+      >
+        <ErrorBoundary>
+        <main className={styles.collection.page}>
+            <div className={`${PAGE} py-24`}>
+              <div className="mx-auto max-w-xl text-center">
+                <p className="mb-4 text-xs uppercase tracking-[0.18em] text-text-secondary">
+                  Room
+                </p>
+
+                <h1 className="mb-4 font-serif text-3xl sm:text-4xl text-text-primary dark:text-cream">
+                  This room isn't available.
+                </h1>
+
+                <p className="mb-8 text-text-secondary dark:text-gray-300">
+                  We couldn't load this room. You can
+                  return to Rooms and try again.
+                </p>
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    history.push(Paths.collections.path)
+                  }
+                  className={PRIMARY_BUTTON}
+                >
+                  Back to Rooms
+                </button>
+              </div>
+            </div>
+          </main>
+        </ErrorBoundary>
+      </IonContent>
+    );
+  }
 
   // -------------------------------------------------------
   // Main
@@ -716,45 +813,26 @@ if (!isBookmarked) {
 
   return (
     <ErrorBoundary>
-      
-      <main className="    h-[100%]
-     
-        overflow-y-auto
-        overscroll-contain
-        bg-plumb-surface 
-        text-text-primary
-        dark:bg-base-bgDark
-        dark:text-cream
-    ">
-
+<main className={styles.collection.page}>
         {/* --------------------------------------------- */}
         {/* Header / Room identity */}
         {/* --------------------------------------------- */}
 
         <section className="border-b border-card-border dark:border-white/10">
-          <div className={`${PAGE} pt-10 sm:pt-14 pb-8`}>
-
+          <div className={`${PAGE} pt-10 pb-8 sm:pt-14`}>
             <button
+              type="button"
               onClick={() =>
                 history.push(Paths.collections.path)
               }
-              className="
-                inline-flex items-center gap-2
-                text-sm text-text-secondary
-                hover:text-text-brand
-                transition-colors
-                mb-8
-              "
+              className={`${TEXT_BUTTON} mb-8`}
             >
               <span aria-hidden="true">←</span>
               <span>Rooms</span>
             </button>
 
-
             <div className="max-w-3xl">
-
-              <div className="flex flex-wrap items-center gap-2 mb-4">
-
+              <div className="mb-4 flex flex-wrap items-center gap-2">
                 {collection.isWorkshop && (
                   <span
                     className="
@@ -779,6 +857,8 @@ if (!isBookmarked) {
                       px-3 py-1
                       text-xs font-medium
                       text-text-secondary
+                      dark:border-white/10
+                      dark:text-gray-300
                     "
                   >
                     {formatRoomType(collection.type)}
@@ -794,6 +874,8 @@ if (!isBookmarked) {
                       px-3 py-1
                       text-xs
                       text-text-secondary
+                      dark:border-white/10
+                      dark:text-gray-300
                     "
                   >
                     Private
@@ -801,23 +883,20 @@ if (!isBookmarked) {
                 )}
               </div>
 
-
               <h1
                 className="
                   font-serif
                   text-4xl
-                  sm:text-5xl
-                  lg:text-6xl
                   leading-[1.05]
                   tracking-tight
                   text-text-primary
                   dark:text-cream
+                  sm:text-5xl
+                  lg:text-6xl
                 "
               >
-                {collection.title ||
-                  "Untitled Room"}
+                {collection.title || "Untitled Room"}
               </h1>
-
 
               {collection.purpose && (
                 <p
@@ -825,18 +904,18 @@ if (!isBookmarked) {
                     mt-5
                     max-w-2xl
                     text-base
-                    sm:text-lg
                     leading-relaxed
                     text-text-secondary
                     dark:text-gray-300
+                    sm:text-lg
                   "
                 >
                   {collection.purpose}
                 </p>
               )}
 
-
               {/* Creator */}
+
               {collection.profile && (
                 <div className="mt-7 flex items-center gap-3">
                   <ProfileCircle
@@ -845,31 +924,20 @@ if (!isBookmarked) {
                   />
                 </div>
               )}
-
             </div>
           </div>
         </section>
-
 
         {/* --------------------------------------------- */}
         {/* Actions */}
         {/* --------------------------------------------- */}
 
-       <section className="border-b border-card-border dark:border-white/10">
-          <div
-            className={`${PAGE} py-4`}
-          >
-            <div
-              className="
-                flex
-                flex-wrap
-                items-center
-                gap-2
-              "
-            >
-
+        <section className="border-b border-card-border dark:border-white/10">
+          <div className={`${PAGE} py-4`}>
+            <div className="flex flex-wrap items-center gap-2">
               {currentProfile && (
                 <button
+                  type="button"
                   disabled={bookmarkLoading}
                   onClick={
                     role
@@ -882,15 +950,13 @@ if (!isBookmarked) {
                       : SECONDARY_BUTTON
                   }
                 >
-                  {role
-                    ? "Following"
-                    : "Follow"}
+                  {role ? "Following" : "Follow"}
                 </button>
               )}
 
-
               {currentProfile && (
                 <button
+                  type="button"
                   disabled={bookmarkLoading}
                   onClick={handleBookmark}
                   className={SECONDARY_BUTTON}
@@ -901,9 +967,9 @@ if (!isBookmarked) {
                 </button>
               )}
 
-
               {currentProfile && (
                 <button
+                  type="button"
                   disabled={bookmarkLoading}
                   onClick={handleArchive}
                   className={SECONDARY_BUTTON}
@@ -914,22 +980,25 @@ if (!isBookmarked) {
                 </button>
               )}
 
-{canEdit && (
-  <button
-    onClick={() =>
-      history.push(
-        Paths.editCollection.createRoute(
-          collection.id
-        )
-      )
-    }
-    className={SECONDARY_BUTTON}
-  >
-    Edit room
-  </button>
-)}
+              {canEdit && (
+                <button
+                  type="button"
+                  onClick={() =>
+                    history.push(
+                      Paths.editCollection.createRoute(
+                        collection.id
+                      )
+                    )
+                  }
+                  className={SECONDARY_BUTTON}
+                >
+                  Edit room
+                </button>
+              )}
+
               {canAdd && (
                 <button
+                  type="button"
                   onClick={() =>
                     history.push(
                       Paths.addToCollection.createRoute(
@@ -942,27 +1011,25 @@ if (!isBookmarked) {
                   Add to Room
                 </button>
               )}
-
             </div>
           </div>
         </section>
 
-
+        {/* --------------------------------------------- */}
+        {/* Room tabs and content */}
+        {/* --------------------------------------------- */}
 
         <section>
-          <div className={`${PAGE}`}>
-
+          <div className={PAGE}>
             <RoomTabs
               tab={tab}
               setTab={setTab}
             />
 
             <div className="pb-16">
-
               {tab === "inside" && (
                 <InsideRoom
                   collection={collection}
-                  collections={collections}
                   canAdd={canAdd}
                   canEdit={canEdit}
                   history={history}
@@ -981,11 +1048,13 @@ if (!isBookmarked) {
                   collection={collection}
                 />
               )}
-
             </div>
           </div>
         </section>
 
+        {/* --------------------------------------------- */}
+        {/* Recommended rooms */}
+        {/* --------------------------------------------- */}
 
         {recommended.items?.length > 0 && (
           <section
@@ -996,13 +1065,12 @@ if (!isBookmarked) {
             "
           >
             <div className={`${PAGE} ${SECTION}`}>
-
               <div className="mb-6">
-                <p className="text-xs uppercase tracking-[0.18em] text-text-secondary mb-2">
+                <p className="mb-2 text-xs uppercase tracking-[0.18em] text-text-secondary">
                   Keep exploring
                 </p>
 
-                <h2 className="font-serif text-2xl sm:text-3xl text-text-primary dark:text-cream">
+                <h2 className="font-serif text-2xl text-text-primary dark:text-cream sm:text-3xl">
                   Other rooms
                 </h2>
               </div>
@@ -1011,28 +1079,32 @@ if (!isBookmarked) {
                 rooms={recommended.items}
                 history={history}
               />
-
             </div>
           </section>
-        )} 
-
+        )}
       </main>
     </ErrorBoundary>
   );
 }
 
-
 // =========================================================
 // INSIDE ROOM
 // =========================================================
+
 function InsideRoom({
   collection,
-  collections,
   canAdd,
+  canEdit,
   history,
 }) {
+  const currentProfileId = useSelector(
+    (state) => state.users.currentProfile?.id
+  );
+
   const orderedContent = useMemo(() => {
-    const pages = (collection?.storyIdList ?? [])
+    const pages = (
+      collection?.storyIdList ?? []
+    )
       .filter((item) => item?.story)
       .map((item, index) => ({
         kind: "page",
@@ -1040,7 +1112,9 @@ function InsideRoom({
         index: item.index ?? index,
       }));
 
-    const rooms = (collection?.childCollections ?? [])
+    const rooms = (
+      collection?.childCollections ?? []
+    )
       .filter((item) => item?.childCollection)
       .map((item, index) => ({
         kind: "room",
@@ -1063,45 +1137,41 @@ function InsideRoom({
     });
   }, [collection]);
 
-
   const isOwner =
-    collection?.profileId ===
-    useSelector(
-      (state) =>
-        state.users.currentProfile?.id
-    );
-
+    collection?.profileId === currentProfileId;
 
   const canModify =
+    canEdit ||
     isOwner ||
     collection?.isOpenCollaboration;
-
 
   if (!orderedContent.length) {
     return (
       <div className="pt-8">
         <div
           className="
+            rounded-2xl
             border
             border-dashed
             border-card-border
-            rounded-2xl
             p-8
-            sm:p-12
             text-center
+            dark:border-white/10
+            sm:p-12
           "
         >
           <p className="font-serif text-2xl text-text-primary dark:text-cream">
             Nothing lives here yet.
           </p>
 
-          <p className="mt-2 max-w-md mx-auto text-sm text-text-secondary">
+          <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-text-secondary dark:text-gray-300">
             A room can hold writing, other rooms,
             or both. Start somewhere.
           </p>
 
           {(canModify || canAdd) && (
             <button
+              type="button"
               onClick={() =>
                 history.push(
                   Paths.addToCollection.createRoute(
@@ -1119,21 +1189,16 @@ function InsideRoom({
     );
   }
 
-
   return (
     <div className="pt-8">
-
       <RoomSectionHeading
         eyebrow="Inside"
         title="What's here"
         description="Writing and rooms collected together."
       />
 
-
       <div className="mt-8 space-y-10">
-
         {orderedContent.map((entry, index) => {
-
           if (entry.kind === "page") {
             return (
               <div
@@ -1150,7 +1215,6 @@ function InsideRoom({
             );
           }
 
-
           if (entry.kind === "room") {
             return (
               <RoomPreview
@@ -1161,26 +1225,12 @@ function InsideRoom({
             );
           }
 
-
           return null;
         })}
-
       </div>
-
     </div>
   );
 }
-
-
-
-
-
-
-// =========================================================
-// ROOM PREVIEW
-// =========================================================
-
-
 
 // =========================================================
 // MEMBERS
@@ -1192,12 +1242,11 @@ function MemberTab({
 }) {
   const roles = useMemo(() => {
     const contributors = [
-      ...(collection?.roles ?? [])
-        .filter(
-          (role) =>
-            role?.profile?.id !==
-            collection?.profile?.id
-        ),
+      ...(collection?.roles ?? []).filter(
+        (member) =>
+          member?.profile?.id !==
+          collection?.profile?.id
+      ),
 
       collection?.profile
         ? {
@@ -1208,7 +1257,7 @@ function MemberTab({
     ];
 
     return contributors
-      .filter(Boolean)
+      .filter((member) => member?.profile?.id)
       .sort((a, b) =>
         String(a.role).localeCompare(
           String(b.role)
@@ -1216,23 +1265,28 @@ function MemberTab({
       );
   }, [collection]);
 
-
   return (
     <section className="pt-8">
-
       <RoomSectionHeading
         eyebrow="People"
         title="Members"
         description="People with a role in this room."
       />
 
-
       {roles.length > 0 ? (
-        <div className="mt-6 divide-y divide-card-border dark:divide-white/10 border-y border-card-border dark:border-white/10">
-
+        <div
+          className="
+            mt-6
+            divide-y divide-card-border
+            border-y border-card-border
+            dark:divide-white/10
+            dark:border-white/10
+          "
+        >
           {roles.map((member) => (
             <button
               key={member.profile.id}
+              type="button"
               onClick={() =>
                 history.push(
                   Paths.profile.createRoute(
@@ -1241,22 +1295,25 @@ function MemberTab({
                 )
               }
               className="
-                w-[100%]
-                my-4
-                px-8
-                rounded-2xl
-                py-4
+                my-2
                 flex
+                w-[100%]
                 items-center
                 justify-between
                 gap-4
+                rounded-2xl
+                px-4
+                py-4
                 text-left
-                hover:bg-black/[0.02]
-                dark:hover:bg-white/[0.03]
                 transition-colors
+                hover:bg-black/[0.02]
+                focus-visible:outline-none
+                focus-visible:ring-2
+                focus-visible:ring-button-primary-bg/40
+                dark:hover:bg-white/[0.03]
+                sm:px-8
               "
             >
-
               <ProfileCircle
                 profile={member.profile}
                 includeUsername={true}
@@ -1264,30 +1321,28 @@ function MemberTab({
 
               <span
                 className="
+                  shrink-0
                   text-xs
                   capitalize
                   text-text-secondary
+                  dark:text-gray-300
                 "
               >
                 {member.role}
               </span>
-
             </button>
           ))}
-
         </div>
       ) : (
-        <div className={styles.tabs.container}>
+        <div className="mt-6">
           <EmptyRoomContent
             message="No members yet."
           />
         </div>
       )}
-
     </section>
   );
 }
-
 
 // =========================================================
 // ABOUT
@@ -1298,24 +1353,15 @@ function AboutTab({
 }) {
   return (
     <section className="pt-8">
-
       <RoomSectionHeading
         eyebrow="About"
         title="About this room"
       />
 
-
-      <div
-        className="
-          mt-6
-          max-w-2xl
-          space-y-8
-        "
-      >
-
+      <div className="mt-6 max-w-2xl space-y-8">
         {collection?.purpose && (
           <div>
-            <p className="text-xs uppercase tracking-[0.16em] text-text-secondary mb-3">
+            <p className="mb-3 text-xs uppercase tracking-[0.16em] text-text-secondary">
               Purpose
             </p>
 
@@ -1332,10 +1378,9 @@ function AboutTab({
           </div>
         )}
 
-
-        {collection?.location && (
+        {collection?.location?.city && (
           <div>
-            <p className="text-xs uppercase tracking-[0.16em] text-text-secondary mb-3">
+            <p className="mb-3 text-xs uppercase tracking-[0.16em] text-text-secondary">
               Location
             </p>
 
@@ -1345,13 +1390,12 @@ function AboutTab({
           </div>
         )}
 
-
         <div>
-          <p className="text-xs uppercase tracking-[0.16em] text-text-secondary mb-3">
+          <p className="mb-3 text-xs uppercase tracking-[0.16em] text-text-secondary">
             Access
           </p>
 
-          <p className="text-sm leading-relaxed text-text-secondary">
+          <p className="text-sm leading-relaxed text-text-secondary dark:text-gray-300">
             {collection.isPrivate
               ? "Private room"
               : collection.isOpenCollaboration
@@ -1359,13 +1403,10 @@ function AboutTab({
                 : "Public room"}
           </p>
         </div>
-
       </div>
-
     </section>
   );
 }
-
 
 // =========================================================
 // TABS
@@ -1390,55 +1431,62 @@ function RoomTabs({
     },
   ];
 
-  
   return (
     <div className={styles.tabs.container}>
-  <div className={styles.tabs.wrapper}>
-  
-
+      <div
+        className={styles.tabs.wrapper}
+        role="tablist"
+        aria-label="Room sections"
+      >
         {tabs.map((item) => {
-          const active =
-            tab === item.id;
+          const active = tab === item.id;
 
           return (
             <button
               key={item.id}
-              onClick={() =>
-                setTab(item.id)
+              id={`room-tab-${item.id}`}
+              type="button"
+              role="tab"
+              aria-selected={active}
+              aria-controls={`room-panel-${item.id}`}
+              onClick={() => setTab(item.id)}
+              className={
+                "relative whitespace-nowrap " +
+                [
+                  styles.tabs.tab,
+                  active
+                    ? styles.tabs.active
+                    : styles.tabs.inactive,
+                ].join(" ") +
+                " focus-visible:outline-none " +
+                "focus-visible:ring-2 " +
+                "focus-visible:ring-button-primary-bg/40"
               }
-                   className={"  whitespace-nowrap  relative "+[
-            styles.tabs.tab,
-            active ? styles.tabs.active : styles.tabs.inactive,
-          ].join(" ")}
-   
             >
               {item.label}
 
               {active && (
                 <motion.span
                   layoutId="room-tab-indicator"
+                  aria-hidden="true"
                   className={`
                     absolute
+                    bottom-0
                     left-0
                     right-0
-                    bottom-0
                     h-0.5
                     rounded-full
                     ${styles.tabs.tab}
-         
                   `}
-                            //  bg-button-primary-bg
                 />
               )}
             </button>
           );
         })}
-
       </div>
     </div>
   );
 }
-
 
 // =========================================================
 // RECOMMENDED ROOMS
@@ -1453,9 +1501,9 @@ function RecommendedRooms({
       className="
         grid
         grid-cols-1
+        gap-4
         sm:grid-cols-2
         lg:grid-cols-3
-        gap-4
       "
     >
       {rooms.map((room) => (
@@ -1469,7 +1517,6 @@ function RecommendedRooms({
   );
 }
 
-
 // =========================================================
 // SECTION HEADING
 // =========================================================
@@ -1482,47 +1529,23 @@ function RoomSectionHeading({
   return (
     <div>
       {eyebrow && (
-        <p
-          className="
-            text-xs
-            uppercase
-            tracking-[0.18em]
-            text-text-secondary
-            mb-2
-          "
-        >
+        <p className="mb-2 text-xs uppercase tracking-[0.18em] text-text-secondary">
           {eyebrow}
         </p>
       )}
 
-      <h2
-        className="
-          font-serif
-          text-2xl
-          sm:text-3xl
-          text-text-primary
-          dark:text-cream
-        "
-      >
+      <h2 className="font-serif text-2xl text-text-primary dark:text-cream sm:text-3xl">
         {title}
       </h2>
 
       {description && (
-        <p
-          className="
-            mt-2
-            text-sm
-            text-text-secondary
-            max-w-xl
-          "
-        >
+        <p className="mt-2 max-w-xl text-sm leading-relaxed text-text-secondary dark:text-gray-300">
           {description}
         </p>
       )}
     </div>
   );
 }
-
 
 // =========================================================
 // EMPTY STATE
@@ -1541,13 +1564,13 @@ function EmptyRoomContent({
         border
         border-dashed
         border-card-border
-        dark:border-white/10
         px-6
         py-10
         text-center
+        dark:border-white/10
       "
     >
-      <p className="text-sm text-text-secondary">
+      <p className="text-sm text-text-secondary dark:text-gray-300">
         {message}
       </p>
 
@@ -1555,9 +1578,9 @@ function EmptyRoomContent({
         buttonLabel &&
         onClick && (
           <button
+            type="button"
             onClick={onClick}
-            className={styles.button.secondary+" mt-5"}
-            // className={`${SECONDARY_BUTTON} mt-5`}
+            className={`${SECONDARY_BUTTON} mt-5`}
           >
             {buttonLabel}
           </button>
@@ -1566,63 +1589,59 @@ function EmptyRoomContent({
   );
 }
 
-
 // =========================================================
 // LOADING
 // =========================================================
 
 function CollectionLoading() {
   return (
-    <main className="min-h-screen bg-plumb-surface  dark:bg-base-bgDark">
-
+    <main
+      role="status"
+      aria-label="Loading room content"
+      className="min-h-screen bg-plumb-surface text-text-primary dark:bg-base-bgDark dark:text-cream"
+    >
       <div className={`${PAGE} pt-10 sm:pt-14`}>
+        <div className="mb-10 h-4 w-16 animate-pulse rounded bg-gray-200 dark:bg-white/10" />
 
-        <div className="h-4 w-16 rounded bg-gray-200 dark:bg-white/10 animate-pulse mb-10" />
+        <div className="mb-5 h-4 w-24 animate-pulse rounded bg-gray-200 dark:bg-white/10" />
 
-        <div className="h-4 w-24 rounded bg-gray-200 dark:bg-white/10 animate-pulse mb-5" />
+        <div className="h-12 w-3/4 max-w-2xl animate-pulse rounded bg-gray-200 dark:bg-white/10 sm:h-16" />
 
-        <div className="h-12 sm:h-16 w-3/4 max-w-2xl rounded bg-gray-200 dark:bg-white/10 animate-pulse" />
-
-        <div className="mt-5 space-y-2 max-w-xl">
-          <div className="h-4 w-full rounded bg-gray-200 dark:bg-white/10 animate-pulse" />
-          <div className="h-4 w-4/5 rounded bg-gray-200 dark:bg-white/10 animate-pulse" />
+        <div className="mt-5 max-w-xl space-y-2">
+          <div className="h-4 w-full animate-pulse rounded bg-gray-200 dark:bg-white/10" />
+          <div className="h-4 w-4/5 animate-pulse rounded bg-gray-200 dark:bg-white/10" />
         </div>
 
-        <div className="mt-8 h-8 w-40 rounded bg-gray-200 dark:bg-white/10 animate-pulse" />
-
+        <div className="mt-8 h-8 w-40 animate-pulse rounded bg-gray-200 dark:bg-white/10" />
       </div>
 
-
-      <div className="border-y border-card-border dark:border-white/10 mt-10">
+      <div className="mt-10 border-y border-card-border dark:border-white/10">
         <div className={`${PAGE} py-4`}>
-          <div className="h-5 w-32 rounded bg-gray-200 dark:bg-white/10 animate-pulse" />
+          <div className="h-5 w-32 animate-pulse rounded bg-gray-200 dark:bg-white/10" />
         </div>
       </div>
 
+      <div className={`${PAGE} space-y-5 py-10`}>
+        <div className="h-7 w-40 animate-pulse rounded bg-gray-200 dark:bg-white/10" />
 
-      <div className={`${PAGE} py-10 space-y-5`}>
-        <div className="h-7 w-40 rounded bg-gray-200 dark:bg-white/10 animate-pulse" />
-
-        <div className="grid sm:grid-cols-2 gap-4">
+        <div className="grid gap-4 sm:grid-cols-2">
           {[1, 2, 3, 4].map((item) => (
             <div
               key={item}
               className="
                 h-40
+                animate-pulse
                 rounded-2xl
                 bg-gray-200
                 dark:bg-white/10
-                animate-pulse
               "
             />
           ))}
         </div>
       </div>
-
     </main>
   );
 }
-
 
 // =========================================================
 // Helpers
@@ -1648,3 +1667,256 @@ function formatRoomType(type) {
       )
   );
 }
+// import {
+//   useEffect,
+
+//   useMemo,
+//   useRef,
+//   useState,
+// } from "react";
+
+// import { useDispatch, useSelector } from "react-redux";
+// import { useHistory, useParams } from "react-router";
+
+// import { useAlert } from "../../core/useAlert.jsx";
+// import AlertType from "../../core/AlertType.js";
+
+// import PageList from "../../components/page/PageList";
+// import ProfileCircle from "../../components/profile/ProfileCircle.jsx";
+// import ErrorBoundary from "../../ErrorBoundary";
+
+// import {
+//   addCollectionListToCollection,
+//   deleteCollectionFromCollection,
+//   fetchCollection,
+//   fetchCollectionProtected,
+
+//   setCollections,
+// } from "../../actions/CollectionActions";
+
+// import {
+//   deleteCollectionRole,
+//   postCollectionRole,
+// } from "../../actions/RoleActions";
+
+// import {
+//   postCollectionHistory,
+// } from "../../actions/HistoryActions.js";
+
+// import {
+//   setPagesInView,
+// } from "../../actions/PageActions.jsx";
+
+// import {
+//   RoleType,
+// } from "../../core/constants";
+
+// import Paths from "../../core/paths.js";
+// import checkResult from "../../core/checkResult.js";
+// import computePermissions from "../../core/compusePermissions.jsx";
+// import usePaginatedResource from "../../core/usePaginatedResource.jsx";
+// import useScrollTracking from "../../core/useScrollTracking.jsx";
+
+// import { motion } from "framer-motion";
+// import { IonContent } from "@ionic/react";
+// import RoomPreview from "../../components/room/RoomPreview.jsx";
+// import styles from "../../styles/style.js";
+
+
+// // ---------------------------------------------------------
+// // Layout
+// // ---------------------------------------------------------
+
+// const PAGE =
+//   "w-full max-w-[52rem] mx-auto px-4 sm:px-6 lg:px-8";
+
+// const SECTION =
+//   "py-8 sm:py-10";
+
+// const BUTTON =
+//   "inline-flex items-center justify-center h-11 px-5 rounded-full " +
+//   "text-sm font-medium transition-all duration-200 " +
+//   "focus:outline-none focus:ring-2 focus:ring-button-primary-bg/30";
+
+// const SECONDARY_BUTTON = styles.button.secondary
+//   // `${BUTTON} border border-card-border bg-card-background ` +
+//   // `text-text-primary hover:border-button-primary-bg ` +
+//   // `hover:text-text-brand`;
+
+// const PRIMARY_BUTTON = styles.button.primary
+//   // `${BUTTON} bg-button-primary-bg text-white ` +
+//   // `hover:bg-button-primary-hover`;
+
+
+// // ---------------------------------------------------------
+// // Main page
+// // ---------------------------------------------------------
+
+// export default function CollectionContainer() {
+//   const { id } = useParams();
+//   const history = useHistory();
+//   const dispatch = useDispatch();
+
+//   const { showAlert } = useAlert();
+
+//   const currentProfile = useSelector(
+//     (state) => state.users.currentProfile
+//   );
+
+//   const collection = useSelector(
+//     (state) => state.books.collectionInView
+//   );
+
+//   const collections = useSelector(
+//     (state) => state.books.collections
+//   );
+
+//   const [loading, setLoading] = useState(true);
+//   const [tab, setTab] = useState("inside");
+
+
+
+//   // const [isBookmarked, setIsBookmarked] = useState(null);
+//   // const [isArchived, setIsArchived] = useState(null);
+
+//   const [bookmarkLoading, setBookmarkLoading] = useState(false);
+//   const [sentHistory, setSentHistory] = useState(false);
+
+//   const actionLock = useRef(false);
+
+//   const sentHistoryRef = useRef(false);
+
+//   // -------------------------------------------------------
+//   // Permissions
+//   // -------------------------------------------------------
+
+//   const {
+//     canSee,
+//     canAdd,
+//     canEdit,
+//     role,
+//   } = computePermissions(
+//     collection,
+//     currentProfile,
+//     {
+//       getAccessList: (c) => c?.roles ?? [],
+//       getAccessRole: (r) => r.role,
+//       isPrivate: (c) => c?.isPrivate,
+//       isOpen: (c) => c?.isOpenCollaboration,
+
+//       canWriteRoles: [
+//         RoleType.writer,
+//         RoleType.editor,
+//       ],
+
+//       canEditRoles: [
+//         RoleType.editor,
+//       ],
+//     }
+//   );
+
+
+//   // -------------------------------------------------------
+//   // Load collection
+//   // -------------------------------------------------------
+
+//   useEffect(() => {
+//     if (!id) return;
+
+//     let cancelled = false;
+
+//     async function loadCollection() {
+//       setLoading(true);
+
+//       try {
+//         const action = currentProfile
+//           ? fetchCollectionProtected({ id })
+//           : fetchCollection({ id });
+
+//         const result = await dispatch(action);
+
+//         if (cancelled) return;
+
+//         checkResult(
+//           result,
+//           (payload) => {
+//             const col = payload?.collection;
+
+//             if (!col) {
+//               setLoading(false);
+//               return;
+//             }
+
+//             const sortedPages = [
+//               ...(col.storyIdList ?? []),
+//             ]
+//               .filter((item) => item?.story)
+//               .sort(
+//                 (a, b) =>
+//                   (a.index ?? 0) - (b.index ?? 0)
+//               )
+//               .map((item) => item.story);
+
+//             dispatch(
+//               setPagesInView({
+//                 pages: sortedPages,
+//               })
+//             );
+
+//             setLoading(false);
+//           },
+//           (error) => {
+//             setLoading(false);
+
+//             showAlert({
+//               message:
+//                 error?.status === 403
+//                   ? "You do not have permission to view this room."
+//                   : error?.message ||
+//                     "Failed to load this room.",
+//               type: AlertType.error,
+//             });
+//           }
+//         );
+//       } catch (error) {
+//         if (cancelled) return;
+
+//         setLoading(false);
+
+//         showAlert({
+//           message: "Unexpected error occurred.",
+//           type: AlertType.error,
+//         });
+//       }
+//     }
+
+//     loadCollection();
+
+//     return () => {
+//       cancelled = true;
+//     };
+//   }, [id, currentProfile?.id]);
+
+
+//   // -------------------------------------------------------
+//   // Clear stale content when changing rooms
+//   // -------------------------------------------------------
+
+//   useEffect(() => {
+//     dispatch(
+//       setCollections({
+//         collections: [],
+//       })
+//     );
+
+//     dispatch(
+//       setPagesInView({
+//         pages: [],
+//       })
+//     );
+//   }, [id]);
+
+
+//   // -------------------------------------------------------
+//   // Home / Archive system rooms
+//   // -------------------------------------------------------

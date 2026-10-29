@@ -16,7 +16,7 @@
     "build:clip": "npx vite build --mode clip",
     "build:main": "npx vite build --mode main",
     "run-ios": "npx vite build --mode main && npx cap sync ios && npx cap open ios",
-"run-android": "npx vite build --mode main && npx cap sync android && npx cap run android"
+    "run-android": "npx vite build --mode main && npx cap sync android && npx cap run android"
   },
   "dependencies": {
     "@capacitor-firebase/messaging": "^7.5.0",
@@ -54,7 +54,7 @@
     "react-beautiful-dnd": "^13.1.1",
     "react-cool-onclickoutside": "^1.7.0",
     "react-dom": "^18.3.1",
-    "react-ga4": "^2.1.0",
+    "react-ga4": "^3.0.1",
     "react-helmet": "^6.1.0",
     "react-helmet-async": "^2.0.5",
     "react-router": "5.3.4",

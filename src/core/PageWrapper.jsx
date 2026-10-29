@@ -144,13 +144,14 @@ return (
   >
     <main
       className="
+        bg-plumb-surface dark:bg-plumb-dark-canvas
         relative
         flex-1
        overflow-auto
               bg-plumb-surface
      
         text-plumb-ink
-        dark:bg-plumb-dark-surface
+    
         dark:text-plumb-darkText
       "
     >

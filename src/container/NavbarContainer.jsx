@@ -193,14 +193,14 @@ function DesktopNavbar({
               onClick={handleSearch}
             />
           )}
-
+<div className='mr-4'>
           {isLoggedIn ? (
             <SignOutButton />
           ) : (
             <SignInButton />
           )}
         </div>
-
+</div>
       </div>
     </header>
   );
@@ -529,27 +529,29 @@ function BrowserMobileNavbar({
   };
   const dispatch = useDispatch()
   const handleSignOut = async () => {
-
-    try {
-      if (Capacitor.isNativePlatform()) {
+    try{
+         dispatch(
+      signOutAction({
+        profile: currentProfile,
+      }))
+         if (Capacitor.isNativePlatform()) {
         await SocialLogin.logout({
           provider: 'google',
         });
       }
-    } catch (error) {
+    
+    }
+catch (error) {
       console.error(
         'Social login logout failed:',
         error
       );
+    
     }
 
-    dispatch(
-      signOutAction({
-        profile: currentProfile,
-      })
-    ).then(() => {
-      router.push(Paths.login, 'root');
-    });
+
+    
+
   };
   return (
     <div    >
@@ -616,7 +618,7 @@ function BrowserMobileNavbar({
       {menuOpen && (
         <nav
           // id="mobile-browser-navigation"
-        className='w-[100%]  '
+        className='w-[100%]   '
           aria-label="Mobile navigation"
         >
           <MobileBrowserNavItem
@@ -669,12 +671,14 @@ function BrowserMobileNavbar({
           )}
 
           {!isLoggedIn && (
+            
             <MobileBrowserNavItem
               label="Sign in"
               onClick={() =>
                 navigateAndClose(handleLogin)
               }
             />
+        
           )}
        {isLoggedIn &&  <MobileBrowserNavItem label={"Sign Out"} onClick={handleSignOut}/>}
      

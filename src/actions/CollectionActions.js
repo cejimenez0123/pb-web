@@ -256,6 +256,44 @@ const fetchCollectionProtected = createAsyncThunk("collection/fetchCollectionPro
      collection:data.collection
     }
  })
+ const getProfileCollections = createAsyncThunk(
+  "collections/getProfileCollections",
+  async (
+    {
+      skip = 0,
+      take = 10,
+      type,
+      search,
+      isWorkshop,
+      scope,
+    } = {},
+    thunkApi
+  ) => {
+    try {
+      const data =
+        await collectionRepo.getProfileCollections({
+          skip,
+          take,
+          type,
+          search,
+          isWorkshop,
+          scope,
+        });
+
+      return {
+        collections: data.collections ?? [],
+        totalCount: data.totalCount ?? 0,
+        hasMore: data.hasMore ?? false,
+      };
+    } catch (error) {
+      return thunkApi.rejectWithValue(
+        error?.response?.data ||
+          error?.message ||
+          "Unable to load Rooms."
+      );
+    }
+  }
+);
  const setCollections = createAction("cols/setCollections", (params)=> {
 
     const {collections} = params
@@ -438,6 +476,28 @@ const getProfileRecommendations = createAsyncThunk(
     }
 );
 const clearCollections = createAction("collection/clearCollections")
+const getRoomRecommendations = createAsyncThunk(
+  "collections/getRoomRecommendations",
+  async ({ skip = 0, take = 10 } = {}, thunkApi) => {
+    try {
+      const data = await collectionRepo.getRoomRecommendations({
+        skip,
+        take,
+      });
+
+      return {
+        collections: data.collections ?? [],
+        totalCount: data.totalCount ?? 0,
+      };
+    } catch (error) {
+      return thunkApi.rejectWithValue(
+        error?.response?.data ||
+          error?.message ||
+          "Unable to load Room recommendations."
+      );
+    }
+  }
+);
 export {
     getPublicBooks,
     saveRoleToCollection,
@@ -467,5 +527,7 @@ export {
     getRecommendedCollectionsProfile,
     setCollections,
     fetchCollectionFeedStories,
-    fetchCollectionFeedSubCollections
+    fetchCollectionFeedSubCollections,
+    getProfileCollections,
+    getRoomRecommendations
 }

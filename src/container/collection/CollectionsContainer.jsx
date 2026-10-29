@@ -213,23 +213,21 @@ router.push(
 
 
   return (
-        <IonContent
-          scrollY={true}
-          className="page-content"
-          fullscreen
-     >
-    <main
-      className="
-        h-[100%]
-        min-h-0
-        overflow-y-auto
-        overscroll-contain
-        bg-plumb-surface 
-        text-text-primary
-        dark:bg-base-bgDark
-        dark:text-cream
-      "
+    <IonContent
+      scrollY={true}
+      className="page-content"
+      fullscreen
     >
+      <main
+        className="
+          min-h-full
+          bg-plumb-canvas
+          text-plumb-ink
+          dark:bg-plumb-dark-canvas
+          dark:text-plumb-darkText
+        "
+      >
+
       <div
         className={`${PAGE} pb-24 pt-10 sm:pt-14`}
       >
@@ -473,7 +471,7 @@ router.push(
         </section>
 
       </div>
-    </main>
+  </main>
     </IonContent>
   );
 }
