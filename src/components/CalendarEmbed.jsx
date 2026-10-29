@@ -27,13 +27,20 @@ const DATE_FILTERS = [
   { key: "thisWeekend", label: "This weekend" },
   { key: "nextWeekend", label: "Next weekend" },
 ];
-
-const FILTERS = [
-  { key: "all", label: "All" },
-  { key: "plumbum", label: "Plumbum" },
-  { key: "neighbourhood", label: "Neighbourhood" },
-  { key: "saved", label: "Saved" },
-];
+// const FILTERS = [
+//   { key: "all", label: "All events" },
+//   { key: "openMics", label: "🎤 Open Mics" },
+//   { key: "djDance", label: "🎧 DJ & Dance" },
+//   { key: "workshops", label: "✍️ Workshops" },
+//   { key: "plumbum", label: "Plumbum" },
+//   { key: "saved", label: "Saved" },
+// ];
+// const FILTERS = [
+//   { key: "all", label: "All" },
+//   { key: "plumbum", label: "Plumbum" },
+//   { key: "neighbourhood", label: "Neighbourhood" },
+//   { key: "saved", label: "Saved" },
+// ];
 
 const AREAS = [
   { label: "Downtown", emoji: "🏙️" },
@@ -41,6 +48,75 @@ const AREAS = [
   { label: "Queens", emoji: "👑" },
   { label: "Virtual", emoji: "💻" },
 ];
+// const EVENT_CATEGORIES = {
+//   openMics: [
+//     "openmic",
+//     "openmics",
+//     "poetry",
+//     "spokenword",
+//     "karaoke",
+//     "comedy",
+//   ],
+//   djDance: [
+//     "dj",
+//     "djs",
+//     "dance",
+//     "danceparty",
+//     "queerdanceparty",
+//     "queerparty",
+//     "alldjlineup",
+//     "popvspunk",
+//     "emo",
+//     "rave",
+//     "clubnight",
+//     "djnights",
+//   ],
+//   workshops: [
+//     "workshop",
+//     "workshops",
+//     "writing",
+//     "writersblock",
+//     "generativewriting",
+//     "creativewriting",
+//     "writinggroup",
+//   ],
+// };
+const FILTERS = [
+  { key: "all", label: "All events" },
+  { key: "plumbum", label: "Plumbum" },
+  { key: "saved", label: "Saved" },
+];
+
+// function normalizeTag(value = "") {
+//   return value
+//     .toLowerCase()
+//     .replace(/^#/, "")
+//     .replace(/[^a-z0-9]/g, "");
+// }
+
+function getPopularHashtags(events) {
+  const counts = new Map();
+
+  events.forEach((event) => {
+    // Count a hashtag once per event.
+    const tags = new Set(
+      (event.hashtags || [])
+        .map(normalizeTag)
+        .filter(Boolean)
+    );
+
+    tags.forEach((tag) => {
+      counts.set(tag, (counts.get(tag) || 0) + 1);
+    });
+  });
+
+  return [...counts.entries()]
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+    .map(([tag, count]) => ({ tag, count }));
+}
+function normalizeTag(value = "") {
+  return value.toLowerCase().replace(/^#/, "").replace(/[^a-z0-9]/g, "");
+}
 
 const PAGE_SIZE_DESKTOP = 30;
 const PAGE_SIZE_PHONE = 24;
@@ -197,10 +273,23 @@ function CalendarEmbed() {
   const [selectedArea, setSelectedArea] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-
+const [selectedHashtags, setSelectedHashtags] = useState([]);
+const [showAllHashtags, setShowAllHashtags] = useState(false);
   const savedEvents =
     useSelector((state) => state.users.events) || [];
+const hashtagOptions = getPopularHashtags(list);
 
+const visibleHashtags = showAllHashtags
+  ? hashtagOptions.slice(0, 8)
+  : hashtagOptions.slice(0, 3);
+
+const toggleHashtag = (tag) => {
+  setSelectedHashtags((current) =>
+    current.includes(tag)
+      ? current.filter((item) => item !== tag)
+      : [...current, tag]
+  );
+};
   const PAGE_SIZE = isPhone
     ? PAGE_SIZE_PHONE
     : PAGE_SIZE_DESKTOP;
@@ -349,63 +438,185 @@ function CalendarEmbed() {
     // Fetch once when the calendar mounts.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
   useEffect(() => {
-    let source = list;
+  let source = list;
 
-    if (selectedFilter === "plumbum") {
-      source = list.filter((event) =>
-        event.description?.includes("☀️")
+  if (selectedFilter === "plumbum") {
+    source = list.filter((event) =>
+      event.description?.includes("☀️")
+    );
+  } else if (selectedFilter === "saved") {
+    source = savedEvents;
+  }
+
+  let filtered = source;
+
+  // Multiple hashtags use OR logic:
+  // an event matches if it contains any selected hashtag.
+  if (selectedHashtags.length > 0) {
+    filtered = filtered.filter((event) => {
+      const eventTags = new Set(
+        (event.hashtags || []).map(normalizeTag)
       );
-    } else if (selectedFilter === "neighbourhood") {
-      source = list.filter(
-        (event) => !event.description?.includes("☀️")
+
+      return selectedHashtags.some((tag) =>
+        eventTags.has(tag)
       );
-    } else if (selectedFilter === "saved") {
-      source = savedEvents;
-    }
+    });
+  }
 
-    let filtered = source;
+  if (selectedArea) {
+    filtered = filtered.filter((event) =>
+      event.area
+        ?.toLowerCase()
+        .includes(selectedArea.toLowerCase())
+    );
+  }
 
-    if (selectedArea) {
-      filtered = filtered.filter((event) =>
-        event.area
-          ?.toLowerCase()
-          .includes(selectedArea.toLowerCase())
-      );
-    }
+  if (searchTerm.trim()) {
+    const lower = searchTerm.trim().toLowerCase();
 
-    if (searchTerm.trim()) {
-      const lower = searchTerm.trim().toLowerCase();
-
-      filtered = filtered.filter(
-        (event) =>
-          event.summary?.toLowerCase().includes(lower) ||
-          event.hashtags?.some((tag) =>
-            tag.toLowerCase().includes(lower)
-          )
-      );
-    }
-
-    if (selectedDateFilter !== "all") {
-      filtered = filtered.filter((event) =>
-        matchesDateFilter(
-          getEventStartDate(event),
-          selectedDateFilter
+    filtered = filtered.filter(
+      (event) =>
+        event.summary?.toLowerCase().includes(lower) ||
+        event.hashtags?.some((tag) =>
+          tag.toLowerCase().includes(lower)
         )
-      );
-    }
+    );
+  }
 
-    setEvents(filtered);
-    setCurrentPage(1);
-  }, [
-    selectedFilter,
-    selectedDateFilter,
-    selectedArea,
-    searchTerm,
-    list,
-    savedEvents,
-  ]);
+  if (selectedDateFilter !== "all") {
+    filtered = filtered.filter((event) =>
+      matchesDateFilter(
+        getEventStartDate(event),
+        selectedDateFilter
+      )
+    );
+  }
+
+  setEvents(filtered);
+  setCurrentPage(1);
+}, [
+  selectedFilter,
+  selectedHashtags,
+  selectedDateFilter,
+  selectedArea,
+  searchTerm,
+  list,
+  savedEvents,
+]);
+// useEffect(() => {
+//   let source = list;
+
+//   if (selectedFilter === "plumbum") {
+//     source = list.filter((event) =>
+//       event.description?.includes("☀️")
+//     );
+//   } else if (selectedFilter === "saved") {
+//     source = savedEvents;
+//   } else if (EVENT_CATEGORIES[selectedFilter]) {
+//     source = list.filter((event) =>
+//       matchesEventCategory(event, selectedFilter)
+//     );
+//   }
+
+//   let filtered = source;
+
+//   if (selectedArea) {
+//     filtered = filtered.filter((event) =>
+//       event.area
+//         ?.toLowerCase()
+//         .includes(selectedArea.toLowerCase())
+//     );
+//   }
+
+//   if (searchTerm.trim()) {
+//     const lower = searchTerm.trim().toLowerCase();
+
+//     filtered = filtered.filter(
+//       (event) =>
+//         event.summary?.toLowerCase().includes(lower) ||
+//         event.hashtags?.some((tag) =>
+//           tag.toLowerCase().includes(lower)
+//         )
+//     );
+//   }
+
+//   if (selectedDateFilter !== "all") {
+//     filtered = filtered.filter((event) =>
+//       matchesDateFilter(
+//         getEventStartDate(event),
+//         selectedDateFilter
+//       )
+//     );
+//   }
+
+//   setEvents(filtered);
+//   setCurrentPage(1);
+// }, [
+//   selectedFilter,
+//   selectedDateFilter,
+//   selectedArea,
+//   searchTerm,
+//   list,
+//   savedEvents,
+// ]);
+  // useEffect(() => {
+  //   let source = list;
+
+  //   if (selectedFilter === "plumbum") {
+  //     source = list.filter((event) =>
+  //       event.description?.includes("☀️")
+  //     );
+  //   } else if (selectedFilter === "neighbourhood") {
+  //     source = list.filter(
+  //       (event) => !event.description?.includes("☀️")
+  //     );
+  //   } else if (selectedFilter === "saved") {
+  //     source = savedEvents;
+  //   }
+
+  //   let filtered = source;
+
+  //   if (selectedArea) {
+  //     filtered = filtered.filter((event) =>
+  //       event.area
+  //         ?.toLowerCase()
+  //         .includes(selectedArea.toLowerCase())
+  //     );
+  //   }
+
+  //   if (searchTerm.trim()) {
+  //     const lower = searchTerm.trim().toLowerCase();
+
+  //     filtered = filtered.filter(
+  //       (event) =>
+  //         event.summary?.toLowerCase().includes(lower) ||
+  //         event.hashtags?.some((tag) =>
+  //           tag.toLowerCase().includes(lower)
+  //         )
+  //     );
+  //   }
+
+  //   if (selectedDateFilter !== "all") {
+  //     filtered = filtered.filter((event) =>
+  //       matchesDateFilter(
+  //         getEventStartDate(event),
+  //         selectedDateFilter
+  //       )
+  //     );
+  //   }
+
+  //   setEvents(filtered);
+  //   setCurrentPage(1);
+  // }, [
+  //   selectedFilter,
+  //   selectedDateFilter,
+  //   selectedArea,
+  //   searchTerm,
+  //   list,
+  //   savedEvents,
+  // ]);
 
   const openGooglemaps = (event) => {
     if (!event.rawLocation) {
@@ -697,8 +908,120 @@ function CalendarEmbed() {
           })}
         </div>
       </section>
+{/* /// */}
+<section aria-label="Filter events by hashtag">
+  <div className="mb-2 flex items-center justify-between gap-3">
+    <p className={styles.text.metadata}>
+      Popular hashtags
+    </p>
 
-      <section aria-label="Filter events by type">
+    {selectedHashtags.length > 0 && (
+      <button
+        type="button"
+        onClick={() => setSelectedHashtags([])}
+        className={[
+          styles.text.metadata,
+          "underline underline-offset-2",
+          "rounded focus-visible:outline-none",
+          "focus-visible:ring-2 focus-visible:ring-plumb-focus",
+        ].join(" ")}
+      >
+        Clear tags
+      </button>
+    )}
+  </div>
+
+  {hashtagOptions.length === 0 ? (
+    <p className={styles.text.muted}>
+      Hashtags will appear as events load.
+    </p>
+  ) : (
+    <div
+      className="flex flex-wrap items-center gap-2"
+      role="group"
+      aria-label="Filter by hashtag"
+    >
+      {visibleHashtags.map(({ tag, count }) => {
+        const active = selectedHashtags.includes(tag);
+
+        return (
+          <button
+            key={tag}
+            type="button"
+            onClick={() => toggleHashtag(tag)}
+            aria-pressed={active}
+            aria-label={`Filter by hashtag ${tag}, ${count} events`}
+            className={filterButtonClass(active)}
+          >
+            #{tag}
+          </button>
+        );
+      })}
+
+      {hashtagOptions.length > 3 && (
+        <button
+          type="button"
+          onClick={() => setShowAllHashtags((current) => !current)}
+          aria-expanded={showAllHashtags}
+          className={[
+            filterButtonClass(false),
+            "inline-flex items-center gap-1",
+          ].join(" ")}
+        >
+          {showAllHashtags ? "Less" : "More"}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.75"
+            className={[
+              "h-4 w-4 transition-transform",
+              showAllHashtags ? "rotate-180" : "",
+            ].join(" ")}
+            aria-hidden="true"
+          >
+            <path
+              d="m5 7.5 5 5 5-5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
+      )}
+    </div>
+  )}
+</section>
+
+{/* <section aria-label="Filter events by collection">
+  <p className={styles.text.metadata + " mb-2"}>
+    Browse
+  </p>
+
+  <div
+    className="flex flex-wrap gap-2"
+    role="group"
+    aria-label="Browse events"
+  >
+    {FILTERS.map((filter) => {
+      const active = selectedFilter === filter.key;
+
+      return (
+        <button
+          key={filter.key}
+          type="button"
+          onClick={() => setSelectedFilter(filter.key)}
+          aria-pressed={active}
+          className={filterButtonClass(active)}
+        >
+          {filter.label}
+        </button>
+      );
+    })}
+  </div>
+</section> */}
+{/*  */}
+      {/* <section aria-label="Filter events by type">
         <p className={styles.text.metadata + " mb-2"}>
           Event type
         </p>
@@ -727,7 +1050,7 @@ function CalendarEmbed() {
             );
           })}
         </div>
-      </section>
+      </section> */}
 
       <section aria-label="Filter events by area">
         <p className={styles.text.metadata + " mb-2"}>

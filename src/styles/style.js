@@ -700,7 +700,7 @@ filterActive: [
 
 input: [
   "w-[100%] max-w-sm",
-  "rounded-full",
+
   "border border-plumb-borderStrong",
   "bg-paper text-plumb-ink",
   "px-4 py-3",

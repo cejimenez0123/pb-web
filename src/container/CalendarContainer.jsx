@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { IonContent, useIonRouter } from "@ionic/react";
 import CalendarEmbed from "../components/CalendarEmbed";
 import Paths from "../core/paths";
+import styles from "../styles/style";
 
 const WRAP = "max-w-3xl mx-auto px-5";
 const PAGE_Y = "pt-12 pb-16";
@@ -80,21 +81,12 @@ export default function CalendarContainer() {
           >
             Get weekly writing events in your inbox, or go deeper — apply to
             become a user and share your writing and feedback.{" "}
+            <br/>
             <button
               type="button"
               onClick={() => router.push(Paths.onboard)}
-              className="
-                underline
-                underline-offset-2
-                text-plumb-ink
-                dark:text-plumb-darkText
-                rounded
-                focus-visible:outline-none
-                focus-visible:ring-2
-                focus-visible:ring-plumb-focus
-                focus-visible:ring-offset-2
-                dark:focus-visible:ring-offset-plumb-dark-canvas
-              "
+              className={styles.button.agree + "mx-auto mt-8"}
+        
             >
               Apply to be a user
             </button>
