@@ -266,7 +266,7 @@ const promptTermsAcceptance = useTermsAcceptance();
                 setEmail(e.target.value.toLowerCase())
               }
               placeholder="example@email.com"
-             className={`${styles.input} w-[100%] min-w-0 flex-1 w-full rounded-xl max-w-none`}
+             className={`${styles.input} w-[100%]  min-w-0 flex-1 w-full rounded-xl max-w-none`}
      
             />
             </div>

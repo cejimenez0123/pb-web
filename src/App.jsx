@@ -32,7 +32,7 @@ import { LoadScript } from "@react-google-maps/api";
 
 import { Capacitor } from "@capacitor/core";
 import { Preferences } from "@capacitor/preferences";
-import { PushNotifications } from "@capacitor/push-notifications";
+
 import { SplashScreen } from "@capacitor/splash-screen";
 import { SocialLogin } from "@capgo/capacitor-social-login";
 
