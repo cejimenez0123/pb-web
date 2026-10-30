@@ -1,0 +1,19 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.plumbum.app-mergeDebugResources-60:/values-h550dp-port-v13/values-h550dp-port-v13.xml",
+            "map": [
+                {
+                    "source": "/Users/christianjimenez/.gradle/caches/9.6.0/transforms/2e9a3c0e42df6d05db612443002e39f3/transformed/material-1.13.0/res/values-h550dp-port-v13/values-h550dp-port-v13.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "64",
+                        "endOffsets": "115"
+                    }
+                }
+            ]
+        }
+    ]
+}

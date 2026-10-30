@@ -1,0 +1,9 @@
+com.plumbum.app-pngs-0 /Users/christianjimenez/Development/pb-web/android/app/build/generated/res/pngs/debug
+com.plumbum.app-resValues-1 /Users/christianjimenez/Development/pb-web/android/app/build/generated/res/resValues/debug
+com.plumbum.app-updated_navigation_xml-2 /Users/christianjimenez/Development/pb-web/android/app/build/generated/updated_navigation_xml/debug
+com.plumbum.app-packageDebugResources-3 /Users/christianjimenez/Development/pb-web/android/app/build/intermediates/incremental/debug/packageDebugResources/merged.dir
+com.plumbum.app-packageDebugResources-4 /Users/christianjimenez/Development/pb-web/android/app/build/intermediates/incremental/debug/packageDebugResources/stripped.dir
+com.plumbum.app-debug-5 /Users/christianjimenez/Development/pb-web/android/app/build/intermediates/merged_res/debug/mergeDebugResources
+com.plumbum.app-debug-6 /Users/christianjimenez/Development/pb-web/android/app/src/debug/res
+com.plumbum.app-main-7 /Users/christianjimenez/Development/pb-web/android/app/src/main/res
+gradleHome-0 /Users/christianjimenez/.gradle

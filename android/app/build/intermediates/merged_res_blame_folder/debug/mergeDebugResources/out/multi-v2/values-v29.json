@@ -1,0 +1,20 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.plumbum.app-mergeDebugResources-60:/values-v29/values-v29.xml",
+            "map": [
+                {
+                    "source": "/Users/christianjimenez/.gradle/caches/9.6.0/transforms/0a86e79fe118d3bb9949eb39b80b77fe/transformed/core-splashscreen-1.2.0/res/values-v29/values-v29.xml",
+                    "from": {
+                        "startLines": "2,8",
+                        "startColumns": "4,4",
+                        "startOffsets": "55,442",
+                        "endLines": "7,8",
+                        "endColumns": "12,82",
+                        "endOffsets": "437,520"
+                    }
+                }
+            ]
+        }
+    ]
+}
