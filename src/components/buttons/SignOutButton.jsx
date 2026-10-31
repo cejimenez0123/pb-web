@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import Paths from "../../core/paths";
 import styles from "../../styles/style";
+import { signOutAction } from "../../actions/UserActions";
 
 export default function SignOutButton({ mobile = false }) {
   const dispatch = useDispatch();

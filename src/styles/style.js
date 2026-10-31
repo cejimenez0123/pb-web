@@ -893,7 +893,7 @@ input: [
   "w-[100%] max-w-sm",
 
 
-  "bg-paper text-plumb-ink",
+  "bg-transparent text-plumb-ink",
   "px-4 py-3",
   "placeholder:text-plumb-muted",
   "dark:border-plumb-darkBorderStrong",
