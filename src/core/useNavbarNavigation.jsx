@@ -1,5 +1,6 @@
 import { useIonRouter } from "@ionic/react";
 import { useDispatch } from "react-redux";
+import Paths from "./paths";
 
 export default function useNavbarNavigation() {
   const router = useIonRouter();

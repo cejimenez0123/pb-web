@@ -6,11 +6,11 @@ const SearchButton = memo(({ onClick }) => (
     type="button"
     onClick={onClick}
     aria-label="Search"
-    className="bg-transparent pb-5 text-white "
+    className="bg-transparent -translate-y-1  text-plumb-darkText dark:text-plumb-mintLight"
 
 
   >
-    <h1 className="h-8 max-h-14 my-auto w-14">⌕</h1>
+    <h1 className="max-h-14 my-auto min-h-10 min-w-10 max-w-14">⌕</h1>
 
   </button>
 ));
