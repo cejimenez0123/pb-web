@@ -97,6 +97,39 @@
   --input: oklch(0.878 0.016 96);
   --ring: oklch(0.355 0.072 159);
 }
+/* =========================================
+   PLUMBUM SEARCHBAR — LIGHT MODE
+========================================= */
+
+:root {
+  --plumb-search-background: transparent;
+  --plumb-search-text: var(--ion-text-color);
+  --plumb-search-muted: var(--ion-color-medium);
+
+  --plumb-search-border-radius: 1rem;
+  --plumb-search-shadow: none;
+}
+
+.plumb-searchbar {
+  --background: var(--plumb-search-background);
+  --box-shadow: var(--plumb-search-shadow);
+  --border-radius: var(--plumb-search-border-radius);
+
+  --color: var(--plumb-search-text);
+  --placeholder-color: var(--plumb-search-muted);
+  --icon-color: var(--plumb-search-muted);
+  --clear-button-color: var(--plumb-search-muted);
+}
+
+/* =========================================
+   PLUMBUM SEARCHBAR — DARK MODE
+========================================= */
+
+.dark {
+  --plumb-search-background: transparent;
+  --plumb-search-text: var(--ion-text-color);
+  --plumb-search-muted: var(--ion-color-medium);
+}
 .plumb-scrollbar {
   scrollbar-width: thin;
   scrollbar-color: #cfc9bc transparent;

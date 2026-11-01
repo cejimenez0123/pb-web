@@ -14,11 +14,11 @@ import {
 } from "../../actions/PageActions";
 
 import Paths from "../../core/paths";
-import InfoTooltip from "../InfoTooltip";
 import checkResult from "../../core/checkResult";
 
 import "../../App.css";
 import { useDialog } from "../../domain/usecases/useDialog";
+import SettingRow from "../SettingRow";
 
 const INITIAL_FORM = {
   name: "",
@@ -65,128 +65,7 @@ function FieldLabel({
   );
 }
 
-function SettingRow({
-  id,
-  title,
-  description,
-  checked,
-  onChange,
-  tooltip,
-}) {
-  return (
-    <div
-      className="
-        flex
-        items-start
-        justify-between
-        gap-5
-        rounded-2xl
-        border
-        border-gray-200
-        bg-base-bg
-        px-4
-        py-4
-        dark:border-gray-700
-        dark:bg-plumb-surface Dark
-      "
-    >
-      <div className="min-w-0">
-        <div className="flex items-center gap-2">
-          <label
-            htmlFor={id}
-            className="
-              text-sm
-              font-medium
-              text-gray-900
-              dark:text-cream
-            "
-          >
-            {title}
-          </label>
 
-          {tooltip ? (
-            <InfoTooltip text={tooltip} />
-          ) : null}
-        </div>
-
-        <p
-          id={`${id}-description`}
-          className="
-            mt-1
-            max-w-xl
-            text-xs
-            leading-5
-            text-gray-500
-            dark:text-gray-400
-          "
-        >
-          {description}
-        </p>
-      </div>
-
-      <label
-        className="
-          relative
-          mt-0.5
-          inline-flex
-          shrink-0
-          cursor-pointer
-          items-center
-        "
-      >
-        <input
-          id={id}
-          type="checkbox"
-          checked={checked}
-          onChange={onChange}
-          className="
-            peer
-            sr-only
-          "
-          aria-describedby={`${id}-description`}
-        />
-
-        <span
-          aria-hidden="true"
-          className="
-            h-6
-            w-11
-            rounded-full
-            border
-            border-gray-300
-            bg-gray-200
-            transition
-            peer-checked:border-blueSea
-            peer-checked:bg-blueSea
-            peer-focus-visible:outline
-            peer-focus-visible:outline-2
-            peer-focus-visible:outline-offset-2
-            peer-focus-visible:outline-blueSea
-            dark:border-gray-600
-            dark:bg-gray-700
-          "
-        />
-
-        <span
-          aria-hidden="true"
-          className="
-            pointer-events-none
-            absolute
-            left-1
-            top-1
-            h-4
-            w-4
-            rounded-full
-            bg-white
-            shadow-sm
-            transition
-            peer-checked:translate-x-5
-          "
-        />
-      </label>
-    </div>
-  );
-}
 
 function ErrorMessage({ error }) {
   if (!error) {

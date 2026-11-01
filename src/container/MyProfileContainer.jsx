@@ -334,7 +334,7 @@ function ArchiveSection({
           </h2>
 
           <p className="mt-1 text-sm text-gray-500">
-            Everything I've written.
+            For later
           </p>
         </div>
 

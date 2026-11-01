@@ -162,16 +162,16 @@
     "@babel/helper-validator-identifier" "^7.29.7"
 
 "@capacitor-firebase/messaging@^8.5.2":
-  version "8.5.2"
-  resolved "https://registry.npmjs.org/@capacitor-firebase/messaging/-/messaging-8.5.2.tgz"
-  integrity sha512-6EFxNeU/9teXdlQMmlHdjVqAMq+rr2po8oxLflvGuA6Xy+LPKbKccvamShXnTLjGO30beD6YmERNv5k9SxeGvg==
+  version "8.6.0"
+  resolved "https://registry.npmjs.org/@capacitor-firebase/messaging/-/messaging-8.6.0.tgz"
+  integrity sha512-DRx4O/naR/tguHAbSlhsm66x/XUKn0IM3KfKcn6lx0pPTGucSfGjJUbSztJmvv5vSwJpUU39tTWUboFe4IVpQA==
 
 "@capacitor-firebase/storage@^8.5.2":
-  version "8.5.2"
-  resolved "https://registry.npmjs.org/@capacitor-firebase/storage/-/storage-8.5.2.tgz"
-  integrity sha512-PeauCSVpqUCIlJXW/7f7imr5OkGsS+LwP+JfOzGXDC4CpHAERL/5/T+97/NHR4j0c8jRGeLPUrF8qSaHCFBWtw==
+  version "8.6.0"
+  resolved "https://registry.npmjs.org/@capacitor-firebase/storage/-/storage-8.6.0.tgz"
+  integrity sha512-BoFN+oNkwVg7Rg/QIo9CqkExI9zv9XiI5nBCsgzPyDUQmN/yAwZdKqgaEV3WpGcowXY0jFEZ2A69vhDE7MmmRg==
 
-"@capacitor/android@^8.0.0":
+"@capacitor/android@^8.6.0":
   version "8.6.0"
   resolved "https://registry.npmjs.org/@capacitor/android/-/android-8.6.0.tgz"
   integrity sha512-6IJS0TCfV/F/8+324CCwYd3xL6r+TH0W7zzaxYzPz9IV3YWCNvsZDuCCPHUIBC5iASb9od827ddSJ6rz+9Pu1Q==
@@ -267,7 +267,7 @@
   dependencies:
     "@capacitor/synapse" "^1.0.4"
 
-"@capacitor/ios@^8.0.0":
+"@capacitor/ios@^8.6.0":
   version "8.6.0"
   resolved "https://registry.npmjs.org/@capacitor/ios/-/ios-8.6.0.tgz"
   integrity sha512-Y2PE4zoBqMrSTWoVMJmX2byBznjn6egmATzoEUJiGVbVubkNpAvkF/tl0SBKDyP67ngyedTx1tQq5IGYIhby1A==
@@ -2473,6 +2473,8 @@ brace-expansion@^2.0.2:
 
 brace-expansion@^5.0.5:
   version "5.0.12"
+  resolved "https://registry.npmjs.org/brace-expansion/-/brace-expansion-5.0.12.tgz"
+  integrity sha512-YovQ3rzhaLMIrDjNDMkNS01tea93qhEhG5xy8f6+R0l+dw3Ki+5sCoIoI942iuLZTHWogWktgwVDhU09iNEimQ==
   dependencies:
     balanced-match "^4.0.2"
 
@@ -3410,9 +3412,9 @@ ee-first@1.1.1:
   integrity sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==
 
 electron-to-chromium@^1.5.464:
-  version "1.5.468"
-  resolved "https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.5.468.tgz"
-  integrity sha512-8XdEp3sIqO+PzmVPxhzqHq/3+yCxp44m27cm2WY1sRn3ZhwKyKmqSi2hx6gEhmnOXmh8NUuYE00z6Onzn5m6DA==
+  version "1.5.472"
+  resolved "https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.5.472.tgz"
+  integrity sha512-s4+nfT29b0FKpVKoaIxl2pWsoNcn7A/nMPSrxayw4T3BsmPeV2lF9Y06BsAQeMGhCTQ4nYJ5XST7jkqe4ZEqFw==
 
 elementtree@^0.1.7:
   version "0.1.7"
@@ -6454,9 +6456,9 @@ node-html-parser@5.4.2:
     he "1.2.0"
 
 node-releases@^2.0.60:
-  version "2.0.61"
-  resolved "https://registry.npmjs.org/node-releases/-/node-releases-2.0.61.tgz"
-  integrity sha512-5NUN6QCxNFrS9oEA9RPS+d0AP+ooGBzzovY2JhIpDRHacPvOhHjXjUsUMX9qp4nLHZ+5jVgXB2jj/P4arGOE/g==
+  version "2.0.63"
+  resolved "https://registry.npmjs.org/node-releases/-/node-releases-2.0.63.tgz"
+  integrity sha512-6li2QanLsAXpIH2R6j77MzRyvOyrvdTqlKtO4CgBdHGNvN99ZZfyxszHc5o5+IZBWD5u6Hzwg83JoGXmqZNG9Q==
 
 nopt@^9.0.0:
   version "9.0.0"
@@ -8883,9 +8885,9 @@ tslib@*, tslib@^2.0.1, tslib@^2.1.0, tslib@^2.4.0, tslib@^2.6.2, tslib@2.6.2:
   integrity sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==
 
 tslib@^2.8.1:
-  version "2.8.1"
-  resolved "https://registry.npmjs.org/tslib/-/tslib-2.8.1.tgz"
-  integrity sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==
+  version "2.9.1"
+  resolved "https://registry.npmjs.org/tslib/-/tslib-2.9.1.tgz"
+  integrity sha512-a4Ux9VKuIMHsOS7ENbEq6hK2ZGYIT27Rtl0E4eD9KqwxhKiQeMZE/9xb3IdYwWaSOyIBQLExhQgXDTYoiCxnWA==
 
 tsscmp@^1.0.6:
   version "1.0.6"

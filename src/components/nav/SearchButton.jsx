@@ -1,6 +1,5 @@
 import { memo } from "react";
-import search from "../images/icons/search.svg";
-import styles from "../styles/style";
+
 
 const SearchButton = memo(({ onClick }) => (
   <button
@@ -11,7 +10,7 @@ const SearchButton = memo(({ onClick }) => (
 
 
   >
-    <h1 className="h-8 max-h-10  my-auto w-8">⌕</h1>
+    <h1 className="h-8 max-h-14 my-auto w-14">⌕</h1>
 
   </button>
 ));

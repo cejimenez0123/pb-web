@@ -31,11 +31,43 @@ function GoogleLoginInner({ drive, onUserSignIn }) {
   const googleButtonRef = useRef(null);
   const isNative =Capacitor.isNativePlatform()
 
-
+const [googleReady, setGoogleReady] = useState(!isNative);
 
   const driveTokenKey = "googledrivetoken";
 
   // ---------------------------
+
+// useEffect(() => {
+//   if (!isNative) return;
+
+
+useEffect(() => {
+  if (!isNative) return;
+
+  const initializeGoogle = async () => {
+    try {
+      await SocialLogin.initialize({
+        google: {
+          webClientId: CLIENT_ID,
+          ...(Capacitor.getPlatform() === "ios" && {
+            iOSClientId: import.meta.env.VITE_IOS_OAUTH2_CLIENT_ID,
+          }),
+          mode: "online",
+        },
+      });
+
+      setGoogleReady(true);
+    } catch (error) {
+      console.error("Google initialization failed:", error);
+      setLoginError(error.message || "Google initialization failed.");
+    }
+  };
+
+  initializeGoogle();
+  setGoogleReady(!googleReady)
+}, [isNative]);
+
+
   useLayoutEffect(() => {
     if (isNative) return;
 
@@ -55,7 +87,6 @@ function GoogleLoginInner({ drive, onUserSignIn }) {
 
     document.body.appendChild(script);
   }, [isNative]);
-
   // ---------------------------
   // 3️⃣ Restore session
   // ---------------------------
@@ -93,13 +124,12 @@ function GoogleLoginInner({ drive, onUserSignIn }) {
     loadStoredUser();
   }, []);
 
-
 const nativeGoogleSignIn = async () => {
-  if (pending) return;
-  
+  if (pending || !googleReady) return;
+
   setPending(true);
   setLoginError(null);
-  
+
   try {
     const user = await SocialLogin.login({
       provider: "google",
@@ -114,11 +144,15 @@ const nativeGoogleSignIn = async () => {
 
     const result = user?.result;
 
-    if (!result) throw new Error("No Google result returned");
+    if (!result) {
+      throw new Error("No Google result returned");
+    }
 
     const profile = result.profile || {};
-    const idToken = result.idToken || result.authentication?.idToken;
-    const accessToken = result.accessToken?.token || result.accessToken;
+    const idToken =
+      result.idToken || result.authentication?.idToken;
+    const accessToken =
+      result.accessToken?.token || result.accessToken;
 
     if (!idToken) {
       throw new Error("Missing Google ID token (required for login)");
@@ -133,7 +167,6 @@ const nativeGoogleSignIn = async () => {
     };
 
     await onUserSignIn?.(payload);
-
     setSignedIn(true);
   } catch (err) {
     console.error("GOOGLE NATIVE LOGIN ERROR:", err);
@@ -142,6 +175,54 @@ const nativeGoogleSignIn = async () => {
     setPending(false);
   }
 };
+// const nativeGoogleSignIn = async () => {
+//   if (pending) return;
+  
+//   setPending(true);
+//   setLoginError(null);
+  
+//   try {
+//     const user = await SocialLogin.login({
+//       provider: "google",
+//       options: {
+//         scopes: [
+//           "email",
+//           "profile",
+//           "https://www.googleapis.com/auth/drive.file",
+//         ],
+//       },
+//     });
+
+//     const result = user?.result;
+
+//     if (!result) throw new Error("No Google result returned");
+
+//     const profile = result.profile || {};
+//     const idToken = result.idToken || result.authentication?.idToken;
+//     const accessToken = result.accessToken?.token || result.accessToken;
+
+//     if (!idToken) {
+//       throw new Error("Missing Google ID token (required for login)");
+//     }
+
+//     const payload = {
+//       email: profile.email,
+//       name: profile.name,
+//       googleId: profile.id,
+//       idToken,
+//       driveAccessToken: accessToken,
+//     };
+
+//     await onUserSignIn?.(payload);
+
+//     setSignedIn(true);
+//   } catch (err) {
+//     console.error("GOOGLE NATIVE LOGIN ERROR:", err);
+//     setLoginError(err.message || "Google Sign-In failed.");
+//   } finally {
+//     setPending(false);
+//   }
+// };
   // ---------------------------
   // 5️⃣ Web login
   // ---------------------------
@@ -219,10 +300,15 @@ const handleCredentialResponse = async (response) => {
   return (
     <div className="flex flex-col justify-center items-center w-full min-h-full">
       <div
-        onClick={!pending ?()=>{
-          showPrompt({message:"Google Sign-In asks for permission to access Google Drive. We only read files you share. Not Required",agreeText:"Continue",agree:()=>nativeGoogleSignIn(),type:"prompt"})
-
-        }  : undefined}
+      onClick={!pending && googleReady ? () => {
+  showPrompt({
+    message: "Google Sign-In asks for permission to access Google Drive. We only read files you share. Not Required",
+    agreeText: "Continue",
+    agree: () => nativeGoogleSignIn(),
+    type: "prompt",
+  });
+} : undefined}
+       
         className="bg-gray-200 btn rounded-full flex h-[4rem] w-[10rem] mt-8"
       >
         <IonRow>
