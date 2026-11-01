@@ -44,7 +44,7 @@ function AppNavigationChrome({
 
       {/* Mobile / Tablet */}
       {showBottomNavbar && (
-        <div className="w-[100%] z-50">
+        <div >
           <NavbarContainer
             isDesktop={false}
             currentProfile={currentProfile}

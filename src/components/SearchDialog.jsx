@@ -1,124 +1,131 @@
+
 import React, {
   useEffect,
   useMemo,
   useState,
 } from "react";
+
 import {
   IonContent,
   IonSearchbar,
   useIonRouter,
 } from "@ionic/react";
-import { useSelector, useDispatch } from "react-redux";
+
+import {
+  useSelector,
+  useDispatch,
+} from "react-redux";
+
 import { searchMultipleIndexes } from "../actions/UserActions";
 import checkResult from "../core/checkResult";
-import Enviroment from "../core/Enviroment";
 import { ErrorBoundary } from "@sentry/react";
+import styles from "../styles/style";
 
 const FILTERS = [
   { key: "all", label: "All" },
   { key: "story", label: "Stories" },
   { key: "profile", label: "People" },
-  { key: "collection", label: "Collections" },
+  { key: "collection", label: "Rooms" },
   { key: "hashtag", label: "#Hashtags" },
 ];
 
 const TYPE_LABELS = {
   story: "Story",
   profile: "Writer",
-  collection: "Collection",
+  collection: "Room",
   hashtag: "Hashtag",
 };
 
-const T = {
-  page:
-    "min-h-full bg-cream dark:bg-base-bgDark text-text-primary dark:text-cream",
+const normalize = (value) =>
+  typeof value === "string"
+    ? value.trim().toLowerCase()
+    : "";
 
-  inner:
-    "w-full max-w-2xl mx-auto px-4 pb-32",
+function getItemTitle(item = {}) {
+  return (
+    item.title ||
+    item.username ||
+    item.name ||
+    "Untitled"
+  );
+}
 
-  header:
-    "pt-8 pb-4",
+function getItemDescription(item = {}, type) {
+  if (type === "story") {
+    return (
+      item.description ||
+      item.excerpt ||
+      item.summary ||
+      null
+    );
+  }
 
-  title:
-    "text-2xl font-semibold text-text-primary dark:text-cream mb-4",
+  if (type === "collection") {
+    return item.purpose || item.description || null;
+  }
 
-  searchWrap:
-    "w-full bg-base-bg dark:bg-plumb-surface Dark rounded-full",
+  return null;
+}
 
-  searchbar:
-    "rounded-full",
+function getItemAuthor(item = {}, type) {
+  if (type !== "story") {
+    return null;
+  }
 
-  filterRow:
-    "flex flex-wrap gap-2 py-4",
+  return (
+    item.authorName ||
+    item.authorUsername ||
+    item.username ||
+    item.author?.username ||
+    item.author?.name ||
+    null
+  );
+}
 
-  filter:
-    "px-3 py-1.5 rounded-full text-sm border transition-all duration-150 cursor-pointer",
+function getSearchableValues(item = {}) {
+  return [
+    item.title,
+    item.name,
+    item.username,
+    item.description,
+    item.excerpt,
+    item.summary,
+    item.purpose,
+    item.authorName,
+    item.authorUsername,
+    item.author?.username,
+    item.author?.name,
+  ];
+}
 
-  filterActive:
-    "bg-soft text-white border-soft dark:bg-plumb-surface Dark dark:text-cream",
+function filterLocalContent(content, query, filter) {
+  const normalizedQuery = normalize(query);
 
-  filterInactive:
-    "bg-base-bg dark:bg-plumb-surface Dark text-text-secondary dark:text-cream border-soft",
+  return content.filter(({ item, type }) => {
+    if (filter !== "all" && type !== filter) {
+      return false;
+    }
 
-  scopeRow:
-    "flex items-center gap-3 pt-2 pb-6",
+    if (!normalizedQuery) {
+      return true;
+    }
 
-  scopeLabel:
-    "text-xs uppercase tracking-wide text-text-secondary dark:text-cream/60",
+    return getSearchableValues(item).some(
+      (value) =>
+        normalize(value).includes(normalizedQuery)
+    );
+  });
+}
 
-  scopeButton:
-    "text-sm font-medium underline underline-offset-4 cursor-pointer",
-
-  section:
-    "pt-4",
-
-  sectionTitle:
-    "text-xs uppercase tracking-wide text-text-secondary dark:text-cream/60 mb-3",
-
-  results:
-    "divide-y divide-border-soft",
-
-  result:
-    "py-4 cursor-pointer transition-colors hover:bg-base-bg dark:hover:bg-plumb-surface Dark px-2 -mx-2 rounded-lg",
-
-  resultTitle:
-    "text-base text-text-primary dark:text-cream font-medium",
-
-  resultMeta:
-    "text-xs text-text-secondary dark:text-cream/60 mt-1",
-
-  resultDescription:
-    "text-sm text-text-secondary dark:text-cream/70 mt-1 line-clamp-2",
-
-  empty:
-    "py-12 text-center",
-
-  emptyTitle:
-    "text-base text-text-primary dark:text-cream",
-
-  emptyText:
-    "text-sm text-text-secondary dark:text-cream/60 mt-2",
-
-  exploreGrid:
-    "divide-y divide-border-soft",
-
-  exploreItem:
-    "py-4 cursor-pointer",
-
-  loading:
-    "py-8 text-center text-sm text-text-secondary dark:text-cream/60",
-
-  error:
-    "py-8 text-center text-sm text-text-secondary dark:text-cream/60",
-};
-
-const SearchDialog = () => {
+function SearchDialog() {
   const dispatch = useDispatch();
   const router = useIonRouter();
 
   const currentProfile = useSelector(
     (state) => state.users.currentProfile
   );
+
+  const currentProfileId = currentProfile?.id ?? null;
 
   const collectionsFromStore = useSelector(
     (state) => state.books.collections ?? []
@@ -137,148 +144,71 @@ const SearchDialog = () => {
   const [searchError, setSearchError] = useState(false);
 
   /*
-   * ───────────────────────────────────────
-   * Local "My Work" sources
-   * ───────────────────────────────────────
+   * Cached content available to the current account.
    *
-   * This currently uses the work already available
-   * in Redux. Role-based participation can be added
-   * later without changing the Search UI.
+   * Rooms and stories are included when they are already
+   * present in Redux. This avoids introducing extra
+   * requests just to populate the My Work view.
    */
 
-  const personalCollections = useMemo(
-    () =>
-      collectionsFromStore
-        .filter(Boolean)
-        .map((collection) => ({
-          item: { ...collection },
-          objectID: collection.id,
-          type: "collection",
-        })),
-    [collectionsFromStore]
-  );
-
-  const personalStories = useMemo(
-    () =>
-      storiesFromStore
-        .filter(Boolean)
-        .map((story) => ({
-          item: { ...story },
-          objectID: story.id,
-          type: "story",
-        })),
-    [storiesFromStore]
-  );
-
-  const personalContent = useMemo(
-    () => [...personalStories, ...personalCollections],
-    [personalStories, personalCollections]
-  );
-
-  /*
-   * ───────────────────────────────────────
-   * Explore content
-   * ───────────────────────────────────────
-   *
-   * Search should not feel empty when there is
-   * no query. We use content already available
-   * to the app rather than introducing a new
-   * recommendation system here.
-   */
-
-  const exploreContent = useMemo(() => {
+  const personalContent = useMemo(() => {
     const stories = storiesFromStore
-      .filter(Boolean)
-      .slice(0, 4)
+      .filter((story) => story?.id)
       .map((story) => ({
         item: story,
         objectID: story.id,
         type: "story",
       }));
 
-    const collections = collectionsFromStore
-      .filter(Boolean)
-      .slice(0, 4)
-      .map((collection) => ({
-        item: collection,
-        objectID: collection.id,
+    const rooms = collectionsFromStore
+      .filter((room) => room?.id)
+      .map((room) => ({
+        item: room,
+        objectID: room.id,
         type: "collection",
       }));
 
-    return [...stories, ...collections].slice(0, 6);
-  }, [storiesFromStore, collectionsFromStore]);
+    const unique = new Map();
 
-  /*
-   * ───────────────────────────────────────
-   * Local My Work filtering
-   * ───────────────────────────────────────
-   */
-
-  const searchLocalContent = (query, content) => {
-    const normalizedQuery = query.trim().toLowerCase();
-
-    if (!normalizedQuery) {
-      return content;
-    }
-
-    return content.filter(({ item = {} }) => {
-      const values = [
-        item.title,
-        item.name,
-        item.username,
-        item.description,
-        item.excerpt,
-      ];
-
-      return values.some(
-        (value) =>
-          typeof value === "string" &&
-          value.toLowerCase().includes(normalizedQuery)
+    [...stories, ...rooms].forEach((result) => {
+      unique.set(
+        `${result.type}:${result.objectID}`,
+        result
       );
     });
-  };
 
-  const personalResults = useMemo(() => {
-    let content = personalContent;
+    return [...unique.values()];
+  }, [storiesFromStore, collectionsFromStore]);
 
-    if (selectedFilter !== "all") {
-      content = content.filter(
-        (result) => result.type === selectedFilter
-      );
-    }
-
-    return searchLocalContent(searchText, content);
-  }, [
-    personalContent,
-    selectedFilter,
-    searchText,
-  ]);
+  const personalResults = useMemo(
+    () =>
+      filterLocalContent(
+        personalContent,
+        searchText,
+        selectedFilter
+      ),
+    [personalContent, searchText, selectedFilter]
+  );
 
   /*
-   * ───────────────────────────────────────
-   * Remote search
-   * ───────────────────────────────────────
+   * Remote search.
    *
-   * searchText only changes after IonSearchbar's
-   * debounce period, so we don't request on
-   * every keystroke.
+   * No request is made for empty queries or when the
+   * user is searching their locally available work.
+   *
+   * The effect only depends on the profile ID, rather
+   * than the entire profile object, to prevent redundant
+   * requests when unrelated profile fields change.
    */
 
   useEffect(() => {
     const query = searchText.trim();
 
-    if (searchScope === "mine") {
+    if (searchScope !== "all" || !query) {
       setSearchContent([]);
       setIsSearching(false);
       setSearchError(false);
-      return;
-    }
-
-    if (!query) {
-      setSearchContent([]);
-      setIsSearching(false);
-      setSearchError(false);
-      return;
+      return undefined;
     }
 
     let cancelled = false;
@@ -291,42 +221,72 @@ const SearchDialog = () => {
         ? []
         : [selectedFilter];
 
-    dispatch(
-      searchMultipleIndexes({
-        query,
-        filters,
-        profileId: currentProfile?.id ?? null,
-      })
-    ).then((result) => {
-      if (cancelled) return;
+    const runSearch = async () => {
+      try {
+        const result = await dispatch(
+          searchMultipleIndexes({
+            query,
+            filters,
+            profileId: currentProfileId,
+          })
+        );
 
-      checkResult(result, (returned) => {
         if (cancelled) return;
 
-        const results = (returned.results ?? [])
-          .filter(Boolean)
-          .map((item) => ({
-            item,
-            objectID: item.objectID ?? item.id,
-            type: item.type,
-          }));
+        if (result?.meta?.requestStatus === "rejected") {
+          setSearchContent([]);
+          setSearchError(true);
+          setIsSearching(false);
+          return;
+        }
 
-        setSearchContent(results);
-        setIsSearching(false);
-      });
+        let receivedResults = false;
 
-      /*
-       * If the thunk rejects, checkResult may not
-       * call the success callback. Clear loading here
-       * on the next render path rather than leaving
-       * the UI permanently searching.
-       */
-      if (result?.meta?.requestStatus === "rejected") {
+        checkResult(result, (returned) => {
+          if (cancelled) return;
+
+          receivedResults = true;
+
+          const normalizedResults = (
+            returned?.results ?? []
+          )
+            .filter(
+              (item) =>
+                item &&
+                (item.objectID || item.id) &&
+                item.type
+            )
+            .map((item) => ({
+              item,
+              objectID: item.objectID ?? item.id,
+              type: item.type,
+            }));
+
+          setSearchContent(normalizedResults);
+          setIsSearching(false);
+          setSearchError(false);
+        });
+
+        /*
+         * Do not leave the UI in a loading state if
+         * checkResult does not invoke its callback.
+         */
+        if (!receivedResults) {
+          setSearchContent([]);
+          setIsSearching(false);
+        }
+      } catch (error) {
+        if (cancelled) return;
+
+        console.error("Search failed:", error);
+
         setSearchContent([]);
         setSearchError(true);
         setIsSearching(false);
       }
-    });
+    };
+
+    runSearch();
 
     return () => {
       cancelled = true;
@@ -336,13 +296,15 @@ const SearchDialog = () => {
     searchText,
     selectedFilter,
     searchScope,
-    currentProfile,
+    currentProfileId,
   ]);
 
   /*
-   * ───────────────────────────────────────
-   * Result navigation
-   * ───────────────────────────────────────
+   * Navigation
+   *
+   * Keep the existing route contract. "collection"
+   * remains the internal route type even though the
+   * interface calls these spaces Rooms.
    */
 
   const handleResultClick = (result) => {
@@ -355,97 +317,6 @@ const SearchDialog = () => {
     );
   };
 
-  /*
-   * ───────────────────────────────────────
-   * Result helpers
-   * ───────────────────────────────────────
-   */
-
-  const getTitle = (result) => {
-    const item = result?.item ?? {};
-
-    return (
-      item.title ||
-      item.username ||
-      item.name ||
-      "Untitled"
-    );
-  };
-
-  const getDescription = (result) => {
-    const item = result?.item ?? {};
-
-    if (result.type === "story") {
-      return (
-        item.description ||
-        item.excerpt ||
-        item.summary ||
-        null
-      );
-    }
-
-    return null;
-  };
-
-  const getAuthor = (result) => {
-    const item = result?.item ?? {};
-
-    if (result.type !== "story") {
-      return null;
-    }
-
-    return (
-      item.authorName ||
-      item.authorUsername ||
-      item.username ||
-      item.author?.username ||
-      item.author?.name ||
-      null
-    );
-  };
-
-  const renderResult = (result, index) => {
-    const title = getTitle(result);
-    const description = getDescription(result);
-    const author = getAuthor(result);
-
-    return (
-      <div
-        key={`${result.objectID ?? "result"}-${index}`}
-        className={T.result}
-        onClick={() => handleResultClick(result)}
-        role="button"
-        tabIndex={0}
-        onKeyDown={(event) => {
-          if (event.key === "Enter" || event.key === " ") {
-            handleResultClick(result);
-          }
-        }}
-      >
-        <div className={T.resultTitle}>
-          {title}
-        </div>
-
-        <div className={T.resultMeta}>
-          {TYPE_LABELS[result.type] || result.type}
-          {author ? ` · ${author}` : ""}
-        </div>
-
-        {description && (
-          <div className={T.resultDescription}>
-            {description}
-          </div>
-        )}
-      </div>
-    );
-  };
-
-  /*
-   * ───────────────────────────────────────
-   * Main result set
-   * ───────────────────────────────────────
-   */
-
   const results =
     searchScope === "mine"
       ? personalResults
@@ -453,62 +324,137 @@ const SearchDialog = () => {
 
   const hasQuery = searchText.trim().length > 0;
 
-  const prefersDark =
-    window.matchMedia &&
-    window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const activeFilterLabel =
+    FILTERS.find(
+      (filter) => filter.key === selectedFilter
+    )?.label ?? "Results";
 
   /*
-   * ───────────────────────────────────────
-   * Render
-   * ───────────────────────────────────────
+   * Result renderer
+   *
+   * Native buttons provide keyboard interaction,
+   * focus handling, and accessible activation without
+   * manually recreating button behavior.
    */
 
-  return (
-    <IonContent fullscreen className={T.page}>
-      <ErrorBoundary>
-        <main className={T.inner}>
+  const renderResult = (result, index) => {
+    const item = result?.item ?? {};
 
-          {/* Header */}
-          <header className={T.header}>
-            <h1 className={T.title}>
+    const title = getItemTitle(item);
+    const description = getItemDescription(
+      item,
+      result.type
+    );
+
+    const author = getItemAuthor(
+      item,
+      result.type
+    );
+
+    const typeLabel =
+      TYPE_LABELS[result.type] || result.type;
+
+    return (
+      <button
+        key={`${result.objectID}-${index}`}
+        type="button"
+        className={styles.search.result}
+        onClick={() => handleResultClick(result)}
+        aria-label={`Open ${typeLabel}: ${title}`}
+      >
+        <div className={styles.search.resultTitle}>
+          {title}
+        </div>
+
+        <div className={styles.search.resultMeta}>
+          {typeLabel}
+          {author ? ` · ${author}` : ""}
+        </div>
+
+        {description && (
+          <p className={styles.search.resultDescription}>
+            {description}
+          </p>
+        )}
+      </button>
+    );
+  };
+
+  return (
+    <IonContent
+      fullscreen
+      className={styles.search.page}
+      style={{
+        "--background": "transparent",
+      }}
+    >
+      <ErrorBoundary>
+        <main className={styles.search.inner}>
+          {/* Search heading and input */}
+
+          <header className={styles.search.header}>
+            <h1 className={styles.search.title}>
               Search
             </h1>
 
-            <div className={T.searchWrap}>
+            <div className={styles.search.searchWrap}>
               <IonSearchbar
+  value={searchText}
+  debounce={350}
+  className={`${styles.search.searchbar} plumb-searchbar`}
+  placeholder="Stories, writers, rooms..."
+  aria-label="Search Plumbum"
+  showClearButton="focus"
+  onIonInput={(event) => {
+    setSearchText(event.detail?.value ?? "");
+  }}
+/>
+              {/* <IonSearchbar
                 value={searchText}
-                debounce={500}
-                className={T.searchbar}
-                placeholder="Search stories, people, collections..."
+                debounce={350}
+                className={styles.search.searchbar}
+                placeholder="Stories, writers, rooms..."
+                aria-label="Search Plumbum"
+                showClearButton="focus"
                 style={{
-                  color: prefersDark
-                    ? Enviroment.palette.cream
-                    : Enviroment.palette.soft,
                   "--background": "transparent",
                   "--box-shadow": "none",
+                  "--border-radius": "1rem",
+                  "--color": "var(--plumb-search-text, var(--ion-text-color))",
+                  "--placeholder-color": "var(--plumb-search-muted, var(--ion-color-medium))",
+                  "--icon-color": "var(--plumb-search-muted, var(--ion-color-medium))",
+                  "--clear-button-color": "var(--plumb-search-muted, var(--ion-color-medium))",
                 }}
                 onIonInput={(event) => {
                   setSearchText(
-                    event.target.value ?? ""
+                    event.detail?.value ?? ""
                   );
                 }}
-              />
+              /> */}
             </div>
           </header>
 
           {/* Search scope */}
+
           {currentProfile && (
-            <div className={T.scopeRow}>
-              <span className={T.scopeLabel}>
+            <div
+              className={styles.search.scopeRow}
+              role="group"
+              aria-label="Search location"
+            >
+              <span className={styles.search.scopeLabel}>
                 Search
               </span>
 
               <button
                 type="button"
-                className={T.scopeButton}
-                onClick={() =>
-                  setSearchScope("all")
-                }
+                className={[
+                  styles.search.scopeButton,
+                  searchScope === "all"
+                    ? styles.search.scopeActive
+                    : styles.search.scopeInactive,
+                ].join(" ")}
+                onClick={() => setSearchScope("all")}
                 aria-pressed={searchScope === "all"}
               >
                 Plumbum
@@ -516,10 +462,13 @@ const SearchDialog = () => {
 
               <button
                 type="button"
-                className={T.scopeButton}
-                onClick={() =>
-                  setSearchScope("mine")
-                }
+                className={[
+                  styles.search.scopeButton,
+                  searchScope === "mine"
+                    ? styles.search.scopeActive
+                    : styles.search.scopeInactive,
+                ].join(" ")}
+                onClick={() => setSearchScope("mine")}
                 aria-pressed={searchScope === "mine"}
               >
                 My Work
@@ -528,9 +477,11 @@ const SearchDialog = () => {
           )}
 
           {/* Filters */}
+
           <div
-            className={T.filterRow}
-            aria-label="Search filters"
+            className={styles.search.filterRow}
+            role="group"
+            aria-label="Filter search results"
           >
             {FILTERS.map((filter) => {
               const active =
@@ -543,11 +494,12 @@ const SearchDialog = () => {
                   onClick={() =>
                     setSelectedFilter(filter.key)
                   }
-                  className={`${T.filter} ${
+                  className={[
+                    styles.search.filter,
                     active
-                      ? T.filterActive
-                      : T.filterInactive
-                  }`}
+                      ? styles.search.filterActive
+                      : styles.search.filterInactive,
+                  ].join(" ")}
                   aria-pressed={active}
                 >
                   {filter.label}
@@ -556,144 +508,134 @@ const SearchDialog = () => {
             })}
           </div>
 
-          {/* ─────────────────────────────
-              Empty / Explore state
-             ───────────────────────────── */}
+          {/* Empty query */}
 
           {!hasQuery && (
             <>
-              <section className={T.empty}>
-                <div className={T.emptyTitle}>
-                  What are you looking for?
-                </div>
+              {searchScope === "all" && (
+                <section className={styles.search.empty}>
+                  <h2 className={styles.search.emptyTitle}>
+                    What are you looking for?
+                  </h2>
 
-                <div className={T.emptyText}>
-                  Find a writer, a story, a collection,
-                  or something you want to come back to.
-                </div>
-              </section>
+                  <p className={styles.search.emptyText}>
+                    Find a writer, discover a story,
+                    or find a room to return to.
+                  </p>
+                </section>
+              )}
 
-              {searchScope === "all" &&
-                exploreContent.length > 0 && (
-                  <section className={T.section}>
-                    <div className={T.sectionTitle}>
-                      Explore
+              {searchScope === "mine" && (
+                <section className={styles.search.section}>
+                  <h2 className={styles.search.sectionTitle}>
+                    Available to you
+                  </h2>
+
+                  {personalResults.length > 0 ? (
+                    <div className={styles.search.results}>
+                      {personalResults.map(renderResult)}
                     </div>
+                  ) : (
+                    <div className={styles.search.empty}>
+                      <h2 className={styles.search.emptyTitle}>
+                        Your work will appear here.
+                      </h2>
 
-                    <div className={T.exploreGrid}>
-                      {exploreContent.map(
-                        renderResult
-                      )}
+                      <p className={styles.search.emptyText}>
+                        Search stories and rooms already
+                        available to your account.
+                      </p>
                     </div>
-                  </section>
-                )}
-
-              {searchScope === "mine" &&
-                personalResults.length > 0 && (
-                  <section className={T.section}>
-                    <div className={T.sectionTitle}>
-                      Your Work
-                    </div>
-
-                    <div className={T.results}>
-                      {personalResults.map(
-                        renderResult
-                      )}
-                    </div>
-                  </section>
-                )}
-
-              {searchScope === "mine" &&
-                personalResults.length === 0 && (
-                  <section className={T.empty}>
-                    <div className={T.emptyTitle}>
-                      Your work will appear here.
-                    </div>
-
-                    <div className={T.emptyText}>
-                      Search your stories and collections
-                      when you need to find something.
-                    </div>
-                  </section>
-                )}
+                  )}
+                </section>
+              )}
             </>
           )}
 
-          {/* ─────────────────────────────
-              Loading
-             ───────────────────────────── */}
+          {/* Loading */}
 
           {hasQuery && isSearching && (
-            <div className={T.loading}>
+            <div
+              className={styles.search.loading}
+              role="status"
+              aria-live="polite"
+            >
               Searching...
             </div>
           )}
 
-          {/* ─────────────────────────────
-              Error
-             ───────────────────────────── */}
+          {/* Error */}
 
-          {hasQuery &&
-            !isSearching &&
-            searchError && (
-              <div className={T.error}>
+          {hasQuery && !isSearching && searchError && (
+            <div className={styles.search.error}>
+              <p role="alert">
                 Something went wrong while searching.
-                <br />
-                Try again.
-              </div>
-            )}
+              </p>
 
-          {/* ─────────────────────────────
-              Results
-             ───────────────────────────── */}
+              <button
+                type="button"
+                className={styles.search.retry}
+                onClick={() => {
+                  // Trigger the existing search effect
+                  // again without introducing a new endpoint.
+                  setSearchText((value) => `${value} `);
+                  requestAnimationFrame(() => {
+                    setSearchText((value) => value.trim());
+                  });
+                }}
+              >
+                Try again
+              </button>
+            </div>
+          )}
+
+          {/* Results */}
 
           {hasQuery &&
             !isSearching &&
             !searchError &&
             results.length > 0 && (
-              <section className={T.section}>
-                <div className={T.sectionTitle}>
+              <section
+                className={styles.search.section}
+                aria-label="Search results"
+              >
+                <h2 className={styles.search.sectionTitle}>
                   {searchScope === "mine"
                     ? "Your Work"
                     : selectedFilter === "all"
                     ? "Results"
-                    : FILTERS.find(
-                        (filter) =>
-                          filter.key ===
-                          selectedFilter
-                      )?.label}
-                </div>
+                    : activeFilterLabel}
+                  <span className="sr-only">
+                    {` for ${searchText.trim()}`}
+                  </span>
+                </h2>
 
-                <div className={T.results}>
+                <div className={styles.search.results}>
                   {results.map(renderResult)}
                 </div>
               </section>
             )}
 
-          {/* ─────────────────────────────
-              No results
-             ───────────────────────────── */}
+          {/* No results */}
 
           {hasQuery &&
             !isSearching &&
             !searchError &&
             results.length === 0 && (
-              <section className={T.empty}>
-                <div className={T.emptyTitle}>
+              <section className={styles.search.empty}>
+                <h2 className={styles.search.emptyTitle}>
                   Nothing found for “{searchText.trim()}”.
-                </div>
+                </h2>
 
-                <div className={T.emptyText}>
-                  Try another word or search for
-                  something related.
-                </div>
+                <p className={styles.search.emptyText}>
+                  Try another word, writer, or related idea.
+                </p>
               </section>
             )}
-
         </main>
       </ErrorBoundary>
     </IonContent>
   );
-};
+}
 
 export default SearchDialog;

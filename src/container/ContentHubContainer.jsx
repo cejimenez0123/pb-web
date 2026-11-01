@@ -165,13 +165,7 @@ export default function ContentHubContainer() {
       fullscreen
     >
       <main
-        className="
-          min-h-full
-          bg-plumb-canvas
-          text-plumb-ink
-          dark:bg-plumb-dark-canvas
-          dark:text-plumb-darkText
-        "
+  
       >
         <div
           className="

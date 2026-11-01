@@ -13,20 +13,19 @@
     "preview": "vite preview",
     "fireTest": "npm run build && firebase hosting:channel:deploy michael-que",
     "build": "npx vite build",
-    "build:clip": "npx vite build --mode clip",
-    "build:main": "npx vite build --mode main",
+ 
     "run-ios": "npx vite build --mode main && npx cap sync ios && npx cap run ios",
     "run-android": "npx vite build --mode main && npx cap sync android && npx cap run android"
   },
   "dependencies": {
     "@capacitor-firebase/messaging": "^8.5.2",
     "@capacitor-firebase/storage": "^8.5.2",
-    "@capacitor/android": "^8.0.0",
+    "@capacitor/android": "^8.6.0",
     "@capacitor/camera": "^8.0.0",
     "@capacitor/core": "^8.0.0",
     "@capacitor/filesystem": "^8.0.0",
     "@capacitor/geolocation": "^8.0.0",
-    "@capacitor/ios": "^8.0.0",
+    "@capacitor/ios": "^8.6.0",
     "@capacitor/network": "^8.0.0",
     "@capacitor/preferences": "^8.0.0",
     "@capacitor/splash-screen": "^8.0.0",

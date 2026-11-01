@@ -1,14 +1,15 @@
-import { useDispatch, useSelector } from 'react-redux';
-import { useIonRouter } from '@ionic/react';
+import { useDispatch } from 'react-redux';
 import { useLocation } from 'react-router';
 import { Capacitor } from '@capacitor/core';
 import { SocialLogin } from '@capgo/capacitor-social-login';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { signOutAction } from '../actions/UserActions';
-import Paths from '../core/paths';
-import SearchButton from '../components/SearchButton';
+import SearchButton from '../components/nav/SearchButton';
 import styles from '../styles/style';
 import SignOutButton from '../components/buttons/SignOutButton';
+import useNavbarNavigation from '../core/useNavbarNavigation';
+import MobileNavbar from '../components/nav/MobileNavbar';
+import SignInButton from '../components/nav/SignInButton';
 
 function NavbarContainer({ isDesktop,currentProfile }) {
   // const currentProfile = useSelector(
@@ -31,7 +32,9 @@ function NavbarContainer({ isDesktop,currentProfile }) {
        isNative?isLoggedIn && <MobileNavbar
           currentProfile={currentProfile}
           showSearch={!isSearchPage}
-        />:<BrowserMobileNavbar  showSearch={!isSearchPage} currentProfile={currentProfile}/>
+        />:
+    
+        <BrowserMobileNavbar  showSearch={!isSearchPage} currentProfile={currentProfile}/>
       )}
     </>
   );
@@ -44,58 +47,6 @@ export default NavbarContainer;
    SHARED
 ========================================================= */
 
-function useNavbarNavigation() {
-  const router = useIonRouter();
-  const dispatch = useDispatch();
-
-  const navigate = (path, direction = 'forward') => {
-    router.push(path, direction);
-  };
-
-  const handleSearch = () => {
-    navigate('/search', 'forward');
-  };
-
-  const handleWrite = () => {
-    navigate(Paths.write, 'forward');
-  };
-
-  const handleHome = () => {
-    navigate(Paths.home, 'root');
-  };
-
-  const handleDiscover = () => {
-    navigate(Paths.discovery, 'forward');
-  };
-
-  const handleEvents = () => {
-    navigate(Paths.calendar(), 'forward');
-  };
-
-  const handleProfile = () => {
-    navigate(Paths.myProfile, 'root');
-  };
-
-  const handleAbout = () => {
-    navigate(Paths.about(), 'forward');
-  };
- const handleLogin = () => {
-    navigate(Paths.login, 'forward');
-  };
-  return {
-    router,
-    dispatch,
-    navigate,
-    handleSearch,
-    handleWrite,
-    handleHome,
-    handleDiscover,
-    handleEvents,
-    handleProfile,
-    handleAbout,
-    handleLogin
-  };
-}
 
 
 /* =========================================================
@@ -237,229 +188,8 @@ function DesktopNavItem({
 }
 
 
-/* =========================================================
-   MOBILE NAVBAR
-========================================================= */
-function useMobileViewportInset() {
-  useEffect(() => {
-    const viewport = window.visualViewport;
-
-    if (!viewport) return undefined;
-
-    const updateViewportInset = () => {
-      const bottomInset = Math.max(
-        0,
-        window.innerHeight -
-          (viewport.offsetTop + viewport.height)
-      );
-
-      document.documentElement.style.setProperty(
-        '--plumbum-visual-bottom-inset',
-        `${bottomInset}px`
-      );
-    };
-
-    updateViewportInset();
-
-    viewport.addEventListener('resize', updateViewportInset);
-    viewport.addEventListener('scroll', updateViewportInset);
-    window.addEventListener('resize', updateViewportInset);
-
-    return () => {
-      viewport.removeEventListener('resize', updateViewportInset);
-      viewport.removeEventListener('scroll', updateViewportInset);
-      window.removeEventListener('resize', updateViewportInset);
-
-      document.documentElement.style.removeProperty(
-        '--plumbum-visual-bottom-inset'
-      );
-    };
-  }, []);
-}
-function MobileNavbar({
-  currentProfile,
-  showSearch = true,
-}) {
-   useMobileViewportInset();
-
-  const {
-    handleHome,
-    handleDiscover,
-    handleWrite,
-    handleEvents,
-    handleProfile,
-    handleAbout,
-    handleSearch,
-  } = useNavbarNavigation();
-
-  const isLoggedIn = !!currentProfile;
-
-  return (
-    <div 
-    
-    className="md:hidden w-full"
-    >
-
-      {/* -----------------------------------------------
-          Mobile top bar
-      ------------------------------------------------ */}
-
-      <header
-      className={styles.navbar.mobileNative}
-        // className="
-        //   w-full
-        //   border-b
-        //   border-border-default
-        //   flex
-        //   items-center
-        //   justify-between
-        //   px-4
-        //   py-3
-        // "
-      >
-        <button
-          type="button"
-          onClick={handleHome}
-          className={styles.navbar.mobileNativeItem}
-          // className="
-          //   font-serif
-          //   text-md
-          //   leading-none
-          //   font-semibold
-          //   text-text-primary
-          //   tracking-[-0.025em]
-          // "
-          aria-label="Go to Plumbum home"
-        >
-          Plumbum
-        </button>
-
-        <div
-          className="
-            flex
-            items-center
-            gap-2
-          "
-        >
-          {showSearch && (
-            <SearchButton
-              onClick={handleSearch}
-            />
-          )}
-
-          {isLoggedIn ? (
-            <SignOutButton mobile />
-          ) : (
-            <SignInButton mobile />
-          )}
-        </div>
-      </header>
 
 
-      {/* -----------------------------------------------
-          Mobile bottom navigation
-      ------------------------------------------------ */}
-
-<nav
-  className="
-    md:hidden
-    fixed
-    left-0
-    right-0
-    z-50
-    min-h-14
-    bg-plumb-surface
-    dark:bg-base-bgDark
-    border-t
-    border-border-default
-    flex
-    items-center
-    justify-around
-    pb-[env(safe-area-inset-bottom)]
-  "
-  style={{
-    bottom:
-      'var(--plumbum-visual-bottom-inset, env(safe-area-inset-bottom, 0px))',
-  }}
-  aria-label="Mobile navigation"
->
-  <MobileNavItem
-    label="Home"
-    onClick={handleHome}
-  />
-
-  <MobileNavItem
-    label="Discover"
-    onClick={handleDiscover}
-  />
-
-  {isLoggedIn && (
-    <MobileNavItem
-      label="Write"
-      onClick={handleWrite}
-      active
-    />
-  )}
-
-  <MobileNavItem
-    label="Events"
-    onClick={handleEvents}
-  />
-
-  {isLoggedIn && (
-    <MobileNavItem
-      label="You"
-      onClick={handleProfile}
-    />
-  )}
-
-  {!isLoggedIn && (
-    <MobileNavItem
-      label="About"
-      onClick={handleAbout}
-    />
-  )}
-</nav>
-
-    </div>
-  );
-}
-
-function MobileNavItem({
-  label,
-  onClick,
-  active = false,
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-current={active ? 'page' : undefined}
-      className={`
-        flex
-        flex-1
-        min-w-0
-        min-h-14
-        items-center
-        justify-center
-        px-1
-        py-3
-        text-sm
-        sm:text-base
-        leading-none
-        tracking-[-0.02em]
-        transition-colors
-        ${
-          active
-            ? 'text-text-primary'
-            : 'text-text-secondary hover:text-text-primary'
-        }
-      `}
-    >
-      {label}
-    </button>
-  );
-}
 
 
 
@@ -469,31 +199,6 @@ function MobileNavItem({
    AUTH
 ========================================================= */
 
-
-
-
-function SignInButton({ mobile = false }) {
-  const router = useIonRouter();
-
-  return (
-    <button
-      type="button"
-      onClick={() =>
-        router.push(Paths.login, 'forward')
-      }
-      className="
-        text-text-secondary
-        hover:text-text-primary
-        transition-colors
-        whitespace-nowrap
-        tracking-[-0.02em]
-        text-md
-      "
-    >
-      Sign in
-    </button>
-  );
-}
 
 
 /* =========================================================
