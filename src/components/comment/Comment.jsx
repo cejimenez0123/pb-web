@@ -14,12 +14,15 @@ import { useDialog } from "../../domain/usecases/useDialog.jsx";
 import Paths from "../../core/paths.js";
 import { reportContent,blockProfile, removeContentByProfileId } from "../../actions/ModerationAcitons.jsx";
 import ReportContentDialog from "../auth/ReportProfileDialog.jsx";
+import { useAlert } from "../../core/useAlert.jsx";
+import AlertType from "../../core/AlertType.js";
 
 const DEEP_LEVEL = 4;
 
 export default function Comment({ page, comment, level = 0 }) {
   const dispatch = useDispatch();
-  const { setError } = useContext(Context);
+  
+  const {showAlert}=useAlert()
   const currentProfile = useSelector((state) => state.users.currentProfile);
   const [isReportDialogOpen, setReportDialogOpen] = useState(false);
 const [isBlockDialogOpen, setBlockDialogOpen] = useState(false);
@@ -112,7 +115,7 @@ const router = useIonRouter()
       checkResult(
         res,
         (payload) => setIsHelpful(payload.hashtag),
-        (err) => setError(err.message)
+        (err) =>showAlert({message:err.message,type:AlertType.error}) 
       )
     );
   };
@@ -165,7 +168,7 @@ const handlePromoteToStory = () => {
                        router.push(Paths.editPage.createRoute( story.id ,story.type));
                       closeDialog();
                   },
-                  (err) => setError(err.message)
+                  (err) =>showAlert({message:err.message,type:AlertType.error}) 
                 )
               );
           }}
@@ -184,7 +187,7 @@ const handlePromoteToStory = () => {
                 router.push(Paths.editPage.createRoute( story.id ,story.type));
                     closeDialog();
                   },
-                  (err) => setError(err.message)
+                  (err) => showAlert({message:err.message,type:AlertType.error}) 
                 )
               );
           }}
@@ -333,7 +336,9 @@ className={`transition-all duration-300 ease-in-out
     onClose={() => setReportDialogOpen(false)}
     onSuccess={() =>{
       dispatch(removeContentByProfileId({profileID:comment.profile.id}))
-      setError(null)}} 
+
+      }
+    } 
   />
 )}
 {comment?.profile && (
@@ -346,7 +351,8 @@ className={`transition-all duration-300 ease-in-out
     onClose={() => setBlockDialogOpen(false)}
     onSuccess={() =>{
          dispatch(removeContentByProfileId({profileID:comment.profile.id}))
-      setError(null)}}
+
+    }}
   />
 )}
     </div>

@@ -488,65 +488,6 @@ const handleSave = async () => {
     setSaving(false);
   }
 };
-  // const handleSave = async () => {
-  //   if (!colInView || !currentProfile) {
-  //     return;
-  //   }
-
-  //   setSaving(true);
-
-  //   try {
-  //     const result = await dispatch(
-  //       patchCollectionContent({
-  //         id,
-  //         isPrivate,
-  //         isOpenCollaboration: isOpen,
-  //         title: title.trim(),
-  //         purpose: purpose.trim(),
-  //         storyToCol: newPages,
-  //         colToCol: newCollections,
-  //         col: colInView,
-  //         profile: currentProfile,
-  //       })
-  //     );
-
-  //     checkResult(
-  //       result,
-  //       (payload) => {
-  //         if (payload?.collection) {
-  //           dispatch(
-  //             updatePaginatedItem({
-  //               key: "collections",
-  //               item: payload.collection,
-  //             })
-  //           );
-  //         }
-
-  //         showAlert({
-  //           message: "Room updated.",
-  //           type: AlertType.success,
-  //         });
-  //       },
-  //       (error) => {
-  //         showAlert({
-  //           message:
-  //             error?.message ||
-  //             "Unable to save this room.",
-  //           type: AlertType.error,
-  //         });
-  //       }
-  //     );
-  //   } catch (error) {
-  //     showAlert({
-  //       message:
-  //         error?.message ||
-  //         "Unable to save this room.",
-  //       type: AlertType.error,
-  //     });
-  //   } finally {
-  //     setSaving(false);
-  //   }
-  // };
 
 
   // =======================================================

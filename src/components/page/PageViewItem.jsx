@@ -61,18 +61,18 @@ const dispatch =useDispatch()
   };
 
   const header = () => (
-    <div className="bg-plumb-surface  dark:bg-base-bgDark border-b border-base-border dark:border-soft rounded-xl shadow-sm px-4 flex items-start justify-between gap-4">
+    <div className="bg-transparent  dark:bg-base-bgDark border-b border-t   py-2  border-base-border dark:border-soft rounded-xl shadow-sm px-4 flex items-start justify-between gap-4">
       <div className="flex flex-col flex-1 min-w-0">
         <div className="flex items-center gap-3">
           {page?.author && (
             <ProfileCircle
               profile={page.author}
               includeUsername={false}
-              color="text-soft dark:text-cream"
+              color="text-plumb-ink dark:text-plumb-darkText"
             />
           )}
           <h6
-            className="text-soft dark:text-cream text-md font-semibold truncate cursor-pointer hover:underline"
+            className="text-plumb-ink dark:text-plumb-darkText text-md font-semibold truncate cursor-pointer hover:underline"
             onClick={() => router.push(Paths.page.createRoute(page.id))}
           >
             {page?.title || "Untitled"}
@@ -82,11 +82,11 @@ const dispatch =useDispatch()
         {page?.description && (
           <div className="py-2 text-sm">
             {(page?.status === "workshop" || page.needsFeedback) && (
-              <span className="text-blue dark:text-cream font-medium mr-1">
+              <span className="text-plumb-ink dark:text-plumb-darkText font-medium mr-1">
                 Feedback Request:
               </span>
             )}
-            <span className="text-soft dark:text-cream">{page.description}</span>
+            <span className="text-plumb-ink dark:text-plumb-darkText">{page.description}</span>
           </div>
         )}
       </div>

@@ -76,7 +76,6 @@ import EULATERMS from "./container/auth/Agreement.jsx";
 import AboutContainer from "./container/AboutContainer.jsx";
 import CalendarContainer from "./container/CalendarContainer.jsx";
 import ContentHubContainer from "./container/ContentHubContainer.jsx";
-import DashboardContainer from "./container/DashboardContainer.jsx";
 import DiscoveryContainer from "./container/DiscoveryContainer.jsx";
 import EmailPreferences from "./container/EmailPreferences.jsx";
 import FeedbackContainer from "./container/FeedbackContainer.jsx";

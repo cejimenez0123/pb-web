@@ -1,6 +1,68 @@
 
 
 const styles = {
+  annotation: {
+  toolbar: [
+    "relative z-50 flex items-center gap-1",
+    "rounded-xl border border-plumb-borderStrong",
+    "bg-transparent dark:bg-transparent",
+    "px-2 py-1.5",
+    "text-plumb-ink dark:text-plumb-darkText",
+    "shadow-lg",
+  ].join(" "),
+
+  toolbarAction: [
+    "inline-flex items-center gap-1.5",
+    "rounded-lg px-2 py-1.5",
+    "text-xs font-medium",
+    "text-plumb-ink dark:text-plumb-darkText",
+    "bg-transparent",
+    "transition-colors",
+    "hover:bg-plumb-mint/10 hover:text-plumb-mintHover",
+    "dark:hover:bg-plumb-mint/15 dark:hover:text-plumb-mintLight",
+    "focus-visible:outline-none focus-visible:ring-2",
+    "focus-visible:ring-plumb-focus",
+    "motion-reduce:transition-none",
+  ].join(" "),
+
+  toolbarClose: [
+    "inline-flex items-center justify-center",
+    "h-7 w-7 rounded-lg",
+    "bg-transparent",
+    "text-plumb-muted dark:text-plumb-darkMuted",
+    "transition-colors",
+    "hover:bg-plumb-mint/10 hover:text-plumb-ink",
+    "dark:hover:bg-plumb-mint/15 dark:hover:text-plumb-darkText",
+    "focus-visible:outline-none focus-visible:ring-2",
+    "focus-visible:ring-plumb-focus",
+    "motion-reduce:transition-none",
+  ].join(" "),
+
+  toggle: [
+    "inline-flex items-center gap-1.5",
+    "rounded-full border border-transparent",
+    "bg-transparent px-3 py-1.5",
+    "text-xs font-medium",
+    "transition-colors",
+    "focus-visible:outline-none focus-visible:ring-2",
+    "focus-visible:ring-plumb-focus",
+    "motion-reduce:transition-none",
+  ].join(" "),
+
+  toggleActive: [
+    "text-plumb-mintHover",
+    "hover:bg-plumb-mint/10",
+    "dark:text-plumb-mintLight",
+    "dark:hover:bg-plumb-mint/15",
+  ].join(" "),
+
+  toggleInactive: [
+    "text-plumb-muted",
+    "hover:bg-plumb-mint/10 hover:text-plumb-ink",
+    "dark:text-plumb-darkMuted",
+    "dark:hover:bg-plumb-mint/15 dark:hover:text-plumb-darkText",
+  ].join(" "),
+},
   sectionHeader: {
   container: [
     "mb-4",
@@ -54,6 +116,7 @@ const styles = {
     "px-2",
     "text-sm",
     "font-medium",
+   
     "text-plumb-mint",
     "transition-colors",
     "hover:text-plumb-mintHover",
@@ -1009,7 +1072,7 @@ text: {
   ].join(" "),
 
   subheading: [
-    "font-open-sans font-semibold text-base",
+    "font-serif font-semibold text-[1.2rem] text-base",
     "leading-snug",
     "text-plumb-ink dark:text-plumb-darkText",
   ].join(" "),
@@ -1097,25 +1160,7 @@ scrollDown: {
 },
 
   button: {
-//   base: [
-//     "inline-flex items-center justify-center",
-//     "rounded-full font-medium",
-//     "transition-all duration-200 ease-out",
-//     "transform-gpu",
-//     "hover:-translate-y-0.5",
-//     "active:translate-y-0 active:scale-[0.96]",
-//     "focus-visible:outline-none",
-//     "focus-visible:ring-2",
-//     "focus-visible:ring-plumb-focus",
-//     "focus-visible:ring-offset-2",
-//     "focus-visible:ring-offset-paper",
-//     "dark:focus-visible:ring-offset-plumb-dark-canvas",
-//     "disabled:pointer-events-none disabled:opacity-50",
-//     "disabled:transform-none",
-//     "motion-reduce:transform-none",
-//     "motion-reduce:transition-none",
-//   ].join(" "),
-// },
+
 base: [
 "inline-flex items-center justify-center",
 "rounded-full",
@@ -1138,9 +1183,10 @@ base: [
 "motion-reduce:transition-none",
 ].join(" "),
 primary: [
+
     "rounded-full",
   "text-base",
-  "bg-plumb-mintHover text-white",
+  "bg-plumb-mintHover dark:bg-transparent  text-plumb-darkText",
   "shadow-sm",
   "hover:bg-plumb-mint",
   "hover:shadow-md",
@@ -1261,7 +1307,56 @@ filterActive: [
     "px-6",
     "text-base",
   ].join(" "),
-// },
+utility: [
+  "inline-flex items-center justify-center",
+  "min-h-9 px-3",
+  "rounded-full",
+  "text-[1.1rem] font-medium",
+  "text-plumb-muted",
+  "bg-transparent",
+  "transition-colors duration-150",
+  "hover:bg-plumb-mint/10",
+  "hover:text-plumb-ink",
+  "active:bg-plumb-mint/20",
+  "focus-visible:outline-none",
+  "focus-visible:ring-2",
+  "focus-visible:ring-plumb-focus",
+  "focus-visible:ring-offset-2",
+  "focus-visible:ring-offset-plumb-paper",
+  "dark:focus-visible:ring-offset-plumb-dark-canvas",
+  "dark:text-plumb-darkMuted",
+  "dark:hover:bg-plumb-mint/15",
+  "dark:hover:text-plumb-darkText",
+  "dark:active:bg-plumb-mint/25",
+  "motion-reduce:transition-none",
+].join(" "),
+iconUtility: [
+  "inline-flex  shrink-0 items-center justify-center",
+  "rounded-full",
+  "bg-transparent",
+  "text-plumb-muted",
+  "transition-colors duration-150",
+  "hover:bg-plumb-mint/10",
+  "hover:text-plumb-mintHover",
+  "focus-visible:outline-none",
+  "focus-visible:ring-2",
+  "focus-visible:ring-plumb-focus",
+  "focus-visible:ring-offset-2",
+  "focus-visible:ring-offset-plumb-paper",
+  "dark:focus-visible:ring-offset-plumb-dark-canvas",
+  "dark:text-plumb-darkMuted",
+  "dark:hover:bg-plumb-mint/15",
+  "dark:hover:text-plumb-mintLight",
+  "motion-reduce:transition-none",
+].join(" "),
+
+utilityActive: [
+  "text-plumb-mintHover",
+  "hover:bg-plumb-mint/10",
+  "dark:text-plumb-mintLight",
+  "dark:hover:bg-plumb-mint/20",
+].join(" "),
+
    },
 
 input: [
@@ -1340,73 +1435,22 @@ event: {
     "dark:text-plumb-darkText",
   ].join(" "),
 }
-,dashboardItem: {
-  card: [
-    "w-[100%] overflow-hidden rounded-2xl",
-    "border border-plumb-borderStrong",
-    "bg-plumb-surface dark:border-plumb-darkBorderStrong",
-    "dark:bg-plumb-dark-surface",
-    "transition-colors duration-200",
-    "motion-reduce:transition-none",
-  ].join(" "),
-
-  header: [
-    "flex items-center justify-between gap-3",
-    "px-4 pt-4 sm:px-5 sm:pt-5",
-  ].join(" "),
-
-  authorButton: [
-    "flex min-w-0 items-center gap-3 rounded-lg text-left",
-    "focus-visible:outline-none focus-visible:ring-2",
-    "focus-visible:ring-plumb-focus focus-visible:ring-offset-2",
-    "focus-visible:ring-offset-plumb-surface",
-    "dark:focus-visible:ring-offset-plumb-dark-surface",
-  ].join(" "),
-
-  authorName: [
-    "truncate font-open-sans text-sm font-medium",
-    "text-plumb-ink dark:text-plumb-darkText",
-  ].join(" "),
-
-  metadata: [
-    "mt-0.5 font-open-sans text-xs",
-    "text-plumb-muted dark:text-plumb-darkMuted",
-  ].join(" "),
-
-  title: [
-    "font-serif text-lg font-semibold leading-snug",
-    "text-plumb-ink dark:text-plumb-darkText",
-    "transition-colors duration-150",
-    "group-hover:text-plumb-mintHover",
-    "dark:group-hover:text-plumb-mintLight",
-  ].join(" "),
-
+,
+dashboardItem: {
   titleButton: [
-    "block w-fit max-w-full rounded-md text-left",
+    "block w-fit font-serif  bg-transparent max-w-full rounded-md text-left",
     "focus-visible:outline-none focus-visible:ring-2",
     "focus-visible:ring-plumb-focus focus-visible:ring-offset-2",
     "focus-visible:ring-offset-plumb-surface",
     "dark:focus-visible:ring-offset-plumb-dark-surface",
   ].join(" "),
-
-  content: [
-    "px-4 pb-4 pt-4 sm:px-5 sm:pb-5",
-  ].join(" "),
-
-  excerpt: [
-    "mt-3 font-lora text-base leading-[1.8]",
-    "text-plumb-text dark:text-plumb-darkText",
-    "[&_p]:mb-3 [&_p:last-child]:mb-0",
-    "[&_a]:underline [&_a]:underline-offset-2",
-    "[&_a]:text-plumb-mintHover",
-    "dark:[&_a]:text-plumb-mintLight",
-  ].join(" "),
-
   continue: [
+    "mx-3",
     "mt-3 inline-flex min-h-10 items-center gap-1.5",
     "rounded-full px-3 py-2",
     "font-open-sans text-sm font-medium",
-    "text-plumb-mintHover dark:text-plumb-mintLight",
+    "text-plumb-muted dark:text-plumb-darkMuted",
+"bg-transparent ",
     "transition-colors duration-150",
     "hover:bg-plumb-mint/10 dark:hover:bg-plumb-mint/15",
     "focus-visible:outline-none focus-visible:ring-2",
@@ -1416,16 +1460,12 @@ event: {
     "motion-reduce:transition-none",
   ].join(" "),
 
-  actions: [
-    "flex flex-wrap items-center gap-1",
-    "border-t border-plumb-borderStrong",
-    "px-3 py-2 dark:border-plumb-darkBorderStrong",
-  ].join(" "),
-
   action: [
+        "bg-transparent mx-2",
     "inline-flex min-h-10 items-center justify-center",
     "rounded-full px-3 py-2",
     "font-open-sans text-sm",
+    
     "text-plumb-muted dark:text-plumb-darkMuted",
     "transition-colors duration-150",
     "hover:bg-plumb-mint/10 hover:text-plumb-ink",
@@ -1434,59 +1474,258 @@ event: {
     "focus-visible:ring-plumb-focus",
     "motion-reduce:transition-none",
   ].join(" "),
-
-  actionActive: [
-    "font-medium text-plumb-mintHover",
-    "dark:text-plumb-mintLight",
-  ].join(" "),
-
-  bookmark: [
-    "flex h-10 w-10 shrink-0 items-center justify-center",
-    "rounded-full transition-colors duration-150",
-    "hover:bg-plumb-mint/10 dark:hover:bg-plumb-mint/15",
-    "focus-visible:outline-none focus-visible:ring-2",
-    "focus-visible:ring-plumb-focus",
+  card: [
+    "group",
+    "w-[100%]",
+    "cursor-pointer",
+    "select-none",
+    "overflow-hidden",
+    "rounded-3xl",
+    "border",
+    "border-plumb-borderStrong",
+    "bg-plumb-surface",
+    "text-plumb-text",
+    "transition-all",
+    "duration-200",
+    "active:scale-[0.985]",
+    "hover:border-plumb-mintHover",
+    "md:hover:-translate-y-0.5",
+    "md:hover:shadow-md",
+    "dark:border-plumb-darkBorderStrong",
+    "dark:bg-plumb-dark-surface",
+    "dark:text-plumb-darkText",
+    "dark:hover:border-plumb-mintLight",
+    "focus-within:ring-2",
+    "focus-within:ring-plumb-focus",
+    "focus-within:ring-offset-2",
+    "focus-within:ring-offset-plumb-surface",
+    "dark:focus-within:ring-offset-plumb-dark-surface",
+    "motion-reduce:transform-none",
     "motion-reduce:transition-none",
   ].join(" "),
 
-  privateCard: [
-    "rounded-xl border border-plumb-borderStrong",
-    "bg-plumb-paper p-4",
+  header: [
+    "px-5 pb-3 pt-5",
+    "sm:px-6 sm:pt-6 flex flex-row justify-between",
+  ].join(" "),
+
+  author: [
+    "flex min-w-0 items-center gap-3",
+  ].join(" "),
+
+  authorName: [
+    "truncate text-sm  bg-transparent font-medium",
+    "text-plumb-ink dark:text-plumb-darkText",
+  ].join(" "),
+
+  authorType: [
+    "mt-0.5 text-xs",
+    "text-plumb-muted dark:text-plumb-darkMuted",
+  ].join(" "),
+
+  bookmark: [
+    "flex h-9 w-9 shrink-0 items-center justify-center",
+    "rounded-full",
+    "bg-transparent ",
+    "transition-colors duration-150",
+    "hover:bg-plumb-mint/20",
+    "active:scale-90",
+    "focus-visible:outline-none",
+    "focus-visible:ring-2",
+    "focus-visible:ring-plumb-focus",
+    "dark:bg-plumb-mint/15",
+    "dark:hover:bg-plumb-mint/25",
+    "motion-reduce:transform-none",
+  ].join(" "),
+
+  titleContent: [
+    "px-5     pb-5",
+    "sm:px-6",
+  ].join(" "),
+
+  title: [
+    "font-serif",
+        "text-[1.2rem]",
+    "font-medium",
+    "leading-[1.08]",
+    "tracking-[-0.015em]",
+    "text-plumb-ink dark:text-plumb-darkText",
+    "transition-colors duration-150",
+    "group-hover:text-plumb-mintHover",
+    "dark:group-hover:text-plumb-mintLight",
+  ].join(" "),
+
+  description: [
+    "mt-3 max-w-2xl",
+    "text-sm leading-6",
+    "text-plumb-text dark:text-plumb-darkText",
+  ].join(" "),
+
+  stories: [
+    "px-4 pb-4",
+    "sm:px-5",
+  ].join(" "),
+
+  storyWindow: [
+    "overflow-hidden rounded-2xl border",
+    "border-plumb-borderStrong",
+    "bg-plumb-surface",
     "dark:border-plumb-darkBorderStrong",
     "dark:bg-plumb-dark-canvas",
   ].join(" "),
 
-  privateTitle: [
-    "font-serif text-lg font-semibold",
-    "text-plumb-ink dark:text-plumb-darkText",
+  footer: [
+    "flex items-center justify-between",
+    "border-t",
+    "border-plumb-borderStrong",
+    "px-5 py-4",
+    "sm:px-6",
+    "dark:border-plumb-darkBorderStrong",
   ].join(" "),
 
-  privateBody: [
-    "mt-1 font-open-sans text-sm leading-relaxed",
+  metadata: [
+    "text-xs",
     "text-plumb-muted dark:text-plumb-darkMuted",
+  ].join(" "),
+
+  separator: [
+    "text-xs",
+    "text-plumb-muted/40",
+    "dark:text-plumb-darkMuted/40",
+  ].join(" "),
+
+  arrow: [
+    "text-lg",
+    "text-plumb-muted dark:text-plumb-darkMuted",
+    "transition-transform duration-200",
+    "group-hover:translate-x-1",
   ].join(" "),
 
   skeleton: [
     "h-48 w-[100%] animate-pulse rounded-2xl",
-    "border border-plumb-borderStrong bg-plumb-mint/5",
-    "dark:border-plumb-darkBorderStrong dark:bg-plumb-dark-surface",
+    "border border-plumb-borderStrong",
+    "bg-plumb-mint/5",
+    "dark:border-plumb-darkBorderStrong",
+    "dark:bg-plumb-dark-surface",
     "motion-reduce:animate-none",
   ].join(" "),
+},
+// dashboardItem: {
+//   card: [
+//     "w-[100%] overflow-hidden rounded-2xl",
+//     "border border-plumb-borderStrong",
+//     "bg-plumb-surface dark:border-plumb-darkBorderStrong",
+//     "dark:bg-plumb-dark-surface",
+//     "transition-colors duration-200",
+//     "motion-reduce:transition-none",
+//   ].join(" "),
 
-  permissionButton: [
-    "mt-4 inline-flex min-h-10 items-center justify-center",
-    "rounded-full bg-plumb-mintHover px-4 py-2",
-    "font-open-sans text-sm font-medium text-white",
-    "transition-colors duration-150 hover:bg-plumb-mint",
-    "focus-visible:outline-none focus-visible:ring-2",
-    "focus-visible:ring-plumb-focus focus-visible:ring-offset-2",
-    "focus-visible:ring-offset-plumb-paper",
-    "dark:focus-visible:ring-offset-plumb-dark-canvas",
-    "disabled:cursor-default disabled:opacity-60",
-    "motion-reduce:transition-none",
-  ].join(" "),
+//   header: [
+//     "flex items-center justify-between gap-3",
+//     "px-4 pt-4 sm:px-5 sm:pt-5",
+//   ].join(" "),
 
-},  settingRow: {
+//   authorButton: [
+//     "flex min-w-0 items-center gap-3 rounded-lg text-left",
+//     "focus-visible:outline-none focus-visible:ring-2",
+//     "focus-visible:ring-plumb-focus focus-visible:ring-offset-2",
+//     "focus-visible:ring-offset-plumb-surface",
+//     "dark:focus-visible:ring-offset-plumb-dark-surface",
+//   ].join(" "),
+
+//   authorName: [
+//     "truncate font-open-sans text-sm font-medium",
+//     "text-plumb-ink dark:text-plumb-darkText",
+//   ].join(" "),
+
+//   metadata: [
+//     "mt-0.5 font-open-sans text-xs",
+//     "text-plumb-muted dark:text-plumb-darkMuted",
+//   ].join(" "),
+
+//   title: [
+//     "font-serif text-lg font-semibold leading-snug",
+//     "text-plumb-ink dark:text-plumb-darkText",
+//     "transition-colors duration-150",
+//     "group-hover:text-plumb-mintHover",
+//     "dark:group-hover:text-plumb-mintLight",
+//   ].join(" "),
+
+
+
+//   content: [
+//     "px-4 pb-4 pt-4 sm:px-5 sm:pb-5",
+//   ].join(" "),
+
+//   excerpt: [
+//     "mt-3 font-lora text-base leading-[1.8]",
+//     "text-plumb-text dark:text-plumb-darkText",
+//     "[&_p]:mb-3 [&_p:last-child]:mb-0",
+//     "[&_a]:underline [&_a]:underline-offset-2",
+//     "[&_a]:text-plumb-mintHover",
+//     "dark:[&_a]:text-plumb-mintLight",
+//   ].join(" "),
+
+//   actions: [
+//     "flex flex-wrap items-center gap-1",
+//     "border-t border-plumb-borderStrong",
+//     "px-3 py-2 dark:border-plumb-darkBorderStrong",
+//   ].join(" "),
+
+
+//   actionActive: [
+//     "font-medium text-plumb-mintHover",
+//     "dark:text-plumb-mintLight",
+//   ].join(" "),
+
+//   bookmark: [
+//     "flex h-10 w-10 shrink-0 items-center justify-center",
+//     "rounded-full transition-colors duration-150",
+//     "hover:bg-plumb-mint/10 dark:hover:bg-plumb-mint/15",
+//     "focus-visible:outline-none focus-visible:ring-2",
+//     "focus-visible:ring-plumb-focus",
+//     "motion-reduce:transition-none",
+//   ].join(" "),
+
+//   privateCard: [
+//     "rounded-xl border border-plumb-borderStrong",
+//     "bg-plumb-paper p-4",
+//     "dark:border-plumb-darkBorderStrong",
+//     "dark:bg-plumb-dark-canvas",
+//   ].join(" "),
+
+//   privateTitle: [
+//     "font-serif text-lg font-semibold",
+//     "text-plumb-ink dark:text-plumb-darkText",
+//   ].join(" "),
+
+//   privateBody: [
+//     "mt-1 font-open-sans text-sm leading-relaxed",
+//     "text-plumb-muted dark:text-plumb-darkMuted",
+//   ].join(" "),
+
+//   skeleton: [
+//     "h-48 w-[100%] animate-pulse rounded-2xl",
+//     "border border-plumb-borderStrong bg-plumb-mint/5",
+//     "dark:border-plumb-darkBorderStrong dark:bg-plumb-dark-surface",
+//     "motion-reduce:animate-none",
+//   ].join(" "),
+
+//   permissionButton: [
+//     "mt-4 inline-flex min-h-10 items-center justify-center",
+//     "rounded-full bg-plumb-mintHover px-4 py-2",
+//     "font-open-sans text-sm font-medium text-white",
+//     "transition-colors duration-150 hover:bg-plumb-mint",
+//     "focus-visible:outline-none focus-visible:ring-2",
+//     "focus-visible:ring-plumb-focus focus-visible:ring-offset-2",
+//     "focus-visible:ring-offset-plumb-paper",
+//     "dark:focus-visible:ring-offset-plumb-dark-canvas",
+//     "disabled:cursor-default disabled:opacity-60",
+//     "motion-reduce:transition-none",
+//   ].join(" "),
+
+// }, 
+ settingRow: {
   container: [
     "flex items-start justify-between gap-5",
     "rounded-2xl border px-4 py-4",

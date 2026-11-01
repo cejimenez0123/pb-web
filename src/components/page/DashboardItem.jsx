@@ -81,8 +81,9 @@ function DashboardItem({
   shortenTo,
   showPermissionRequest = true,
 }) {
-  const { setSuccess, setError } = useContext(Context);
+ 
 
+  const {showPrompt,showAlert}=useAlert()
   const [archive, setArchive] = useState(null);
   const [likeFound, setLikeFound] = useState(null);
   const [bookmarked, setBookmarked] = useState(null);
@@ -98,7 +99,7 @@ function DashboardItem({
   const router = useIonRouter();
 
   const { openDialog, resetDialog } = useDialog();
-  const { showAlert } = useAlert();
+
 
   /*
    * -------------------------------------------------------------------------
@@ -271,7 +272,10 @@ function DashboardItem({
     event?.stopPropagation();
 
     if (!currentProfile) {
-      return setError("Please Sign Up");
+     showPrompt({message:"Become a user first!",agreeText:"Yes!",agree:()=>router.push(Paths.apply())
+        ,disagreeText:"Later"
+      })
+    
     }
 
     const bookmarkCollections =
@@ -301,9 +305,12 @@ function DashboardItem({
             setBookmarked(null);
           },
           (err) =>
-            setError(
-              "Error removing bookmark: " + err.message
-            )
+          showAlert({
+        message:  "Error removing bookmark: " + err.message,
+        type: AlertType.error
+      })
+             
+            
         )
       );
 
@@ -343,7 +350,11 @@ function DashboardItem({
 
           setSuccess("Added Successfully");
         },
-        () => setError("Error Bookmarking")
+        (err) =>showAlert({
+        message:  "Error removing bookmark: " + err.message,
+        type: AlertType.error
+      })
+        
       )
     );
   };
@@ -477,67 +488,100 @@ const hasMoreContent =
     >
       {/* AUTHOR */}
       <header className={theme.header}>
-        <button
-          type="button"
-          disabled={!authorId}
-          onClick={() => {
-            if (!authorId) return;
+  <div className={theme.authorButton}>
+    <ProfileCircle
+      includeUsername={false}
+      profile={
+        page.author || {
+          id: authorId,
+          username: authorName,
+        }
+      }
+    />
 
-            router.push(
-              Paths.profile.createRoute(authorId),
-              "forward"
-            );
-          }}
-          className={theme.authorButton}
-          aria-label={`View ${authorName}'s profile`}
-        >
-          <ProfileCircle
-            includeUsername={false}
-            profile={
-              page.author || {
-                id: authorId,
-                username: authorName,
-              }
-            }
-          />
+    <button
+      type="button"
+      disabled={!authorId}
+      onClick={() => {
+        if (!authorId) return;
 
-          <span className="min-w-0">
-            <span className={`block ${theme.authorName}`}>
-              {authorName}
-            </span>
+        router.push(
+          Paths.profile.createRoute(authorId),
+          "forward"
+        );
+      }}
+      className={`
+        min-w-0
+        truncate
+        text-left
+       
+        ${theme.authorName}
+      `}
+      aria-label={`View ${authorName}'s profile`}
+    >
+      <span className="block truncate">
+        {authorName}
+      </span>
 
-            <span className={`block ${theme.metadata}`}>
-              {isPrivateStory
-                ? "Private Story"
-                : page.status || "Story"}
-            </span>
-          </span>
-        </button>
+      <span className={`block ${theme.metadata}`}>
+        {isPrivateStory
+          ? "Private Story"
+          : page.status || "Story"}
+      </span>
+    </button>
+  </div>
+{!isPrivateStory && (
+  <button
+    type="button"
+    onClick={handleBookmark}
+    className={`
+      flex
+      h-9
+      w-9
+      shrink-0
+      items-center
+      justify-center
+      rounded-full
+      text-plumb-muted
+      transition-colors
+      duration-150
+      bg-transparent
+      hover:bg-plumb-mint/10
+      hover:text-plumb-mintHover
+      focus-visible:outline-none
+      focus-visible:ring-2
+      focus-visible:ring-plumb-focus
+      dark:text-plumb-darkMuted
+      dark:hover:bg-plumb-mint/15
+      dark:hover:text-plumb-mintLight
+      active:scale-95
+      motion-reduce:transform-none
+      motion-reduce:transition-none
+    `}
+    aria-label={
+      bookmarked
+        ? "Remove story from saved items"
+        : "Save story"
+    }
+    aria-pressed={Boolean(bookmarked)}
+  >
+    <svg
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      className="h-[24px] w-[24px]"
+      fill={bookmarked ? "currentColor" : "none"}
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M6 4.75A1.75 1.75 0 0 1 7.75 3h8.5A1.75 1.75 0 0 1 18 4.75V21l-6-3.75L6 21V4.75Z" />
+    </svg>
+  </button>
+)}
 
-        {!isPrivateStory && (
-          <button
-            type="button"
-            onClick={handleBookmark}
-            className={theme.bookmark}
-            aria-label={
-              bookmarked
-                ? "Remove story from saved items"
-                : "Save story"
-            }
-            aria-pressed={Boolean(bookmarked)}
-          >
-            <IonImg
-              className="h-5 w-5"
-              src={
-                bookmarked
-                  ? bookmarkfill
-                  : bookmarkoutline
-              }
-              alt=""
-            />
-          </button>
-        )}
-      </header>
+</header>
+    
 
       {/* TITLE AND STORY PREVIEW */}
       <div className={theme.content}>
@@ -546,13 +590,13 @@ const hasMoreContent =
           onClick={handleClickComment}
           className={theme.titleButton}
         >
-          <p className={styles.text.subheading}>
+          <h6 className={styles.text.subheading}>
             {page.title  || "Untitled"}
-          </p>
+          </h6>
         </button>
 
         {page.description && (
-          <p className={`${styles.text.muted} mt-2 text-sm leading-relaxed`}>
+          <p className={`${styles.text.muted} mt-2 text-sm px-4 leading-relaxed`}>
             {page.description}
           </p>
         )}

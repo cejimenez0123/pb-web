@@ -154,8 +154,9 @@ const renderedHtml = shortenTo
         />
       )}
 <div
-className={styles.page.content}
-  // className="ql-editor prose prose-sm max-w-none text-sky-900 dark:text-sky-100"
+
+className=" text-plumb-ink dark:text-plumb-darkText "
+
   style={{ WebkitUserSelect: "text", userSelect: "text" }}
   dangerouslySetInnerHTML={{ __html: renderedHtml }}
 />

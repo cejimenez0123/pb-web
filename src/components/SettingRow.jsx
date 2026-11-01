@@ -12,20 +12,7 @@ function SettingRow({
   return (
     <div
     className={styles.settingRow.container}
-    //   className="
-    //     flex
-    //     items-start
-    //     justify-between
-    //     gap-5
-    //     rounded-2xl
-    //     border
-    //     border-gray-200
-    //     bg-base-bg
-    //     px-4
-    //     py-4
-    //     dark:border-gray-700
-    //     dark:bg-plumb-surface Dark
-    //   "
+
     >
       <div className="min-w-0">
         <div className="flex items-center gap-2">
