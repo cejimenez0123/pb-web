@@ -1238,6 +1238,7 @@ secondary: [
         "rounded-full",
     "bg-plumb-button-danger-bg",
     "text-white",
+    "dark:bg-transparent border-plumb-button-danger-bg border-1 dark:text-plumb-button-danger-bg dark:border dark:border-button-danger-bg",
     "hover:bg-plumb-button-danger-hover",
   ].join(" "),
 

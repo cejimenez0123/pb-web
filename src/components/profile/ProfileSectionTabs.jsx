@@ -12,6 +12,7 @@ function ProfileSectionTabs({ active, onChange }) {
       aria-label="Profile sections"
       className="
         w-[100%]
+    
         border-b
         border-soft
       "
@@ -22,10 +23,11 @@ function ProfileSectionTabs({ active, onChange }) {
           w-[100%]
           max-w-[48rem]
           items-center
-          gap-5
+          gap-3
           overflow-x-auto
           no-scrollbar
           sm:gap-6
+          
           md:gap-7
         "
       >
@@ -42,17 +44,19 @@ function ProfileSectionTabs({ active, onChange }) {
                 relative
                 shrink-0
                 whitespace-nowrap
-                px-0
-                pb-3
-                pt-1
+             p-3
+             border-x-1 border-t-1 border-plumb-darkText/10 dark:border-plumb-lightText/10
+                    bg-base-bg 
+              
                 text-sm
                 leading-none
                 transition-colors
                 duration-200
                 ${
                   isActive
-                    ? "text-gray-900"
-                    : "text-gray-500 hover:text-gray-800"
+                  
+                    ? "text-plumb-darkText dark:text-plumb-lightText font-semibold"
+                    : " text-plumb-darkText/70 dark:text-plumb-lightText/70 hover:text-plumb-darkText dark:hover:text-plumb-lightText"
                 }
               `}
             >

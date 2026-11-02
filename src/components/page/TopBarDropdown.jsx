@@ -39,19 +39,15 @@ const handleMenuClick = (action) => (e) => {
   };
 
   useEffect(() => { checkAccessToken() }, []);
-
+  const MENU=<svg xmlns="http://www.w3.org/2000/svg" className="my-auto" viewBox="0 0 24 24" height="40px" width="40px" fill="#FFFFFF"><path d="M3,18V16H21v2H3Zm0-5V11H21v2H3ZM3,8V6H21V8H3Z"/></svg>
   return (
-    <div className="dropdown dropdown-bottom dropdown-end flex-shrink-0">
-      <div tabIndex={0} role="button" className="rounded-md">
-        <img
-          className="w-[3.6rem] h-[3.6rem] rounded-lg"
-          src={menu}
-          style={{ backgroundColor: "#40906f" }}
-        />
+    <div className="dropdown dropdown-bottom  dropdown-end items-center flex-shrink-0">
+      <div tabIndex={0} role="button" className="rounded-md dark:border p-1 dark:border-1 dark:border-plumb-darkText">
+    {MENU}
       </div>
       <ul
         tabIndex={0}
-        className="dropdown-content menu bg-base-bg rounded-box shadow-lg z-[10] p-2"
+        className="dropdown-content menu dark:bg-base-bg rounded-box shadow-lg z-[10] p-2"
         style={{ minWidth: "12rem" }}
       >
                 {editPage && (

@@ -47,9 +47,10 @@ import EditorFooter from "../../components/page/EditorFooter.jsx";
 
 import Enviroment from "../../core/Enviroment.js";
 import { useMediaQuery } from "react-responsive";
+import styles from "../../styles/style.js";
 
 const CONTAINER =
-  "mx-auto w-full max-w-3xl rounded-lg bg-base-bg p-4 shadow-sm md:p-6";
+  "mx-auto w-full  max-w-3xl rounded-lg bg-base-bg p-4 shadow-sm md:p-6";
 
 const DRIVE_TOKEN_KEY = "googledrivetoken";
 
@@ -837,7 +838,7 @@ useEffect(() => {
                     className="mb-2 h-10 w-10 rounded"
                   />
 
-                  <span className="w-full break-words text-center text-sm text-emerald-800">
+                  <span className="w-full break-words text-center text-sm   dark:text-plumb-darkText text-plumb-ink">
                     {file.name}
                   </span>
                 </button>
@@ -1116,11 +1117,11 @@ const openConfirmDeleteDialog = useCallback(() => {
                 border border-emerald-200
                 bg-emerald-50 p-2
                 dark:border-base-borderDark
-                dark:bg-base-bgDark
+                dark:bg-transparent
               "
             >
-              <div className="flex w-full items-center gap-2">
-                <div className="flex    w-[100%] flex-col">
+              <div className="flex w-full  flex-col gap-2">
+                <div className="flex    w-[100%] gap-2 flex-row">
                   <input
                     type="text"
                     value={parameters.title}
@@ -1133,23 +1134,38 @@ const openConfirmDeleteDialog = useCallback(() => {
                     placeholder="Untitled"
                     aria-label="Story title"
                     className="
-                 
+               
                       flex-grow rounded-md border
                       border-emerald-300 bg-base-bg
                       p-2 text-[1rem] font-bold
-                      text-emerald-800 outline-none
+                    outline-none
                       focus:ring-2 focus:ring-emerald-500
-                      dark:text-cream
+                     dark:text-plumb-darkText text-plumb-ink
                     "
                   />
-
-                  <div className="mt-1 flex items-center gap-2">
+           <TopBarDropdown
+                    router={router}
+                    id={effectiveId}
+                    handleView={handleView}
+                    editPage={pageInView}
+                    handleChange={handleChange}
+                    openFeedback={openFeedback}
+                    parameters={parameters}
+                    openGoogleDrive={openGoogleDrive}
+                    setOpenHashtag={setOpenHashtag}
+                    openHashtag={openHashtag}
+                    openConfirmDeleteDialog={
+                      openConfirmDeleteDialog
+                    }
+                  />
+                  </div>
+                  <div className="mt-1 flex px-2 items-center gap-2">
                     {isSaved ? (
-                      <span className="flex items-center gap-1 font-semibold text-emerald-700">
+                      <span className="flex items-center gap-1 font-semibold   dark:text-plumb-darkText text-plumb-ink">
                         ✅ Saved
                       </span>
                     ) : (
-                      <span className="flex items-center gap-1 font-semibold text-yellow-600">
+                      <span className="flex items-center gap-1 font-semibold   dark:text-plumb-darkText text-plumb-ink">
                         💾 Saving...
                       </span>
                     )}
@@ -1173,11 +1189,11 @@ const openConfirmDeleteDialog = useCallback(() => {
                             inline-flex items-center gap-1
                             rounded-full border
                             border-emerald-300 px-2 py-[3px]
-                            text-xs font-medium text-emerald-700
+                            text-xs font-medium   dark:text-plumb-darkText text-plumb-ink
                             transition-colors
                             hover:bg-emerald-50
                             dark:border-emerald-600
-                            dark:text-emerald-300
+                        
                             dark:hover:bg-emerald-900/30
                           "
                         >
@@ -1206,36 +1222,20 @@ const openConfirmDeleteDialog = useCallback(() => {
                   </div>
                 </div>
 
-                <div className="shrink-0">
-                  <TopBarDropdown
-                    router={router}
-                    id={effectiveId}
-                    handleView={handleView}
-                    editPage={pageInView}
-                    handleChange={handleChange}
-                    openFeedback={openFeedback}
-                    parameters={parameters}
-                    openGoogleDrive={openGoogleDrive}
-                    setOpenHashtag={setOpenHashtag}
-                    openHashtag={openHashtag}
-                    openConfirmDeleteDialog={
-                      openConfirmDeleteDialog
-                    }
-                  />
-                </div>
               </div>
-            </div>
+            {/* </div> */}
           </header>
 
           <main className="w-full px-2 pb-24 pt-2 md:px-4 md:pb-10 md:pt-4">
             <div className="mx-auto w-full max-w-3xl">
               <div className={CONTAINER}>
                 <div
-                  className="
-                    mb-4 flex w-fit gap-1
-                    rounded-full bg-gray-100 p-1
-                    dark:bg-plumb-surface Dark
-                  "
+                className="gap-1 flex-row flex mx-auto items-center justify-center mb-4 w-fit rounded-ful"
+                  // className="
+                  //   mb-4 flex w-fit gap-1
+                  //   rounded-full  p-1
+                   
+                  // "
                 >
                   {STATUS_OPTIONS.map((option) => {
                     const isActive =
@@ -1252,16 +1252,19 @@ const openConfirmDeleteDialog = useCallback(() => {
                             option.value
                           )
                         }
-                        className={`
-                          rounded-full px-3 py-1
-                          text-xs font-semibold
-                          transition-all duration-150
-                          ${
-                            isActive
-                              ? "bg-soft text-white shadow-sm"
-                              : "bg-base-bg text-soft dark:bg-base-bgDark dark:text-cream"
-                          }
-                        `}
+                        className={"dark:text-plumb-darkText dark:bg-base-bg h-14 dark:border dark:border-1 dark:border-plumb-darkText dark:bg-base-bg text-plumb-ink " + (isActive ? " text-[1.01em] " : " ")}
+                      //   className={`
+                      //     rounded-full px-3 py-1
+                      //     text-xs font-semibold
+                      //     transition-all duration-150
+                      //     dark:bg-base-bg 
+                      //  "dark:text-plumb-darkText
+                      //     ${
+                      //       isActive
+                      //         ? "  shadow-sm"
+                      //         : " shadow-sm"
+                      //     }
+                      //   `}
                       >
                         {option.label}
                       </button>
@@ -1304,7 +1307,7 @@ function VisibilityBadge({
   toggle,
 }) {
   const base =
-    "inline-flex items-center gap-1 rounded-full px-2 py-[2px] text-xs font-semibold transition";
+    "inline-flex items-center gap-1 rounded-full px-2 py-[2px] dark:bg-transparent dark:text-plumb-darkText dark:border-1 dark:border-plumb-button-secondary-bg text-xs font-semibold transition";
 
   return (
     <button
@@ -1312,9 +1315,10 @@ function VisibilityBadge({
       onClick={toggle}
       aria-label="Change visibility"
       className={
-        isPrivate
+        "" +
+        (isPrivate
           ? `${base} bg-gray-100 text-gray-600 hover:bg-gray-200`
-          : `${base} bg-emerald-100 text-emerald-700 hover:bg-emerald-200`
+          : `${base} bg-emerald-100   dark:text-plumb-darkText text-plumb-ink hover:bg-emerald-200`)
       }
     >
       <span aria-hidden="true">

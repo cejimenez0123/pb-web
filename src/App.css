@@ -111,6 +111,7 @@
 }
 
 .plumb-searchbar {
+
   --background: var(--plumb-search-background);
   --box-shadow: var(--plumb-search-shadow);
   --border-radius: var(--plumb-search-border-radius);

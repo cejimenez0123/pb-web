@@ -28,6 +28,7 @@ import ProfileSectionTabs from "../components/profile/ProfileSectionTabs";
 import EventsSection from "../components/collection/EventsSection";
 import PortfolioSection from "../components/collection/PortfolioSection";
 import EmptyState from "../components/general/EmptyState";
+import styles from "../styles/style";
 
 const TABS = {
   PORTFOLIO: "portfolio",
@@ -176,7 +177,8 @@ const eventsDebouncedSearch = useDebounce(
                     font-serif
                     text-[2.5rem]
                     leading-tight
-                    text-gray-900
+                    text-plumb-ink
+               dark:text-plumb-darkText
                     sm:text-[3rem]
                   "
                 >
@@ -200,13 +202,8 @@ const eventsDebouncedSearch = useDebounce(
                         : "/profile"
                     )
                   }
-                  className="
-                    mt-4
-                    text-sm
-                    text-emerald-800
-                    transition
-                    hover:text-emerald-950
-                  "
+                  className={styles.button.secondary+" mt-4"}
+            
                 >
                   See what other people see →
                 </button>
@@ -237,19 +234,7 @@ const eventsDebouncedSearch = useDebounce(
     debouncedSearch={portfolioDebouncedSearch}
   />
 )}
-{/* 
-              {tab === TABS.ARCHIVE && (
-                <ArchiveSection
-                  profile={profile}
-                  router={router}
-                  search={search}
-                  setSearch={setSearch}
-                  searchInput={searchInput}
-                  setSearchInput={setSearchInput}
-                  debouncedSearch={debouncedSearch}
-                  storiesParams={storiesParams}
-                />
-              )} */}
+
 {tab === TABS.ARCHIVE && (
   <ArchiveSection
     profile={profile}
@@ -329,7 +314,7 @@ function ArchiveSection({
         "
       >
         <div>
-          <h2 className="font-serif text-2xl text-gray-900">
+          <h2 className="font-serif text-plumb-ink dark:text-plumb-darkText text-2xl text-gray-900">
             Archive
           </h2>
 
@@ -445,12 +430,12 @@ function CollectionsSection({
             w-full
             rounded-full
             border
-            border-soft
-            bg-cream
+            dark:text-plumb-darkText/70
+            text-plumb-ink
+    
             px-4
             py-2
-            text-sm
-            text-gray-800
+          
             placeholder-gray-400
             outline-none
             focus:border-emerald-700

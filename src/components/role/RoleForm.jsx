@@ -615,11 +615,13 @@ export default function RoleForm({ item }) {
                       flex
                       shrink-0
                          dark:text-plumb-darkText
-                      flex-col
+                   flex-row gap-2 w-fit
                       items-end
+
                     "
                   >
-                    <div className="relative">
+                      
+                    <div className="relative ">
                       <select
                         value={role}
                         disabled={isOwner}
@@ -705,7 +707,7 @@ export default function RoleForm({ item }) {
                         </span>
                       )}
                     </div>
-                    <InfoTooltip text={getRoleDescription(role)} />
+                
                  
                   </div>
                 </div>

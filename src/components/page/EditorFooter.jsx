@@ -2,6 +2,8 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import HashtagForm from "../hashtag/HashtagForm";
 import deleteIcon from "../../images/icons/delete.svg"
+import styles from "../../styles/style";
+const DELETE =(<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="24px" width="24px" fill="currentColor"><path d="M7,21q-0.82,0-1.41-0.59T5,19V6H4V4H9V3h6V4h5V6H19V19q0,0.82-0.59,1.41T17,21H7ZM17,6H7V19H17V6ZM9,17h2V8H9v9Zm4,0h2V8H13v9ZM7,6V19V6Z"/></svg>)
 function EditorFooter({ pageInView, effectiveId, openConfirmDeleteDialog }) {
   const [openHashtag, setOpenHashtag] = useState(false);
 let path = location.pathname.split("/")
@@ -18,11 +20,12 @@ return(<AnimatePresence><motion.div
     onClick={() => setOpenHashtag(prev => !prev)}
     className={`
       flex items-center gap-2 px-5 py-4 text-sm font-semibold
-      border rounded-2xl transition-all duration-200
+      border rounded-2xl dark:border-plumb-darkText dark:bg-transparent bg-plumb-button-primary-bg transition-all duration-200
       active:scale-95
-      ${openHashtag
-        ? "bg-button-secondary-bg border-button-secondary-bg text-white"
-        : "bg-base-bg border-soft text-soft dark:text-cream hover:border-button-secondary-bg hover:text-button-secondary-bg"
+      text-plumb-button-primary-text dark:text-plumb-darkText
+      ${openHashtag?"":""
+        // ? "bg-button-secondary-bg border-button-secondary-bg "
+        // : "bg-base-bg border-soft hover:border-button-secondary-bg hover:text-button-secondary-bg"
       }
     `}
     style={{ WebkitTapHighlightColor: "transparent" }}
@@ -52,32 +55,35 @@ return(<AnimatePresence><motion.div
       type="button"
       onClick={openConfirmDeleteDialog}
       aria-label="Delete story"
-      className="
-        group flex flex-col items-center
-        gap-1.5 rounded-2xl
-        bg-golden
-        dark:bg-text-primary
-      "
-      style={{
-        WebkitTapHighlightColor: "transparent",
-      }}
+      className={styles.button.danger+ "    text-plumb-button-danger-bg flex flex-col items-center gap-1.5 rounded-2xl"}
+      // className="
+      //   group flex flex-col items-center
+      //   gap-1.5 rounded-2xl
+  
+       
+      // "
+      // style={{
+      //   WebkitTapHighlightColor: "transparent",
+      // }}
     >
-      <img
+      {DELETE}
+      {/* <img
         src={deleteIcon}
         alt=""
         aria-hidden="true"
         className="h-8 w-8 max-h-8 max-w-8"
-      />
+      /> */}
 
-      <span
+      <h6
         className="
           text-[11px] text-white
           transition-colors
+          text-plumb-button-danger-bg
           group-hover:text-red-400
         "
       >
         Delete
-      </span>
+      </h6>
     </button>
 )}
 {/* </div> */}
@@ -99,9 +105,9 @@ return(<AnimatePresence><motion.div
                 <div className="flex flex-wrap gap-2 mb-3">
                   {pageInView.hashtags.map((tag, i) => (
                     <span
-                      key={tag?.id ?? i}
+                      key={ i}
                       className="px-3 py-4 rounded-full text-xs font-medium
-                        bg-base-soft border border-soft text-soft"
+                      "
                     >
                       #{tag?.name ?? tag}
                     </span>
