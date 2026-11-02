@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:ns1="http://schemas.android.com/tools" xmlns:ns2="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:ns1="urn:oasis:names:tc:xliff:document:1.2" xmlns:ns2="http://schemas.android.com/tools">
     <plurals name="mtrl_badge_content_description">
     <item quantity="one">%d ახალი შეტყობინება</item>
     <item quantity="other">%d ახალი შეტყობინება</item>
@@ -29,7 +29,7 @@
     <string msgid="1486535517437947103" name="abc_searchview_description_submit">"მოთხოვნის გადაგზავნა"</string>
     <string msgid="2293578557972875415" name="abc_searchview_description_voice">"ხმოვანი ძიება"</string>
     <string msgid="8875138169939072951" name="abc_shareactionprovider_share_with">"გაზიარება:"</string>
-    <string msgid="9055268688411532828" name="abc_shareactionprovider_share_with_application">"<ns2:g id="APPLICATION_NAME">%s</ns2:g>-ით გაზიარება"</string>
+    <string msgid="9055268688411532828" name="abc_shareactionprovider_share_with_application">"<ns1:g id="APPLICATION_NAME">%s</ns1:g>-ით გაზიარება"</string>
     <string msgid="1656852541809559762" name="abc_toolbar_collapse_description">"ჩაკეცვა"</string>
     <string msgid="8397015543330865059" name="android.credentials.TYPE_PASSWORD_CREDENTIAL">"პაროლი"</string>
     <string msgid="3929015085059320822" name="androidx.credentials.TYPE_PUBLIC_KEY_CREDENTIAL">"წვდომის გასაღები"</string>
@@ -108,7 +108,7 @@
     <string name="mtrl_checkbox_state_description_indeterminate">ნაწილობრივ შემოწმებულია</string>
     <string name="mtrl_checkbox_state_description_unchecked">არ არის მონიშნული</string>
     <string name="mtrl_chip_close_icon_content_description">%1$s-ის ამოშლა</string>
-    <string name="mtrl_exceed_max_badge_number_content_description" ns1:ignore="PluralsCandidate">%1$d-ზე მეტი ახალი შეტყობინება</string>
+    <string name="mtrl_exceed_max_badge_number_content_description" ns2:ignore="PluralsCandidate">%1$d-ზე მეტი ახალი შეტყობინება</string>
     <string name="mtrl_picker_a11y_next_month">შემდეგ თვეზე გადასვლა</string>
     <string name="mtrl_picker_a11y_prev_month">წინა თვეზე გადასვლა</string>
     <string name="mtrl_picker_announce_current_range_selection">დაწყების თარიღის შერჩევა: %1$s — დასრულების თარიღის შერჩევა: %2$s</string>

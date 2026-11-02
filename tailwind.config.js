@@ -148,7 +148,7 @@ focusLight: "#347a5e",
     },
 
     // Focus
-    focus: "#8fd8b5",
+ 
   },
 },
 

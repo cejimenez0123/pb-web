@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:ns1="http://schemas.android.com/tools" xmlns:ns2="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:ns1="urn:oasis:names:tc:xliff:document:1.2" xmlns:ns2="http://schemas.android.com/tools">
     <plurals name="mtrl_badge_content_description">
     <item quantity="one">%d ny notifikation</item>
     <item quantity="other">%d nye notifikationer</item>
@@ -29,7 +29,7 @@
     <string msgid="1486535517437947103" name="abc_searchview_description_submit">"Indsend forespørgsel"</string>
     <string msgid="2293578557972875415" name="abc_searchview_description_voice">"Talesøgning"</string>
     <string msgid="8875138169939072951" name="abc_shareactionprovider_share_with">"Del med"</string>
-    <string msgid="9055268688411532828" name="abc_shareactionprovider_share_with_application">"Del med <ns2:g id="APPLICATION_NAME">%s</ns2:g>"</string>
+    <string msgid="9055268688411532828" name="abc_shareactionprovider_share_with_application">"Del med <ns1:g id="APPLICATION_NAME">%s</ns1:g>"</string>
     <string msgid="1656852541809559762" name="abc_toolbar_collapse_description">"Skjul"</string>
     <string msgid="8397015543330865059" name="android.credentials.TYPE_PASSWORD_CREDENTIAL">"Adgangskode"</string>
     <string msgid="3929015085059320822" name="androidx.credentials.TYPE_PUBLIC_KEY_CREDENTIAL">"Adgangsnøgle"</string>
@@ -130,7 +130,7 @@
     <string name="mtrl_checkbox_state_description_indeterminate">Delvist markeret</string>
     <string name="mtrl_checkbox_state_description_unchecked">Ikke markeret</string>
     <string name="mtrl_chip_close_icon_content_description">Fjern %1$s</string>
-    <string name="mtrl_exceed_max_badge_number_content_description" ns1:ignore="PluralsCandidate">Flere end %1$d nye notifikationer</string>
+    <string name="mtrl_exceed_max_badge_number_content_description" ns2:ignore="PluralsCandidate">Flere end %1$d nye notifikationer</string>
     <string name="mtrl_picker_a11y_next_month">Skift til næste måned</string>
     <string name="mtrl_picker_a11y_prev_month">Skift til forrige måned</string>
     <string name="mtrl_picker_announce_current_range_selection">Valg af startdato: %1$s – Valg af slutdato: %2$s</string>

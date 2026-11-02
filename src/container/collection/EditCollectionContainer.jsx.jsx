@@ -37,42 +37,40 @@ import CollectionToCollection from "../../domain/models/CollectionToCollection";
 import StoryToCollection from "../../domain/models/storyToColleciton";
 
 import HashtagForm from "../../components/hashtag/HashtagForm";
-import ProfileCircle from "../../components/profile/ProfileCircle.jsx";
 import RoleForm from "../../components/role/RoleForm";
 import SortableList from "../../components/SortableList";
-import TabBar from "../../components/TabBar";
 import ErrorBoundary from "../../ErrorBoundary";
-
 import { useAlert } from "../../core/useAlert.jsx";
 import AlertType from "../../core/AlertType.js";
 import { useDialog } from "../../domain/usecases/useDialog";
+import styles from "../../styles/style.js";
 
 
 // =========================================================
 // STYLES
 // =========================================================
 
-const PAGE =
-  "w-full max-w-[52rem] mx-auto px-4 sm:px-6 lg:px-8";
+const PAGE =""
+//   "w-full max-w-[52rem] mx-auto px-4 sm:px-6 lg:px-8";
 
-const CARD =
-  "rounded-2xl border border-card-border bg-card-background " +
-  "dark:bg-plumb-surface Dark dark:border-white/10";
+const CARD = "rounded-2xl bark:bg-plumb-surface dark:text-plumb-darkText"
+  // "rounded-2xl border border-card-border bg-card-background " +
+  // "dark:bg-plumb-surface Dark dark:border-white/10";
 
-const PRIMARY_BUTTON =
-  "inline-flex items-center justify-center h-11 px-5 mt-4  mb-1 rounded-full " +
-  "bg-button-primary-bg text-white text-sm font-medium " +
-  "transition-all duration-200 hover:bg-button-primary-hover " +
-  "focus:outline-none focus:ring-2 focus:ring-button-primary-bg/30 " +
-  "disabled:opacity-50 disabled:pointer-events-none";
+const PRIMARY_BUTTON = styles.button.primary 
+  // "inline-flex items-center justify-center h-11 px-5 mt-4  mb-1 rounded-full " +
+  // "bg-button-primary-bg text-white text-sm font-medium " +
+  // "transition-all duration-200 hover:bg-button-primary-hover " +
+  // "focus:outline-none focus:ring-2 focus:ring-button-primary-bg/30 " +
+  // "disabled:opacity-50 disabled:pointer-events-none";
 
-const SECONDARY_BUTTON =
-  "inline-flex items-center justify-center h-11 px-5 rounded-full " +
-  "border border-card-border bg-card-background text-text-primary " +
-  "text-sm font-medium transition-all duration-200 " +
-  "hover:border-button-primary-bg hover:text-text-brand " +
-  "focus:outline-none focus:ring-2 focus:ring-button-primary-bg/30 " +
-  "dark:bg-plumb-surface Dark dark:border-white/10 dark:text-cream";
+const SECONDARY_BUTTON = styles.button.secondary
+  // "inline-flex items-center justify-center h-11 px-5 rounded-full " +
+  // "border border-card-border bg-card-background text-text-primary " +
+  // "text-sm font-medium transition-all duration-200 " +
+  // "hover:border-button-primary-bg hover:text-text-brand " +
+  // "focus:outline-none focus:ring-2 focus:ring-button-primary-bg/30 " +
+  // "dark:bg-plumb-surface Dark dark:border-white/10 dark:text-cream";
 
 const DANGER_BUTTON =
   "inline-flex items-center justify-center h-11 px-5 rounded-full " +
@@ -611,13 +609,14 @@ const handleSave = async () => {
         className="page-content"
       >
         <main
-          className="
-            min-h-full
-            bg-plumb-surface 
-            text-text-primary
-            dark:bg-base-bgDark
-            dark:text-cream
-          "
+        className={styles.page}
+          // className="
+          //   min-h-full
+          //   bg-plumb-surface 
+          //   text-text-primary
+          //   dark:bg-base-bgDark
+          //   dark:text-cream
+          // "
         >
 
           {/* =========================================== */}
@@ -638,6 +637,8 @@ const handleSave = async () => {
                   )
                 }
                 className="
+                dark:text-plumb-darkText
+                dark:border-white/10 mx-4
                   inline-flex
                   items-center
                   gap-2
@@ -658,7 +659,7 @@ const handleSave = async () => {
               </button>
 
 
-              <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+              <div className="flex flex-col gap-5  px-4  dark:text-plumb-darkText sm:flex-row sm:items-end sm:justify-between">
 
                 <div className="min-w-0">
 
@@ -829,24 +830,26 @@ const handleSave = async () => {
                         setTitle(event.target.value)
                       }
                       placeholder="Room title"
-                      className="
+                      className={styles.input+ "     dark:bg-base-bg"}
+                      // className={styles.text}
+                      // className="
               
-                        rounded-xl
-                        border
-                        border-card-border
-                        bg-transparent
-                        px-4
-                        py-3
-                        text-base
-                        text-text-primary
-                        outline-none
-                        transition
-                        focus:border-button-primary-bg
-                        focus:ring-2
-                        focus:ring-button-primary-bg/20
-                        dark:border-white/10
-                        dark:text-cream
-                      "
+                      //   rounded-xl
+                      //   border
+                      //   border-card-border
+                      //   bg-transparent
+                      //   px-4
+                      //   py-3
+                      //   text-base
+                      //   text-text-primary
+                      //   outline-none
+                      //   transition
+                      //   focus:border-button-primary-bg
+                      //   focus:ring-2
+                      //   focus:ring-button-primary-bg/20
+                      //   dark:border-white/10
+                      //   dark:text-cream
+                      // "
                     />
                   </label>
 
@@ -869,7 +872,7 @@ const handleSave = async () => {
                         rounded-xl
                         border
                         border-card-border
-                        bg-transparent
+                       bg-base-bg
                         px-4
                         py-3
                         text-base
@@ -998,21 +1001,23 @@ const handleSave = async () => {
                             event.target.value
                           )
                         }
-                        className="
-                          h-11
-                          rounded-full
-                          border
-                          border-card-border
-                          bg-card-background
-                          px-4
-                          text-sm
-                          text-text-primary
-                          outline-none
-                          focus:border-button-primary-bg
-                          dark:bg-plumb-surface Dark
-                          dark:border-white/10
-                          dark:text-cream
-                        "
+                        // }
+                        className= "h-11 rounded-full border border-card-border bg-card-background px-4 dark:bg-transparent  py-4 font-bold text-sm text-text-primary outline-none focus:border-button-primary-bg dark:bg-plumb-surface Dark dark:border-white/10 dark:text-cream"
+                        // "
+                        //   h-11
+                        //   rounded-full
+                        //   border
+                        //   border-card-border
+                        //   bg-card-background
+                        //   px-4
+                        //   text-sm
+                        //   text-text-primary
+                        //   outline-none
+                        //   focus:border-button-primary-bg
+                        //   dark:bg-plumb-surface Dark
+                        //   dark:border-white/10
+                        //   dark:text-cream
+                        // "
                       >
                         <option
                           value={RoleType.commenter}
@@ -1143,7 +1148,7 @@ const handleSave = async () => {
                       rounded-xl
                       border
                       border-card-border
-                      bg-transparent
+                      bg-base-bg
                       px-4
                       py-3
                       text-sm
@@ -1298,6 +1303,7 @@ const handleSave = async () => {
 
               <section
                 className="
+                px-4
                   flex
                   flex-col-reverse
                   sm:flex-row
@@ -1311,7 +1317,8 @@ const handleSave = async () => {
                 <button
                   type="button"
                   onClick={handleDelete}
-                  className={DANGER_BUTTON}
+                  className={styles.button.danger}
+                  // className={DANGER_BUTTON}
                 >
                   Delete room
                 </button>
@@ -1398,7 +1405,7 @@ function SettingRow({
           </p>
         </div>
 
-        <div className="shrink-0">
+        <div className="shrink-0 ">
           {action}
         </div>
 

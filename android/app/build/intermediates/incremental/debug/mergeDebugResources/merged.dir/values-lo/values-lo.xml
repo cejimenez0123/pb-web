@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:ns1="http://schemas.android.com/tools" xmlns:ns2="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:ns1="urn:oasis:names:tc:xliff:document:1.2" xmlns:ns2="http://schemas.android.com/tools">
     <plurals name="mtrl_badge_content_description">
     <item quantity="one">%d ການແຈ້ງເຕືອນໃໝ່</item>
     <item quantity="other">%d ການແຈ້ງເຕືອນໃໝ່</item>
@@ -29,7 +29,7 @@
     <string msgid="1486535517437947103" name="abc_searchview_description_submit">"ສົ່ງຂໍ້ມູນ"</string>
     <string msgid="2293578557972875415" name="abc_searchview_description_voice">"ຊອກຫາດ້ວຍສຽງ"</string>
     <string msgid="8875138169939072951" name="abc_shareactionprovider_share_with">"ແບ່ງປັນກັບ"</string>
-    <string msgid="9055268688411532828" name="abc_shareactionprovider_share_with_application">"ແບ່ງປັນດ້ວຍ <ns2:g id="APPLICATION_NAME">%s</ns2:g>"</string>
+    <string msgid="9055268688411532828" name="abc_shareactionprovider_share_with_application">"ແບ່ງປັນດ້ວຍ <ns1:g id="APPLICATION_NAME">%s</ns1:g>"</string>
     <string msgid="1656852541809559762" name="abc_toolbar_collapse_description">"ຫຍໍ້ລົງ"</string>
     <string msgid="8397015543330865059" name="android.credentials.TYPE_PASSWORD_CREDENTIAL">"ລະຫັດຜ່ານ"</string>
     <string msgid="3929015085059320822" name="androidx.credentials.TYPE_PUBLIC_KEY_CREDENTIAL">"ກະແຈຜ່ານ"</string>
@@ -108,7 +108,7 @@
     <string name="mtrl_checkbox_state_description_indeterminate">ເລືອກໄວ້ບາງສ່ວນ</string>
     <string name="mtrl_checkbox_state_description_unchecked">ບໍ່ໄດ້ເລືອກໄວ້</string>
     <string name="mtrl_chip_close_icon_content_description">ລຶບ %1$s ອອກ</string>
-    <string name="mtrl_exceed_max_badge_number_content_description" ns1:ignore="PluralsCandidate">ການແຈ້ງເຕືອນໃໝ່ຫຼາຍກວ່າ %1$d ລາຍການ</string>
+    <string name="mtrl_exceed_max_badge_number_content_description" ns2:ignore="PluralsCandidate">ການແຈ້ງເຕືອນໃໝ່ຫຼາຍກວ່າ %1$d ລາຍການ</string>
     <string name="mtrl_picker_a11y_next_month">ປ່ຽນເປັນເດືອນຕໍ່ໄປ</string>
     <string name="mtrl_picker_a11y_prev_month">ປ່ຽນເປັນເດືອນຜ່ານມາ</string>
     <string name="mtrl_picker_announce_current_range_selection">ການເລືອກວັນທີເລີ່ມຕົ້ນ: %1$s – ການເລືອກວັນທີສິ້ນສຸດ: %2$s</string>

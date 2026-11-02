@@ -16,6 +16,7 @@ import Enviroment from "../../core/Enviroment";
 import Pill from "../Pill";
 import { useAlert } from "../../core/useAlert";
 import AlertType from "../../core/AlertType";
+import InfoTooltip from "../InfoTooltip";
 
 const ROLE_OPTIONS = [
   {
@@ -398,17 +399,24 @@ export default function RoleForm({ item }) {
         w-full
         min-w-0
         flex-col
-        bg-cream
-        text-text-primary
-        dark:bg-base-bgDark
-        dark:text-base-surface
+     
+ 
       "
     >
       {/* HEADER */}
 
-      <div className="shrink-0 px-1 pb-4">
-        <div className="flex items-start justify-between gap-3">
-          <div className="min-w-0">
+      <div className="shrink-0 px-1     
+     
+     
+        dark:text-plumb-darkText pb-4">
+        <div className="flex items-start  
+     
+     
+        dark:text-plumb-darkText justify-between gap-3">
+          <div className="min-w-0    
+     
+
+        dark:text-plumb-darkText">
             <p
               className="
                 mb-1
@@ -425,15 +433,15 @@ export default function RoleForm({ item }) {
             </p>
 
             <h2
-              className="
-                truncate
-                font-serif
-                text-xl
-                leading-tight
-                text-text-primary
-                dark:text-base-surface
-                sm:text-2xl
-              "
+              // className="
+              //   truncate
+              //   font-serif
+              //   text-xl
+              //   leading-tight
+              //   text-text-primary
+              //   dark:text-base-surface
+              //   sm:text-2xl
+              // "
             >
               {item.title || item.name || "Untitled"}
             </h2>
@@ -443,14 +451,14 @@ export default function RoleForm({ item }) {
             className="
               shrink-0
               rounded-full
-              bg-soft
+   
               px-3
               py-1.5
               text-xs
               text-white
               font-semibold
-              text-text-brand
-              dark:bg-plumb-surface Dark
+             dark:text-plumb-darkText
+        
             "
           >
             {activeCount}{" "}
@@ -474,7 +482,7 @@ export default function RoleForm({ item }) {
 
       {/* SEARCH */}
 
-      <div className="shrink-0 pb-3">
+      <div className="shrink-0    dark:text-plumb-darkText pb-3">
         <IonSearchbar
           value={search}
           onIonInput={(event) =>
@@ -499,13 +507,18 @@ export default function RoleForm({ item }) {
 
       <div
         className="
+     
+     
+  
+        dark:text-plumb-darkText
           mb-3
           shrink-0
+          
           rounded-2xl
-          bg-base-bg
+    
           px-3
           py-2.5
-          dark:bg-plumb-surface Dark
+        
         "
       >
         <div className="flex flex-wrap gap-x-3 gap-y-1.5">
@@ -542,6 +555,8 @@ export default function RoleForm({ item }) {
       <div
         className="
           min-h-0
+             dark:text-plumb-darkText
+           
           flex-1
           overflow-y-auto
           overscroll-contain
@@ -574,8 +589,8 @@ export default function RoleForm({ item }) {
                     duration-150
                     ${
                       hasAccess
-                        ? "border-border-focus bg-base-bg dark:bg-plumb-surface Dark"
-                        : "border-border-soft/60 bg-base-bg/60 dark:bg-plumb-surface Dark/60"
+                        ? "border-border-focus "
+                        : "border-border-soft/60"
                     }
                   `}
                 >
@@ -599,6 +614,7 @@ export default function RoleForm({ item }) {
                     className="
                       flex
                       shrink-0
+                         dark:text-plumb-darkText
                       flex-col
                       items-end
                     "
@@ -634,21 +650,21 @@ export default function RoleForm({ item }) {
                               ? `
                                 cursor-default
                                 border-button-primary/30
-                                bg-soft
+                    
                                 text-white
                               `
                               : hasAccess
                               ? `
                                 cursor-pointer
                                 border-button-primary
-                                bg-soft
+                        
                                 text-white
                                 hover:border-button-primary
                               `
                               : `
                                 cursor-pointer
                                 border-border-soft
-                                bg-transparent
+                          
                                 text-text-secondary
                                 hover:border-button-primary
                                 hover:text-text-brand
@@ -689,20 +705,8 @@ export default function RoleForm({ item }) {
                         </span>
                       )}
                     </div>
-
-                    <p
-                      className="
-                        mt-1
-                        max-w-[145px]
-                        truncate
-                        text-right
-                        text-[10px]
-                        leading-tight
-                        text-text-secondary
-                      "
-                    >
-                      {getRoleDescription(role)}
-                    </p>
+                    <InfoTooltip text={getRoleDescription(role)} />
+                 
                   </div>
                 </div>
               );
@@ -729,7 +733,7 @@ export default function RoleForm({ item }) {
                 font-serif
                 text-lg
                 text-text-primary
-                dark:text-base-surface
+        
               "
             >
               {search
@@ -774,11 +778,12 @@ export default function RoleForm({ item }) {
       <div
         className="
           shrink-0
+             dark:text-plumb-darkText
           border-t
           border-border-soft
-          bg-cream
+ 
           pt-3
-          dark:bg-base-bgDark
+  
         "
       >
         <div
@@ -796,11 +801,11 @@ export default function RoleForm({ item }) {
             baseClass="
               border
               border-border-soft
-              bg-transparent
+        
               text-text-secondary
-              hover:bg-soft
+   
               dark:border-border-soft
-              dark:bg-transparent
+       
               dark:text-cream
             "
           />
@@ -810,7 +815,7 @@ export default function RoleForm({ item }) {
             onClick={handlePatchRoles}
             variant="primary"
             baseClass="
-              bg-button-primary
+          
               text-white
               shadow-sm
               hover:opacity-90

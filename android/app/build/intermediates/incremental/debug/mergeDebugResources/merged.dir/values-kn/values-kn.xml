@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:ns1="http://schemas.android.com/tools" xmlns:ns2="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:ns1="urn:oasis:names:tc:xliff:document:1.2" xmlns:ns2="http://schemas.android.com/tools">
     <plurals name="mtrl_badge_content_description">
     <item quantity="one">%d ಹೊಸ ನೋಟಿಫಿಕೇಶನ್‍ಗಳು</item>
     <item quantity="other">%d ಹೊಸ ನೋಟಿಫಿಕೇಶನ್‍ಗಳು</item>
@@ -29,7 +29,7 @@
     <string msgid="1486535517437947103" name="abc_searchview_description_submit">"ಪ್ರಶ್ನೆಯನ್ನು ಸಲ್ಲಿಸಿ"</string>
     <string msgid="2293578557972875415" name="abc_searchview_description_voice">"ಧ್ವನಿ ಹುಡುಕಾಟ"</string>
     <string msgid="8875138169939072951" name="abc_shareactionprovider_share_with">"ಇವರೊಂದಿಗೆ ಹಂಚಿಕೊಳ್ಳಿ"</string>
-    <string msgid="9055268688411532828" name="abc_shareactionprovider_share_with_application">"<ns2:g id="APPLICATION_NAME">%s</ns2:g> ನೊಂದಿಗೆ ಹಂಚಿಕೊಳ್ಳಿ"</string>
+    <string msgid="9055268688411532828" name="abc_shareactionprovider_share_with_application">"<ns1:g id="APPLICATION_NAME">%s</ns1:g> ನೊಂದಿಗೆ ಹಂಚಿಕೊಳ್ಳಿ"</string>
     <string msgid="1656852541809559762" name="abc_toolbar_collapse_description">"ಕುಗ್ಗಿಸಿ"</string>
     <string msgid="8397015543330865059" name="android.credentials.TYPE_PASSWORD_CREDENTIAL">"ಪಾಸ್‌ವರ್ಡ್"</string>
     <string msgid="3929015085059320822" name="androidx.credentials.TYPE_PUBLIC_KEY_CREDENTIAL">"ಪಾಸ್‌ಕೀ"</string>
@@ -131,7 +131,7 @@
     <string name="mtrl_checkbox_state_description_indeterminate">ಭಾಗಶಃ ಪರೀಕ್ಷಿಸಲಾಗಿದೆ</string>
     <string name="mtrl_checkbox_state_description_unchecked">ಪರೀಕ್ಷಿಸಲಾಗಿಲ್ಲ</string>
     <string name="mtrl_chip_close_icon_content_description">%1$s ಅನ್ನು ತೆಗೆದುಹಾಕಿ</string>
-    <string name="mtrl_exceed_max_badge_number_content_description" ns1:ignore="PluralsCandidate">%1$d ಕ್ಕಿಂತ ಹೆಚ್ಚು ಹೊಸ ಅಧಿಸೂಚನೆಗಳು</string>
+    <string name="mtrl_exceed_max_badge_number_content_description" ns2:ignore="PluralsCandidate">%1$d ಕ್ಕಿಂತ ಹೆಚ್ಚು ಹೊಸ ಅಧಿಸೂಚನೆಗಳು</string>
     <string name="mtrl_picker_a11y_next_month">ಮುಂದಿನ ತಿಂಗಳಿಗೆ ಬದಲಿಸಿ</string>
     <string name="mtrl_picker_a11y_prev_month">ಹಿಂದಿನ ತಿಂಗಳಿಗೆ ಬದಲಿಸಿ</string>
     <string name="mtrl_picker_announce_current_range_selection">ಪ್ರಾರಂಭ ದಿನಾಂಕದ ಆಯ್ಕೆ: %1$s – ಮುಕ್ತಾಯ ದಿನಾಂಕದ ಆಯ್ಕೆ: %2$s</string>

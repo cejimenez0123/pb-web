@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:ns1="http://schemas.android.com/tools" xmlns:ns2="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:ns1="urn:oasis:names:tc:xliff:document:1.2" xmlns:ns2="http://schemas.android.com/tools">
     <plurals name="mtrl_badge_content_description">
     <item quantity="one">%d notificare nouă</item>
     <item quantity="few">%d notificări noi</item>
@@ -30,7 +30,7 @@
     <string msgid="1486535517437947103" name="abc_searchview_description_submit">"Trimite interogarea"</string>
     <string msgid="2293578557972875415" name="abc_searchview_description_voice">"Căutare vocală"</string>
     <string msgid="8875138169939072951" name="abc_shareactionprovider_share_with">"Trimite la"</string>
-    <string msgid="9055268688411532828" name="abc_shareactionprovider_share_with_application">"Trimite folosind <ns2:g id="APPLICATION_NAME">%s</ns2:g>"</string>
+    <string msgid="9055268688411532828" name="abc_shareactionprovider_share_with_application">"Trimite folosind <ns1:g id="APPLICATION_NAME">%s</ns1:g>"</string>
     <string msgid="1656852541809559762" name="abc_toolbar_collapse_description">"Restrânge"</string>
     <string msgid="8397015543330865059" name="android.credentials.TYPE_PASSWORD_CREDENTIAL">"Parolă"</string>
     <string msgid="3929015085059320822" name="androidx.credentials.TYPE_PUBLIC_KEY_CREDENTIAL">"Cheie de acces"</string>
@@ -132,7 +132,7 @@
     <string name="mtrl_checkbox_state_description_indeterminate">Bifată parțial</string>
     <string name="mtrl_checkbox_state_description_unchecked">Nebifată</string>
     <string name="mtrl_chip_close_icon_content_description">Eliminați %1$s</string>
-    <string name="mtrl_exceed_max_badge_number_content_description" ns1:ignore="PluralsCandidate">Peste %1$d notificări noi</string>
+    <string name="mtrl_exceed_max_badge_number_content_description" ns2:ignore="PluralsCandidate">Peste %1$d notificări noi</string>
     <string name="mtrl_picker_a11y_next_month">Treceți la luna următoare</string>
     <string name="mtrl_picker_a11y_prev_month">Treceți la luna anterioară</string>
     <string name="mtrl_picker_announce_current_range_selection">Selectarea datei de începere: %1$s – Selectarea datei de încheiere: %2$s</string>

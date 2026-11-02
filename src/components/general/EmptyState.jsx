@@ -28,7 +28,7 @@ function EmptyState({
         <button
           type="button"
           onClick={onAction}
-          className={styles.button.primary}
+          className={styles.button.primary + "  mb-4" }
 
         >
           {action}

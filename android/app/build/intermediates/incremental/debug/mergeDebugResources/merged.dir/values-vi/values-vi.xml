@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:ns1="http://schemas.android.com/tools" xmlns:ns2="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:ns1="urn:oasis:names:tc:xliff:document:1.2" xmlns:ns2="http://schemas.android.com/tools">
     <plurals name="mtrl_badge_content_description">
     <item quantity="one">%d thông báo mới</item>
     <item quantity="other">%d thông báo mới</item>
@@ -29,7 +29,7 @@
     <string msgid="1486535517437947103" name="abc_searchview_description_submit">"Gửi truy vấn"</string>
     <string msgid="2293578557972875415" name="abc_searchview_description_voice">"Tìm kiếm bằng giọng nói"</string>
     <string msgid="8875138169939072951" name="abc_shareactionprovider_share_with">"Chia sẻ với"</string>
-    <string msgid="9055268688411532828" name="abc_shareactionprovider_share_with_application">"Chia sẻ với <ns2:g id="APPLICATION_NAME">%s</ns2:g>"</string>
+    <string msgid="9055268688411532828" name="abc_shareactionprovider_share_with_application">"Chia sẻ với <ns1:g id="APPLICATION_NAME">%s</ns1:g>"</string>
     <string msgid="1656852541809559762" name="abc_toolbar_collapse_description">"Thu gọn"</string>
     <string msgid="8397015543330865059" name="android.credentials.TYPE_PASSWORD_CREDENTIAL">"Mật khẩu"</string>
     <string msgid="3929015085059320822" name="androidx.credentials.TYPE_PUBLIC_KEY_CREDENTIAL">"Khoá truy cập"</string>
@@ -131,7 +131,7 @@
     <string name="mtrl_checkbox_state_description_indeterminate">Đã đánh dấu một phần</string>
     <string name="mtrl_checkbox_state_description_unchecked">Chưa đánh dấu</string>
     <string name="mtrl_chip_close_icon_content_description">Xóa %1$s</string>
-    <string name="mtrl_exceed_max_badge_number_content_description" ns1:ignore="PluralsCandidate">Hơn %1$d thông báo mới</string>
+    <string name="mtrl_exceed_max_badge_number_content_description" ns2:ignore="PluralsCandidate">Hơn %1$d thông báo mới</string>
     <string name="mtrl_picker_a11y_next_month">Chuyển sang tháng tiếp theo</string>
     <string name="mtrl_picker_a11y_prev_month">Chuyển về tháng trước</string>
     <string name="mtrl_picker_announce_current_range_selection">Ngày bắt đầu được chọn: %1$s – Ngày kết thúc được chọn: %2$s</string>

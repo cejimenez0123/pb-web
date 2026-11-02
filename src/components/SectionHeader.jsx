@@ -3,7 +3,7 @@ import React from "react";
 
 const SectionHeader = ({ title, right }) => (
   <div className="flex items-center px-4 justify-between">
-    <h1 className="text-lg px-2 text-soft dark:text-cream">
+    <h1 className="text-lg px-2 text-plumb-ink dark:text-plumb-darkText font-semibold">
       {title}
     </h1>
     {right}

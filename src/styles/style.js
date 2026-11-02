@@ -1,6 +1,12 @@
+import { wrap } from "lodash"
 
 
 const styles = {
+ page: [
+  // "w-full max-w-[52rem] mx-auto px-4 sm:px-6 lg:px-8",
+    " overflow-auto min-h-[100vh] ",
+    "bg-plumb-surface px-4 dark:bg-plumb-dark-canvas",
+  ].join(" "),
   annotation: {
   toolbar: [
     "relative z-50 flex items-center gap-1",
@@ -113,10 +119,10 @@ const styles = {
     "min-h-11",
     "shrink-0",
     "rounded-lg",
-    "px-2",
+    "px-2 dark:px-3 dark:py-3",
     "text-sm",
     "font-medium",
-   
+    "dark:border dark:border-plumb-darkBorder",
     "text-plumb-mint",
     "transition-colors",
     "hover:text-plumb-mintHover",
@@ -1104,13 +1110,23 @@ text: {
   ].join(" "),
 },
 tabs: {
+  wrapper: [
+    "flex w-[100%] items-center justify-center",
+    "gap-2 overflow-x-auto overscroll-x-contain",
+    "px-4 py-2 sm:px-5 sm:py-3",
+    "[-webkit-overflow-scrolling:touch]",
+    "[scrollbar-width:none]",
+    "[&::-webkit-scrollbar]:hidden",
+  ].join(" "),
+  container: ["mt-4  ",].join(" "),
   list: {
 container: [
+  // "dark:border dark:border",
 "divide-y",
 "text-center",
 "divide-plumb-border",
 "dark:divide-plumb-darkBorder",
-"border-y",
+"border",
 "border-plumb-border",
 "dark:border-plumb-darkBorder",
 ].join(" "),
@@ -1123,7 +1139,7 @@ container: [
     ].join(" "),
 
     body: [
-      "py-8 font-serif",
+      "p-8 font-serif",
       "text-plumb-text dark:text-plumb-darkText",
     ].join(" "),
 
@@ -1183,10 +1199,10 @@ base: [
 "motion-reduce:transition-none",
 ].join(" "),
 primary: [
-
+"dark:border dark:border-plumb-button-primary-bg  mt-4 hover:border-2 dark:border-1",
     "rounded-full",
-  "text-base",
-  "bg-plumb-mintHover dark:bg-transparent  text-plumb-darkText",
+  "text-base ",
+  "bg-plumb-mintHover dark:bg-transparent  dark:text-plumb-button-primary-bg text-plumb-darkText",
   "shadow-sm",
   "hover:bg-plumb-mint",
   "hover:shadow-md",
@@ -1197,11 +1213,13 @@ primary: [
 
   
 secondary: [
+  "dark:border dark:border-plumb-button-secondary-bg hover:border-2 dark:border-1",
   "rounded-full",
 "text-base",
 "bg-plumb-button-secondary-bg",
 "text-white",
 "shadow-sm",
+"dark:bg-transparent   dark:text-plumb-button-secondary-bg dark:border dark:border-plumb-darkBorder",
 "hover:bg-plumb-button-secondary-hover",
 "hover:shadow-md",
 "active:shadow-sm",
@@ -1360,14 +1378,14 @@ utilityActive: [
    },
 
 input: [
-  "w-[100%] max-w-sm",
+  "w-[100%] max-w-sm","dark:bg-base-bg",
 
 
-  "bg-transparent text-plumb-ink",
+  "text-plumb-ink rounded-2xl",
   "px-4 py-3",
   "placeholder:text-plumb-muted",
   "dark:border-plumb-darkBorderStrong",
-  "dark:bg-plumb-dark-surface",
+  // "dark:bg-plumb-dark-surface",
   "dark:text-plumb-darkText",
   "dark:placeholder:text-plumb-darkMuted",
   "focus:outline-none",
