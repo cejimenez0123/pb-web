@@ -85,14 +85,12 @@ export default function PaginatedList({
             onClick={loadMore}
             disabled={loading}
             className="
-              border-b
-              border-gray-300
+             
               pb-1
               text-sm
               text-gray-600
               transition-colors
-              hover:border-emerald-700
-              hover:text-emerald-800
+           
               disabled:opacity-40
             "
           >

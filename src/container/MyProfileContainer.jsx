@@ -1,7 +1,5 @@
 
-
-
-import { useContext, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { IonContent, useIonRouter } from "@ionic/react";
 import { useSelector } from "react-redux";
 
@@ -22,13 +20,14 @@ import {
   getMyStories,
 } from "../actions/StoryActions";
 
-import usePaginatedResource from "../core/usePaginatedResource";
 import useDebounce from "../core/useDebounce";
 import ProfileSectionTabs from "../components/profile/ProfileSectionTabs";
 import EventsSection from "../components/collection/EventsSection";
 import PortfolioSection from "../components/collection/PortfolioSection";
 import EmptyState from "../components/general/EmptyState";
 import styles from "../styles/style";
+import DetailsSection from "../components/profile/DetailsSection";
+import ArchiveSection from "../components/profile/ArchiveSection";
 
 const TABS = {
   PORTFOLIO: "portfolio",
@@ -38,13 +37,9 @@ const TABS = {
   DETAILS: "details",
 };
 
-
-
 const PAGE_SIZE = 8;
 
-
 function MyProfileContainer() {
-
   const router = useIonRouter();
 
   const profile = useSelector(
@@ -55,7 +50,6 @@ function MyProfileContainer() {
     (state) => state.users.authResolved
   );
 
-
   const librariesCache = useSelector(
     (state) =>
       state.pagination.byKey?.["libraries"]?.pages?.[1] ?? []
@@ -63,53 +57,49 @@ function MyProfileContainer() {
 
   const [tab, setTab] = useState(TABS.PORTFOLIO);
 
+  const [portfolioSearchInput, setPortfolioSearchInput] =
+    useState("");
+  const [portfolioSearch, setPortfolioSearch] =
+    useState("");
 
-  // const [searchInput, setSearchInput] = useState("");
-  // const [search, setSearch] = useState("");
+  const [archiveSearchInput, setArchiveSearchInput] =
+    useState("");
+  const [archiveSearch, setArchiveSearch] =
+    useState("");
 
-  // const debouncedSearch = useDebounce(search, 300);
+  const [collectionsSearchInput, setCollectionsSearchInput] =
+    useState("");
+  const [collectionsSearch, setCollectionsSearch] =
+    useState("");
 
-const [portfolioSearchInput, setPortfolioSearchInput] = useState("");
-const [portfolioSearch, setPortfolioSearch] = useState("");
+  const [eventsSearchInput, setEventsSearchInput] =
+    useState("");
+  const [eventsSearch, setEventsSearch] =
+    useState("");
 
-const [archiveSearchInput, setArchiveSearchInput] = useState("");
-const [archiveSearch, setArchiveSearch] = useState("");
+  const portfolioDebouncedSearch = useDebounce(
+    portfolioSearch,
+    300
+  );
 
-const [collectionsSearchInput, setCollectionsSearchInput] = useState("");
-const [collectionsSearch, setCollectionsSearch] = useState("");
+  const archiveDebouncedSearch = useDebounce(
+    archiveSearch,
+    300
+  );
 
-const [eventsSearchInput, setEventsSearchInput] = useState("");
-const [eventsSearch, setEventsSearch] = useState("");
+  const collectionsDebouncedSearch = useDebounce(
+    collectionsSearch,
+    300
+  );
 
-const portfolioDebouncedSearch = useDebounce(
-  portfolioSearch,
-  300
-);
+  const eventsDebouncedSearch = useDebounce(
+    eventsSearch,
+    300
+  );
 
-const archiveDebouncedSearch = useDebounce(
-  archiveSearch,
-  300
-);
-
-const collectionsDebouncedSearch = useDebounce(
-  collectionsSearch,
-  300
-);
-
-const eventsDebouncedSearch = useDebounce(
-  eventsSearch,
-  300
-);
-
-
-
-
-  
   const communities = {
     items: librariesCache,
   };
-
-
 
   const storiesParams = useMemo(
     () => ({
@@ -133,152 +123,124 @@ const eventsDebouncedSearch = useDebounce(
   }
 
   return (
-    <IonContent
-      scrollY={true}
-      className="page-content"
-      fullscreen
-    >
+    <IonContent scrollY={true} fullscreen>
       <ErrorBoundary>
-        <main
-          className="
-            min-h-full
-            bg-cream
-            text-gray-800
-          "
-        >
-          <div
-            className="
-              mx-auto
-              w-full
-              max-w-[76rem]
-              px-6
-              pb-20
-              pt-16
-              sm:px-10
-              lg:px-12
-            "
-          >
-            {/* PROFILE HEADER */}
+        <main>
+          <div className="mx-auto w-[100%]">
+            <div className={styles.profile.mine.page}>
+              {/* PROFILE HEADER */}
+              <section
+         
+                aria-labelledby="my-profile-heading"
+                className={styles.profile.mine.header}
+              >
+                <ProfileInfo profile={profile} />
 
-            <section
-              className="
-                flex
-                flex-col
-                gap-8
-                sm:flex-row
-                sm:items-center
-              "
-            >
-              <ProfileInfo profile={profile} />
+                <div className="min-w-0">
+                  <h1
+                    id="my-profile-heading"
+                    className={styles.profile.mine.name}
+                  >
+                    {profile?.name ||
+                      profile?.username ||
+                      "Your Profile"}
+                  </h1>
 
-              <div className="min-w-0">
-                <h1
-                  className="
-                    font-serif
-                    text-[2.5rem]
-                    leading-tight
-                    text-plumb-ink
-               dark:text-plumb-darkText
-                    sm:text-[3rem]
-                  "
-                >
-                  {profile?.name ||
-                    profile?.username ||
-                    "Your Profile"}
-                </h1>
+                  {profile?.username && (
+                    <p className={styles.profile.mine.username}>
+                      @{profile.username}
+                    </p>
+                  )}
 
-                {profile?.username && (
-                  <p className="mt-1 text-sm text-gray-500">
-                    @{profile.username}
-                  </p>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      router.push(
+                        Paths.profile?.createRoute
+                          ? Paths.profile.createRoute(profile.id)
+                          : "/profile"
+                      )
+                    }
+                    className={`${styles.button.secondary} mt-4`}
+                  >
+                    See what other people see
+                    <span aria-hidden="true"> →</span>
+                  </button>
+                </div>
+              </section>
+
+              <section
+                aria-label="Profile sections"
+                className={styles.profile.mine.sections}
+              >
+                <ProfileSectionTabs
+                  active={tab}
+                  onChange={setTab}
+                />
+              </section>
+
+              <section
+                aria-live="polite"
+                className={styles.profile.mine.content}
+              >
+                {tab === TABS.PORTFOLIO && (
+                  <PortfolioSection
+                    profile={profile}
+                    router={router}
+                    search={portfolioSearch}
+                    setSearch={setPortfolioSearch}
+                    searchInput={portfolioSearchInput}
+                    setSearchInput={setPortfolioSearchInput}
+                    debouncedSearch={portfolioDebouncedSearch}
+                  />
                 )}
 
-                <button
-                  type="button"
-                  onClick={() =>
-                    router.push(
-                      Paths.profile?.createRoute
-                        ? Paths.profile.createRoute(profile.id)
-                        : "/profile"
-                    )
-                  }
-                  className={styles.button.secondary+" mt-4"}
-            
-                >
-                  See what other people see →
-                </button>
-              </div>
-            </section>
-<section className="mt-10 w-[100%] mx-auto max-w-[48rem]">
-<section className="mt-14 sm:mt-16">
+                {tab === TABS.ARCHIVE && (
+                  <ArchiveSection
+                    profile={profile}
+                    router={router}
+                    search={archiveSearch}
+                    setSearch={setArchiveSearch}
+                    searchInput={archiveSearchInput}
+                    setSearchInput={setArchiveSearchInput}
+                    debouncedSearch={archiveDebouncedSearch}
+                    storiesParams={storiesParams}
+                  />
+                )}
 
-  <ProfileSectionTabs
-  active={tab}
-  onChange={setTab}
-/>
-</section>
+                {tab === TABS.COLLECTIONS && (
+                  <CollectionsSection
+                    profile={profile}
+                    router={router}
+                    search={collectionsSearch}
+                    setSearch={setCollectionsSearch}
+                    searchInput={collectionsSearchInput}
+                    setSearchInput={setCollectionsSearchInput}
+                    debouncedSearch={collectionsDebouncedSearch}
+                  />
+                )}
 
+                {tab === TABS.EVENTS && (
+                  <EventsSection
+                    profile={profile}
+                    router={router}
+                    search={eventsSearch}
+                    setSearch={setEventsSearch}
+                    searchInput={eventsSearchInput}
+                    setSearchInput={setEventsSearchInput}
+                    debouncedSearch={eventsDebouncedSearch}
+                  />
+                )}
 
-          
-
-           
-<section className="mt-10 w-[100%]  max-w-[48rem]">
-{tab === TABS.PORTFOLIO && (
-  <PortfolioSection
-    profile={profile}
-    router={router}
-    search={portfolioSearch}
-    setSearch={setPortfolioSearch}
-    searchInput={portfolioSearchInput}
-    setSearchInput={setPortfolioSearchInput}
-    debouncedSearch={portfolioDebouncedSearch}
-  />
-)}
-
-{tab === TABS.ARCHIVE && (
-  <ArchiveSection
-    profile={profile}
-    router={router}
-    search={archiveSearch}
-    setSearch={setArchiveSearch}
-    searchInput={archiveSearchInput}
-    setSearchInput={setArchiveSearchInput}
-    debouncedSearch={archiveDebouncedSearch}
-    storiesParams={storiesParams}
-  />
-)}
-{tab === TABS.COLLECTIONS && (
-  <CollectionsSection
-    profile={profile}
-    router={router}
-    search={collectionsSearch}
-    setSearch={setCollectionsSearch}
-    searchInput={collectionsSearchInput}
-    setSearchInput={setCollectionsSearchInput}
-    debouncedSearch={collectionsDebouncedSearch}
-  />
-)}
-{tab === TABS.EVENTS && (
-  <EventsSection
-    profile={profile}
-    router={router}
-    search={eventsSearch}
-    setSearch={setEventsSearch}
-    searchInput={eventsSearchInput}
-    setSearchInput={setEventsSearchInput}
-    debouncedSearch={eventsDebouncedSearch}
-  />
-)}
-
-              {tab === TABS.DETAILS && (
-                <DetailsSection
-                  profile={profile}
-                  router={router}
-                  communities={communities.items}
-                />
-              )}
-            </section>
-            </section>
+                {tab === TABS.DETAILS && (
+                  <DetailsSection
+                    profile={profile}
+                    router={router}
+                    communities={communities.items}
+                  />
+                )}
+              </section>
+            </div>
           </div>
         </main>
       </ErrorBoundary>
@@ -288,101 +250,6 @@ const eventsDebouncedSearch = useDebounce(
 
 
 
-function ArchiveSection({
-  profile,
-  router,
-  search,
-  setSearch,
-  searchInput,
-  setSearchInput,
-  debouncedSearch,
-  storiesParams,
-}) {
-  return (
-    <section>
-      <div
-        className="
-          flex
-          flex-col
-          gap-5
-          border-b
-          border-soft
-          pb-5
-          sm:flex-row
-          sm:items-end
-          sm:justify-between
-        "
-      >
-        <div>
-          <h2 className="font-serif text-plumb-ink dark:text-plumb-darkText text-2xl text-gray-900">
-            Archive
-          </h2>
-
-          <p className="mt-1 text-sm text-gray-500">
-            For later
-          </p>
-        </div>
-
-        <input
-          value={searchInput}
-          onChange={(e) => {
-            const value = e.target.value;
-            setSearchInput(value);
-            setSearch(value);
-          }}
-          placeholder="Search"
-          className="
-            w-full
-            rounded-full
-            border
-            border-soft
-            bg-cream
-            px-4
-            py-2
-            text-sm
-            text-gray-800
-            placeholder-gray-400
-            outline-none
-            focus:border-emerald-700
-            sm:max-w-[18rem]
-          "
-        />
-      </div>
-
-      <div className="mt-6">
-        <PaginatedList
-          cacheKey="stories"
-          params={storiesParams}
-          fetcher={getMyStories}
-          pageSize={PAGE_SIZE}
-          enabled={!!profile?.id}
-          search={debouncedSearch}
-          emptyState={
-            <EmptyState
-              text={
-                search
-                  ? "No matching stories."
-                  : "No stories yet."
-              }
-            />
-          }
-          renderItem={(item) => (
-            <ListPill
-              key={item.id}
-              item={item}
-              profile={profile}
-              onClick={() =>
-                router.push(
-                  Paths.page.createRoute(item.id)
-                )
-              }
-            />
-          )}
-        />
-      </div>
-    </section>
-  );
-}
 function CollectionsSection({
   profile,
   router,
@@ -393,55 +260,39 @@ function CollectionsSection({
   setSearchInput,
 }) {
   return (
-    <section>
-      <div
-        className="
-          flex
-          flex-col
-          gap-5
-          border-b
-          border-soft
-          pb-5
-          sm:flex-row
-          sm:items-end
-          sm:justify-between
-        "
-      >
+    <section aria-labelledby="collections-heading">
+      <div className={styles.profile.mine.sectionHeader}>
         <div>
-          <h2 className="font-serif border:text-plumb-darkText text-plumb-ink text-2xl ">
+          <h2
+            id="collections-heading"
+            className={styles.profile.mine.sectionTitle}
+          >
             Collections
           </h2>
 
-          <p className="mt-1  border:text-plumb-darkText text-plumb-ink text-sm ">
+          <p className={styles.profile.mine.sectionDescription}>
             Places and groups of work I'm part of.
           </p>
         </div>
 
-        <input
-          value={searchInput}
-          onChange={(e) => {
-            const value = e.target.value;
+        <label className="w-full sm:max-w-[18rem]">
+          <span className="sr-only">
+            Search collections
+          </span>
 
-            setSearchInput(value);
-            setSearch(value);
-          }}
-          placeholder="Search"
-          className="
-            w-[100%]
-            rounded-full
-            border
-            dark:text-plumb-darkText/70
-            text-plumb-ink
-    
-            px-4
-            py-2
-          
-            placeholder-gray-400
-            outline-none
-            focus:border-emerald-700
-            sm:max-w-[18rem]
-          "
-        />
+          <input
+            type="search"
+            value={searchInput}
+            onChange={(e) => {
+              const value = e.target.value;
+              setSearchInput(value);
+              setSearch(value);
+            }}
+            placeholder="Search"
+            aria-label="Search collections"
+            className={styles.profile.mine.search}
+          />
+        </label>
       </div>
 
       <div className="mt-6">
@@ -467,9 +318,7 @@ function CollectionsSection({
               profile={profile}
               onClick={() =>
                 router.push(
-                  Paths.collection.createRoute(
-                    item.id
-                  )
+                  Paths.collection.createRoute(item.id)
                 )
               }
             />
@@ -539,36 +388,21 @@ function CollectionRoomCard({
     <button
       type="button"
       onClick={onClick}
-      className="
-        group
-        w-[100%]
-        border
-        dark:border-plumb-darkText/20
-       dark:hover:border-2
-        bg-transparent
-        px-3
-        py-5
-        text-left
-        transition
-        duration-200
-        hover:bg-cream/50
-        active:scale-[0.995]
-        sm:px-4
-      "
+      aria-label={`Open ${title}${
+        isWorkshop ? " workshop" : " collection"
+      }`}
+      className={styles.profile.mine.collectionItem}
     >
       <div className="flex w-[100%] items-start gap-4">
-        {/* New indicator */}
-        <div className="w-2 shrink-0 pt-2.5">
+        {/* Updated indicator */}
+        <div
+          className="w-2 shrink-0 pt-2.5"
+          aria-hidden={!isNew}
+        >
           {isNew && (
             <span
-              aria-label="Updated"
-              className="
-                block
-                h-2
-                w-2
-                rounded-full
-                bg-emerald-700
-              "
+              aria-label="Updated since your last visit"
+              className={styles.profile.mine.updated}
             />
           )}
         </div>
@@ -576,14 +410,7 @@ function CollectionRoomCard({
         <div className="min-w-0 flex-1">
           {/* Type + role */}
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-            <span
-              className="
-                text-[0.68rem]
-                uppercase
-                tracking-[0.12em]
-                text-gray-400
-              "
-            >
+            <span className={styles.profile.mine.type}>
               {isWorkshop
                 ? "Workshop"
                 : "Collection"}
@@ -593,52 +420,28 @@ function CollectionRoomCard({
               <>
                 <span
                   aria-hidden="true"
-                  className="text-gray-300"
+                  className="text-plumb-border dark:text-plumb-darkBorder"
                 >
                   ·
                 </span>
 
-                <span
-                  className="
-                    text-[0.68rem]
-                    font-medium
-                    uppercase
-                    tracking-[0.12em]
-                    text-emerald-800
-                  "
-                >
+                <span className={styles.profile.mine.role}>
                   {formatCollectionRole(role)}
                 </span>
               </>
             )}
           </div>
 
-          {/* Title */}
-          <h3
-            className="border:text-plumb-darkText text-plumb-ink"
-          >
+          <h3 className={styles.profile.mine.title}>
             {title}
           </h3>
-    
 
-          {/* Purpose */}
           {purpose && (
-            <p
-              className="
-                mt-1.5
-                max-w-[42rem]
-                line-clamp-2
-                font-serif
-                text-sm
-                leading-relaxed
-                text-gray-500
-              "
-            >
+            <p className={styles.profile.mine.purpose}>
               {purpose}
             </p>
           )}
 
-          {/* Workshop information */}
           {isWorkshop ? (
             <WorkshopMeta
               role={role}
@@ -666,8 +469,7 @@ function CollectionRoomCard({
               <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
                 {visibleStories.map(
                   (storyLink, index) => {
-                    const story =
-                      storyLink?.story;
+                    const story = storyLink?.story;
 
                     const storyTitle =
                       story?.title?.trim() ||
@@ -680,18 +482,7 @@ function CollectionRoomCard({
                           story?.id ||
                           index
                         }
-                        className="
-                          max-w-[14rem]
-                          truncate
-                          rounded-full
-                          border
-                          border-soft
-                          bg-cream
-                          px-3
-                          py-1.5
-                          text-xs
-                          text-gray-600
-                        "
+                        className={styles.profile.mine.storyTag}
                         title={storyTitle}
                       >
                         {storyTitle}
@@ -702,10 +493,9 @@ function CollectionRoomCard({
 
                 {hasMoreStories && (
                   <span
-                    className="
-                      text-xs
-                      text-gray-400
-                    "
+                    className={
+                      styles.profile.mine.metaSecondary
+                    }
                   >
                     +{contentCount -
                       visibleStories.length}{" "}
@@ -716,15 +506,8 @@ function CollectionRoomCard({
             </div>
           )}
 
-          {/* Empty workshop/collection */}
           {contentCount === 0 && (
-            <p
-              className="
-                mt-3
-                text-xs
-                text-gray-400
-              "
-            >
+            <p className={styles.profile.mine.activity}>
               {isWorkshop
                 ? role === "writer"
                   ? "Your piece will appear here."
@@ -733,15 +516,8 @@ function CollectionRoomCard({
             </p>
           )}
 
-          {/* Activity */}
           {item?.updated && (
-            <p
-              className="
-                mt-4
-                text-xs
-                text-gray-400
-              "
-            >
+            <p className={styles.profile.mine.activity}>
               {isWorkshop
                 ? `Active ${formatRelativeDate(
                     item.updated
@@ -753,20 +529,9 @@ function CollectionRoomCard({
           )}
         </div>
 
-        {/* Arrow */}
         <span
           aria-hidden="true"
-          className="
-            shrink-0
-            pt-1
-            text-lg
-            leading-none
-            text-gray-300
-            transition-all
-            duration-200
-            group-hover:translate-x-1
-            group-hover:text-emerald-700
-          "
+          className={styles.profile.mine.arrow}
         >
           →
         </span>
@@ -807,14 +572,8 @@ function WorkshopMeta({
   }
 
   return (
-    <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1.5">
-      <span
-        className="
-          text-xs
-          font-medium
-          text-gray-600
-        "
-      >
+    <div className={styles.profile.mine.meta}>
+      <span className={styles.profile.mine.metaText}>
         {parts.join(" · ")}
       </span>
 
@@ -822,16 +581,15 @@ function WorkshopMeta({
         <>
           <span
             aria-hidden="true"
-            className="text-gray-300"
+            className="text-plumb-border dark:text-plumb-darkBorder"
           >
             ·
           </span>
 
           <span
-            className="
-              text-xs
-              text-gray-400
-            "
+            className={
+              styles.profile.mine.metaSecondary
+            }
           >
             You’re here to read and respond
           </span>
@@ -842,16 +600,15 @@ function WorkshopMeta({
         <>
           <span
             aria-hidden="true"
-            className="text-gray-300"
+            className="text-plumb-border dark:text-plumb-darkBorder"
           >
             ·
           </span>
 
           <span
-            className="
-              text-xs
-              text-gray-400
-            "
+            className={
+              styles.profile.mine.metaSecondary
+            }
           >
             You’re writing here
           </span>
@@ -862,16 +619,15 @@ function WorkshopMeta({
         <>
           <span
             aria-hidden="true"
-            className="text-gray-300"
+            className="text-plumb-border dark:text-plumb-darkBorder"
           >
             ·
           </span>
 
           <span
-            className="
-              text-xs
-              text-gray-400
-            "
+            className={
+              styles.profile.mine.metaSecondary
+            }
           >
             You created this room
           </span>
@@ -908,14 +664,8 @@ function CollectionMeta({
   }
 
   return (
-    <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1.5">
-      <span
-        className="
-          text-xs
-          font-medium
-          text-gray-600
-        "
-      >
+    <div className={styles.profile.mine.meta}>
+      <span className={styles.profile.mine.metaText}>
         {parts.join(" · ")}
       </span>
 
@@ -923,30 +673,26 @@ function CollectionMeta({
         <>
           <span
             aria-hidden="true"
-            className="text-gray-300"
+            className="text-plumb-border dark:text-plumb-darkBorder"
           >
             ·
           </span>
 
           <span
-            className="
-              text-xs
-              text-gray-400
-            "
+            className={
+              styles.profile.mine.metaSecondary
+            }
           >
-            {getCollectionRoleDescription(
-              role
-            )}
+            {getCollectionRoleDescription(role)}
           </span>
         </>
       )}
 
       {updated && (
         <span
-          className="
-            text-xs
-            text-gray-400
-          "
+          className={
+            styles.profile.mine.metaSecondary
+          }
         >
           · Updated {formatDate(updated)}
         </span>
@@ -963,8 +709,6 @@ function getCollectionRole({
     return null;
   }
 
-  // Collection.profileId represents
-  // the collection creator/owner.
   if (
     item.profileId &&
     item.profileId === profile.id
@@ -1004,10 +748,7 @@ function getCollectionRoleDescription(role) {
     reader: "You can read this",
   };
 
-  return (
-    descriptions[role] ||
-    ""
-  );
+  return descriptions[role] || "";
 }
 
 function formatDate(date) {
@@ -1017,11 +758,7 @@ function formatDate(date) {
 
   const parsed = new Date(date);
 
-  if (
-    Number.isNaN(
-      parsed.getTime()
-    )
-  ) {
+  if (Number.isNaN(parsed.getTime())) {
     return "";
   }
 
@@ -1042,25 +779,16 @@ function formatRelativeDate(date) {
 
   const parsed = new Date(date);
 
-  if (
-    Number.isNaN(
-      parsed.getTime()
-    )
-  ) {
+  if (Number.isNaN(parsed.getTime())) {
     return "";
   }
 
   const diff =
     Date.now() - parsed.getTime();
 
-  const minute =
-    60 * 1000;
-
-  const hour =
-    60 * minute;
-
-  const day =
-    24 * hour;
+  const minute = 60 * 1000;
+  const hour = 60 * minute;
+  const day = 24 * hour;
 
   if (diff < minute) {
     return "just now";
@@ -1105,86 +833,7 @@ function formatRelativeDate(date) {
   return formatDate(date);
 }
 
-function DetailsSection({
-  profile,
-  router,
-  communities,
-}) {
-  return (
-    <section>
-      <div className="border-b border-soft pb-5">
-        <h2 className="font-serif text-2xl text-gray-900">
-          Details
-        </h2>
 
-        <p className="mt-1 text-sm text-gray-500">
-          A little more about me.
-        </p>
-      </div>
-
-      <div className="mt-6 max-w-[48rem]">
-        <AboutPanel
-          router={router}
-          profile={profile}
-        />
-
-        {profile?.hashtag?.length > 0 && (
-          <div className="mt-10">
-            <p className="text-xs uppercase text-gray-400">
-              Hashtags
-            </p>
-
-            <div className="mt-3 flex flex-wrap gap-2">
-              {[...profile.hashtag]
-                .slice(0, 10)
-                .map((tag, index) => (
-                  <Pill
-                    key={index}
-                    onClick={() =>
-                      router.push(
-                        Paths.hashtag.createRoute(
-                          tag.hashtag.id
-                        )
-                      )
-                    }
-                    label={`#${
-                      tag.hashtag.name ?? tag.tag
-                    }`}
-                  />
-                ))}
-            </div>
-          </div>
-        )}
-
-        {communities?.length > 0 && (
-          <div className="mt-10">
-            <p className="text-xs uppercase text-gray-400">
-              Communities
-            </p>
-
-            <div className="mt-3 flex flex-wrap gap-2">
-              {communities.slice(0, 10).map((community) => (
-                <Pill
-                  key={community.id}
-                  baseClass="border-blue bg-base-bg"
-                  onClick={() =>
-                    router.push(
-                      Paths.collection.createRoute(
-                        community.id
-                      ),
-                      "forward"
-                    )
-                  }
-                  label={community.title}
-                />
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-    </section>
-  );
-}
 
 export default MyProfileContainer;
 
@@ -1202,30 +851,21 @@ function EmptyProfileState() {
           text-center
         "
       >
-        <h1 className="font-serif text-2xl text-emerald-800">
+        <h1 className={styles.profile.mine.emptyTitle}>
           Welcome to Plumbum
         </h1>
 
-        <p className="mt-3 text-sm leading-relaxed text-gray-600">
-          Sign in to view your profile, stories, collections,
-          and communities.
+        <p className={styles.profile.mine.emptyText}>
+          Sign in to view your profile, stories,
+          collections, and communities.
         </p>
 
         <button
           type="button"
-          onClick={() => router.push(Paths.login)}
-          className="
-            mt-6
-            rounded-full
-            bg-emerald-700
-            px-6
-            py-3
-            text-sm
-            text-white
-            shadow-md
-            transition
-            active:scale-95
-          "
+          onClick={() =>
+            router.push(Paths.login)
+          }
+          className={`${styles.button.primary} ${styles.profile.mine.emptyButton}`}
         >
           Log in / Sign up
         </button>

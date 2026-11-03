@@ -4,7 +4,7 @@ import { wrap } from "lodash"
 const styles = {
 
  page: [
-  // "w-full max-w-[52rem] mx-auto px-4 sm:px-6 lg:px-8",
+
     " overflow-auto min-h-[100vh] ",
     "bg-plumb-surface px-4 dark:bg-plumb-dark-canvas",
   ].join(" "),
@@ -416,7 +416,313 @@ const styles = {
   ].join(" "),
 },
 profile: {
+  // inside styles.profile
+mine: {
+  page: `
+    mx-auto w-[100%] max-w-[76rem]
+    px-6 pb-20 pt-16
+    sm:px-10 lg:px-12 flex flex-col items-center
+  `,
+
+  header: `
+    flex flex-col gap-8
+    sm:flex-row sm:items-center 
+  `,
+
+  name: `
+    font-serif text-[2.5rem] leading-tight
+    text-plumb-ink dark:text-plumb-darkText
+    sm:text-[3rem]
+  `,
+
+  username: `
+    mt-1 text-sm
+    text-plumb-muted dark:text-plumb-darkMuted
+  `,
+
+  sections: `
+    mt-10 w-[100%]
+  `,
+
+  content: `
+    mt-10 w-[100%] max-w-[48rem]
+  `,
+
+  sectionHeader: `
+    flex flex-col gap-5
+    border-b border-plumb-border
+    pb-5
+    dark:border-plumb-darkBorder
+    sm:flex-row sm:items-end sm:justify-between
+  `,
+
+  sectionTitle: `
+    font-serif text-2xl
+    text-plumb-ink dark:text-plumb-darkText
+  `,
+
+  sectionDescription: `
+    mt-1 text-sm
+    text-plumb-muted dark:text-plumb-darkMuted
+  `,
+
+  search: `
+    w-full rounded-full border
+    border-plumb-border
+    bg-transparent
+    px-4 py-2
+    text-sm text-plumb-ink
+    placeholder:text-plumb-subtle
+    outline-none
+    transition-colors
+    focus:border-plumb-mint
+    focus:ring-2 focus:ring-plumb-focus/40
+    dark:border-plumb-darkBorder
+    dark:text-plumb-darkText
+    dark:placeholder:text-plumb-darkSubtle
+    dark:focus:border-plumb-mintLight
+    dark:focus:ring-plumb-mintLight/30
+    sm:max-w-[18rem]
+  `,
+
+  collectionItem: `
+    group w-[100%]
+    border
+    border-plumb-border
+    bg-transparent
+    px-3 py-5
+    text-left
+    transition-colors duration-200
+    hover:border-plumb-mint
+    hover:bg-plumb-mint/5
+    focus-visible:outline-none
+    focus-visible:ring-2
+    focus-visible:ring-plumb-focus
+    focus-visible:ring-offset-2
+    focus-visible:ring-offset-plumb-canvas
+    dark:border-plumb-darkBorder
+    dark:hover:border-plumb-mintLight
+    dark:hover:bg-plumb-mintLight/10
+    dark:focus-visible:ring-plumb-mintLight
+    dark:focus-visible:ring-offset-plumb-dark-canvas
+    sm:px-4
+  `,
+
+  type: `
+    text-[0.68rem] uppercase tracking-[0.12em]
+    text-plumb-subtle
+    dark:text-plumb-darkSubtle
+  `,
+
+  role: `
+    text-[0.68rem] font-medium uppercase tracking-[0.12em]
+    text-plumb-mint
+    dark:text-plumb-mintLight
+  `,
+
+  title: `
+    text-plumb-ink dark:text-plumb-darkText
+  `,
+
+  purpose: `
+    mt-1.5 max-w-[42rem]
+    line-clamp-2
+    font-serif text-sm leading-relaxed
+    text-plumb-muted dark:text-plumb-darkMuted
+  `,
+
+  meta: `
+    mt-4 flex flex-wrap items-center
+    gap-x-3 gap-y-1.5
+  `,
+
+  metaText: `
+    text-xs font-medium
+    text-plumb-muted dark:text-plumb-darkMuted
+  `,
+
+  metaSecondary: `
+    text-xs
+    text-plumb-subtle dark:text-plumb-darkSubtle
+  `,
+
+  storyTag: `
+    max-w-[14rem] truncate
+    rounded-full border
+    border-plumb-border
+    bg-plumb-surface
+    px-3 py-1.5
+    text-xs text-plumb-muted
+    dark:border-plumb-darkBorder
+    dark:bg-plumb-dark-surface
+    dark:text-plumb-darkMuted
+  `,
+
+  activity: `
+    mt-4 text-xs
+    text-plumb-subtle dark:text-plumb-darkSubtle
+  `,
+
+  arrow: `
+    shrink-0 pt-1
+    text-lg leading-none
+    text-plumb-subtle
+    transition-transform transition-colors duration-200
+    group-hover:translate-x-1
+    group-hover:text-plumb-mint
+    dark:text-plumb-darkSubtle
+    dark:group-hover:text-plumb-mintLight
+  `,
+
+  updated: `
+    block h-2 w-2 rounded-full
+    bg-plumb-mint
+    
+    dark:bg-plumb-mintLight
+  `,
+
+  hashtagLabel: `
+    text-xs uppercase tracking-[0.08em]
+    text-plumb-subtle dark:text-plumb-darkSubtle
+  `,
+
+  emptyTitle: `
+    font-serif text-2xl
+    text-plumb-mint
+    dark:text-plumb-mintLight
+  `,
+
+  emptyText: `
+    mt-3 text-sm leading-relaxed
+    text-plumb-muted dark:text-plumb-darkMuted
+  `,
+
+  emptyButton: `
+    mt-6
+  `,
+},
     portfolio: {
+       section: `
+    w-[100%]
+  `,
+
+  header: `
+    flex flex-col gap-5
+  
+    pb-5
+
+    sm:flex-row
+    sm:items-end
+    sm:justify-between
+  `,
+
+  searchLabel: `
+    mb-1.5 block
+    text-xs font-medium
+    text-plumb-muted
+    dark:text-plumb-darkMuted
+  `,
+
+  searchInput: `
+    w-full 
+    bg-transparent
+    px-4 py-2.5
+    text-sm
+    text-plumb-ink
+    placeholder:text-plumb-subtle
+    outline-none
+    transition-colors
+   
+    focus:ring-2
+    focus:ring-plumb-focus/40
+
+    dark:text-plumb-darkText
+    dark:placeholder:text-plumb-darkSubtle
+ 
+    sm:max-w-[18rem]
+  `,
+
+  list: `
+    mt-6
+  `,
+
+  article: `
+
+    w-[100%]
+  `,
+
+  storyList: `
+    m-0
+    list-none
+    divide-y
+`,
+ 
+  storyRow: [
+    "w-[100%]   rounded-full",
+ 
+    ].join(" "),
+
+  storyButton: `
+
+    group
+    flex w-[100%]
+    min-h-12
+    items-center
+  
+    justify-between
+    gap-4
+    bg-transparent
+    py-4
+    text-left
+    text-plumb-ink
+    transition-colors
+    hover:text-plumb-mint
+
+
+  
+  
+ 
+  `,
+
+  storyContent: [`
+    min-w-0 flex-1`,
+  
+].join(" "),
+
+  storyTitle: `
+    font-medium
+    underline-offset-4
+    group-hover:underline
+    group-focus-visible:underline
+  `,
+
+  storyDescription: `
+    mt-1
+    text-sm leading-relaxed
+    text-plumb-muted
+    dark:text-plumb-darkMuted
+  `,
+
+  arrow: `
+    shrink-0
+    text-lg
+    leading-none
+    text-plumb-subtle
+    transition-transform
+    duration-200
+    group-hover:translate-x-1
+    group-hover:text-plumb-mint
+    dark:text-plumb-darkSubtle
+    dark:group-hover:text-plumb-mintLight
+  `,
+
+  emptyCollection: `
+    py-8
+    text-sm
+    text-plumb-muted
+    dark:text-plumb-darkMuted
+  `,
+
   section: [
     "w-[100%]",
     "bg-transparent",
@@ -425,9 +731,9 @@ profile: {
 
   header: [
     "flex flex-col gap-5",
-    "border-b border-plumb-border",
+
     "bg-transparent pb-5",
-    "dark:border-plumb-darkBorder",
+ 
     "sm:flex-row sm:items-end sm:justify-between",
   ].join(" "),
 
@@ -457,9 +763,9 @@ profile: {
   ].join(" "),
 
   article: [
-    "border-b border-plumb-border",
-    "bg-transparent py-6 first:pt-0",
-    "dark:border-plumb-darkBorder",
+   
+    "bg-transparent ",
+  
   ].join(" "),
 
   storyList: [
@@ -472,18 +778,12 @@ profile: {
 
   storyButton: [
     "flex min-h-12 w-[100%]",
-    "items-start justify-between gap-4",
-    "border-b border-plumb-border",
+    "items-start justify-between gap-2",
+  
     "bg-transparent py-3",
     "text-left",
     "transition-colors duration-150",
-    "last:border-b-0",
-    "focus:outline-none",
-    "focus-visible:outline focus-visible:outline-2",
-    "focus-visible:outline-offset-2",
-    "focus-visible:outline-plumb-mintHover",
-    "dark:border-plumb-darkBorder",
-    "dark:focus-visible:outline-plumb-mintLight",
+
     "motion-reduce:transition-none",
   ].join(" "),
 
@@ -563,14 +863,14 @@ profile: {
 
   pill: [
     "inline-flex max-w-full items-center",
-    "rounded-full border px-3 py-1",
-    "border-plumb-border bg-plumb-paper",
+    // "rounded-full border px-3 py-1",
+    // "border-plumb-border bg-plumb-paper",
     "text-xs text-plumb-text",
-    "transition-colors hover:border-plumb-mintHover",
+    // "transition-colors hover:border-plumb-mintHover",
     "focus-visible:outline-none focus-visible:ring-2",
     "focus-visible:ring-plumb-focus focus-visible:ring-offset-2",
-    "dark:border-plumb-darkBorder dark:bg-plumb-dark-surface",
-    "dark:text-plumb-darkText dark:hover:border-plumb-mintLight",
+    // "dark:border-plumb-darkBorder dark:bg-plumb-dark-surface",
+    // "dark:text-plumb-darkText dark:hover:border-plumb-mintLight",
     "dark:focus-visible:ring-offset-plumb-dark-canvas",
   ].join(" "),
 
@@ -1231,13 +1531,12 @@ tabs: {
   ].join(" "),
   container: ["mt-4  ",].join(" "),
   list: {
-container: [
-  // "dark:border dark:border",
-"divide-y",
-"text-center",
-"divide-plumb-border",
-"dark:divide-plumb-darkBorder",
-"border",
+    container: [
+      "divide-y",
+      "text-center",
+      "divide-plumb-border",
+      "dark:divide-plumb-darkBorder",
+      "border",
 "border-plumb-border",
 "dark:border-plumb-darkBorder",
 ].join(" "),

@@ -9,28 +9,20 @@ const TABS = [
 ];
 
 function ProfileSectionTabs({ active, onChange }) {
+
   return (
     <nav
+    
       aria-label="Profile sections"
-      className="
-        w-[100%]
-        border-b
-        border-plumb-border
- bg-transparent
-      "
+      className={`${
+        styles.tabs.container
+      }  border-b border-plumb-border bg-transparent`}
+  
+
     >
       <div
-        className="
-          flex
-          w-[100%]
-          max-w-[48rem]
-          items-center
-          gap-2
-          overflow-x-auto
-          no-scrollbar
-          sm:gap-4
-          md:gap-6
-        "
+        className={styles.tabs.wrapper}
+
       >
         {TABS.map((item) => {
           const isActive = active === item.key;
@@ -47,11 +39,11 @@ function ProfileSectionTabs({ active, onChange }) {
                 whitespace-nowrap
                 px-3
                 py-3
-                rounded-lg
+                rounded-t-lg
                 text-sm
-          bg-plumb-mintLight
                 leading-none
                 transition-colors
+                bg-plumb-tag-blue/30
                 duration-200
                 focus:outline-none
                 focus-visible:ring-2
