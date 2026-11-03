@@ -1,3 +1,5 @@
+import styles from "../../styles/style";
+
 const TABS = [
   { key: "portfolio", label: "Portfolio" },
   { key: "archive", label: "Archive" },
@@ -12,9 +14,9 @@ function ProfileSectionTabs({ active, onChange }) {
       aria-label="Profile sections"
       className="
         w-[100%]
-    
         border-b
-        border-soft
+        border-plumb-border
+ bg-transparent
       "
     >
       <div
@@ -23,12 +25,11 @@ function ProfileSectionTabs({ active, onChange }) {
           w-[100%]
           max-w-[48rem]
           items-center
-          gap-3
+          gap-2
           overflow-x-auto
           no-scrollbar
-          sm:gap-6
-          
-          md:gap-7
+          sm:gap-4
+          md:gap-6
         "
       >
         {TABS.map((item) => {
@@ -44,19 +45,29 @@ function ProfileSectionTabs({ active, onChange }) {
                 relative
                 shrink-0
                 whitespace-nowrap
-             p-3
-             border-x-1 border-t-1 border-plumb-darkText/10 dark:border-plumb-lightText/10
-                    bg-base-bg 
-              
+                px-3
+                py-3
+                rounded-lg
                 text-sm
+          bg-plumb-mintLight
                 leading-none
                 transition-colors
                 duration-200
+                focus:outline-none
+                focus-visible:ring-2
+                focus-visible:ring-plumb-focus
+                focus-visible:ring-offset-2
+                focus-visible:ring-offset-plumb-surface
+                dark:focus-visible:ring-offset-plumb-dark-canvas
                 ${
                   isActive
-                  
-                    ? "text-plumb-darkText dark:text-plumb-lightText font-semibold"
-                    : " text-plumb-darkText/70 dark:text-plumb-lightText/70 hover:text-plumb-darkText dark:hover:text-plumb-lightText"
+                    ? styles.text.section
+                    : `
+                      text-plumb-muted
+                      hover:text-plumb-ink
+                      dark:text-plumb-darkMuted
+                      dark:hover:text-plumb-darkText
+                    `
                 }
               `}
             >
@@ -69,7 +80,8 @@ function ProfileSectionTabs({ active, onChange }) {
                   bottom-[-1px]
                   left-0
                   h-[2px]
-                  bg-emerald-800
+                  rounded-full
+               
                   transition-all
                   duration-200
                   ${

@@ -2,6 +2,7 @@ import { wrap } from "lodash"
 
 
 const styles = {
+
  page: [
   // "w-full max-w-[52rem] mx-auto px-4 sm:px-6 lg:px-8",
     " overflow-auto min-h-[100vh] ",
@@ -118,7 +119,7 @@ const styles = {
   action: [
     "min-h-11",
     "shrink-0",
-    "rounded-lg",
+    "rounded-full",
     "px-2 dark:px-3 dark:py-3",
     "text-sm",
     "font-medium",
@@ -415,6 +416,116 @@ const styles = {
   ].join(" "),
 },
 profile: {
+    portfolio: {
+  section: [
+    "w-[100%]",
+    "bg-transparent",
+    "text-plumb-ink dark:text-plumb-darkText",
+  ].join(" "),
+
+  header: [
+    "flex flex-col gap-5",
+    "border-b border-plumb-border",
+    "bg-transparent pb-5",
+    "dark:border-plumb-darkBorder",
+    "sm:flex-row sm:items-end sm:justify-between",
+  ].join(" "),
+
+  searchLabel: "sr-only",
+
+  searchInput: [
+    "min-h-12 w-[100%] sm:max-w-[18rem]",
+    "rounded-full border px-4 py-2.5",
+    "border-plumb-borderStrong bg-transparent",
+    "text-sm text-plumb-ink",
+    "placeholder:text-plumb-muted",
+    "transition-colors",
+    "focus:outline-none focus-visible:ring-2",
+    "focus-visible:ring-plumb-focus",
+    "focus-visible:outline focus-visible:outline-1",
+    "focus-visible:outline-plumb-mintHover",
+    "dark:border-plumb-darkBorderStrong",
+    "dark:text-plumb-darkText",
+    "dark:placeholder:text-plumb-darkMuted",
+    "dark:focus-visible:outline-plumb-mintLight",
+    "motion-reduce:transition-none",
+  ].join(" "),
+
+  list: [
+    "mt-8 space-y-0",
+    "bg-transparent",
+  ].join(" "),
+
+  article: [
+    "border-b border-plumb-border",
+    "bg-transparent py-6 first:pt-0",
+    "dark:border-plumb-darkBorder",
+  ].join(" "),
+
+  storyList: [
+    "mt-3 list-none space-y-3 p-0",
+  ].join(" "),
+
+  storyRow: [
+    "group list-none",
+  ].join(" "),
+
+  storyButton: [
+    "flex min-h-12 w-[100%]",
+    "items-start justify-between gap-4",
+    "border-b border-plumb-border",
+    "bg-transparent py-3",
+    "text-left",
+    "transition-colors duration-150",
+    "last:border-b-0",
+    "focus:outline-none",
+    "focus-visible:outline focus-visible:outline-2",
+    "focus-visible:outline-offset-2",
+    "focus-visible:outline-plumb-mintHover",
+    "dark:border-plumb-darkBorder",
+    "dark:focus-visible:outline-plumb-mintLight",
+    "motion-reduce:transition-none",
+  ].join(" "),
+
+  storyContent: [
+    "min-w-0 flex-1",
+  ].join(" "),
+
+  storyTitle: [
+    "break-words font-serif text-base",
+    "leading-snug",
+    "text-plumb-ink",
+    "transition-colors duration-150",
+    "group-hover:text-plumb-mintHover",
+    "group-hover:underline group-hover:underline-offset-4",
+    "group-focus-visible:underline",
+    "group-focus-visible:underline-offset-4",
+    "dark:text-plumb-darkText",
+    "dark:group-hover:text-plumb-mintLight",
+    "motion-reduce:transition-none",
+  ].join(" "),
+
+  storyDescription: [
+    "mt-1 text-sm leading-relaxed",
+    "text-plumb-muted dark:text-plumb-darkMuted",
+  ].join(" "),
+
+  arrow: [
+    "shrink-0 pt-0.5",
+    "text-base font-medium",
+    "text-plumb-muted",
+    "transition-transform duration-150",
+    "group-hover:translate-x-1",
+    "dark:text-plumb-darkMuted",
+    "motion-reduce:transition-none",
+  ].join(" "),
+
+  emptyCollection: [
+    "py-4 pl-4 text-sm italic",
+    "text-plumb-muted dark:text-plumb-darkMuted",
+    "sm:pl-5",
+  ].join(" "),
+},
   page: [
     "mx-auto  ",
     "px-4 sm:px-5",
@@ -1199,7 +1310,7 @@ base: [
 "motion-reduce:transition-none",
 ].join(" "),
 primary: [
-"dark:border dark:border-plumb-button-primary-bg  mt-4 hover:border-2 dark:border-1",
+"dark:border dark:border-plumb-button-primary-bg hover:border-3 dark:border-2",
     "rounded-full",
   "text-base ",
   "bg-plumb-mintHover dark:bg-transparent  dark:text-plumb-button-primary-bg text-plumb-darkText",
@@ -1213,7 +1324,7 @@ primary: [
 
   
 secondary: [
-  "dark:border dark:border-plumb-button-secondary-bg hover:border-2 dark:border-1",
+  "dark:border dark:border-plumb-button-secondary-bg hover:border-3 dark:border-2",
   "rounded-full",
 "text-base",
 "bg-plumb-button-secondary-bg",
@@ -1629,121 +1740,8 @@ dashboardItem: {
     "motion-reduce:animate-none",
   ].join(" "),
 },
-// dashboardItem: {
-//   card: [
-//     "w-[100%] overflow-hidden rounded-2xl",
-//     "border border-plumb-borderStrong",
-//     "bg-plumb-surface dark:border-plumb-darkBorderStrong",
-//     "dark:bg-plumb-dark-surface",
-//     "transition-colors duration-200",
-//     "motion-reduce:transition-none",
-//   ].join(" "),
-
-//   header: [
-//     "flex items-center justify-between gap-3",
-//     "px-4 pt-4 sm:px-5 sm:pt-5",
-//   ].join(" "),
-
-//   authorButton: [
-//     "flex min-w-0 items-center gap-3 rounded-lg text-left",
-//     "focus-visible:outline-none focus-visible:ring-2",
-//     "focus-visible:ring-plumb-focus focus-visible:ring-offset-2",
-//     "focus-visible:ring-offset-plumb-surface",
-//     "dark:focus-visible:ring-offset-plumb-dark-surface",
-//   ].join(" "),
-
-//   authorName: [
-//     "truncate font-open-sans text-sm font-medium",
-//     "text-plumb-ink dark:text-plumb-darkText",
-//   ].join(" "),
-
-//   metadata: [
-//     "mt-0.5 font-open-sans text-xs",
-//     "text-plumb-muted dark:text-plumb-darkMuted",
-//   ].join(" "),
-
-//   title: [
-//     "font-serif text-lg font-semibold leading-snug",
-//     "text-plumb-ink dark:text-plumb-darkText",
-//     "transition-colors duration-150",
-//     "group-hover:text-plumb-mintHover",
-//     "dark:group-hover:text-plumb-mintLight",
-//   ].join(" "),
 
 
-
-//   content: [
-//     "px-4 pb-4 pt-4 sm:px-5 sm:pb-5",
-//   ].join(" "),
-
-//   excerpt: [
-//     "mt-3 font-lora text-base leading-[1.8]",
-//     "text-plumb-text dark:text-plumb-darkText",
-//     "[&_p]:mb-3 [&_p:last-child]:mb-0",
-//     "[&_a]:underline [&_a]:underline-offset-2",
-//     "[&_a]:text-plumb-mintHover",
-//     "dark:[&_a]:text-plumb-mintLight",
-//   ].join(" "),
-
-//   actions: [
-//     "flex flex-wrap items-center gap-1",
-//     "border-t border-plumb-borderStrong",
-//     "px-3 py-2 dark:border-plumb-darkBorderStrong",
-//   ].join(" "),
-
-
-//   actionActive: [
-//     "font-medium text-plumb-mintHover",
-//     "dark:text-plumb-mintLight",
-//   ].join(" "),
-
-//   bookmark: [
-//     "flex h-10 w-10 shrink-0 items-center justify-center",
-//     "rounded-full transition-colors duration-150",
-//     "hover:bg-plumb-mint/10 dark:hover:bg-plumb-mint/15",
-//     "focus-visible:outline-none focus-visible:ring-2",
-//     "focus-visible:ring-plumb-focus",
-//     "motion-reduce:transition-none",
-//   ].join(" "),
-
-//   privateCard: [
-//     "rounded-xl border border-plumb-borderStrong",
-//     "bg-plumb-paper p-4",
-//     "dark:border-plumb-darkBorderStrong",
-//     "dark:bg-plumb-dark-canvas",
-//   ].join(" "),
-
-//   privateTitle: [
-//     "font-serif text-lg font-semibold",
-//     "text-plumb-ink dark:text-plumb-darkText",
-//   ].join(" "),
-
-//   privateBody: [
-//     "mt-1 font-open-sans text-sm leading-relaxed",
-//     "text-plumb-muted dark:text-plumb-darkMuted",
-//   ].join(" "),
-
-//   skeleton: [
-//     "h-48 w-[100%] animate-pulse rounded-2xl",
-//     "border border-plumb-borderStrong bg-plumb-mint/5",
-//     "dark:border-plumb-darkBorderStrong dark:bg-plumb-dark-surface",
-//     "motion-reduce:animate-none",
-//   ].join(" "),
-
-//   permissionButton: [
-//     "mt-4 inline-flex min-h-10 items-center justify-center",
-//     "rounded-full bg-plumb-mintHover px-4 py-2",
-//     "font-open-sans text-sm font-medium text-white",
-//     "transition-colors duration-150 hover:bg-plumb-mint",
-//     "focus-visible:outline-none focus-visible:ring-2",
-//     "focus-visible:ring-plumb-focus focus-visible:ring-offset-2",
-//     "focus-visible:ring-offset-plumb-paper",
-//     "dark:focus-visible:ring-offset-plumb-dark-canvas",
-//     "disabled:cursor-default disabled:opacity-60",
-//     "motion-reduce:transition-none",
-//   ].join(" "),
-
-// }, 
  settingRow: {
   container: [
     "flex items-start justify-between gap-5",

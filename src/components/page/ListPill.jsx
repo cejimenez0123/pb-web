@@ -1,3 +1,104 @@
+// export default function ListPill({
+//   item,
+//   onClick,
+//   profile,
+// }) {
+//   const lastSeen = profile?.lastNotified
+//     ? new Date(profile.lastNotified).getTime()
+//     : Date.now() - 24 * 60 * 60 * 1000;
+
+//   let isNew =
+//     item?.updated &&
+//     new Date(item.updated).getTime() > lastSeen;
+
+//   if (item?.userHistory?.length > 0) {
+//     isNew = false;
+//   }
+
+//   const title = item?.title?.trim() || "Untitled";
+
+//   return (
+//     <button
+//       type="button"
+//       onClick={onClick}
+//       className="
+//         group
+//         flex
+//         w-[100%]
+//         items-center
+//         justify-between
+//         gap-3
+//         border-b
+//        dark:border-plumb-darkText
+//        rounded-full
+//         bg-transparent
+//         px-3
+//         py-4
+//         text-left
+//         transition
+//         duration-200
+    
+//         active:scale-[0.995]
+//         sm:gap-4
+//         sm:px-4
+//       "
+//     >
+//       <div className="flex min-w-0 flex-1 items-start gap-3">
+//         {isNew && (
+//           <span
+//             aria-label="New"
+//             className="
+//               mt-2
+//               h-2
+//               w-2
+//               shrink-0
+//               rounded-full
+//               bg-emerald-700
+//             "
+//           />
+//         )}
+
+//         <span
+//           title={title}
+//           className="
+//             min-w-0
+//             flex-1
+//             dark:text-plumb-darkText
+//             overflow-hidden
+//             font-serif
+//             text-[1.05rem]
+//             leading-snug
+//             text-gray-900
+//             transition-colors
+//             duration-200
+//             group-hover:text-emerald-800
+//             line-clamp-2
+//             lg:line-clamp-1
+//           "
+//         >
+//           {title}
+//         </span>
+//       </div>
+
+//       <span
+//         aria-hidden="true"
+//         className="
+//           shrink-0
+//           pt-0.5
+//           text-lg
+//           leading-none
+//           text-gray-300
+//           transition-all
+//           duration-200
+//           group-hover:translate-x-1
+//           group-hover:text-emerald-700
+//         "
+//       >
+//         →
+//       </span>
+//     </button>
+//   );
+// }
 export default function ListPill({
   item,
   onClick,
@@ -21,6 +122,7 @@ export default function ListPill({
     <button
       type="button"
       onClick={onClick}
+      aria-label={title}
       className="
         group
         flex
@@ -28,18 +130,27 @@ export default function ListPill({
         items-center
         justify-between
         gap-3
+        rounded-full
         border-b
-        border-soft
+        border-plumb-border
         bg-transparent
         px-3
         py-4
         text-left
-        transition
+        transition-colors
         duration-200
-        hover:bg-cream/50
+        hover:bg-plumb-elevated
         active:scale-[0.995]
+        focus:outline-none
+        focus-visible:ring-2
+        focus-visible:ring-plumb-focus
+        focus-visible:ring-offset-2
+        focus-visible:ring-offset-plumb-surface
         sm:gap-4
         sm:px-4
+        dark:border-plumb-darkBorder
+        dark:hover:bg-plumb-dark-surface
+        dark:focus-visible:ring-offset-plumb-dark-canvas
       "
     >
       <div className="flex min-w-0 flex-1 items-start gap-3">
@@ -52,7 +163,7 @@ export default function ListPill({
               w-2
               shrink-0
               rounded-full
-              bg-emerald-700
+              bg-plumb-mint
             "
           />
         )}
@@ -66,12 +177,14 @@ export default function ListPill({
             font-serif
             text-[1.05rem]
             leading-snug
-            text-gray-900
+            text-plumb-ink
             transition-colors
             duration-200
-            group-hover:text-emerald-800
+            group-hover:text-plumb-mintHover
             line-clamp-2
             lg:line-clamp-1
+            dark:text-plumb-darkText
+            dark:group-hover:text-plumb-mintLight
           "
         >
           {title}
@@ -85,11 +198,13 @@ export default function ListPill({
           pt-0.5
           text-lg
           leading-none
-          text-gray-300
+          text-plumb-subtle
           transition-all
           duration-200
           group-hover:translate-x-1
-          group-hover:text-emerald-700
+          group-hover:text-plumb-mintHover
+          dark:text-plumb-darkSubtle
+          dark:group-hover:text-plumb-mintLight
         "
       >
         →

@@ -52,6 +52,7 @@ paper: "#f4f4e0",
 canvas: "#f8f6f1",
 surface: "#eeeeda",
 elevated: "#fffef5",
+tab: "#e8e5ceff",
 
 // Dark surfaces
 dark: {

@@ -253,26 +253,29 @@ function HomeHeader({
           sm:flex-row sm:flex-wrap
         "
       >
-        <HomeAction
+        <button
+                className={styles.button.primary}
           variant="primary"
           onClick={onWrite}
         >
           Start writing
-        </HomeAction>
+        </button>
 
-        <HomeAction
+        <button
+                className={styles.button.secondary}
           variant="secondary"
           onClick={onRooms}
         >
           Make a room
-        </HomeAction>
+        </button>
 
-        <HomeAction
+        <button
+        className={styles.button.secondary}
           variant="secondary"
           onClick={onWorkshop}
         >
           Read with the community
-        </HomeAction>
+        </button>
       </div>
     </header>
   );
@@ -643,29 +646,27 @@ function RoomCard({ profileToCollection, onClick }) {
 |--------------------------------------------------------------------------
 */
 
-function HomeAction({
-  children,
-  onClick,
-  variant = "secondary",
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`
-        ${styles.button.base}
-        ${variant === "primary"
-          ? styles.button.primary
-          : styles.button.secondary}
-        ${styles.button.medium}
-        min-h-11 w-full
-        sm:w-auto
-      `}
-    >
-      {children}
-    </button>
-  );
-}
+// function HomeAction({
+//   children,
+//   onClick,
+//   variant = "secondary",
+// }) {
+//   return (
+//     <button
+//       type="button"
+//       onClick={onClick}
+//       className={`    w-full rounded-2xl px-6 py-3 text-center
+//         sm:w-auto sm:px-8 sm:py-4
+//         ${variant === "primary" ? styles.button.primary : styles.button.secondary}
+     
+  
+     
+//       `}
+//     >
+//       {children}
+//     </button>
+//   );
+// }
 
 /*
 |--------------------------------------------------------------------------

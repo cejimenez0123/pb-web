@@ -185,7 +185,8 @@ function EventListItem({ item, router }) {
                       font-serif
                       text-base
                       leading-snug
-                      text-gray-900
+                      text-plumb-ink
+                      dark:text-plumb-darkText/90
                       transition-colors
                       group-hover:text-emerald-800
                     "

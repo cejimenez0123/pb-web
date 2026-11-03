@@ -44,7 +44,7 @@ const PAGE_SIZE = 8;
 
 
 function MyProfileContainer() {
-  const { setSeo } = useContext(Context);
+
   const router = useIonRouter();
 
   const profile = useSelector(
@@ -408,11 +408,11 @@ function CollectionsSection({
         "
       >
         <div>
-          <h2 className="font-serif text-2xl text-gray-900">
+          <h2 className="font-serif border:text-plumb-darkText text-plumb-ink text-2xl ">
             Collections
           </h2>
 
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-1  border:text-plumb-darkText text-plumb-ink text-sm ">
             Places and groups of work I'm part of.
           </p>
         </div>
@@ -427,7 +427,7 @@ function CollectionsSection({
           }}
           placeholder="Search"
           className="
-            w-full
+            w-[100%]
             rounded-full
             border
             dark:text-plumb-darkText/70
@@ -542,8 +542,9 @@ function CollectionRoomCard({
       className="
         group
         w-[100%]
-        border-b
-        border-soft
+        border
+        dark:border-plumb-darkText/20
+       dark:hover:border-2
         bg-transparent
         px-3
         py-5
@@ -614,19 +615,11 @@ function CollectionRoomCard({
 
           {/* Title */}
           <h3
-            className="
-              mt-2
-              font-serif
-              text-[1.2rem]
-              leading-snug
-              text-gray-900
-              transition-colors
-              duration-200
-              group-hover:text-emerald-800
-            "
+            className="border:text-plumb-darkText text-plumb-ink"
           >
             {title}
           </h3>
+    
 
           {/* Purpose */}
           {purpose && (
