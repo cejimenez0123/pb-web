@@ -15,23 +15,43 @@ class AlgoliaRepo {
       Authorization: `Bearer ${value}`,
     };
   }
-
-  async search(query="",profileId, filters = []) {
+async search(query = "", filters = []) {
   const headers = await this.getAuthHeaders();
 
-  const params = { q: query??"" ,profileId};
+  const params = {
+    q: query ?? "",
+  };
 
-  filters.forEach((f, idx) => {
-    params[idx] = f;
+  filters.forEach((filter, index) => {
+    params[index] = filter;
   });
 
-  const res = await axios.get(`${Enviroment.url}/api/algolia/search`, {
-    headers,
-    params,
-  });
+  const res = await axios.get(
+    `${Enviroment.url}/api/algolia/search`,
+    {
+      headers,
+      params,
+    }
+  );
 
   return res.data;
 }
+//   async search(query="",profileId, filters = []) {
+//   const headers = await this.getAuthHeaders();
+
+//   const params = { q: query??"" ,profileId};
+
+//   filters.forEach((f, idx) => {
+//     params[idx] = f;
+//   });
+
+//   const res = await axios.get(`${Enviroment.url}/api/algolia/search`, {
+//     headers,
+//     params,
+//   });
+
+//   return res.data;
+// }
 
   async saveObject(indexName, object) {
     const headers = await this.getAuthHeaders();

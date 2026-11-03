@@ -120,7 +120,7 @@ function filterLocalContent(content, query, filter) {
 function SearchDialog() {
   const dispatch = useDispatch();
   const router = useIonRouter();
-
+const [searchAttempt, setSearchAttempt] = useState(0);
   const currentProfile = useSelector(
     (state) => state.users.currentProfile
   );
@@ -200,19 +200,19 @@ function SearchDialog() {
    * than the entire profile object, to prevent redundant
    * requests when unrelated profile fields change.
    */
+useEffect(() => {
+  const query = searchText.trim();
 
-  useEffect(() => {
-    const query = searchText.trim();
+  if (searchScope !== "all" || !query) {
+    setSearchContent([]);
+    setIsSearching(false);
+    setSearchError(false);
+    return undefined;
+  }
 
-    if (searchScope !== "all" || !query) {
-      setSearchContent([]);
-      setIsSearching(false);
-      setSearchError(false);
-      return undefined;
-    }
+  let cancelled = false;
 
-    let cancelled = false;
-
+  const runSearch = async () => {
     setIsSearching(true);
     setSearchError(false);
 
@@ -221,83 +221,169 @@ function SearchDialog() {
         ? []
         : [selectedFilter];
 
-    const runSearch = async () => {
-      try {
-        const result = await dispatch(
-          searchMultipleIndexes({
-            query,
-            filters,
-            profileId: currentProfileId,
-          })
+    try {
+      const result = await dispatch(searchMultipleIndexes({
+          query,
+          filters,
+          // profileId: currentProfileId,
+        })
+      );
+
+      if (cancelled) return;
+
+      if (
+        result.meta?.requestStatus !== "fulfilled"
+      ) {
+        console.error(
+          "Search request rejected:",
+          result.payload || result.error
         );
-
-        if (cancelled) return;
-
-        if (result?.meta?.requestStatus === "rejected") {
-          setSearchContent([]);
-          setSearchError(true);
-          setIsSearching(false);
-          return;
-        }
-
-        let receivedResults = false;
-
-        checkResult(result, (returned) => {
-          if (cancelled) return;
-
-          receivedResults = true;
-
-          const normalizedResults = (
-            returned?.results ?? []
-          )
-            .filter(
-              (item) =>
-                item &&
-                (item.objectID || item.id) &&
-                item.type
-            )
-            .map((item) => ({
-              item,
-              objectID: item.objectID ?? item.id,
-              type: item.type,
-            }));
-
-          setSearchContent(normalizedResults);
-          setIsSearching(false);
-          setSearchError(false);
-        });
-
-        /*
-         * Do not leave the UI in a loading state if
-         * checkResult does not invoke its callback.
-         */
-        if (!receivedResults) {
-          setSearchContent([]);
-          setIsSearching(false);
-        }
-      } catch (error) {
-        if (cancelled) return;
-
-        console.error("Search failed:", error);
 
         setSearchContent([]);
         setSearchError(true);
         setIsSearching(false);
+        return;
       }
-    };
 
-    runSearch();
+      const normalizedResults = (
+        result.payload?.results ?? []
+      )
+        .filter(
+          (item) =>
+            item &&
+            (item.objectID || item.id) &&
+            item.type
+        )
+        .map((item) => ({
+          item,
+          objectID: item.objectID ?? item.id,
+          type: item.type,
+        }));
 
-    return () => {
-      cancelled = true;
-    };
-  }, [
-    dispatch,
-    searchText,
-    selectedFilter,
-    searchScope,
-    currentProfileId,
-  ]);
+      setSearchContent(normalizedResults);
+      setSearchError(false);
+      setIsSearching(false);
+    } catch (error) {
+      if (cancelled) return;
+
+      console.error("Search failed:", error);
+
+      setSearchContent([]);
+      setSearchError(true);
+      setIsSearching(false);
+    }
+  };
+
+  runSearch();
+
+  return () => {
+    cancelled = true;
+  };
+}, [
+  dispatch,
+  searchText,
+  selectedFilter,
+  searchScope,
+  currentProfileId,
+  searchAttempt,
+]);
+  // useEffect(() => {
+  //   const query = searchText.trim();
+
+  //   if (searchScope !== "all" || !query) {
+  //     setSearchContent([]);
+  //     setIsSearching(false);
+  //     setSearchError(false);
+  //     return undefined;
+  //   }
+
+  //   let cancelled = false;
+
+  //   setIsSearching(true);
+  //   setSearchError(false);
+
+  //   const filters =
+  //     selectedFilter === "all"
+  //       ? []
+  //       : [selectedFilter];
+
+  //   const runSearch = async () => {
+  //     try {
+  //       const result = await dispatch(
+  //         searchMultipleIndexes({
+  //           query,
+  //           filters,
+  //           profileId: currentProfileId,
+  //         })
+  //       );
+
+  //       if (cancelled) return;
+
+  //       if (result?.meta?.requestStatus === "rejected") {
+  //         setSearchContent([]);
+  //         setSearchError(true);
+  //         setIsSearching(false);
+  //         return;
+  //       }
+
+  //       let receivedResults = false;
+
+  //       checkResult(result, (returned) => {
+  //         if (cancelled) return;
+
+  //         receivedResults = true;
+
+  //         const normalizedResults = (
+  //           returned?.results ?? []
+  //         )
+  //           .filter(
+  //             (item) =>
+  //               item &&
+  //               (item.objectID || item.id) &&
+  //               item.type
+  //           )
+  //           .map((item) => ({
+  //             item,
+  //             objectID: item.objectID ?? item.id,
+  //             type: item.type,
+  //           }));
+
+  //         setSearchContent(normalizedResults);
+  //         setIsSearching(false);
+  //         setSearchError(false);
+  //       });
+
+  //       /*
+  //        * Do not leave the UI in a loading state if
+  //        * checkResult does not invoke its callback.
+  //        */
+  //       if (!receivedResults) {
+  //         setSearchContent([]);
+  //         setIsSearching(false);
+  //       }
+  //     } catch (error) {
+  //       if (cancelled) return;
+
+  //       console.error("Search failed:", error);
+
+  //       setSearchContent([]);
+  //       setSearchError(true);
+  //       setIsSearching(false);
+  //     }
+  //   };
+
+  //   runSearch();
+
+  //   return () => {
+  //     cancelled = true;
+  //   };
+  // }, [
+  //   dispatch,
+  //   searchText,
+  //   selectedFilter,
+  //   searchScope,
+  //   currentProfileId,
+  // ]);
 
   /*
    * Navigation
@@ -355,18 +441,23 @@ function SearchDialog() {
       TYPE_LABELS[result.type] || result.type;
 
     return (
-      <button
+      <div
         key={`${result.objectID}-${index}`}
-        type="button"
+        // type="button"
+        // className="w-[100%] rounded-full py-4 mx-4 "
         className={styles.search.result}
         onClick={() => handleResultClick(result)}
         aria-label={`Open ${typeLabel}: ${title}`}
       >
-        <div className={styles.search.resultTitle}>
+        <div
+         className={styles.search.resultTitle}
+        >
           {title}
         </div>
 
-        <div className={styles.search.resultMeta}>
+        <div 
+        className={styles.search.resultMeta}
+        >
           {typeLabel}
           {author ? ` · ${author}` : ""}
         </div>
@@ -376,7 +467,7 @@ function SearchDialog() {
             {description}
           </p>
         )}
-      </button>
+      </div>
     );
   };
 
@@ -398,7 +489,9 @@ function SearchDialog() {
             </h1>
 
             <div className={styles.search.searchWrap}>
-              <IonSearchbar
+
+             
+       <IonSearchbar
   value={searchText}
   debounce={350}
   className={`${styles.search.searchbar} plumb-searchbar`}
@@ -406,32 +499,16 @@ function SearchDialog() {
   aria-label="Search Plumbum"
   showClearButton="focus"
   onIonInput={(event) => {
-    setSearchText(event.detail?.value ?? "");
+    const value =
+      event.detail?.value ??
+      event.target?.value ??
+      "";
+
+    console.log("[Search] Input event:", value);
+    setSearchText(value);
   }}
 />
-              {/* <IonSearchbar
-                value={searchText}
-                debounce={350}
-                className={styles.search.searchbar}
-                placeholder="Stories, writers, rooms..."
-                aria-label="Search Plumbum"
-                showClearButton="focus"
-                style={{
-                  "--background": "transparent",
-                  "--box-shadow": "none",
-                  "--border-radius": "1rem",
-                  "--color": "var(--plumb-search-text, var(--ion-text-color))",
-                  "--placeholder-color": "var(--plumb-search-muted, var(--ion-color-medium))",
-                  "--icon-color": "var(--plumb-search-muted, var(--ion-color-medium))",
-                  "--clear-button-color": "var(--plumb-search-muted, var(--ion-color-medium))",
-                }}
-                onIonInput={(event) => {
-                  setSearchText(
-                    event.detail?.value ?? ""
-                  );
-                }}
-              /> */}
-            </div>
+     </div>
           </header>
 
           {/* Search scope */}
@@ -532,9 +609,10 @@ function SearchDialog() {
                   </h2>
 
                   {personalResults.length > 0 ? (
-                    <div className={styles.search.results}>
-                      {personalResults.map(renderResult)}
-                    </div>
+               personalResults.map(renderResult)
+                    // <div className={styles.search.results}>
+                      // {personalResults.map(renderResult)}
+                    // </div>
                   ) : (
                     <div className={styles.search.empty}>
                       <h2 className={styles.search.emptyTitle}>
@@ -571,21 +649,16 @@ function SearchDialog() {
               <p role="alert">
                 Something went wrong while searching.
               </p>
-
-              <button
-                type="button"
-                className={styles.search.retry}
-                onClick={() => {
-                  // Trigger the existing search effect
-                  // again without introducing a new endpoint.
-                  setSearchText((value) => `${value} `);
-                  requestAnimationFrame(() => {
-                    setSearchText((value) => value.trim());
-                  });
-                }}
-              >
-                Try again
-              </button>
+<button
+  type="button"
+  className={styles.search.retry}
+  onClick={() =>
+    setSearchAttempt((attempt) => attempt + 1)
+  }
+>
+  Try again
+</button>
+    
             </div>
           )}
 

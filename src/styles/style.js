@@ -570,8 +570,7 @@ skeleton: `
     "w-[100%]",
     "overflow-hidden",
     "rounded-2xl",
-    "border",
-    "border-border-default",
+ 
     "bg-plumb-surface",
     "dark:bg-plumb-dark-surface",
     "transition-colors",
@@ -579,12 +578,16 @@ skeleton: `
     "focus-within:ring-2",
     "focus-within:ring-plumb-mint/20",
   ].join(" "),
-
- searchbar: [
-  "w-[100%]",
-  "px-0",
-  "py-1",
-  "text-sm",
+searchbar: [
+  "w-full p-0 rounded-full",
+  "bg-plumb-elevated text-plumb-ink",
+  "placeholder:text-plumb-muted",
+  "dark:bg-plumb-dark-surface dark:text-plumb-darkText",
+  "dark:placeholder:text-plumb-darkMuted",
+  "border border-plumb-borderStrong",
+  "dark:border-plumb-darkBorderStrong",
+  "focus-within:border-plumb-mint",
+  "dark:focus-within:border-plumb-mintLight",
 ].join(" "),
 
   scopeRow: [
@@ -703,16 +706,18 @@ skeleton: `
   ].join(" "),
 
   results: [
-    "divide-y",
+    "divide-y ",
     "divide-border-default",
   ].join(" "),
 
+
   result: [
+    "dark:bg-base-bg dark:border-1 my-4 px-8 dark:hover:bg-plumb-mint/40 rounded-full dark:border dark:border-plumb-mintLight rounded-full",
     "block",
     "w-[100%]",
-    "rounded-xl",
-    "px-3",
-    "py-4",
+  
+  
+    "py-2",
     "text-left",
     "transition-colors",
     "duration-150",
@@ -722,7 +727,7 @@ skeleton: `
     "focus-visible:ring-2",
     "focus-visible:ring-inset",
     "focus-visible:ring-plumb-mint",
-    "sm:px-4",
+    // "sm:px-4",
   ].join(" "),
 
   resultTitle: [
@@ -1433,7 +1438,7 @@ collection: {
 
 navbar: {
   desktop: [
-    "w-full h-36",
+    "w-[100%] min-h-20",
     "flex items-center",
     "bg-plumb-mintHover dark:bg-plumb-dark-surface",
   "border-b border-plumb-mint dark:border-plumb-darkBorder",
@@ -1474,7 +1479,7 @@ menuButton: [
     " gap-1 flex flex-col",
     "bg-plumb-mintHover dark:bg-plumb-dark-surface",
 
-  "min-h-8 ",
+  // "min-h-8 ",
    
     "z-40",
   ].join(" "),
@@ -1488,7 +1493,7 @@ menuButton: [
   mobileInner: [
     "w-full",
     "flex items-center justify-between",
-    "px-4 py-3",
+    // "px-4 py-3",
   ].join(" "),
 
   wordmark: [
@@ -1508,6 +1513,8 @@ menuButton: [
   ].join(" "),
 
   desktopNav: [
+    "py-4",
+    "min-h-30",
     "bg-plumb",
     "absolute",
     "left-1/2",
@@ -1773,7 +1780,7 @@ mobileNativeWordmark: [
   sectionLabel: [
     "mb-3 font-open-sans text-xs font-medium",
     "uppercase tracking-widest",
-       "bg-plumb-surface dark:bg-plumb-dark-canvas",
+       "",
     "text-plumb-muted dark:text-plumb-darkMuted",
   ].join(" "),
 

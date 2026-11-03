@@ -28,7 +28,7 @@ fullscreen
       <h1 className={styles.about.welcome}>
         Find a room. <br/> Meet people. <br/>Keep the connection going.
       </h1>
-      <p className={styles.text.display}>
+      <p className={styles.text.display+" pb-8"}>
 
   You might find Plumbum at a reading, a workshop, a mixer, or through
   someone you know. Come as you are. The <a 
@@ -37,7 +37,7 @@ fullscreen
   and you don't need an account to see what's happening.
 </p>
 {/* BOOGIE*/}
-   <section className={styles.about.start}>
+   <section className={styles.about.start+" mt-8"}>
         <div className={styles.about.section}>
           <p className={styles.about.sectionLabel}>
             Start here

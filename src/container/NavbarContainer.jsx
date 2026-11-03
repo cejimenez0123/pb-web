@@ -126,6 +126,11 @@ function DesktopNavbar({
           <DesktopNavItem onClick={handleAbout}>
             About
           </DesktopNavItem>
+              {showSearch && (
+            <SearchButton
+              onClick={handleSearch}
+            />
+          )}
         </nav>
 
 
@@ -136,13 +141,10 @@ function DesktopNavbar({
             flex
             items-center
             gap-5
+            flex-col
           "
         >
-          {showSearch && (
-            <SearchButton
-              onClick={handleSearch}
-            />
-          )}
+      
 <div className='mr-4'>
           {isLoggedIn ? (
             <SignOutButton />

@@ -259,7 +259,8 @@ function DiscoveryContainer() {
                 }
                 placeholder="Search stories or collections..."
                 aria-label="Search stories or collections"
-                className={SEARCH_INPUT}
+                className={styles.input}
+                // className={SEARCH_INPUT}
               />
 
               {search && (

@@ -140,22 +140,41 @@ let data = await profileRepo.register({
     }
   }
 );
-
 const searchMultipleIndexes = createAsyncThunk(
   "users/searchMultipleIndexes",
   async (params, thunkApi) => {
-    const { query, filters = [],profileId} = params;
+    const { query, filters = [] } = params;
 
     try {
-      const data = await algoliaRepo.search(query, profileId,filters);
+      const data = await algoliaRepo.search(query, filters);
 
-      return { results: data.results??[] };
+      return {
+        results: data.results ?? [],
+      };
     } catch (error) {
       console.error("Search failed:", error);
-      return thunkApi.rejectWithValue({ error: "Search failed" });
+
+      return thunkApi.rejectWithValue({
+        error: "Search failed",
+      });
     }
   }
 );
+// const searchMultipleIndexes = createAsyncThunk(
+//   "users/searchMultipleIndexes",
+//   async (params, thunkApi) => {
+//     const { query, filters = [],profileId} = params;
+
+//     try {
+//       const data = await algoliaRepo.search(query, profileId,filters);
+
+//       return { results: data.results??[] };
+//     } catch (error) {
+//       console.error("Search failed:", error);
+//       return thunkApi.rejectWithValue({ error: "Search failed" });
+//     }
+//   }
+// );
 const setCurrentProfile = createAction("user/setCurrentProfile", (params)=> {
 
 
