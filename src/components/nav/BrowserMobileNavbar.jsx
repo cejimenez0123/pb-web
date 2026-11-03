@@ -121,7 +121,7 @@ catch (error) {
 
       {menuOpen && (
         <nav
-          // id="mobile-browser-navigation"
+   
         className='w-[100%] dark:bg-plumb-dark-surface   '
           aria-label="Mobile navigation"
         >

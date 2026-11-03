@@ -1,5 +1,5 @@
 
-import { useContext, useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import { useAlert } from "../../core/useAlert.jsx";
 import AlertType from "../../core/AlertType.js";
 import "../../App.css";
@@ -16,6 +16,7 @@ import { useDialog } from "../../domain/usecases/useDialog.jsx";
 
 import useTermsAcceptance from "../../core/useTermsAcceptance.jsx";
 import styles from "../../styles/style.js";
+
 export default function LogInContainer({ currentProfile }) {
   const { showAlert, closeAlert, showPrompt } = useAlert();
   const router = useIonRouter();
@@ -218,9 +219,7 @@ const promptTermsAcceptance = useTermsAcceptance();
         {/* Header */}
         <header className="space-y-3 text-center">
 
-          {/* <p lassName={styles.text.display}>
-            Welcome back
-          </p> */}
+      
 
         <h1 className={styles.text.display}>
   Log in
@@ -241,13 +240,13 @@ const promptTermsAcceptance = useTermsAcceptance();
 
           {/* Email */}
        <div className="mt-6 space-y-2">
-            <label
+            {/* <label
               htmlFor="login-email"
       className={styles.text.body}
             >
               Email
-            </label>
-  <div
+            </label> */}
+  {/* <div
     className="
       relative flex w-full min-w-0 items-center
       rounded-xl border border-plumb-borderStrong
@@ -257,8 +256,8 @@ const promptTermsAcceptance = useTermsAcceptance();
       dark:border-plumb-darkBorderStrong
       dark:bg-plumb-dark-surface
     "
-  >
-            <input
+  > */}
+            {/* <input
               id="login-email"
               type="text"
               value={email}
@@ -268,94 +267,83 @@ const promptTermsAcceptance = useTermsAcceptance();
               placeholder="example@email.com"
              className={`${styles.input} w-[100%]  min-w-0 flex-1 w-full rounded-xl max-w-none`}
      
-            />
-            </div>
+            /> */}
+            <div className={styles.login.field}>
+  <label htmlFor="login-email" className={styles.text.body}>
+    Email
+  </label>
+
+  <div className={styles.login.inputWrap}>
+    <input
+      id="login-email"
+      type="email"
+      value={email}
+      onChange={(e) => setEmail(e.target.value)}
+      placeholder="example@email.com"
+      autoComplete="email"
+      required
+      disabled={pending}
+      className={styles.login.input}
+    />
+  </div>
+</div>
+            {/* </div> */}
           </div>
-{/* Password */}
-<div className="mt-6 space-y-2">
-  <label
-    htmlFor="login-password"
-    className={styles.text.body}
-  >
+          <div className={styles.login.field}>
+  <label htmlFor="login-password" className={styles.text.body}>
     Password
   </label>
 
-  <div
-    className="
-      relative flex w-full min-w-0 items-center
-      rounded-xl border border-plumb-borderStrong
-      bg-paper transition-colors
-      focus-within:border-plumb-focus
-      focus-within:ring-2 focus-within:ring-plumb-focus/30
-      dark:border-plumb-darkBorderStrong
-      dark:bg-plumb-dark-surface
-    "
-  >
+  <div className={styles.login.inputWrap}>
     <input
       id="login-password"
       type={showPassword ? "text" : "password"}
       value={password}
       onChange={(e) => setPassword(e.target.value)}
-      placeholder="••••••••"
+      placeholder="Your password"
       autoComplete="current-password"
-      className="
-        min-w-0 flex-1 w-full
-        border-0 bg-transparent
-        rounded-xl py-3 pl-4 pr-20
-        text-plumb-ink placeholder:text-plumb-muted
-        dark:text-plumb-darkText dark:placeholder:text-plumb-darkMuted
-        focus:outline-none focus:ring-0
-      "
+      required
+      disabled={pending}
+      className={`${styles.login.input} flex-1`}
     />
 
     <button
       type="button"
-      onClick={() => setShowPassword((visible) => !visible)}
+      onClick={() => setShowPassword((value) => !value)}
       aria-label={showPassword ? "Hide password" : "Show password"}
       aria-pressed={showPassword}
-      className={`
-      
-        ${styles.button.ghost}
-        px-3 py-2 text-sm
-      `}
+      className={styles.button.ghost}
     >
       {showPassword ? "Hide" : "Show"}
     </button>
   </div>
 </div>
 
+<div className="text-center p-8">
 
           {/* Primary action */}
-          <button
-            type="button"
-            onClick={handleLogIn}
-            disabled={pending}
-              className={`
-                mt-4
-    ${styles.button.base}
-    ${styles.button.primary}
-    ${styles.button.large}
-    w-[100%]
-  `}
+          <div
+  type="submit"
+  disabled={pending}
+  className={"dark:border dark:border-2 bg-plumb-mint dark:bg-transparent dark:border-plumb-mintLight min-w-[90%] hover:ring-offset-1 hover:ring-1 rounded-full "+styles.button.base}
+ 
+>
+ <p className=" text-plumb-darkText dark:text-plumb-mintLight text-2xl py-4">{pending ? "Logging in..." : "Log In"}</p> 
+</div>
 
-   
-          >
-            {pending ? "Logging in..." : "Log In"}
-          </button>
+</div>
         </form>
 
         {/* Divider */}
-        <div className="flex items-center gap-4">
-          <div className="h-px flex-1 bg-emerald-800/15" />
+        <div className="flex items-center gap-2">
+          {/* <div className="h-px flex-1 " /> */}
 
-          <span 
-          className={styles.text.display}
-          // className="text-xs text-emerald-800/45"
-          >
+            <h5 className={"mx-auto text-plumb-mint dark:text-plumb-mintLight"}>
             or
-          </span>
+            </h5>
+     
 
-          <div className="h-px flex-1 bg-emerald-800/15" />
+          {/* <div className="h-px flex-1 " /> */}
         </div>
 
         {/* Social login */}
@@ -412,7 +400,7 @@ const promptTermsAcceptance = useTermsAcceptance();
           <button
             type="button"
             onClick={handleForgotPasswordDialog}
-            className={styles.button.primary+" w-72 mx-auto"}
+            className={styles.button.primary+" max-w-72  py-4 mx-auto"}
       
           >
             Forgot password?

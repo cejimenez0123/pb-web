@@ -131,7 +131,7 @@ function MyProfileContainer() {
    
             <div className={styles.profile.mine.page}>
               {/* PROFILE HEADER */}
-              <section
+              {/* <section
          
                 aria-labelledby="my-profile-heading"
                 className={styles.profile.mine.header}
@@ -169,8 +169,65 @@ function MyProfileContainer() {
                     <span aria-hidden="true"> →</span>
                   </button>
                 </div>
-              </section>
+              </section> */}
+<section
+  aria-labelledby="my-profile-heading"
+  className={styles.profile.mine.header}
+>
+  <ProfileInfo profile={profile} />
 
+  <div className="min-w-0 flex-1">
+    <h1
+      id="my-profile-heading"
+      className={styles.profile.mine.name}
+    >
+      {profile?.name ||
+        profile?.username ||
+        "Your Profile"}
+    </h1>
+
+    {profile?.username && (
+      <p className={styles.profile.mine.username}>
+        @{profile.username}
+      </p>
+    )}
+
+    <div className="mt-4 flex flex-wrap items-center gap-2">
+      <button
+        type="button"
+        onClick={() =>
+          router.push(Paths.profile.editRoute(profile.id))
+        }
+        className={`${styles.button.base} ${styles.button.primary} px-5 py-2.5`}
+      >
+        <icon name="pencil" size="sm" />
+        <span className="ml-2">Edit profile</span>
+      </button>
+
+      <button
+        type="button"
+        onClick={() =>
+          router.push(
+            Paths.profile.createRoute(profile.id)
+          )
+        }
+        className={`${styles.button.base} ${styles.button.secondary} px-5 py-2.5`}
+      >
+        <icon name="eye" size="sm" />
+        <span className="ml-2">Preview</span>
+      </button>
+
+      <button
+        type="button"
+        aria-label="Settings"
+        onClick={() => router.push(Paths.settings)}
+        className={`${styles.button.base} ${styles.button.cancel} size-11`}
+      >
+        <icon name="settings" size="lg" />
+      </button>
+    </div>
+  </div>
+</section>
               <section
                 aria-label="Profile sections"
                 className={styles.profile.mine.sections}

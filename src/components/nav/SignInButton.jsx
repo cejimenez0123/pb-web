@@ -16,7 +16,9 @@ function SignInButton({ mobile = false }) {
         transition-colors
         whitespace-nowrap
         tracking-[-0.02em]
-        text-md
+           text-[1.2em]
+        bg-transparent
+        
       "
     >
       Sign in

@@ -1,16 +1,268 @@
 
 
 const styles = {
+  login: {
+  page: "flex min-h-full w-full justify-center px-5 pt-12 pb-24 sm:px-6 sm:pt-16",
+
+  card: "mx-auto w-full max-w-md",
+
+  layout: "space-y-8",
+
+  header: "space-y-3 text-center",
+
+  fields: "space-y-5",
+
+  field: "space-y-2",
+
+  inputWrap: [
+    "flex w-full items-center rounded-xl border",
+    "border-plumb-borderStrong bg-plumb-elevated",
+    "focus-within:border-plumb-mint",
+    "focus-within:ring-2 focus-within:ring-plumb-focus/30",
+    "dark:border-plumb-darkBorderStrong",
+    "dark:bg-plumb-dark-elevated",
+  ].join(" "),
+
+  input: [
+    "w-full min-w-0 rounded-xl border-0 bg-transparent",
+    "px-4 py-3 text-plumb-ink",
+    "placeholder:text-plumb-muted",
+    "focus:outline-none focus:ring-0",
+    "dark:text-plumb-darkText",
+    "dark:placeholder:text-plumb-darkMuted",
+  ].join(" "),
+
+  divider: "flex items-center gap-4",
+
+  dividerLine: [
+    "h-px flex-1 bg-plumb-border",
+    "dark:bg-plumb-darkBorder",
+  ].join(" "),
+
+  dividerText: "text-plumb-muted dark:text-plumb-darkMuted",
+
+  social: "space-y-3",
+
+  socialButton: "flex w-full justify-center",
+
+  actions: "space-y-3 pt-2",
+},
+  button: {
+
+base: [
+"inline-flex items-center justify-center",
+"rounded-full",
+"font-medium",
+"transition-all duration-200 ease-out",
+"transform-gpu",
+"hover:-translate-y-0.5",
+"active:translate-y-0",
+"active:scale-[0.96]",
+"focus-visible:outline-none",
+"focus-visible:ring-2",
+"focus-visible:ring-plumb-focus",
+"focus-visible:ring-offset-2",
+"focus-visible:ring-offset-plumb-paper",
+"dark:focus-visible:ring-offset-plumb-dark-canvas",
+"disabled:pointer-events-none",
+"disabled:opacity-50",
+"disabled:transform-none",
+"motion-reduce:transform-none",
+"motion-reduce:transition-none",
+].join(" "),
+primary: [
+  "dark:border-plumb-mintLight dark:border dark:border-2 py-2 dark:text-plumb-mintLight",
+    "rounded-full font-semiBold  md:text-l sm:text-md lg:text-xl ",
+  "text-base ",
+  
+  "bg-plumb-mint dark:bg-transparent min-w-80 dark:text-plumb-button-primary-bg text-plumb-darkText",
+  "shadow-sm",
+  "hover:bg-plumb-mint",
+  "hover:shadow-md",
+  "active:shadow-sm",
+].join(" "),
+
+
+
+  
+secondary: [
+  "dark:border dark:border-plumb-button-secondary-bg hover:border-3 dark:border-2",
+  "rounded-full",
+"text-base",
+"bg-plumb-button-secondary-bg",
+"text-white",
+"shadow-sm",
+"dark:bg-transparent   dark:text-plumb-button-secondary-bg dark:border dark:border-plumb-darkBorder",
+"hover:bg-plumb-button-secondary-hover",
+"hover:shadow-md",
+"active:shadow-sm",
+].join(" "),
+
+  accent: [
+     "text-base",
+        "rounded-full",
+    "bg-plumb-button-accent-bg",
+    "text-plumb-button-accent-text",
+    "hover:bg-plumb-button-accent-hover",
+  ].join(" "),
+
+  // danger: [
+  //    "text-base",
+  //       "rounded-full",
+  //   "bg-plumb-button-danger-bg",
+  //   "text-white",
+  //   "dark:bg-transparent border-plumb-button-danger-bg border-1 dark:text-plumb-button-danger-bg dark:border dark:border-button-danger-bg",
+  //   "hover:bg-plumb-button-danger-hover",
+  // ].join(" "),
+
+  // agree: [
+  //    "text-base",
+  //       "rounded-full",
+  //       "bg-plumb-button-primary-hover",
+  //       "font-bold",
+      
+  //   "text-white",
+  //   "hover:bg-plumb-mintHover",
+  // ].join(" "),
+
+  // cancel: [
+  //    "text-base",
+  //       "rounded-full",
+  //   "border border-plumb-border",
+  //   "bg-transparent",
+  //   "text-plumb-muted",
+  //   "hover:border-plumb-mint",
+  //   "hover:text-plumb-ink",
+  //   "dark:border-plumb-darkBorder",
+  //   "dark:text-plumb-darkMuted",
+  //   "dark:hover:border-plumb-mintLight",
+  //   "dark:hover:text-plumb-darkText",
+  // ].join(" "),
+ghost: [
+"text-base",
+"bg-transparent",
+"text-plumb-muted",
+"hover:bg-plumb-mint/10",
+"hover:text-plumb-ink",
+"dark:text-plumb-darkMuted",
+"dark:hover:bg-plumb-mint/15",
+"dark:hover:text-plumb-darkText",
+"active:bg-plumb-mint/20",
+"dark:active:bg-plumb-mint/25",
+].join(" "),
+
+
+
+  filter: [
+    "rounded-full",
+    "px-4 py-2",
+    "text-xs uppercase tracking-widest",
+    "font-medium",
+    "transition-colors",
+    "focus-visible:outline-none",
+    "focus-visible:ring-2",
+    "focus-visible:ring-plumb-focus",
+    "focus-visible:ring-offset-2",
+  ].join(" "),
+
+filterActive: [
+  "bg-plumb-mint",
+  "text-white",
+  "hover:bg-plumb-mintHover",
+].join(" "),
+
+  filterInactive: [
+    "border border-plumb-border",
+    "bg-transparent",
+    "text-plumb-muted",
+    "dark:border-plumb-darkBorder",
+    "dark:text-plumb-darkMuted",
+    "hover:border-plumb-mint",
+    "hover:text-plumb-ink",
+    "dark:hover:text-plumb-darkText",
+  ].join(" "),
+
+  small: [
+    "min-h-9",
+    "px-3",
+    "text-xs",
+  ].join(" "),
+
+  medium: [
+    "min-h-11",
+    "px-5",
+    "text-sm",
+  ].join(" "),
+
+  large: [
+    "min-h-12",
+    "px-6",
+    "text-base",
+  ].join(" "),
+utility: [
+  "inline-flex items-center justify-center",
+  "min-h-9 px-3",
+  "rounded-full",
+  "text-[1.1rem] font-medium",
+  "text-plumb-muted",
+  "bg-transparent",
+  "transition-colors duration-150",
+  "hover:bg-plumb-mint/10",
+  "hover:text-plumb-ink",
+  "active:bg-plumb-mint/20",
+  "focus-visible:outline-none",
+  "focus-visible:ring-2",
+  "focus-visible:ring-plumb-focus",
+  "focus-visible:ring-offset-2",
+  "focus-visible:ring-offset-plumb-paper",
+  "dark:focus-visible:ring-offset-plumb-dark-canvas",
+  "dark:text-plumb-darkMuted",
+  "dark:hover:bg-plumb-mint/15",
+  "dark:hover:text-plumb-darkText",
+  "dark:active:bg-plumb-mint/25",
+  "motion-reduce:transition-none",
+].join(" "),
+iconUtility: [
+  "inline-flex  shrink-0 items-center justify-center",
+  "rounded-full",
+  "bg-transparent",
+  "text-plumb-muted",
+  "transition-colors duration-150",
+  "hover:bg-plumb-mint/10",
+  "hover:text-plumb-mintHover",
+  "focus-visible:outline-none",
+  "focus-visible:ring-2",
+  "focus-visible:ring-plumb-focus",
+  "focus-visible:ring-offset-2",
+  "focus-visible:ring-offset-plumb-paper",
+  "dark:focus-visible:ring-offset-plumb-dark-canvas",
+  "dark:text-plumb-darkMuted",
+  "dark:hover:bg-plumb-mint/15",
+  "dark:hover:text-plumb-mintLight",
+  "motion-reduce:transition-none",
+].join(" "),
+
+utilityActive: [
+  "text-plumb-mintHover",
+  "hover:bg-plumb-mint/10",
+  "dark:text-plumb-mintLight",
+  "dark:hover:bg-plumb-mint/20",
+].join(" "),
+
+   },
   pageShell: {
   // Shared page foundation
   base: [
-    "min-h-[100dvh] w-[100%]",
-    "bg-plumb-canvas text-plumb-ink",
-    "dark:bg-plumb-dark-canvas dark:text-plumb-darkText",
+
+    "h-[100vh] w-[100vw]",
+    "pt-16",
+    "bg-plumb-surface text-plumb-ink",
+    "dark:bg-plumb-dark-surface dark:text-plumb-darkText",
   ].join(" "),
 
   // Use when the page itself should scroll
   scroll: [
+  
     "overflow-y-auto overscroll-y-contain",
   ].join(" "),
 
@@ -28,7 +280,7 @@ const styles = {
 
   // Centered content container
   inner: [
-    "mx-auto w-[100%] max-w-5xl",
+    "mx-auto w-[100%] bg-plumb-surface px-4 dark:bg-plumb-dark-surface sm:px-10 md:px-16 lg:px-20",
   ].join(" "),
 
   // Narrower reading/content container
@@ -558,7 +810,7 @@ skeleton: `
   ].join(" "),
 },
 profile: {
-  // inside styles.profile
+
 mine: {
   about: {
   content: `space-y-6`,
@@ -1488,7 +1740,7 @@ mobileNativeWordmark: [
   ].join(" "),
 
   welcome: [
-    "mb-6 py-12 font-serif font-bold",
+    "mb-6 py-4 font-serif font-bold",
     "text-4xl sm:text-5xl leading-tight",
     "text-plumb-ink dark:text-plumb-darkText",
   ].join(" "),
@@ -1514,7 +1766,7 @@ mobileNativeWordmark: [
 
   section: [
     "border-t border-plumb-borderStrong",
-       "bg-plumb-surface dark:bg-plumb-dark-canvas",
+       "bg-transparent ",
     "pt-6 dark:border-plumb-darkBorderStrong",
   ].join(" "),
 
@@ -1568,7 +1820,7 @@ mobileNativeWordmark: [
 },
 content: {
   surface: [
-    // "className="pb-20 ""
+  
     "mx-auto min-h-screen",
     "bg-paper text-plumb-ink",
     "dark:bg-plumb-dark-canvas dark:text-plumb-darkText",
@@ -1773,208 +2025,7 @@ scrollDown: {
   ].join(" "),
 },
 
-  button: {
 
-base: [
-"inline-flex items-center justify-center",
-"rounded-full",
-"font-medium",
-"transition-all duration-200 ease-out",
-"transform-gpu",
-"hover:-translate-y-0.5",
-"active:translate-y-0",
-"active:scale-[0.96]",
-"focus-visible:outline-none",
-"focus-visible:ring-2",
-"focus-visible:ring-plumb-focus",
-"focus-visible:ring-offset-2",
-"focus-visible:ring-offset-plumb-paper",
-"dark:focus-visible:ring-offset-plumb-dark-canvas",
-"disabled:pointer-events-none",
-"disabled:opacity-50",
-"disabled:transform-none",
-"motion-reduce:transform-none",
-"motion-reduce:transition-none",
-].join(" "),
-primary: [
-"dark:border dark:border-plumb-button-primary-bg dark:text-plumb-button-primary-bg hover:text-plumb-darkText hover:border-3 dark:border-2",
-    "rounded-full",
-  "text-base ",
-  "bg-plumb-mintHover dark:bg-transparent  dark:text-plumb-button-primary-bg text-plumb-darkText",
-  "shadow-sm",
-  "hover:bg-plumb-mint",
-  "hover:shadow-md",
-  "active:shadow-sm",
-].join(" "),
-
-
-
-  
-secondary: [
-  "dark:border dark:border-plumb-button-secondary-bg hover:border-3 dark:border-2",
-  "rounded-full",
-"text-base",
-"bg-plumb-button-secondary-bg",
-"text-white",
-"shadow-sm",
-"dark:bg-transparent   dark:text-plumb-button-secondary-bg dark:border dark:border-plumb-darkBorder",
-"hover:bg-plumb-button-secondary-hover",
-"hover:shadow-md",
-"active:shadow-sm",
-].join(" "),
-
-  accent: [
-     "text-base",
-        "rounded-full",
-    "bg-plumb-button-accent-bg",
-    "text-plumb-button-accent-text",
-    "hover:bg-plumb-button-accent-hover",
-  ].join(" "),
-
-  danger: [
-     "text-base",
-        "rounded-full",
-    "bg-plumb-button-danger-bg",
-    "text-white",
-    "dark:bg-transparent border-plumb-button-danger-bg border-1 dark:text-plumb-button-danger-bg dark:border dark:border-button-danger-bg",
-    "hover:bg-plumb-button-danger-hover",
-  ].join(" "),
-
-  agree: [
-     "text-base",
-        "rounded-full",
-        "bg-plumb-button-primary-hover",
-        "font-bold",
-      
-    "text-white",
-    "hover:bg-plumb-mintHover",
-  ].join(" "),
-
-  cancel: [
-     "text-base",
-        "rounded-full",
-    "border border-plumb-border",
-    "bg-transparent",
-    "text-plumb-muted",
-    "hover:border-plumb-mint",
-    "hover:text-plumb-ink",
-    "dark:border-plumb-darkBorder",
-    "dark:text-plumb-darkMuted",
-    "dark:hover:border-plumb-mintLight",
-    "dark:hover:text-plumb-darkText",
-  ].join(" "),
-ghost: [
-"text-base",
-"bg-transparent",
-"text-plumb-muted",
-"hover:bg-plumb-mint/10",
-"hover:text-plumb-ink",
-"dark:text-plumb-darkMuted",
-"dark:hover:bg-plumb-mint/15",
-"dark:hover:text-plumb-darkText",
-"active:bg-plumb-mint/20",
-"dark:active:bg-plumb-mint/25",
-].join(" "),
-
-
-
-  filter: [
-    "rounded-full",
-    "px-4 py-2",
-    "text-xs uppercase tracking-widest",
-    "font-medium",
-    "transition-colors",
-    "focus-visible:outline-none",
-    "focus-visible:ring-2",
-    "focus-visible:ring-plumb-focus",
-    "focus-visible:ring-offset-2",
-  ].join(" "),
-
-filterActive: [
-  "bg-plumb-mint",
-  "text-white",
-  "hover:bg-plumb-mintHover",
-].join(" "),
-
-  filterInactive: [
-    "border border-plumb-border",
-    "bg-transparent",
-    "text-plumb-muted",
-    "dark:border-plumb-darkBorder",
-    "dark:text-plumb-darkMuted",
-    "hover:border-plumb-mint",
-    "hover:text-plumb-ink",
-    "dark:hover:text-plumb-darkText",
-  ].join(" "),
-
-  small: [
-    "min-h-9",
-    "px-3",
-    "text-xs",
-  ].join(" "),
-
-  medium: [
-    "min-h-11",
-    "px-5",
-    "text-sm",
-  ].join(" "),
-
-  large: [
-    "min-h-12",
-    "px-6",
-    "text-base",
-  ].join(" "),
-utility: [
-  "inline-flex items-center justify-center",
-  "min-h-9 px-3",
-  "rounded-full",
-  "text-[1.1rem] font-medium",
-  "text-plumb-muted",
-  "bg-transparent",
-  "transition-colors duration-150",
-  "hover:bg-plumb-mint/10",
-  "hover:text-plumb-ink",
-  "active:bg-plumb-mint/20",
-  "focus-visible:outline-none",
-  "focus-visible:ring-2",
-  "focus-visible:ring-plumb-focus",
-  "focus-visible:ring-offset-2",
-  "focus-visible:ring-offset-plumb-paper",
-  "dark:focus-visible:ring-offset-plumb-dark-canvas",
-  "dark:text-plumb-darkMuted",
-  "dark:hover:bg-plumb-mint/15",
-  "dark:hover:text-plumb-darkText",
-  "dark:active:bg-plumb-mint/25",
-  "motion-reduce:transition-none",
-].join(" "),
-iconUtility: [
-  "inline-flex  shrink-0 items-center justify-center",
-  "rounded-full",
-  "bg-transparent",
-  "text-plumb-muted",
-  "transition-colors duration-150",
-  "hover:bg-plumb-mint/10",
-  "hover:text-plumb-mintHover",
-  "focus-visible:outline-none",
-  "focus-visible:ring-2",
-  "focus-visible:ring-plumb-focus",
-  "focus-visible:ring-offset-2",
-  "focus-visible:ring-offset-plumb-paper",
-  "dark:focus-visible:ring-offset-plumb-dark-canvas",
-  "dark:text-plumb-darkMuted",
-  "dark:hover:bg-plumb-mint/15",
-  "dark:hover:text-plumb-mintLight",
-  "motion-reduce:transition-none",
-].join(" "),
-
-utilityActive: [
-  "text-plumb-mintHover",
-  "hover:bg-plumb-mint/10",
-  "dark:text-plumb-mintLight",
-  "dark:hover:bg-plumb-mint/20",
-].join(" "),
-
-   },
 
 input: [
   "w-[100%] max-w-sm","dark:bg-base-bg",

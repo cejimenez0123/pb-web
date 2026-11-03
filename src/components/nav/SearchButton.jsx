@@ -1,16 +1,17 @@
 import { memo } from "react";
 
-
+const SEARCH= (<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="24px" width="24px" fill="#FFFFFF"><path d="M19.6,21l-6.3-6.3q-0.75,0.6-1.72,0.95T9.5,16q-2.72,0-4.61-1.89Q3,12.23 3,9.5Q3,6.77 4.89,4.89T9.5,3t4.61,1.89T16,9.5q0,1.1-0.35,2.07T14.7,13.3L21,19.6L19.6,21ZM9.5,14q1.88,0 3.19-1.31T14,9.5T12.69,6.31T9.5,5T6.31,6.31T5,9.5t1.31,3.19T9.5,14Z"/></svg>)
 const SearchButton = memo(({ onClick }) => (
   <button
     type="button"
     onClick={onClick}
     aria-label="Search"
-    className="bg-transparent -translate-y-1  text-plumb-darkText dark:text-plumb-mintLight"
+    className="bg-transparent  md:my-auto text-plumb-darkText dark:text-plumb-mintLight"
 
 
   >
-    <h1 className="max-h-14 my-auto min-h-10 min-w-10 max-w-14">⌕</h1>
+    {SEARCH}
+    {/* <h1 className="my-auto min-h-10  my-auto min-w-10 md:min-w-14 max-w-14">⌕</h1> */}
 
   </button>
 ));

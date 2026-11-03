@@ -496,6 +496,25 @@ useEffect(() => {
     </PageWrapper>
   );
 
+function RootRoute() {
+  const authResolved = useSelector(
+    (state) => state.users.authResolved
+  );
+
+  const currentProfile = useSelector(
+    (state) => state.users.currentProfile
+  );
+
+  if (!authResolved) {
+    return <LoadingPlaceholder />;
+  }
+
+  if (currentProfile) {
+    return <ContentHubContainer />;
+  }
+
+  return <Redirect to={Paths.about()} />;
+}
   return (
     <ErrorBoundary>
       <Context.Provider
@@ -539,32 +558,16 @@ useEffect(() => {
                 <Alert />
 
                 <IonRouterOutlet>
-                  <Route
-                    exact
-                    path="/"
-                    render={() => (
-                      <PageWrapper>
-                        {!authResolved ? (
-                          <LoadingPlaceholder />
-                        ) : currentProfile &&
-                          isNative ? (
-                          <ContentHubContainer />
-                        ) : currentProfile ? (
-                          <Redirect to={Paths.home} />
-                        ) : isFirstLaunch &&
-                          isNative ? (
-                          <Redirect
-                            to={Paths.onboard}
-                          />
-                        ) : (
-                          <Redirect
-                            to={Paths.about()}
-                          />
-                        )}
-                      </PageWrapper>
-                    )}
-                  />
-
+             
+<Route
+  exact
+  path="/"
+  render={() => (
+    <PageWrapper>
+      <RootRoute />
+    </PageWrapper>
+  )}
+/>
                   <Route
                     exact
                     path="/about"

@@ -18,16 +18,18 @@ export default function AboutContainer() {
 
 fullscreen
 >
-  <div className={styles.about.page+" pb-20"}>
-    <div className={styles.about.inner}>
+  <main className={styles.pageShell.base + styles.pageShell.scroll+" "}>
+<div>
+     <div className={styles.pageShell.inner}>
       <p className={styles.about.eyebrow}>
         About
       </p>
 
       <h1 className={styles.about.welcome}>
-        Find a room. Meet people. Keep the connection going.
+        Find a room. <br/> Meet people. <br/>Keep the connection going.
       </h1>
-<p className="open-sans-medium text-[#6b6f63] max-w-xl mb-12">
+      <p className={styles.text.display}>
+
   You might find Plumbum at a reading, a workshop, a mixer, or through
   someone you know. Come as you are. The <a 
   
@@ -51,18 +53,18 @@ fullscreen
             decide to join.
           </p>
 
-          <div className="flex flex-wrap gap-3">
-            <button
+          <div className="flex flex-wrap  gap-3">
+            <div
               type="button"
               onClick={() => router.push(Paths.calendar())}
               className={[
                 styles.button.base,
                 styles.button.primary,
-                "min-h-11 px-5 py-3 text-sm",
+                " mx-auto"
               ].join(" ")}
             >
               See what's on
-            </button>
+            </div>
           </div>
         </div>
       </section>
@@ -98,8 +100,8 @@ fullscreen
         </div>
 <div className=" h-48  ">
         <AboutCTA
-          primaryLabel="See what's on"
-          secondaryLabel="Make an account"
+          primaryLabel="Make an account"
+       
           onPrimary={() => router.push(Paths.calendar())}
           onSecondary={() => router.push(Paths.onboard)}
         />
@@ -108,6 +110,7 @@ fullscreen
       </div>
      
       </div>
+      </main>
     </IonContent>
   );
 }
@@ -145,18 +148,18 @@ function AboutCTA({
       </p>
 
       <div className="flex flex-wrap gap-3">
-        <button
+        <div
           type="button"
           onClick={onPrimary}
           className={[
             styles.button.base,
             styles.button.primary,
-            "min-h-11 px-5 py-3 text-sm",
+            // "min-h-11 px-5 py-3 text-sm",
           ].join(" ")}
         >
           {primaryLabel}
-        </button>
-
+        </div>
+{/* 
         <button
           type="button"
           onClick={onSecondary}
@@ -167,7 +170,7 @@ function AboutCTA({
           ].join(" ")}
         >
           {secondaryLabel}
-        </button>
+        </button> */}
       </div>
     </div>
   );
@@ -184,7 +187,7 @@ function AboutLegalFooter() {
   ];
 
   return (
-    <footer className="mt-12 border-t border-current/15 pt-20 pb-8">
+    <footer className="mt-12 border-t max-w-60 mx-auto flex flex-col dark:text-plumb-darkText border-current/15 pt-20 pb-8">
       <div className="flex flex-col gap-5 text-center sm:flex-row sm:items-end sm:justify-between">
         <div className="max-w-sm">
           <p className="text-sm font-medium">
@@ -195,26 +198,22 @@ function AboutLegalFooter() {
             A place to find your people, make room for your work,
             and keep the connection going.
           </p>
-
-          <p className="mt-3 text-xs opacity-60">
-            © {new Date().getFullYear()} Plumbum. All rights reserved.
+<br/>
+          <p className="mt-4 text-xs opacity-60">
+            © {new Date().getFullYear()} Plumbum. <br className="my-4 "/>All rights reserved.
           </p>
-        </div>
-
-        <nav
-          aria-label="Legal and company information"
-          className="flext text-center flex-wrap gap-x-5 gap-y-3 text-xs"
-        >
-          {legalLinks.map((link) => (
+             {legalLinks.map((link) => (
             <a
               key={link.label}
               href={link.href}
-              className="underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 rounded-sm"
+              className="underline-offset-4  hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 rounded-sm"
             >
               {link.label}
             </a>
           ))}
-        </nav>
+        </div>
+
+       
       </div>
     </footer>
   );

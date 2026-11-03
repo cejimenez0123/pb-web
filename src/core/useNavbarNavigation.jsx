@@ -18,9 +18,11 @@ export default function useNavbarNavigation() {
     navigate(Paths.write, 'forward');
   };
 
-  const handleHome = () => {
-    navigate(Paths.home, 'root');
-  };
+
+
+const handleHome = () => {
+  router.push("/", "root");
+};
 
   const handleDiscover = () => {
     navigate(Paths.discovery, 'forward');
