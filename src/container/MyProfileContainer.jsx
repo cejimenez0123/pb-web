@@ -2,23 +2,17 @@
 import { useMemo, useState } from "react";
 import { IonContent, useIonRouter } from "@ionic/react";
 import { useSelector } from "react-redux";
-
-import Context from "../context";
 import ErrorBoundary from "../ErrorBoundary";
 import ProfileInfo from "../components/profile/ProfileInfo";
 import Paths from "../core/paths";
-import Pill from "../components/Pill";
-import AboutPanel from "../components/profile/AboutPanel";
+
 import PaginatedList from "../components/page/PaginatedList";
-import ListPill from "../components/page/ListPill";
 
 import {
   getMyCollections,
 } from "../actions/CollectionActions";
 
-import {
-  getMyStories,
-} from "../actions/StoryActions";
+
 
 import useDebounce from "../core/useDebounce";
 import ProfileSectionTabs from "../components/profile/ProfileSectionTabs";
@@ -28,6 +22,7 @@ import EmptyState from "../components/general/EmptyState";
 import styles from "../styles/style";
 import DetailsSection from "../components/profile/DetailsSection";
 import ArchiveSection from "../components/profile/ArchiveSection";
+import TabBar from "../components/TabBar";
 
 const TABS = {
   PORTFOLIO: "portfolio",
@@ -36,7 +31,15 @@ const TABS = {
   EVENTS: "events",
   DETAILS: "details",
 };
-
+ const tabs = [
+   { key: TABS.PORTFOLIO, label: "portfilo" },
+    { key: TABS.ARCHIVE, label: "archive" },
+    { key: TABS.COLLECTIONS, label: "collections" },
+    {key:TABS.EVENTS, label:"events"},
+    { key: TABS.DETAILS, label: "details" },
+   
+  ];
+// const tabs = [TABS.ARCHIVE,TABS.COLLECTIONS,TABS.DETAILS,TABS.EVENTS,TABS.PORTFOLIO]
 const PAGE_SIZE = 8;
 
 function MyProfileContainer() {
@@ -125,8 +128,8 @@ function MyProfileContainer() {
   return (
     <IonContent scrollY={true} fullscreen>
       <ErrorBoundary>
-        <main>
-          <div className="mx-auto w-[100%]">
+        {/* <main>
+          <div className="mx-auto w-[100%]"> */}
             <div className={styles.profile.mine.page}>
               {/* PROFILE HEADER */}
               <section
@@ -172,11 +175,12 @@ function MyProfileContainer() {
               <section
                 aria-label="Profile sections"
                 className={styles.profile.mine.sections}
+
               >
-                <ProfileSectionTabs
-                  active={tab}
-                  onChange={setTab}
-                />
+                <TabBar    
+                     tabs={tabs}               active={tab}
+                  onChange={setTab} />
+           
               </section>
 
               <section
@@ -234,15 +238,22 @@ function MyProfileContainer() {
 
                 {tab === TABS.DETAILS && (
                   <DetailsSection
-                    profile={profile}
+                  profile={profile}
                     router={router}
-                    communities={communities.items}
+                    search={eventsSearch}
+                    setSearch={setEventsSearch}
+                    // searchInput={eventsSearchInput}
+                    // setSearchInput={setEventsSearchInput}
+                    debouncedSearch={eventsDebouncedSearch}
+                    // profile={profile}
+                    // router={router}
+                    // communities={communities.items}
                   />
                 )}
               </section>
             </div>
-          </div>
-        </main>
+          {/* </div>
+        </main> */}
       </ErrorBoundary>
     </IonContent>
   );

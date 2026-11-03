@@ -228,13 +228,7 @@ export default function ListPill({   item,
       type="story"
       usingItem = item?.story
     }
-    // const { collection } 
-  // const collection = item?.collection;
-  // const stories = item?.stories || [];
 
-  // if (!collection) {
-  //   return null;
-  // }
  const title = item?.title?.trim() || "Untitled";
   return (
     <article className={styles.profile.portfolio.article}>
@@ -245,25 +239,21 @@ export default function ListPill({   item,
        >
               <li
                 key={item.id}
-                className={styles.profile.portfolio.storyRow+ "     "}
+                className={styles.profile.portfolio.storyRow+ "    "}
               >
                 <div
                   type="button"
                   onClick={onClick
                   }
                   aria-label={`Read ${title}`}
-                  // aria-describedby={
-                  //   story.description
-                  //     ? descriptionId
-                  //     : undefined
-                  // }
+             
                   className={
-                    styles.profile.portfolio.storyButton+ styles.button.base
+                    styles.profile.portfolio.storyButton+ styles.button.base+"  "
                   }
                 >
                   <div
                     className={
-                      styles.profile.portfolio.storyContent+"  border flex flex-row justify-between border-1 rounded-full py-4 border-plumb-accent-blue/40 hover:ring-1 hover:ring-offset-1 px-6 "
+                      styles.profile.portfolio.storyContent+"  border flex flex-row justify-between border-1 rounded-full py-4 border-plumb-accent-blue/40  hover:ring-1 hover:ring-offset-1 px-6 "
                     }
                   >
                     <p
@@ -274,23 +264,10 @@ export default function ListPill({   item,
                       {title}
                     </p>
 
-                    {/* {story.description && (
-                      <p
-                        id={descriptionId}
-                        className={
-                          styles.profile.portfolio
-                            .storyDescription
-                        }
-                      >
-                        {shortName(
-                          story.description,
-                          80
-                        )}
-                      </p>
-                    )} */}
+       
                       <span
                     aria-hidden="true"
-                 
+                 className="dark:text-plumb-darkText "
                   >
                     →
                   </span>

@@ -25,17 +25,9 @@ const SEARCH_INPUT =
 styles.input + "w-[100%] rounded-full border border-base-content/15 bg-plumb-surface  px-5 py-4 text-base-content outline-none transition placeholder:text-base-content/45 focus:border-soft focus:ring-2 focus:ring-soft/20 dark:border-white/15 dark:bg-base-bgDark";
 
 const PILL =
-  "rounded-full border border-base-content/15 px-4 py-2 text-sm transition dark:border-white/15";
+  "rounded-full border bg-emerald-800 text-plumb-darkText border-base-content/15 px-4 py-2 text-sm transition dark:border-white/15";
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.06,
-    },
-  },
-};
+
 
 const itemVariants = {
   hidden: {

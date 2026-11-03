@@ -34,6 +34,7 @@ import checkResult from "../../core/checkResult";
 import styles from "../../styles/style";
 
 import horiz from "../../images/icons/more_vert.svg";
+import Pill from "../../components/Pill";
 
 const TABS = {
   POSTS: "pages",
@@ -42,15 +43,6 @@ const TABS = {
   ABOUT: "about",
 };
 
-const Pill = ({ label, onClick }) => (
-  <button
-    type="button"
-    onClick={onClick}
-    className={styles.profile.pill}
-  >
-    {label}
-  </button>
-);
 
 const StatChip = ({ value, label }) => (
   <div className={styles.profile.stat}>
@@ -150,7 +142,7 @@ function ProfileContainer() {
   );
 
   const tabs = [
-    { key: TABS.POSTS, label: "Pages" },
+    { key: TABS.POSTS, label: "Posts" },
     { key: TABS.COLLECTIONS, label: "Collections" },
     { key: TABS.COMMUNITIES, label: "Communities" },
     { key: TABS.ABOUT, label: "About" },
@@ -436,7 +428,7 @@ function ProfileContainer() {
               </div>
             </div>
 
-            {/* Profile tabs */}
+      
             <div className={styles.profile.tabWrapper}>
               <TabBar
                 tabs={tabs}

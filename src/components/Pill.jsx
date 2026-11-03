@@ -1,17 +1,54 @@
 
+
+import styles from "../styles/style";
+
 export default function Pill({
   label,
   onClick,
   icon,
-  baseClass = "bg-gray-100",
+  baseClass,
 }) {
+  const isInteractive = typeof onClick === "function";
+
+  const className = [
+    styles.pill.base,
+    isInteractive
+      ? styles.pill.interactive
+      : styles.pill.static,
+    baseClass || styles.pill.default,
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  const content = (
+    <>
+      {icon && (
+        <img
+          src={icon}
+          alt=""
+          aria-hidden="true"
+          className={styles.pill.icon}
+        />
+      )}
+      <span className="dark:text-plumb-darkText">{label}</span>
+    </>
+  );
+
+  if (!isInteractive) {
+    return (
+      <span className={className}>
+        {content}
+      </span>
+    );
+  }
+
   return (
-    <div
+    <button
+      type="button"
       onClick={onClick}
-      className={`flex items-center gap-2 text-xs px-4 py-3 shadow-sm rounded-full ${baseClass} transition active:scale-[0.97]`}
+      className={className}
     >
-      {icon && <img src={icon} className="w-4 h-4" />}
-      {label}
-    </div>
+      {content}
+    </button>
   );
 }

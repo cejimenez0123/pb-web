@@ -51,11 +51,25 @@ import { IonContent } from "@ionic/react";
 
 import RoomPreview from "../../components/room/RoomPreview.jsx";
 import styles from "../../styles/style.js";
+import TabBar from "../../components/TabBar.jsx";
 
 // ---------------------------------------------------------
 // Layout
 // ---------------------------------------------------------
-
+  const tabs = [
+    {
+      id: "inside",
+      label: "Inside",
+    },
+    {
+      id: "members",
+      label: "Members",
+    },
+    {
+      id: "about",
+      label: "About",
+    },
+  ];
 const PAGE =
   "w-full max-w-[52rem] mx-auto px-4 sm:px-6 lg:px-8";
 
@@ -79,7 +93,7 @@ const PRIMARY_BUTTON =
   `${styles.button.primary} ${BUTTON}`;
 
 const TEXT_BUTTON =
-  "inline-flex items-center gap-2 text-sm " +
+  "inline-flex items-center    bg-plumb-blueSea text-plumb-darkText  gap-2 text-sm " +
   "text-text-secondary transition-colors " +
   "hover:text-text-brand focus-visible:outline-none " +
   "focus-visible:ring-2 focus-visible:ring-button-primary-bg/40 " +
@@ -822,6 +836,7 @@ export default function CollectionContainer() {
           <div className={`${PAGE} pt-10 pb-8 sm:pt-14`}>
             <button
               type="button"
+            
               onClick={() =>
                 history.push(Paths.collections.path)
               }
@@ -855,6 +870,7 @@ export default function CollectionContainer() {
                       rounded-full
                       border border-card-border
                       px-3 py-1
+                   
                       text-xs font-medium
                       text-text-secondary
                       dark:border-white/10
@@ -1021,11 +1037,12 @@ export default function CollectionContainer() {
 
         <section>
           <div className={PAGE}>
-            <RoomTabs
-              tab={tab}
-              setTab={setTab}
+            <TabBar
+tabs={tabs}
+tab={tab}
+setTab={setTab}
             />
-
+       
             <div className="pb-16">
               {tab === "inside" && (
                 <InsideRoom
@@ -1412,81 +1429,68 @@ function AboutTab({
 // TABS
 // =========================================================
 
-function RoomTabs({
-  tab,
-  setTab,
-}) {
-  const tabs = [
-    {
-      id: "inside",
-      label: "Inside",
-    },
-    {
-      id: "members",
-      label: "Members",
-    },
-    {
-      id: "about",
-      label: "About",
-    },
-  ];
+// function RoomTabs({
+//   tab,
+//   setTab,
+// }) {
 
-  return (
-    <div className={styles.tabs.container}>
-      <div
-        className={styles.tabs.wrapper}
-        role="tablist"
-        aria-label="Room sections"
-      >
-        {tabs.map((item) => {
-          const active = tab === item.id;
 
-          return (
-            <button
-              key={item.id}
-              id={`room-tab-${item.id}`}
-              type="button"
-              role="tab"
-              aria-selected={active}
-              aria-controls={`room-panel-${item.id}`}
-              onClick={() => setTab(item.id)}
-              className={
-                "relative whitespace-nowrap " +
-                [
-                  styles.tabs.tab,
-                  active
-                    ? styles.tabs.active
-                    : styles.tabs.inactive,
-                ].join(" ") +
-                " focus-visible:outline-none " +
-                "focus-visible:ring-2 " +
-                "focus-visible:ring-button-primary-bg/40"
-              }
-            >
-              {item.label}
+//   return (
+//     <div className={styles.tabs.container}>
+//       <div
+//         className={styles.tabs.wrapper}
+//         role="tablist"
+//         aria-label="Room sections"
+//       >
+//         {tabs.map((item) => {
+//           const active = tab === item.id;
 
-              {active && (
-                <motion.span
-                  layoutId="room-tab-indicator"
-                  aria-hidden="true"
-                  className={`
-                    absolute
-                    bottom-0
-                    left-0
-                    right-0
-                    h-0.5
-                    rounded-full
-                    ${styles.tabs.tab}
-                  `}
-                />
-              )}
-            </button>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
+//           return (
+//             <button
+//               key={item.id}
+//               id={`room-tab-${item.id}`}
+//               type="button"
+//               role="tab"
+//               aria-selected={active}
+//               aria-controls={`room-panel-${item.id}`}
+//               onClick={() => setTab(item.id)}
+//               className={
+//                 "relative whitespace-nowrap " +
+//                 [
+//                   styles.tabs.tab,
+//                   active
+//                     ? styles.tabs.active
+//                     : styles.tabs.inactive,
+//                 ].join(" ") +
+//                 " focus-visible:outline-none " +
+//                 "focus-visible:ring-2 " +
+//                 "focus-visible:ring-button-primary-bg/40"
+//               }
+//             >
+//               {item.label}
+
+//               {active && (
+//                 <motion.span
+//                   layoutId="room-tab-indicator"
+//                   aria-hidden="true"
+//                   className={`
+//                     absolute
+//                     bottom-0
+//                     left-0
+//                     right-0
+//                     h-0.5
+//                     rounded-full
+//                     ${styles.tabs.tab}
+//                   `}
+//                 />
+//               )}
+//             </button>
+//           );
+//         })}
+//       </div>
+//     </div>
+//   );
+// }
 
 // =========================================================
 // RECOMMENDED ROOMS
@@ -1667,256 +1671,3 @@ function formatRoomType(type) {
       )
   );
 }
-// import {
-//   useEffect,
-
-//   useMemo,
-//   useRef,
-//   useState,
-// } from "react";
-
-// import { useDispatch, useSelector } from "react-redux";
-// import { useHistory, useParams } from "react-router";
-
-// import { useAlert } from "../../core/useAlert.jsx";
-// import AlertType from "../../core/AlertType.js";
-
-// import PageList from "../../components/page/PageList";
-// import ProfileCircle from "../../components/profile/ProfileCircle.jsx";
-// import ErrorBoundary from "../../ErrorBoundary";
-
-// import {
-//   addCollectionListToCollection,
-//   deleteCollectionFromCollection,
-//   fetchCollection,
-//   fetchCollectionProtected,
-
-//   setCollections,
-// } from "../../actions/CollectionActions";
-
-// import {
-//   deleteCollectionRole,
-//   postCollectionRole,
-// } from "../../actions/RoleActions";
-
-// import {
-//   postCollectionHistory,
-// } from "../../actions/HistoryActions.js";
-
-// import {
-//   setPagesInView,
-// } from "../../actions/PageActions.jsx";
-
-// import {
-//   RoleType,
-// } from "../../core/constants";
-
-// import Paths from "../../core/paths.js";
-// import checkResult from "../../core/checkResult.js";
-// import computePermissions from "../../core/compusePermissions.jsx";
-// import usePaginatedResource from "../../core/usePaginatedResource.jsx";
-// import useScrollTracking from "../../core/useScrollTracking.jsx";
-
-// import { motion } from "framer-motion";
-// import { IonContent } from "@ionic/react";
-// import RoomPreview from "../../components/room/RoomPreview.jsx";
-// import styles from "../../styles/style.js";
-
-
-// // ---------------------------------------------------------
-// // Layout
-// // ---------------------------------------------------------
-
-// const PAGE =
-//   "w-full max-w-[52rem] mx-auto px-4 sm:px-6 lg:px-8";
-
-// const SECTION =
-//   "py-8 sm:py-10";
-
-// const BUTTON =
-//   "inline-flex items-center justify-center h-11 px-5 rounded-full " +
-//   "text-sm font-medium transition-all duration-200 " +
-//   "focus:outline-none focus:ring-2 focus:ring-button-primary-bg/30";
-
-// const SECONDARY_BUTTON = styles.button.secondary
-//   // `${BUTTON} border border-card-border bg-card-background ` +
-//   // `text-text-primary hover:border-button-primary-bg ` +
-//   // `hover:text-text-brand`;
-
-// const PRIMARY_BUTTON = styles.button.primary
-//   // `${BUTTON} bg-button-primary-bg text-white ` +
-//   // `hover:bg-button-primary-hover`;
-
-
-// // ---------------------------------------------------------
-// // Main page
-// // ---------------------------------------------------------
-
-// export default function CollectionContainer() {
-//   const { id } = useParams();
-//   const history = useHistory();
-//   const dispatch = useDispatch();
-
-//   const { showAlert } = useAlert();
-
-//   const currentProfile = useSelector(
-//     (state) => state.users.currentProfile
-//   );
-
-//   const collection = useSelector(
-//     (state) => state.books.collectionInView
-//   );
-
-//   const collections = useSelector(
-//     (state) => state.books.collections
-//   );
-
-//   const [loading, setLoading] = useState(true);
-//   const [tab, setTab] = useState("inside");
-
-
-
-//   // const [isBookmarked, setIsBookmarked] = useState(null);
-//   // const [isArchived, setIsArchived] = useState(null);
-
-//   const [bookmarkLoading, setBookmarkLoading] = useState(false);
-//   const [sentHistory, setSentHistory] = useState(false);
-
-//   const actionLock = useRef(false);
-
-//   const sentHistoryRef = useRef(false);
-
-//   // -------------------------------------------------------
-//   // Permissions
-//   // -------------------------------------------------------
-
-//   const {
-//     canSee,
-//     canAdd,
-//     canEdit,
-//     role,
-//   } = computePermissions(
-//     collection,
-//     currentProfile,
-//     {
-//       getAccessList: (c) => c?.roles ?? [],
-//       getAccessRole: (r) => r.role,
-//       isPrivate: (c) => c?.isPrivate,
-//       isOpen: (c) => c?.isOpenCollaboration,
-
-//       canWriteRoles: [
-//         RoleType.writer,
-//         RoleType.editor,
-//       ],
-
-//       canEditRoles: [
-//         RoleType.editor,
-//       ],
-//     }
-//   );
-
-
-//   // -------------------------------------------------------
-//   // Load collection
-//   // -------------------------------------------------------
-
-//   useEffect(() => {
-//     if (!id) return;
-
-//     let cancelled = false;
-
-//     async function loadCollection() {
-//       setLoading(true);
-
-//       try {
-//         const action = currentProfile
-//           ? fetchCollectionProtected({ id })
-//           : fetchCollection({ id });
-
-//         const result = await dispatch(action);
-
-//         if (cancelled) return;
-
-//         checkResult(
-//           result,
-//           (payload) => {
-//             const col = payload?.collection;
-
-//             if (!col) {
-//               setLoading(false);
-//               return;
-//             }
-
-//             const sortedPages = [
-//               ...(col.storyIdList ?? []),
-//             ]
-//               .filter((item) => item?.story)
-//               .sort(
-//                 (a, b) =>
-//                   (a.index ?? 0) - (b.index ?? 0)
-//               )
-//               .map((item) => item.story);
-
-//             dispatch(
-//               setPagesInView({
-//                 pages: sortedPages,
-//               })
-//             );
-
-//             setLoading(false);
-//           },
-//           (error) => {
-//             setLoading(false);
-
-//             showAlert({
-//               message:
-//                 error?.status === 403
-//                   ? "You do not have permission to view this room."
-//                   : error?.message ||
-//                     "Failed to load this room.",
-//               type: AlertType.error,
-//             });
-//           }
-//         );
-//       } catch (error) {
-//         if (cancelled) return;
-
-//         setLoading(false);
-
-//         showAlert({
-//           message: "Unexpected error occurred.",
-//           type: AlertType.error,
-//         });
-//       }
-//     }
-
-//     loadCollection();
-
-//     return () => {
-//       cancelled = true;
-//     };
-//   }, [id, currentProfile?.id]);
-
-
-//   // -------------------------------------------------------
-//   // Clear stale content when changing rooms
-//   // -------------------------------------------------------
-
-//   useEffect(() => {
-//     dispatch(
-//       setCollections({
-//         collections: [],
-//       })
-//     );
-
-//     dispatch(
-//       setPagesInView({
-//         pages: [],
-//       })
-//     );
-//   }, [id]);
-
-
-//   // -------------------------------------------------------
-//   // Home / Archive system rooms
-//   // -------------------------------------------------------

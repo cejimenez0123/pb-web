@@ -1,97 +1,160 @@
 
-// ── About Panel ──────────────────────────────────────
-
 import { useEffect, useState } from "react";
 import fetchCity from "../../core/fetchCity";
 import Paths from "../../core/paths";
 import SectionHeader from "../SectionHeader";
 import Pill from "../Pill";
+import styles from "../../styles/style";
+
+// ── About Panel ──────────────────────────────────────
+
+const locationCache = new Map();
 
 const AboutPanel = ({ profile, router }) => {
-  const [locationName, setLocationName] = useState("Location not specified");
+  const [locationName, setLocationName] = useState(
+    "Location not specified"
+  );
   const [isLoadingLocation, setIsLoadingLocation] = useState(false);
 
   useEffect(() => {
-    if (!profile) return;
+    let cancelled = false;
+
+    if (!profile) {
+      setLocationName("Location not specified");
+      setIsLoadingLocation(false);
+      return undefined;
+    }
 
     const location = profile.location;
 
-    // ❌ No location at all
     if (!location) {
       setLocationName("Location not specified");
-      return;
+      setIsLoadingLocation(false);
+      return undefined;
     }
 
-    // ✅ City already exists
     if (location.city) {
       setLocationName(location.city);
-      return;
+      setIsLoadingLocation(false);
+      return undefined;
     }
 
-    // 🔄 Otherwise fetch
+    const cacheKey = JSON.stringify(location);
+
+    if (locationCache.has(cacheKey)) {
+      setLocationName(locationCache.get(cacheKey));
+      setIsLoadingLocation(false);
+      return undefined;
+    }
+
     const fetchLocation = async () => {
       try {
         setIsLoadingLocation(true);
-       const cache = new Map();
 
-if (cache.has(JSON.stringify(location))) {
-  setLocationName(cache.get(JSON.stringify(location)));
-} else {
-  const address = await fetchCity(location);
-  cache.set(JSON.stringify(location), address);
-     setLocationName(address || "Unknown location");
-}
+        const address = await fetchCity(location);
+        const resolvedName = address || "Unknown location";
 
+        locationCache.set(cacheKey, resolvedName);
 
+        if (!cancelled) {
+          setLocationName(resolvedName);
+        }
       } catch (err) {
-        setLocationName("Unknown location");
+        if (!cancelled) {
+          setLocationName("Unknown location");
+        }
       } finally {
-        setIsLoadingLocation(false);
+        if (!cancelled) {
+          setIsLoadingLocation(false);
+        }
       }
     };
 
     fetchLocation();
+
+    return () => {
+      cancelled = true;
+    };
   }, [profile]);
 
   if (!profile) return null;
 
-  const hashtags = profile.hashtags ?? profile.tags ?? [];
+  const hashtags = Array.isArray(profile.hashtags)
+    ? profile.hashtags
+    : Array.isArray(profile.tags)
+      ? profile.tags
+      : [];
 
   return (
-    <div className="space-y-6 px-4">
-      <SectionHeader title="Bio"/>
-      {(profile.bio || profile.selfStatement) && (
-        <p className="text-sm text-gray-700 dark:text-cream leading-relaxed">
-          {profile.bio ?? profile.selfStatement}
-        </p>
-      )}
+    <div className={styles.profile.mine.about.content}>
+      <div>
+        <SectionHeader title="Bio" />
 
-     <div>
- 
-<SectionHeader title="Location"/>
-  {isLoadingLocation ? (
-    <div className="mt-1 h-4 w-32 bg-gray-200 rounded animate-pulse" />
-  ) : (
-    <p className="text-sm text-gray-700 dark:text-cream mt-1">
-      {locationName}
-    </p>
-  )}
-</div>
+        {(profile.bio || profile.selfStatement) && (
+          <p className={styles.profile.mine.about.bio}>
+            {profile.bio ?? profile.selfStatement}
+          </p>
+        )}
+      </div>
 
+      <div>
+        <SectionHeader title="Location" />
+
+        {isLoadingLocation ? (
+          <div
+            aria-label="Loading location"
+            role="status"
+            className={styles.profile.mine.about.locationLoading}
+          />
+        ) : (
+          <p className={styles.profile.mine.about.location}>
+            {locationName}
+          </p>
+        )}
+      </div>
 
       {hashtags.length > 0 && (
         <div>
-          <p className="text-xs text-gray-400 uppercase mb-2">Interests</p>
-          <div className="flex flex-wrap gap-2">
-            {hashtags.slice(0, 5).map((tag, i) => (
-              <Pill key={i} onClick={()=>
-                router.push(Paths.hashtag.createRoute(tag.id))}label={`#${typeof tag === "string" ? tag : tag.name ?? tag.tag}`} />
-            ))}
-          </div>
+          <p className={styles.profile.mine.about.interestsLabel}>
+            Interests
+          </p>
+
+          <ul
+            aria-label="Profile interests"
+            className={styles.profile.mine.about.pillList}
+          >
+            {hashtags.slice(0, 5).map((tag, index) => {
+              const isString = typeof tag === "string";
+              const tagId = isString ? null : tag?.id;
+              const tagName = isString
+                ? tag
+                : tag?.name ?? tag?.tag;
+
+              if (!tagName) {
+                return null;
+              }
+
+              return (
+                <li key={tagId ?? `${tagName}-${index}`}>
+                  <Pill
+                    onClick={
+                      tagId
+                        ? () =>
+                            router.push(
+                              Paths.hashtag.createRoute(tagId)
+                            )
+                        : undefined
+                    }
+                    label={`#${tagName}`}
+                  />
+                </li>
+              );
+            })}
+          </ul>
         </div>
       )}
     </div>
   );
 };
 
-export default AboutPanel
+export default AboutPanel;

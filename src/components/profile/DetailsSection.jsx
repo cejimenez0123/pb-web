@@ -1,4 +1,6 @@
+
 import styles from "../../styles/style";
+import Paths from "../../core/paths";
 import Pill from "../Pill";
 import AboutPanel from "./AboutPanel";
 
@@ -7,10 +9,17 @@ export default function DetailsSection({
   router,
   communities,
 }) {
+  const hashtags = Array.isArray(profile?.hashtag)
+    ? profile.hashtag.slice(0, 10)
+    : [];
+
+  const profileCommunities = Array.isArray(communities)
+    ? communities.slice(0, 10)
+    : [];
 
   return (
     <section aria-labelledby="details-heading">
-      <div className={styles.profile.mine.sectionHeader}>
+      {/* <div className={styles.profile.mine.sectionHeader}>
         <div>
           <h2
             id="details-heading"
@@ -19,87 +28,119 @@ export default function DetailsSection({
             Details
           </h2>
 
-          <p
-            className={
-              styles.profile.mine.sectionDescription
-            }
-          >
+          <p className={styles.profile.mine.sectionDescription}>
             A little more about me.
           </p>
         </div>
-      </div>
+      </div> */}
+    <div className={styles.profile.mine.sectionHeader}>
+        <div>
+          <h2
+            id="archive-heading"
+            className={styles.profile.mine.sectionTitle}
+          >
+           Details
+          </h2>
 
-      <div className="mt-6 max-w-[48rem]">
+          <p className={styles.profile.mine.sectionDescription}>
+           A little more about me.
+          </p>
+        </div>
+
+          {/* <input
+            id="portfolio-search"
+            type="search"
+            value={searchInput ?? ""}
+            onChange={(e) => {
+              const value = e.target.value;
+              setSearchInput(value);
+              setSearch(value);
+            }}
+            placeholder="Search portfolio"
+            className={styles.profile.portfolio.searchInput}
+          /> */}
+        </div>
+      <div className={styles.profile.mine.details.content}>
         <AboutPanel
           router={router}
           profile={profile}
         />
 
-        {profile?.hashtag?.length > 0 && (
-          <div className="mt-10">
-            <p
-              className={
-                styles.profile.mine.hashtagLabel
-              }
-            >
+        {hashtags.length > 0 && (
+          <div className={styles.profile.mine.details.group}>
+            <p className={styles.profile.mine.details.groupLabel}>
               Hashtags
             </p>
 
-            <div className="mt-3 flex flex-wrap gap-2">
-              {[...profile.hashtag]
-                .slice(0, 10)
-                .map((tag, index) => (
-                  <Pill
-                    key={index}
-                    onClick={() =>
-                      router.push(
-                        Paths.hashtag.createRoute(
-                          tag.hashtag.id
-                        )
-                      )
-                    }
-                    label={`#${
-                      tag.hashtag.name ?? tag.tag
-                    }`}
-                  />
-                ))}
-            </div>
+            <ul
+              aria-label="Profile hashtags"
+              className={styles.profile.mine.details.pillList}
+            >
+              {hashtags.map((tag, index) => {
+                const hashtag = tag?.hashtag;
+                const hashtagId = hashtag?.id;
+                const hashtagName = hashtag?.name ?? tag?.tag;
+
+                if (!hashtagName) {
+                  return null;
+                }
+
+                return (
+                  <li key={hashtagId ?? `${hashtagName}-${index}`}>
+                    <Pill
+                      onClick={
+                        hashtagId
+                          ? () =>
+                              router.push(
+                                Paths.hashtag.createRoute(
+                                  hashtagId
+                                )
+                              )
+                          : undefined
+                      }
+                      label={`#${hashtagName}`}
+                    />
+                  </li>
+                );
+              })}
+            </ul>
           </div>
         )}
 
-        {communities?.length > 0 && (
-          <div className="mt-10">
-            <p
-              className={
-                styles.profile.mine.hashtagLabel
-              }
-            >
+        {profileCommunities.length > 0 && (
+          <div className={styles.profile.mine.details.group}>
+            <p className={styles.profile.mine.details.groupLabel}>
               Communities
             </p>
 
-            <div className="mt-3 flex flex-wrap gap-2">
-              {communities
-                .slice(0, 10)
-                .map((community) => (
-                  <Pill
-                    key={community.id}
-                    baseClass="
-                      border-plumb-blueSea
-                      bg-transparent
-                      dark:border-plumb-softBlue/60
-                    "
-                    onClick={() =>
-                      router.push(
-                        Paths.collection.createRoute(
-                          community.id
-                        ),
-                        "forward"
-                      )
-                    }
-                    label={community.title}
-                  />
-                ))}
-            </div>
+            <ul
+              aria-label="Profile communities"
+              className={styles.profile.mine.details.pillList}
+            >
+              {profileCommunities.map((community) => {
+                if (!community?.id || !community?.title) {
+                  return null;
+                }
+
+                return (
+                  <li key={community.id}>
+                    <Pill
+                      baseClass={
+                        styles.profile.mine.details.communityPill
+                      }
+                      onClick={() =>
+                        router.push(
+                          Paths.collection.createRoute(
+                            community.id
+                          )
+                        )
+                      }
+                      label={community.title}
+                    />
+                  </li>
+                );
+              })}
+            </ul>
           </div>
         )}
       </div>

@@ -1,4 +1,3 @@
-import { wrap } from "lodash"
 
 
 const styles = {
@@ -418,9 +417,26 @@ const styles = {
 profile: {
   // inside styles.profile
 mine: {
+  about: {
+  content: `space-y-6`,
+  bio: `text-sm leading-relaxed text-plumb-muted dark:text-plumb-darkMuted`,
+  location: `text-sm text-plumb-muted dark:text-plumb-darkMuted`,
+  locationLoading: `mt-1 h-4 w-32 rounded bg-plumb-surface motion-safe:animate-pulse dark:bg-plumb-dark-surface`,
+  interestsLabel: `text-xs uppercase tracking-[0.08em] text-plumb-subtle dark:text-plumb-darkSubtle`,
+  pillList: `mt-2 flex flex-wrap gap-2`,
+},
+  details: {
+  content: `mt-6 max-w-[48rem]`,
+  group: `mt-10`,
+  groupLabel: `text-xs uppercase tracking-[0.08em] text-plumb-subtle dark:text-plumb-darkSubtle`,
+  pillList: `mt-3 flex flex-wrap gap-2`,
+  communityPill: `border-plumb-blueSea bg-transparent dark:border-plumb-softBlue/60`,
+},
   page: `
     mx-auto w-[100%] max-w-[76rem]
     px-6 pb-20 pt-16
+    dark:bg-plumb-dark-canvas
+  
     sm:px-10 lg:px-12 flex flex-col items-center
   `,
 
@@ -441,7 +457,10 @@ mine: {
   `,
 
   sections: `
-    mt-10 w-[100%]
+    mt-10 
+    max-w-[98vw]
+    overflow-visible
+   
   `,
 
   content: `
@@ -1059,7 +1078,7 @@ menuButton: [
   mobileBrowserMenu: [
     " gap-1 flex flex-col",
     "bg-plumb-mintHover dark:bg-plumb-dark-surface",
-    // border-b border-plumb-mint dark:border-plumb-darkBorder 
+
   "min-h-8 ",
    
     "z-40",
@@ -1428,8 +1447,23 @@ content: {
     ].join(" "),
   },
 },
-
+roomPreview: {
+  card: `group flex h-full min-h-[14rem] w-[100%] flex-col rounded-xl border border-plumb-border bg-plumb-elevated p-5 text-left shadow-sm transition-colors duration-200 hover:border-plumb-mint/70 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plumb-focus focus-visible:ring-offset-2 focus-visible:ring-offset-plumb-canvas dark:border-plumb-darkBorder dark:bg-plumb-dark-elevated dark:hover:border-plumb-mintLight/70 dark:focus-visible:ring-plumb-mintLight dark:focus-visible:ring-offset-plumb-dark-canvas`,
+  type: `mb-3 text-[0.68rem] uppercase tracking-[0.16em] text-plumb-blueSea dark:text-plumb-softBlue`,
+  title: `min-w-0 flex-1 font-serif text-xl leading-snug text-plumb-ink transition-colors group-hover:text-plumb-mint dark:text-plumb-darkText dark:group-hover:text-plumb-mintLight`,
+  arrow: `shrink-0 pt-0.5 text-lg text-plumb-muted transition-transform group-hover:translate-x-0.5 group-hover:text-plumb-mint dark:text-plumb-darkMuted dark:group-hover:text-plumb-mintLight motion-reduce:transform-none`,
+  purpose: `mt-4 line-clamp-3 text-sm leading-relaxed text-plumb-muted dark:text-plumb-darkMuted`,
+  meta: `mt-6 flex min-h-5 flex-wrap items-center gap-x-4 gap-y-1 border-t border-plumb-border/70 pt-4 text-xs text-plumb-muted dark:border-plumb-darkBorder dark:text-plumb-darkMuted`,
+},
 page: {
+  listItem: `my-2 min-w-0`,
+  pillButton: `group flex w-[100%] min-h-12 items-center gap-3 rounded-full border px-4 py-3 text-left shadow-sm transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plumb-focus focus-visible:ring-offset-2 focus-visible:ring-offset-plumb-canvas dark:focus-visible:ring-plumb-mintLight dark:focus-visible:ring-offset-plumb-dark-canvas`,
+  pillCollection: `border-plumb-blueSea/50 bg-plumb-blueSea/5 hover:border-plumb-blueSea hover:bg-plumb-blueSea/10 dark:border-plumb-softBlue/40 dark:bg-plumb-softBlue/5 dark:hover:border-plumb-softBlue dark:hover:bg-plumb-softBlue/10`,
+  pillPage: `border-plumb-mint/50 bg-plumb-mint/5 hover:border-plumb-mint hover:bg-plumb-mint/10 dark:border-plumb-mintLight/40 dark:bg-plumb-mintLight/5 dark:hover:border-plumb-mintLight dark:hover:bg-plumb-mintLight/10`,
+  pillType: `shrink-0 text-[0.68rem] font-medium uppercase tracking-[0.12em]`,
+  pillCollectionType: `text-plumb-blueSea dark:text-plumb-softBlue`,
+  pillPageType: `text-plumb-mint dark:text-plumb-mintLight`,
+  pillTitle: `min-w-0 truncate text-sm font-medium text-plumb-ink dark:text-plumb-darkText`,
   content: [
     "ql-editor prose prose-sm max-w-none",
     "bg-paper text-plumb-text",
@@ -1521,9 +1555,20 @@ text: {
   ].join(" "),
 },
 tabs: {
+  // Keep your existing container and wrapper keys.
+
+
+  pill: {
+    container: `w-full`,
+    wrapper: `flex items-center justify-center gap-1 rounded-xl bg-plumb-surface p-1 dark:bg-plumb-dark-surface`,
+    button: `shrink-0 rounded-full px-4 py-2 text-sm sm:text-md md:text-lg  transition-colors duration-200 sm:text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plumb-focus focus-visible:ring-offset-2 focus-visible:ring-offset-plumb-canvas dark:focus-visible:ring-mintLight dark:focus-visible:ring-offset-plumb-dark-canvas`,
+    active: `bg-plumb-mint text-white shadow-sm dark:bg-plumb-mintLight dark:text-plumb-ink`,
+    inactive: `text-plumb-muted hover:text-plumb-ink dark:text-plumb-darkMuted dark:hover:text-plumb-darkText`,
+  },
+
   wrapper: [
     "flex w-[100%] items-center justify-center",
-    "gap-2 overflow-x-auto overscroll-x-contain",
+    " overflow-x-auto overscroll-x-contain",
     "px-4 py-2 sm:px-5 sm:py-3",
     "[-webkit-overflow-scrolling:touch]",
     "[scrollbar-width:none]",
@@ -2103,6 +2148,13 @@ dashboardItem: {
     "motion-reduce:transition-none",
   ].join(" "),
 },
+pill: {
+  base: `inline-flex min-h-10 items-center gap-2 rounded-full px-4 py-2.5 text-xs font-medium shadow-sm transition-[transform,background-color,border-color,color,box-shadow] duration-200`,
+  interactive: `cursor-pointer hover:-translate-y-0.5 active:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plumb-focus focus-visible:ring-offset-2 focus-visible:ring-offset-plumb-canvas dark:focus-visible:ring-plumb-mintLight dark:focus-visible:ring-offset-plumb-dark-canvas`,
+  default: `border border-plumb-mint/30 bg-plumb-mint/10 text-plumb-mint hover:border-plumb-mint hover:bg-plumb-mint/20 dark:border-plumb-mintLight/30 dark:bg-plumb-mintLight/10 dark:text-plumb-mintLight dark:hover:border-plumb-mintLight dark:hover:bg-plumb-mintLight/20`,
+  static: `border border-plumb-border bg-plumb-surface text-plumb-muted dark:border-plumb-darkBorder dark:bg-plumb-dark-surface dark:text-plumb-darkMuted`,
+  icon: `h-4 w-4 shrink-0 object-contain`,
+}
 }
 
 export default styles

@@ -1169,21 +1169,7 @@ const handleSave = async () => {
 
                 <div className="px-5 sm:px-6 border-b border-card-border dark:border-white/10">
 
-                  {/* <TabBar
-                    tabs={[
-                      {
-                        key: "pages",
-                        label: "Pages",
-                      },
-                      {
-                        key: "collections",
-                        label: "Rooms",
-                      },
-                    ]}
-                    active={activeTab}
-                    onChange={setActiveTab}
-                  /> */}
-
+             
                 </div>
 
 
@@ -1195,54 +1181,7 @@ const handleSave = async () => {
   items={filteredContent}
   isFiltered={search.trim().length > 0}
   onOrderChange={setContent}
-  // onDelete={async (item) => {
-  //   try {
-  //     let result;
 
-  //     if (item.kind === "page") {
-  //       result = await dispatch(
-  //         deleteStoryFromCollection({
-  //           storyId: item.story.id,
-  //           collectionId: item.collectionId,
-  //         })
-  //       );
-  //     }
-
-  //     if (item.kind === "room") {
-  //       result = await dispatch(
-  //         deleteCollectionFromCollection({
-  //           tcId: item.id,
-  //         })
-  //       );
-  //     }
-
-  //     checkResult(
-  //       result,
-  //       () => {
-  //         setContent((current) =>
-  //           current.filter(
-  //             (entry) => entry.id !== item.id
-  //           )
-  //         );
-  //       },
-  //       (error) => {
-  //         showAlert({
-  //           message:
-  //             error?.message ||
-  //             "Unable to remove this item.",
-  //           type: AlertType.error,
-  //         });
-  //       }
-  //     );
-  //   } catch (error) {
-  //     showAlert({
-  //       message:
-  //         error?.message ||
-  //         "Unable to remove this item.",
-  //       type: AlertType.error,
-  //     });
-  //   }
-  // }}
   onDelete={async (item) => {
   try {
     let result;
@@ -1549,3 +1488,18 @@ function formatRoomType(type) {
   );
 }
 
+
+     {/* <TabBar
+                    tabs={[
+                      {
+                        key: "pages",
+                        label: "Pages",
+                      },
+                      {
+                        key: "collections",
+                        label: "Rooms",
+                      },
+                    ]}
+                    active={activeTab}
+                    onChange={setActiveTab}
+                  /> */}
