@@ -1,7 +1,150 @@
 
 
 const styles = {
+  pageShell: {
+  // Shared page foundation
+  base: [
+    "min-h-[100dvh] w-[100%]",
+    "bg-plumb-canvas text-plumb-ink",
+    "dark:bg-plumb-dark-canvas dark:text-plumb-darkText",
+  ].join(" "),
 
+  // Use when the page itself should scroll
+  scroll: [
+    "overflow-y-auto overscroll-y-contain",
+  ].join(" "),
+
+  // Standard responsive page padding
+  padded: [
+    "px-4 sm:px-6 lg:px-8",
+    "pt-8 pb-24",
+  ].join(" "),
+
+  // Safe-area-aware layout for native pages
+  native: [
+    "pt-[env(safe-area-inset-top,0px)]",
+    "pb-[calc(6rem+env(safe-area-inset-bottom,0px))]",
+  ].join(" "),
+
+  // Centered content container
+  inner: [
+    "mx-auto w-[100%] max-w-5xl",
+  ].join(" "),
+
+  // Narrower reading/content container
+  reading: [
+    "mx-auto w-[100%] max-w-3xl",
+  ].join(" "),
+},
+addToCollection: {
+  content: `min-h-[100dvh] bg-plumb-canvas text-plumb-ink dark:bg-plumb-dark-canvas dark:text-plumb-darkText`,
+  wrap: `mx-auto w-full max-w-[50em] px-4 pb-24 pt-8 sm:px-6`,
+  header: `mb-8`,
+  eyebrow: `text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-plumb-mint dark:text-plumb-mintLight`,
+  heading: `mt-2 font-serif text-3xl font-medium tracking-tight text-plumb-ink dark:text-plumb-darkText sm:text-4xl`,
+  sectionTitle: `mt-1 font-serif text-2xl font-medium text-plumb-ink dark:text-plumb-darkText`,
+  body: `mt-2 max-w-xl text-sm leading-6 text-plumb-muted dark:text-plumb-darkMuted`,
+  card: `rounded-2xl border border-plumb-border bg-plumb-elevated shadow-sm dark:border-plumb-darkBorder dark:bg-plumb-dark-elevated`,
+  itemCard: `p-5`,
+  itemType: `text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-plumb-blueSea dark:text-plumb-softBlue`,
+  itemTitle: `mt-2 truncate font-serif text-2xl font-medium tracking-tight text-plumb-ink dark:text-plumb-darkText`,
+  itemDescription: `mt-2 text-sm leading-6 text-plumb-muted dark:text-plumb-darkMuted`,
+  itemStatus: `mt-3 text-xs text-plumb-subtle dark:text-plumb-darkSubtle`,
+  itemBadge: `shrink-0 rounded-full border border-plumb-blueSea/40 bg-plumb-blueSea/5 px-3 py-1.5 text-xs font-medium text-plumb-blueSea dark:border-plumb-softBlue/40 dark:bg-plumb-softBlue/5 dark:text-plumb-softBlue`,
+  section: `mb-8`,
+  createRow: `flex items-center justify-between gap-4 p-4`,
+  createTitle: `text-sm font-medium text-plumb-ink dark:text-plumb-darkText`,
+  createDescription: `mt-1 text-xs leading-5 text-plumb-muted dark:text-plumb-darkMuted`,
+  createButton: `shrink-0 border border-plumb-blueSea bg-plumb-blueSea text-white dark:border-plumb-softBlue dark:bg-plumb-softBlue dark:text-plumb-ink`,
+  controls: `mb-5 flex flex-col gap-3 sm:flex-row`,
+  select: `w-full rounded-full border border-plumb-border bg-plumb-elevated px-4 py-3 text-sm text-plumb-ink shadow-sm outline-none focus:border-plumb-mint focus:ring-2 focus:ring-plumb-focus/40 dark:border-plumb-darkBorder dark:bg-plumb-dark-elevated dark:text-plumb-darkText dark:focus:border-plumb-mintLight sm:w-40`,
+  search: `flex min-w-0 flex-1 items-center rounded-full border border-plumb-border bg-plumb-elevated px-4 shadow-sm transition-colors focus-within:border-plumb-mint focus-within:ring-2 focus-within:ring-plumb-focus/40 dark:border-plumb-darkBorder dark:bg-plumb-dark-elevated dark:focus-within:border-plumb-mintLight`,
+  searchLabel: `mr-2 shrink-0 text-xs font-semibold uppercase tracking-wide text-plumb-subtle dark:text-plumb-darkSubtle`,
+  searchInput: `min-w-0 w-full flex-1 bg-transparent py-3 text-sm text-plumb-ink outline-none placeholder:text-plumb-subtle dark:text-plumb-darkText dark:placeholder:text-plumb-darkSubtle`,
+  list: `rounded-2xl border border-plumb-border bg-plumb-elevated p-3 shadow-sm dark:border-plumb-darkBorder dark:bg-plumb-dark-elevated sm:p-5`,
+  empty: `rounded-2xl border border-dashed border-plumb-border bg-plumb-surface px-6 py-10 text-center text-sm text-plumb-muted dark:border-plumb-darkBorder dark:bg-plumb-dark-surface dark:text-plumb-darkMuted`,
+  backButton: `shrink-0 rounded-full border border-plumb-border bg-plumb-elevated px-4 py-2 text-sm font-medium text-plumb-muted transition-colors hover:border-plumb-blueSea hover:text-plumb-blueSea focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plumb-focus focus-visible:ring-offset-2 dark:border-plumb-darkBorder dark:bg-plumb-dark-elevated dark:text-plumb-darkMuted dark:hover:border-plumb-softBlue dark:hover:text-plumb-softBlue dark:focus-visible:ring-plumb-mintLight dark:focus-visible:ring-offset-plumb-dark-canvas`,
+  state: `mx-auto flex min-h-[70dvh] w-full max-w-[50em] flex-col items-center justify-center px-4 text-center sm:px-6`,
+  stateIcon: `mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-plumb-blueSea/10 text-plumb-blueSea dark:bg-plumb-softBlue/10 dark:text-plumb-softBlue`,
+  stateHeading: `mt-2 font-serif text-2xl font-medium text-plumb-ink dark:text-plumb-darkText`,
+  stateBody: `mt-2 max-w-md text-sm leading-6 text-plumb-muted dark:text-plumb-darkMuted`,
+  stateAction: `mt-6`,
+  loading: `space-y-4`,
+  skeleton: `rounded-xl bg-plumb-surface motion-safe:animate-pulse dark:bg-plumb-dark-surface`,
+  row: `
+  flex w-[100%] min-w-0 items-center gap-3
+  rounded-full border border-plumb-border
+  bg-plumb-elevated px-4 py-3 shadow-sm
+  dark:border-plumb-darkBorder
+  dark:bg-plumb-dark-elevated
+`,
+
+rowLink: `
+  flex min-h-10 min-w-0 flex-1 items-center
+  rounded-full text-left
+  focus-visible:outline-none
+  focus-visible:ring-2 focus-visible:ring-plumb-focus
+  focus-visible:ring-offset-2
+  focus-visible:ring-offset-plumb-elevated
+  dark:focus-visible:ring-plumb-mintLight
+  dark:focus-visible:ring-offset-plumb-dark-elevated
+`,
+
+rowTitle: `
+  block truncate text-sm font-medium
+  text-plumb-ink transition-colors
+  hover:text-plumb-blueSea
+  dark:text-plumb-darkText
+  dark:hover:text-plumb-softBlue
+`,
+
+pending: `
+  flex min-h-10 shrink-0 items-center gap-2
+  rounded-full bg-plumb-blueSea/10
+  px-4 py-2 text-xs font-medium
+  text-plumb-blueSea
+  dark:bg-plumb-softBlue/10
+  dark:text-plumb-softBlue
+`,
+
+spinner: `
+  h-4 w-4 animate-spin rounded-full
+  border-2 border-current/30 border-t-current
+  motion-reduce:animate-none
+`,
+
+addPill: `
+  border border-plumb-mint/40
+  bg-plumb-mint/10 text-plumb-mint
+  hover:border-plumb-mint
+  hover:bg-plumb-mint/20
+  dark:border-plumb-mintLight/40
+  dark:bg-plumb-mintLight/10
+  dark:text-plumb-mintLight
+  dark:hover:border-plumb-mintLight
+  dark:hover:bg-plumb-mintLight/20
+`,
+
+addedPill: `
+  border border-plumb-blueSea/40
+  bg-plumb-blueSea/10 text-plumb-blueSea
+  hover:border-plumb-coral
+  hover:bg-plumb-coral/10
+  hover:text-plumb-coral
+  dark:border-plumb-softBlue/40
+  dark:bg-plumb-softBlue/10
+  dark:text-plumb-softBlue
+  dark:hover:border-plumb-coralLight
+  dark:hover:bg-plumb-coralLight/10
+  dark:hover:text-plumb-coralLight
+`,
+
+skeleton: `
+  h-16 w-full rounded-full
+  bg-plumb-surface motion-safe:animate-pulse
+  dark:bg-plumb-dark-surface
+`,
+},
  page: [
 
     " overflow-auto min-h-[100vh] ",
@@ -1561,9 +1704,9 @@ tabs: {
   pill: {
     container: `w-full`,
     wrapper: `flex items-center justify-center gap-1 rounded-xl bg-plumb-surface p-1 dark:bg-plumb-dark-surface`,
-    button: `shrink-0 rounded-full px-4 py-2 text-sm sm:text-md md:text-lg  transition-colors duration-200 sm:text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plumb-focus focus-visible:ring-offset-2 focus-visible:ring-offset-plumb-canvas dark:focus-visible:ring-mintLight dark:focus-visible:ring-offset-plumb-dark-canvas`,
+    button: `shrink-0 rounded-full px-6 py-2 text-sm sm:text-md md:text-lg  transition-colors duration-200 sm:text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plumb-focus focus-visible:ring-offset-2 focus-visible:ring-offset-plumb-canvas dark:focus-visible:ring-mintLight dark:focus-visible:ring-offset-plumb-dark-canvas`,
     active: `bg-plumb-mint text-white shadow-sm dark:bg-plumb-mintLight dark:text-plumb-ink`,
-    inactive: `text-plumb-muted hover:text-plumb-ink dark:text-plumb-darkMuted dark:hover:text-plumb-darkText`,
+    inactive: `text-plumb-muted bg-plumb-canvas hover:text-plumb-ink dark:text-plumb-darkMuted dark:hover:text-plumb-darkText`,
   },
 
   wrapper: [
@@ -1654,7 +1797,7 @@ base: [
 "motion-reduce:transition-none",
 ].join(" "),
 primary: [
-"dark:border dark:border-plumb-button-primary-bg hover:border-3 dark:border-2",
+"dark:border dark:border-plumb-button-primary-bg dark:text-plumb-button-primary-bg hover:text-plumb-darkText hover:border-3 dark:border-2",
     "rounded-full",
   "text-base ",
   "bg-plumb-mintHover dark:bg-transparent  dark:text-plumb-button-primary-bg text-plumb-darkText",
@@ -2149,10 +2292,20 @@ dashboardItem: {
   ].join(" "),
 },
 pill: {
-  base: `inline-flex min-h-10 items-center gap-2 rounded-full px-4 py-2.5 text-xs font-medium shadow-sm transition-[transform,background-color,border-color,color,box-shadow] duration-200`,
-  interactive: `cursor-pointer hover:-translate-y-0.5 active:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plumb-focus focus-visible:ring-offset-2 focus-visible:ring-offset-plumb-canvas dark:focus-visible:ring-plumb-mintLight dark:focus-visible:ring-offset-plumb-dark-canvas`,
-  default: `border border-plumb-mint/30 bg-plumb-mint/10 text-plumb-mint hover:border-plumb-mint hover:bg-plumb-mint/20 dark:border-plumb-mintLight/30 dark:bg-plumb-mintLight/10 dark:text-plumb-mintLight dark:hover:border-plumb-mintLight dark:hover:bg-plumb-mintLight/20`,
-  static: `border border-plumb-border bg-plumb-surface text-plumb-muted dark:border-plumb-darkBorder dark:bg-plumb-dark-surface dark:text-plumb-darkMuted`,
+  base: `inline-flex min-h-10 items-center gap-2 rounded-full px-4 py-2.5 text-xs font-medium shadow-sm
+duration-200`,
+  //  transition-[transform,background-color,border-color,color,box-shadow] 
+  interactive: `cursor-pointer hover:-translate-y-0.5
+   active:translate-y-0 focus-visible:outline-none
+    focus-visible:ring-2 focus-visible:ring-plumb-focus 
+    focus-visible:ring-offset-2 focus-visible:ring-offset-plumb-canvas 
+    dark:focus-visible:ring-plumb-mintLight dark:focus-visible:ring-offset-plumb-dark-canvas`,
+
+  default: `border border-plumb-mint/30  text-plumb-mint hover:border-plumb-mint  dark:border-plumb-mintLight/30
+  dark:text-plumb-mintLight dark:hover:border-plumb-mintLight 
+`,
+
+  static: `border border-plumb-border  text-plumb-muted dark:border-plumb-darkBorder dark:text-plumb-darkMuted`,
   icon: `h-4 w-4 shrink-0 object-contain`,
 }
 }

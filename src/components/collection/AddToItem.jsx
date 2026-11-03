@@ -1,3 +1,289 @@
+// import { useEffect, useState } from "react";
+// import { useSelector, useDispatch } from "react-redux";
+// import { useIonRouter } from "@ionic/react";
+
+// import Paths from "../../core/paths";
+// import {
+//   deleteStoryFromCollection,
+//   deleteCollectionFromCollection,
+//   addCollectionListToCollection,
+//   addStoryListToCollection,
+// } from "../../actions/CollectionActions";
+// import checkResult from "../../core/checkResult";
+// import Pill from "../Pill";
+// import shortName from "../../core/shortName";
+// import { useAlert } from "../../core/useAlert";
+// import AlertType from "../../core/AlertType";
+
+// export default function AddToItem({
+//   col,
+//   item,
+//   itemType = "story",
+//   onSuccess,
+// }) {
+//   const router = useIonRouter();
+//   const dispatch = useDispatch();
+//   const { showAlert } = useAlert();
+
+//   const currentProfile = useSelector(
+//     (state) => state.users.currentProfile
+//   );
+
+//   const [pending, setPending] = useState(false);
+//   const [found, setFound] = useState(null);
+
+//   const isStory = itemType === "story";
+//   const isCollection = itemType === "collection";
+
+//   useEffect(() => {
+//     if (!item?.id || !col?.id) {
+//       setFound(null);
+//       return;
+//     }
+
+//     if (isStory) {
+//       const existingLink = item.collections?.find(
+//         (storyCollection) =>
+//           storyCollection?.collectionId === col.id
+//       );
+
+//       setFound(existingLink || null);
+//       return;
+//     }
+
+//     if (isCollection) {
+//       const existingLink = item.parentCollections?.find(
+//         (parentCollection) =>
+//           parentCollection?.parentCollectionId === col.id
+//       );
+
+//       setFound(existingLink || null);
+//       return;
+//     }
+
+//     setFound(null);
+//   }, [item, col?.id, isStory, isCollection]);
+
+//   const handleAdd = async () => {
+//     if (!item?.id || !col?.id || pending) return;
+
+//     setPending(true);
+
+//     try {
+//       if (isCollection) {
+//         const result = await dispatch(
+//           addCollectionListToCollection({
+//             id: col.id,
+//             list: [item.id],
+//             profile: currentProfile,
+//           })
+//         );
+
+//         checkResult(result, (payload) => {
+//           const newLink =
+//             payload.collection?.childCollections?.find(
+//               (child) =>
+//                 child?.childCollectionId === item.id
+//             );
+
+//           setFound(newLink || true);
+
+//           showAlert({
+//             message: "Added",
+//             type: AlertType.success,
+//           });
+
+//           onSuccess?.();
+//         });
+
+//         return;
+//       }
+
+//       if (isStory) {
+//         const result = await dispatch(
+//           addStoryListToCollection({
+//             id: col.id,
+//             list: [item],
+//             profile: currentProfile,
+//           })
+//         );
+
+//         checkResult(result, (payload) => {
+//           const newLink = payload.stories?.find(
+//             (story) => story?.id === item.id
+//           );
+
+//           setFound(newLink || true);
+
+//           showAlert({
+//             message: "Added",
+//             type: AlertType.success,
+//           });
+
+//           onSuccess?.();
+//         });
+//       }
+//     } catch (error) {
+//       showAlert({
+//         message: error?.message || "Something went wrong.",
+//         type: AlertType.error,
+//       });
+//     } finally {
+//       setPending(false);
+//     }
+//   };
+
+//   const handleRemove = async () => {
+//     if (!found?.id || pending) return;
+
+//     setPending(true);
+
+//     try {
+//       if (isCollection) {
+//         const result = await dispatch(
+//           deleteCollectionFromCollection({
+//             tcId: found.id,
+//           })
+//         );
+
+//         checkResult(result, () => {
+//           setFound(null);
+
+//           showAlert({
+//             message: "Removed",
+//             type: AlertType.success,
+//           });
+
+//           onSuccess?.();
+//         });
+
+//         return;
+//       }
+
+//       if (isStory) {
+//         const result = await dispatch(
+//           deleteStoryFromCollection({
+//             stId: found.id,
+//           })
+//         );
+
+//         checkResult(result, () => {
+//           setFound(null);
+
+//           showAlert({
+//             message: "Removed",
+//             type: AlertType.success,
+//           });
+
+//           onSuccess?.();
+//         });
+//       }
+//     } catch (error) {
+//       showAlert({
+//         message: error?.message || "Something went wrong.",
+//         type: AlertType.error,
+//       });
+//     } finally {
+//       setPending(false);
+//     }
+//   };
+
+//   if (!col) {
+//     return (
+//       <div className="skeleton h-16 w-full rounded-full" />
+//     );
+//   }
+
+//   const collectionTitle =
+//     shortName(col.title, 25) || "Untitled";
+
+//   return (
+//     <div
+//       className="
+//         bg-base-bg dark:bg-plumb-surface Dark
+//         rounded-full
+//         px-4 sm:px-6
+//         py-3
+//         shadow-sm
+//         flex items-center gap-3
+//         border border-border-default dark:border-purple
+//       "
+//     >
+//       <button
+//         type="button"
+//         onClick={() =>
+//           router.push(
+//             Paths.collection.createRoute(col.id)
+//           )
+//         }
+//         className="
+//           min-w-0
+//           flex-1
+//           text-left
+//           cursor-pointer
+//           focus:outline-none
+//           focus-visible:ring-2
+//           focus-visible:ring-soft
+//           rounded-full
+//         "
+//       >
+//         <p
+//           className="
+//             text-sm
+//             font-medium
+//             truncate
+//             text-soft
+//             dark:text-cream
+//           "
+//         >
+//           {collectionTitle}
+//         </p>
+//       </button>
+
+//       {pending ? (
+//         <div
+//           className="
+//             shrink-0
+//             px-4 py-2
+//             rounded-full
+//             bg-soft/80
+//             text-white
+//             text-sm
+//             flex items-center gap-2
+//             shadow-sm
+//           "
+//         >
+//           <span
+//             className="
+//               w-4 h-4
+//               border-2
+//               border-white/40
+//               border-t-white
+//               rounded-full
+//               animate-spin
+//             "
+//           />
+//           <span>Loading</span>
+//         </div>
+//       ) : found ? (
+//         <Pill
+//           label="Added ✓"
+//           onClick={handleRemove}
+//           variant="secondary"
+//           color="softBlue"
+//         />
+//       ) : (
+//         <Pill
+//           label="Add"
+//           onClick={handleAdd}
+//           variant="primary"
+//           color="soft"
+//         />
+//       )}
+//     </div>
+//   );
+// }
+
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useIonRouter } from "@ionic/react";
@@ -14,6 +300,7 @@ import Pill from "../Pill";
 import shortName from "../../core/shortName";
 import { useAlert } from "../../core/useAlert";
 import AlertType from "../../core/AlertType";
+import styles from "../../styles/style";
 
 export default function AddToItem({
   col,
@@ -34,9 +321,10 @@ export default function AddToItem({
 
   const isStory = itemType === "story";
   const isCollection = itemType === "collection";
+  const isSupported = isStory || isCollection;
 
   useEffect(() => {
-    if (!item?.id || !col?.id) {
+    if (!item?.id || !col?.id || !isSupported) {
       setFound(null);
       return;
     }
@@ -51,21 +339,18 @@ export default function AddToItem({
       return;
     }
 
-    if (isCollection) {
-      const existingLink = item.parentCollections?.find(
-        (parentCollection) =>
-          parentCollection?.parentCollectionId === col.id
-      );
+    const existingLink = item.parentCollections?.find(
+      (parentCollection) =>
+        parentCollection?.parentCollectionId === col.id
+    );
 
-      setFound(existingLink || null);
-      return;
-    }
-
-    setFound(null);
-  }, [item, col?.id, isStory, isCollection]);
+    setFound(existingLink || null);
+  }, [item, col?.id, isStory, isCollection, isSupported]);
 
   const handleAdd = async () => {
-    if (!item?.id || !col?.id || pending) return;
+    if (!item?.id || !col?.id || pending || !isSupported) {
+      return;
+    }
 
     setPending(true);
 
@@ -81,12 +366,14 @@ export default function AddToItem({
 
         checkResult(result, (payload) => {
           const newLink =
-            payload.collection?.childCollections?.find(
+            payload?.collection?.childCollections?.find(
               (child) =>
                 child?.childCollectionId === item.id
             );
 
-          setFound(newLink || true);
+          // Keep the added state even if the API doesn't return
+          // the relationship ID. Removal requires a real ID.
+          setFound(newLink || { added: true });
 
           showAlert({
             message: "Added",
@@ -99,30 +386,28 @@ export default function AddToItem({
         return;
       }
 
-      if (isStory) {
-        const result = await dispatch(
-          addStoryListToCollection({
-            id: col.id,
-            list: [item],
-            profile: currentProfile,
-          })
+      const result = await dispatch(
+        addStoryListToCollection({
+          id: col.id,
+          list: [item],
+          profile: currentProfile,
+        })
+      );
+
+      checkResult(result, (payload) => {
+        const newLink = payload?.stories?.find(
+          (story) => story?.id === item.id
         );
 
-        checkResult(result, (payload) => {
-          const newLink = payload.stories?.find(
-            (story) => story?.id === item.id
-          );
+        setFound(newLink || { added: true });
 
-          setFound(newLink || true);
-
-          showAlert({
-            message: "Added",
-            type: AlertType.success,
-          });
-
-          onSuccess?.();
+        showAlert({
+          message: "Added",
+          type: AlertType.success,
         });
-      }
+
+        onSuccess?.();
+      });
     } catch (error) {
       showAlert({
         message: error?.message || "Something went wrong.",
@@ -134,6 +419,7 @@ export default function AddToItem({
   };
 
   const handleRemove = async () => {
+    // A real relationship ID is required to remove an item.
     if (!found?.id || pending) return;
 
     setPending(true);
@@ -160,24 +446,22 @@ export default function AddToItem({
         return;
       }
 
-      if (isStory) {
-        const result = await dispatch(
-          deleteStoryFromCollection({
-            stId: found.id,
-          })
-        );
+      const result = await dispatch(
+        deleteStoryFromCollection({
+          stId: found.id,
+        })
+      );
 
-        checkResult(result, () => {
-          setFound(null);
+      checkResult(result, () => {
+        setFound(null);
 
-          showAlert({
-            message: "Removed",
-            type: AlertType.success,
-          });
-
-          onSuccess?.();
+        showAlert({
+          message: "Removed",
+          type: AlertType.success,
         });
-      }
+
+        onSuccess?.();
+      });
     } catch (error) {
       showAlert({
         message: error?.message || "Something went wrong.",
@@ -190,94 +474,56 @@ export default function AddToItem({
 
   if (!col) {
     return (
-      <div className="skeleton h-16 w-full rounded-full" />
+      <div
+        className={styles.addToCollection.skeleton}
+        aria-hidden="true"
+      />
     );
   }
 
   const collectionTitle =
     shortName(col.title, 25) || "Untitled";
 
+  const canRemove = Boolean(found?.id);
+
   return (
-    <div
-      className="
-        bg-base-bg dark:bg-plumb-surface Dark
-        rounded-full
-        px-4 sm:px-6
-        py-3
-        shadow-sm
-        flex items-center gap-3
-        border border-border-default dark:border-purple
-      "
-    >
+    <div className={styles.addToCollection.row}>
       <button
         type="button"
         onClick={() =>
-          router.push(
-            Paths.collection.createRoute(col.id)
-          )
+          router.push(Paths.collection.createRoute(col.id))
         }
-        className="
-          min-w-0
-          flex-1
-          text-left
-          cursor-pointer
-          focus:outline-none
-          focus-visible:ring-2
-          focus-visible:ring-soft
-          rounded-full
-        "
+        className={styles.addToCollection.rowLink}
+        aria-label={`Open collection ${collectionTitle}`}
       >
-        <p
-          className="
-            text-sm
-            font-medium
-            truncate
-            text-soft
-            dark:text-cream
-          "
-        >
+        <span className={styles.addToCollection.rowTitle}>
           {collectionTitle}
-        </p>
+        </span>
       </button>
 
       {pending ? (
         <div
-          className="
-            shrink-0
-            px-4 py-2
-            rounded-full
-            bg-soft/80
-            text-white
-            text-sm
-            flex items-center gap-2
-            shadow-sm
-          "
+          className={styles.addToCollection.pending}
+          role="status"
+          aria-live="polite"
         >
           <span
-            className="
-              w-4 h-4
-              border-2
-              border-white/40
-              border-t-white
-              rounded-full
-              animate-spin
-            "
+            className={styles.addToCollection.spinner}
+            aria-hidden="true"
           />
           <span>Loading</span>
         </div>
       ) : found ? (
         <Pill
           label="Added ✓"
-          onClick={handleRemove}
-          variant="secondary"
-          color="softBlue"
+          onClick={canRemove ? handleRemove : undefined}
+          baseClass={styles.addToCollection.addedPill}
         />
       ) : (
         <Pill
           label="Add"
           onClick={handleAdd}
-          variant="primary"
-          color="soft"
+          baseClass={styles.addToCollection.addPill}
         />
       )}
     </div>

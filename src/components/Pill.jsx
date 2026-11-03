@@ -30,7 +30,7 @@ export default function Pill({
           className={styles.pill.icon}
         />
       )}
-      <span className="dark:text-plumb-darkText">{label}</span>
+      <span className="">{label}</span>
     </>
   );
 

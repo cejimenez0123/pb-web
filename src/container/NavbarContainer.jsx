@@ -13,9 +13,7 @@ import SignInButton from '../components/nav/SignInButton';
 import BrowserMobileNavbar from '../components/nav/BrowserMobileNavbar';
 
 function NavbarContainer({ isDesktop,currentProfile }) {
-  // const currentProfile = useSelector(
-  //   (state) => state.users.currentProfile
-  // );
+
 
   const location = useLocation();
   const isLoggedIn = !!currentProfile;

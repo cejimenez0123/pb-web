@@ -39,7 +39,7 @@ const TABS = {
     { key: TABS.DETAILS, label: "details" },
    
   ];
-// const tabs = [TABS.ARCHIVE,TABS.COLLECTIONS,TABS.DETAILS,TABS.EVENTS,TABS.PORTFOLIO]
+
 const PAGE_SIZE = 8;
 
 function MyProfileContainer() {
@@ -128,8 +128,7 @@ function MyProfileContainer() {
   return (
     <IonContent scrollY={true} fullscreen>
       <ErrorBoundary>
-        {/* <main>
-          <div className="mx-auto w-[100%]"> */}
+   
             <div className={styles.profile.mine.page}>
               {/* PROFILE HEADER */}
               <section
@@ -178,7 +177,8 @@ function MyProfileContainer() {
 
               >
                 <TabBar    
-                     tabs={tabs}               active={tab}
+                     tabs={tabs}            
+                        active={tab}
                   onChange={setTab} />
            
               </section>

@@ -1489,17 +1489,4 @@ function formatRoomType(type) {
 }
 
 
-     {/* <TabBar
-                    tabs={[
-                      {
-                        key: "pages",
-                        label: "Pages",
-                      },
-                      {
-                        key: "collections",
-                        label: "Rooms",
-                      },
-                    ]}
-                    active={activeTab}
-                    onChange={setActiveTab}
-                  /> */}
+ 

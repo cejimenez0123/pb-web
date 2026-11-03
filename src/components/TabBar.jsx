@@ -30,8 +30,9 @@ const TabBar = ({
               aria-current={isActive ? "page" : undefined}
               aria-pressed={isActive}
               className={`
+              
                 ${tabStyles.button}
-                ${isActive ? tabStyles.active : tabStyles.inactive}
+                ${isActive ? tabStyles.active : tabStyles.inactive+ " bg-plumb-tab"}
               `}
             >
               {tab.label}

@@ -46,7 +46,7 @@ import checkResult from "../../core/checkResult.js";
 import computePermissions from "../../core/compusePermissions.jsx";
 import useScrollTracking from "../../core/useScrollTracking.jsx";
 
-import { motion } from "framer-motion";
+
 import { IonContent } from "@ionic/react";
 
 import RoomPreview from "../../components/room/RoomPreview.jsx";
@@ -56,22 +56,25 @@ import TabBar from "../../components/TabBar.jsx";
 // ---------------------------------------------------------
 // Layout
 // ---------------------------------------------------------
-  const tabs = [
-    {
-      id: "inside",
-      label: "Inside",
-    },
-    {
-      id: "members",
-      label: "Members",
-    },
-    {
-      id: "about",
-      label: "About",
-    },
+const TABS = {
+  INSIDE: "inside",
+  MEMBERS: "members",
+  ABOUT: "about"
+ 
+};
+
+
+ const tabs = [
+      { key: TABS.INSIDE, label: "inside" },
+       { key: TABS.MEMBERS, label: "members" },
+   { key: TABS.ABOUT, label: "about" },
+   
+
+ 
+   
   ];
 const PAGE =
-  "w-full max-w-[52rem] mx-auto px-4 sm:px-6 lg:px-8";
+  "w-full max-w-[52rem] mt-4 mx-auto px-4 sm:px-6 lg:px-8";
 
 const SECTION =
   "py-8 sm:py-10";
@@ -126,7 +129,7 @@ export default function CollectionContainer() {
 
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
-  const [tab, setTab] = useState("inside");
+  const [tab, setTab] = useState(TABS.INSIDE);
   const [bookmarkLoading, setBookmarkLoading] = useState(false);
 
   const actionLock = useRef(false);
@@ -1037,10 +1040,11 @@ export default function CollectionContainer() {
 
         <section>
           <div className={PAGE}>
-            <TabBar
-tabs={tabs}
-tab={tab}
-setTab={setTab}
+          <TabBar
+                tabs={tabs}
+                active={tab}
+                onChange={setTab}
+            
             />
        
             <div className="pb-16">
@@ -1429,72 +1433,8 @@ function AboutTab({
 // TABS
 // =========================================================
 
-// function RoomTabs({
-//   tab,
-//   setTab,
-// }) {
 
 
-//   return (
-//     <div className={styles.tabs.container}>
-//       <div
-//         className={styles.tabs.wrapper}
-//         role="tablist"
-//         aria-label="Room sections"
-//       >
-//         {tabs.map((item) => {
-//           const active = tab === item.id;
-
-//           return (
-//             <button
-//               key={item.id}
-//               id={`room-tab-${item.id}`}
-//               type="button"
-//               role="tab"
-//               aria-selected={active}
-//               aria-controls={`room-panel-${item.id}`}
-//               onClick={() => setTab(item.id)}
-//               className={
-//                 "relative whitespace-nowrap " +
-//                 [
-//                   styles.tabs.tab,
-//                   active
-//                     ? styles.tabs.active
-//                     : styles.tabs.inactive,
-//                 ].join(" ") +
-//                 " focus-visible:outline-none " +
-//                 "focus-visible:ring-2 " +
-//                 "focus-visible:ring-button-primary-bg/40"
-//               }
-//             >
-//               {item.label}
-
-//               {active && (
-//                 <motion.span
-//                   layoutId="room-tab-indicator"
-//                   aria-hidden="true"
-//                   className={`
-//                     absolute
-//                     bottom-0
-//                     left-0
-//                     right-0
-//                     h-0.5
-//                     rounded-full
-//                     ${styles.tabs.tab}
-//                   `}
-//                 />
-//               )}
-//             </button>
-//           );
-//         })}
-//       </div>
-//     </div>
-//   );
-// }
-
-// =========================================================
-// RECOMMENDED ROOMS
-// =========================================================
 
 function RecommendedRooms({
   rooms,
