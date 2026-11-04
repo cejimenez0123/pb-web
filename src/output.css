@@ -106,37 +106,44 @@
   --tw-contain-style:  ;
 }
 
-html {
-  min-width: 320px;
-  min-height: 100%;
-  background-color: #f8f6f1;
-}
 
-html.dark {
-  background-color: #2c342e;
+/* =========================================================
+   DOCUMENT FOUNDATION
+   The application theme is controlled by the Plumbum tokens.
+========================================================= */
+
+html {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  min-height: 100%;
+  background: var(--color-background, #f4f4e0);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
-  margin: 0;
-  min-width: 320px;
-  min-height: 100vh;
-  min-height: 100dvh;
-  display: block;
-  background-color: #f8f6f1;
-  color: #12261f;
-}
-
-html.dark body {
-  background-color: #2c342e;
-  color: #f3f1df;
-}
-
-#root {
-  min-height: 100vh;
-  min-height: 100dvh;
   width: 100%;
-  background-color: transparent;
+  min-width: 0;
+  max-width: 100%;
+  min-height: 100%;
+  margin: 0;
+  display: block;
+  background: var(--color-background, #f4f4e0);
+  color: var(--color-foreground, #12261f);
+  font-family: var(--font-sans, system-ui, sans-serif);
+  line-height: inherit;
 }
+
+
+
+/* Keep box sizing consistent. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 
 *,
 ::before,
@@ -441,16 +448,3 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 
 
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-  }
-
-  a:hover {
-    color: #747bff;
-  }
-
-  button {
-    background-color: #f9f9f9;
-  }
-}

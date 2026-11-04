@@ -1,6 +1,229 @@
+const shared = {
+  // Page foundations
+  page: {
+    canvas: `
+      min-h-[100dvh]
+      bg-plumb-canvas text-plumb-ink
+      dark:bg-plumb-dark-canvas dark:text-plumb-darkText
+    `,
+    surface: `
+      bg-plumb-surface text-plumb-ink
+      dark:bg-plumb-dark-canvas dark:text-plumb-darkText
+    `,
+  },
 
+  // Layout
+  layout: {
+    centered: "mx-auto w-full",
+    readingWidth: "max-w-3xl",
+    pagePadding: "px-4 sm:px-6",
+  },
+
+  // Typography
+  text: {
+    eyebrow: `
+      text-xs font-semibold uppercase tracking-widest
+      text-plumb-muted dark:text-plumb-darkMuted
+    `,
+    heading: `
+      font-serif font-medium tracking-tight
+      text-plumb-ink dark:text-plumb-darkText
+    `,
+    body: `
+      text-sm leading-6
+      text-plumb-muted dark:text-plumb-darkMuted
+    `,
+    subtle: `
+      text-xs
+      text-plumb-subtle dark:text-plumb-darkSubtle
+    `,
+  },
+
+  // Surfaces
+  surface: {
+    border: `
+      border border-plumb-borderStrong
+      dark:border-plumb-darkBorderStrong
+    `,
+    card: `
+      rounded-2xl border
+      border-plumb-borderStrong
+      bg-plumb-paper
+      dark:border-plumb-darkBorderStrong
+      dark:bg-plumb-dark-surface
+    `,
+    elevated: `
+      rounded-2xl border
+      border-plumb-border
+      bg-plumb-elevated
+      dark:border-plumb-darkBorder
+      dark:bg-plumb-dark-elevated
+    `,
+    empty: `
+      rounded-2xl border border-dashed
+      border-plumb-borderStrong
+      dark:border-plumb-darkBorderStrong
+    `,
+  },
+
+  // Interaction
+  interaction: {
+    focus: `
+      focus-visible:outline-none
+      focus-visible:ring-2
+      focus-visible:ring-plumb-focus
+      focus-visible:ring-offset-2
+      dark:focus-visible:ring-plumb-mintLight
+      dark:focus-visible:ring-offset-plumb-dark-canvas
+    `,
+    transition: "transition-colors duration-150",
+    reducedMotion: "motion-reduce:transition-none",
+  },
+};
 
 const styles = {
+
+hash: {
+  thread: `
+    flex flex-col gap-3
+    min-w-0 w-full
+  `,
+
+  card: `
+    relative flex min-w-0 flex-col gap-4
+    rounded-2xl border p-4 sm:p-5
+    bg-plumb-surface
+    border-plumb-mint/20
+    shadow-sm
+    dark:bg-plumb-dark-surface
+    dark:border-darkMuted/20
+    dark:shadow-none
+  `,
+
+  header: `
+    flex min-w-0 items-center justify-between gap-3
+  `,
+
+  body: `
+    min-w-0 break-words whitespace-pre-wrap
+    text-left text-sm leading-relaxed sm:text-base
+    text-plumb-text
+    dark:text-darkText
+  `,
+
+  anchor: `
+    block w-full min-w-0
+    rounded-r-lg border-l-2 border-plumb-mint/60
+    bg-plumb-mint/5 px-3 py-2
+    text-left text-xs italic leading-relaxed
+    text-plumb-muted
+    transition-colors hover:text-plumb-mint
+    dark:bg-plumb-mint/10
+    dark:text-darkMuted
+    dark:hover:text-mintLight
+  `,
+
+  nestedReplies: `
+    ml-2 min-w-0
+    border-l-2 border-plumb-mint/20
+    pl-3 sm:ml-3 sm:pl-4
+    dark:border-darkMuted/25
+  `,
+
+  actions: `
+    flex flex-wrap items-center gap-2 sm:gap-3
+    pt-1 text-sm
+  `,
+
+  action: `
+    inline-flex min-h-9 items-center justify-center gap-2
+    rounded-full border border-transparent
+    px-3 py-1.5
+    text-sm font-medium
+    text-plumb-muted
+    transition-colors
+    hover:bg-plumb-mint/10 hover:text-plumb-ink
+    focus-visible:outline-none
+    focus-visible:ring-2 focus-visible:ring-plumb-mint
+    dark:text-darkMuted
+    dark:hover:bg-plumb-mint/10
+    dark:hover:text-darkText
+  `,
+
+  helpful: `
+    inline-flex min-h-9 items-center justify-center
+    rounded-full border border-plumb-mint/25
+    bg-plumb-mint/10 px-3 py-1.5
+    text-sm font-medium text-plumb-mint
+    transition-colors
+    hover:bg-plumb-mint/20
+    focus-visible:outline-none
+    focus-visible:ring-2 focus-visible:ring-plumb-mint
+    dark:border-current
+    dark:text-mintLight
+    dark:hover:bg-plumb-mint/15
+  `,
+
+  dropdown: `
+    dropdown-content z-30
+    w-52 rounded-xl border p-2 shadow-lg
+    border-plumb-mint/20
+    bg-plumb-surface text-plumb-text
+    dark:border-darkMuted/25
+    dark:bg-plumb-dark-surface
+    dark:text-darkText
+  `,
+
+  dropdownItem: `
+    w-full rounded-lg px-3 py-2.5
+    text-left text-sm
+    text-plumb-text
+    transition-colors
+    hover:bg-plumb-mint/10
+    dark:text-darkText
+    dark:hover:bg-plumb-mint/15
+  `,
+
+  viewReplies: `
+    inline-flex min-h-10 items-center justify-center gap-2
+    self-start rounded-full
+    border border-plumb-mint/25
+    bg-plumb-mint/5 px-4 py-2
+    text-sm font-medium text-plumb-mint
+    transition-colors
+    hover:bg-plumb-mint/15
+    focus-visible:outline-none
+    focus-visible:ring-2 focus-visible:ring-plumb-mint
+    dark:border-current
+    dark:text-mintLight
+    dark:hover:bg-plumb-mint/15
+  `,
+
+  conversationContext: `
+    flex min-w-0 flex-col gap-3
+    rounded-xl border p-4
+    border-plumb-mint/25
+    bg-plumb-mint/5
+    dark:border-plumb-mint/30
+    dark:bg-plumb-mint/10
+  `,
+
+  conversationLabel: `
+    text-xs font-semibold uppercase tracking-wider
+    text-plumb-muted
+    dark:text-darkMuted
+  `,
+
+  deleted: `
+    overflow-hidden opacity-0 max-h-0
+    p-0 my-0
+  `,
+
+  visible: `
+    max-h-[1000px] opacity-100
+  `,
+},
+
   login: {
   page: "flex min-h-full w-full justify-center px-5 pt-12 pb-24 sm:px-6 sm:pt-16",
 
@@ -47,6 +270,32 @@ const styles = {
 
   actions: "space-y-3 pt-2",
 },
+
+  communities: {
+  item: [
+    "p-4  mx-4 rounded-xl",
+    "bg-plumb-surface dark:bg-plumb-dark-surface",
+    "text-left",
+   
+    "border border-plumb-subtle/20 dark:border-white/10",
+    "active:scale-[0.98]",
+    "transition duration-200",
+    "cursor-pointer",
+  ].join(" "),
+
+  title: [
+    "text-sm font-medium",
+    "text-plumb-ink dark:text-plumb-lightText",
+    "break-words",
+  ].join(" "),
+
+  purpose: [
+    "text-sm mt-1",
+    "text-plumb-muted dark:text-plumb-darkMuted",
+    "break-words",
+  ].join(" "),
+},
+
   button: {
 
 base: [
@@ -71,11 +320,11 @@ base: [
 "motion-reduce:transition-none",
 ].join(" "),
 primary: [
-  "dark:border-plumb-mintLight dark:border dark:border-2 py-2 dark:text-plumb-mintLight",
-    "rounded-full font-semiBold  md:text-l sm:text-md lg:text-xl ",
+  "dark:border-plumb-mintLight dark:border dark:border-2 btn  dark:text-plumb-mintLight",
+    "rounded-full font-semiBold  ",
   "text-base ",
   
-  "bg-plumb-mint dark:bg-transparent min-w-80 dark:text-plumb-button-primary-bg text-plumb-darkText",
+  "bg-plumb-mint dark:bg-transparent dark:border-plumb-button-primary-bg dark:text-plumb-button-primary-bg text-plumb-darkText",
   "shadow-sm",
   "hover:bg-plumb-mint",
   "hover:shadow-md",
@@ -99,9 +348,10 @@ secondary: [
 ].join(" "),
 
   accent: [
+    "border dark:border-2 dark:border-plumb-blueSea dark:text-plumb-blueSea",
      "text-base",
         "rounded-full",
-    "bg-plumb-button-accent-bg",
+    "bg-plumb-accent-blue text-plumb-darkText py-2 px-6 dark:bg-transparent ",
     "text-plumb-button-accent-text",
     "hover:bg-plumb-button-accent-hover",
   ].join(" "),
@@ -252,18 +502,19 @@ utilityActive: [
    },
   pageShell: {
   // Shared page foundation
-  base: [
-
-    "h-[100vh] w-[100vw]",
-    "pt-16",
-    "bg-plumb-surface text-plumb-ink",
-    "dark:bg-plumb-dark-surface dark:text-plumb-darkText",
-  ].join(" "),
-
+base: [
+  "relative",
+  "flex flex-col",
+  "w-full",
+  "min-w-0 min-h-0",
+  "overflow-hidden",
+  "bg-plumb-surface text-plumb-ink",
+  "dark:bg-plumb-dark-surface dark:text-plumb-darkText",
+].join(" "),
   // Use when the page itself should scroll
   scroll: [
   
-    "overflow-y-auto overscroll-y-contain",
+    // "overflow-y-auto overscroll-y-contain",
   ].join(" "),
 
   // Standard responsive page padding
@@ -280,7 +531,7 @@ utilityActive: [
 
   // Centered content container
   inner: [
-    "mx-auto w-[100%] bg-plumb-surface px-4 dark:bg-plumb-dark-surface sm:px-10 md:px-16 lg:px-20",
+    "mx-auto w-[100%] bg-plumb-surface  dark:bg-plumb-dark-surface sm:px-10 md:px-16 lg:px-20",
   ].join(" "),
 
   // Narrower reading/content container
@@ -289,119 +540,165 @@ utilityActive: [
   ].join(" "),
 },
 addToCollection: {
-  content: `min-h-[100dvh] bg-plumb-canvas text-plumb-ink dark:bg-plumb-dark-canvas dark:text-plumb-darkText`,
-  wrap: `mx-auto w-full max-w-[50em] px-4 pb-24 pt-8 sm:px-6`,
-  header: `mb-8`,
-  eyebrow: `text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-plumb-mint dark:text-plumb-mintLight`,
-  heading: `mt-2 font-serif text-3xl font-medium tracking-tight text-plumb-ink dark:text-plumb-darkText sm:text-4xl`,
-  sectionTitle: `mt-1 font-serif text-2xl font-medium text-plumb-ink dark:text-plumb-darkText`,
-  body: `mt-2 max-w-xl text-sm leading-6 text-plumb-muted dark:text-plumb-darkMuted`,
-  card: `rounded-2xl border border-plumb-border bg-plumb-elevated shadow-sm dark:border-plumb-darkBorder dark:bg-plumb-dark-elevated`,
-  itemCard: `p-5`,
-  itemType: `text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-plumb-blueSea dark:text-plumb-softBlue`,
-  itemTitle: `mt-2 truncate font-serif text-2xl font-medium tracking-tight text-plumb-ink dark:text-plumb-darkText`,
-  itemDescription: `mt-2 text-sm leading-6 text-plumb-muted dark:text-plumb-darkMuted`,
-  itemStatus: `mt-3 text-xs text-plumb-subtle dark:text-plumb-darkSubtle`,
-  itemBadge: `shrink-0 rounded-full border border-plumb-blueSea/40 bg-plumb-blueSea/5 px-3 py-1.5 text-xs font-medium text-plumb-blueSea dark:border-plumb-softBlue/40 dark:bg-plumb-softBlue/5 dark:text-plumb-softBlue`,
-  section: `mb-8`,
-  createRow: `flex items-center justify-between gap-4 p-4`,
-  createTitle: `text-sm font-medium text-plumb-ink dark:text-plumb-darkText`,
-  createDescription: `mt-1 text-xs leading-5 text-plumb-muted dark:text-plumb-darkMuted`,
-  createButton: `shrink-0 border border-plumb-blueSea bg-plumb-blueSea text-white dark:border-plumb-softBlue dark:bg-plumb-softBlue dark:text-plumb-ink`,
-  controls: `mb-5 flex flex-col gap-3 sm:flex-row`,
-  select: `w-full rounded-full border border-plumb-border bg-plumb-elevated px-4 py-3 text-sm text-plumb-ink shadow-sm outline-none focus:border-plumb-mint focus:ring-2 focus:ring-plumb-focus/40 dark:border-plumb-darkBorder dark:bg-plumb-dark-elevated dark:text-plumb-darkText dark:focus:border-plumb-mintLight sm:w-40`,
-  search: `flex min-w-0 flex-1 items-center rounded-full border border-plumb-border bg-plumb-elevated px-4 shadow-sm transition-colors focus-within:border-plumb-mint focus-within:ring-2 focus-within:ring-plumb-focus/40 dark:border-plumb-darkBorder dark:bg-plumb-dark-elevated dark:focus-within:border-plumb-mintLight`,
-  searchLabel: `mr-2 shrink-0 text-xs font-semibold uppercase tracking-wide text-plumb-subtle dark:text-plumb-darkSubtle`,
-  searchInput: `min-w-0 w-full flex-1 bg-transparent py-3 text-sm text-plumb-ink outline-none placeholder:text-plumb-subtle dark:text-plumb-darkText dark:placeholder:text-plumb-darkSubtle`,
-  list: `rounded-2xl border border-plumb-border bg-plumb-elevated p-3 shadow-sm dark:border-plumb-darkBorder dark:bg-plumb-dark-elevated sm:p-5`,
-  empty: `rounded-2xl border border-dashed border-plumb-border bg-plumb-surface px-6 py-10 text-center text-sm text-plumb-muted dark:border-plumb-darkBorder dark:bg-plumb-dark-surface dark:text-plumb-darkMuted`,
-  backButton: `shrink-0 rounded-full border border-plumb-border bg-plumb-elevated px-4 py-2 text-sm font-medium text-plumb-muted transition-colors hover:border-plumb-blueSea hover:text-plumb-blueSea focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plumb-focus focus-visible:ring-offset-2 dark:border-plumb-darkBorder dark:bg-plumb-dark-elevated dark:text-plumb-darkMuted dark:hover:border-plumb-softBlue dark:hover:text-plumb-softBlue dark:focus-visible:ring-plumb-mintLight dark:focus-visible:ring-offset-plumb-dark-canvas`,
-  state: `mx-auto flex min-h-[70dvh] w-full max-w-[50em] flex-col items-center justify-center px-4 text-center sm:px-6`,
-  stateIcon: `mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-plumb-blueSea/10 text-plumb-blueSea dark:bg-plumb-softBlue/10 dark:text-plumb-softBlue`,
-  stateHeading: `mt-2 font-serif text-2xl font-medium text-plumb-ink dark:text-plumb-darkText`,
-  stateBody: `mt-2 max-w-md text-sm leading-6 text-plumb-muted dark:text-plumb-darkMuted`,
-  stateAction: `mt-6`,
-  loading: `space-y-4`,
-  skeleton: `rounded-xl bg-plumb-surface motion-safe:animate-pulse dark:bg-plumb-dark-surface`,
-  row: `
-  flex w-[100%] min-w-0 items-center gap-3
-  rounded-full border border-plumb-border
-  bg-plumb-elevated px-4 py-3 shadow-sm
-  dark:border-plumb-darkBorder
-  dark:bg-plumb-dark-elevated
-`,
+  content: shared.page.canvas,
 
-rowLink: `
-  flex min-h-10 min-w-0 flex-1 items-center
-  rounded-full text-left
-  focus-visible:outline-none
-  focus-visible:ring-2 focus-visible:ring-plumb-focus
-  focus-visible:ring-offset-2
-  focus-visible:ring-offset-plumb-elevated
-  dark:focus-visible:ring-plumb-mintLight
-  dark:focus-visible:ring-offset-plumb-dark-elevated
-`,
+  wrap: `
+    ${shared.layout.centered}
+    max-w-[50em]
+    ${shared.layout.pagePadding}
+    pb-24 pt-8
+  `,
 
-rowTitle: `
-  block truncate text-sm font-medium
-  text-plumb-ink transition-colors
-  hover:text-plumb-blueSea
-  dark:text-plumb-darkText
-  dark:hover:text-plumb-softBlue
-`,
+  eyebrow: `
+    ${shared.text.eyebrow}
+    text-plumb-mint dark:text-plumb-mintLight
+  `,
 
-pending: `
-  flex min-h-10 shrink-0 items-center gap-2
-  rounded-full bg-plumb-blueSea/10
-  px-4 py-2 text-xs font-medium
-  text-plumb-blueSea
-  dark:bg-plumb-softBlue/10
-  dark:text-plumb-softBlue
-`,
+  heading: `
+    ${shared.text.heading}
+    mt-2 text-3xl sm:text-4xl
+  `,
 
-spinner: `
-  h-4 w-4 animate-spin rounded-full
-  border-2 border-current/30 border-t-current
-  motion-reduce:animate-none
-`,
+  body: `
+    ${shared.text.body}
+    mt-2 max-w-xl
+  `,
 
-addPill: `
-  border border-plumb-mint/40
-  bg-plumb-mint/10 text-plumb-mint
-  hover:border-plumb-mint
-  hover:bg-plumb-mint/20
-  dark:border-plumb-mintLight/40
-  dark:bg-plumb-mintLight/10
-  dark:text-plumb-mintLight
-  dark:hover:border-plumb-mintLight
-  dark:hover:bg-plumb-mintLight/20
-`,
+  card: shared.surface.elevated,
 
-addedPill: `
-  border border-plumb-blueSea/40
-  bg-plumb-blueSea/10 text-plumb-blueSea
-  hover:border-plumb-coral
-  hover:bg-plumb-coral/10
-  hover:text-plumb-coral
-  dark:border-plumb-softBlue/40
-  dark:bg-plumb-softBlue/10
-  dark:text-plumb-softBlue
-  dark:hover:border-plumb-coralLight
-  dark:hover:bg-plumb-coralLight/10
-  dark:hover:text-plumb-coralLight
-`,
+  itemCard: "p-5",
 
-skeleton: `
-  h-16 w-full rounded-full
-  bg-plumb-surface motion-safe:animate-pulse
-  dark:bg-plumb-dark-surface
-`,
+  section: "mb-8",
+
+  empty: `
+    ${shared.surface.empty}
+    bg-plumb-surface px-6 py-10 text-center
+    ${shared.text.body}
+    dark:bg-plumb-dark-surface
+  `,
+
+  backButton: `
+    ${shared.surface.elevated}
+    ${shared.interaction.focus}
+    ${shared.interaction.transition}
+    rounded-full px-4 py-2
+    text-sm font-medium
+    text-plumb-muted dark:text-plumb-darkMuted
+    hover:border-plumb-blueSea hover:text-plumb-blueSea
+    dark:hover:border-plumb-softBlue
+    dark:hover:text-plumb-softBlue
+  `,
 },
- page: [
+// addToCollection: {
+//   content: `min-h-[100dvh] bg-plumb-canvas text-plumb-ink dark:bg-plumb-dark-canvas dark:text-plumb-darkText`,
+//   wrap: `mx-auto w-full max-w-[50em] px-4 pb-24 pt-8 sm:px-6`,
+//   header: `mb-8`,
+//   eyebrow: `text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-plumb-mint dark:text-plumb-mintLight`,
+//   heading: `mt-2 font-serif text-3xl font-medium tracking-tight text-plumb-ink dark:text-plumb-darkText sm:text-4xl`,
+//   sectionTitle: `mt-1 font-serif text-2xl font-medium text-plumb-ink dark:text-plumb-darkText`,
+//   body: `mt-2 max-w-xl text-sm leading-6 text-plumb-muted dark:text-plumb-darkMuted`,
+//   card: `rounded-2xl border border-plumb-border bg-plumb-elevated shadow-sm dark:border-plumb-darkBorder dark:bg-plumb-dark-elevated`,
+//   itemCard: `p-5`,
+//   itemType: `text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-plumb-blueSea dark:text-plumb-softBlue`,
+//   itemTitle: `mt-2 truncate font-serif text-2xl font-medium tracking-tight text-plumb-ink dark:text-plumb-darkText`,
+//   itemDescription: `mt-2 text-sm leading-6 text-plumb-muted dark:text-plumb-darkMuted`,
+//   itemStatus: `mt-3 text-xs text-plumb-subtle dark:text-plumb-darkSubtle`,
+//   itemBadge: `shrink-0 rounded-full border border-plumb-blueSea/40 bg-plumb-blueSea/5 px-3 py-1.5 text-xs font-medium text-plumb-blueSea dark:border-plumb-softBlue/40 dark:bg-plumb-softBlue/5 dark:text-plumb-softBlue`,
+//   section: `mb-8`,
+//   createRow: `flex items-center justify-between gap-4 p-4`,
+//   createTitle: `text-sm font-medium text-plumb-ink dark:text-plumb-darkText`,
+//   createDescription: `mt-1 text-xs leading-5 text-plumb-muted dark:text-plumb-darkMuted`,
+//   createButton: `shrink-0 border border-plumb-blueSea bg-plumb-blueSea text-white dark:border-plumb-softBlue dark:bg-plumb-softBlue dark:text-plumb-ink`,
+//   controls: `mb-5 flex flex-col gap-3 sm:flex-row`,
+//   select: `w-full rounded-full border border-plumb-border bg-plumb-elevated px-4 py-3 text-sm text-plumb-ink shadow-sm outline-none focus:border-plumb-mint focus:ring-2 focus:ring-plumb-focus/40 dark:border-plumb-darkBorder dark:bg-plumb-dark-elevated dark:text-plumb-darkText dark:focus:border-plumb-mintLight sm:w-40`,
+//   search: `flex min-w-0 flex-1 items-center rounded-full border border-plumb-border bg-plumb-elevated px-4 shadow-sm transition-colors focus-within:border-plumb-mint focus-within:ring-2 focus-within:ring-plumb-focus/40 dark:border-plumb-darkBorder dark:bg-plumb-dark-elevated dark:focus-within:border-plumb-mintLight`,
+//   searchLabel: `mr-2 shrink-0 text-xs font-semibold uppercase tracking-wide text-plumb-subtle dark:text-plumb-darkSubtle`,
+//   searchInput: `min-w-0 w-full flex-1 bg-transparent py-3 text-sm text-plumb-ink outline-none placeholder:text-plumb-subtle dark:text-plumb-darkText dark:placeholder:text-plumb-darkSubtle`,
+//   list: `rounded-2xl border border-plumb-border bg-plumb-elevated p-3 shadow-sm dark:border-plumb-darkBorder dark:bg-plumb-dark-elevated sm:p-5`,
+//   empty: `rounded-2xl border border-dashed border-plumb-border bg-plumb-surface px-6 py-10 text-center text-sm text-plumb-muted dark:border-plumb-darkBorder dark:bg-plumb-dark-surface dark:text-plumb-darkMuted`,
+//   backButton: `shrink-0 rounded-full border border-plumb-border bg-plumb-elevated px-4 py-2 text-sm font-medium text-plumb-muted transition-colors hover:border-plumb-blueSea hover:text-plumb-blueSea focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plumb-focus focus-visible:ring-offset-2 dark:border-plumb-darkBorder dark:bg-plumb-dark-elevated dark:text-plumb-darkMuted dark:hover:border-plumb-softBlue dark:hover:text-plumb-softBlue dark:focus-visible:ring-plumb-mintLight dark:focus-visible:ring-offset-plumb-dark-canvas`,
+//   state: `mx-auto flex min-h-[70dvh] w-full max-w-[50em] flex-col items-center justify-center px-4 text-center sm:px-6`,
+//   stateIcon: `mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-plumb-blueSea/10 text-plumb-blueSea dark:bg-plumb-softBlue/10 dark:text-plumb-softBlue`,
+//   stateHeading: `mt-2 font-serif text-2xl font-medium text-plumb-ink dark:text-plumb-darkText`,
+//   stateBody: `mt-2 max-w-md text-sm leading-6 text-plumb-muted dark:text-plumb-darkMuted`,
+//   stateAction: `mt-6`,
+//   loading: `space-y-4`,
+//   skeleton: `rounded-xl bg-plumb-surface motion-safe:animate-pulse dark:bg-plumb-dark-surface`,
+//   row: `
+//   flex w-[100%] min-w-0 items-center gap-3
+//   rounded-full border border-plumb-border
+//   bg-plumb-elevated px-4 py-3 shadow-sm
+//   dark:border-plumb-darkBorder
+//   dark:bg-plumb-dark-elevated
+// `,
 
-    " overflow-auto min-h-[100vh] ",
-    "bg-plumb-surface px-4 dark:bg-plumb-dark-canvas",
-  ].join(" "),
+// rowLink: `
+//   flex min-h-10 min-w-0 flex-1 items-center
+//   rounded-full text-left
+//   focus-visible:outline-none
+//   focus-visible:ring-2 focus-visible:ring-plumb-focus
+//   focus-visible:ring-offset-2
+//   focus-visible:ring-offset-plumb-elevated
+//   dark:focus-visible:ring-plumb-mintLight
+//   dark:focus-visible:ring-offset-plumb-dark-elevated
+// `,
+
+// rowTitle: `
+//   block truncate text-sm font-medium
+//   text-plumb-ink transition-colors
+//   hover:text-plumb-blueSea
+//   dark:text-plumb-darkText
+//   dark:hover:text-plumb-softBlue
+// `,
+
+// pending: `
+//   flex min-h-10 shrink-0 items-center gap-2
+//   rounded-full bg-plumb-blueSea/10
+//   px-4 py-2 text-xs font-medium
+//   text-plumb-blueSea
+//   dark:bg-plumb-softBlue/10
+//   dark:text-plumb-softBlue
+// `,
+
+// spinner: `
+//   h-4 w-4 animate-spin rounded-full
+//   border-2 border-current/30 border-t-current
+//   motion-reduce:animate-none
+// `,
+
+// addPill: `
+//   border border-plumb-mint/40
+//   bg-plumb-mint/10 text-plumb-mint
+//   hover:border-plumb-mint
+//   hover:bg-plumb-mint/20
+//   dark:border-plumb-mintLight/40
+//   dark:bg-plumb-mintLight/10
+//   dark:text-plumb-mintLight
+//   dark:hover:border-plumb-mintLight
+//   dark:hover:bg-plumb-mintLight/20
+// `,
+
+// addedPill: `
+//   border border-plumb-blueSea/40
+//   bg-plumb-blueSea/10 text-plumb-blueSea
+//   hover:border-plumb-coral
+//   hover:bg-plumb-coral/10
+//   hover:text-plumb-coral
+//   dark:border-plumb-softBlue/40
+//   dark:bg-plumb-softBlue/10
+//   dark:text-plumb-softBlue
+//   dark:hover:border-plumb-coralLight
+//   dark:hover:bg-plumb-coralLight/10
+//   dark:hover:text-plumb-coralLight
+// `,
+
+// skeleton: `
+//   h-16 w-full rounded-full
+//   bg-plumb-surface motion-safe:animate-pulse
+//   dark:bg-plumb-dark-surface
+// `,
+// },
+
   annotation: {
   toolbar: [
     "relative z-50 flex items-center gap-1",
@@ -517,7 +814,7 @@ skeleton: `
     "px-2 dark:px-3 dark:py-3",
     "text-sm",
     "font-medium",
-    "dark:border dark:border-plumb-darkBorder",
+    "dark:border dark:text-plumb-mintLight dark:border-plumb-mintLight dark:border-1",
     "text-plumb-mint",
     "transition-colors",
     "hover:text-plumb-mintHover",
@@ -818,10 +1115,10 @@ profile: {
 
 mine: {
   about: {
-  content: `space-y-6`,
+  content: `space-y-6 mx-4`,
   bio: `text-sm leading-relaxed text-plumb-muted dark:text-plumb-darkMuted`,
   location: `text-sm text-plumb-muted dark:text-plumb-darkMuted`,
-  locationLoading: `mt-1 h-4 w-32 rounded bg-plumb-surface motion-safe:animate-pulse dark:bg-plumb-dark-surface`,
+  locationLoading: `mt-1 h-4 w-32 rounded motion-safe:animate-pulse`,
   interestsLabel: `text-xs uppercase tracking-[0.08em] text-plumb-subtle dark:text-plumb-darkSubtle`,
   pillList: `mt-2 flex flex-wrap gap-2`,
 },
@@ -841,7 +1138,7 @@ mine: {
   `,
 
   header: `
-    flex flex-col gap-8
+    flex flex-col gap-8 px-4 max-w-4xl mx-auto
     sm:flex-row sm:items-center 
   `,
 
@@ -864,7 +1161,7 @@ mine: {
   `,
 
   content: `
-    mt-10 w-[100%] max-w-[48rem]
+    mt-10 w-[100%] max-w-3xl mx-auto
   `,
 
   sectionHeader: `
@@ -1020,6 +1317,7 @@ mine: {
     mt-6
   `,
 },
+
     portfolio: {
        section: `
     w-[100%]
@@ -1067,17 +1365,17 @@ mine: {
 
   article: `
 
-    w-[100%]
+
   `,
 
   storyList: `
-    m-0
+ 
     list-none
     divide-y
 `,
  
   storyRow: [
-    "w-[100%]   rounded-full",
+    "w-[100%]   ",
  
     ].join(" "),
 
@@ -1086,10 +1384,7 @@ mine: {
     group
     flex w-[100%]
     min-h-12
-    items-center
   
-    justify-between
-    gap-4
     bg-transparent
     py-4
     text-left
@@ -1135,115 +1430,115 @@ mine: {
     dark:group-hover:text-plumb-mintLight
   `,
 
-  emptyCollection: `
-    py-8
-    text-sm
-    text-plumb-muted
-    dark:text-plumb-darkMuted
-  `,
+//   emptyCollection: `
+//     py-8
+//     text-sm
+//     text-plumb-muted
+//     dark:text-plumb-darkMuted
+//   `,
 
-  section: [
-    "w-[100%]",
-    "bg-transparent",
-    "text-plumb-ink dark:text-plumb-darkText",
-  ].join(" "),
+//   section: [
+//     "w-[100%]",
+//     "bg-transparent",
+//     "text-plumb-ink dark:text-plumb-darkText",
+//   ].join(" "),
 
-  header: [
-    "flex flex-col gap-5",
+//   header: [
+//     "flex flex-col gap-5",
 
-    "bg-transparent pb-5",
+//     "bg-transparent pb-5",
  
-    "sm:flex-row sm:items-end sm:justify-between",
-  ].join(" "),
+//     "sm:flex-row sm:items-end sm:justify-between",
+//   ].join(" "),
 
-  searchLabel: "sr-only",
+//   searchLabel: "sr-only",
 
-  searchInput: [
-    "min-h-12 w-[100%] sm:max-w-[18rem]",
-    "rounded-full border px-4 py-2.5",
-    "border-plumb-borderStrong bg-transparent",
-    "text-sm text-plumb-ink",
-    "placeholder:text-plumb-muted",
-    "transition-colors",
-    "focus:outline-none focus-visible:ring-2",
-    "focus-visible:ring-plumb-focus",
-    "focus-visible:outline focus-visible:outline-1",
-    "focus-visible:outline-plumb-mintHover",
-    "dark:border-plumb-darkBorderStrong",
-    "dark:text-plumb-darkText",
-    "dark:placeholder:text-plumb-darkMuted",
-    "dark:focus-visible:outline-plumb-mintLight",
-    "motion-reduce:transition-none",
-  ].join(" "),
+//   searchInput: [
+//     "min-h-12 w-[100%] sm:max-w-[18rem]",
+//     "rounded-full border px-4 py-2.5",
+//     "border-plumb-borderStrong bg-transparent",
+//     "text-sm text-plumb-ink",
+//     "placeholder:text-plumb-muted",
+//     "transition-colors",
+//     "focus:outline-none focus-visible:ring-2",
+//     "focus-visible:ring-plumb-focus",
+//     "focus-visible:outline focus-visible:outline-1",
+//     "focus-visible:outline-plumb-mintHover",
+//     "dark:border-plumb-darkBorderStrong",
+//     "dark:text-plumb-darkText",
+//     "dark:placeholder:text-plumb-darkMuted",
+//     "dark:focus-visible:outline-plumb-mintLight",
+//     "motion-reduce:transition-none",
+//   ].join(" "),
 
-  list: [
-    "mt-8 space-y-0",
-    "bg-transparent",
-  ].join(" "),
+//   list: [
+//     "mt-8 space-y-0",
+//     "bg-transparent",
+//   ].join(" "),
 
-  article: [
+//   article: [
    
-    "bg-transparent ",
+//     "bg-transparent ",
   
-  ].join(" "),
+//   ].join(" "),
 
-  storyList: [
-    "mt-3 list-none space-y-3 p-0",
-  ].join(" "),
+//   storyList: [
+//     "mt-3 list-none space-y-3 p-0",
+//   ].join(" "),
 
-  storyRow: [
-    "group list-none",
-  ].join(" "),
+//   storyRow: [
+//     "group list-none",
+//   ].join(" "),
 
-  storyButton: [
-    "flex min-h-12 w-[100%]",
-    "items-start justify-between gap-2",
+//   storyButton: [
+//     "flex min-h-12 w-[100%]",
+//     "items-start justify-between gap-2",
   
-    "bg-transparent py-3",
-    "text-left",
-    "transition-colors duration-150",
+//     "bg-transparent py-3",
+//     "text-left",
+//     "transition-colors duration-150",
 
-    "motion-reduce:transition-none",
-  ].join(" "),
+//     "motion-reduce:transition-none",
+//   ].join(" "),
 
-  storyContent: [
-    "min-w-0 flex-1",
-  ].join(" "),
+//   storyContent: [
+//     "min-w-0 flex-1",
+//   ].join(" "),
 
-  storyTitle: [
-    "break-words font-serif text-base",
-    "leading-snug",
-    "text-plumb-ink",
-    "transition-colors duration-150",
-    "group-hover:text-plumb-mintHover",
-    "group-hover:underline group-hover:underline-offset-4",
-    "group-focus-visible:underline",
-    "group-focus-visible:underline-offset-4",
-    "dark:text-plumb-darkText",
-    "dark:group-hover:text-plumb-mintLight",
-    "motion-reduce:transition-none",
-  ].join(" "),
+//   storyTitle: [
+//     "break-words font-serif text-base",
+//     "leading-snug",
+//     "text-plumb-ink",
+//     "transition-colors duration-150",
+//     "group-hover:text-plumb-mintHover",
+//     "group-hover:underline group-hover:underline-offset-4",
+//     "group-focus-visible:underline",
+//     "group-focus-visible:underline-offset-4",
+//     "dark:text-plumb-darkText",
+//     "dark:group-hover:text-plumb-mintLight",
+//     "motion-reduce:transition-none",
+//   ].join(" "),
 
-  storyDescription: [
-    "mt-1 text-sm leading-relaxed",
-    "text-plumb-muted dark:text-plumb-darkMuted",
-  ].join(" "),
+//   storyDescription: [
+//     "mt-1 text-sm leading-relaxed",
+//     "text-plumb-muted dark:text-plumb-darkMuted",
+//   ].join(" "),
 
-  arrow: [
-    "shrink-0 pt-0.5",
-    "text-base font-medium",
-    "text-plumb-muted",
-    "transition-transform duration-150",
-    "group-hover:translate-x-1",
-    "dark:text-plumb-darkMuted",
-    "motion-reduce:transition-none",
-  ].join(" "),
+//   arrow: [
+//     "shrink-0 pt-0.5",
+//     "text-base font-medium",
+//     "text-plumb-muted",
+//     "transition-transform duration-150",
+//     "group-hover:translate-x-1",
+//     "dark:text-plumb-darkMuted",
+//     "motion-reduce:transition-none",
+//   ].join(" "),
 
-  emptyCollection: [
-    "py-4 pl-4 text-sm italic",
-    "text-plumb-muted dark:text-plumb-darkMuted",
-    "sm:pl-5",
-  ].join(" "),
+//   emptyCollection: [
+//     "py-4 pl-4 text-sm italic",
+//     "text-plumb-muted dark:text-plumb-darkMuted",
+//     "sm:pl-5",
+//   ].join(" "),
 },
   page: [
     "mx-auto  ",
@@ -1256,7 +1551,7 @@ mine: {
 
   content: "space-y-8 sm:space-y-10 max-w-2xl mx-auto",
 
-  header: "space-y-5 py-6 sm:space-y-6 sm:py-8",
+  header: "space-y-5 py-6 sm:space-y-6 sm:py-8 px-4",
 
   identity: [
     "flex min-w-0 flex-col gap-3",
@@ -1280,18 +1575,46 @@ mine: {
 
   muted: "text-plumb-muted dark:text-plumb-darkMuted",
 
-  pill: [
-    "inline-flex max-w-full items-center",
-    // "rounded-full border px-3 py-1",
-    // "border-plumb-border bg-plumb-paper",
-    "text-xs text-plumb-text",
-    // "transition-colors hover:border-plumb-mintHover",
-    "focus-visible:outline-none focus-visible:ring-2",
-    "focus-visible:ring-plumb-focus focus-visible:ring-offset-2",
-    // "dark:border-plumb-darkBorder dark:bg-plumb-dark-surface",
-    // "dark:text-plumb-darkText dark:hover:border-plumb-mintLight",
-    "dark:focus-visible:ring-offset-plumb-dark-canvas",
+pill: {
+  container: [
+    "group flex w-[100%] min-w-0",
+    "items-center justify-between gap-3",
+    "min-h-12 px-4 py-3",
+    "rounded-full",
+    "border border-plumb-borderStrong/50",
+    "bg-transparent",
+    "text-left",
+    "transition-all duration-200",
+    "hover:border-plumb-mintHover",
+    "hover:bg-plumb-mint/5",
+    "focus-visible:outline-none",
+    "focus-visible:ring-2 focus-visible:ring-plumb-focus/40",
+    "dark:border-plumb-darkBorderStrong",
+    "dark:hover:border-plumb-mintLight",
+    "dark:hover:bg-plumb-mint/10",
+    "motion-reduce:transition-none",
   ].join(" "),
+
+  title: [
+    "min-w-0 break-words",
+    "font-serif text-base leading-snug",
+    "text-plumb-ink",
+    "transition-colors duration-150",
+    "group-hover:text-plumb-mintHover",
+    "dark:text-plumb-darkText",
+    "dark:group-hover:text-plumb-mintLight",
+  ].join(" "),
+
+  arrow: [
+    "shrink-0 text-lg leading-none",
+    "text-plumb-muted",
+    "transition-transform duration-200",
+    "group-hover:translate-x-1",
+    "group-hover:text-plumb-mintHover",
+    "dark:text-plumb-darkMuted",
+    "dark:group-hover:text-plumb-mintLight",
+  ].join(" "),
+},
 
   stats: "flex flex-wrap items-center gap-x-8 gap-y-4",
 
@@ -1307,7 +1630,7 @@ mine: {
   ].join(" "),
 
   search: [
-    "min-w-0 w-[100%] flex-1 rounded-full border px-4 py-2.5",
+    " flex-1 rounded-full border mx-4 px-4 py-3",
     "border-plumb-borderStrong bg-plumb-paper",
     "text-sm text-plumb-text placeholder:text-plumb-muted",
     "focus:outline-none focus-visible:ring-2 focus-visible:ring-plumb-focus",
@@ -1318,7 +1641,7 @@ mine: {
   actions: "flex min-w-0 items-center gap-3",
 
   menuButton: [
-    "inline-flex h-10 w-10 shrink-0 items-center justify-center",
+    "inline-flex h-10 w-10 shrink-0items-center  justify-center",
     "rounded-full transition-colors",
     "hover:bg-plumb-border/50 focus-visible:outline-none",
     "focus-visible:ring-2 focus-visible:ring-plumb-focus",
@@ -1341,10 +1664,6 @@ mine: {
   ].join(" "),
 
   menuItemDanger: "text-red-600 dark:text-red-400",
-
-  tabWrapper: "mx-auto w-[100%] max-w-lg px-0 pb-4 sm:px-4",
-
-  tabContent: "min-h-[24rem] space-y-8 sm:min-h-[40rem] sm:space-y-10",
 
   section: "space-y-4",
 
@@ -1388,53 +1707,95 @@ mine: {
   pageTitle: "text-lg font-semibold text-plumb-ink dark:text-plumb-darkText",
 },
 collection: {
-  page: [
-    "  pb-20 overflow-y-auto ",
-    "bg-plumb-surface text-plumb-ink",
-    "dark:bg-plumb-dark-canvas dark:text-plumb-darkText",
-  ].join(" "),
+  page: `
+    ${shared.page.surface}
+    overflow-y-auto pb-20
+  `,
 
-  section: [
-    "border-plumb-borderStrong",
-    "dark:border-plumb-darkBorderStrong",
-  ].join(" "),
+  section: shared.surface.border,
 
-  card: [
-    "rounded-2xl border p-5",
-    "border-plumb-borderStrong bg-plumb-paper",
-    "transition-all duration-200",
-    "hover:-translate-y-0.5 hover:border-plumb-mintHover",
-    "dark:border-plumb-darkBorderStrong",
-    "dark:bg-plumb-dark-surface",
-    "dark:hover:border-plumb-mintLight",
-  ].join(" "),
+  card: `
+    ${shared.surface.card}
+    p-5
+    transition-all duration-200
+    hover:-translate-y-0.5
+    hover:border-plumb-mintHover
+    dark:hover:border-plumb-mintLight
+    motion-reduce:transform-none
+    motion-reduce:transition-none
+  `,
 
-  heading: [
-    "font-serif text-2xl sm:text-3xl",
-    "text-plumb-ink dark:text-plumb-darkText",
-  ].join(" "),
+  heading: `
+    ${shared.text.heading}
+    text-2xl sm:text-3xl
+  `,
 
-  body: [
-    "font-open-sans text-base leading-relaxed",
-    "text-plumb-text dark:text-plumb-darkText",
-  ].join(" "),
+  body: `
+    font-open-sans text-base leading-relaxed
+    text-plumb-text dark:text-plumb-darkText
+  `,
 
-  muted: [
-    "text-plumb-muted dark:text-plumb-darkMuted",
-  ].join(" "),
+  muted: shared.text.body,
 
-  empty: [
-    "rounded-2xl border border-dashed p-8 text-center",
-    "border-plumb-borderStrong",
-    "dark:border-plumb-darkBorderStrong",
-  ].join(" "),
+  empty: `
+    ${shared.surface.empty}
+    p-8 text-center
+  `,
 
-  skeleton: [
-    "animate-pulse rounded-2xl",
-    "bg-plumb-border dark:bg-plumb-dark-surface",
-    "motion-reduce:animate-none",
-  ].join(" "),
+  skeleton: `
+    animate-pulse rounded-2xl
+    bg-plumb-border dark:bg-plumb-dark-surface
+    motion-reduce:animate-none
+  `,
 },
+// collection: {
+//   page: [
+//     "  pb-20 overflow-y-auto ",
+//     "bg-plumb-surface text-plumb-ink",
+//     "dark:bg-plumb-dark-canvas dark:text-plumb-darkText",
+//   ].join(" "),
+
+//   section: [
+//     "border-plumb-borderStrong",
+//     "dark:border-plumb-darkBorderStrong",
+//   ].join(" "),
+
+//   card: [
+//     "rounded-2xl border p-5",
+//     "border-plumb-borderStrong bg-plumb-paper",
+//     "transition-all duration-200",
+//     "hover:-translate-y-0.5 hover:border-plumb-mintHover",
+//     "dark:border-plumb-darkBorderStrong",
+//     "dark:bg-plumb-dark-surface",
+//     "dark:hover:border-plumb-mintLight",
+//   ].join(" "),
+
+//   heading: [
+//     "font-serif text-2xl sm:text-3xl",
+//     "text-plumb-ink dark:text-plumb-darkText",
+//   ].join(" "),
+
+//   body: [
+//     "font-open-sans text-base leading-relaxed",
+//     "text-plumb-text dark:text-plumb-darkText",
+//   ].join(" "),
+
+//   muted: [
+//     "text-plumb-muted dark:text-plumb-darkMuted",
+//   ].join(" "),
+
+//   empty: [
+//     "rounded-2xl border border-dashed p-8 text-center",
+//     "border-plumb-borderStrong",
+//     "dark:border-plumb-darkBorderStrong",
+//   ].join(" "),
+
+//   skeleton: [
+//     "animate-pulse rounded-2xl",
+//     "bg-plumb-border dark:bg-plumb-dark-surface",
+//     "motion-reduce:animate-none",
+//   ].join(" "),
+// },
 
 navbar: {
   desktop: [
@@ -1659,80 +2020,49 @@ mobileNativeWordmark: [
     "font-medium",
   ].join(" "),
 },
-  importWork: {
-    section: [
-      "mt-16 max-w-3xl",
-    ].join(" "),
+importWork: {
+  section: "mt-16 max-w-3xl",
 
-    intro: [
-      "mb-5",
-    ].join(" "),
+  intro: "mb-5",
 
-    label: [
-      "mb-3 font-open-sans text-xs font-medium",
-      "uppercase tracking-widest",
-      "text-plumb-muted dark:text-plumb-darkMuted",
-    ].join(" "),
+  label: shared.text.eyebrow,
 
-    description: [
-      "mt-2 max-w-xl font-lora text-base leading-relaxed",
-      "text-plumb-text dark:text-plumb-darkText",
-    ].join(" "),
+  description: `
+    mt-2 max-w-xl
+    font-lora text-base leading-relaxed
+    text-plumb-text dark:text-plumb-darkText
+  `,
 
-    grid: [
-      "grid grid-cols-1 gap-4 sm:grid-cols-2",
-    ].join(" "),
+  grid: "grid grid-cols-1 gap-4 sm:grid-cols-2",
 
-    card: [
-      "group min-h-[150px] rounded-2xl border p-6 text-left",
-      "border-plumb-borderStrong bg-plumb-paper",
-      "transition-all duration-200",
-      "hover:-translate-y-0.5 hover:border-plumb-mintHover",
-      "hover:bg-plumb-surface",
-      "dark:border-plumb-darkBorderStrong",
-      "dark:bg-plumb-dark-surface",
-      "dark:hover:border-plumb-mintLight",
-      "dark:hover:bg-plumb-dark-canvas",
-      "focus-visible:outline-none focus-visible:ring-2",
-      "focus-visible:ring-plumb-focus focus-visible:ring-offset-2",
-      "focus-visible:ring-offset-plumb-paper",
-      "dark:focus-visible:ring-offset-plumb-dark-canvas",
-      "motion-reduce:transform-none motion-reduce:transition-none",
-    ].join(" "),
+  card: `
+    group ${shared.surface.card}
+    min-h-[150px] p-6 text-left
+    ${shared.interaction.transition}
+    hover:-translate-y-0.5
+    hover:border-plumb-mintHover
+    hover:bg-plumb-surface
+    dark:hover:border-plumb-mintLight
+    dark:hover:bg-plumb-dark-canvas
+    ${shared.interaction.focus}
+    focus-visible:ring-offset-plumb-paper
+    dark:focus-visible:ring-offset-plumb-dark-canvas
+    ${shared.interaction.reducedMotion}
+  `,
 
-    cardDragging: [
-      "border-plumb-mintHover bg-plumb-surface",
-      "dark:border-plumb-mintLight dark:bg-plumb-dark-canvas",
-    ].join(" "),
+  cardTitle: `
+    ${shared.text.heading}
+    text-xl font-semibold
+  `,
 
-    cardTitle: [
-      "font-serif text-xl font-semibold",
-      "text-plumb-ink dark:text-plumb-darkText",
-    ].join(" "),
-
-    cardDescription: [
-      "mt-2 max-w-sm font-open-sans text-sm leading-relaxed",
-      "text-plumb-muted dark:text-plumb-darkMuted",
-    ].join(" "),
-
-    cardAction: [
-      "text-sm font-medium",
-      "text-plumb-mintHover dark:text-plumb-mintLight",
-      "group-hover:underline underline-offset-4",
-    ].join(" "),
-
-    error: [
-      "mt-3 font-open-sans text-sm",
-      "text-red-700 dark:text-red-300",
-    ].join(" "),
-  },
+  cardDescription: `
+    ${shared.text.body}
+    mt-2 max-w-sm
+  `,
+},
 
   about: {
     
-  page: [
-    " overflow-auto min-h-[100vh] ",
-    "bg-plumb-surface px-8 py-12 dark:bg-plumb-dark-canvas",
-  ].join(" "),
 
   inner: [
     "mx-auto h-full overflow-auto w-[100%]",
@@ -1850,7 +2180,7 @@ content: {
   },
 },
 roomPreview: {
-  card: `group flex h-full min-h-[14rem] w-[100%] flex-col rounded-xl border border-plumb-border bg-plumb-elevated p-5 text-left shadow-sm transition-colors duration-200 hover:border-plumb-mint/70 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plumb-focus focus-visible:ring-offset-2 focus-visible:ring-offset-plumb-canvas dark:border-plumb-darkBorder dark:bg-plumb-dark-elevated dark:hover:border-plumb-mintLight/70 dark:focus-visible:ring-plumb-mintLight dark:focus-visible:ring-offset-plumb-dark-canvas`,
+  card: `group flex h-full min-h-[12em] w-[100%] border dark:border-1 dark:border-plumb-darkText flex-col rounded-xl border border-plumb-border bg-plumb-elevated p-5 text-left shadow-sm transition-colors duration-200 hover:border-plumb-mint/70 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plumb-focus focus-visible:ring-offset-2 focus-visible:ring-offset-plumb-canvas dark:border-plumb-darkBorder dark:bg-plumb-dark-elevated dark:hover:border-plumb-mintLight/70 dark:focus-visible:ring-plumb-mintLight dark:focus-visible:ring-offset-plumb-dark-canvas`,
   type: `mb-3 text-[0.68rem] uppercase tracking-[0.16em] text-plumb-blueSea dark:text-plumb-softBlue`,
   title: `min-w-0 flex-1 font-serif text-xl leading-snug text-plumb-ink transition-colors group-hover:text-plumb-mint dark:text-plumb-darkText dark:group-hover:text-plumb-mintLight`,
   arrow: `shrink-0 pt-0.5 text-lg text-plumb-muted transition-transform group-hover:translate-x-0.5 group-hover:text-plumb-mint dark:text-plumb-darkMuted dark:group-hover:text-plumb-mintLight motion-reduce:transform-none`,
@@ -1957,26 +2287,32 @@ text: {
   ].join(" "),
 },
 tabs: {
-  // Keep your existing container and wrapper keys.
+
 
 
   pill: {
-    container: `w-full`,
-    wrapper: `flex items-center justify-center gap-1 rounded-xl bg-plumb-surface p-1 dark:bg-plumb-dark-surface`,
-    button: `shrink-0 rounded-full px-6 py-2 text-sm sm:text-md md:text-lg  transition-colors duration-200 sm:text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plumb-focus focus-visible:ring-offset-2 focus-visible:ring-offset-plumb-canvas dark:focus-visible:ring-mintLight dark:focus-visible:ring-offset-plumb-dark-canvas`,
-    active: `bg-plumb-mint text-white shadow-sm dark:bg-plumb-mintLight dark:text-plumb-ink`,
+    container: `w-[100%] `,
+    wrapper: `flex items-center overflow-x-scroll  justify-center gap-1 rounded-xl bg-plumb-surface  px-4 dark:bg-plumb-dark-surface`,
+    button: `shrink-0 rounded-full px-6 py-2 transition-colors duration-200 sm:text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plumb-focus focus-visible:ring-offset-2 focus-visible:ring-offset-plumb-canvas dark:focus-visible:ring-mintLight dark:focus-visible:ring-offset-plumb-dark-canvas`,
+    active: `bg-plumb-mint text-plumb-darkText shadow-sm dark:bg-plumb-mintLight dark:text-plumb-ink`,
     inactive: `text-plumb-muted bg-plumb-canvas hover:text-plumb-ink dark:text-plumb-darkMuted dark:hover:text-plumb-darkText`,
   },
-
-  wrapper: [
-    "flex w-[100%] items-center justify-center",
-    " overflow-x-auto overscroll-x-contain",
-    "px-4 py-2 sm:px-5 sm:py-3",
-    "[-webkit-overflow-scrolling:touch]",
-    "[scrollbar-width:none]",
-    "[&::-webkit-scrollbar]:hidden",
-  ].join(" "),
-  container: ["mt-4  ",].join(" "),
+wrapper: [
+  "flex w-max min-w-full gap-1 items-center justify-start",
+  "overflow-x-auto overscroll-x-contain",
+  "whitespace-nowrap",
+  "[scrollbar-width:none]",
+  "[&::-webkit-scrollbar]:hidden",
+].join(" "),
+  // wrapper: [
+  //   "flex w-[100%] gap-1 items-center justify-center",
+  //   " overflow-x-scroll",
+  //   "",
+  //   // "[-webkit-overflow-scrolling:touch]",
+  //   "[scrollbar-width:none]",
+  //   "[&::-webkit-scrollbar]:hidden",
+  // ].join(" "),
+  container: ["mt-4 overflow-x-scroll flex flex-col items-center",].join(" "),
   list: {
     container: [
       "divide-y",
@@ -2035,14 +2371,13 @@ scrollDown: {
 
 
 input: [
-  "w-[100%] max-w-sm","dark:bg-base-bg",
+  "w-[100%] max-w-sm"," bg-plumb-canvas dark:bg-plumb-darkCanvas border-plumb-mintLight/30 border border-1",
 
 
   "text-plumb-ink rounded-2xl",
   "px-4 py-3",
   "placeholder:text-plumb-muted",
   "dark:border-plumb-darkBorderStrong",
-  // "dark:bg-plumb-dark-surface",
   "dark:text-plumb-darkText",
   "dark:placeholder:text-plumb-darkMuted",
   "focus:outline-none",
@@ -2367,5 +2702,5 @@ duration-200`,
   icon: `h-4 w-4 shrink-0 object-contain`,
 }
 }
-
+export {shared}
 export default styles

@@ -1039,7 +1039,7 @@ export default function CollectionContainer() {
         {/* --------------------------------------------- */}
 
         <section>
-          <div className={PAGE}>
+          <div >
           <TabBar
                 tabs={tabs}
                 active={tab}

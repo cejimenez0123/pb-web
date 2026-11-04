@@ -17,8 +17,7 @@ import {
 } from "react-redux";
 
 import { searchMultipleIndexes } from "../actions/UserActions";
-import checkResult from "../core/checkResult";
-import { ErrorBoundary } from "@sentry/react";
+import ErrorBoundary from "../ErrorBoundary";
 import styles from "../styles/style";
 
 const FILTERS = [

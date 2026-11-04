@@ -36,6 +36,7 @@ import fetchCity from "../../core/fetchCity";
 import { getStory } from "../../actions/StoryActions";
 import usePaginatedResource from "../../core/usePaginatedResource";
 import styles from "../../styles/style.js";
+import requestLocation from "../../core/requestLocation.js";
 
 const DEFAULT_LOCATION = {
   latitude: 40.818622458906425,
@@ -124,18 +125,7 @@ const {
     totalCount: res?.totalCount ?? 0,
   }),
 });
-// const {
-//   items: roomItems,
-//   isLoading: roomsLoading,
-// } = usePaginatedResource({
-//   cacheKey: "profile-rooms",
-//   fetcher: getProfileCollections,
-//   params: {
-//     isWorkshop: false,
-//   },
-//   pageSize: 10,
-//   select: selectCollections,
-// });
+
 
 const {
   items: workshopItems,
@@ -306,54 +296,6 @@ const {
         setLoading(false);
       }
     );
-  };
-
-  const requestLocation = async () => {
-    setLoading(true);
-
-    try {
-      let permStatus = await Geolocation.checkPermissions();
-
-      if (
-        permStatus.location === "prompt" ||
-        permStatus.location === "denied"
-      ) {
-        permStatus = await Geolocation.requestPermissions();
-      }
-
-      if (permStatus.location === "granted") {
-        const { coords } =
-          await Geolocation.getCurrentPosition();
-
-        const name = await fetchCity({
-          latitude: coords.latitude,
-          longitude: coords.longitude,
-        });
-
-        applyLocation({
-          latitude: coords.latitude,
-          longitude: coords.longitude,
-          city: name,
-        });
-      } else {
-        showAlert({
-          message:
-            "Location permission is off. Enable it in your device settings to find nearby writers.",
-          type: AlertType.error,
-        });
-
-        setLoading(false);
-      }
-    } catch (err) {
-      console.error("Error requesting location:", err);
-
-      showAlert({
-        message: "We couldn't get your location. Please try again.",
-        type: AlertType.error,
-      });
-
-      setLoading(false);
-    }
   };
 
   /*

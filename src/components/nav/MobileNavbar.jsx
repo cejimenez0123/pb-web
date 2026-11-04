@@ -10,15 +10,16 @@ export default function MobileNavbar({
   currentProfile,
   showSearch = true,
 }) {
-  const {
-    handleHome,
-    handleDiscover,
-    handleWrite,
-    handleEvents,
-    handleProfile,
-    handleAbout,
-    handleSearch,
-  } = useNavbarNavigation();
+const {
+  handleHome,
+  handleDiscover,
+  handleWrite,
+  handleEvents,
+  handleProfile,
+  handleAbout,
+  handleSearch,
+  handleLogin,
+} = useNavbarNavigation(currentProfile);
 
   const isLoggedIn = !!currentProfile;
 

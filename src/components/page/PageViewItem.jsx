@@ -55,8 +55,8 @@ const dispatch =useDispatch()
       title: "",
       height: 60,
       text: <CommentInput page={page} anchorText={anchorText} />,
-     disagreeText: "Close",
-      disagree: closeDialog
+    //  disagreeText: "Close",
+    //   disagree: closeDialog
     });
   };
 

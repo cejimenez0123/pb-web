@@ -398,8 +398,8 @@ const patchCollectionRoles = createAsyncThunk("collection/patchCollectionRoles",
         collection:data.collection??[]
     }
 })
-const patchCollectionContent = createAsyncThunk(
-  "collection/patchCollectionContent",
+const patchCollectionDetails = createAsyncThunk(
+  "collection/patchCollectionDetails",
   async (
     {
       id,
@@ -407,51 +407,68 @@ const patchCollectionContent = createAsyncThunk(
       purpose,
       isPrivate,
       isOpenCollaboration,
+      followersAre,
+    },
+    thunkApi
+  ) => {
+    try {
+      const data =
+        await collectionRepo.updateCollectionDetails({
+          id,
+          title,
+          purpose,
+          isPrivate,
+          isOpenCollaboration,
+          followersAre,
+        });
+
+      return {
+        collection: data.collection,
+      };
+    } catch (error) {
+      return thunkApi.rejectWithValue(
+        error?.response?.data ||
+          error?.message ||
+          "Unable to update Room details."
+      );
+    }
+  }
+);
+
+
+const patchCollectionContent = createAsyncThunk(
+  "collection/patchCollectionContent",
+  async (
+    {
+      id,
       storyToCol,
       colToCol,
     },
     thunkApi
   ) => {
-    const data =
-      await collectionRepo.updateCollectionContent({
-        id,
-        title,
-        purpose,
-        isPrivate,
-        isOpenCollaboration,
-        storyToCol,
-        colToCol,
-      });
+    try {
+      const data =
+        await collectionRepo.updateCollectionContent({
+          id,
+          storyToCol,
+          colToCol,
+        });
 
-    if (!isPrivate) {
-      await algoliaRepo.partialUpdateObject(
-        "collection",
-        id,
-        {
-          title,
-        }
+      return {
+        collection: data.collection,
+      };
+    } catch (error) {
+      return thunkApi.rejectWithValue(
+        error?.response?.data ||
+          error?.message ||
+          "Unable to update Room contents."
       );
     }
-
-    return {
-      collection: data.collection,
-    };
   }
 );
-// const patchCollectionContent=createAsyncThunk("collection/patchCollectionContent",
-//     async ({id,title,purpose,isPrivate,isOpenCollaboration,storyToCol,colToCol,col,profile},thunkApi)=>{
-//         let data = await collectionRepo.updateCollectionContent({id,title,purpose,isPrivate,isOpenCollaboration,storyToCol,colToCol,col,profile})
-//         if(!isPrivate){
-//           await algoliaRepo.partialUpdateObject("collection", id, { title: title })
-//                }else{
 
-       
-          
-//             }  
-//         return {collection:data.collection}
-//     }
 
-// )
+
 const getCollectionRecommendations = createAsyncThunk(
     'collections/getCollectionRecommendations',
     async ({ colId, skip = 0, take = 10, type }, thunkApi) => {
@@ -519,7 +536,8 @@ export {
     deleteCollection,
     deleteCollectionFromCollection,
     deleteStoryFromCollection,
-    patchCollectionContent,
+    patchCollectionDetails,
+  patchCollectionContent,
     patchCollectionRoles,
     clearCollections,
     getRecommendedCollections,

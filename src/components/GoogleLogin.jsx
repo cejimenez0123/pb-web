@@ -178,51 +178,7 @@ const nativeGoogleSignIn = async () => {
 // const nativeGoogleSignIn = async () => {
 //   if (pending) return;
   
-//   setPending(true);
-//   setLoginError(null);
-  
-//   try {
-//     const user = await SocialLogin.login({
-//       provider: "google",
-//       options: {
-//         scopes: [
-//           "email",
-//           "profile",
-//           "https://www.googleapis.com/auth/drive.file",
-//         ],
-//       },
-//     });
 
-//     const result = user?.result;
-
-//     if (!result) throw new Error("No Google result returned");
-
-//     const profile = result.profile || {};
-//     const idToken = result.idToken || result.authentication?.idToken;
-//     const accessToken = result.accessToken?.token || result.accessToken;
-
-//     if (!idToken) {
-//       throw new Error("Missing Google ID token (required for login)");
-//     }
-
-//     const payload = {
-//       email: profile.email,
-//       name: profile.name,
-//       googleId: profile.id,
-//       idToken,
-//       driveAccessToken: accessToken,
-//     };
-
-//     await onUserSignIn?.(payload);
-
-//     setSignedIn(true);
-//   } catch (err) {
-//     console.error("GOOGLE NATIVE LOGIN ERROR:", err);
-//     setLoginError(err.message || "Google Sign-In failed.");
-//   } finally {
-//     setPending(false);
-//   }
-// };
   // ---------------------------
   // 5️⃣ Web login
   // ---------------------------

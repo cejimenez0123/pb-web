@@ -1,9 +1,7 @@
-import { useDispatch } from 'react-redux';
+
 import { useLocation } from 'react-router';
 import { Capacitor } from '@capacitor/core';
-import { SocialLogin } from '@capgo/capacitor-social-login';
-import React, { useState } from 'react';
-import { signOutAction } from '../actions/UserActions';
+
 import SearchButton from '../components/nav/SearchButton';
 import styles from '../styles/style';
 import SignOutButton from '../components/buttons/SignOutButton';
@@ -56,15 +54,16 @@ function DesktopNavbar({
   currentProfile,
   showSearch = true,
 }) {
-  const {
-    handleHome,
-    handleDiscover,
-    handleWrite,
-    handleEvents,
-    handleProfile,
-    handleAbout,
-    handleSearch,
-  } = useNavbarNavigation();
+const {
+  handleHome,
+  handleDiscover,
+  handleWrite,
+  handleEvents,
+  handleProfile,
+  handleAbout,
+  handleSearch,
+  handleLogin,
+} = useNavbarNavigation(currentProfile);
 
   const isLoggedIn = !!currentProfile;
 
@@ -123,9 +122,9 @@ function DesktopNavbar({
             </DesktopNavItem>
           )}
 
-          <DesktopNavItem onClick={handleAbout}>
+          {!currentProfile && <DesktopNavItem onClick={handleAbout}>
             About
-          </DesktopNavItem>
+          </DesktopNavItem>}
               {showSearch && (
             <SearchButton
               onClick={handleSearch}

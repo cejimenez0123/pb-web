@@ -20,6 +20,7 @@ import Paths from "../../core/paths.js";
 import { IonContent, useIonRouter } from "@ionic/react";
 
 
+
 const PAGE =
   "mx-auto w-full max-w-[52rem] px-4 sm:px-6 lg:px-8";
 
@@ -381,12 +382,12 @@ router.push(
 
           <div className="mt-6">
 
-            {loadingCreated ? (
+            {/* {loadingCreated ? (
               <RoomGridSkeleton count={4} />
             ) : createdRooms.length > 0 ? (
               <RoomGrid
                 rooms={createdRooms}
-                onOpen={handleOpenRoom}
+                  onSelectRoom={handleOpenRoom}
               />
             ) : (
               <EmptyRooms
@@ -394,7 +395,7 @@ router.push(
                 actionLabel="Start a Room"
                 onAction={handleCreate}
               />
-            )}
+            )} */}
 
           </div>
 
@@ -476,184 +477,6 @@ router.push(
   );
 }
 
-
-// ============================================================
-// Room Grid
-// ============================================================
-
-function RoomGrid({
-  rooms,
-  onOpen,
-  showRole = false,
-  currentProfileId,
-}) {
-  return (
-    <div className="grid gap-4 sm:grid-cols-2">
-      {rooms.map((room) => (
-        <RoomCard
-          key={room.id}
-          room={room}
-          onClick={() => onOpen(room)}
-          showRole={showRole}
-          currentProfileId={
-            currentProfileId
-          }
-        />
-      ))}
-    </div>
-  );
-}
-
-
-// ============================================================
-// Room Card
-// ============================================================
-
-function RoomCard({
-  room,
-  onClick,
-  showRole,
-  currentProfileId,
-}) {
-  const role = useMemo(() => {
-    if (
-      !showRole ||
-      !currentProfileId
-    ) {
-      return null;
-    }
-
-    return (
-      room?.roles?.find(
-        (item) =>
-          item?.profileId ===
-            currentProfileId ||
-          item?.profile?.id ===
-            currentProfileId
-      )?.role || null
-    );
-  }, [
-    room,
-    showRole,
-    currentProfileId,
-  ]);
-
-  const storyCount =
-    room?.storyIdList?.length ?? 0;
-
-  const childCount =
-    room?.childCollections?.length ?? 0;
-
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="group w-full text-left"
-    >
-      <article
-        className="
-          relative
-          flex
-          min-h-[12rem]
-          flex-col
-          justify-between
-          overflow-hidden
-          rounded-2xl
-          border
-          border-card-border
-          bg-card-background
-          p-5
-          shadow-sm
-          transition
-          duration-200
-          hover:-translate-y-0.5
-          hover:border-base-soft
-          hover:shadow-md
-          dark:border-gray-700
-          dark:bg-plumb-surface Dark
-        "
-      >
-
-        <div>
-
-          <div className="flex items-start justify-between gap-4">
-
-            <span className="rounded-full bg-plumb-surface  px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.12em] text-text-secondary dark:bg-base-bgDark dark:text-gray-300">
-              {getRoomTypeLabel(room?.type)}
-            </span>
-
-            {room?.isWorkshop && (
-              <span className="rounded-full bg-softBlue px-3 py-1 text-[0.68rem] font-semibold text-teal dark:bg-teal/20 dark:text-softBlue">
-                Workshop
-              </span>
-            )}
-
-          </div>
-
-
-          <h3 className="mt-5 font-serif text-xl leading-tight text-text-primary transition group-hover:text-text-brand dark:text-cream">
-            {room?.title || "Untitled"}
-          </h3>
-
-
-          {room?.purpose && (
-            <p className="mt-2 line-clamp-2 text-sm leading-6 text-text-secondary dark:text-gray-400">
-              {room.purpose}
-            </p>
-          )}
-
-        </div>
-
-
-        <div className="mt-8 flex items-end justify-between gap-3">
-
-          <div className="flex flex-wrap gap-2 text-xs text-text-secondary dark:text-gray-400">
-
-            {storyCount > 0 && (
-              <span>
-                {storyCount}{" "}
-                {storyCount === 1
-                  ? "Story"
-                  : "Stories"}
-              </span>
-            )}
-
-            {childCount > 0 && (
-              <span>
-                {childCount}{" "}
-                {childCount === 1
-                  ? "Room"
-                  : "Rooms"}
-              </span>
-            )}
-
-            {storyCount === 0 &&
-              childCount === 0 && (
-                <span>
-                  Empty for now
-                </span>
-              )}
-
-          </div>
-
-
-          {role && (
-            <span className="shrink-0 text-xs font-semibold capitalize text-text-brand">
-              {role}
-            </span>
-          )}
-
-        </div>
-
-
-        <span className="absolute bottom-5 right-5 translate-x-1 opacity-0 transition group-hover:translate-x-0 group-hover:opacity-100">
-          →
-        </span>
-
-      </article>
-    </button>
-  );
-}
 
 
 // ============================================================

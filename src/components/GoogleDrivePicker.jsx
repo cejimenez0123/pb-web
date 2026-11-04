@@ -69,7 +69,7 @@ const fetchFiles = async () => {
     try{
     if (!token) return;
 
-    // setLoading(true);
+
     fetch('https://www.googleapis.com/drive/v3/files?q=mimeType="application/vnd.google-apps.document"&fields=files(id,name,mimeType,iconLink)', {
       headers: {
         Authorization: `Bearer ${token}`,

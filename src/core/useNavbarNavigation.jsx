@@ -2,46 +2,34 @@ import { useIonRouter } from "@ionic/react";
 import { useDispatch } from "react-redux";
 import Paths from "./paths";
 
-export default function useNavbarNavigation() {
+export default function useNavbarNavigation(currentProfile) {
   const router = useIonRouter();
   const dispatch = useDispatch();
 
-  const navigate = (path, direction = 'forward') => {
+  const navigate = (path, direction = "forward") => {
     router.push(path, direction);
   };
 
-  const handleSearch = () => {
-    navigate('/search', 'forward');
-  };
-
-  const handleWrite = () => {
-    navigate(Paths.write, 'forward');
-  };
-
-
-
-const handleHome = () => {
-  router.push("/", "root");
-};
-
-  const handleDiscover = () => {
-    navigate(Paths.discovery, 'forward');
-  };
-
-  const handleEvents = () => {
-    navigate(Paths.calendar(), 'forward');
-  };
+  const handleSearch = () => navigate("/search");
+  const handleWrite = () => navigate(Paths.write);
+  const handleHome = () => router.push("/", "root");
+  const handleDiscover = () => navigate(Paths.discovery);
+  const handleEvents = () => navigate(Paths.calendar());
+  const handleAbout = () => navigate(Paths.about());
+  const handleLogin = () => navigate(Paths.login);
 
   const handleProfile = () => {
-    navigate(Paths.myProfile, 'root');
+    if (!currentProfile?.id) {
+      console.warn("Cannot navigate to profile: profile ID is missing.");
+      return;
+    }
+
+    router.push(
+      Paths.myProfile,
+      "root"
+    );
   };
 
-  const handleAbout = () => {
-    navigate(Paths.about(), 'forward');
-  };
- const handleLogin = () => {
-    navigate(Paths.login, 'forward');
-  };
   return {
     router,
     dispatch,
@@ -53,6 +41,6 @@ const handleHome = () => {
     handleEvents,
     handleProfile,
     handleAbout,
-    handleLogin
+    handleLogin,
   };
 }

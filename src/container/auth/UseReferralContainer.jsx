@@ -12,8 +12,10 @@ import authRepo from "../../data/authRepo";
 import { debounce } from "lodash";
 import { Preferences } from "@capacitor/preferences";
 import { IonContent, useIonRouter } from "@ionic/react";
-import { ErrorBoundary } from "@sentry/react";
+
 import { Capacitor } from "@capacitor/core";
+import ErrorBoundary from "../../ErrorBoundary";
+
 
 // ─── Palette ─────────────────────────────────────────────────────────────────
 const C = {

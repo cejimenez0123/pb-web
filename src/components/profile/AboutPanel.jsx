@@ -87,7 +87,7 @@ const AboutPanel = ({ profile, router }) => {
 
   return (
     <div className={styles.profile.mine.about.content}>
-      <div>
+  
         <SectionHeader title="Bio" />
 
         {(profile.bio || profile.selfStatement) && (
@@ -95,8 +95,7 @@ const AboutPanel = ({ profile, router }) => {
             {profile.bio ?? profile.selfStatement}
           </p>
         )}
-      </div>
-
+     
       <div>
         <SectionHeader title="Location" />
 
@@ -112,6 +111,7 @@ const AboutPanel = ({ profile, router }) => {
           </p>
         )}
       </div>
+
 
       {hashtags.length > 0 && (
         <div>

@@ -1,16 +1,19 @@
+
 import Paths from "../../core/paths";
-// import EmptyState from "../EmptyState";
 import PaginatedList from "../page/PaginatedList";
-import { getMyCollections } from "../../actions/CollectionActions";
 import { useSelector } from "react-redux";
 import EmptyState from "../general/EmptyState";
-// 
-const CommunitiesPanel = ({fetch,id, router }) => {
+import styles from "../../styles/style";
+import truncate from "html-truncate";
+
+const CommunitiesPanel = ({ fetch, id, router }) => {
   const profile = useSelector((state) => state.users.currentProfile);
+
+  const communityStyles = styles.communities
 
   return (
     <PaginatedList
-  cacheKey={`libraries${id ? `:${id}` : ""}`}
+      cacheKey={`libraries${id ? `:${id}` : ""}`}
       params={{ type: "library" }}
       fetcher={fetch}
       pageSize={6}
@@ -20,13 +23,24 @@ const CommunitiesPanel = ({fetch,id, router }) => {
         <div
           key={c.id}
           onClick={() => router.push(Paths.collection.createRoute(c.id))}
-          className="p-4 rounded-xl bg-base-bg text-left active:scale-[0.98] transition"
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              router.push(Paths.collection.createRoute(c.id));
+            }
+          }}
+          className={communityStyles.item+" h-[6rem] "}
         >
-          <p className="text-sm font-medium text-gray-900">
+          <p className={communityStyles.title}>
             {c.title?.length > 0 ? c.title : "Untitled"}
           </p>
+
           {c.purpose && (
-            <p className="text-sm text-gray-500 mt-1">{c.purpose}</p>
+            <p className={communityStyles.purpose}>
+              {truncate(c.purpose,94)}
+            </p>
           )}
         </div>
       )}

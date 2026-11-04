@@ -11,7 +11,7 @@ import checkResult from "../../core/checkResult";
 import clear from "../../images/icons/close.svg";
 import Context from "../../context";
 import { IonImg, IonLabel } from "@ionic/react";
-import { ErrorBoundary } from "@sentry/react";
+import ErrorBoundary from "../../ErrorBoundary";
 
 export function HashtagForm({ item, type = "story" }) {
   const { setError } = useContext(Context);

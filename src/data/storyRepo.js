@@ -86,37 +86,37 @@ async getProtectedProfileStories({ profileId, skip = 0, take = 20 } = {}) {
       
         return res.data
     }
-    async getMyStories({
-  skip = 0,
-  status,
-  take = 50,
-  search = "",
-  type,
-} = {}) {
-  try {
-    const headers = await this.getAuthHeaders();
+//     async getMyStories({
+//   skip = 0,
+//   status,
+//   take = 50,
+//   search = "",
+//   type,
+// } = {}) {
+//   try {
+//     const headers = await this.getAuthHeaders();
 
-    const res = await axios.get(
-      Enviroment.url + "/story/profile/protected",
-      {
-        headers: headers,
+//     const res = await axios.get(
+//       Enviroment.url + "/story/profile/protected",
+//       {
+//         headers: headers,
 
-        params: {
-          type,
-          status,
-          skip,
-          take,
-          search,
-        },
-      }
-    );
+//         params: {
+//           type,
+//           status,
+//           skip,
+//           take,
+//           search,
+//         },
+//       }
+//     );
 
-    return res.data;
-  } catch (e) {
-    console.error("getMyStories failed:", e);
-    throw e;
-  }
-}
+//     return res.data;
+//   } catch (e) {
+//     console.error("getMyStories failed:", e);
+//     throw e;
+//   }
+// }
 
 
 
@@ -129,6 +129,34 @@ async getProtectedProfileStories({ profileId, skip = 0, take = 20 } = {}) {
 //   }
 // }
     
+
+async getMyStories({
+  skip = 0,
+  status,
+  take = 50,
+  search = "",
+  type,
+  signal,
+} = {}) {
+  const headers = await this.getAuthHeaders();
+
+  const { data } = await axios.get(
+    `${this.url}/profile/protected`,
+    {
+      headers,
+      signal,
+      params: {
+        skip,
+        status,
+        take,
+        search,
+        type,
+      },
+    }
+  );
+
+  return data;
+}
 
     async getPublicProfileStories({profileId}){
         let res = await axios.get(this.url+"/profile/"+profileId+"/public")

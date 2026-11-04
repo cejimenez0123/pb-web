@@ -62,13 +62,13 @@ export default function PaginatedList({
           </div>
         )
       )}
-
+<div className=" gap-1 flex w-[100%] flex-col">
       {items.map((item, index) => (
-        <div key={item.id ?? index}>
-          {renderItem(item, index)}
-        </div>
+    
+          <>{renderItem(item, index)}</>
+    
       ))}
-
+</div>
       {items.length > 0 && pagination === "controls" && (
         <PaginationControls
           page={page}

@@ -87,14 +87,140 @@ export default function EditCollectionContainer() {
   const { id } = useParams();
   const router = useIonRouter();
   const dispatch = useDispatch();
-
+const [savingDetails, setSavingDetails] = useState(false);
+const saving = savingDetails||savingContent
+const [savingContent, setSavingContent] = useState(false);
   const { showAlert } = useAlert();
   const { openDialog, closeDialog, resetDialog } = useDialog();
 
   const currentProfile = useSelector(
     (state) => state.users.currentProfile
   );
+const handleSaveDetails = async () => {
+  if (!colInView || !currentProfile) return;
 
+  setSavingDetails(true);
+
+  try {
+    const result = await dispatch(
+      patchCollectionDetails({
+        id,
+        title: title.trim(),
+        purpose: purpose.trim(),
+        isPrivate,
+        isOpenCollaboration: isOpen,
+        followersAre,
+      })
+    );
+
+    checkResult(
+      result,
+      (payload) => {
+        if (payload?.collection) {
+          dispatch(
+            updatePaginatedItem({
+              key: "collections",
+              item: payload.collection,
+            })
+          );
+        }
+
+        showAlert({
+          message: "Room details updated.",
+          type: AlertType.success,
+        });
+      },
+      (error) => {
+        showAlert({
+          message:
+            error?.message ||
+            "Unable to update Room details.",
+          type: AlertType.error,
+        });
+      }
+    );
+  } catch (error) {
+    showAlert({
+      message:
+        error?.message ||
+        "Unable to update Room details.",
+      type: AlertType.error,
+    });
+  } finally {
+    setSavingDetails(false);
+  }
+};
+
+  const handleSaveContent = async () => {
+  if (!colInView || !currentProfile) return;
+
+  setSavingContent(true);
+
+  try {
+    const storyToCol = [];
+    const colToCol = [];
+
+    content.forEach((item, index) => {
+      if (item.kind === "page" && item.story) {
+        const { kind, ...relationship } = item;
+
+        storyToCol.push({
+          ...relationship,
+          index,
+        });
+      }
+
+      if (item.kind === "room" && item.childCollection) {
+        const { kind, ...relationship } = item;
+
+        colToCol.push({
+          ...relationship,
+          index,
+        });
+      }
+    });
+
+    const result = await dispatch(
+      patchCollectionContent({
+        id,
+        storyToCol,
+        colToCol,
+      })
+    );
+
+    checkResult(
+      result,
+      (payload) => {
+        if (payload?.collection) {
+          dispatch(
+            updatePaginatedItem({
+              key: "collections",
+              item: payload.collection,
+            })
+          );
+        }
+
+        showAlert({
+          message: "Room contents updated.",
+          type: AlertType.success,
+        });
+      },
+      (error) => {
+        showAlert({
+          message: error?.message || "Unable to update room contents.",
+          type: AlertType.error,
+        });
+      }
+    );
+  } catch (error) {
+    showAlert({
+      message: error?.message || "Unable to update room contents.",
+      type: AlertType.error,
+    });
+  } finally {
+    setSavingContent(false);
+  }
+};
   const colInView = useSelector(
     (state) => state.books.collectionInView
   );
@@ -117,7 +243,7 @@ const [content, setContent] = useState([]);
   // const [activeTab, setActiveTab] = useState("pages");
   const [search, setSearch] = useState("");
   const [openHashtag, setOpenHashtag] = useState(false);
-  const [saving, setSaving] = useState(false);
+  // const [saving, setSaving] = useState(false);
 
 
   // =======================================================
@@ -312,41 +438,6 @@ const [content, setContent] = useState([]);
     currentProfile?.id,
   ]);
 
-  // =======================================================
-  // FILTERING
-  // =======================================================
-
-  // const filteredPages = useMemo(() => {
-  //   const query = search.trim().toLowerCase();
-
-  //   if (!query) {
-  //     return newPages;
-  //   }
-
-  //   return newPages.filter((item) =>
-  //     item?.story?.title
-  //       ?.toLowerCase()
-  //       .includes(query)
-  //   );
-  // }, [newPages, search]);
-
-
-  // const filteredCollections = useMemo(() => {
-  //   const query = search.trim().toLowerCase();
-
-  //   if (!query) {
-  //     return newCollections;
-  //   }
-
-  //   return newCollections.filter((item) =>
-  //     item?.childCollection?.title
-  //       ?.toLowerCase()
-  //       .includes(query)
-  //   );
-  // }, [newCollections, search]);
-  // =======================================================
-// FILTERING
-// =======================================================
 
 const filteredContent = useMemo(() => {
   const query = search.trim().toLowerCase();
@@ -392,100 +483,100 @@ const filteredContent = useMemo(() => {
 // SAVE
 // =======================================================
 
-const handleSave = async () => {
-  if (!colInView || !currentProfile) {
-    return;
-  }
+// const handleSave = async () => {
+//   if (!colInView || !currentProfile) {
+//     return;
+//   }
 
-  setSaving(true);
+//   setSaving(true);
 
-  try {
-    const storyToCol = [];
-    const colToCol = [];
+//   try {
+//     const storyToCol = [];
+//     const colToCol = [];
 
-    content.forEach((item, index) => {
-      if (
-        item.kind === "page" &&
-        item.story
-      ) {
-        const {
-          kind,
-          ...relationship
-        } = item;
+//     content.forEach((item, index) => {
+//       if (
+//         item.kind === "page" &&
+//         item.story
+//       ) {
+//         const {
+//           kind,
+//           ...relationship
+//         } = item;
 
-        storyToCol.push({
-          ...relationship,
-          index,
-        });
-      }
+//         storyToCol.push({
+//           ...relationship,
+//           index,
+//         });
+//       }
 
-      if (
-        item.kind === "room" &&
-        item.childCollection
-      ) {
-        const {
-          kind,
-          ...relationship
-        } = item;
+//       if (
+//         item.kind === "room" &&
+//         item.childCollection
+//       ) {
+//         const {
+//           kind,
+//           ...relationship
+//         } = item;
 
-        colToCol.push({
-          ...relationship,
-          index,
-        });
-      }
-    });
+//         colToCol.push({
+//           ...relationship,
+//           index,
+//         });
+//       }
+//     });
 
-    const result = await dispatch(
-      patchCollectionContent({
-        id,
-        isPrivate,
-        isOpenCollaboration: isOpen,
-        title: title.trim(),
-        purpose: purpose.trim(),
-        storyToCol,
-        colToCol,
-        col: colInView,
-        profile: currentProfile,
-      })
-    );
+//     const result = await dispatch(
+//       patchCollectionContent({
+//         id,
+//         isPrivate,
+//         isOpenCollaboration: isOpen,
+//         title: title.trim(),
+//         purpose: purpose.trim(),
+//         storyToCol,
+//         colToCol,
+//         col: colInView,
+//         profile: currentProfile,
+//       })
+//     );
 
-    checkResult(
-      result,
-      (payload) => {
-        if (payload?.collection) {
-          dispatch(
-            updatePaginatedItem({
-              key: "collections",
-              item: payload.collection,
-            })
-          );
-        }
+//     checkResult(
+//       result,
+//       (payload) => {
+//         if (payload?.collection) {
+//           dispatch(
+//             updatePaginatedItem({
+//               key: "collections",
+//               item: payload.collection,
+//             })
+//           );
+//         }
 
-        showAlert({
-          message: "Room updated.",
-          type: AlertType.success,
-        });
-      },
-      (error) => {
-        showAlert({
-          message:
-            error?.message ||
-            "Unable to save this room.",
-          type: AlertType.error,
-        });
-      }
-    );
-  } catch (error) {
-    showAlert({
-      message:
-        error?.message ||
-        "Unable to save this room.",
-      type: AlertType.error,
-    });
-  } finally {
-    setSaving(false);
-  }
-};
+//         showAlert({
+//           message: "Room updated.",
+//           type: AlertType.success,
+//         });
+//       },
+//       (error) => {
+//         showAlert({
+//           message:
+//             error?.message ||
+//             "Unable to save this room.",
+//           type: AlertType.error,
+//         });
+//       }
+//     );
+//   } catch (error) {
+//     showAlert({
+//       message:
+//         error?.message ||
+//         "Unable to save this room.",
+//       type: AlertType.error,
+//     });
+//   } finally {
+//     setSaving(false);
+//   }
+// };
 
 
   // =======================================================
@@ -610,13 +701,7 @@ const handleSave = async () => {
       >
         <main
         className={styles.page}
-          // className="
-          //   min-h-full
-          //   bg-plumb-surface 
-          //   text-text-primary
-          //   dark:bg-base-bgDark
-          //   dark:text-cream
-          // "
+   
         >
 
           {/* =========================================== */}
@@ -758,6 +843,7 @@ const handleSave = async () => {
                     Manage access
                   </button>
 
+
                   <button
                     onClick={() =>
                       router.push(
@@ -778,7 +864,16 @@ const handleSave = async () => {
             </div>
           </section>
 
-
+<div className="flex justify-end px-4">
+  <button
+    type="button"
+    onClick={handleSaveDetails}
+    disabled={savingDetails}
+    className={PRIMARY_BUTTON}
+  >
+    {savingDetails ? "Saving details..." : "Save details"}
+  </button>
+</div>
           {/* =========================================== */}
           {/* EDITOR */}
           {/* =========================================== */}
@@ -1285,7 +1380,7 @@ const handleSave = async () => {
                     disabled={saving}
                     className={PRIMARY_BUTTON}
                   >
-                    {saving
+                    {savingDetails||savingContent
                       ? "Saving..."
                       : "Save changes"}
                   </button>

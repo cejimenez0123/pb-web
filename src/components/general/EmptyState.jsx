@@ -25,14 +25,14 @@ function EmptyState({
       )}
 
       {action && onAction && (
-        <button
+        <div
           type="button"
           onClick={onAction}
           className={styles.button.primary + "  mb-4" }
 
         >
           {action}
-        </button>
+        </div>
       )}
     </div>
   );

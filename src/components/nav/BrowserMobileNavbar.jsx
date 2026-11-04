@@ -10,16 +10,16 @@ function BrowserMobileNavbar({
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const {
-    handleHome,
-    handleDiscover,
-    handleWrite,
-    handleEvents,
-    handleProfile,
-    handleAbout,
-    handleSearch,
-    handleLogin
-  } = useNavbarNavigation();
+const {
+  handleHome,
+  handleDiscover,
+  handleWrite,
+  handleEvents,
+  handleProfile,
+  handleAbout,
+  handleSearch,
+  handleLogin,
+} = useNavbarNavigation(currentProfile);
 
   const isLoggedIn = !!currentProfile;
 

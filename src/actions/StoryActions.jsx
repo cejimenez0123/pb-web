@@ -20,9 +20,10 @@ const getStory = createAsyncThunk("story/getStory",async ({id},thunkApi)=>{
         return {story:data.story}
 
     }
-  }catch(error){
- 
-    return {error}
+ }catch (error) {
+  return thunkApi.rejectWithValue({
+    message: error.message,
+  })
   }
 })
 
@@ -37,21 +38,23 @@ const deleteStory = createAsyncThunk(
           await FirebaseStorage.deleteFile({
             path: page.data,
           });
-        } catch (err) {
-          // Ignore storage deletion failure
-        }
-      }
+        }catch (error) {
+  return thunkApi.rejectWithValue({
+    message: error.message,
+  });
+}}
 
       await storyRepo.deleteStory({
         id: page.id,
       });
 
       return page;
-    } catch (error) {
-      return thunkApi.rejectWithValue(error);
-    }
-  }
-);
+  }catch (error) {
+  return thunkApi.rejectWithValue({
+    message: error.message,
+  });
+  
+  }})
 const fetchRecommendedStories = createAsyncThunk(
   'pages/fetchRecommendedStories',
   async (params,thunkApi) => {
@@ -66,10 +69,12 @@ try{
           stories:[]
         }
       }
-    }catch(error){
-      return {error}
-    }
-  })
+  }catch (error) {
+  return thunkApi.rejectWithValue({
+    message: error.message,
+  });
+  
+  }})
   const getMyStories = createAsyncThunk(
   "pages/getMyStories",
   async (params, thunkApi) => {
@@ -103,11 +108,11 @@ const createStory = createAsyncThunk("pages/createStory",async (params,thunkApi)
       return {
         story:data.story
       }
-  }catch(e){
-  
-    return {
-      error: "Create Story"+e
-    }
+  }catch (error) {
+  return thunkApi.rejectWithValue({
+    message: error.message,
+  });
+
   }
 })
 const updateStory = createAsyncThunk("pages/updateStory",async(params,thunkApi)=>{
@@ -119,10 +124,12 @@ const updateStory = createAsyncThunk("pages/updateStory",async(params,thunkApi)=
 return {
     story: data.story
   }
-}catch(e){
-    return {
-      error: e
-    }
+  }catch (error) {
+  return thunkApi.rejectWithValue({
+    message: error.message,
+  });
+
+  
   }}
 )
 const getCollectionStoriesPublic = createAsyncThunk("pages/getCollectionStoriesPublic",async (params,thunkApi)=>{
@@ -131,8 +138,10 @@ const getCollectionStoriesPublic = createAsyncThunk("pages/getCollectionStoriesP
      return {
       list:data.list
      }
-  }catch(e){
-    return {error:e}
+   }catch (error) {
+  return thunkApi.rejectWithValue({
+    message: error.message,
+  });
   }
 })
 const getPrompts = createAsyncThunk("pages/getPrompts",async ({take },thunkApi)=>{
@@ -142,8 +151,10 @@ const getPrompts = createAsyncThunk("pages/getPrompts",async ({take },thunkApi)=
      return {
       prompts:data.prompts
      }
-  }catch(e){
-    return {error:e}
+ }catch (error) {
+  return thunkApi.rejectWithValue({
+    message: error.message,
+  });
   }
 })
 const getCollectionStoriesProtected = createAsyncThunk("pages/getCollectionStoriesProtected",async (params,thunkApi)=>{
@@ -154,10 +165,11 @@ const getCollectionStoriesProtected = createAsyncThunk("pages/getCollectionStori
     return {
      list:data.list
     }
-  }catch(e){
-    return {
-      error:e
-    }
+ }catch (error) {
+  return thunkApi.rejectWithValue({
+    message: error.message,
+  
+    })
   }
 })
 export {deleteStory,getStory,getMyStories,createStory,updateStory,getPrompts,

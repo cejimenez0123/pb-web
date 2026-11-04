@@ -1,10 +1,8 @@
 
-
-import React, { useEffect, useMemo, useState } from "react";
-import { useSelector } from "react-redux";
+import { useMemo } from "react";
 import { IonContent, useIonRouter } from "@ionic/react";
+import { useSelector } from "react-redux";
 
-import useProfileDependentEffects from "../core/useProfileDependentEffects.jsx";
 import Paths from "../core/paths.js";
 import { PageType } from "../core/constants.js";
 import { useDialog } from "../domain/usecases/useDialog.jsx";
@@ -15,43 +13,64 @@ import SectionHeader from "../components/pieces/SectionHeader.jsx";
 import EmptyState from "../components/general/EmptyState.jsx";
 
 import styles from "../styles/style.js";
+import ErrorBoundary from "../ErrorBoundary.jsx";
+import RoomsPreviewSection from "../components/collection/RoomsPreviewSection.jsx";
+import OpenWorkSection from "../components/OpenWorkSection.jsx";
+
+// Keep fallback references stable.
+// Do not use `|| []` or `|| {}` directly inside a selector.
+const EMPTY_ARRAY = [];
 
 /*
 |--------------------------------------------------------------------------
-| HOME
+| CONTENT HUB
+|--------------------------------------------------------------------------
+*/
+
+function ContentHubContainer() {
+  return (
+    <IonContent fullscreen={true} scrollY={true}>
+      <ErrorBoundary>
+    
+        <ContentHubContent />
+     
+      </ErrorBoundary>
+    </IonContent>
+  );
+}
+
+/*
+|--------------------------------------------------------------------------
+| HOME DATA
 |--------------------------------------------------------------------------
 |
-| Home is the user's personal front door to Plumbum.
-|
-| Write    -> active writing practice
-| Discover -> things beyond the user's own work
-| Events   -> complete event/calendar experience
-| You      -> complete body of work and rooms
+| Keep Redux selection separate from presentation.
+| These selectors return existing Redux references rather than creating
+| new objects or arrays.
 |
 */
 
-export default function ContentHubContainer() {
+function useHomeData() {
   const currentProfile = useSelector(
     (state) => state.users.currentProfile
   );
 
-  const router = useIonRouter();
-  const isTablet = useMediaQuery("(min-width: 768px)");
-
-  const { stories = [] } = useProfileDependentEffects(
-    currentProfile,
-    true,
-    isTablet ? 3 : 1
+  const recommendedStories = useSelector(
+    (state) => state.pages.recommendedStories
   );
 
-  const { openDialog, closeDialog } = useDialog();
+  const stories = Array.isArray(recommendedStories)
+    ? recommendedStories
+    : EMPTY_ARRAY;
 
-  /*
-   * Home only surfaces work that is still in progress.
-   * Stories without a status remain visible.
-   */
+  const profileCollections = Array.isArray(
+    currentProfile?.profileToCollections
+  )
+    ? currentProfile.profileToCollections
+    : EMPTY_ARRAY;
+
   const openStories = useMemo(() => {
-    return [...stories]
+    return stories
       .filter((story) => {
         if (!story) return false;
         if (!story.status) return true;
@@ -82,50 +101,45 @@ export default function ContentHubContainer() {
       .slice(0, 4);
   }, [stories]);
 
-  /*
-   * Home shows a preview of the user's rooms.
-   * Full room management stays on the Rooms experience.
-   */
   const homeRooms = useMemo(() => {
-    const relationships =
-      currentProfile?.profileToCollections || [];
-
-    return relationships
+    return profileCollections
       .filter((item) => item?.collection?.id)
       .slice(0, 4);
-  }, [currentProfile?.profileToCollections]);
+  }, [profileCollections]);
 
-  if (!currentProfile) {
-    return null;
-  }
+  return {
+    currentProfile,
+    stories,
+    openStories,
+    homeRooms,
+  };
+}
+
+/*
+|--------------------------------------------------------------------------
+| HOME CONTENT
+|--------------------------------------------------------------------------
+*/
+
+function ContentHubContent() {
+  const router = useIonRouter();
+
+  const {
+    currentProfile,
+    openStories,
+    homeRooms,
+  } = useHomeData();
+
+  const { openDialog, closeDialog } = useDialog();
+
+  /*
+  |--------------------------------------------------------------------------
+  | Navigation
+  |--------------------------------------------------------------------------
+  */
 
   const goToWrite = () => {
     router.push(Paths.write);
-  };
-
-  const goToRoom = (profileToCollection) => {
-    const collection = profileToCollection?.collection;
-
-    if (!collection?.id) return;
-
-    router.push(
-      Paths.collection.createRoute(collection.id)
-    );
-  };
-
-  const goToRooms = () => {
-    openDialog({
-      title: "Make a room",
-      scrollY: false,
-      text: (
-        <CreateCollectionForm
-          onClose={() => closeDialog()}
-        />
-      ),
-      disagree: () => closeDialog(),
-      disagreeText: "Close",
-      breakpoint: 1,
-    });
   };
 
   const goToWorkshop = () => {
@@ -135,6 +149,10 @@ export default function ContentHubContainer() {
     }
 
     router.push("/workshop");
+  };
+
+  const goToEvents = () => {
+    router.push(Paths.calendar());
   };
 
   const goToStory = (story) => {
@@ -154,53 +172,71 @@ export default function ContentHubContainer() {
     }
   };
 
-  const goToEvents = () => {
-    router.push(Paths.calendar());
+  const goToRoom = (profileToCollection) => {
+    const collection = profileToCollection?.collection;
+
+    if (!collection?.id) return;
+
+    router.push(
+      Paths.collection.createRoute(collection.id)
+    );
   };
 
+  /*
+  |--------------------------------------------------------------------------
+  | Dialogs
+  |--------------------------------------------------------------------------
+  */
+
+  const goToRooms = () => {
+    openDialog({
+      title: "Make a room",
+      scrollY: false,
+      text: (
+        <CreateCollectionForm
+          onClose={closeDialog}
+        />
+      ),
+      disagree: closeDialog,
+      disagreeText: "Close",
+      breakpoint: 1,
+    });
+  };
+
+  /*
+  |--------------------------------------------------------------------------
+  | Render
+  |--------------------------------------------------------------------------
+  */
+
   return (
-    <IonContent
-      scrollY={true}
-      className="page-content"
-      fullscreen
+    <div
+    className={styles.pageShell.base}
+
     >
-      <main
-  
-      >
-        <div
-          className="
-            mx-auto w-full max-w-[50em]
-            px-4 pb-24 pt-12
-            sm:px-6 sm:pt-16
-            lg:px-8 lg:pt-20
-          "
-        >
-          <HomeHeader
-            profile={currentProfile}
-            onWrite={goToWrite}
-            onRooms={goToRooms}
-            onWorkshop={goToWorkshop}
-          />
+      <div className="mx-auto w-full px-4 pt-14 max-w-5xl">
+        <HomeHeader
+          profile={currentProfile}
+          onWrite={goToWrite}
+          onRooms={goToRooms}
+          onWorkshop={goToWorkshop}
+        />
 
-          <FeaturedEventSection
-            currentProfile={currentProfile}
-            onViewEvents={goToEvents}
-          />
+      <UpcomingEventsSection events={[]} onViewEvents={()=>{goToEvents()}}/>
 
-          <OpenWorkSection
-            stories={openStories}
-            onWrite={goToWrite}
-            onSelectStory={goToStory}
-          />
+        <OpenWorkSection
+          stories={openStories}
+          onWrite={goToWrite}
+          onSelectStory={goToStory}
+        />
 
-          <RoomsPreviewSection
-            rooms={homeRooms}
-            onViewRooms={goToRooms}
-            onSelectRoom={goToRoom}
-          />
-        </div>
-      </main>
-    </IonContent>
+        <RoomsPreviewSection
+          rooms={homeRooms}
+          onViewRooms={goToRooms}
+          onSelectRoom={goToRoom}
+        />
+      </div>
+    </div>
   );
 }
 
@@ -254,25 +290,37 @@ function HomeHeader({
         "
       >
         <button
-                className={styles.button.primary}
-          variant="primary"
+          type="button"
           onClick={onWrite}
+          className={`
+            ${styles.button.base}
+            ${styles.button.primary}
+            ${styles.button.large}
+          `}
         >
           Start writing
         </button>
 
         <button
-                className={styles.button.secondary}
-          variant="secondary"
+          type="button"
           onClick={onRooms}
+          className={`
+            ${styles.button.base}
+            ${styles.button.secondary}
+            ${styles.button.large}
+          `}
         >
           Make a room
         </button>
 
         <button
-        className={styles.button.secondary}
-          variant="secondary"
+          type="button"
           onClick={onWorkshop}
+          className={`
+            ${styles.button.base}
+            ${styles.button.secondary}
+            ${styles.button.large}
+          `}
         >
           Read with the community
         </button>
@@ -285,101 +333,9 @@ function HomeHeader({
 |--------------------------------------------------------------------------
 | UPCOMING EVENTS
 |--------------------------------------------------------------------------
-|
-| The existing event component remains responsible for its own display.
-| Keep the list empty until the Home event data source is connected.
-|
 */
 
-function FeaturedEventSection({
-  onViewEvents,
-  currentProfile,
-}) {
-  const upcomingEvents = [];
 
-  return (
-    <section className="mt-14">
-      <UpcomingEventsSection
-        profile={currentProfile}
-        events={upcomingEvents}
-        onViewEvents={onViewEvents}
-      />
-    </section>
-  );
-}
-
-/*
-|--------------------------------------------------------------------------
-| OPTIONAL FEATURED EVENT CARD
-|--------------------------------------------------------------------------
-|
-| Retained for use if Home later surfaces a single featured event.
-|
-*/
-
-function FeaturedEventCard({ event, onClick }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="
-        group block w-full rounded-2xl
-        border border-plumb-border
-        bg-plumb-elevated p-6 text-left
-        transition-all duration-200
-        hover:border-plumb-mintHover hover:shadow-sm
-        focus-visible:outline-none
-        focus-visible:ring-2 focus-visible:ring-plumb-focus
-        focus-visible:ring-offset-2
-        focus-visible:ring-offset-plumb-canvas
-        dark:border-plumb-darkBorder
-        dark:bg-plumb-dark-surface
-        dark:hover:border-plumb-mintLight
-        dark:focus-visible:ring-offset-plumb-dark-canvas
-        sm:p-7
-      "
-    >
-      <p className={styles.text.metadata}>
-        {formatEventDate(event)}
-      </p>
-
-      <h3
-        className={`
-          ${styles.text.heading}
-          mt-3 max-w-2xl
-        `}
-      >
-        {event?.title || "Something happening"}
-      </h3>
-
-      {event?.description && (
-        <p className={`${styles.text.body} mt-3 max-w-2xl`}>
-          {event.description}
-        </p>
-      )}
-
-      <span
-        className="
-          mt-5 inline-flex items-center
-          text-sm font-medium
-          text-plumb-mintHover
-          dark:text-plumb-mintLight
-        "
-      >
-        See event details
-        <span
-          aria-hidden="true"
-          className="
-            ml-2 transition-transform
-            group-hover:translate-x-1
-          "
-        >
-          →
-        </span>
-      </span>
-    </button>
-  );
-}
 
 /*
 |--------------------------------------------------------------------------
@@ -387,40 +343,8 @@ function FeaturedEventCard({ event, onClick }) {
 |--------------------------------------------------------------------------
 */
 
-function OpenWorkSection({
-  stories,
-  onWrite,
-  onSelectStory,
-}) {
-  return (
-    <section className="mt-14">
-      <SectionHeader
-        title="Still open"
-        description="Drafts and fragments you're still finding your way through."
-        actionLabel={
-          stories.length > 0 ? "See all work" : undefined
-        }
-        onAction={
-          stories.length > 0 ? onWrite : undefined
-        }
-      />
 
-      {stories.length > 0 ? (
-        <WorkList
-          stories={stories}
-          onSelectStory={onSelectStory}
-        />
-      ) : (
-        <EmptyState
-          title="Nothing in progress just yet."
-          description="Start with a line, a fragment, or whatever is on your mind."
-          action="Start writing"
-          onAction={onWrite}
-        />
-      )}
-    </section>
-  );
-}
+
 
 /*
 |--------------------------------------------------------------------------
@@ -428,33 +352,15 @@ function OpenWorkSection({
 |--------------------------------------------------------------------------
 */
 
-function WorkList({ stories, onSelectStory }) {
-  return (
-    <div
-      className="
-        mt-4 space-y-1
-        border-y border-plumb-border
-        dark:border-plumb-darkBorder
-      "
-    >
-      {stories.map((story) => (
-        <WorkRow
-          key={story.id}
-          story={story}
-          onClick={() => onSelectStory(story)}
-        />
-      ))}
-    </div>
-  );
-}
 
 function WorkRow({ story, onClick }) {
   return (
     <button
       type="button"
       onClick={onClick}
+      aria-label={`Open ${story?.title || "untitled story"}`}
       className="
-        group flex min-h-16 w-[100%]
+        group flex min-h-16 w-[100%] min-w-0
         items-center justify-between gap-5
         border-b border-plumb-border
         py-4 text-left transition-colors
@@ -465,6 +371,7 @@ function WorkRow({ story, onClick }) {
         focus-visible:ring-plumb-focus
         dark:border-plumb-darkBorder
         dark:hover:bg-plumb-dark-surface
+        motion-reduce:transition-none
       "
     >
       <div className="min-w-0">
@@ -496,6 +403,7 @@ function WorkRow({ story, onClick }) {
           text-plumb-muted transition-transform
           group-hover:translate-x-1
           dark:text-plumb-darkMuted
+          motion-reduce:transform-none
         "
       >
         →
@@ -510,163 +418,13 @@ function WorkRow({ story, onClick }) {
 |--------------------------------------------------------------------------
 */
 
-function RoomsPreviewSection({
-  rooms,
-  onViewRooms,
-  onSelectRoom,
-}) {
-  return (
-    <section className="mt-14">
-      <SectionHeader
-        title="Your rooms"
-        description="Places to gather the stories, ideas, and things you want to keep close."
-        actionLabel="+ Make a room"
-        onAction={onViewRooms}
-      />
-
-      {rooms.length > 0 ? (
-        <RoomGrid
-          rooms={rooms}
-          onSelectRoom={onSelectRoom}
-        />
-      ) : (
-        <EmptyState
-          title="No rooms yet."
-          description="Create a room to keep stories and ideas together."
-          action="Make a room"
-          onAction={onViewRooms}
-        />
-      )}
-    </section>
-  );
-}
-
-function RoomGrid({ rooms, onSelectRoom }) {
-  return (
-    <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-      {rooms.map((profileToCollection) => (
-        <RoomCard
-          key={profileToCollection.id}
-          profileToCollection={profileToCollection}
-          onClick={() => onSelectRoom(profileToCollection)}
-        />
-      ))}
-    </div>
-  );
-}
-
-function RoomCard({ profileToCollection, onClick }) {
-  const room = profileToCollection?.collection;
-
-  if (!room?.id) {
-    return null;
-  }
-
-  const pieceCount =
-    room?.storyCount ??
-    room?.stories?.length ??
-    room?.storyIdList?.length ??
-    null;
-
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="
-        group flex min-h-36 w-full flex-col
-        rounded-2xl border border-plumb-border
-        bg-plumb-surface p-5 text-left
-        transition-all duration-200
-        hover:border-plumb-mintHover hover:shadow-sm
-        focus-visible:outline-none
-        focus-visible:ring-2 focus-visible:ring-plumb-focus
-        focus-visible:ring-offset-2
-        focus-visible:ring-offset-plumb-canvas
-        dark:border-plumb-darkBorder
-        dark:bg-plumb-dark-surface
-        dark:hover:border-plumb-mintLight
-        dark:focus-visible:ring-offset-plumb-dark-canvas
-      "
-    >
-      <p
-        className={`
-          ${styles.text.metadata}
-          uppercase tracking-[0.1em]
-        `}
-      >
-        Room
-      </p>
-
-      <div className="flex items-start justify-between gap-4">
-        <h3
-          className={`
-            ${styles.text.subheading}
-            mt-2 font-serif
-          `}
-        >
-          {room.title || room.name || "Untitled room"}
-        </h3>
-
-        <span
-          aria-hidden="true"
-          className="
-            mt-2 shrink-0 text-xl
-            text-plumb-muted transition-transform
-            group-hover:translate-x-1
-            dark:text-plumb-darkMuted
-          "
-        >
-          →
-        </span>
-      </div>
-
-      {room.description && (
-        <p
-          className={`
-            ${styles.text.body}
-            mt-2 line-clamp-2
-          `}
-        >
-          {room.description}
-        </p>
-      )}
-
-      {pieceCount !== null && (
-        <p className={`${styles.text.metadata} mt-auto pt-4`}>
-          {pieceCount} {pieceCount === 1 ? "piece" : "pieces"}
-        </p>
-      )}
-    </button>
-  );
-}
 
 /*
 |--------------------------------------------------------------------------
-| HOME ACTION
+| ROOM GRID
 |--------------------------------------------------------------------------
 */
 
-// function HomeAction({
-//   children,
-//   onClick,
-//   variant = "secondary",
-// }) {
-//   return (
-//     <button
-//       type="button"
-//       onClick={onClick}
-//       className={`    w-full rounded-2xl px-6 py-3 text-center
-//         sm:w-auto sm:px-8 sm:py-4
-//         ${variant === "primary" ? styles.button.primary : styles.button.secondary}
-     
-  
-     
-//       `}
-//     >
-//       {children}
-//     </button>
-//   );
-// }
 
 /*
 |--------------------------------------------------------------------------
@@ -686,64 +444,4 @@ function formatStatus(status) {
   return labels[String(status).toLowerCase()] || status;
 }
 
-function formatEventDate(event) {
-  if (!event) return "";
-
-  const rawDate =
-    event?.startDate ||
-    event?.start_date ||
-    event?.date ||
-    event?.start;
-
-  if (!rawDate) return "";
-
-  const date = new Date(rawDate);
-
-  if (Number.isNaN(date.getTime())) {
-    return rawDate;
-  }
-
-  return new Intl.DateTimeFormat("en-US", {
-    weekday: "short",
-    month: "short",
-    day: "numeric",
-  }).format(date);
-}
-
-/*
-|--------------------------------------------------------------------------
-| RESPONSIVE MEDIA QUERY
-|--------------------------------------------------------------------------
-*/
-
-function useMediaQuery(query) {
-  const [matches, setMatches] = useState(false);
-
-  useEffect(() => {
-    if (typeof window === "undefined") {
-      return undefined;
-    }
-
-    const mediaQuery = window.matchMedia(query);
-    const update = () => setMatches(mediaQuery.matches);
-
-    update();
-
-    if (mediaQuery.addEventListener) {
-      mediaQuery.addEventListener("change", update);
-    } else {
-      // Compatibility fallback for older WebViews.
-      mediaQuery.addListener(update);
-    }
-
-    return () => {
-      if (mediaQuery.removeEventListener) {
-        mediaQuery.removeEventListener("change", update);
-      } else {
-        mediaQuery.removeListener(update);
-      }
-    };
-  }, [query]);
-
-  return matches;
-}
+export default ContentHubContainer;

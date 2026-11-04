@@ -7,6 +7,7 @@ import SectionHeader from "../SectionHeader";
 import EmptyState from "../general/EmptyState";
 
 import styles from "../../styles/style";
+import ListPill from "../page/ListPill";
 
 const PAGE_SIZE = 8;
 
@@ -79,12 +80,22 @@ export default function PortfolioSection({
             />
           }
           renderItem={(item) => (
-            <PortfolioListItem
-              key={item.collection?.id}
-              item={item}
-              router={router}
+            <>
+                    <ListPill
+            router={router}
+              key={item.id}
+              item={{story:item}}
+              profile={profile}
+              onClick={() =>
+                router.push(
+                  Paths.page.createRoute(item.id)
+                )
+              }
             />
-          )}
+          </>
+      
+          )
+        }
         />
       </div>
     </section>

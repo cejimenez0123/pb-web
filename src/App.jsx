@@ -75,7 +75,7 @@ import EULATERMS from "./container/auth/Agreement.jsx";
 
 import AboutContainer from "./container/AboutContainer.jsx";
 import CalendarContainer from "./container/CalendarContainer.jsx";
-import ContentHubContainer from "./container/ContentHubContainer.jsx";
+
 import DiscoveryContainer from "./container/DiscoveryContainer.jsx";
 import EmailPreferences from "./container/EmailPreferences.jsx";
 import FeedbackContainer from "./container/FeedbackContainer.jsx";
@@ -106,6 +106,7 @@ import WriteContainer from "./components/page/WriteContainer.jsx";
 import { useDialog } from "./domain/usecases/useDialog.jsx";
 import AppNavigationChrome from "./components/AppNavigationChrome.jsx";
 import useTermsAcceptance from "./core/useTermsAcceptance.jsx";
+import ContentHubContainer from "./container/ContentHubContainer.jsx";
 
 const CLIENT_ID = import.meta.env.VITE_OAUTH2_CLIENT_ID;
 const IOS_CLIENT_ID = import.meta.env.VITE_IOS_CLIENT_ID;
@@ -516,7 +517,7 @@ function RootRoute() {
   return <Redirect to={Paths.about()} />;
 }
   return (
-    <ErrorBoundary>
+
       <Context.Provider
         value={{
           setPresentingEl,
@@ -539,9 +540,7 @@ function RootRoute() {
         >
           <IonApp>
             <IonReactRouter>
-              {/* {isNative && (
-                <PushNotificationHandler />
-              )} */}
+       
 
            
   <AppNavigationChrome
@@ -1005,7 +1004,7 @@ function RootRoute() {
           </IonApp>
         </LoadScript>
       </Context.Provider>
-    </ErrorBoundary>
+ 
   );
 }
 

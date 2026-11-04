@@ -263,9 +263,6 @@ export default function HashtagContainer() {
             );
 
 
-            // ---------------------------------------------
-            // Direct hashtag collections
-            // ---------------------------------------------
 
             const hashtagCollections =
               fetchedHashtag.collections

@@ -19,7 +19,7 @@ import ErrorBoundary from "../../ErrorBoundary";
 import ProfileInfo from "../../components/profile/ProfileInfo";
 import FollowButton from "../../components/profile/FollowButton";
 import TabBar from "../../components/TabBar";
-import PageProfileList from "../../components/page/PageProfileList";
+
 import PaginatedList from "../../components/page/PaginatedList";
 import SectionHeader from "../../components/SectionHeader";
 import CommunitiesPanel from "../../components/profile/CommunitiesPanel";
@@ -35,10 +35,11 @@ import styles from "../../styles/style";
 
 import horiz from "../../images/icons/more_vert.svg";
 import Pill from "../../components/Pill";
+import ListPill from "../../components/page/ListPill";
 
 const TABS = {
   POSTS: "pages",
-  COLLECTIONS: "collections",
+  COLLECTIONS: "rooms",
   COMMUNITIES: "communities",
   ABOUT: "about",
 };
@@ -143,7 +144,7 @@ function ProfileContainer() {
 
   const tabs = [
     { key: TABS.POSTS, label: "Posts" },
-    { key: TABS.COLLECTIONS, label: "Collections" },
+    { key: TABS.COLLECTIONS, label: "Rooms" },
     { key: TABS.COMMUNITIES, label: "Communities" },
     { key: TABS.ABOUT, label: "About" },
   ];
@@ -234,22 +235,25 @@ function ProfileContainer() {
 
   if (!profile || isLoading) {
     return (
-      <ErrorBoundary>
+
         <IonContent fullscreen>
+                <ErrorBoundary>
           <main className={`${styles.profile.page} min-h-screen`}>
             <ProfileSkeleton />
           </main>
+          </ErrorBoundary>
         </IonContent>
-      </ErrorBoundary>
+      // </ErrorBoundary>
     );
   }
 
   return (
-    <ErrorBoundary>
-     <IonContent fullscreen>
-         <main className={`${styles.profile.page} min-h-screen`}>
-          <div className={styles.profile.content}>
-            {/* Profile header */}
+  
+     <IonContent fullscreen={true} scrollY={true} >
+        <ErrorBoundary>
+
+  <div>
+       
             <header className={styles.profile.header}>
               <div className={styles.profile.identity}>
                 <ProfileInfo profile={profile} compact />
@@ -320,7 +324,7 @@ function ProfileContainer() {
               )}
             </header>
 
-            {/* Report / block dialogs */}
+      
             <ReportContentDialog
               contentType="profile"
               contentId={profile.id}
@@ -428,30 +432,26 @@ function ProfileContainer() {
               </div>
             </div>
 
-      
-            <div className={styles.profile.tabWrapper}>
+       <section
+                aria-label="Profile sections"
+                className={styles.tabs.container}
+
+              >
+                {/* <div className="overflow-x-scroll text-center"> */}
               <TabBar
                 tabs={tabs}
                 active={tab}
                 onChange={setTab}
               />
-            </div>
-
+            {/* </div> */}
+</section>
             {/* Tab content */}
-            <div className={styles.profile.tabContent}>
+            <div className="mx-4" >
               {tab === TABS.POSTS && (
                 <>
-                  {!search && recentPosts.length > 0 && (
-                    <section className={styles.profile.section}>
-                      <SectionHeader title="Recent" />
-                      <PageProfileList
-                        items={recentPosts}
-                        router={router}
-                      />
-                    </section>
-                  )}
+    
+                  
 
-                  <section className={styles.profile.section}>
                     <SectionHeader title="All Pages" />
 
                     <PaginatedList
@@ -461,25 +461,14 @@ function ProfileContainer() {
                       params={{ profileId: id }}
                       pageSize={8}
                       renderItem={(page) => (
-                        <button
-                          key={page.id}
-                          type="button"
-                          onClick={() =>
-                            router.push(
+                        <ListPill item={{story:page}}
+                        onClick={()=>{
+                           router.push(
                               Paths.page.createRoute(page.id)
                             )
-                          }
-                          className={styles.profile.listItem}
-                        >
-                          <div className="text-left mx-4">
-                            {page?.title?.length > 0
-                              ? page.title
-                              : "Untitled"}
-                          </div>
-                        </button>
-                      )}
-                    />
-                  </section>
+                        }}/>
+                      )}/>
+             
 
                   {pages.length === 0 && (
                     <EmptyState text="No posts yet." />
@@ -488,33 +477,31 @@ function ProfileContainer() {
               )}
 
               {tab === TABS.COLLECTIONS && (
-                <section className={`${styles.profile.section} pt-2`}>
+               <>
+                    <SectionHeader title="Room" />
                   <PaginatedList
                     cacheKey={`collections:${id}`}
                     fetcher={getPublicProfileCollections}
                     params={{ profileId: id }}
                     pageSize={8}
                     renderItem={(collection) => (
-                      <button
-                        key={collection.id}
-                        type="button"
-                        onClick={() =>
-                          router.push(
-                            Paths.collection.createRoute(collection.id)
-                          )
-                        }
-                        className={styles.profile.listItem}
-                      >
-                        <div className="text-left mx-4">
-                                 {collection.title?.length > 0 ? collection.title : "Untitled"}
-                        </div>
-                      </button>
+                      <ListPill item={{collection:collection}}
+                      onClick={()=>{
+                        router.push(
+                            Paths.collection.createRoute(collection.id))
+                      }}
+                      />
+               
                     )}
                   />
-                </section>
+             </>
               )}
 
               {tab === TABS.COMMUNITIES && (
+                <>
+                <div className="mb-3">
+              <SectionHeader title={"Communities"}/>
+       </div>
                 <CommunitiesPanel
                   id={id}
                   fetch={(args) =>
@@ -526,6 +513,8 @@ function ProfileContainer() {
                   communities={communities}
                   router={router}
                 />
+                </>
+             
               )}
 
               {tab === TABS.ABOUT && (
@@ -535,16 +524,16 @@ function ProfileContainer() {
                   locationName={locationName}
                 />
               )}
-            </div>
-
+          
             {/* Recommendations */}
             <section className="pb-6">
               <RecommendedProfiles profileId={id} />
             </section>
           </div>
-        </main>
+          </div>
+     </ErrorBoundary>
       </IonContent>
-    </ErrorBoundary>
+
   );
 }
 

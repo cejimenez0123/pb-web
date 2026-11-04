@@ -45,7 +45,7 @@
     border: 1px solid gray;
     
 }
-button {
+/* button {
     -moz-appearance: none;
     -webkit-appearance: none;
     appearance: none;
@@ -55,7 +55,7 @@ button {
     background-color: #fff;
     border: 1px solid rgba(0, 0, 0, 0.2);
     border-radius: 4px;
-}
+} */
 
 button:hover,
 button:focus,
@@ -177,7 +177,7 @@ button:active {
         border: 1px solid gray;
         
     }
-    button {
+    /* button {
         -moz-appearance: none;
         -webkit-appearance: none;
         appearance: none;
@@ -188,7 +188,7 @@ button:active {
         border: 1px solid rgba(0, 0, 0, 0.2);
         
     }
-    
+     */
     button:hover,
     button:focus,
     button:active {
