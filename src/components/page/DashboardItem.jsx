@@ -635,6 +635,7 @@ const hasMoreContent =
         ) : (
           <>
           <div className={theme.excerpt}>
+            <div className="mt-4 mx-2">
   {page.type === PageType.text ? (
     <StoryPreview
       page={page}
@@ -647,7 +648,7 @@ const hasMoreContent =
     />
   )}
 </div>
-     
+     </div>
 
             {hasMoreContent && (
               <button

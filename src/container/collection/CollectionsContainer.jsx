@@ -382,20 +382,7 @@ router.push(
 
           <div className="mt-6">
 
-            {/* {loadingCreated ? (
-              <RoomGridSkeleton count={4} />
-            ) : createdRooms.length > 0 ? (
-              <RoomGrid
-                rooms={createdRooms}
-                  onSelectRoom={handleOpenRoom}
-              />
-            ) : (
-              <EmptyRooms
-                message="No collections yet. Start one before you know what it is. It can change shape later."
-                actionLabel="Start a Room"
-                onAction={handleCreate}
-              />
-            )} */}
+ 
 
           </div>
 

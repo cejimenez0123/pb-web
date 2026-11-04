@@ -95,14 +95,14 @@ const SECONDARY_BUTTON =
 const PRIMARY_BUTTON =
   `${styles.button.primary} ${BUTTON}`;
 
-const TEXT_BUTTON =
-  "inline-flex items-center    bg-plumb-blueSea text-plumb-darkText  gap-2 text-sm " +
-  "text-text-secondary transition-colors " +
-  "hover:text-text-brand focus-visible:outline-none " +
-  "focus-visible:ring-2 focus-visible:ring-button-primary-bg/40 " +
-  "focus-visible:ring-offset-2 " +
-  "focus-visible:ring-offset-plumb-surface " +
-  "dark:focus-visible:ring-offset-base-bgDark";
+// const TEXT_BUTTON =
+//   "inline-flex items-center    bg-plumb-blueSea text-plumb-darkText  gap-2 text-sm " +
+//   "text-text-secondary transition-colors " +
+//   "hover:text-text-brand focus-visible:outline-none " +
+//   "focus-visible:ring-2 focus-visible:ring-button-primary-bg/40 " +
+//   "focus-visible:ring-offset-2 " +
+//   "focus-visible:ring-offset-plumb-surface " +
+//   "dark:focus-visible:ring-offset-base-bgDark";
 
 // ---------------------------------------------------------
 // Main page
@@ -759,7 +759,7 @@ export default function CollectionContainer() {
                   what is inside this room.
                 </p>
 
-                <button
+                <div
                   type="button"
                   onClick={() =>
                     history.push(Paths.collections.path)
@@ -767,7 +767,7 @@ export default function CollectionContainer() {
                   className={PRIMARY_BUTTON}
                 >
                   Back to Rooms
-                </button>
+                </div>
               </div>
             </div>
           </main>
@@ -838,17 +838,18 @@ export default function CollectionContainer() {
 
         <section className="border-b border-card-border dark:border-white/10">
           <div className={`${PAGE} pt-10 pb-8 sm:pt-14`}>
-            <button
+            <div
               type="button"
             
               onClick={() =>
                 history.push(Paths.collections.path)
               }
-              className={`${TEXT_BUTTON} mb-8`}
+              className="bg-blueSea"
+              // className={`${TEXT_BUTTON} mb-8`}
             >
-              <span aria-hidden="true">←</span>
-              <span>Rooms</span>
-            </button>
+              <span aria-hidden="true" className="text-plumb-ink dark:text-plumb-darkText">←</span>
+              <span className="mx-2 text-plumb-ink dark:text-plumb-darkText">Rooms</span>
+            </div>
 
             <div className="max-w-3xl">
               <div className="mb-4 flex flex-wrap items-center gap-2">
@@ -874,7 +875,7 @@ export default function CollectionContainer() {
                       rounded-full
                       border border-card-border
                       px-3 py-1
-                   
+                    mt-1
                       text-xs font-medium
                       text-text-secondary
                       dark:border-white/10
@@ -956,7 +957,7 @@ export default function CollectionContainer() {
           <div className={`${PAGE} py-4`}>
             <div className="flex flex-wrap items-center gap-2">
               {currentProfile && (
-                <button
+                <div
                   type="button"
                   disabled={bookmarkLoading}
                   onClick={
@@ -965,43 +966,45 @@ export default function CollectionContainer() {
                       : handleFollow
                   }
                   className={
+                    styles.button.base+
                     role
-                      ? PRIMARY_BUTTON
-                      : SECONDARY_BUTTON
+                      ? styles.button.primary
+                      :styles.button.secondary
                   }
                 >
                   {role ? "Following" : "Follow"}
-                </button>
+                </div>
               )}
 
               {currentProfile && (
-                <button
+                <div
                   type="button"
                   disabled={bookmarkLoading}
                   onClick={handleBookmark}
-                  className={SECONDARY_BUTTON}
+                  className={styles.button.base+ " "+styles.button.secondary }
                 >
                   {isBookmarked
                     ? "Saved to Home"
                     : "Save to Home"}
-                </button>
+                </div>
               )}
 
               {currentProfile && (
-                <button
+                <div
                   type="button"
                   disabled={bookmarkLoading}
                   onClick={handleArchive}
-                  className={SECONDARY_BUTTON}
+                  // className={SECONDARY_BUTTON}
+                  className={styles.button.base+ " "+styles.button.secondary }
                 >
                   {isArchived
                     ? "In Archive"
                     : "Save to Archive"}
-                </button>
+                </div>
               )}
 
               {canEdit && (
-                <button
+                <div
                   type="button"
                   onClick={() =>
                     history.push(
@@ -1010,14 +1013,14 @@ export default function CollectionContainer() {
                       )
                     )
                   }
-                  className={SECONDARY_BUTTON}
+               className={styles.button.base+ " "+styles.button.secondary }
                 >
                   Edit room
-                </button>
+                </div>
               )}
 
               {canAdd && (
-                <button
+                <div
                   type="button"
                   onClick={() =>
                     history.push(
@@ -1026,10 +1029,10 @@ export default function CollectionContainer() {
                       )
                     )
                   }
-                  className={PRIMARY_BUTTON}
+                  className={styles.button.base+" "+styles.button.primary}
                 >
                   Add to Room
-                </button>
+                </div>
               )}
             </div>
           </div>
@@ -1039,12 +1042,13 @@ export default function CollectionContainer() {
         {/* Room tabs and content */}
         {/* --------------------------------------------- */}
 
-        <section className="mx-4">
-          <div  >
+        <section className="mx-4 ">
+      
     
               
            
               <TabBar
+           
                 tabs={tabs}
                 active={tab}
                 onChange={setTab}
@@ -1075,7 +1079,7 @@ export default function CollectionContainer() {
                 />
               )}
             </div>
-          </div>
+     
         </section>
 
         {/* --------------------------------------------- */}
@@ -1108,6 +1112,7 @@ export default function CollectionContainer() {
             </div>
           </section>
         )}
+     
       </main>
     </ErrorBoundary>
     </IonContent>

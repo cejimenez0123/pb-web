@@ -324,7 +324,7 @@ primary: [
   "dark:border-plumb-mintLight dark:border dark:border-2 btn  dark:text-plumb-mintLight",
     "rounded-full font-semiBold  ",
   "text-base ",
-  
+  "py-2 px-6 text-[1rem] ",
   "bg-plumb-mint dark:bg-transparent dark:border-plumb-button-primary-bg dark:text-plumb-button-primary-bg text-plumb-darkText",
   "shadow-sm",
   "hover:bg-plumb-mint/60 hover:border-plumb-mintLight hover:border-3",
@@ -336,6 +336,7 @@ primary: [
 
   
 secondary: [
+  "py-2 px-6 text-[1rem] ",
   "dark:border dark:text-plumb-button-secondary-bg dark:border-plumb-button-secondary-bg hover:border-3 dark:border-2",
   "rounded-full",
 "text-base",
@@ -350,7 +351,7 @@ secondary: [
 
   accent: [
     "border dark:border-2 dark:border-plumb-blueSea dark:text-plumb-blueSea",
-     "text-base",
+     "text-[1rem] ",
         "rounded-full",
     "bg-plumb-accent-blue text-plumb-darkText py-2 px-6 dark:bg-transparent ",
     "text-plumb-button-accent-text",
