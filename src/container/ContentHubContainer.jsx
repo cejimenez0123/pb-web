@@ -9,8 +9,6 @@ import { useDialog } from "../domain/usecases/useDialog.jsx";
 
 import CreateCollectionForm from "../components/collection/CreateCollectionForm.jsx";
 import UpcomingEventsSection from "../components/events/UpcomingEventsSection.jsx";
-import SectionHeader from "../components/pieces/SectionHeader.jsx";
-import EmptyState from "../components/general/EmptyState.jsx";
 
 import styles from "../styles/style.js";
 import ErrorBoundary from "../ErrorBoundary.jsx";
@@ -289,7 +287,7 @@ function HomeHeader({
           sm:flex-row sm:flex-wrap
         "
       >
-        <button
+        <div
           type="button"
           onClick={onWrite}
           className={`
@@ -299,9 +297,9 @@ function HomeHeader({
           `}
         >
           Start writing
-        </button>
+        </div>
 
-        <button
+        <div
           type="button"
           onClick={onRooms}
           className={`
@@ -311,9 +309,9 @@ function HomeHeader({
           `}
         >
           Make a room
-        </button>
+        </div>
 
-        <button
+        <div
           type="button"
           onClick={onWorkshop}
           className={`
@@ -323,7 +321,7 @@ function HomeHeader({
           `}
         >
           Read with the community
-        </button>
+        </div>
       </div>
     </header>
   );

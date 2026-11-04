@@ -12,7 +12,7 @@ export default function useNavbarNavigation(currentProfile) {
 
   const handleSearch = () => navigate("/search");
   const handleWrite = () => navigate(Paths.write);
-  const handleHome = () => router.push("/", "root");
+  const handleHome = () => router.push("/");
   const handleDiscover = () => navigate(Paths.discovery);
   const handleEvents = () => navigate(Paths.calendar());
   const handleAbout = () => navigate(Paths.about());
@@ -26,7 +26,7 @@ export default function useNavbarNavigation(currentProfile) {
 
     router.push(
       Paths.myProfile,
-      "root"
+ 
     );
   };
 

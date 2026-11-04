@@ -1,7 +1,7 @@
 
 import React, { useEffect, useRef, useCallback, useState } from "react";
 import { useSelector } from "react-redux";
-import { ErrorBoundary } from "@sentry/react";
+import ErrorBoundary from "../../ErrorBoundary";
 import alignLeft from "../../images/editor/align-left-svgrepo-com.svg"
 import alignCenter from "../../images/editor/align-center-svgrepo-com.svg"
 import alignRight from "../../images/editor/align-right-svgrepo-com.svg"

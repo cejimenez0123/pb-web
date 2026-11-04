@@ -21,7 +21,7 @@ import FollowButton from "../../components/profile/FollowButton";
 import TabBar from "../../components/TabBar";
 
 import PaginatedList from "../../components/page/PaginatedList";
-import SectionHeader from "../../components/SectionHeader";
+
 import CommunitiesPanel from "../../components/profile/CommunitiesPanel";
 import AboutPanel from "../../components/profile/AboutPanel";
 import RecommendedProfiles from "../../components/page/RecommendedProfile";
@@ -36,6 +36,7 @@ import styles from "../../styles/style";
 import horiz from "../../images/icons/more_vert.svg";
 import Pill from "../../components/Pill";
 import ListPill from "../../components/page/ListPill";
+import SectionHeader from "../../components/pieces/SectionHeader";
 
 const TABS = {
   POSTS: "pages",
@@ -252,9 +253,11 @@ function ProfileContainer() {
      <IonContent fullscreen={true} scrollY={true} >
         <ErrorBoundary>
 
-  <div>
+  <div className={""}>
        
-            <header className={styles.profile.header}>
+            <header 
+            className={styles.profile.header+" mx-4"}
+            >
               <div className={styles.profile.identity}>
                 <ProfileInfo profile={profile} compact />
 
@@ -363,7 +366,8 @@ function ProfileContainer() {
                 </div>
               </div>
             )}
-
+            {/*  */}
+<div></div>
             {/* Search, follow, and profile actions */}
             <div className={styles.profile.searchRow}>
               <input
@@ -434,25 +438,32 @@ function ProfileContainer() {
 
        <section
                 aria-label="Profile sections"
-                className={styles.tabs.container}
+                className={styles.tabs.pill.container}
 
               >
-                {/* <div className="overflow-x-scroll text-center"> */}
+           
               <TabBar
                 tabs={tabs}
                 active={tab}
                 onChange={setTab}
               />
-            {/* </div> */}
+      
 </section>
             {/* Tab content */}
-            <div className="mx-4" >
+            <div className=" mx-4" >
               {tab === TABS.POSTS && (
                 <>
-    
-                  
+                                   <div className=" mx-4" >
+          <h2
+            id="post-heading"
+            className={styles.profile.mine.sectionTitle}
+          >
+  Posts
+          </h2>
 
-                    <SectionHeader title="All Pages" />
+        </div>
+
+                    {/* <SectionHeader title="All Pages" /> */}
 
                     <PaginatedList
                       cacheKey={`stories:${id}`}
@@ -478,7 +489,15 @@ function ProfileContainer() {
 
               {tab === TABS.COLLECTIONS && (
                <>
-                    <SectionHeader title="Room" />
+                                       <div className=" mx-4" >
+          <h2
+            id="archive-heading"
+            className={styles.profile.mine.sectionTitle}
+          >
+     Room
+          </h2>
+
+        </div>
                   <PaginatedList
                     cacheKey={`collections:${id}`}
                     fetcher={getPublicProfileCollections}
@@ -499,9 +518,16 @@ function ProfileContainer() {
 
               {tab === TABS.COMMUNITIES && (
                 <>
-                <div className="mb-3">
-              <SectionHeader title={"Communities"}/>
-       </div>
+          
+                       <div className=" mx-4" >
+          <h2
+            id="archive-heading"
+            className={styles.profile.mine.sectionTitle}
+          >
+       Communities
+          </h2>
+
+        </div>
                 <CommunitiesPanel
                   id={id}
                   fetch={(args) =>
@@ -518,11 +544,12 @@ function ProfileContainer() {
               )}
 
               {tab === TABS.ABOUT && (
+                    <div className=" mx-4" >
                 <AboutPanel
                   router={router}
                   profile={profile}
                   locationName={locationName}
-                />
+                /></div>
               )}
           
             {/* Recommendations */}

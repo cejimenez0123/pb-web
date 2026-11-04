@@ -1,4 +1,5 @@
 const shared = {
+  
   // Page foundations
   page: {
     canvas: `
@@ -285,7 +286,7 @@ hash: {
 
   title: [
     "text-sm font-medium",
-    "text-plumb-ink dark:text-plumb-lightText",
+    "text-plumb-ink dark:text-plumb-darkText",
     "break-words",
   ].join(" "),
 
@@ -326,7 +327,7 @@ primary: [
   
   "bg-plumb-mint dark:bg-transparent dark:border-plumb-button-primary-bg dark:text-plumb-button-primary-bg text-plumb-darkText",
   "shadow-sm",
-  "hover:bg-plumb-mint",
+  "hover:bg-plumb-mint/60 hover:border-plumb-mintLight hover:border-3",
   "hover:shadow-md",
   "active:shadow-sm",
 ].join(" "),
@@ -335,14 +336,14 @@ primary: [
 
   
 secondary: [
-  "dark:border dark:border-plumb-button-secondary-bg hover:border-3 dark:border-2",
+  "dark:border dark:text-plumb-button-secondary-bg dark:border-plumb-button-secondary-bg hover:border-3 dark:border-2",
   "rounded-full",
 "text-base",
 "bg-plumb-button-secondary-bg",
 "text-white",
 "shadow-sm",
-"dark:bg-transparent   dark:text-plumb-button-secondary-bg dark:border dark:border-plumb-darkBorder",
-"hover:bg-plumb-button-secondary-hover",
+"dark:bg-transparent   ",
+"hover:bg-plumb-button-secondary-hover/60 hover:border-3",
 "hover:shadow-md",
 "active:shadow-sm",
 ].join(" "),
@@ -1551,7 +1552,7 @@ mine: {
 
   content: "space-y-8 sm:space-y-10 max-w-2xl mx-auto",
 
-  header: "space-y-5 py-6 sm:space-y-6 sm:py-8 px-4",
+  header: "space-y-5 py-6 sm:space-y-6 sm:py-8 px-4 max-w-4xl mx-auto",
 
   identity: [
     "flex min-w-0 flex-col gap-3",
@@ -2288,31 +2289,49 @@ text: {
 },
 tabs: {
 
+pill: {
+  container: `w-full min-w-0 max-w-full`,
+  wrapper: `
+    flex w-full min-w-0 max-w-full
+    flex-nowrap items-center justify-start gap-1
+    overflow-x-auto overflow-y-hidden
+    overscroll-x-contain touch-pan-x
+    whitespace-nowrap
+    rounded-xl bg-plumb-surface px-4
+    dark:bg-plumb-dark-surface
+    [scrollbar-width:none]
+    [&::-webkit-scrollbar]:hidden
+  `,
+  button: `
+    shrink-0 whitespace-nowrap rounded-full px-6 py-2
+    transition-colors duration-200 sm:text-sm
+    focus-visible:outline-none focus-visible:ring-2
+    focus-visible:ring-plumb-focus focus-visible:ring-offset-2
+    focus-visible:ring-offset-plumb-canvas
+    dark:focus-visible:ring-plumb-mintLight
+    dark:focus-visible:ring-offset-plumb-dark-canvas
+  `,
+  active: `bg-plumb-mint text-plumb-darkText shadow-sm dark:bg-plumb-mintLight dark:text-plumb-ink`,
+  inactive: `text-plumb-muted bg-plumb-canvas hover:text-plumb-ink dark:text-plumb-darkMuted dark:hover:text-plumb-darkText`,
+},
 
-
-  pill: {
-    container: `w-[100%] `,
-    wrapper: `flex items-center overflow-x-scroll  justify-center gap-1 rounded-xl bg-plumb-surface  px-4 dark:bg-plumb-dark-surface`,
-    button: `shrink-0 rounded-full px-6 py-2 transition-colors duration-200 sm:text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plumb-focus focus-visible:ring-offset-2 focus-visible:ring-offset-plumb-canvas dark:focus-visible:ring-mintLight dark:focus-visible:ring-offset-plumb-dark-canvas`,
-    active: `bg-plumb-mint text-plumb-darkText shadow-sm dark:bg-plumb-mintLight dark:text-plumb-ink`,
-    inactive: `text-plumb-muted bg-plumb-canvas hover:text-plumb-ink dark:text-plumb-darkMuted dark:hover:text-plumb-darkText`,
-  },
+  // pill: {
+  //   container: `w-[100%] `,
+  //   wrapper: `flex items-center overflow-x-scroll  justify-center gap-1 rounded-xl bg-plumb-surface  px-4 dark:bg-plumb-dark-surface`,
+  //   button: `shrink-0 rounded-full px-6 py-2 transition-colors duration-200 sm:text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plumb-focus focus-visible:ring-offset-2 focus-visible:ring-offset-plumb-canvas dark:focus-visible:ring-mintLight dark:focus-visible:ring-offset-plumb-dark-canvas`,
+  //   active: `bg-plumb-mint text-plumb-darkText shadow-sm dark:bg-plumb-mintLight dark:text-plumb-ink`,
+  //   inactive: `text-plumb-muted bg-plumb-canvas hover:text-plumb-ink dark:text-plumb-darkMuted dark:hover:text-plumb-darkText`,
+  // },
 wrapper: [
-  "flex w-max min-w-full gap-1 items-center justify-start",
-  "overflow-x-auto overscroll-x-contain",
-  "whitespace-nowrap",
+  "flex w-max w-[100%] gap-1 items-center justify-start",
+  "overflow-x-scroll overflow-x-contain",
+
+  
   "[scrollbar-width:none]",
   "[&::-webkit-scrollbar]:hidden",
 ].join(" "),
-  // wrapper: [
-  //   "flex w-[100%] gap-1 items-center justify-center",
-  //   " overflow-x-scroll",
-  //   "",
-  //   // "[-webkit-overflow-scrolling:touch]",
-  //   "[scrollbar-width:none]",
-  //   "[&::-webkit-scrollbar]:hidden",
-  // ].join(" "),
-  container: ["mt-4 overflow-x-scroll flex flex-col items-center",].join(" "),
+ 
+  container: ["mt-4  flex flex-col items-center ",].join(" "),
   list: {
     container: [
       "divide-y",
@@ -2704,3 +2723,5 @@ duration-200`,
 }
 export {shared}
 export default styles
+
+

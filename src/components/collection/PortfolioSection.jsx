@@ -3,7 +3,7 @@ import Paths from "../../core/paths";
 
 import { getMyStories } from "../../actions/StoryActions";
 import shortName from "../../core/shortName";
-import SectionHeader from "../SectionHeader";
+import SectionHeader from "../pieces/SectionHeader";
 import EmptyState from "../general/EmptyState";
 
 import styles from "../../styles/style";

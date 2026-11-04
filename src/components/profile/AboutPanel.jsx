@@ -2,9 +2,10 @@
 import { useEffect, useState } from "react";
 import fetchCity from "../../core/fetchCity";
 import Paths from "../../core/paths";
-import SectionHeader from "../SectionHeader";
+
 import Pill from "../Pill";
 import styles from "../../styles/style";
+import SectionHeader from "../pieces/SectionHeader";
 
 // ── About Panel ──────────────────────────────────────
 

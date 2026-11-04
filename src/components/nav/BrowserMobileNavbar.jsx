@@ -3,6 +3,7 @@ import useNavbarNavigation from "../../core/useNavbarNavigation";
 import SearchButton from "./SearchButton";
 import { useDispatch } from "react-redux";
 import styles from "../../styles/style";
+import { SocialLogin } from "@capgo/capacitor-social-login";
 
 function BrowserMobileNavbar({
   currentProfile,
@@ -63,10 +64,10 @@ catch (error) {
 
       <header
 
-   className={styles.navbar.mobileBrowser}
+   className={styles.navbar.mobileBrowser+" px-4"}
 
       >
-<div className='flex-1 my-auto'>
+<div className='flex-1 my-auto '>
 <button
   type="button"
   onClick={() => setMenuOpen((open) => !open)}
@@ -93,7 +94,7 @@ catch (error) {
           onClick={() =>
             navigateAndClose(handleHome)
           }
-          className={styles.navbar.wordmark+" my-auto py-4"}
+          className={styles.navbar.wordmark+" my-auto -translate-y-1.5"}
      
           aria-label="Go to Plumbum home"
         >
@@ -104,7 +105,7 @@ catch (error) {
     
     <div className='flex-1  
          
-           py-6
+       my-auto
          
              text-right'>
         

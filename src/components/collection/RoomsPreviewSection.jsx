@@ -1,5 +1,6 @@
 import EmptyState from "../general/EmptyState";
-import SectionHeader from "../SectionHeader";
+import SectionHeader from "../pieces/SectionHeader";
+
 import RoomGrid from "./RoomGrid";
 
 function RoomsPreviewSection({

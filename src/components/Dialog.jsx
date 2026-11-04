@@ -9,9 +9,14 @@ import {
 } from "framer-motion";
 
 import { useDialog } from "../domain/usecases/useDialog";
-import SectionHeader from "./SectionHeader";
+
 import styles from "../styles/style";
-import clear from "../images/icons/clear.svg"
+import SectionHeader from "./pieces/SectionHeader";
+
+
+
+const CLOSE = (<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="24px" width="24px" fill="#FFFFFF"><path d="M8.4,17L7,15.6L10.6,12L7,8.42l1.4-1.4l3.6,3.6l3.58-3.6l1.4,1.4L13.38,12l3.6,3.6L15.58,17L12,13.4L8.4,17Z"/></svg>)
+
 const FOCUSABLE_SELECTOR = [
   "a[href]",
   "area[href]",
@@ -477,32 +482,11 @@ function DialogPanel({
       >
         <div className="min-w-0 flex-1">
           <SectionHeader
+     
             title={dialog.title}
-            right={
-              <button
-                type="button"
-                onClick={onClose}
-                aria-label="Close dialog"
-                className={`
-                  ${styles.button.base}
-                  ${styles.button.ghost}
-                  flex h-10 w-10 shrink-0
-                  items-center justify-center
-                  rounded-full p-2
-                `}
-              >
-                <img
-                  src={clear}
-                  alt=""
-                  aria-hidden="true"
-                  className="
-                    h-5 w-5
-                    opacity-70
-                    dark:invert
-                  "
-                />
-              </button>
-            }
+            actionLabel={CLOSE}
+            onAction={onClose}
+        
           />
 
           {typeof dialog.description === "string" && (

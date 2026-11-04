@@ -35,7 +35,8 @@ function SectionHeader({
           <div
             type="button"
             onClick={onAction}
-            className={s.action}
+            className={styles.button.base}
+            // className={s.action}
           >
             {actionLabel}
           </div>

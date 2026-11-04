@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchNotifcations, markNotificationsRead } from "../../actions/ProfileActions";
 import NotificationItem from "../../components/profile/NotificationItem";
 import { IonList, IonContent } from "@ionic/react";
-import SectionHeader from "../../components/SectionHeader";
+import SectionHeader from "../../components/pieces/SectionHeader";
 
 const WRAP = "max-w-2xl mx-auto ";
 const SECTION = "space-y-4 pt-10 ";

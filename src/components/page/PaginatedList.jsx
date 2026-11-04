@@ -62,7 +62,7 @@ export default function PaginatedList({
           </div>
         )
       )}
-<div className=" gap-1 flex w-[100%] flex-col">
+<div className=" gap-2 flex w-[100%] flex-col">
       {items.map((item, index) => (
     
           <>{renderItem(item, index)}</>

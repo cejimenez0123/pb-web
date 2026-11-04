@@ -39,7 +39,7 @@ export default function BlockedUsersDialog({ isOpen, onClose }) {
         text: () => (
           <div className="p-4 text-center text-soft">Loading…</div>
         ),
-        disagreeText: "Close",
+        // disagreeText: "Close",
         disagree: () => {
           closeDialog();
           onClose?.();

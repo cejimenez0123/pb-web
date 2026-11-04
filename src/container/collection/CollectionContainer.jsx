@@ -1040,12 +1040,19 @@ export default function CollectionContainer() {
 
         <section>
           <div >
-          <TabBar
+       <section
+                aria-label=""
+                className={styles.tabs.pill.container}
+
+              >
+           
+              <TabBar
                 tabs={tabs}
                 active={tab}
                 onChange={setTab}
-            
-            />
+              />
+      
+</section>
        
             <div className="pb-16">
               {tab === "inside" && (

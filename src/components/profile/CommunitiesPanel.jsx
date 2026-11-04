@@ -39,7 +39,7 @@ const CommunitiesPanel = ({ fetch, id, router }) => {
 
           {c.purpose && (
             <p className={communityStyles.purpose}>
-              {truncate(c.purpose,94)}
+              {truncate(c.purpose,84)}
             </p>
           )}
         </div>

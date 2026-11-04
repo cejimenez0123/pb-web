@@ -131,8 +131,8 @@ function MyProfileContainer() {
     <IonContent scrollY={true} fullscreen>
       <ErrorBoundary>
    
-            <div className={styles.pageShell.base}>
-             <div className={styles.pageShell.inner}>
+            <div className={""}>
+             <div className={""}>
 <section
   aria-labelledby="my-profile-heading"
   className={styles.profile.mine.header}
@@ -157,7 +157,7 @@ function MyProfileContainer() {
 
 
     <div className="mt-5 flex flex-row flex-wrap  ">
-  <button
+  {/* <button
     type="button"
     onClick={() => router.push(Paths.profile.editRoute(profile.id))}
     className={`
@@ -171,10 +171,11 @@ function MyProfileContainer() {
     `}
   >
   
-    {/* <icon name="pencil" size="sm" /> */}
+
     <span className="mb-2">Edit profile</span>
       {PENCIL}
-  </button>
+  </button> 
+  */}
 
   <button
     type="button"
@@ -200,7 +201,7 @@ function MyProfileContainer() {
     type="button"
     aria-label="Settings"
     title="Settings"
-    onClick={() => router.push(Paths.settings)}
+    onClick={() => router.push(Paths.editProfile)}
     className={`
       ${styles.button.base}
       ${styles.button.iconUtility}
@@ -215,18 +216,19 @@ function MyProfileContainer() {
 </div>
   </div>
 </section>
-              <section
-                aria-label="Profile sections"
-                className={styles.tabs.container}
+       <section
+                aria-label=""
+                className={styles.tabs.pill.container}
 
               >
-                <div className="overflow-x-scroll">
-                <TabBar    
-                     tabs={tabs}            
-                        active={tab}
-                  onChange={setTab} />
-           </div>
-              </section>
+           
+              <TabBar
+                tabs={tabs}
+                active={tab}
+                onChange={setTab}
+              />
+      
+</section>
 
               <section
                 aria-live="polite"
