@@ -739,11 +739,11 @@ export default function CollectionContainer() {
     return (
       <IonContent
         scrollY={true}
-        className="page-content"
+       
         fullscreen
       >
         <ErrorBoundary>
-         <main className={styles.collection.page}>
+         <main className={styles.pageShell.base}>
             <div className={`${PAGE} py-24`}>
               <div className="mx-auto max-w-xl text-center">
                 <p className="mb-4 text-xs uppercase tracking-[0.18em] text-text-secondary">
@@ -791,7 +791,7 @@ export default function CollectionContainer() {
         fullscreen
       >
         <ErrorBoundary>
-        <main className={styles.collection.page}>
+        <main className={styles.pageShell.base}>
             <div className={`${PAGE} py-24`}>
               <div className="mx-auto max-w-xl text-center">
                 <p className="mb-4 text-xs uppercase tracking-[0.18em] text-text-secondary">
@@ -829,6 +829,7 @@ export default function CollectionContainer() {
   // -------------------------------------------------------
 
   return (
+    <IonContent>
     <ErrorBoundary>
 <main className={styles.collection.page}>
         {/* --------------------------------------------- */}
@@ -1038,13 +1039,10 @@ export default function CollectionContainer() {
         {/* Room tabs and content */}
         {/* --------------------------------------------- */}
 
-        <section>
-          <div >
-       <section
-                aria-label=""
-                className={styles.tabs.pill.container}
-
-              >
+        <section className="mx-4">
+          <div  >
+    
+              
            
               <TabBar
                 tabs={tabs}
@@ -1052,7 +1050,7 @@ export default function CollectionContainer() {
                 onChange={setTab}
               />
       
-</section>
+
        
             <div className="pb-16">
               {tab === "inside" && (
@@ -1112,6 +1110,7 @@ export default function CollectionContainer() {
         )}
       </main>
     </ErrorBoundary>
+    </IonContent>
   );
 }
 

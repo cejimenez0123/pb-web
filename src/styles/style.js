@@ -106,10 +106,10 @@ hash: {
   `,
 
   body: `
-    min-w-0 break-words whitespace-pre-wrap
+    min-w-0 break-words dark:text-plumb-darkText whitespace-pre-wrap
     text-left text-sm leading-relaxed sm:text-base
-    text-plumb-text
-    dark:text-darkText
+    text-plumb-ink
+
   `,
 
   anchor: `
@@ -152,7 +152,7 @@ hash: {
   `,
 
   helpful: `
-    inline-flex min-h-9 items-center justify-center
+    inline-flex min-h-9 dark:bg-transparent dark:text-plumb-blueSea items-center justify-center
     rounded-full border border-plumb-mint/25
     bg-plumb-mint/10 px-3 py-1.5
     text-sm font-medium text-plumb-mint
@@ -2256,7 +2256,7 @@ text: {
   ].join(" "),
 
   subheading: [
-    "font-serif font-semibold text-[1.2rem] text-base",
+    "font-serif font-semibold text-[1.2rem] mx-4 text-base",
     "leading-snug",
     "text-plumb-ink dark:text-plumb-darkText",
   ].join(" "),

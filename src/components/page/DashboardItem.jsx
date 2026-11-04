@@ -488,7 +488,8 @@ const hasMoreContent =
     >
       {/* AUTHOR */}
       <header className={theme.header}>
-  <div className={theme.authorButton}>
+  <div className="flex flex-row">
+    <div className="mx-2 my-auto">
     <ProfileCircle
       includeUsername={false}
       profile={
@@ -498,8 +499,8 @@ const hasMoreContent =
         }
       }
     />
-
-    <button
+</div>
+    <div
       type="button"
       disabled={!authorId}
       onClick={() => {
@@ -511,10 +512,11 @@ const hasMoreContent =
         );
       }}
       className={`
+        -translate-y-1
         min-w-0
         truncate
         text-left
-       
+       my-auto
         ${theme.authorName}
       `}
       aria-label={`View ${authorName}'s profile`}
@@ -528,7 +530,7 @@ const hasMoreContent =
           ? "Private Story"
           : page.status || "Story"}
       </span>
-    </button>
+    </div>
   </div>
 {!isPrivateStory && (
   <button
@@ -585,7 +587,7 @@ const hasMoreContent =
 
       {/* TITLE AND STORY PREVIEW */}
       <div className={theme.content}>
-        <button
+        <div
           type="button"
           onClick={handleClickComment}
           className={theme.titleButton}
@@ -593,7 +595,7 @@ const hasMoreContent =
           <h6 className={styles.text.subheading}>
             {page.title  || "Untitled"}
           </h6>
-        </button>
+        </div>
 
         {page.description && (
           <p className={`${styles.text.muted} mt-2 text-sm px-4 leading-relaxed`}>
@@ -603,31 +605,31 @@ const hasMoreContent =
 
         {/* PRIVATE STORIES NEVER RENDER THEIR BODY */}
         {isPrivateStory ? (
-          <div className={`${theme.privateCard} mt-4`}>
-            <h3 className={theme.privateTitle}>
+          <div className={`mx-auto`}>
+            <h3 className={"text-center "}>
               This Story is private.
             </h3>
 
-            <p className={theme.privateBody}>
+            <p className={"mx-auto text-center"}>
               Ask {authorName} for permission to read it.
             </p>
 
             {showPermissionRequest && (
-              <button
+              <div
                 type="button"
                 onClick={handleRequestPermission}
                 disabled={
                   permissionRequestState === "pending" ||
                   permissionRequestState === "requested"
                 }
-                className={theme.permissionButton}
+                className={theme.permissionButton +" mx-auto text-center"}
               >
                 {permissionRequestState === "pending"
                   ? "Requesting…"
                   : permissionRequestState === "requested"
                   ? "Request sent"
                   : "Request permission"}
-              </button>
+              </div>
             )}
           </div>
         ) : (

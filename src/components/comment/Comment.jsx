@@ -237,7 +237,7 @@ export default function Comment({
               className={styles.hash.action}
             >
               <icon name="reply" size="xs" />
-              Reply
+             <h6 className="dark:text-plumb-darkText"> Reply</h6>
             </button>
           </div>
 
@@ -476,7 +476,8 @@ export default function Comment({
 
           <button
             type="button"
-            className={styles.hash.action}
+            // className=
+            className={styles.hash.action+" dark:text-plumb-darkText"}
             onClick={handleOpenReply}
           >
             <icon name="reply" size="xs" />
@@ -557,126 +558,3 @@ export default function Comment({
     </div>
   );
 }
-
-// import { useSelector, useDispatch } from "react-redux";
-// import { useState, useEffect, useContext } from "react";
-// import { IonImg, useIonRouter } from "@ionic/react";
-// import Context from "../../context.jsx";
-// import ProfileCircle from "../profile/ProfileCircle.jsx";
-// import CommentInput from "./CommentInput";
-// import CommentThread from "./CommentThread";
-// import horiz from "../../images/icons/more_vert.svg";
-// import { deleteComment, promoteCommentToStory } from "../../actions/PageActions.jsx";
-// import { createHashtagComment, deleteHashtagComment } from "../../actions/HashtagActions.js";
-// import checkResult from "../../core/checkResult.js";
-// import { useDialog } from "../../domain/usecases/useDialog.jsx";
-// import Paths from "../../core/paths.js";
-// import {  removeContentByProfileId } from "../../actions/ModerationAcitons.jsx";
-// import ReportContentDialog from "../auth/ReportProfileDialog.jsx";
-// import { useAlert } from "../../core/useAlert.jsx";
-// import AlertType from "../../core/AlertType.js";
-// import styles from "../../styles/style.js";
-
-// const DEEP_LEVEL = 3;
-
-// export default function Comment({ page, comment, level = 0 }) {
-//   const dispatch = useDispatch();
-  
-//   const {showAlert}=useAlert()
-//   const currentProfile = useSelector((state) => state.users.currentProfile);
-//   const [isReportDialogOpen, setReportDialogOpen] = useState(false);
-// const [isBlockDialogOpen, setBlockDialogOpen] = useState(false);
-//   const branches = useSelector((state) => {
-//     const storyComments = state.comments.byStory?.[page?.id] ?? [];
-//     const parent = storyComments.find((c) => c.id === comment.id);
-//     const fromChildren = parent?.children ?? comment.children ?? [];
-//     const fromFlat = storyComments.filter((c) => c.parentId === comment.id);
-
-//     const seen = new Set();
-//     return [...fromChildren, ...fromFlat].filter((c) => {
-//       if (seen.has(c.id)) return false;
-//       seen.add(c.id);
-//       return true;
-//     });
-//   });
-
-
-// const handleReport = () => {
-//   setReportDialogOpen(true);
-// };
-
-// const handleBlockUser = () => {
-//   setBlockDialogOpen(true);
-// };
-
-//   const hashtags = useSelector((state) => state.hashtags.profileHashtagComments);
-//   const isSelf = currentProfile && comment ? currentProfile?.id === comment?.profileId : false;
-// const router = useIonRouter()
-//   const [isHelpful, setIsHelpful] = useState(null);
-//   const [isDeleted, setIsDeleted] = useState(false);
-//   const { openDialog, closeDialog ,resetDialog} = useDialog();
-
-//   useEffect(() => {
-//     const hs = hashtags.find(
-//       (hash) => hash.commentId === comment.id && hash.hashtag.name === "helpful"
-//     );
-//     setIsHelpful(hs || null);
-//   }, [hashtags]);
-
-//   if (!comment) return null;
-
-//   const handleOpenReply = () => {
-//     openDialog({
-//       title: "",
-//       height: 60,
-//       text: (
-//         <CommentInput
-//           page={page}
-//           parentComment={comment}
-//           handleClose={closeDialog}
-//         />
-//       ),
-//       disagreeText: "Close",
-//       disagree: closeDialog
-//     });
-//   };
-
-//   const handleEdit = () => {
-//     openDialog({
-//       title: "",
-//       height: 60,
-//       text: (
-//         <CommentInput
-//           page={page}
-//           defaultComment={comment}
-//           anchorText={comment.anchorText || null}
-//           handleClose={closeDialog}
-//         />
-//       ),
-//       disagreeText: "Close",
-//       disagree: closeDialog
-//     });
-//   };
-
-//   const handleDelete = () => {
-//     setIsDeleted(true);
-//     setTimeout(() => {
-//       dispatch(deleteComment({ comment }));
-//     }, 300);
-//   };
-
-//   const handleMarkHelpful = () => {
-//     if (!currentProfile) return;
-//     dispatch(createHashtagComment({
-//       name: "helpful",
-//       profileId: currentProfile.id,
-//       commentId: comment.id,
-//     })).then((res) =>
-//       checkResult(
-//         res,
-//         (payload) => setIsHelpful(payload.hashtag),
-//         (err) =>showAlert({message:err.message,type:AlertType.error}) 
-//       )
-//     );
-//   };
-
