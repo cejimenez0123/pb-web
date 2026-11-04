@@ -514,7 +514,7 @@ function RootRoute() {
     return <ContentHubContainer />;
   }
 
-  return <Redirect to={Paths.about()} />;
+  return isNative?<Redirect to={Paths.onboard}/>:<Redirect to={Paths.about()} />;
 }
   return (
 

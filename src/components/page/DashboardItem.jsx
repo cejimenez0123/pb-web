@@ -272,7 +272,7 @@ function DashboardItem({
     event?.stopPropagation();
 
     if (!currentProfile) {
-     showPrompt({message:"Become a user first!",agreeText:"Yes!",agree:()=>router.push(Paths.apply())
+     showPrompt({message:"Become a user first!",agreeText:"Yes!",agree:()=>router.push(Paths.onboard)
         ,disagreeText:"Later"
       })
     

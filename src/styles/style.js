@@ -511,7 +511,7 @@ base: [
   "min-w-0 min-h-0",
   "overflow-hidden",
   "bg-plumb-surface text-plumb-ink",
-  "dark:bg-plumb-dark-surface dark:text-plumb-darkText",
+  "dark:bg-plumb-dark-canvas dark:text-plumb-darkText",
 ].join(" "),
   // Use when the page itself should scroll
   scroll: [
@@ -2075,7 +2075,7 @@ importWork: {
   eyebrow: [
     "mb-4 font-open-sans text-xs font-medium",
     "uppercase tracking-widest",
-    "text-plumb-muted dark:text-plumb-darkMuted",
+    "text-plumb-muted dark:bg-plumb-dark-canvas dark:text-plumb-darkMuted",
   ].join(" "),
 
   welcome: [

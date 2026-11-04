@@ -4,6 +4,7 @@ import SearchButton from "./SearchButton";
 import { useDispatch } from "react-redux";
 import styles from "../../styles/style";
 import { SocialLogin } from "@capgo/capacitor-social-login";
+import { signOutAction } from "../../actions/UserActions";
 
 function BrowserMobileNavbar({
   currentProfile,
@@ -34,6 +35,7 @@ const {
   };
   const dispatch = useDispatch()
   const handleSignOut = async () => {
+     closeMenu();
     try{
          dispatch(
       signOutAction({

@@ -15,20 +15,20 @@ export default function AboutContainer() {
 
   return (
     <IonContent
-
-fullscreen
+scrollY={true}
+fullscreen={true}
 >
-  <main className={styles.pageShell.base + styles.pageShell.scroll+" "}>
-<div>
-     <div className={styles.pageShell.inner}>
-      <p className={styles.about.eyebrow}>
+  <div className="mx-4 pt-16 dark:bg-transparent" >
+     {/* <div  className="bg-transparent">
+     <div  className="bg-transparent"> */}
+      <p className={styles.about.eyebrow+ " dark:bg-transparent"}>
         About
       </p>
 
-      <h1 className={styles.about.welcome}>
+      <h1 className={styles.about.welcome+ " dark:bg-transparent"}>
         Find a room. <br/> Meet people. <br/>Keep the connection going.
       </h1>
-      <p className={styles.text.display+" pb-8"}>
+      <p className={" font-open-sans px-4 pb-8"}>
 
   You might find Plumbum at a reading, a workshop, a mixer, or through
   someone you know. Come as you are. The <a 
@@ -98,7 +98,7 @@ fullscreen
             person you kept talking to, the collection that came out of it.
           </FeatureBlock>
         </div>
-<div className=" h-48  ">
+<div className=" h-48   ">
         <AboutCTA
           primaryLabel="Make an account"
        
@@ -107,10 +107,10 @@ fullscreen
         />
 <AboutLegalFooter />
       </div>
-      </div>
+      {/* </div>
      
+      </div> */}
       </div>
-      </main>
     </IonContent>
   );
 }
@@ -137,7 +137,7 @@ function AboutCTA({
   onSecondary,
 }) {
   return (
-    <div className={styles.about.cta}>
+    <div className={styles.about.cta+" "}>
       <h3 className={styles.about.ctaTitle}>
         Anyone can look before joining
       </h3>
@@ -154,6 +154,7 @@ function AboutCTA({
           className={[
             styles.button.base,
             styles.button.primary,
+            " mx-auto "
             // "min-h-11 px-5 py-3 text-sm",
           ].join(" ")}
         >
