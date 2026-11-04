@@ -355,7 +355,7 @@ export default function AddStoryToCollection() {
           onClose={resetDialog}
         />
       ),
-      disagreeText: "Close",
+      
       onClose: closeDialog,
       breakpoint: 1,
     });

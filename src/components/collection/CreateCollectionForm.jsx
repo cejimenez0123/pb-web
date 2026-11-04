@@ -18,7 +18,8 @@ import checkResult from "../../core/checkResult";
 
 import "../../App.css";
 import { useDialog } from "../../domain/usecases/useDialog";
-import SettingRow from "../SettingRow";
+
+import styles from "../../styles/style";
 
 const INITIAL_FORM = {
   name: "",
@@ -312,11 +313,12 @@ const {closeDialog}=useDialog()
           autoFocus
           aria-describedby="collection-name-description"
           className="
-            w-full
+                bg-transparent
+            w-[100%]
             rounded-xl
             border
             border-gray-300
-            bg-base-bg
+     
             px-4
             py-4
             text-lg
@@ -329,7 +331,7 @@ const {closeDialog}=useDialog()
             focus:ring-2
             focus:ring-blueSea/20
             dark:border-gray-700
-            dark:bg-plumb-surface Dark
+     dark:text-plumb-darkText
             dark:text-cream
           "
         />
@@ -353,13 +355,15 @@ const {closeDialog}=useDialog()
           aria-describedby="collection-purpose-description"
           className="
             min-h-[7rem]
-            w-full
+            w-[100%]
+            bg-transparent
+         
+            dark:text-plumb-darkText
             resize-y
             rounded-xl
             border
             border-gray-300
-            bg-base-bg
-            px-4
+         px-4
             py-4
             text-base
             leading-6
@@ -372,14 +376,15 @@ const {closeDialog}=useDialog()
             focus:ring-2
             focus:ring-blueSea/20
             dark:border-gray-700
-            dark:bg-plumb-surface Dark
+           bg-transparent
             dark:text-cream
           "
         />
       </div>
 
       {/* Visibility */}
-      <fieldset>
+      <fieldset className="       bg-transparent
+            dark:text-plumb-darkText">
         <legend
           className="
             mb-2
@@ -397,6 +402,7 @@ const {closeDialog}=useDialog()
         <div
           className="
             overflow-hidden
+              bg-transparent
             rounded-2xl
             border
             border-gray-200
@@ -411,11 +417,12 @@ const {closeDialog}=useDialog()
               gap-3
               border-b
               border-gray-200
-              bg-base-bg
+           
               px-4
               py-4
+              
               dark:border-gray-700
-              dark:bg-plumb-surface Dark
+            dark:text-plumb-darkText
             "
           >
             <input
@@ -434,6 +441,9 @@ const {closeDialog}=useDialog()
               className="
                 h-4
                 w-4
+            bg-transparent
+            dark:text-plumb-darkText
+           
                 accent-blueSea
                 focus-visible:outline
                 focus-visible:outline-2
@@ -443,11 +453,11 @@ const {closeDialog}=useDialog()
             />
 
             <span className="min-w-0">
-              <span className="block text-sm font-medium text-gray-900 dark:text-cream">
+              <span className="block text-sm  dark:text-plumb-darkText font-medium text-gray-900 dark:text-cream">
                 Only me and people I give access to
               </span>
 
-              <span className="mt-1 block text-xs leading-5 text-gray-500 dark:text-gray-400">
+              <span className="mt-1 block  dark:text-plumb-darkText text-xs leading-5 text-gray-500 dark:text-gray-400">
                 Keep the Room private. You can add people
                 through its roles later.
               </span>
@@ -460,7 +470,9 @@ const {closeDialog}=useDialog()
               cursor-pointer
               items-center
               gap-3
-              bg-base-bg
+dark:bg-transparent
+       
+            dark:text-plumb-darkText
               px-4
               py-4
               dark:bg-plumb-surface Dark
@@ -482,6 +494,7 @@ const {closeDialog}=useDialog()
               className="
                 h-4
                 w-4
+              bg-transparent
                 accent-blueSea
                 focus-visible:outline
                 focus-visible:outline-2
@@ -490,12 +503,13 @@ const {closeDialog}=useDialog()
               "
             />
 
-            <span className="min-w-0">
-              <span className="block text-sm font-medium text-gray-900 dark:text-cream">
+            <span className="min-w-0   bg-transparent ">
+              <span className="block text-sm dark:text-plumb-darkText font-medium text-gray-900">
                 Anyone who can find it
               </span>
 
-              <span className="mt-1 block text-xs leading-5 text-gray-500 dark:text-gray-400">
+              <span className="mt-1 block text-xs leading-5 text-gray-500 dark:text-plumb-darkText
+       ">
                 The Room isn't private.
               </span>
             </span>
@@ -520,20 +534,72 @@ const {closeDialog}=useDialog()
         </legend>
 
         <SettingRow
-          id="open-collaboration"
-          title="Open collaboration"
-          description="People who can find this Room can add to it when collaboration is open."
-          checked={
-            formData.isOpenCollaboration
-          }
-          onChange={() =>
-            setFormData((previous) => ({
-              ...previous,
-              isOpenCollaboration:
-                !previous.isOpenCollaboration,
-            }))
-          }
-          tooltip="Open collaboration controls whether people can contribute without you assigning them a writing or editing role first."
+title="Open collaboration"
+ description="People who can find this Room can add to it when collaboration is open."
+ action={ 
+   <input
+        id="open-collaboration"
+        type="checkbox"
+        name="isOpenCollaboration"
+        checked={formData.isOpenCollaboration}
+        onChange={(event) =>
+          setFormData((previous) => ({
+            ...previous,
+            isOpenCollaboration: event.target.checked,
+          }))
+        }
+        aria-label="Enable open collaboration"
+        className="
+          checkbox checkbox-md
+          border-plumb-borderStrong
+          [--chkbg:theme(colors.green.700)]
+          [--chkfg:white]
+          checked:border-plumb-mint
+          focus-visible:outline-none
+          focus-visible:ring-2
+          focus-visible:ring-plumb-focus
+          focus-visible:ring-offset-2
+          dark:border-plumb-darkBorderStrong
+          dark:checked:border-plumb-mintLight
+          dark:focus-visible:ring-plumb-mintLight
+        "/>
+    // <input
+    //           type="checkbox"
+    //           name="visibility"
+    //           value="private"
+    //           checked={
+    //             formData.isPrivate === true
+    //           }
+    //       onChange={() =>
+    //         setFormData((previous) => ({
+    //           ...previous,
+    //           isOpenCollaboration:
+    //             !previous.isOpenCollaboration,
+    //         }))
+    //       }
+    //           className="
+    //             h-4
+    //             w-4
+    //             dark:bg-base-bg
+    //         dark:text-plumb-darkText
+           
+    //             accent-blueSea
+    //             focus-visible:outline
+    //             focus-visible:outline-2
+    //             focus-visible:outline-offset-2
+    //             focus-visible:outline-blueSea
+    //           "
+    //         />
+}
+          // checked={
+          // id="open-collaboration"
+          // title="Open collaboration"
+          // description="People who can find this Room can add to it when collaboration is open."
+          // checked={
+          //   formData.isOpenCollaboration
+          // }
+          
+          // tooltip="Open collaboration controls whether people can contribute without you assigning them a writing or editing role first."
         />
       </fieldset>
 
@@ -576,38 +642,84 @@ const {closeDialog}=useDialog()
       <ErrorMessage error={error} />
 
       {/* Submit */}
-      <button
+      <div
         type="submit"
         disabled={submitting}
-        className="
-          flex
-          min-h-[3.5rem]
-          w-full
-          items-center
-          justify-center
-          rounded-full
-          bg-button-secondary-bg
-          px-6
-          py-3
-          text-base
-          font-semibold
-          text-white
-          shadow-sm
-          transition
-          hover:brightness-95
-          focus-visible:outline
-          focus-visible:outline-2
-          focus-visible:outline-offset-2
-          focus-visible:outline-blueSea
-          active:scale-[0.99]
-          disabled:cursor-not-allowed
-          disabled:opacity-60
-        "
+        className={styles.button.base+" "+styles.button.primary+ " hover:bg-plumb-mintLight/40 dark:border-plumb-mintLight dark:border dark:border-1"}
+       onClick={handleSubmit}
+        // className="
+        //   flex
+        //   min-h-[3.5rem]
+        //   w-full
+        //   items-center
+        //   justify-center
+        //   rounded-full
+        //   bg-button-secondary-bg
+        //   px-6
+        //   py-3
+        //   text-base
+        //   font-semibold
+        //   text-white
+        //   shadow-sm
+        //   transition
+        //   hover:brightness-95
+        //   focus-visible:outline
+        //   focus-visible:outline-2
+        //   focus-visible:outline-offset-2
+        //   focus-visible:outline-blueSea
+        //   active:scale-[0.99]
+        //   disabled:cursor-not-allowed
+        //   disabled:opacity-60
+        // "
       >
         {submitting
           ? "Making your Room..."
           : "Make it"}
-      </button>
+      </div>
     </form>
+  );
+}
+function SettingRow({
+  title,
+  description,
+  action,
+}) {
+  return (
+    <div
+      className="
+        rounded-xl
+        border
+        border-card-border
+        p-4
+        dark:border-white/10
+      "
+    >
+      <div
+        className="
+          flex
+          flex-col
+          sm:flex-row
+          sm:items-center
+          sm:justify-between
+          gap-4
+        "
+      >
+
+        <div className="min-w-0">
+          <h3 className="text-sm font-medium text-text-primary dark:text-cream">
+            {title}
+          </h3>
+
+          <p className="mt-1 text-sm leading-relaxed text-text-secondary">
+            {description}
+          </p>
+        </div>
+
+        <div className="shrink-0 ">
+          {action}
+        </div>
+
+      </div>
+    </div>
   );
 }

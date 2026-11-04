@@ -248,8 +248,8 @@ hash: {
   ].join(" "),
 
   input: [
-    "w-full min-w-0 rounded-xl border-0 bg-transparent",
-    "px-4 py-3 text-plumb-ink",
+    "w-full min-w-0 rounded-full border-0 bg-transparent",
+    "px-4  py-3 text-plumb-ink",
     "placeholder:text-plumb-muted",
     "focus:outline-none focus:ring-0",
     "dark:text-plumb-darkText",
@@ -2391,7 +2391,7 @@ scrollDown: {
 
 
 input: [
-  "w-[100%] max-w-sm"," bg-plumb-canvas dark:bg-plumb-darkCanvas border-plumb-mintLight/30 border border-1",
+  "w-[100%] max-w-sm"," bg-plumb-canvas dark:bg-transparent border border-1 border-plumb-mintLight/30",
 
 
   "text-plumb-ink rounded-2xl",

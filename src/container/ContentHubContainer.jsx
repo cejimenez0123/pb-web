@@ -196,7 +196,7 @@ function ContentHubContent() {
         />
       ),
       disagree: closeDialog,
-      disagreeText: "Close",
+     
       breakpoint: 1,
     });
   };

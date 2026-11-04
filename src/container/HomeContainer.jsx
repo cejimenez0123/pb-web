@@ -206,7 +206,7 @@ openDialog({
 disagree:null,
 scrollY: false,
   text: <CreateCollectionForm onClose={resetDialog} />,
-  disagreeText: "Close", // optional button
+// optional button
   onClose: closeDialog,
   breakpoint: 1, // if you want a half-sheet style
 });

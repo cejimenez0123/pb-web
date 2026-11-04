@@ -64,7 +64,7 @@ useEffect(() => {
   };
 
   initializeGoogle();
-  setGoogleReady(!googleReady)
+  
 }, [isNative]);
 
 

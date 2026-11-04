@@ -246,34 +246,30 @@ const promptTermsAcceptance = useTermsAcceptance();
             >
               Email
             </label> */}
-  {/* <div
-    className="
-      relative flex w-full min-w-0 items-center
-      rounded-xl border border-plumb-borderStrong
-      bg-paper transition-colors
-      focus-within:border-plumb-focus
-      focus-within:ring-2 focus-within:ring-plumb-focus/30
-      dark:border-plumb-darkBorderStrong
-      dark:bg-plumb-dark-surface
-    "
-  > */}
-            {/* <input
-              id="login-email"
-              type="text"
-              value={email}
-              onChange={(e) =>
-                setEmail(e.target.value.toLowerCase())
-              }
-              placeholder="example@email.com"
-             className={`${styles.input} w-[100%]  min-w-0 flex-1 w-full rounded-xl max-w-none`}
-     
-            /> */}
+
             <div className={styles.login.field}>
-  <label htmlFor="login-email" className={styles.text.body}>
+  <label
+    htmlFor="login-email"
+    className={`${styles.text.body} mb-2 block font-medium`}
+  >
     Email
   </label>
 
-  <div className={styles.login.inputWrap}>
+  <div
+    className="
+      flex w-full min-w-0 items-center gap-2
+      rounded-full min-h-12 border border-plumb-borderStrong
+      bg-plumb-paper px-4
+      transition-all duration-200
+      focus-within:border-plumb-mint
+      focus-within:ring-2 focus-within:ring-plumb-mint/20
+      dark:border-plumb-darkBorderStrong
+      dark:bg-plumb-dark-surface
+      dark:focus-within:border-plumb-mintLight
+      dark:focus-within:ring-plumb-mintLight/20
+     
+    "
+  >
     <input
       id="login-email"
       type="email"
@@ -283,18 +279,47 @@ const promptTermsAcceptance = useTermsAcceptance();
       autoComplete="email"
       required
       disabled={pending}
-      className={styles.login.input}
+      className="
+        h-14 w-full min-w-0 flex-1
+        border-0 bg-transparent px-
+        text-base text-plumb-ink
+        placeholder:text-plumb-subtle
+        outline-none ring-0
+        focus:border-0 focus:outline-none focus:ring-0
+        disabled:cursor-not-allowed disabled:opacity-60
+        dark:text-plumb-darkText
+        dark:placeholder:text-plumb-darkSubtle
+      "
     />
   </div>
 </div>
-            {/* </div> */}
+
+        
           </div>
-          <div className={styles.login.field}>
-  <label htmlFor="login-password" className={styles.text.body}>
+         
+<div className={styles.login.field}>
+  <label
+    htmlFor="login-password"
+    className={`${styles.text.body} mb-2 block font-medium`}
+  >
     Password
   </label>
 
-  <div className={styles.login.inputWrap}>
+  <div
+    className="
+      flex w-full min-w-0 items-center gap-2
+      rounded-full min-h-12 border border-plumb-borderStrong
+      bg-plumb-paper px-4
+      transition-all duration-200
+      focus-within:border-plumb-mint
+      focus-within:ring-2 focus-within:ring-plumb-mint/20
+      dark:border-plumb-darkBorderStrong
+      dark:bg-plumb-dark-surface
+      dark:focus-within:border-plumb-mintLight
+      dark:focus-within:ring-plumb-mintLight/20
+     
+    "
+  >
     <input
       id="login-password"
       type={showPassword ? "text" : "password"}
@@ -304,7 +329,17 @@ const promptTermsAcceptance = useTermsAcceptance();
       autoComplete="current-password"
       required
       disabled={pending}
-      className={`${styles.login.input} flex-1`}
+      className="
+        h-14 w-full min-w-0 flex-1
+        border-0 bg-transparent pl-1 pr-2
+        text-base text-plumb-ink
+        placeholder:text-plumb-subtle
+        outline-none ring-0
+        focus:border-0 focus:outline-none focus:ring-0
+        disabled:cursor-not-allowed disabled:opacity-60
+        dark:text-plumb-darkText
+        dark:placeholder:text-plumb-darkSubtle
+      "
     />
 
     <button
@@ -312,13 +347,26 @@ const promptTermsAcceptance = useTermsAcceptance();
       onClick={() => setShowPassword((value) => !value)}
       aria-label={showPassword ? "Hide password" : "Show password"}
       aria-pressed={showPassword}
-      className={styles.button.ghost}
+      disabled={pending}
+      className="
+        shrink-0 rounded-full px-3 py-2
+        text-sm font-semibold
+        text-plumb-muted
+        transition-colors
+        hover:bg-plumb-mint/10 hover:text-plumb-mintHover
+        focus-visible:outline-none focus-visible:ring-2
+        focus-visible:ring-plumb-focus
+        disabled:cursor-not-allowed disabled:opacity-50
+        dark:text-plumb-darkMuted
+        dark:hover:bg-plumb-mint/15
+        dark:hover:text-plumb-mintLight
+        dark:focus-visible:ring-plumb-mintLight
+      "
     >
       {showPassword ? "Hide" : "Show"}
     </button>
   </div>
 </div>
-
 <div className="text-center p-8">
 
           {/* Primary action */}
@@ -328,7 +376,7 @@ const promptTermsAcceptance = useTermsAcceptance();
   className={"dark:border dark:border-2 bg-plumb-mint dark:bg-transparent dark:border-plumb-mintLight min-w-[90%] hover:ring-offset-1 hover:ring-1 rounded-full "+styles.button.base}
  
 >
- <p className=" text-plumb-darkText dark:text-plumb-mintLight text-2xl py-4">{pending ? "Logging in..." : "Log In"}</p> 
+ <p className=" text-plumb-darkText dark:text-plumb-mintLight text-l py-3">{pending ? "Logging in..." : "Log In"}</p> 
 </div>
 
 </div>

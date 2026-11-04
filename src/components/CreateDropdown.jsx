@@ -95,7 +95,7 @@ export default function CreateDropdown({ isOpen, onClose }) {
     ),
     title: "Create Collection",
     agree: null,
-    disagreeText: "Cancel",
+ 
     breakpoint: 0.9,
   });
   break;

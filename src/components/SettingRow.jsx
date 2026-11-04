@@ -24,9 +24,7 @@ function SettingRow({
             {title}
           </label>
 
-          {tooltip ? (
-            <InfoTooltip text={tooltip} />
-          ) : null}
+        
         </div>
 
         <p
@@ -54,18 +52,19 @@ function SettingRow({
           type="checkbox"
           checked={checked}
           onChange={onChange}
-          className={styles.settingRow.input}
+          className={styles.settingRow.input+ "       bg-transparent"}
      
           aria-describedby={`${id}-description`}
         />
 
         <span
           aria-hidden="true"
-          className="
+          className={`
             h-6
             w-11
             rounded-full
             border
+            ${checked?" border-2 ":""}
             border-gray-300
             bg-gray-200
             transition
@@ -77,7 +76,7 @@ function SettingRow({
             peer-focus-visible:outline-blueSea
             dark:border-gray-600
             dark:bg-gray-700
-          "
+          `}
         />
 
         <span

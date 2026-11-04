@@ -1108,7 +1108,7 @@ export default function OnboardingContainer() {
     <IonContent
       ref={contentRef}
       className="page-content"
-      style={{ "--padding-bottom": "10rem" }}
+      // style={{ "--padding-bottom": "10rem" }}
       fullscreen
     >
       <div className="min-h-full w-[100%] max-w-xl mx-auto bg-plumb-surface dark:bg-plumb-dark-canvas">
