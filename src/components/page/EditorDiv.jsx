@@ -1,6 +1,4 @@
 
-
-
 import { useCallback } from "react";
 import { PageType } from "../../core/constants";
 import RichEditor from "./RichEditor";
@@ -35,9 +33,5 @@ export default function EditorDiv({
     );
   }
 
-  return (
-    <RichEditor
-      handleChange={handleEditorChange}
-    />
-  );
+  return <RichEditor handleChange={handleEditorChange} />;
 }

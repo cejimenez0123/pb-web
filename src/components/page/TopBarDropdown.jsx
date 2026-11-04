@@ -1,12 +1,11 @@
 
 import { Preferences } from "@capacitor/preferences";
-import menu from "../../images/icons/menu.svg"
 import { useEffect, useState } from "react";
 import Paths from "../../core/paths";
 import { useParams } from "react-router";
 import { useDialog } from "../../domain/usecases/useDialog";
 import RoleForm from "../role/RoleForm";
-import { xor } from "lodash";
+
 
 function TopBarDropdown({
   id, router, editPage, openFeedback, handleChange,
@@ -15,7 +14,7 @@ function TopBarDropdown({
 }) {
   const driveTokenKey = "googledrivetoken";
   const TOKEN_EXPIRY_KEY = "googledrivetoken_expiry";
-  const { id: pageId } = useParams();
+
   const { dialog, openDialog, closeDialog, resetDialog } = useDialog();
   const [accessToken, setAccessToken] = useState(null);
 
@@ -42,17 +41,17 @@ const handleMenuClick = (action) => (e) => {
   const MENU=<svg xmlns="http://www.w3.org/2000/svg" className="my-auto" viewBox="0 0 24 24" height="40px" width="40px" fill="#FFFFFF"><path d="M3,18V16H21v2H3Zm0-5V11H21v2H3ZM3,8V6H21V8H3Z"/></svg>
   return (
     <div className="dropdown dropdown-bottom  dropdown-end items-center flex-shrink-0">
-      <div tabIndex={0} role="button" className="rounded-md dark:border p-1 dark:border-1 dark:border-plumb-darkText">
+      <div tabIndex={0} role="button" className="rounded-2xl bg-plumb-mint dark:border p-1 border-2 dark:border-2 dark:border-plumb-darkText">
     {MENU}
       </div>
       <ul
         tabIndex={0}
-        className="dropdown-content menu dark:bg-base-bg rounded-box shadow-lg z-[10] p-2"
+        className="dropdown-content menu  bg-plumb-mint text-center rounded-box shadow-lg z-[10] py-2"
         style={{ minWidth: "12rem" }}
       >
                 {editPage && (
   <li
-    className="text-emerald-600 pt-3 pb-2 cursor-pointer"
+    className="dark:text-plumb-darkText pt-3 pb-2 text-center cursor-pointer"
     onClick={handleMenuClick(() =>
    
          openFeedback(false)
@@ -62,12 +61,12 @@ const handleMenuClick = (action) => (e) => {
     Share
   </li>
 )}
-        <li className="text-emerald-600 pt-3 pb-2 cursor-pointer"
+        <li className="dark:text-plumb-darkText pt-3 pb-2 cursor-pointer"
           onClick={() => router.push(Paths.addStoryToCollection.story(id))}>
           Add to Collection
         </li>
         {accessToken && (
-          <li className="text-emerald-600 pt-3 pb-2 cursor-pointer"
+          <li className="dark:text-plumb-darkText pt-3 pb-2 cursor-pointer"
             onClick={() => openGoogleDrive()}>
             Google Doc Import
           </li>
@@ -75,7 +74,7 @@ const handleMenuClick = (action) => (e) => {
 
     
         {editPage && (
-          <li className="text-emerald-600 pt-3 pb-2 cursor-pointer"
+          <li className="dark:text-plumb-darkText pt-3 pb-2 cursor-pointer"
             onClick={() => openRoleFormDialog(parameters.page)}>
             Manage Access
           </li>

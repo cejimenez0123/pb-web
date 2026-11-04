@@ -981,6 +981,7 @@ export default function EditCollectionContainer() {
                   {openHashtag && (
                     <div className="px-5 sm:px-6 pb-6">
                       <HashtagForm
+                            effectiveId={colInView.id}
                         item={colInView}
                         type="collection"
                       />

@@ -1801,7 +1801,7 @@ collection: {
 
 navbar: {
   desktop: [
-    "w-[100%] min-h-20",
+    "w-[100%] pl-4 min-h-20",
     "flex items-center",
     "bg-plumb-mintHover dark:bg-plumb-dark-surface",
   "border-b border-plumb-mint dark:border-plumb-darkBorder",
@@ -1937,9 +1937,9 @@ menuButton: [
 
   mobileItem: [
 
-    "flex items-center",
+    "flex items-center text-[1.2rem]",
 
-    "text-base",
+    // "text-base",
     "leading-none",
     "text-left",
     "tracking-[-0.02em]",
@@ -2391,14 +2391,15 @@ scrollDown: {
 
 
 input: [
-  "w-[100%] max-w-sm"," bg-plumb-canvas dark:bg-transparent border border-1 border-plumb-mintLight/30",
+  "w-[100%] max-w-sm",
+  " bg-plumb-canvas  dark:bg-plumb-darkCanvas border border-1 border-plumb-mintLight/30",
 
 
-  "text-plumb-ink rounded-2xl",
+  "text-plumb-ink  dark:text-plumb-darkText rounded-2xl",
   "px-4 py-3",
   "placeholder:text-plumb-muted",
   "dark:border-plumb-darkBorderStrong",
-  "dark:text-plumb-darkText",
+  "",
   "dark:placeholder:text-plumb-darkMuted",
   "focus:outline-none",
   "focus-visible:ring-2",

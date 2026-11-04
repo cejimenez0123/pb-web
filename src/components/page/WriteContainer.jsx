@@ -6,6 +6,7 @@ import { IonContent, useIonRouter } from "@ionic/react";
 import WriteLanding from "../lovehome/WriterLanding";
 import Paths from "../../core/paths";
 import { getMyStories } from "../../actions/StoryActions";
+import styles from "../../styles/style";
 
 export default function WriteContainer() {
   const router = useIonRouter();
@@ -74,16 +75,17 @@ useEffect(() => {
 
   return (
     <IonContent>
+      <main className={styles.pageShell.base}>
     <WriteLanding
       search={search}
       onSearch={setSearch}
       stories={stories}
       loading={loading}
       onBegin={handleBegin}
-      // onFileSelected={}
-      // onGoogleFilePicked={}
+     
       onSelectStory={handleSelectStory}
     />
+    </main>
     </IonContent>
   );
 }

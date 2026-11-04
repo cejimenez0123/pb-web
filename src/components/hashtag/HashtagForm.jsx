@@ -8,12 +8,12 @@ import {
   searchHashtags, // <-- new action (see note below)
 } from "../../actions/HashtagActions";
 import checkResult from "../../core/checkResult";
-import clear from "../../images/icons/close.svg";
+const clear =(<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="24px" width="24px" fill="#FFFFFF"><path d="M8.4,17L7,15.6L10.6,12L7,8.42l1.4-1.4l3.6,3.6l3.58-3.6l1.4,1.4L13.38,12l3.6,3.6L15.58,17L12,13.4L8.4,17Z"/></svg>)
 import Context from "../../context";
 import { IonImg, IonLabel } from "@ionic/react";
 import ErrorBoundary from "../../ErrorBoundary";
 
-export function HashtagForm({ item, type = "story" }) {
+export function HashtagForm({ item,effectiveId, type = "story" }) {
   const { setError } = useContext(Context);
   const isStory = type === "story";
   const dispatch = useDispatch();
@@ -27,8 +27,8 @@ export function HashtagForm({ item, type = "story" }) {
 
   const fetchHashtags = (item) => {
     const action = isStory
-      ? fetchStoryHashtags({ profile: currentProfile, storyId: item.id })
-      : fetchCollectionHashtags({ profile: currentProfile, colId: item.id });
+      ? fetchStoryHashtags({ profile: currentProfile, storyId: effectiveId })
+      : fetchCollectionHashtags({ profile: currentProfile, colId: effectiveId });
     dispatch(action).then(res =>
       checkResult(res, payload => setHashtags(payload.hashtags), () => {})
     );
@@ -46,7 +46,7 @@ export function HashtagForm({ item, type = "story" }) {
     }
 
     if (!isStory) {
-      dispatch(createHashtagCollection({ name: clean, colId: item.id, profile: currentProfile }))
+      dispatch(createHashtagCollection({ name: clean, colId:effectiveId, profile: currentProfile }))
         .then(res => {
           if (res && res.payload) {
             setHashtags(prev => [...prev, res.payload.hashtag]);
@@ -57,7 +57,7 @@ export function HashtagForm({ item, type = "story" }) {
           }
         });
     } else {
-      dispatch(createHashtagPage({ name: clean, storyId: item.id, profile: currentProfile }))
+      dispatch(createHashtagPage({ name: clean, storyId: effectiveId, profile: currentProfile }))
         .then(res => checkResult(res, payload => {
           if (payload) setHashtags(prev => [...prev, payload.hashtag]);
           setInputValue("");
@@ -69,7 +69,7 @@ export function HashtagForm({ item, type = "story" }) {
   const deleteHashtag = (hash) => {
     const action = isStory
       ? deleteHashtagStory({ hashtagStoryId: hash.id })
-      : deleteHashtagCollection({ colId: item.id, hashId: hash.id });
+      : deleteHashtagCollection({ colId: effectiveId, hashId: hash.id });
     dispatch(action).then(res =>
       checkResult(res, () => fetchHashtags(item), () => {})
     );
@@ -108,13 +108,13 @@ export function HashtagForm({ item, type = "story" }) {
 
   return (
     <ErrorBoundary>
-      <form className="w-full flex flex-col mt-2">
+      <form className="w-full flex flex-col dark:bg-transparent ">
         {visibleSuggestions.length > 0 && (
-          <div className="flex flex-wrap gap-2 mb-2 px-1 mx-auto w-[90%] md:w-[48em]">
+          <div className="flex flex-wrap gap-2 mx-auto w-[90%] md:w-[48em]">
             {visibleSuggestions.map((s) => (
               <button
                 type="button"
-                key={s.id ?? s.name}
+                key={effectiveId ?? s.name}
                 onClick={() => addHashtag(s.name)}
                 className="px-2 py-1 text-sm rounded-lg border border-soft text-soft hover:bg-button-secondary-bg hover:text-white transition-colors"
               >
@@ -131,7 +131,7 @@ export function HashtagForm({ item, type = "story" }) {
           placeholder="Type a hashtag and press Enter"
           rows={4}
           cols={12}
-          className="my-1 w-[90%] p-2 rounded-xl md:w-[48em] bg-base-bg mx-auto border border-soft text-soft placeholder:text-soft/50 focus:outline-none focus:ring-2 focus:ring-button-secondary-bg"
+          className="my-1 p-8 mx-4 rounded-xl w-[100%]  mx-auto border border-plumb-mintLight/50   placeholder:text-soft/50 focus:outline-none focus:ring-2 focus:ring-button-secondary-bg"
         />
         <button type="submit" className="hidden">Submit</button>
 
@@ -139,9 +139,12 @@ export function HashtagForm({ item, type = "story" }) {
           <IonLabel className="text-soft text-sm">Hashtags:</IonLabel>
           <ul className="flex flex-wrap p-4">
             {hashtags.map((hash, index) => (
-              <li className="p-1 flex flex-row m-1 text-sm rounded-lg bg-button-secondary-bg text-white" key={index}>
+              <li
+              onClick={() => deleteHashtag(hash)}
+              className="p-1 flex flex-row m-1 text-sm border-plumb-blueSea/50 border border-1 rounded-full  bg-button-secondary-bg text-white" key={index}>
                 <h6 className="my-auto mx-2">#{hash.hashtag.name}</h6>
-                <IonImg className="my-auto" onClick={() => deleteHashtag(hash)} src={clear} />
+                {clear}
+                {/* <IonImg className="my-auto" onClick={() => deleteHashtag(hash)} src={clear} /> */}
               </li>
             ))}
           </ul>

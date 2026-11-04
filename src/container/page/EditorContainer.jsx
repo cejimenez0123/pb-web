@@ -48,6 +48,7 @@ import EditorFooter from "../../components/page/EditorFooter.jsx";
 import Enviroment from "../../core/Enviroment.js";
 import { useMediaQuery } from "react-responsive";
 import styles from "../../styles/style.js";
+import PageTypeSelector from "../../components/PageTypeSelector.jsx";
 
 const CONTAINER =
   "mx-auto w-full  max-w-3xl rounded-lg bg-base-bg p-4 shadow-sm md:p-6";
@@ -94,7 +95,7 @@ function createEmptyParameters({
   };
 }
 
-export default function EditorContainer() {
+ export default function EditorContainer() {
   const dispatch = useDispatch();
   const router = useIonRouter();
 
@@ -125,22 +126,27 @@ export default function EditorContainer() {
   const story = editPage || pageInView || {};
    const storyData = editPage?.data || pageInView?.data || "";
 const pageInViewId = pageInView?.id;
-  const type = normalizeType(paramType || sliceType);
+  const initialType = normalizeType(paramType || sliceType);
 
   const isNewStory =
     !routeId || routeId === "new";
 
-  const isMediaType =
-    type === PageType.picture ||
-    type === PageType.link;
-
   const [parameters, setParameters] = useState(() =>
     createEmptyParameters({
       routeId,
-      type,
+      type: initialType,
       currentProfile,
     })
   );
+
+  // The selected editor type lives in the existing story parameters.
+  // This allows the selector to update the rendered editor without a
+  // separate state value that can drift out of sync.
+  const type = normalizeType(parameters.type || initialType);
+
+  const isMediaType =
+    type === PageType.picture ||
+    type === PageType.link;
 
   const [files, setFiles] = useState([]);
   const [accessToken, setAccessToken] = useState(null);
@@ -226,7 +232,7 @@ useEffect(() => {
 
   const effectiveId =
     parameters.id || routeId;
-
+console.log(effectiveId)
   const showError = useCallback(
     (error) => {
       showAlert({
@@ -318,12 +324,12 @@ useEffect(() => {
     dispatch(setEditingPage({ page: null }));
     dispatch(setPageInView({ page: null }));
     dispatch(setHtmlContent(""));
-    dispatch(setPageType({ type }));
+    dispatch(setPageType({ type: initialType }));
 
     setParameters(
       createEmptyParameters({
         routeId: null,
-        type,
+        type: initialType,
         currentProfile,
       })
     );
@@ -333,7 +339,8 @@ useEffect(() => {
     currentProfile,
     dispatch,
     isNewStory,
-    type,
+    routeId,
+    paramType,
   ]);
 
 
@@ -1106,22 +1113,23 @@ const openConfirmDeleteDialog = useCallback(() => {
         <div
           className="
             flex min-h-[100dvh] flex-col
-            bg-cream dark:bg-base-bgDark
+       
           "
         >
-          <header className="w-full px-2 pt-2 md:px-4 md:pt-4">
+          <header className="w-full pt-2 md:pt-4">
             <div
               className="
-                mx-auto flex w-full max-w-3xl
+                mx-auto flex
                 flex-col gap-1 rounded-lg
-                border border-emerald-200
-                bg-emerald-50 p-2
+                border border-plumb-blueSea/50
+             p-4
+              border-2
                 dark:border-base-borderDark
-                dark:bg-transparent
+               
               "
             >
-              <div className="flex w-full  flex-col gap-2">
-                <div className="flex    w-[100%] gap-2 flex-row">
+              <div className="flex w-full flex-row gap-2">
+                
                   <input
                     type="text"
                     value={parameters.title}
@@ -1133,14 +1141,17 @@ const openConfirmDeleteDialog = useCallback(() => {
                     }
                     placeholder="Untitled"
                     aria-label="Story title"
-                    className="
                
+                    className="
+               bg-plumb-canvas
                       flex-grow rounded-md border
-                      border-emerald-300 bg-base-bg
+                   text-plumb-ink
+                   dark:text-plumb-darkText
+                    
                       p-2 text-[1rem] font-bold
                     outline-none
                       focus:ring-2 focus:ring-emerald-500
-                     dark:text-plumb-darkText text-plumb-ink
+                    
                     "
                   />
            <TopBarDropdown
@@ -1159,17 +1170,19 @@ const openConfirmDeleteDialog = useCallback(() => {
                     }
                   />
                   </div>
-                  <div className="mt-1 flex px-2 items-center gap-2">
+                  <div className=" flex flex-row gap-2 py-1">
+                
                     {isSaved ? (
-                      <span className="flex items-center gap-1 font-semibold   dark:text-plumb-darkText text-plumb-ink">
+                      <h6 className="flex items-center gap-1 text-sm my-auto translate-y-[0.5pt] font-semibold ">
                         ✅ Saved
-                      </span>
+                      </h6>
                     ) : (
-                      <span className="flex items-center gap-1 font-semibold   dark:text-plumb-darkText text-plumb-ink">
+                      <h6 className="flex items-center gap-1 text-sm my-auto translate-y-[0.5pt] font-semibold  ">
                         💾 Saving...
-                      </span>
+                      </h6>
                     )}
-
+                    {/* </div> */}
+{/* <div className="w-[5em]"> */}
                     <VisibilityBadge
                       isPrivate={parameters.isPrivate}
                       toggle={() =>
@@ -1179,21 +1192,21 @@ const openConfirmDeleteDialog = useCallback(() => {
                         )
                       }
                     />
-
+{/* </div> */}
                     {effectiveId &&
                       effectiveId !== "new" && (
-                        <button
+                        <div
                           type="button"
                           onClick={handleView}
                           className="
                             inline-flex items-center gap-1
                             rounded-full border
-                            border-emerald-300 px-2 py-[3px]
-                            text-xs font-medium   dark:text-plumb-darkText text-plumb-ink
+                            px-6 py-[3px]
+                            text-xs font-medium  
                             transition-colors
                             hover:bg-emerald-50
-                            dark:border-emerald-600
-                        
+                            dark:border-plumb-mintLight
+                            border-plumb-blueSea/50
                             dark:hover:bg-emerald-900/30
                           "
                         >
@@ -1217,25 +1230,29 @@ const openConfirmDeleteDialog = useCallback(() => {
                           </svg>
 
                           Preview
-                        </button>
+                        </div>
                       )}
-                  </div>
+                  {/* </div> */}
                 </div>
 
               </div>
             {/* </div> */}
           </header>
 
-          <main className="w-full px-2 pb-24 pt-2 md:px-4 md:pb-10 md:pt-4">
+          <main className="w-full  pb-24 pt-2  md:pb-10 md:pt-4">
             <div className="mx-auto w-full max-w-3xl">
               <div className={CONTAINER}>
+                <PageTypeSelector
+                  value={type}
+                  onChange={(nextType) => {
+                    handleChange("type", nextType);
+                    dispatch(setPageType({ type: nextType }));
+                  }}
+                />
+
                 <div
-                className="gap-1 flex-row flex mx-auto items-center justify-center mb-4 w-fit rounded-ful"
-                  // className="
-                  //   mb-4 flex w-fit gap-1
-                  //   rounded-full  p-1
-                   
-                  // "
+                className="gap-1 flex-row flex mx-auto items-center justify-center mb-4 mt-4 w-fit rounded-full"
+            
                 >
                   {STATUS_OPTIONS.map((option) => {
                     const isActive =
@@ -1246,25 +1263,19 @@ const openConfirmDeleteDialog = useCallback(() => {
                       <button
                         key={option.value}
                         type="button"
+                        aria-pressed={isActive}
                         onClick={() =>
                           handleChange(
                             "status",
                             option.value
                           )
                         }
-                        className={"dark:text-plumb-darkText dark:bg-base-bg h-14 dark:border dark:border-1 dark:border-plumb-darkText dark:bg-base-bg text-plumb-ink " + (isActive ? " text-[1.01em] " : " ")}
-                      //   className={`
-                      //     rounded-full px-3 py-1
-                      //     text-xs font-semibold
-                      //     transition-all duration-150
-                      //     dark:bg-base-bg 
-                      //  "dark:text-plumb-darkText
-                      //     ${
-                      //       isActive
-                      //         ? "  shadow-sm"
-                      //         : " shadow-sm"
-                      //     }
-                      //   `}
+                        className={`${styles.button.base} ${styles.button.small} ${
+                          isActive
+                            ? "ring-2 ring-plumb-mint/40"
+                            : "opacity-75"
+                        }`}
+
                       >
                         {option.label}
                       </button>
@@ -1289,7 +1300,8 @@ const openConfirmDeleteDialog = useCallback(() => {
 
               <EditorFooter
                 pageInView={pageInView}
-                effectiveId={effectiveId}
+                      effectiveId={effectiveId}
+                // effectiveId={effectiveId}
                 openConfirmDeleteDialog={
                   openConfirmDeleteDialog
                 }
@@ -1306,26 +1318,26 @@ function VisibilityBadge({
   isPrivate,
   toggle,
 }) {
-  const base =
-    "inline-flex items-center gap-1 rounded-full px-2 py-[2px] dark:bg-transparent dark:text-plumb-darkText dark:border-1 dark:border-plumb-button-secondary-bg text-xs font-semibold transition";
-
+  const base = ` max-w-min flex gap-2 flex-row text-sm px-6 py-1 rounded-full`
+                  
+  
   return (
-    <button
-      type="button"
+    <div
+      // type="button"
       onClick={toggle}
       aria-label="Change visibility"
       className={
         "" +
         (isPrivate
-          ? `${base} bg-gray-100 text-gray-600 hover:bg-gray-200`
-          : `${base} bg-emerald-100   dark:text-plumb-darkText text-plumb-ink hover:bg-emerald-200`)
+          ? `${base} border-plumb-blueSea border border-1   dark:text-plumb-blueSea hover:bg-gray-200`
+          : `${base} border-plumb-mintLight border border-1  dark:text-plumb-mintLight hover:bg-emerald-200`)
       }
     >
       <span aria-hidden="true">
         {isPrivate ? "🔒" : "🌍"}
       </span>
 
-      {isPrivate ? "Private" : "Public"}
-    </button>
+   {isPrivate ? "Private" : "Public"}
+    </div>
   );
 }

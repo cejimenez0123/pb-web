@@ -673,7 +673,7 @@ const toggleHashtag = (tag) => {
           )}
         </div>
       ),
-      disagreeText: "Close",
+      // disagreeText: "Close",
       disagree: closeDialog,
     });
   }

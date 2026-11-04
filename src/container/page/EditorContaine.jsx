@@ -28,7 +28,7 @@ import EditorFooter from "../../components/page/EditorFooter.jsx";
 import getBackground from "../../core/getbackground.jsx";
 import { useMediaQuery } from "react-responsive";
 
-const CONTAINER = "mx-auto w-full max-w-3xl p-4 md:p-6 bg-base-bg rounded-lg shadow-sm";
+
 
 export default function EditorContainer({ presentingElement }) {
   const router = useIonRouter();
