@@ -50,33 +50,18 @@ import styles from "../../styles/style.js";
 // STYLES
 // =========================================================
 
-const PAGE =""
+const PAGE ="flex-col flex gap-4"
 //   "w-full max-w-[52rem] mx-auto px-4 sm:px-6 lg:px-8";
 
 const CARD = "rounded-2xl bark:bg-plumb-surface dark:text-plumb-darkText"
   // "rounded-2xl border border-card-border bg-card-background " +
   // "dark:bg-plumb-surface Dark dark:border-white/10";
 
-const PRIMARY_BUTTON = styles.button.primary 
-  // "inline-flex items-center justify-center h-11 px-5 mt-4  mb-1 rounded-full " +
-  // "bg-button-primary-bg text-white text-sm font-medium " +
-  // "transition-all duration-200 hover:bg-button-primary-hover " +
-  // "focus:outline-none focus:ring-2 focus:ring-button-primary-bg/30 " +
-  // "disabled:opacity-50 disabled:pointer-events-none";
+const SECONDARY_BUTTON =
+  `${styles.button.secondary} px-6 py-3 ${styles.button.base}`;
 
-const SECONDARY_BUTTON = styles.button.secondary
-  // "inline-flex items-center justify-center h-11 px-5 rounded-full " +
-  // "border border-card-border bg-card-background text-text-primary " +
-  // "text-sm font-medium transition-all duration-200 " +
-  // "hover:border-button-primary-bg hover:text-text-brand " +
-  // "focus:outline-none focus:ring-2 focus:ring-button-primary-bg/30 " +
-  // "dark:bg-plumb-surface Dark dark:border-white/10 dark:text-cream";
-
-const DANGER_BUTTON =
-  "inline-flex items-center justify-center h-11 px-5 rounded-full " +
-  "border border-red-200 bg-transparent text-red-600 text-sm font-medium " +
-  "transition-all duration-200 hover:bg-red-50 " +
-  "dark:border-red-400/20 dark:text-red-400 dark:hover:bg-red-400/10";
+const PRIMARY_BUTTON =
+  `${styles.button.primary} px-6 py-3 ${styles.button.base}`;
 
 
 // =========================================================
@@ -87,9 +72,10 @@ export default function EditCollectionContainer() {
   const { id } = useParams();
   const router = useIonRouter();
   const dispatch = useDispatch();
+  const [savingContent, setSavingContent] = useState(false);
 const [savingDetails, setSavingDetails] = useState(false);
 const saving = savingDetails||savingContent
-const [savingContent, setSavingContent] = useState(false);
+
   const { showAlert } = useAlert();
   const { openDialog, closeDialog, resetDialog } = useDialog();
 
@@ -696,24 +682,23 @@ const filteredContent = useMemo(() => {
   return (
     <ErrorBoundary>
       <IonContent
-        fullscreen
-        className="page-content"
-      >
-        <main
-        className={styles.page}
+        fullscreen={true}
+        scrollY={true}
    
-        >
+      >
+                  <div className={styles.pageShell.base+" "+styles.pageShell.scroll+" "+styles.pageShell.padded}>
+             <div className={""}>
+<section
+  // aria-labelledby="my-profile-heading"
+  className={styles.pageShell.header}
+>
 
-          {/* =========================================== */}
-          {/* HEADER */}
-          {/* =========================================== */}
-
-          <section className="border-b border-card-border dark:border-white/10">
             <div
-              className={`${PAGE} pt-8 sm:pt-12 pb-8`}
+            className="flex flex-col gap-8"
+              // className={`pt-8 sm:pt-12 pb-8`}
             >
 
-              <button
+              <div
                 onClick={() =>
                   router.push(
                     Paths.collection.createRoute(
@@ -741,54 +726,31 @@ const filteredContent = useMemo(() => {
                 <span>
                   Back to room
                 </span>
-              </button>
+              </div>
 
 
-              <div className="flex flex-col gap-5  px-4  dark:text-plumb-darkText sm:flex-row sm:items-end sm:justify-between">
-
-                <div className="min-w-0">
-
+            
+                <div >
+<div className="flex flex-row justify-start">
                   <p
                     className="
                       text-xs
                       uppercase
+                      my-auto
                       tracking-[0.18em]
                       text-text-secondary
-                      mb-3
+                  mx-4
                     "
                   >
                     Edit room
                   </p>
-
-                  <h1
-                    className="
-                      font-serif
-                      text-4xl
-                      sm:text-5xl
-                      leading-[1.05]
-                      tracking-tight
-                      text-text-primary
-                      dark:text-cream
-                    "
-                  >
-                    {colInView.title ||
-                      "Untitled Room"}
-                  </h1>
-
-                  <div className="mt-4 flex flex-wrap gap-2">
+   <div className="flex flex-wrap gap-2 ">
 
                     {colInView.type && (
                       <span
-                        className="
-                          inline-flex
-                          rounded-full
-                          border
-                          border-card-border
-                          px-3
-                          py-1
-                          text-xs
-                          text-text-secondary
-                        "
+                      className={styles.pill.base+" border border-1 border-plumb-mint/50"}
+            text-text-secondary
+                        // "
                       >
                         {formatRoomType(
                           colInView.type
@@ -798,16 +760,8 @@ const filteredContent = useMemo(() => {
 
                     {colInView.isPrivate && (
                       <span
-                        className="
-                          inline-flex
-                          rounded-full
-                          border
-                          border-card-border
-                          px-3
-                          py-1
-                          text-xs
-                          text-text-secondary
-                        "
+                       className={styles.pill.base+" border border-1 border-plumb-mint/50"}
+              
                       >
                         Private
                       </span>
@@ -830,21 +784,39 @@ const filteredContent = useMemo(() => {
                     )}
 
                   </div>
+                  </div>
+                  <div>
+                  <h1
+                    className="
+                      font-serif
+                      text-4xl
+                      sm:text-5xl
+                      leading-[1.05]
+                      tracking-tight
+                      text-text-primary
+                      dark:text-cream
+                    "
+                  >
+                    {colInView.title ||
+                      "Untitled Room"}
+                  </h1>
+</div>
+               
 
                 </div>
 
 
-                <div className="flex flex-wrap gap-2">
+                <div className="flex mx-2 flex-wrap gap-2">
 
-                  <button
+                  <div
                     onClick={openRoleForm}
                     className={SECONDARY_BUTTON}
                   >
                     Manage access
-                  </button>
+                  </div>
 
 
-                  <button
+                  <div
                     onClick={() =>
                       router.push(
                         Paths.collection.createRoute(
@@ -853,26 +825,27 @@ const filteredContent = useMemo(() => {
                       )
                     }
                     className={SECONDARY_BUTTON}
+                
                   >
                     View room
-                  </button>
+                  </div>
 
                 </div>
 
               </div>
 
-            </div>
+     
           </section>
 
 <div className="flex justify-end px-4">
-  <button
+  <div
     type="button"
     onClick={handleSaveDetails}
     disabled={savingDetails}
     className={PRIMARY_BUTTON}
   >
     {savingDetails ? "Saving details..." : "Save details"}
-  </button>
+  </div>
 </div>
           {/* =========================================== */}
           {/* EDITOR */}
@@ -880,16 +853,20 @@ const filteredContent = useMemo(() => {
 
           <section>
             <div
-              className={`${PAGE} py-8 sm:py-10 space-y-6`}
+            className={styles.pageShell.body+" "}
+              // className={`${PAGE} py-8 sm:py-10 space-y-6`}
             >
 
               {/* --------------------------------------- */}
               {/* BASIC INFORMATION */}
               {/* --------------------------------------- */}
 
-              <section className={`${CARD}  p-5 sm:p-6`}>
-{/* <div className="flex flex-row space between"> */}
-                <div className="mb-6">
+              <section 
+         
+            
+              >
+
+                <div className="mb-6 w-[100%]">
                   <p className="text-xs uppercase  tracking-[0.16em] text-text-secondary mb-2">
                     Room identity
                   </p>
@@ -897,7 +874,7 @@ const filteredContent = useMemo(() => {
                   <h2 className="font-serif text-2xl text-text-primary dark:text-cream">
                     What is this room?
                   </h2>
-                   <button
+                   <div
                   onClick={() =>
                     history.push(
                       Paths.addToCollection.createRoute(
@@ -908,7 +885,7 @@ const filteredContent = useMemo(() => {
                   className={PRIMARY_BUTTON}
                 >
                   Add to Room
-                </button>
+                </div>
                 {/* </div> */}
 </div>
 
@@ -1374,7 +1351,7 @@ const filteredContent = useMemo(() => {
                     Cancel
                   </button>
 
-                  <button
+                  {/* <button
                     type="button"
                     onClick={handleSave}
                     disabled={saving}
@@ -1383,7 +1360,7 @@ const filteredContent = useMemo(() => {
                     {savingDetails||savingContent
                       ? "Saving..."
                       : "Save changes"}
-                  </button>
+                  </button> */}
 
                 </div>
 
@@ -1392,7 +1369,8 @@ const filteredContent = useMemo(() => {
             </div>
           </section>
 
-        </main>
+        </div>
+        </div>
       </IonContent>
     </ErrorBoundary>
   );

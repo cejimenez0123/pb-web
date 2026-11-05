@@ -56,7 +56,7 @@ export default function PortfolioSection({
               setSearch(value);
             }}
             placeholder="Search portfolio"
-            className={styles.profile.portfolio.searchInput}
+            className={styles.profile.mine.search}
           />
         </div>
       <div className={styles.profile.portfolio.list}>

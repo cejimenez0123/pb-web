@@ -128,14 +128,14 @@ function MyProfileContainer() {
   }
 
   return (
-    <IonContent scrollY={true} fullscreen>
+    <IonContent scrollY={true} fullscreen={true}>
       <ErrorBoundary>
    
-            <div className={""}>
+            <div className={styles.pageShell.base+" "+styles.pageShell.scroll}>
              <div className={""}>
 <section
   aria-labelledby="my-profile-heading"
-  className={styles.profile.mine.header}
+  className={styles.pageShell.header}
 >
   <ProfileInfo profile={profile} />
 
@@ -157,25 +157,7 @@ function MyProfileContainer() {
 
 
     <div className="mt-5 flex flex-row flex-wrap  ">
-  {/* <button
-    type="button"
-    onClick={() => router.push(Paths.profile.editRoute(profile.id))}
-    className={`
-      ${styles.button.base}
-   bg-transparent
-   text-plumb-mint
-      min-h-11 px-5 py-2.5
-      inline-flex 
-      flex flex-col
-   
-    `}
-  >
-  
 
-    <span className="mb-2">Edit profile</span>
-      {PENCIL}
-  </button> 
-  */}
 
   <button
     type="button"

@@ -302,7 +302,7 @@ hash: {
 base: [
 "inline-flex items-center justify-center",
 "rounded-full",
-"font-medium",
+"font-medium font-open-sans",
 "transition-all duration-200 ease-out",
 "transform-gpu",
 "hover:-translate-y-0.5",
@@ -321,11 +321,12 @@ base: [
 "motion-reduce:transition-none",
 ].join(" "),
 primary: [
-  "dark:border-plumb-mintLight dark:border dark:border-2 btn  dark:text-plumb-mintLight",
-    "rounded-full font-semiBold  ",
-  "text-base ",
+  "border-plumb-mintLight border-2 btn  dark:text-plumb-mintLight",
+  " border dark:bg-transparent ",
+    "rounded-full ",
+  "text-base text-plumb-darkText",
+  "bg-plumb-mint ",
   
-  "bg-plumb-mint dark:bg-transparent dark:border-plumb-button-primary-bg dark:text-plumb-button-primary-bg text-plumb-darkText",
   "shadow-sm",
   "hover:bg-plumb-mint/60 hover:border-plumb-mintLight hover:border-3",
   "hover:shadow-md",
@@ -502,12 +503,26 @@ utilityActive: [
 
    },
   pageShell: {
+
+    body: [
+      "mt-4 sm:mx-auto w-[100%] mx-4 max-w-3xl font-serif",
+      "text-lg sm:text-xl leading-relaxed",
+      "text-plumb-text dark:text-plumb-darkText",
+    ].join(" "),
+      list: [
+    "mx-auto max-w-2xl",
+    "bg-paper dark:bg-plumb-dark-surface",
+  ].join(" "),
   // Shared page foundation
+    header: `
+    flex flex-col px-4 max-w-4xl mx-auto
+    sm:flex-row sm:items-center 
+  `,
 base: [
-  "relative",
+  "relative font-open-sans" ,
   "flex flex-col",
-  "w-full",
-  "min-w-0 min-h-0",
+  "w-[100%]",
+  "min-w-[100%] min-h-[100%]",
   "overflow-hidden",
   "bg-plumb-surface text-plumb-ink",
   "dark:bg-plumb-dark-surface dark:text-plumb-darkText",
@@ -515,7 +530,7 @@ base: [
   // Use when the page itself should scroll
   scroll: [
   
-    // "overflow-y-auto overscroll-y-contain",
+    "overflow-y-auto"
   ].join(" "),
 
   // Standard responsive page padding
@@ -1139,7 +1154,7 @@ mine: {
   `,
 
   header: `
-    flex flex-col gap-8 px-4 max-w-4xl mx-auto
+    flex flex-col px-4 max-w-4xl mx-auto
     sm:flex-row sm:items-center 
   `,
 
@@ -1472,74 +1487,8 @@ mine: {
 //     "motion-reduce:transition-none",
 //   ].join(" "),
 
-//   list: [
-//     "mt-8 space-y-0",
-//     "bg-transparent",
-//   ].join(" "),
 
-//   article: [
-   
-//     "bg-transparent ",
-  
-//   ].join(" "),
 
-//   storyList: [
-//     "mt-3 list-none space-y-3 p-0",
-//   ].join(" "),
-
-//   storyRow: [
-//     "group list-none",
-//   ].join(" "),
-
-//   storyButton: [
-//     "flex min-h-12 w-[100%]",
-//     "items-start justify-between gap-2",
-  
-//     "bg-transparent py-3",
-//     "text-left",
-//     "transition-colors duration-150",
-
-//     "motion-reduce:transition-none",
-//   ].join(" "),
-
-//   storyContent: [
-//     "min-w-0 flex-1",
-//   ].join(" "),
-
-//   storyTitle: [
-//     "break-words font-serif text-base",
-//     "leading-snug",
-//     "text-plumb-ink",
-//     "transition-colors duration-150",
-//     "group-hover:text-plumb-mintHover",
-//     "group-hover:underline group-hover:underline-offset-4",
-//     "group-focus-visible:underline",
-//     "group-focus-visible:underline-offset-4",
-//     "dark:text-plumb-darkText",
-//     "dark:group-hover:text-plumb-mintLight",
-//     "motion-reduce:transition-none",
-//   ].join(" "),
-
-//   storyDescription: [
-//     "mt-1 text-sm leading-relaxed",
-//     "text-plumb-muted dark:text-plumb-darkMuted",
-//   ].join(" "),
-
-//   arrow: [
-//     "shrink-0 pt-0.5",
-//     "text-base font-medium",
-//     "text-plumb-muted",
-//     "transition-transform duration-150",
-//     "group-hover:translate-x-1",
-//     "dark:text-plumb-darkMuted",
-//     "motion-reduce:transition-none",
-//   ].join(" "),
-
-//   emptyCollection: [
-//     "py-4 pl-4 text-sm italic",
-//     "text-plumb-muted dark:text-plumb-darkMuted",
-//     "sm:pl-5",
-//   ].join(" "),
 },
   page: [
     "mx-auto  ",
@@ -1749,54 +1698,6 @@ collection: {
     motion-reduce:animate-none
   `,
 },
-// collection: {
-//   page: [
-//     "  pb-20 overflow-y-auto ",
-//     "bg-plumb-surface text-plumb-ink",
-//     "dark:bg-plumb-dark-canvas dark:text-plumb-darkText",
-//   ].join(" "),
-
-//   section: [
-//     "border-plumb-borderStrong",
-//     "dark:border-plumb-darkBorderStrong",
-//   ].join(" "),
-
-//   card: [
-//     "rounded-2xl border p-5",
-//     "border-plumb-borderStrong bg-plumb-paper",
-//     "transition-all duration-200",
-//     "hover:-translate-y-0.5 hover:border-plumb-mintHover",
-//     "dark:border-plumb-darkBorderStrong",
-//     "dark:bg-plumb-dark-surface",
-//     "dark:hover:border-plumb-mintLight",
-//   ].join(" "),
-
-//   heading: [
-//     "font-serif text-2xl sm:text-3xl",
-//     "text-plumb-ink dark:text-plumb-darkText",
-//   ].join(" "),
-
-//   body: [
-//     "font-open-sans text-base leading-relaxed",
-//     "text-plumb-text dark:text-plumb-darkText",
-//   ].join(" "),
-
-//   muted: [
-//     "text-plumb-muted dark:text-plumb-darkMuted",
-//   ].join(" "),
-
-//   empty: [
-//     "rounded-2xl border border-dashed p-8 text-center",
-//     "border-plumb-borderStrong",
-//     "dark:border-plumb-darkBorderStrong",
-//   ].join(" "),
-
-//   skeleton: [
-//     "animate-pulse rounded-2xl",
-//     "bg-plumb-border dark:bg-plumb-dark-surface",
-//     "motion-reduce:animate-none",
-//   ].join(" "),
-// },
 
 navbar: {
   desktop: [
@@ -2290,7 +2191,7 @@ text: {
 tabs: {
 
 pill: {
-  container: `w-full min-w-0 max-w-full`,
+  container: `w-full min-w-0 max-w-4xl mx-auto`,
   wrapper: `
     flex w-full min-w-0 max-w-full
     flex-nowrap items-center justify-start gap-1
@@ -2315,15 +2216,8 @@ pill: {
   inactive: `text-plumb-muted bg-plumb-canvas hover:text-plumb-ink dark:text-plumb-darkMuted dark:hover:text-plumb-darkText`,
 },
 
-  // pill: {
-  //   container: `w-[100%] `,
-  //   wrapper: `flex items-center overflow-x-scroll  justify-center gap-1 rounded-xl bg-plumb-surface  px-4 dark:bg-plumb-dark-surface`,
-  //   button: `shrink-0 rounded-full px-6 py-2 transition-colors duration-200 sm:text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plumb-focus focus-visible:ring-offset-2 focus-visible:ring-offset-plumb-canvas dark:focus-visible:ring-mintLight dark:focus-visible:ring-offset-plumb-dark-canvas`,
-  //   active: `bg-plumb-mint text-plumb-darkText shadow-sm dark:bg-plumb-mintLight dark:text-plumb-ink`,
-  //   inactive: `text-plumb-muted bg-plumb-canvas hover:text-plumb-ink dark:text-plumb-darkMuted dark:hover:text-plumb-darkText`,
-  // },
 wrapper: [
-  "flex w-max w-[100%] gap-1 items-center justify-start",
+  "flex w-max  gap-1 items-center justify-start",
   "overflow-x-scroll overflow-x-contain",
 
   
@@ -2704,7 +2598,7 @@ dashboardItem: {
   ].join(" "),
 },
 pill: {
-  base: `inline-flex min-h-10 items-center gap-2 rounded-full px-4 py-2.5 text-xs font-medium shadow-sm
+  base: `inline-flex  items-center gap-2 rounded-full px-4 py-2.5 text-xs font-medium shadow-sm
 duration-200`,
   //  transition-[transform,background-color,border-color,color,box-shadow] 
   interactive: `cursor-pointer hover:-translate-y-0.5

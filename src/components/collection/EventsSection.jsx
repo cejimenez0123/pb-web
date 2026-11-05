@@ -8,6 +8,7 @@ import { getMyStories } from "../../actions/StoryActions";
 import shortName from "../../core/shortName";
 import SectionHeader from "../pieces/SectionHeader";
 import EmptyState from "../general/EmptyState";
+import styles from "../../styles/style";
 
 const PAGE_SIZE = 8;
 
@@ -24,52 +25,42 @@ export default function EventsSection({
   return (
     <section>
       <div
-        className="
-          flex
-          flex-col
-          gap-5
-          border-b
-          border-card-border
-          pb-5
-          sm:flex-row
-          sm:items-end
-          sm:justify-between
-        "
+        // className="
+        //   flex
+        //   flex-col
+        //   gap-5
+        //   border-b
+        //   border-card-border
+        //   pb-5
+        //   sm:flex-row
+        //   sm:items-end
+        //   sm:justify-between
+        // "
       >
         <div>
-          {/* <p
-            className="
-              mb-2
-              text-xs
-              uppercase
-              tracking-[0.18em]
-              text-text-secondary
-            "
+ 
+      
+        
+
+<div className={styles.profile.mine.sectionHeader}>
+        <div>
+          <h2
+            id="archive-heading"
+            className={styles.profile.mine.sectionTitle}
           >
             Events
-          </p> */}
-{/*    
-          <h2
-            className="
-              font-serif
-              text-2xl
-              sm:text-3xl
-              text-text-primary
-              dark:text-cream
-            "
-          >
-            Where the writing meets the world
-          </h2> */}
+          </h2>
 
-     <SectionHeader
-        eyebrow="Your Calendar"
-        title="Events"
-        actionLabel="Where the writing meets the world"
-        onAction={()=>{
-          router.push(Paths.collection.createRoute(id))
-        }}
-      />
+          <p className={styles.profile.mine.sectionDescription}>
+           Where you meet the world"
+          </p>
         </div>
+
+        <label className="w-full sm:max-w-[18rem]">
+          <span className="sr-only">
+            Search
+          </span>
+
 
         <input
           value={searchInput}
@@ -79,24 +70,14 @@ export default function EventsSection({
             setSearch(value);
           }}
           placeholder="Search"
-          className="
-            w-full
-            rounded-full
-            border
-            border-card-border
-            bg-plumb-surface 
-            px-4
-            py-2
-            text-sm
-            text-text-primary
-            placeholder:text-text-secondary
-            outline-none
-            transition-colors
-            focus:border-button-primary-bg
-            sm:max-w-[18rem]
-            dark:bg-base-bgDark
-          "
+          className={styles.profile.mine.search}
         />
+        </label>
+      </div>
+
+
+        </div>
+
       </div>
 
       <div className="mt-8">
