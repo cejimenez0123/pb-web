@@ -9,10 +9,7 @@ export default function SelectableItem({
   onOpen,
   accent = "blue",
 }) {
-  const borderClass =
-    accent === "purple"
-      ? "border-purple/30"
-      : "border-blueSea/30";
+
 
   return (
     <div
@@ -38,8 +35,10 @@ export default function SelectableItem({
 
       <Pill
         label={actionLabel}
+        baseClass={styles.pill.interactive+""}
         onClick={onAction}
-         baseClass={styles.button.base+"  border border-1 border-plumb-accent-blue "+styles.button.accent}
+        
+       
       
       />
     </div>

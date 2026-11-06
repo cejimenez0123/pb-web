@@ -137,7 +137,7 @@ dark:bg-transparent
     sm:max-w-[18rem]
   `,},
                base: [
-    "px-6 py-3 bg-plumb-canvas dark:bg-transparent",
+    "px-6 py-3 bg-plumb-canvas shadow-sm dark:bg-transparent",
     " text-plumb-ink dark:text-plumb-darkText ",
     "placeholder:text-plumb-muted",
     "focus:outline-none focus:ring-0",
@@ -162,7 +162,8 @@ dark:bg-transparent
     `,
           elevated: " p-3 "+shared.surface.elevated,
       head:"max-w-3xl mx-auto  w-[100%]",
-body:"max-w-3xl mx-auto  w-[100%]",
+      headInner:"px-2",
+body:"max-w-3xl mx-auto px-2  w-[100%]",
     content:[" max-w-3xl  flex"].join(" "),
    section:["mx-auto max-w-page space-y-4 mt-4 mb-8"].join(" "),
   
@@ -430,6 +431,7 @@ hash: {
   button: {
 
 base: [
+  "btn",
 "inline-flex items-center justify-center",
 "rounded-full text-base",
 "font-medium border-2 font-open-sans",
@@ -452,10 +454,11 @@ base: [
 ].join(" "),
 
 primary: [
-  "dark:border-plumb-mintLight dark:border dark:border-2 btn  dark:text-plumb-mintLight",
+  "dark:border-plumb-mintLight dark:border dark:border-2   dark:text-plumb-mintLight",
     "rounded-full font-semiBold  ",
   
-  "bg-plumb-mint dark:bg-transparent dark:border-plumb-button-primary-bg dark:text-plumb-button-primary-bg text-plumb-darkText",
+  "bg-plumb-mint dark:bg-transparent dark:border-plumb-button-primary-bg ",
+  "dark:text-plumb-button-primary-bg text-plumb-darkText",
   "shadow-sm",
   "hover:bg-plumb-mint/60 hover:border-plumb-mintLight hover:border-3",
   "hover:shadow-md",
@@ -609,7 +612,7 @@ addToCollection: {
   wrap: `
     ${shared.layout.centered}
     max-w-[50em]
-    ${shared.layout.pagePadding}
+g}
     pb-24 pt-8
   `,
 
@@ -2506,14 +2509,16 @@ dashboardItem: {
   ].join(" "),
 },
 pill: {
-  base: `inline-flex border border-1   items-center gap-2 rounded-full py-2 text-[.8rem] px-6 font-medium shadow-sm
+  base: `inline-flex   items-center gap-2 rounded-full py-2 text-sm px-6 font-bold 
 duration-200`,
   //  transition-[transform,background-color,border-color,color,box-shadow] 
-  interactive: `cursor-pointer hover:-translate-y-0.5
+  interactive:[    
+         
+    `cursor-pointer hover:-translate-y-0.5
    active:translate-y-0 focus-visible:outline-none
-    focus-visible:ring-2 focus-visible:ring-plumb-focus 
-    focus-visible:ring-offset-2 focus-visible:ring-offset-plumb-canvas 
+text-plumb-mint
     dark:focus-visible:ring-plumb-mintLight dark:focus-visible:ring-offset-plumb-dark-canvas`,
+  "   text-plumb-mint hover:bg-plumb-mintLight focus:bg-plumb-mintLight"].join(" "),
 
   default: `border border-plumb-mint/30  text-plumb-mint hover:border-plumb-mint  dark:border-plumb-mintLight/30
   dark:text-plumb-mintLight dark:hover:border-plumb-mintLight 

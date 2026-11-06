@@ -231,14 +231,16 @@ export default function AddToItem({
         <Pill
           label="Added ✓"
           onClick={canRemove ? handleRemove : undefined}
-            baseClass={styles.button.base+"  border border-1 border-plumb-accent-blue "+styles.button.accent}
-        
+       baseClass={styles.pill.interactive+" border border-t-1 border-b-1 border-plumb-mint/70 text-plumb-mint"}
+      
+          
         />
       ) : (
         <Pill
           label="Add"
           onClick={handleAdd}
-          baseClass={styles.button.base+" border border-1 border-plumb-accent-blue "+styles.button.accent}
+   baseClass={styles.pill.interactive+""}
+      
         />
       )}
     </div>

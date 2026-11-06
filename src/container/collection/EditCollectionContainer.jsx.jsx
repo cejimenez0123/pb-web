@@ -689,7 +689,7 @@ const saving = savingDetails||savingContent
             
 
            
-                  <secion className={"  mx-auto "+styles.pageShell.header+" "+styles.pageShell.body}>
+                  <secion className={"  mx-auto "+styles.pageShell.header+""+styles.pageShell.body}>
                   <h1
                     className="
                       font-serif

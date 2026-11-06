@@ -18,7 +18,8 @@ function PlumbHead({isWorkshop=null,buttons=[],label=null,onClick,title="Untitle
                   {label}
                 </p>
 
-            <div className="max-w-3xl">
+            <div className="max-w-3xl  ">
+
               <div className="mb-4 flex flex-wrap items-center gap-2">
                 {isWorkshop && (
                   <span
@@ -114,7 +115,7 @@ function PlumbHead({isWorkshop=null,buttons=[],label=null,onClick,title="Untitle
               )}
             </div>
           </div>
-          <div className="flex my-4 flex-wrap gap-2">
+          <div className="flex my-4 flex-wrap px-2 gap-2">
             {buttons.map(button=>button)}
           </div>
         </section>)

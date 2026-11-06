@@ -37,7 +37,7 @@ export default function Pill({
 
   return (
     <div
-      type="button"
+      // type="button"
       onClick={onClick}
       className={className+" "+styles.pill.base+" "+styles.pill.interactive}
     >

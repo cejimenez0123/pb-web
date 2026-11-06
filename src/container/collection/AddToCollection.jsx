@@ -382,7 +382,7 @@ purpose=" Select stories or Rooms to
                       )
                     }
             
-                className={[styles.button.base,styles.button.secondary].join(" ")}
+                className={[styles.button.base,styles.button.secondary+"  "].join(" ")}
                   >
                     View room
                   </div>,
@@ -393,7 +393,7 @@ purpose=" Select stories or Rooms to
           className={`
             ${styles.button.base} 
             ${styles.button.primary} 
-            ${styles.button.large}
+          
           `}
         >
           { saving

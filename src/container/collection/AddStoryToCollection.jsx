@@ -423,7 +423,7 @@ export default function AddStoryToCollection() {
       <main className={styles.pageShell.base+" "+styles.pageShell.scroll}>
         <ErrorBoundary>
           <div className={styles.addToCollection.wrap}>
-            {/* Header */}
+       
  <button
                   type="button"
                   onClick={() => router.goBack()}
@@ -432,7 +432,7 @@ export default function AddStoryToCollection() {
                   Back
                 </button>
             <header className={styles.pageShell.head}>
-              <div className="flex items-start justify-between gap-4">
+              <div className="flex items-start justify-between gap-4 px-2">
                 <div className="min-w-0">
                   <p className={styles.addToCollection.eyebrow}>
                     Add to Rooms
@@ -489,7 +489,8 @@ export default function AddStoryToCollection() {
                 <Pill
                   label="New Room"
                   onClick={openCreateCollection}
-                  baseClass={ ` mt-4 mb-2  ${styles.pill.base+" "+styles.pill.interactive}`}
+                  baseClass=""
+                  
                 />
               </div>
             </section>
