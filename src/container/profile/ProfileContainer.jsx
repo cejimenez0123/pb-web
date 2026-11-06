@@ -253,10 +253,10 @@ function ProfileContainer() {
      <IonContent fullscreen={true} scrollY={true} >
         <ErrorBoundary>
 
-         <div className={styles.pageShell.base+" "+styles.pageShell.scroll}>
+         <div className={styles.pageShell.base+" "+styles.pageShell.scroll+" "}>
        
             <header 
-            className={styles.pageShell.header}
+            className={styles.pageShell.head+" "+styles.pageShell.padded}
             >
               <div className={styles.profile.identity}>
                 <ProfileInfo profile={profile} compact />
@@ -267,7 +267,7 @@ function ProfileContainer() {
               </div>
 
               {communities.length > 0 && (
-                <section className="space-y-2">
+                <section className="mt-4 space-y-2">
                   <p className={styles.profile.sectionLabel}>
                     Communities
                   </p>
@@ -368,6 +368,7 @@ function ProfileContainer() {
             )}
             {/*  */}
 <div></div>
+<div className={styles.pageShell.body}>
             {/* Search, follow, and profile actions */}
             <div className={styles.profile.searchRow}>
               <input
@@ -438,7 +439,7 @@ function ProfileContainer() {
 
        <section
                 aria-label="Profile sections"
-                className={styles.tabs.pill.container}
+           className="overflow-x-scroll "
 
               >
            
@@ -556,6 +557,7 @@ function ProfileContainer() {
             <section className="pb-6">
               <RecommendedProfiles profileId={id} />
             </section>
+          </div>
           </div>
           </div>
      </ErrorBoundary>

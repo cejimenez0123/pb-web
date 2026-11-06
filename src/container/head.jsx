@@ -1,22 +1,18 @@
 import { useIonRouter } from "@ionic/react";
 import ProfileCircle from "../components/profile/ProfileCircle";
 
-function PlumbHead({isWorkshop=null,title="Untitled",type,purpose="",isPrivate=false,profile=null}){
+function PlumbHead({isWorkshop=null,onClick,title="Untitled",backText="Rooms",type,purpose="",isPrivate=false,profile=null}){
     const router = useIonRouter()
     return( <section className="border-b border-card-border dark:border-white/10">
           <div className={`w-full max-w-[52rem] mt-4 mx-auto px-4 sm:px-6 lg:px-8" pt-10 pb-8 sm:pt-14`}>
-            <div
-              type="button"
-            
-              onClick={() =>
-             r
-              }
-              className="bg-blueSea"
+            <button
+              
+                onClick={onClick}
               
             >
               <span aria-hidden="true" className="text-plumb-ink dark:text-plumb-darkText">←</span>
-              <span className="mx-2 text-plumb-ink dark:text-plumb-darkText">Rooms</span>
-            </div>
+              <span className="mx-2 text-plumb-ink dark:text-plumb-darkText">{backText}</span>
+            </button>
 
             <div className="max-w-3xl">
               <div className="mb-4 flex flex-wrap items-center gap-2">

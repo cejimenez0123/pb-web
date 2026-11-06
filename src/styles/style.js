@@ -2049,17 +2049,25 @@ tabs: {
 
 pill: {
   container: `w-full min-w-0 max-w-4xl mx-auto`,
-  wrapper: `
-    flex w-full min-w-0 max-w-full
-    flex-nowrap items-center justify-start gap-1
-    overflow-x-auto overflow-y-hidden
-    overscroll-x-contain touch-pan-x
-    whitespace-nowrap
-    rounded-xl bg-plumb-surface px-4
-    dark:bg-plumb-dark-surface
-    [scrollbar-width:none]
-    [&::-webkit-scrollbar]:hidden
-  `,
+  wrapper: [
+  "flex w-max  gap-1 items-center justify-start",
+  "overflow-x-scroll overflow-x-contain",
+
+  
+  "[scrollbar-width:none]",
+  "[&::-webkit-scrollbar]:hidden",
+].join(" "),
+  // wrapper: `
+  //   flex w-full min-w-0 max-w-full
+  //   flex-nowrap items-center justify-start gap-1
+  //   overflow-x-auto overflow-y-hidden
+  //   overscroll-x-contain touch-pan-x
+  //   whitespace-nowrap
+  //   rounded-xl bg-plumb-surface px-4
+  //   dark:bg-plumb-dark-surface
+  //   [scrollbar-width:none]
+  //   [&::-webkit-scrollbar]:hidden
+  // `,
   button: `
     shrink-0 whitespace-nowrap rounded-full px-6 py-2
     transition-colors duration-200 sm:text-sm
@@ -2073,14 +2081,7 @@ pill: {
   inactive: `text-plumb-muted bg-plumb-canvas hover:text-plumb-ink dark:text-plumb-darkMuted dark:hover:text-plumb-darkText`,
 },
 
-wrapper: [
-  "flex w-max  gap-1 items-center justify-start",
-  "overflow-x-scroll overflow-x-contain",
 
-  
-  "[scrollbar-width:none]",
-  "[&::-webkit-scrollbar]:hidden",
-].join(" "),
  
   container: ["mt-4  flex flex-col items-center ",].join(" "),
   list: {

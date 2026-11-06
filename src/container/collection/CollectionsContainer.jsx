@@ -18,11 +18,12 @@ import {
 
 import Paths from "../../core/paths.js";
 import { IonContent, useIonRouter } from "@ionic/react";
+import styles from "../../styles/style.js";
 
 
 
 const PAGE =
-  "mx-auto w-full max-w-[52rem] px-4 sm:px-6 lg:px-8";
+  "mx-auto  ";
 
 const SECTION =
   "mt-12 sm:mt-16";
@@ -216,17 +217,12 @@ router.push(
   return (
     <IonContent
       scrollY={true}
-      className="page-content"
+      // className="page-content"
       fullscreen
     >
       <main
-        className="
-          min-h-full
-          bg-plumb-canvas
-          text-plumb-ink
-          dark:bg-plumb-dark-canvas
-          dark:text-plumb-darkText
-        "
+      className={styles.pageShell.base+ " "+styles.pageShell.padded+" "+styles.pageShell.scroll}
+ 
       >
 
       <div
@@ -387,7 +383,7 @@ router.push(
           </div>
 
 
-          <button
+          {/* <button
             type="button"
             onClick={handleCreate}
             className="
@@ -411,7 +407,7 @@ router.push(
             "
           >
             + New Room
-          </button>
+          </button> */}
 
         </section>
 
@@ -543,7 +539,7 @@ function EmptyRooms({
   onAction,
 }) {
   return (
-    <div className="rounded-2xl border border-dashed border-card-border bg-base-bg/40 px-6 py-10 text-center dark:border-gray-700 dark:bg-plumb-surface Dark/40">
+    <div className="rounded-2xl border border-dashed border-card-border bg-base-bg/40 px-2 py-10 text-center dark:border-gray-700 dark:bg-plumb-surface Dark/40">
 
       <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-plumb-surface  text-xl dark:bg-base-bgDark">
         +
@@ -557,7 +553,7 @@ function EmptyRooms({
         <button
           type="button"
           onClick={onAction}
-          className="mt-5 rounded-full bg-button-primary-bg px-5 py-3 text-sm font-semibold text-white transition hover:bg-button-primary-hover"
+          className="mt-5 rounded-full bg-button-primary-bg px-6 py-3 text-sm font-semibold text-white transition hover:bg-button-primary-hover"
         >
           {actionLabel}
         </button>

@@ -47,7 +47,7 @@ import computePermissions from "../../core/compusePermissions.jsx";
 import useScrollTracking from "../../core/useScrollTracking.jsx";
 
 
-import { IonContent } from "@ionic/react";
+import { IonContent, useIonRouter } from "@ionic/react";
 
 import RoomPreview from "../../components/room/RoomPreview.jsx";
 import styles from "../../styles/style.js";
@@ -738,8 +738,8 @@ export default function CollectionContainer() {
         fullscreen
       >
         <ErrorBoundary>
-         <main className={styles.pageShell.base}>
-            <div className={`${PAGE} py-24`}>
+         <main className={styles.pageShell.base+" "+styles.pageShell.padded}>
+            <div className={``}>
               <div className="mx-auto max-w-xl text-center">
                 <p className="mb-4 text-xs uppercase tracking-[0.18em] text-text-secondary">
                   Room
@@ -786,8 +786,8 @@ export default function CollectionContainer() {
         fullscreen
       >
         <ErrorBoundary>
-        <main className={styles.pageShell.base}>
-            <div className={`${PAGE} py-24`}>
+        <main className={styles.pageShell.base+" "+styles.pageShell.padded+" "+styles.pageShell.scroll}>
+            <div className={``}>
               <div className="mx-auto max-w-xl text-center">
                 <p className="mb-4 text-xs uppercase tracking-[0.18em] text-text-secondary">
                   Room
@@ -822,136 +822,24 @@ export default function CollectionContainer() {
   // -------------------------------------------------------
   // Main
   // -------------------------------------------------------
-
+const router = useIonRouter()
   return (
     <IonContent>
     <ErrorBoundary>
-<main className={styles.collection.page}>
+<main className={styles.pageShell.base+" "+styles.pageShell.padded+" "+styles.pageShell.scroll}>
  
 
-        {/* ----------------------------------
-        <section className="border-b border-card-border dark:border-white/10">
-          <div className={`${PAGE} pt-10 pb-8 sm:pt-14`}>
-            <div
-              type="button"
-            
-              onClick={() =>
-                history.push(Paths.collections.path)
-              }
-              className="bg-blueSea"
-              
-            >
-              <span aria-hidden="true" className="text-plumb-ink dark:text-plumb-darkText">←</span>
-              <span className="mx-2 text-plumb-ink dark:text-plumb-darkText">Rooms</span>
-            </div>
-
-            <div className="max-w-3xl">
-              <div className="mb-4 flex flex-wrap items-center gap-2">
-                {collection.isWorkshop && (
-                  <span
-                    className="
-                      inline-flex items-center
-                      rounded-full
-                      bg-softBlue
-                      px-3 py-1
-                      text-xs font-medium
-                      text-text-primary
-                    "
-                  >
-                    Workshop
-                  </span>
-                )}
-
-                {collection.type && (
-                  <span
-                    className="
-                      inline-flex items-center
-                      rounded-full
-                      border border-card-border
-                      px-3 py-1
-                    mt-1
-                      text-xs font-medium
-                      text-text-secondary
-                      dark:border-white/10
-                      dark:text-gray-300
-                    "
-                  >
-                    {formatRoomType(collection.type)}
-                  </span>
-                )}
-
-                {collection.isPrivate && (
-                  <span
-                    className="
-                      inline-flex items-center
-                      rounded-full
-                      border border-card-border
-                      px-3 py-1
-                      text-xs
-                      text-text-secondary
-                      dark:border-white/10
-                      dark:text-gray-300
-                    "
-                  >
-                    Private
-                  </span>
-                )}
-              </div>
-
-              <h1
-                className="
-                  font-serif
-                  text-4xl
-                  leading-[1.05]
-                  tracking-tight
-                  text-text-primary
-                  dark:text-cream
-                  sm:text-5xl
-                  lg:text-6xl
-                "
-              >
-                {collection.title || "Untitled Room"}
-              </h1>
-
-              {collection.purpose && (
-                <p
-                  className="
-                    mt-5
-                    max-w-2xl
-                    text-base
-                    leading-relaxed
-                    text-text-secondary
-                    dark:text-gray-300
-                    sm:text-lg
-                  "
-                >
-                  {collection.purpose}
-                </p>
-           
-
-          
-
-              {collection.profile && (
-                <div className="mt-7 flex items-center gap-3">
-                  <ProfileCircle
-                    profile={collection.profile}
-                    includeUsername={true}
-                  />
-                </div>
-              )}
-            </div>
-          </div>
-        </section>
-        */}
+        
         <PlumbHead
+        onClick={()=>router.goBack()}
 title={collection.title}
+backText="Room"
 profile={collection.profile}
 isPrivate={collection.isPrivate}
 type={collection.type}
 
         />
-        {/* Actions */}
-        {/* --------------------------------------------- */}
+
 
         <section className="border-b border-card-border dark:border-white/10">
           <div className={`${PAGE} py-4`}>
@@ -966,7 +854,7 @@ type={collection.type}
                       : handleFollow
                   }
                   className={
-                    styles.button.base+
+                    styles.button.base+" px-6 py-3 "+
                     role
                       ? styles.button.primary
                       :styles.button.secondary
@@ -1045,7 +933,7 @@ type={collection.type}
         <section className={"mx-4 "+styles.pageShell.body}>
       
     
-              
+            <div             className={styles.tabs.pill.container}>
            
               <TabBar
            
@@ -1054,9 +942,9 @@ type={collection.type}
                 onChange={setTab}
               />
       
-
+ </div>  
        
-            <div className="pb-16">
+            <div className={styles.pageShell.body+" pt-4 "+styles.pageShell.section}>
               {tab === "inside" && (
                 <InsideRoom
                   collection={collection}
@@ -1334,7 +1222,7 @@ function MemberTab({
                 justify-between
                 gap-4
                 rounded-2xl
-                px-4
+           
                 py-4
                 text-left
                 transition-colors
@@ -1519,7 +1407,7 @@ function EmptyRoomContent({
         border
         border-dashed
         border-card-border
-        px-6
+
         py-10
         text-center
         dark:border-white/10
@@ -1553,8 +1441,8 @@ function CollectionLoading() {
     <main
       role="status"
       aria-label="Loading room content"
-      className="min-h-screen bg-plumb-surface text-text-primary dark:bg-base-bgDark dark:text-cream"
-    >
+      className={styles.pageShell.base+" "+styles.pageShell.padded+" "+styles.pageShell.scroll}
+        >
       <div className={`${PAGE} pt-10 sm:pt-14`}>
         <div className="mb-10 h-4 w-16 animate-pulse rounded bg-gray-200 dark:bg-white/10" />
 
