@@ -47,12 +47,14 @@ import computePermissions from "../../core/compusePermissions.jsx";
 import useScrollTracking from "../../core/useScrollTracking.jsx";
 
 
-import { IonContent, useIonRouter } from "@ionic/react";
+import { IonButton, IonContent, useIonRouter } from "@ionic/react";
 
 import RoomPreview from "../../components/room/RoomPreview.jsx";
 import styles from "../../styles/style.js";
 import TabBar from "../../components/TabBar.jsx";
 import PlumbHead from "../head.jsx";
+import FollowButton from "../../components/profile/FollowButton.jsx";
+import PlumbButton from "../../components/profile/FollowButton.jsx";
 
 // ---------------------------------------------------------
 // Layout
@@ -107,13 +109,14 @@ export default function CollectionContainer() {
   const { id } = useParams();
   const history = useHistory();
   const dispatch = useDispatch();
-
+const router = useIonRouter()
   const { showAlert } = useAlert();
 
   const currentProfile = useSelector(
     (state) => state.users.currentProfile
   );
 
+ 
   const collection = useSelector(
     (state) => state.books.collectionInView
   );
@@ -169,7 +172,7 @@ export default function CollectionContainer() {
       ],
     }
   );
-
+const [following,setFollowing]=useState(!!role)
   // -------------------------------------------------------
   // Load collection
   // -------------------------------------------------------
@@ -415,6 +418,7 @@ export default function CollectionContainer() {
       checkResult(
         result,
         () => {
+          setFollowing(true)
           showAlert({
             message:
               "You are now following this room.",
@@ -451,6 +455,7 @@ export default function CollectionContainer() {
       currentProfile?.id ===
       collection?.profile?.id
     ) {
+  
       showAlert({
         message:
           "This is yours — you cannot unfollow your own room.",
@@ -502,13 +507,14 @@ export default function CollectionContainer() {
         type: AlertType.error,
       });
     }
+        setFollowing(false)
   };
 
   // -------------------------------------------------------
   // Bookmark / Archive state
   // -------------------------------------------------------
 
-  const isBookmarked = useMemo(() => {
+  const initBookmarked = useMemo(() => {
     if (!isCurrentCollection || !homeCol) {
       return null;
     }
@@ -524,8 +530,8 @@ export default function CollectionContainer() {
     isCurrentCollection,
     homeCol,
   ]);
-
-  const isArchived = useMemo(() => {
+const [isBookmarked,setIsBookmarked]=useState(initBookmarked)
+  const initArchived = useMemo(() => {
     if (!isCurrentCollection || !archiveCol) {
       return null;
     }
@@ -541,12 +547,16 @@ export default function CollectionContainer() {
     isCurrentCollection,
     archiveCol,
   ]);
-
+const [isArchived,setIsArchived]=useState(initArchived)
   // -------------------------------------------------------
   // Save / unsave Home
   // -------------------------------------------------------
 
   const handleBookmark = async () => {
+    const tcid = collection.parentCollections?.find(
+        (item) =>
+          item.parentCollectionId === homeCol.id
+      ).id
     if (!currentProfile) {
       showAlert({
         message: "Please sign in",
@@ -575,6 +585,7 @@ export default function CollectionContainer() {
         checkResult(
           result,
           () => {
+            setIsBookmarked(true)
             showAlert({
               message: "Saved to Home.",
               type: AlertType.success,
@@ -592,13 +603,14 @@ export default function CollectionContainer() {
       } else {
         const result = await dispatch(
           deleteCollectionFromCollection({
-            tcId: isBookmarked.id,
+            tcId: tcid,
           })
         );
 
         checkResult(
           result,
           () => {
+                setIsBookmarked(false)
             showAlert({
               message: "Removed from Home.",
               type: AlertType.success,
@@ -615,15 +627,14 @@ export default function CollectionContainer() {
         );
       }
     } catch (error) {
+
       showAlert({
         message:
           error?.message ||
           "Unable to update Home.",
         type: AlertType.error,
       });
-    } finally {
-      setBookmarkLoading(false);
-    }
+    } 
   };
 
   // -------------------------------------------------------
@@ -631,6 +642,10 @@ export default function CollectionContainer() {
   // -------------------------------------------------------
 
   const handleArchive = async () => {
+        const tcid = collection.parentCollections?.find(
+        (item) =>
+          item.parentCollectionId === archiveCol.id
+      ).id
     if (!currentProfile) {
       showAlert({
         message: "Please sign in",
@@ -659,6 +674,7 @@ export default function CollectionContainer() {
         checkResult(
           result,
           () => {
+            setIsArchived(true)
             showAlert({
               message: "Saved to Archive.",
               type: AlertType.success,
@@ -683,6 +699,7 @@ export default function CollectionContainer() {
         checkResult(
           result,
           () => {
+            setIsArchived(false)
             showAlert({
               message: "Removed from Archive.",
               type: AlertType.success,
@@ -757,7 +774,7 @@ export default function CollectionContainer() {
                 <div
                   type="button"
                   onClick={() =>
-                    history.push(Paths.collections.path)
+                    router.push(Paths.collections.path)
                   }
                   className={PRIMARY_BUTTON}
                 >
@@ -805,7 +822,7 @@ export default function CollectionContainer() {
                 <button
                   type="button"
                   onClick={() =>
-                    history.push(Paths.collections.path)
+                    router.push(Paths.collections.path)
                   }
                   className={PRIMARY_BUTTON}
                 >
@@ -822,7 +839,7 @@ export default function CollectionContainer() {
   // -------------------------------------------------------
   // Main
   // -------------------------------------------------------
-const router = useIonRouter()
+
   return (
     <IonContent>
     <ErrorBoundary>
@@ -844,58 +861,54 @@ type={collection.type}
         <section className="border-b border-card-border dark:border-white/10">
           <div className={`${PAGE} py-4`}>
             <div className="flex flex-wrap items-center gap-2">
-              {currentProfile && (
-                <div
-                  type="button"
-                  disabled={bookmarkLoading}
-                  onClick={
-                    role
-                      ? handleUnfollow
-                      : handleFollow
-                  }
-                  className={
-                    styles.button.base+" px-6 py-3 "+
-                    role
-                      ? styles.button.primary
-                      :styles.button.secondary
-                  }
-                >
-                  {role ? "Following" : "Follow"}
-                </div>
-              )}
+              
+<PlumbButton
+  currentProfile={currentProfile}
+  isSelf={false}
+  label={following?"Following":"Follow"}
+  following={following}
+  onClick={() =>
+    following
+      ? handleUnfollow()
+      : handleFollow()
+  }
+/>
 
-              {currentProfile && (
-                <div
-                  type="button"
-                  disabled={bookmarkLoading}
-                  onClick={handleBookmark}
-                  className={styles.button.base+ " "+styles.button.secondary }
-                >
-                  {isBookmarked
+
+
+              {currentProfile &&  (homeCol?.id !=id) && (<>
+                <PlumbButton 
+                
+                onClick={handleBookmark}
+                following={isBookmarked}
+                label={isBookmarked
                     ? "Saved to Home"
                     : "Save to Home"}
-                </div>
+                />
+        
+                </>
               )}
 
-              {currentProfile && (
-                <div
-                  type="button"
-                  disabled={bookmarkLoading}
+              {currentProfile && (archiveCol?.id!=id) && (
+                <>
+                <PlumbButton
+                 currentProfile={currentProfile}
+                isSelf={false}
+                following={isArchived}
+                 
                   onClick={handleArchive}
-                  // className={SECONDARY_BUTTON}
-                  className={styles.button.base+ " "+styles.button.secondary }
-                >
-                  {isArchived
+                  label= {isArchived
                     ? "In Archive"
                     : "Save to Archive"}
-                </div>
+                  />
+        </>
               )}
 
               {canEdit && (
                 <div
                   type="button"
                   onClick={() =>
-                    history.push(
+                    router.push(
                       Paths.editCollection.createRoute(
                         collection.id
                       )
@@ -911,7 +924,7 @@ type={collection.type}
                 <div
                   type="button"
                   onClick={() =>
-                    history.push(
+                    router.push(
                       Paths.addToCollection.createRoute(
                         collection.id
                       )
@@ -933,7 +946,8 @@ type={collection.type}
         <section className={"mx-4 "+styles.pageShell.body}>
       
     
-            <div             className={styles.tabs.pill.container+" "+styles.tabs.pill.wrapper}>
+   
+            <div             className={styles.tabs.pill.container+" justify-around pb-4 "+styles.tabs.pill.wrapper}>
            
               <TabBar
            

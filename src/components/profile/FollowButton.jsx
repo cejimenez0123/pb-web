@@ -1,29 +1,75 @@
-import { useState } from "react";
-import styles from "../../styles/style";
+// import { useState } from "react";
+// import styles from "../../styles/style";
 
-const FollowButton = ({ prof,isSelf,current,follow,onClick}) => {
+// const FollowButton = ({isSelf,currentProfile,following,onClick}) => {
 
   
-    if(isSelf){
-      return    <div
-      // onClick={onClick}
-      className={styles.button.base+styles.button.accent+" mx-4 "}
+//     if(isSelf){
+//       return    <div
+    
+//       className={styles.button.base+styles.button.accent+" mx-4 "}
      
         
        
   
-    >
-      {"Self"}
-    </div>
-    }
+//     >
+//       {"Self"}
+//     </div>
+//     }
+//   return (
+//     <button
+//       onClick={onClick}
+//       className={styles.button.base+" "+(following?styles.button.primary:styles.button.secondary)}
+    
+//     >
+//       {following? "Following" : "Follow"}
+//     </button>
+//   );
+// };
+// export default FollowButton
+
+import styles from "../../styles/style";
+
+const PlumbButton = ({
+  isSelf,
+  label,
+  following,
+  onClick,
+  disabled = false,
+}) => {
+
+  if (isSelf) {
+    return (
+      <div
+        className={
+          styles.button.base +
+          styles.button.accent +
+          " mx-4"
+        }
+      >
+        Self
+      </div>
+    );
+  }
+
   return (
     <button
+      type="button"
       onClick={onClick}
-      className={styles.button.base+" "+styles.button.primary}
-    
+      disabled={disabled}
+      aria-pressed={following}
+      className={
+        styles.button.base +
+        " " +
+        (following
+          ? styles.button.primary
+          : styles.button.secondary)
+      }
     >
-      {follow? "Following" : "Follow"}
+      {label}
+      {/* {following ? "Following" : "Follow"} */}
     </button>
   );
 };
-export default FollowButton
+
+export default PlumbButton

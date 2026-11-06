@@ -13,7 +13,7 @@ export default function SelectableItem({
 
   return (
     <div
- className={styles.pageShell.row.outer+" border border-1 border-plumb-mint/70  dark:border-plumb-surface"} >
+ className={styles.pageShell.row.outer+" bg-transparent"} >
   
 
   
@@ -27,7 +27,7 @@ export default function SelectableItem({
         </p>
 
         {subtitle ? (
-          <p className="mt-1 truncate text-xs text-gray-500 dark:text-gray-400">
+          <p className="mt-1 truncate text-xs text-ink dark:text-plumb-darkSurface">
             {subtitle}
           </p>
         ) : null}
@@ -35,7 +35,7 @@ export default function SelectableItem({
 
       <Pill
         label={actionLabel}
-        baseClass={styles.pill.interactive+""}
+        baseClass={styles.pill.interactive}
         onClick={onAction}
         
        

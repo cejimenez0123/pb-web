@@ -1,5 +1,5 @@
 
-import { IonContent, useIonViewDidLeave, useIonViewWillEnter, useIonRouter } from "@ionic/react";
+import { IonContent, useIonViewDidLeave, useIonViewWillEnter, useIonRouter, IonButton } from "@ionic/react";
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
@@ -37,6 +37,7 @@ import horiz from "../../images/icons/more_vert.svg";
 import Pill from "../../components/Pill";
 import ListPill from "../../components/page/ListPill";
 import SectionHeader from "../../components/pieces/SectionHeader";
+import PlumbButton from "../../components/profile/FollowButton";
 
 const TABS = {
   POSTS: "pages",
@@ -381,13 +382,20 @@ function ProfileContainer() {
               />
 
               <div className={styles.profile.actions}>
-                <FollowButton
-                  isSelf={isSelf}
-                  prof={profile}
-                  onClick={onClickFollow}
-                  follow={following}
-                  current={currentProfile}
-                />
+          
+
+<PlumbButton
+
+
+  label={following?"Following":"Follow"}
+  following={following}
+
+  isSelf={isSelf}
+
+    onClick={onClickFollow}
+    disabled={isSelf}
+/>
+
 
                 {!isSelf && (
                   <div className="dropdown dropdown-end shrink-0">

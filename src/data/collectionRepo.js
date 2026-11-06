@@ -289,6 +289,7 @@ async getProtectedProfileCollections({ id, skip = 0, take = 20 }) {
     }
     async deleteCollectionToCollection({tcId}){
           const headers = await this.getAuthHeaders()
+          console.log(tcId)
         let res = await axios.delete(this.url+"/colToCol/"+tcId,
             {headers:headers}
         )

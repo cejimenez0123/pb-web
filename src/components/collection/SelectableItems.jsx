@@ -1,3 +1,5 @@
+import shortName from "../../core/shortName";
+import styles from "../../styles/style";
 import Pill from "../Pill";
 import SelectableItem from "./SelectableItem";
 
@@ -14,7 +16,8 @@ function SelectedItems({
   return (
     <div className="mb-6 rounded-2xl border border-blueSea/20 bg-softBlue/20 p-3 dark:bg-plumb-surface Dark">
       <div className="mb-2 flex items-center justify-between">
-        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-blueSea">
+        {/* <p className="text-xs font-semibold uppercase tracking-[0.14em] text-blueSea"> */}
+        <p className={styles.text.section}>
           Added
         </p>
 

@@ -343,9 +343,11 @@ if (storyList.length > 0) {
 
   if (!colInView) {
     return (
-      <IonContent className="bg-plumb-surface  dark:bg-base-bgDark">
-      <main className="min-h-[100dvh] bg-plumb-surface  dark:bg-base-bgDark">
-        <div className="mx-auto max-w-[50em] px-4 py-12">
+      <IonContent >
+      <main 
+      className={styles.pageShell.base}
+      // className="min-h-[100dvh] bg-plumb-surface  dark:bg-base-bgDark">
+        ><div className="mx-auto max-w-[50em] px-4 py-12">
           <div className="animate-pulse space-y-4">
             <div className="h-8 rounded-xl bg-gray-200 dark:bg-plumb-surface Dark" />
             <div className="h-32 rounded-2xl bg-gray-200 dark:bg-plumb-surface Dark" />
@@ -460,12 +462,12 @@ purpose=" Select stories or Rooms to
                 ))}
          </select>
 </span>
-              <div className={styles.input.search.searchWrap}>
+              <div className={styles.input.search.searchWrap+" flex flex-row"}>
                   <span
-                    aria-hidden="true"
+                
                     className={styles.input.search.searchLabel}
                   >
-                    Search
+                    Search:
                   </span>
 
                   <input
@@ -477,8 +479,9 @@ purpose=" Select stories or Rooms to
                       event.target.value
                     )
                   }
-                    placeholder="Search..."
-                className={styles.input.search.input}
+                  
+                    placeholder=""
+          className={styles.input.search.input+" w-[100%] "}
                   />
                 </div>
       
@@ -499,7 +502,7 @@ purpose=" Select stories or Rooms to
             <>
       <div>
  
-      {/* Selected stories */}
+     
       <SelectedItems
         items={newStories}
         type="story"
@@ -511,7 +514,7 @@ purpose=" Select stories or Rooms to
         }
       />
 
-      {/* Available stories */}
+   
       <PaginatedList
         cacheKey={`add-stories-${colInView.id}`}
         fetcher={getMyStories}
@@ -574,7 +577,7 @@ purpose=" Select stories or Rooms to
               }
               subtitle={story.status}
               actionLabel="Add"
-              accent="blue"
+              // accent="blue"
               onAction={() =>
                 addStory(story)
               }

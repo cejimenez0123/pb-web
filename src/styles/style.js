@@ -87,7 +87,8 @@ const styles = {
      search:{
 
   searchLabel: `
-  w-[100%]
+pr-2
+  pl-4
     my-auto block
     bg-plumb-canvas
     dark:bg-transparent
@@ -95,16 +96,16 @@ const styles = {
     text-plumb-muted
     dark:text-plumb-darkMuted
   `,
-      searchWrap: `
-    w-[100%] flex flex-row rounded-full border
-    border-plumb-border
-    dark:bg-transparent
- px-4
-mb-4
-    text-sm text-plumb-ink
-    placeholder:text-plumb-subtle
+      searchWrap: [`
+    w-[100%] flex flex-row rounded-full `,
+    `border border-1
+    border-plumb-mintLight`,
+  `  dark:bg-transparent   bg-plumb-canvas
+`,`
+    text-sm text-plumb-ink dark:text-plumb-darkSurface
+    placeholder:text-plumb-subtle`,`
     outline-none
-    bg-plumb-canvas
+ `,`
     transition-colors
     focus:border-plumb-mint
     focus:ring-2 focus:ring-plumb-focus/40
@@ -113,16 +114,16 @@ mb-4
     dark:placeholder:text-plumb-darkSubtle
     dark:focus:border-plumb-mintLight
     dark:focus:ring-plumb-mintLight/30
-    sm:max-w-[18rem]
-  `,
+  
+  `].join(" "),
   
       input: `
-   w-[100%] rounded-full
+   rounded-full
 my-auto
 bg-plumb-canvas
 dark:bg-transparent
  
-    px-4 py-2
+  
     text-sm text-plumb-ink
     placeholder:text-plumb-subtle
     outline-none
@@ -134,7 +135,7 @@ dark:bg-transparent
     dark:placeholder:text-plumb-darkSubtle
     dark:focus:border-plumb-mintLight
     dark:focus:ring-plumb-mintLight/30
-    sm:max-w-[18rem]
+
   `,},
                base: [
     "px-6 py-3 bg-plumb-canvas shadow-sm dark:bg-transparent",
@@ -152,7 +153,7 @@ dark:bg-transparent
     pageShell: {
       row:{
         outer:["w-[100%] flex flex-row justify-between px-6 py-3",
-          " border border-1 bg-plumb-canvas dark:bg-transparent  rounded-full py-3 "].join(" "),
+          " border border-1 rounded-full py-3 "].join(" "),
        }, elevated: `
       rounded-2xl border
       border-plumb-border
@@ -849,14 +850,15 @@ g}
     "rounded-2xl",
  
     "bg-plumb-surface",
-    "dark:bg-plumb-dark-surface",
+    "dark:bg-transparent",
+    // "dark:bg-plumb-dark-surface",
     "transition-colors",
     "focus-within:border-plumb-mint",
     "focus-within:ring-2",
     "focus-within:ring-plumb-mint/20",
   ].join(" "),
 searchbar: [
-  "w-full p-0 rounded-full",
+
   "bg-plumb-elevated text-plumb-ink",
   "placeholder:text-plumb-muted",
   "dark:bg-plumb-dark-surface dark:text-plumb-darkText",
