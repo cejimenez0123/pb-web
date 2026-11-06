@@ -544,6 +544,7 @@ function RootRoute() {
     currentProfile={currentProfile}
   />
               <div className="relative flex-1">
+                <PushNotificationHandler/>
                 <Dialog
                   dialog={dialog}
                   presentingElement={presentingEl}
