@@ -52,6 +52,7 @@ import { IonContent } from "@ionic/react";
 import RoomPreview from "../../components/room/RoomPreview.jsx";
 import styles from "../../styles/style.js";
 import TabBar from "../../components/TabBar.jsx";
+import PlumbHead from "../head.jsx";
 
 // ---------------------------------------------------------
 // Layout
@@ -828,6 +829,7 @@ export default function CollectionContainer() {
 <main className={styles.collection.page}>
  
 
+        {/* ----------------------------------
         <section className="border-b border-card-border dark:border-white/10">
           <div className={`${PAGE} pt-10 pb-8 sm:pt-14`}>
             <div
@@ -837,7 +839,7 @@ export default function CollectionContainer() {
                 history.push(Paths.collections.path)
               }
               className="bg-blueSea"
-              // className={`${TEXT_BUTTON} mb-8`}
+              
             >
               <span aria-hidden="true" className="text-plumb-ink dark:text-plumb-darkText">←</span>
               <span className="mx-2 text-plumb-ink dark:text-plumb-darkText">Rooms</span>
@@ -925,9 +927,9 @@ export default function CollectionContainer() {
                 >
                   {collection.purpose}
                 </p>
-              )}
+           
 
-              {/* Creator */}
+          
 
               {collection.profile && (
                 <div className="mt-7 flex items-center gap-3">
@@ -940,8 +942,14 @@ export default function CollectionContainer() {
             </div>
           </div>
         </section>
+        */}
+        <PlumbHead
+title={collection.title}
+profile={collection.profile}
+isPrivate={collection.isPrivate}
+type={collection.type}
 
-        {/* --------------------------------------------- */}
+        />
         {/* Actions */}
         {/* --------------------------------------------- */}
 
@@ -1034,7 +1042,7 @@ export default function CollectionContainer() {
         {/* Room tabs and content */}
         {/* --------------------------------------------- */}
 
-        <section className="mx-4 ">
+        <section className={"mx-4 "+styles.pageShell.body}>
       
     
               

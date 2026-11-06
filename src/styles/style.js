@@ -97,14 +97,11 @@ const styles = {
    
     },
     pageShell: {
+      head:"max-w-3xl mx-auto  w-[100%]",
 body:"max-w-3xl mx-auto  w-[100%]",
     content:[" max-w-3xl  flex"].join(" "),
    section:["mx-auto max-w-page space-y-4 mt-4 mb-8"].join(" "),
-    // body: [
-    //   "mt-4 sm:mx-auto w-[100%] mx-4 max-w-3xl font-serif",
-    //   "text-lg sm:text-xl leading-relaxed",
-    //   "text-plumb-text dark:text-plumb-darkText",
-    // ].join(" "),
+  
       list: [
     "mx-auto max-w-2xl",
     "bg-paper dark:bg-plumb-dark-surface",
