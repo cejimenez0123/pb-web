@@ -15,7 +15,7 @@ const TabBar = ({
   return (
     <nav
       aria-label={ariaLabel}
-      className={`${styles.tabs.container}  min-w-0 w-full ${className}`}
+  
     >
       <div className={styles.tabs.pill.container+" px-2 "+styles.tabs.pill.wrapper}>
         {tabs.map((tab) => {

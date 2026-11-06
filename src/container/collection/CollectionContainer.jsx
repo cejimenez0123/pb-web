@@ -933,7 +933,7 @@ type={collection.type}
         <section className={"mx-4 "+styles.pageShell.body}>
       
     
-            <div             className={styles.tabs.pill.container}>
+            <div             className={styles.tabs.pill.container+" "+styles.tabs.pill.wrapper}>
            
               <TabBar
            

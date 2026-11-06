@@ -82,7 +82,7 @@ const SECONDARY_BUTTON =
   `${styles.button.secondary} px-6 py-3 ${styles.button.base}`;
 
 const PRIMARY_BUTTON =
-  `${styles.button.primary} px-6 mx-auto py-3 ${styles.button.base}`;
+  `${styles.button.primary} px-6  py-3 ${styles.button.base}`;
 
 
 // =========================================================
@@ -706,8 +706,8 @@ const saving = savingDetails||savingContent
                   </h1>
 
  
-                
-<section className={"flex flex-wrap  my-4 gap-4"}>
+         <section className="flex flex-wrap my-4 items-center gap-2">      
+
                   <div
                     onClick={openRoleForm}
                     className={SECONDARY_BUTTON}
@@ -756,9 +756,9 @@ const saving = savingDetails||savingContent
                   </h2>
                   </span>
                    <div onClick={() =>
-                    history.push(
+                   router.push(
                       Paths.addToCollection.createRoute(
-                        collection.id
+                        colInView.id
                       )
                     )
                   }

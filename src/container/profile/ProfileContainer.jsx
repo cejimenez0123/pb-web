@@ -436,20 +436,16 @@ function ProfileContainer() {
                 )}
               </div>
             </div>
-
-       <section
-                aria-label="Profile sections"
-           className="overflow-x-scroll "
-
-              >
+   <div             className={styles.tabs.pill.container+" "+styles.tabs.pill.wrapper}>
            
               <TabBar
+           
                 tabs={tabs}
                 active={tab}
                 onChange={setTab}
               />
       
-</section>
+ </div>  
             {/* Tab content */}
             <div className=" mx-4" >
               {tab === TABS.POSTS && (

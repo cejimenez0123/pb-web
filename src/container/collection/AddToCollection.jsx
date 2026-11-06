@@ -22,6 +22,7 @@ import Pill from "../../components/Pill.jsx";
 import computePermissions from "../../core/compusePermissions.jsx";
 import { RoleType } from "../../core/constants.js";
 import shortName from "../../core/shortName.jsx";
+import styles from "../../styles/style.js";
 
 const filterTypes = {
   filter: "Filter",
@@ -440,8 +441,8 @@ if (storyList.length > 0) {
     newCollections.length;
 
   return (
-          <IonContent className="bg-plumb-surface  dark:bg-base-bgDark">
-    <main className="min-h-[100%] overflow-y-auto bg-plumb-surface  dark:bg-base-bgDark">
+          <IonContent fullscreen={true} scrollY={true}>
+    <main className={styles.pageShell.base+" "+styles.pageShell.scroll}>
       <ErrorBoundary>
         <div className="mx-auto w-full max-w-[50em] px-4 pb-24 pt-8 sm:px-6">
 
@@ -520,7 +521,7 @@ if (storyList.length > 0) {
                     event.target.value
                   )
                 }
-                className="select w-full rounded-full border border-emerald-300 bg-base-bg text-sm text-emerald-800 shadow-sm focus:border-soft focus:outline-none focus:ring-1 focus:ring-soft dark:bg-plumb-surface Dark dark:text-cream sm:w-40"
+                className="select w-full rounded-full border border-emerald-300 bg-plumb-canvas dark:bg-transparent border border-1 border-plumb-mintLight text-sm text-emerald-800 shadow-sm focus:border-soft focus:outline-none focus:ring-1 focus:ring-soft   sm:w-40"
               >
                 {Object.entries(
                   filterTypes
@@ -534,7 +535,10 @@ if (storyList.length > 0) {
                 ))}
               </select>
 
-              <label className="flex min-w-0 flex-1 items-center rounded-full border border-emerald-300 bg-base-bg px-4 shadow-sm focus-within:border-soft focus-within:ring-1 focus-within:ring-soft dark:bg-plumb-surface Dark">
+              <label
+            // className={styles.input.base+" flex flex-row rounded-full border border-1 border-plumb-mintLight px-4 "}
+               className="flex min-w-0 flex-1 items-center rounded-full border border-emerald-300 bg-base-bg px-4 shadow-sm focus-within:border-soft focus-within:ring-1 focus-within:ring-soft "
+               >
                 <span className="mr-2 shrink-0 text-xs font-semibold uppercase tracking-wide text-soft">
                   Search
                 </span>
@@ -548,14 +552,15 @@ if (storyList.length > 0) {
                     )
                   }
                   placeholder="title..."
-                  className="min-w-0 flex-1 bg-transparent py-3 text-sm text-gray-800 outline-none placeholder:text-gray-400 dark:text-cream"
+                  className={styles.input.base+" "+styles.input.text}
+                  // className="min-w-0 flex-1 bg-transparent py-3 text-sm text-gray-800 outline-none placeholder:text-gray-400 dark:text-cream"
                 />
               </label>
             </div>
           </section>
 
           {/* Main selector */}
-          <section className="rounded-3xl border border-gray-200 bg-white/50 p-3 shadow-sm dark:border-gray-700 dark:bg-plumb-surface Dark/40 sm:p-5">
+          <section className="rounded-3xl border border-gray-200 bg-white/50 p-3 shadow-sm dark:border-gray-700 Dark/40 sm:p-5">
 
          <StoryCollectionTabs
   tab={tab}

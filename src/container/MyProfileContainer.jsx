@@ -198,11 +198,9 @@ function MyProfileContainer() {
 </div>
   </div>
 </section>
-       <section
-                aria-label=""
-                className={styles.tabs.pill.container}
 
-              >
+                      <div             className={styles.tabs.pill.container+" "+styles.tabs.pill.wrapper}>
+       
            
               <TabBar
                 tabs={tabs}
@@ -210,7 +208,7 @@ function MyProfileContainer() {
                 onChange={setTab}
               />
       
-</section>
+</div>
 
               <section
                 aria-live="polite"
