@@ -356,7 +356,7 @@ export default function AddStoryToCollection() {
         />
       ),
       
-      onClose: closeDialog,
+      // onClose: closeDialog,
       breakpoint: 1,
     });
   }, [
@@ -418,13 +418,20 @@ export default function AddStoryToCollection() {
   // ── Main View ──────────────────────────────────────
 
   return (
-    <IonContent className={styles.addToCollection.content}>
-      <main className={styles.addToCollection.content}>
+    <IonContent fullscreen={true}
+    scrollY={true}>
+      <main className={styles.pageShell.base+" "+styles.pageShell.scroll}>
         <ErrorBoundary>
           <div className={styles.addToCollection.wrap}>
             {/* Header */}
-
-            <header className={styles.addToCollection.header}>
+ <button
+                  type="button"
+                  onClick={() => router.goBack()}
+                  className={styles.addToCollection.backButton+" mb-4"}
+                >
+                  Back
+                </button>
+            <header className={styles.pageShell.head}>
               <div className="flex items-start justify-between gap-4">
                 <div className="min-w-0">
                   <p className={styles.addToCollection.eyebrow}>
@@ -435,19 +442,13 @@ export default function AddStoryToCollection() {
                     Choose where this belongs
                   </h1>
 
-                  <p className={styles.addToCollection.body}>
+                  <p className={styles.addToCollection.body+" mb-4 "}>
                     Add this {isStory ? "story" : "item"} to
                     as many Rooms as you want.
                   </p>
                 </div>
 
-                <button
-                  type="button"
-                  onClick={() => router.goBack()}
-                  className={styles.addToCollection.backButton}
-                >
-                  Back
-                </button>
+               
               </div>
             </header>
 
@@ -468,7 +469,7 @@ export default function AddStoryToCollection() {
             >
               <div
                 className={`
-                  ${styles.addToCollection.card}
+                  ${styles.pageShell.elevated}
                   ${styles.addToCollection.createRow}
                 `}
               >
@@ -488,19 +489,21 @@ export default function AddStoryToCollection() {
                 <Pill
                   label="New Room"
                   onClick={openCreateCollection}
-                  baseClass={styles.addToCollection.createButton}
+                  baseClass={ ` mt-4 mb-2  ${styles.pill.base+" "+styles.pill.interactive}`}
                 />
               </div>
             </section>
 
             {/* Existing Rooms */}
 
-            <section aria-labelledby="existing-rooms-heading">
+          
+      
               <div id="existing-rooms-heading">
                 <CollectionHeader />
               </div>
-
-              <div className={styles.addToCollection.controls}>
+  <section aria-labelledby="existing-rooms-heading"
+          className={styles.pageShell.body+ ""}>
+     
                 <label
                   htmlFor="room-search"
                   className="sr-only"
@@ -508,10 +511,10 @@ export default function AddStoryToCollection() {
                   Search Rooms
                 </label>
 
-                <div className={styles.addToCollection.search}>
+                <div className={styles.input.search.searchWrap}>
                   <span
                     aria-hidden="true"
-                    className={styles.addToCollection.searchLabel}
+                    className={styles.input.search.searchLabel}
                   >
                     Search
                   </span>
@@ -524,10 +527,10 @@ export default function AddStoryToCollection() {
                       setSearch(event.target.value)
                     }
                     placeholder="Room title..."
-                    className={styles.addToCollection.searchInput}
+                className={styles.input.search.input}
                   />
                 </div>
-              </div>
+     
 
               <div className={styles.addToCollection.list}>
                 <PaginatedList

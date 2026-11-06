@@ -201,16 +201,11 @@ function App(props) {
 
 
   const {
-    authResolved,
+
     currentProfile,
     dialog,
   } = useSelector((state) => state.users);
 
-  const {
-    resetDialog,
-    openDialog,
-    closeDialog
-  } = useDialog()
 
   const isNative = Capacitor.isNativePlatform();
 

@@ -6,19 +6,12 @@ export default function Pill({
   label,
   onClick,
   icon,
-  baseClass,
+  baseClass="",
 }) {
   const isInteractive = typeof onClick === "function";
 
-  const className = [
-    styles.pill.base,
-    isInteractive
-      ? styles.pill.interactive
-      : styles.pill.static,
-    baseClass || styles.pill.default,
-  ]
-    .filter(Boolean)
-    .join(" ");
+  const className = baseClass
+
 
   const content = (
     <>
@@ -43,12 +36,12 @@ export default function Pill({
   }
 
   return (
-    <button
+    <div
       type="button"
       onClick={onClick}
-      className={className}
+      className={className+" "+styles.pill.base+" "+styles.pill.interactive}
     >
       {content}
-    </button>
+    </div>
   );
 }

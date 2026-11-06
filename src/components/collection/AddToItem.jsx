@@ -203,16 +203,14 @@ export default function AddToItem({
   const canRemove = Boolean(found?.id);
 
   return (
-    <div className={styles.addToCollection.row}>
+    <div className={styles.pageShell.row.outer+" border border-1 border-plumb-mint/70  dark:border-plumb-surface"} >
       <button
         type="button"
-        onClick={() =>
+    onClick={() =>
           router.push(Paths.collection.createRoute(col.id))
         }
-        className={styles.addToCollection.rowLink}
-        aria-label={`Open collection ${collectionTitle}`}
-      >
-        <span className={styles.addToCollection.rowTitle}>
+      > 
+        <span className={styles.addToCollection.rowTitle+" text-plumb-ink dark:text-plumb-surface text-lg truncate"}>
           {collectionTitle}
         </span>
       </button>
@@ -233,13 +231,14 @@ export default function AddToItem({
         <Pill
           label="Added ✓"
           onClick={canRemove ? handleRemove : undefined}
-          baseClass={styles.addToCollection.addedPill}
+            baseClass={styles.button.base+"  border border-1 border-plumb-accent-blue "+styles.button.accent}
+        
         />
       ) : (
         <Pill
           label="Add"
           onClick={handleAdd}
-          baseClass={styles.addToCollection.addPill}
+          baseClass={styles.button.base+" border border-1 border-plumb-accent-blue "+styles.button.accent}
         />
       )}
     </div>

@@ -46,23 +46,48 @@ export default {
   ...colors,
 
   plumb: {
-    // Core surfaces
-   // Core surfaces — preserve the existing design
-paper: "#f4f4e0",
-canvas: "#f8f6f1",
-surface: "#eeeeda",
-elevated: "#fffef5",
-tab: "#8fd8b569",
-// "#d6e3d7ff",
-
-// Dark surfaces
-dark: {
+    dark: {
   canvas:"#2c342e",
   //  "#171c19",
   paper: "#1d231f",
   surface: "#252c27",
   elevated: "#171c19",
 },
+  
+paper: "#f4f4e0",
+canvas: "#f8f6f1",
+surface: "#eeeeda",
+elevated: "#fffef5",
+tab: "#8fd8b569",
+// "#d6e3d7ff",
+  button: {
+      primary: {
+        bg: "#40906f",
+        text: "#ffffff",
+        hover: "#347a5e",
+      },
+
+      secondary: {
+        bg: "#0097b2",
+        text: "#ffffff",
+        hover: "#007c92",
+      },
+
+      accent: {
+        bg: "#ffde59",
+        text: "#12261f",
+        hover: "#e6c94f",
+      },
+
+      danger: {
+        bg: "#d62d15",
+        text: "#ffffff",
+        hover: "#b62511",
+      },
+    },
+
+// Dark surfaces
+
 
 // Typography
 ink: "#12261f",
@@ -99,31 +124,7 @@ focusLight: "#347a5e",
 
 
     // Buttons
-    button: {
-      primary: {
-        bg: "#40906f",
-        text: "#ffffff",
-        hover: "#347a5e",
-      },
-
-      secondary: {
-        bg: "#0097b2",
-        text: "#ffffff",
-        hover: "#007c92",
-      },
-
-      accent: {
-        bg: "#ffde59",
-        text: "#12261f",
-        hover: "#e6c94f",
-      },
-
-      danger: {
-        bg: "#d62d15",
-        text: "#ffffff",
-        hover: "#b62511",
-      },
-    },
+  
 
     // Supporting colors
     accent: {

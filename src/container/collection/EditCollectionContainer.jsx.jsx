@@ -724,7 +724,7 @@ const saving = savingDetails||savingContent
                         )
                       )
                     }
-                    className={SECONDARY_BUTTON}
+                    className={[styles.button.base,styles.button.secondary].join(" ")}
                 
                   >
                     View room

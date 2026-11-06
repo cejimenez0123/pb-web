@@ -195,7 +195,7 @@ function ContentHubContent() {
           onClose={closeDialog}
         />
       ),
-      disagree: closeDialog,
+      // disagree: closeDialog,
      
       breakpoint: 1,
     });

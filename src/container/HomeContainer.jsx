@@ -207,7 +207,7 @@ disagree:null,
 scrollY: false,
   text: <CreateCollectionForm onClose={resetDialog} />,
 // optional button
-  onClose: closeDialog,
+  // onClose: closeDialog,
   breakpoint: 1, // if you want a half-sheet style
 });
 

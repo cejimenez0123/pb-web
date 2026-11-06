@@ -57,8 +57,8 @@ export default function CreateDropdown({ isOpen, onClose }) {
         />
       ),
       title: "Create Collection",
-      agree: null,
-      disagreeText: "Cancel",
+      // agree: null,
+      // disagreeText: "Cancel",
       breakpoint: 0.9,
     });
   };
@@ -94,7 +94,7 @@ export default function CreateDropdown({ isOpen, onClose }) {
       <CreateCollectionForm initPages={[]} onClose={() => closeDialog()} />
     ),
     title: "Create Collection",
-    agree: null,
+    // agree: null,
  
     breakpoint: 0.9,
   });

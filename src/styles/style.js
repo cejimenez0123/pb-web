@@ -84,6 +84,58 @@ const shared = {
 
 const styles = {
     input:{
+     search:{
+
+  searchLabel: `
+  w-[100%]
+    my-auto block
+    bg-plumb-canvas
+    dark:bg-transparent
+    text-xs font-medium
+    text-plumb-muted
+    dark:text-plumb-darkMuted
+  `,
+      searchWrap: `
+    w-[100%] flex flex-row rounded-full border
+    border-plumb-border
+    dark:bg-transparent
+ px-4
+mb-4
+    text-sm text-plumb-ink
+    placeholder:text-plumb-subtle
+    outline-none
+    bg-plumb-canvas
+    transition-colors
+    focus:border-plumb-mint
+    focus:ring-2 focus:ring-plumb-focus/40
+    dark:border-plumb-darkBorder
+    dark:text-plumb-darkText
+    dark:placeholder:text-plumb-darkSubtle
+    dark:focus:border-plumb-mintLight
+    dark:focus:ring-plumb-mintLight/30
+    sm:max-w-[18rem]
+  `,
+  
+      input: `
+   w-[100%] rounded-full
+my-auto
+bg-plumb-canvas
+dark:bg-transparent
+ 
+    px-4 py-2
+    text-sm text-plumb-ink
+    placeholder:text-plumb-subtle
+    outline-none
+    transition-colors
+    focus:border-plumb-mint
+    focus:ring-2 focus:ring-plumb-focus/40
+   
+    dark:text-plumb-darkText
+    dark:placeholder:text-plumb-darkSubtle
+    dark:focus:border-plumb-mintLight
+    dark:focus:ring-plumb-mintLight/30
+    sm:max-w-[18rem]
+  `,},
                base: [
     "px-6 py-3 bg-plumb-canvas dark:bg-transparent",
     " text-plumb-ink dark:text-plumb-darkText ",
@@ -96,7 +148,19 @@ const styles = {
   primary:["border-1  border border-plumb-mint"].join(" ")
    
     },
+
     pageShell: {
+      row:{
+        outer:["w-[100%] flex flex-row justify-between px-6 py-3",
+          " border border-1 bg-plumb-canvas dark:bg-transparent  rounded-full py-3 "].join(" "),
+       }, elevated: `
+      rounded-2xl border
+      border-plumb-border
+      bg-plumb-elevated
+      dark:border-plumb-darkBorder
+      dark:bg-plumb-dark-elevated
+    `,
+          elevated: " p-3 "+shared.surface.elevated,
       head:"max-w-3xl mx-auto  w-[100%]",
 body:"max-w-3xl mx-auto  w-[100%]",
     content:[" max-w-3xl  flex"].join(" "),
@@ -368,7 +432,7 @@ hash: {
 base: [
 "inline-flex items-center justify-center",
 "rounded-full text-base",
-"font-medium font-open-sans",
+"font-medium border-2 font-open-sans",
 "transition-all duration-200 ease-out",
 "transform-gpu",
 "hover:-translate-y-0.5",
@@ -402,12 +466,12 @@ danger:[" broder-plumb-button-danger-bg border text-plumb-button-danger-bg borde
 
   
 secondary: [
-  "py-2 px-6 text-[1rem] ",
-  "dark:border dark:text-plumb-button-secondary-bg dark:border-plumb-button-secondary-bg hover:border-3 dark:border-2",
-  "rounded-full",
+  "py-2 px-6 ",
+  "border border-2 border-plumb-button-secondary-bg rounded-full",
 
-"bg-plumb-button-secondary-bg",
-"text-white",
+"bg-plumb-button-secondary-bg text-plumb-surface dark:text-plumb-button-secondary-bg"
+,
+"text-surface",
 "shadow-sm",
 "dark:bg-transparent   ",
 "hover:bg-plumb-button-secondary-hover/60 hover:border-3",
@@ -416,11 +480,11 @@ secondary: [
 ].join(" "),
 
   accent: [
-    "border dark:border-2 dark:border-plumb-blueSea dark:text-plumb-blueSea",
-     "text-[1rem] ",
+
+    "border border-1 text-plumb-surface bg-plumb-accent-blue border-plumb-accent-blue ",
+    " dark:bg-transparent dark:text-plumb-accent-blue",
+     "text-lg ",
         "rounded-full",
-    "bg-plumb-accent-blue text-plumb-darkText py-2 px-6 dark:bg-transparent ",
-    "text-plumb-button-accent-text",
     "hover:bg-plumb-button-accent-hover",
   ].join(" "),
 
@@ -539,6 +603,7 @@ utilityActive: [
 
 
 addToCollection: {
+  
   content: shared.page.canvas,
 
   wrap: `
@@ -1245,12 +1310,6 @@ mine: {
     sm:justify-between
   `,
 
-  searchLabel: `
-    mb-1.5 block
-    text-xs font-medium
-    text-plumb-muted
-    dark:text-plumb-darkMuted
-  `,
 
   searchInput: `
     w-full 
@@ -2447,7 +2506,7 @@ dashboardItem: {
   ].join(" "),
 },
 pill: {
-  base: `inline-flex  items-center gap-2 rounded-full px-4 py-2.5 text-xs font-medium shadow-sm
+  base: `inline-flex border border-1   items-center gap-2 rounded-full py-2 text-[.8rem] px-6 font-medium shadow-sm
 duration-200`,
   //  transition-[transform,background-color,border-color,color,box-shadow] 
   interactive: `cursor-pointer hover:-translate-y-0.5

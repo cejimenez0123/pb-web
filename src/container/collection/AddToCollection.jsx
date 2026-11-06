@@ -15,7 +15,6 @@ import {
 } from "../../actions/CollectionActions";
 import { getMyStories } from "../../actions/StoryActions.jsx";
 
-import StoryCollectionTabs from "../../components/page/StoryCollectionTabs.jsx";
 import PaginatedList from "../../components/page/PaginatedList.jsx";
 import Pill from "../../components/Pill.jsx";
 
@@ -23,6 +22,10 @@ import computePermissions from "../../core/compusePermissions.jsx";
 import { RoleType } from "../../core/constants.js";
 import shortName from "../../core/shortName.jsx";
 import styles from "../../styles/style.js";
+import PlumbHead from "../head.jsx";
+import TabBar from "../../components/TabBar.jsx";
+import SelectedItems from "../../components/collection/SelectableItems.jsx";
+import SelectableItem from "../../components/collection/SelectableItem.jsx";
 
 const filterTypes = {
   filter: "Filter",
@@ -33,7 +36,23 @@ const filterTypes = {
   ZA: "Z-A",
 };
 
+const TABS = {
+  STORY: "STORY",
+  ROOM: "ROOM",
+  // ABOUT: "about"
+ 
+};
 
+
+ const tabs = [
+      { key: TABS.STORY, label: "stories" },
+      //  { key: TABS.MEMBERS, label: "members" },
+   { key: TABS.ROOM, label: "room" }
+   
+
+ 
+   
+  ];
 
 
 
@@ -46,58 +65,6 @@ const filterTypes = {
  * Selected item:
  *     Undo
  */
-function SelectableItem({
-  title,
-  subtitle,
-  actionLabel,
-  onAction,
-  onOpen,
-  accent = "blue",
-}) {
-  const borderClass =
-    accent === "purple"
-      ? "border-purple/30"
-      : "border-blueSea/30";
-
-  return (
-    <div
-      className={[
-        "flex items-center gap-3 rounded-2xl border",
-        "bg-base-bg px-4 py-3 shadow-sm",
-        "transition hover:shadow-md",
-        "dark:bg-plumb-surface Dark",
-        borderClass,
-      ].join(" ")}
-    >
-      <button
-        type="button"
-        onClick={onOpen}
-        className="min-w-0 flex-1 text-left"
-      >
-        <p className="truncate text-sm font-medium text-gray-900 dark:text-cream">
-          {title || "Untitled"}
-        </p>
-
-        {subtitle ? (
-          <p className="mt-1 truncate text-xs text-gray-500 dark:text-gray-400">
-            {subtitle}
-          </p>
-        ) : null}
-      </button>
-
-      <Pill
-        label={actionLabel}
-        onClick={onAction}
-        variant="primary"
-        baseClass={
-          actionLabel === "Undo"
-            ? "shrink-0 border border-gray-300 bg-gray-100 text-gray-700 dark:border-gray-600 dark:bg-plumb-surface Dark dark:text-cream"
-            : "shrink-0 border border-blueSea bg-blueSea text-white"
-        }
-      />
-    </div>
-  );
-}
 
 /**
  * Small reusable section heading.
@@ -134,51 +101,7 @@ function SelectionHeader({
  * This is deliberately separate from the available list so
  * selecting something removes it from the available choices.
  */
-function SelectedItems({
-  items,
-  type,
-  onUndo,
-  onOpen,
-}) {
-  if (!items?.length) {
-    return null;
-  }
 
-  return (
-    <div className="mb-6 rounded-2xl border border-blueSea/20 bg-softBlue/20 p-3 dark:bg-plumb-surface Dark">
-      <div className="mb-2 flex items-center justify-between">
-        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-blueSea">
-          Added
-        </p>
-
-        <span className="text-xs text-gray-500 dark:text-gray-400">
-          {items.length}
-        </span>
-      </div>
-
-      <div className="space-y-2">
-        {items.map((item) => (
-          <SelectableItem
-            key={item.id}
-            title={
-              shortName(item.title, 60) ||
-              "Untitled"
-            }
-            subtitle={
-              type === "story"
-                ? item.status
-                : item.purpose || item.type || "Room"
-            }
-            actionLabel="Undo"
-            onAction={() => onUndo(item)}
-            onOpen={() => onOpen(item)}
-            accent={type === "story" ? "blue" : "purple"}
-          />
-        ))}
-      </div>
-    </div>
-  );
-}
 
 function EmptySelection({ children }) {
   return (
@@ -200,7 +123,7 @@ export default function AddToCollectionContainer() {
   );
 
   const [search, setSearch] = useState("");
-  const [tab, setTab] = useState("page");
+  // const [tab, setTab] = useState("page");
 
   const [newStories, setNewStories] = useState([]);
   const [newCollections, setNewCollections] =
@@ -268,10 +191,8 @@ export default function AddToCollectionContainer() {
       )
       .filter(Boolean)
   );
+  const [tab,setTab]=useState(TABS.STORY)
 
-  /*
-   * Fetch the target Room.
-   */
   useEffect(() => {
     if (!id) return;
 
@@ -442,78 +363,66 @@ if (storyList.length > 0) {
 
   return (
           <IonContent fullscreen={true} scrollY={true}>
+                <ErrorBoundary>
     <main className={styles.pageShell.base+" "+styles.pageShell.scroll}>
-      <ErrorBoundary>
-        <div className="mx-auto w-full max-w-[50em] px-4 pb-24 pt-8 sm:px-6">
+  
+    
+     
+<PlumbHead 
+label={"Add to Room"}
+title={colInView.title}
+purpose=" Select stories or Rooms to
+                  include."
+                  buttons={[             <div
+                    onClick={() =>
+                      router.push(
+                        Paths.collection.createRoute(
+                          colInView.id
+                        )
+                      )
+                    }
+            
+                className={[styles.button.base,styles.button.secondary].join(" ")}
+                  >
+                    View room
+                  </div>,
 
-          {/* Header */}
-          <header className="mb-8">
-            <div className="flex items-start justify-between gap-4">
-              <div className="min-w-0">
-                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-soft">
-                  Add to Room
-                </p>
-
-                <h1 className="mt-2 truncate font-serif text-3xl font-medium tracking-tight text-gray-900 dark:text-cream sm:text-4xl">
-                  {colInView.title ||
-                    "Untitled"}
-                </h1>
-
-                <p className="mt-2 max-w-xl text-sm leading-6 text-gray-500 dark:text-gray-400">
-                  Select stories or Rooms to
-                  include.
-                </p>
-              </div>
-
-              <button
-                type="button"
-                onClick={() =>
-                  router.push(
-                    Paths.collection.createRoute(
-                      colInView.id
-                    )
-                  )
-                }
-                className="shrink-0 rounded-full border border-gray-300 bg-base-bg px-4 py-2 text-sm font-medium text-gray-700 transition hover:border-blueSea hover:text-blueSea dark:border-gray-700 dark:bg-plumb-surface Dark dark:text-cream"
-              >
-                View Room
-              </button>
-            </div>
-
-            {/* Save */}
-            <div className="mt-6 flex items-center justify-between gap-4 rounded-2xl border border-gray-200 bg-white/60 px-4 py-3 dark:border-gray-700 dark:bg-plumb-surface Dark/60">
-              <div>
-                <p className="text-sm font-medium text-gray-800 dark:text-cream">
-                  {selectedCount === 0
-                    ? "Nothing selected"
-                    : `${selectedCount} selected`}
-                </p>
-
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  Add them when you're ready.
-                </p>
-              </div>
-
-              <Pill
-                label={
-                  saving
+                      <div
+          type="button"
+         onClick={save}
+          className={`
+            ${styles.button.base} 
+            ${styles.button.primary} 
+            ${styles.button.large}
+          `}
+        >
+          { saving
                     ? "Saving..."
                     : `Save${
                         selectedCount
                           ? ` (${selectedCount})`
                           : ""
-                      }`
-                }
-                onClick={save}
-                variant="primary"
-                baseClass="border border-blueSea bg-blueSea text-white"
-              />
-            </div>
-          </header>
+                      }`}
+                      </div>
+                  ,     <div>
+                    <span className="my-auto">
+                <p  className={styles.text.muted+" text-center mx-8"}
+                // className="text-sm font-medium  text-center mx-8 text-gray-800 ">
+                >
+                  {selectedCount === 0
+                    ? "Nothing selected"
+                    : `${selectedCount} selected`}
+                </p>
 
-          {/* Search / filter */}
-          <section className="mb-6">
-            <div className="flex flex-col gap-3 sm:flex-row">
+                <p className="text-xs text-gray-500 text-center dark:text-gray-400">
+                  Add them when you're ready.
+                </p>
+                </span>
+              </div>]}/>
+
+          <section className={styles.pageShell.body}>
+            <div className="flex flex-row gap-2">
+              <span className="">
               <select
                 value={filterType}
                 onChange={(event) =>
@@ -521,8 +430,24 @@ if (storyList.length > 0) {
                     event.target.value
                   )
                 }
-                className="select w-full rounded-full border border-emerald-300 bg-plumb-canvas dark:bg-transparent border border-1 border-plumb-mintLight text-sm text-emerald-800 shadow-sm focus:border-soft focus:outline-none focus:ring-1 focus:ring-soft   sm:w-40"
-              >
+               className="
+                           
+                    border border-1 border-plumb-mint    dark:bg-transparent    bg-plumb-canvas
+                            rounded-full
+                            border
+                        py-2
+                      
+                            text-plumb-mint px-2
+                         
+                            font-open-sans
+                            text-sm
+                        
+                            outline-none
+                            focus:border-button-primary-bg
+                           
+                      
+                          "
+     >
                 {Object.entries(
                   filterTypes
                 ).map(([key, value]) => (
@@ -533,47 +458,47 @@ if (storyList.length > 0) {
                     {value}
                   </option>
                 ))}
-              </select>
+         </select>
+</span>
+              <div className={styles.input.search.searchWrap}>
+                  <span
+                    aria-hidden="true"
+                    className={styles.input.search.searchLabel}
+                  >
+                    Search
+                  </span>
 
-              <label
-            // className={styles.input.base+" flex flex-row rounded-full border border-1 border-plumb-mintLight px-4 "}
-               className="flex min-w-0 flex-1 items-center rounded-full border border-emerald-300 bg-base-bg px-4 shadow-sm focus-within:border-soft focus-within:ring-1 focus-within:ring-soft "
-               >
-                <span className="mr-2 shrink-0 text-xs font-semibold uppercase tracking-wide text-soft">
-                  Search
-                </span>
-
-                <input
-                  type="search"
-                  value={search}
-                  onChange={(event) =>
+                  <input
+                    id="room-search"
+                    type="search"
+                    value={search}
+                   onChange={(event) =>
                     setSearch(
                       event.target.value
                     )
                   }
-                  placeholder="title..."
-                  className={styles.input.base+" "+styles.input.text}
-                  // className="min-w-0 flex-1 bg-transparent py-3 text-sm text-gray-800 outline-none placeholder:text-gray-400 dark:text-cream"
-                />
-              </label>
+                    placeholder="Search..."
+                className={styles.input.search.input}
+                  />
+                </div>
+      
             </div>
-          </section>
-
-          {/* Main selector */}
-          <section className="rounded-3xl border border-gray-200 bg-white/50 p-3 shadow-sm dark:border-gray-700 Dark/40 sm:p-5">
-
-         <StoryCollectionTabs
-  tab={tab}
-  setTab={setTab}
-
-  storyList={() => (
-    <div>
-      <SelectionHeader
-        eyebrow="Writing"
-        title="Stories"
-        count={newStories.length}
-      />
-
+   
+            <div             className={styles.tabs.pill.container+" justify-around pb-4 "+styles.tabs.pill.wrapper}>
+           
+              <TabBar
+           
+                tabs={tabs}
+                active={tab}
+                onChange={setTab}
+              />
+      
+ </div>  
+ <span className="mt-4">
+         {tab === TABS.STORY && (
+            <>
+      <div>
+ 
       {/* Selected stories */}
       <SelectedItems
         items={newStories}
@@ -665,29 +590,16 @@ if (storyList.length > 0) {
         }}
       />
     </div>
-  )}
+  
 
-  colList={() => (
-    <div>
-      <SelectionHeader
-        eyebrow="Rooms"
-        title="Collections & Rooms"
-        count={newCollections.length}
-      />
+</>
+              )}
+               {tab === TABS.ROOM && 
+(
+  <div>
 
-      {/* Selected collections */}
-      <SelectedItems
-        items={newCollections}
-        type="collection"
-        onUndo={undoCollection}
-        onOpen={(collection) =>
-          router.push(
-            Paths.collection.createRoute(
-              collection.id
-            )
-          )
-        }
-      />
+
+
 
       {/* Available collections */}
       <PaginatedList
@@ -788,12 +700,13 @@ if (storyList.length > 0) {
         }}
       />
     </div>
-  )}
-/>
-          </section>
-        </div>
-      </ErrorBoundary>
+)
+}
+</span>
+
+</section>
     </main>
+    </ErrorBoundary>
     </IonContent>
   );
 }
@@ -825,15 +738,16 @@ function NoPermissionUI() {
           <Pill
             label="Go Back"
             onClick={() => router.goBack()}
-            baseClass="border border-gray-300 bg-gray-100 text-gray-700 dark:border-gray-700 dark:bg-plumb-surface Dark dark:text-cream"
-          />
+         baseClass={styles.button.base+"  border border-1 border-plumb-accent-blue "+styles.button.accent}
+             />
 
           <Pill
             label="Refresh"
             onClick={() =>
               window.location.reload()
             }
-            baseClass="border border-blueSea bg-blueSea text-white"
+             baseClass={styles.button.base+"  border border-1 border-plumb-accent-blue "+styles.button.accent}
+          
           />
         </div>
       </div>

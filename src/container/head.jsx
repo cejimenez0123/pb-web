@@ -1,9 +1,10 @@
 import { useIonRouter } from "@ionic/react";
 import ProfileCircle from "../components/profile/ProfileCircle";
+import styles from "../styles/style";
 
-function PlumbHead({isWorkshop=null,onClick,title="Untitled",backText="Rooms",type,purpose="",isPrivate=false,profile=null}){
+function PlumbHead({isWorkshop=null,buttons=[],label=null,onClick,title="Untitled",backText="Rooms",type,purpose="",isPrivate=false,profile=null}){
     const router = useIonRouter()
-    return( <section className="border-b border-card-border dark:border-white/10">
+    return( <section className={styles.pageShell.head}>
           <div className={`w-full max-w-[52rem] mt-4 mx-auto px-4 sm:px-6 lg:px-8" pt-10 pb-8 sm:pt-14`}>
             <button
               
@@ -13,6 +14,9 @@ function PlumbHead({isWorkshop=null,onClick,title="Untitled",backText="Rooms",ty
               <span aria-hidden="true" className="text-plumb-ink dark:text-plumb-darkText">←</span>
               <span className="mx-2 text-plumb-ink dark:text-plumb-darkText">{backText}</span>
             </button>
+            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-soft">
+                  {label}
+                </p>
 
             <div className="max-w-3xl">
               <div className="mb-4 flex flex-wrap items-center gap-2">
@@ -109,6 +113,9 @@ function PlumbHead({isWorkshop=null,onClick,title="Untitled",backText="Rooms",ty
                 </div>
               )}
             </div>
+          </div>
+          <div className="flex my-4 flex-wrap gap-2">
+            {buttons.map(button=>button)}
           </div>
         </section>)
 }

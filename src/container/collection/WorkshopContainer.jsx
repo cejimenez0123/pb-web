@@ -346,6 +346,7 @@ const {
           }
         },
         (err) => {
+          console.log(JSON.stringify(err))
           showAlert({
             message: err.message,
             type: AlertType.error,
@@ -385,10 +386,10 @@ const {
 
   return (
       <IonContent
-
-fullscreen
+scrollY={true}
+fullscreen={true}
 >
-  <div className={styles.about.page+" pb-20"}>
+  <main className={styles.pageShell.base}>
 
         <div className={WRAP}>
           <div className={STACK}>
@@ -625,7 +626,7 @@ fullscreen
                 <p
                   className={`
                     ${styles.text.metadata}
-                    mt-3 text-center leading-5
+                    mt-4 text-center leading-5
                   `}
                 >
                   You don't need a finished piece. Bring whatever you're
@@ -681,7 +682,7 @@ label="Workshops"
           message="Finding your space..."
           spinner="crescent"
         />
-      </div>
+      </main>
     </IonContent>
   );
 };
