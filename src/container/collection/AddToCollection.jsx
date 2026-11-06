@@ -601,7 +601,16 @@ purpose=" Select stories or Rooms to
 (
   <div>
 
-
+      <SelectedItems
+        items={newCollections}
+        type="collection"
+        onUndo={undoCollection}
+        onOpen={(story) =>
+          router.push(
+            Paths.collection.createRoute(story.id)
+          )
+        }
+      />
 
 
       {/* Available collections */}

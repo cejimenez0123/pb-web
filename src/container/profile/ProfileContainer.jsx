@@ -254,11 +254,56 @@ function ProfileContainer() {
      <IonContent fullscreen={true} scrollY={true} >
         <ErrorBoundary>
 
-         <div className={styles.pageShell.base+" "+styles.pageShell.scroll+" "}>
+         <main className={styles.pageShell.base+" "+styles.pageShell.scroll+" "}>
        
             <header 
-            className={styles.pageShell.head+" "+styles.pageShell.padded}
+            className={styles.pageShell.head+" px-4"}
             >
+              <div className="flex flex-row justify-end">    {!isSelf && (
+                  <div className="dropdown dropdown-end shrink-0">
+                    <button
+                      type="button"
+                      className={styles.profile.menuButton}
+                      aria-label="Profile actions"
+                      aria-haspopup="menu"
+                    >
+                      <img
+                        src={horiz}
+                        alt=""
+                        aria-hidden="true"
+                        className="h-5 w-5"
+                      />
+                    </button>
+
+                    <ul
+                      tabIndex={0}
+                      role="menu"
+                      className={`dropdown-content menu ${styles.profile.menu}`}
+                    >
+                      <li role="none">
+                        <button
+                          type="button"
+                          role="menuitem"
+                          className={styles.profile.menuItem}
+                          onClick={() => setReportDialogOpen(true)}
+                        >
+                          Report
+                        </button>
+                      </li>
+
+                      <li role="none">
+                        <button
+                          type="button"
+                          role="menuitem"
+                          className={`${styles.profile.menuItem} ${styles.profile.menuItemDanger}`}
+                          onClick={() => setBlockDialogOpen(true)}
+                        >
+                          Block
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+                )}</div>
               <div className={styles.profile.identity}>
                 <ProfileInfo profile={profile} compact />
 
@@ -289,10 +334,8 @@ function ProfileContainer() {
                 </section>
               )}
 
-              <div className={styles.profile.stats}>
-                <StatChip value={followerCount} label="Followers" />
-                <StatChip value={followingCount} label="Following" />
-              </div>
+
+              
 
               {(profile.bio || profile.selfStatement) && (
                 <p className={styles.profile.body}>
@@ -367,8 +410,18 @@ function ProfileContainer() {
                 </div>
               </div>
             )}
-            {/*  */}
-<div></div>
+         
+<div className={styles.pageShell.body}>
+  <FollowButton 
+  label={following?"Following":"Follow"}
+  following={following}
+
+  isSelf={isSelf}
+
+    onClick={onClickFollow}
+    disabled={isSelf}
+/>
+</div>
 <div className={styles.pageShell.body}>
             {/* Search, follow, and profile actions */}
             <div className={styles.profile.searchRow}>
@@ -381,79 +434,25 @@ function ProfileContainer() {
                 className={styles.profile.search}
               />
 
-              <div className={styles.profile.actions}>
+              <div className={"flex flex-row justify-between"}>
           
 
-<PlumbButton
 
 
-  label={following?"Following":"Follow"}
-  following={following}
-
-  isSelf={isSelf}
-
-    onClick={onClickFollow}
-    disabled={isSelf}
-/>
-
-
-                {!isSelf && (
-                  <div className="dropdown dropdown-end shrink-0">
-                    <button
-                      type="button"
-                      className={styles.profile.menuButton}
-                      aria-label="Profile actions"
-                      aria-haspopup="menu"
-                    >
-                      <img
-                        src={horiz}
-                        alt=""
-                        aria-hidden="true"
-                        className="h-5 w-5"
-                      />
-                    </button>
-
-                    <ul
-                      tabIndex={0}
-                      role="menu"
-                      className={`dropdown-content menu ${styles.profile.menu}`}
-                    >
-                      <li role="none">
-                        <button
-                          type="button"
-                          role="menuitem"
-                          className={styles.profile.menuItem}
-                          onClick={() => setReportDialogOpen(true)}
-                        >
-                          Report
-                        </button>
-                      </li>
-
-                      <li role="none">
-                        <button
-                          type="button"
-                          role="menuitem"
-                          className={`${styles.profile.menuItem} ${styles.profile.menuItemDanger}`}
-                          onClick={() => setBlockDialogOpen(true)}
-                        >
-                          Block
-                        </button>
-                      </li>
-                    </ul>
-                  </div>
-                )}
+            
               </div>
             </div>
-   <div             className={styles.tabs.pill.container+" "+styles.tabs.pill.wrapper}>
+               <section className={"mx-4 "+styles.pageShell.body}>
+                       <div             className={styles.tabs.pill.container+" justify-center "+styles.tabs.pill.wrapper}>
+       
            
               <TabBar
-           
                 tabs={tabs}
                 active={tab}
                 onChange={setTab}
               />
       
- </div>  
+</div>
             {/* Tab content */}
             <div className=" mx-4" >
               {tab === TABS.POSTS && (
@@ -561,9 +560,11 @@ function ProfileContainer() {
             <section className="pb-6">
               <RecommendedProfiles profileId={id} />
             </section>
+            
           </div>
+          </section>
           </div>
-          </div>
+          </main>
      </ErrorBoundary>
       </IonContent>
 

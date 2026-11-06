@@ -19,6 +19,7 @@ import {
 import { searchMultipleIndexes } from "../actions/UserActions";
 import ErrorBoundary from "../ErrorBoundary";
 import styles from "../styles/style";
+import ResultItem from "./ResultItem";
 
 const FILTERS = [
   { key: "all", label: "All" },
@@ -28,26 +29,14 @@ const FILTERS = [
   { key: "hashtag", label: "#Hashtags" },
 ];
 
-const TYPE_LABELS = {
-  story: "Story",
-  profile: "Writer",
-  collection: "Room",
-  hashtag: "Hashtag",
-};
+
 
 const normalize = (value) =>
   typeof value === "string"
     ? value.trim().toLowerCase()
     : "";
 
-function getItemTitle(item = {}) {
-  return (
-    item.title ||
-    item.username ||
-    item.name ||
-    "Untitled"
-  );
-}
+
 
 function getItemDescription(item = {}, type) {
   if (type === "story") {
@@ -286,104 +275,6 @@ useEffect(() => {
   currentProfileId,
   searchAttempt,
 ]);
-  // useEffect(() => {
-  //   const query = searchText.trim();
-
-  //   if (searchScope !== "all" || !query) {
-  //     setSearchContent([]);
-  //     setIsSearching(false);
-  //     setSearchError(false);
-  //     return undefined;
-  //   }
-
-  //   let cancelled = false;
-
-  //   setIsSearching(true);
-  //   setSearchError(false);
-
-  //   const filters =
-  //     selectedFilter === "all"
-  //       ? []
-  //       : [selectedFilter];
-
-  //   const runSearch = async () => {
-  //     try {
-  //       const result = await dispatch(
-  //         searchMultipleIndexes({
-  //           query,
-  //           filters,
-  //           profileId: currentProfileId,
-  //         })
-  //       );
-
-  //       if (cancelled) return;
-
-  //       if (result?.meta?.requestStatus === "rejected") {
-  //         setSearchContent([]);
-  //         setSearchError(true);
-  //         setIsSearching(false);
-  //         return;
-  //       }
-
-  //       let receivedResults = false;
-
-  //       checkResult(result, (returned) => {
-  //         if (cancelled) return;
-
-  //         receivedResults = true;
-
-  //         const normalizedResults = (
-  //           returned?.results ?? []
-  //         )
-  //           .filter(
-  //             (item) =>
-  //               item &&
-  //               (item.objectID || item.id) &&
-  //               item.type
-  //           )
-  //           .map((item) => ({
-  //             item,
-  //             objectID: item.objectID ?? item.id,
-  //             type: item.type,
-  //           }));
-
-  //         setSearchContent(normalizedResults);
-  //         setIsSearching(false);
-  //         setSearchError(false);
-  //       });
-
-  //       /*
-  //        * Do not leave the UI in a loading state if
-  //        * checkResult does not invoke its callback.
-  //        */
-  //       if (!receivedResults) {
-  //         setSearchContent([]);
-  //         setIsSearching(false);
-  //       }
-  //     } catch (error) {
-  //       if (cancelled) return;
-
-  //       console.error("Search failed:", error);
-
-  //       setSearchContent([]);
-  //       setSearchError(true);
-  //       setIsSearching(false);
-  //     }
-  //   };
-
-  //   runSearch();
-
-  //   return () => {
-  //     cancelled = true;
-  //   };
-  // }, [
-  //   dispatch,
-  //   searchText,
-  //   selectedFilter,
-  //   searchScope,
-  //   currentProfileId,
-  // ]);
-
   /*
    * Navigation
    *
@@ -392,15 +283,6 @@ useEffect(() => {
    * interface calls these spaces Rooms.
    */
 
-  const handleResultClick = (result) => {
-    if (!result?.type || !result?.objectID) {
-      return;
-    }
-
-    router.push(
-      `/${result.type}/${result.objectID}/view`
-    );
-  };
 
   const results =
     searchScope === "mine"
@@ -422,53 +304,6 @@ useEffect(() => {
    * manually recreating button behavior.
    */
 
-  const renderResult = (result, index) => {
-    const item = result?.item ?? {};
-
-    const title = getItemTitle(item);
-    const description = getItemDescription(
-      item,
-      result.type
-    );
-
-    const author = getItemAuthor(
-      item,
-      result.type
-    );
-
-    const typeLabel =
-      TYPE_LABELS[result.type] || result.type;
-
-    return (
-      <div
-        key={`${result.objectID}-${index}`}
-        // type="button"
-        // className="w-[100%] rounded-full py-4 mx-4 "
-        className={styles.search.result}
-        onClick={() => handleResultClick(result)}
-        aria-label={`Open ${typeLabel}: ${title}`}
-      >
-        <div
-         className={styles.search.resultTitle}
-        >
-          {title}
-        </div>
-
-        <div 
-        className={styles.search.resultMeta}
-        >
-          {typeLabel}
-          {author ? ` · ${author}` : ""}
-        </div>
-
-        {description && (
-          <p className={styles.search.resultDescription}>
-            {description}
-          </p>
-        )}
-      </div>
-    );
-  };
 
   return (
     <IonContent
@@ -518,9 +353,7 @@ useEffect(() => {
               role="group"
               aria-label="Search location"
             >
-              <span className={styles.search.scopeLabel}>
-                Search
-              </span>
+            
 
               <button
                 type="button"
@@ -608,10 +441,9 @@ useEffect(() => {
                   </h2>
 
                   {personalResults.length > 0 ? (
-               personalResults.map(renderResult)
-                    // <div className={styles.search.results}>
-                      // {personalResults.map(renderResult)}
-                    // </div>
+                    <div>
+              { personalResults.map((result)=><ResultItem result={result} index={result.id}/>)}
+                   </div>
                   ) : (
                     <div className={styles.search.empty}>
                       <h2 className={styles.search.emptyTitle}>
@@ -661,8 +493,7 @@ useEffect(() => {
             </div>
           )}
 
-          {/* Results */}
-
+         
           {hasQuery &&
             !isSearching &&
             !searchError &&
@@ -682,8 +513,11 @@ useEffect(() => {
                   </span>
                 </h2>
 
-                <div className={styles.search.results}>
-                  {results.map(renderResult)}
+                <div >
+                  {results.map((result)=>{
+                
+                   return <ResultItem result={result} index={result.id}/>
+                  })}
                 </div>
               </section>
             )}

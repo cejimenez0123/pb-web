@@ -17,11 +17,12 @@ import {
 
 import dragHandle from "../images/icons/drag_handle.svg";
 import Paths from "../core/paths";
-const DRAG_HANDLE=<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="24px" width="24px" fill="#FFFFFF"><path d="M9,20q-0.82,0-1.41-0.59T7,18t0.59-1.41T9,16q0.83,0 1.41,0.59Q11,17.18 11,18t-0.59,1.41T9,20Zm6,0q-0.82,0-1.41-0.59T13,18t0.59-1.41T15,16t1.41,0.59Q17,17.18 17,18t-0.59,1.41T15,20ZM9,14q-0.82,0-1.41-0.59T7,12t0.59-1.41T9,10q0.83,0 1.41,0.59Q11,11.18 11,12t-0.59,1.41T9,14Zm6,0q-0.82,0-1.41-0.59T13,12t0.59-1.41T15,10t1.41,0.59Q17,11.18 17,12t-0.59,1.41T15,14ZM9,8Q8.18,8 7.59,7.41T7,6T7.59,4.59T9,4q0.83,0 1.41,0.59Q11,5.18 11,6T10.41,7.41T9,8Zm6,0q-0.82,0-1.41-0.59T13,6t0.59-1.41T15,4t1.41,0.59Q17,5.18 17,6T16.41,7.41T15,8Z"/></svg>
+const DRAG_HANDLE=<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="24px" width="24px" fill="currentColor"><path d="M9,20q-0.82,0-1.41-0.59T7,18t0.59-1.41T9,16q0.83,0 1.41,0.59Q11,17.18 11,18t-0.59,1.41T9,20Zm6,0q-0.82,0-1.41-0.59T13,18t0.59-1.41T15,16t1.41,0.59Q17,17.18 17,18t-0.59,1.41T15,20ZM9,14q-0.82,0-1.41-0.59T7,12t0.59-1.41T9,10q0.83,0 1.41,0.59Q11,11.18 11,12t-0.59,1.41T9,14Zm6,0q-0.82,0-1.41-0.59T13,12t0.59-1.41T15,10t1.41,0.59Q17,11.18 17,12t-0.59,1.41T15,14ZM9,8Q8.18,8 7.59,7.41T7,6T7.59,4.59T9,4q0.83,0 1.41,0.59Q11,5.18 11,6T10.41,7.41T9,8Zm6,0q-0.82,0-1.41-0.59T13,6t0.59-1.41T15,4t1.41,0.59Q17,5.18 17,6T16.41,7.41T15,8Z"/></svg>
 export default function SortableList({
   items,
   onOrderChange,
   onDelete,
+  removedItems,
   disableDrag = false,
   isFiltered = false,
 }) {
@@ -162,7 +163,7 @@ const handleNavigate = (entry) => {
   // =======================================================
 
   return (
-    <div className="py-4 mx-auto max-w-lg">
+   
 
       <DragDropContext
         onDragEnd={
@@ -187,7 +188,7 @@ const handleNavigate = (entry) => {
     const isRoom =
       Boolean(entry.childCollection);
 
-    console.log("entrycc:", entry);
+    
 
     const title =
       isRoom
@@ -218,14 +219,13 @@ const handleNavigate = (entry) => {
                           }
                           {...provided.draggableProps}
                           className={[
+                            "bg-plumb-canvas dark:bg-transparent",
+                            "text-plumb-ink dark:text-plumb-darkText",
                             "group",
                             "rounded-2xl",
-                            "border",
-                            "border-card-border",
-                            "dark:bg-transparent",
-                            "bg-card-background",
-                            "dark:border-plumb-darkText/80",
-                            "dark:bg-plumb-surface Dark",
+                            "border border-1 border-plumb-mint/70",
+                     "w-[100%]"
+                           ,
                             "transition-all",
                             snapshot.isDragging
                               ? "shadow-xl"
@@ -251,24 +251,14 @@ const handleNavigate = (entry) => {
                                   items-center
                                   justify-center
                                   rounded-lg
-                                  text-white
-                                  text-text-secondary
+                                  dark:text-plumb-darkText
+                                  text-plumb-ink
                                   hover:bg-plumb-surface 
                                   active:cursor-grabbing
                                 "
                               >
                                 {DRAG_HANDLE}
-                                {/* <img
-                                  src={
-                                    dragHandle
-                                  }
-                                  alt=""
-                                  className="
-                                    h-5
-                                    w-5
-                                    opacity-60
-                                  "
-                                /> */}
+                        
                               </div>
                             ) : (
                               <div className="h-9 w-8 shrink-0" />
@@ -373,7 +363,93 @@ const handleNavigate = (entry) => {
                             >
                               Delete
                             </button>
+{removedItems.length > 0 && (
+  <div className="
+    mx-5
+    mb-4
+    rounded-xl
+    border
+    border-plumb-mint/30
+    bg-plumb-surface
+    dark:bg-base-bg
+    p-4
+    space-y-3
+  ">
+    <div className="flex items-center justify-between gap-3">
 
+      <div>
+        <p className="text-sm font-medium text-plumb-ink dark:text-cream">
+          {removedItems.length === 1
+            ? "1 item removed"
+            : `${removedItems.length} items removed`}
+        </p>
+
+        <p className="mt-1 text-xs text-text-secondary">
+          Changes haven't been saved yet.
+        </p>
+      </div>
+
+      <button
+        type="button"
+        onClick={() => {
+          setContent((current) => {
+            const restored = [
+              ...current,
+              ...removedItems,
+            ];
+
+            return restored.sort(
+              (a, b) =>
+                (a.index ?? Number.MAX_SAFE_INTEGER) -
+                (b.index ?? Number.MAX_SAFE_INTEGER)
+            );
+          });
+
+          setRemovedItems([]);
+        }}
+        className="
+          shrink-0
+          rounded-full
+          border
+          border-plumb-mint
+          px-4
+          py-2
+          text-sm
+          font-medium
+          text-plumb-mint
+          hover:bg-plumb-mint/10
+        "
+      >
+        Undo all
+      </button>
+    </div>
+
+    {removedItems.length > 1 && (
+      <div className="border-t border-card-border dark:border-white/10 pt-2 space-y-2">
+        {removedItems.map((item) => (
+          <div
+            key={item.id}
+            className="flex items-center justify-between gap-3 text-sm"
+          >
+            <span className="truncate text-text-secondary">
+              {item.kind === "room"
+                ? item.childCollection?.title
+                : item.story?.title}
+            </span>
+
+            <button
+              type="button"
+              onClick={() => handleUndoRemove(item)}
+              className="shrink-0 text-plumb-mint font-medium"
+            >
+              Restore
+            </button>
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+)}
                           </div>
 
                         </li>
@@ -393,6 +469,6 @@ const handleNavigate = (entry) => {
 
       </DragDropContext>
 
-    </div>
+
   );
 }

@@ -7,6 +7,7 @@ function SectionHeader({
   description,
   actionLabel,
   onAction,
+  buttonClass
 }) {
   const s = styles.sectionHeader;
 
@@ -35,8 +36,8 @@ function SectionHeader({
           <div
             type="button"
             onClick={onAction}
-            className={styles.button.base}
-            // className={s.action}
+            className={styles.button.base+` ${buttonClass}`}
+            
           >
             {actionLabel}
           </div>

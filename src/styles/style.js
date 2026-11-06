@@ -123,7 +123,7 @@ my-auto
 bg-plumb-canvas
 dark:bg-transparent
  
-  
+  py-2 px-2 w-[100%]
     text-sm text-plumb-ink
     placeholder:text-plumb-subtle
     outline-none
@@ -434,7 +434,7 @@ hash: {
 base: [
   "btn",
 "inline-flex items-center justify-center",
-"rounded-full text-base",
+" text-base",
 "font-medium border-2 font-open-sans",
 "transition-all duration-200 ease-out",
 "transform-gpu",
@@ -456,7 +456,7 @@ base: [
 
 primary: [
   "dark:border-plumb-mintLight dark:border dark:border-2   dark:text-plumb-mintLight",
-    "rounded-full font-semiBold  ",
+    "rounded-full font-semiBold rounded-full  ",
   
   "bg-plumb-mint dark:bg-transparent dark:border-plumb-button-primary-bg ",
   "dark:text-plumb-button-primary-bg text-plumb-darkText",
@@ -466,13 +466,13 @@ primary: [
   "active:shadow-sm",
 ].join(" "),
 
-danger:[" broder-plumb-button-danger-bg border text-plumb-button-danger-bg border-1 border dark:bg-transparent text-white font-open-sans py-4 px-6 rounded-full bg-plumb-button-danger-bg ",].join(" "),
+danger:[" broder-plumb-button-danger-bg  border text-plumb-button-danger-bg border-1 border dark:bg-transparent text-white font-open-sans py-4 px-6 rounded-full bg-plumb-button-danger-bg ",].join(" "),
 
   
 secondary: [
   "py-2 px-6 ",
   "border border-2 border-plumb-button-secondary-bg rounded-full",
-
+"rounded-full",
 "bg-plumb-button-secondary-bg text-plumb-surface dark:text-plumb-button-secondary-bg"
 ,
 "text-surface",

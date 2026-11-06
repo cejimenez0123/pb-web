@@ -49,6 +49,7 @@ import AlertType from "../../core/AlertType.js";
 import { useDialog } from "../../domain/usecases/useDialog";
 
 import styles from "../../styles/style.js";
+import SectionHeader from "../../components/pieces/SectionHeader.jsx";
 
 const TAG_ICON = (
   <svg
@@ -139,7 +140,34 @@ const saving = savingDetails||savingContent
 
   const [search, setSearch] = useState("");
   const [openHashtag, setOpenHashtag] = useState(false);
+  const [removedItems, setRemovedItems] = useState([]);
+const handleRemoveContent = (item) => {
+  setContent((current) =>
+    current.filter((entry) => entry.id !== item.id)
+  );
 
+  setRemovedItems((current) => [
+    ...current,
+    item,
+  ]);
+};
+const handleUndoRemove = (item) => {
+  setContent((current) => {
+    if (current.some((entry) => entry.id === item.id)) {
+      return current;
+    }
+
+    return [...current, item].sort(
+      (a, b) =>
+        (a.index ?? Number.MAX_SAFE_INTEGER) -
+        (b.index ?? Number.MAX_SAFE_INTEGER)
+    );
+  });
+
+  setRemovedItems((current) =>
+    current.filter((entry) => entry.id !== item.id)
+  );
+};
   // -------------------------------------------------------
   // COLLECTION MATCH
   // -------------------------------------------------------
@@ -362,9 +390,10 @@ const saving = savingDetails||savingContent
     }
 
     setSavingDetails(true);
-
-    try {
-      const result = await dispatch(
+try{
+  // colInView
+    
+  const result = await dispatch(
         patchCollectionDetails({
           id,
           title: title.trim(),
@@ -406,14 +435,14 @@ const saving = savingDetails||savingContent
       showAlert({
         message:
           error?.message ||
-          "Unable to update Room details.",
+          "Unable to update room details.",
         type: AlertType.error,
       });
     } finally {
       setSavingDetails(false);
     }
-  };
-
+  
+  }
   // =======================================================
   // SAVE ROOM CONTENT
   // =======================================================
@@ -465,31 +494,27 @@ const saving = savingDetails||savingContent
         }
       });
 
-      const result = await dispatch(
-        patchCollectionContent({
-          id,
-          storyToCol,
-          colToCol,
-        })
-      );
 
+const result = await dispatch(patchCollectionContent({id:id,storyToCol:storyToCol,colToCol}))
       checkResult(
         result,
-        (payload) => {
-          if (payload?.collection) {
-            dispatch(
-              updatePaginatedItem({
-                key: "collections",
-                item: payload.collection,
-              })
-            );
-          }
+       (payload) => {
+  if (payload?.collection) {
+    dispatch(
+      updatePaginatedItem({
+        key: "collections",
+        item: payload.collection,
+      })
+    );
+  }
 
-          showAlert({
-            message: "Room contents updated.",
-            type: AlertType.success,
-          });
-        },
+  setRemovedItems([]);
+
+  showAlert({
+    message: "Room contents updated.",
+    type: AlertType.success,
+  });
+},
         (error) => {
           showAlert({
             message:
@@ -735,7 +760,7 @@ const saving = savingDetails||savingContent
     disabled={savingDetails}
     className={PRIMARY_BUTTON}
   >
-    {savingDetails ? "Saving details..." : "Save details"}
+      {savingDetails ? "Saving details..." : "Save room details"}
   </div>
           
 </section>
@@ -965,59 +990,41 @@ const saving = savingDetails||savingContent
            
               </section>
 <section className={styles.pageShell.body}>
-                    <p 
-                    className={styles.text.subLabel}
-                    // className={styles.text.readable}
-                    // className="text-xs uppercase mb-4 mt-2  tracking-[0.16em] text-plumb-ink dark:text-plumb-darkText mb-2"
-                    >
-                      Content
-                    </p>
-
-                    <h2 
-className={styles.text.label}
-                    // className="font-serif  mb-4 mt-2 text-2xl text-text-primary dark:text-cream"
-                    >
-                      What lives here?
-                    </h2>
-
-                    <p className="mb-4 mt-2 text-sm text-text-secondary">
-                      Add, remove, and reorder pages and
-                      rooms inside this room.
-                    </p>
-
+               
+<SectionHeader
+title={" What lives here?"}
+eyebrow={"Add, remove, and reorder pages and rooms inside this room."}
+onAction={handleSaveContent}
+  actionLabel={
+    savingContent ? "Saving Items..." : "Save Items"
+  }
+buttonClass={"bg-transparent border-plumb-mint/70 text-plumb-mint/70"}
+/>
+          
 
                   <div className="px-5 sm:px-6 pb-4">
 
-                    <input
-                      type="search"
-                      value={search}
-                      onChange={(event) =>
-                        setSearch(event.target.value)
-                      }
-                      placeholder="Search pages and rooms..."
-                      className="
-                        w-[100%]
-                        rounded-xl
-                        border
-                        border-plumb-mint
-                        border-1
-                        bg-plumb-canvas
-                        dark:bg-transaperent
-                        px-6
-                        py-3
-                        text-sm
-                        text-plumb-ink
+   <div className={styles.input.search.searchWrap}>
+                  <span
+                    aria-hidden="true"
+                    className={styles.input.search.searchLabel}
+                  >
+                    Search
+                  </span>
 
-                        outline-none
-                        focus:border-button-primary-bg
-                        focus:ring-2
-                        focus:ring-button-primary-bg/20
-                        dark:border-white/10
-                        dark:text-cream
-                      "
-                    />
-
-                  </div>
+                  <input
+                
+                    type="search"
+                    value={search}
+                    onChange={(event) =>
+                      setSearch(event.target.value)
+                    }
+                   placeholder="Search pages and rooms..."
+                className={styles.input.search.input}
+                  />
+                </div>
+     
+                  </div> 
 
 <section className={styles.pageShell.section}>
                   <div className="px-5 sm:px-6 border-b border-card-border dark:border-white/10" />
@@ -1027,58 +1034,12 @@ className={styles.text.label}
                   <div className="p-5 sm:p-6">
 
                     <SortableList
+                    removedItems={removedItems}
                       items={filteredContent}
                       isFiltered={search.trim().length > 0}
                       onOrderChange={setContent}
-                      onDelete={async (item) => {
-                        try {
-                          let result;
-
-                          if (item.kind === "page") {
-                            result = await dispatch(
-                              deleteStoryFromCollection({
-                                stId: item.id,
-                              })
-                            );
-                          }
-
-                          if (item.kind === "room") {
-                            result = await dispatch(
-                              deleteCollectionFromCollection({
-                                tcId: item.id,
-                              })
-                            );
-                          }
-
-                          checkResult(
-                            result,
-                            () => {
-                              setContent((current) =>
-                                current.filter(
-                                  (entry) =>
-                                    entry.id !== item.id
-                                )
-                              );
-                            },
-                            (error) => {
-                              showAlert({
-                                message:
-                                  error?.message ||
-                                  "Unable to remove this item.",
-                                type: AlertType.error,
-                              });
-                            }
-                          );
-
-                        } catch (error) {
-                          showAlert({
-                            message:
-                              error?.message ||
-                              "Unable to remove this item.",
-                            type: AlertType.error,
-                          });
-                        }
-                      }}
+                      onDelete={handleRemoveContent}
+                
                     />
 
                   </div>
@@ -1145,6 +1106,7 @@ function SettingRow({
       className="
         rounded-xl
         border
+        my-2
         border-card-border
         p-4
         dark:border-white/10

@@ -14,14 +14,14 @@ function SelectedItems({
   }
 
   return (
-    <div className="mb-6 rounded-2xl border border-blueSea/20 bg-softBlue/20 p-3 dark:bg-plumb-surface Dark">
+    <div className="mb-6 border-b  border-plumb-muted p-3 dark:bg-transparent ">
       <div className="mb-2 flex items-center justify-between">
-        {/* <p className="text-xs font-semibold uppercase tracking-[0.14em] text-blueSea"> */}
+     
         <p className={styles.text.section}>
           Added
         </p>
 
-        <span className="text-xs text-gray-500 dark:text-gray-400">
+        <span className="text-sm  text-plumb-ink/50 dark:text-plumb-surface/40">
           {items.length}
         </span>
       </div>

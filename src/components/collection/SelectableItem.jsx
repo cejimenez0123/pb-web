@@ -13,7 +13,7 @@ export default function SelectableItem({
 
   return (
     <div
- className={styles.pageShell.row.outer+" bg-transparent"} >
+ className={styles.pageShell.row.outer+" border-plumb-mint/60 bg-transparent"} >
   
 
   
