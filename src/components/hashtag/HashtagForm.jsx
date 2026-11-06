@@ -12,6 +12,7 @@ const clear =(<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height
 import Context from "../../context";
 import { IonImg, IonLabel } from "@ionic/react";
 import ErrorBoundary from "../../ErrorBoundary";
+import SectionHeader from "../pieces/SectionHeader";
 
 export function HashtagForm({ item,effectiveId, type = "story" }) {
   const { setError } = useContext(Context);
@@ -108,9 +109,9 @@ export function HashtagForm({ item,effectiveId, type = "story" }) {
 
   return (
     <ErrorBoundary>
-      <form className="w-full flex flex-col dark:bg-transparent ">
+      <form className="flex flex-col bg-plumb-surface dark:bg-plumb-darkSurface ">
         {visibleSuggestions.length > 0 && (
-          <div className="flex flex-wrap gap-2 mx-auto w-[90%] md:w-[48em]">
+          <div className="flex flex-wrap gap-2 mx-auto  md:w-[48em]">
             {visibleSuggestions.map((s) => (
               <button
                 type="button"
@@ -131,24 +132,25 @@ export function HashtagForm({ item,effectiveId, type = "story" }) {
           placeholder="Type a hashtag and press Enter"
           rows={4}
           cols={12}
-          className="my-1 p-8 mx-4 rounded-xl w-[100%]  mx-auto border border-plumb-mintLight/50   placeholder:text-soft/50 focus:outline-none focus:ring-2 focus:ring-button-secondary-bg"
+          className="my-1 px-4 py-6  text-base rounded-2xl 
+          w-[100%] bg-plumb-canvas dark:bg-transparent mx-auto border border-plumb-mint/50   placeholder:text-plumb-mint/40 focus:outline-none focus:ring-2 focus:ring-button-secondary-bg"
         />
         <button type="submit" className="hidden">Submit</button>
 
-        <div className="text-left my-1">
-          <IonLabel className="text-soft text-sm">Hashtags:</IonLabel>
-          <ul className="flex flex-wrap p-4">
+        
+          <SectionHeader title={"Hashtags:"}/>
+          <ul className="flex flex-wrap  dark:bg-transparent mx-auto border border-plumb-mint/50 min-h-20 rounded-2xl  p-4">
             {hashtags.map((hash, index) => (
               <li
               onClick={() => deleteHashtag(hash)}
               className="p-1 flex flex-row m-1 text-sm border-plumb-blueSea/50 border border-1 rounded-full  bg-button-secondary-bg text-white" key={index}>
                 <h6 className="my-auto mx-2">#{hash.hashtag.name}</h6>
                 {clear}
-                {/* <IonImg className="my-auto" onClick={() => deleteHashtag(hash)} src={clear} /> */}
+               
               </li>
             ))}
           </ul>
-        </div>
+
       </form>
     </ErrorBoundary>
   );

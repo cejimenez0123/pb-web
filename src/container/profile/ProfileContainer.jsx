@@ -253,10 +253,10 @@ function ProfileContainer() {
      <IonContent fullscreen={true} scrollY={true} >
         <ErrorBoundary>
 
-  <div className={""}>
+         <div className={styles.pageShell.base+" "+styles.pageShell.scroll}>
        
             <header 
-            className={styles.profile.header+" mx-4"}
+            className={styles.pageShell.header}
             >
               <div className={styles.profile.identity}>
                 <ProfileInfo profile={profile} compact />

@@ -83,6 +83,74 @@ const shared = {
 };
 
 const styles = {
+    input:{
+               base: [
+    "px-6 py-3 bg-plumb-canvas dark:bg-transparent",
+    " text-plumb-ink dark:text-plumb-darkText ",
+    "placeholder:text-plumb-muted",
+    "focus:outline-none focus:ring-0",
+    "dark:placeholder:text-plumb-darkMuted",
+  ].join(" "),
+  text:" w-[100%] rounded-full",
+  textarea:"rounded-2xl border border-1 border-plumb-mint w-[100%]",
+  primary:["border-1  border border-plumb-mint"].join(" ")
+   
+    },
+    pageShell: {
+body:"max-w-3xl mx-auto  w-[100%]",
+    content:[" max-w-3xl  flex"].join(" "),
+   section:["mx-auto max-w-page space-y-4 mt-4 mb-8"].join(" "),
+    // body: [
+    //   "mt-4 sm:mx-auto w-[100%] mx-4 max-w-3xl font-serif",
+    //   "text-lg sm:text-xl leading-relaxed",
+    //   "text-plumb-text dark:text-plumb-darkText",
+    // ].join(" "),
+      list: [
+    "mx-auto max-w-2xl",
+    "bg-paper dark:bg-plumb-dark-surface",
+  ].join(" "),
+
+    header: `
+    flex flex-col px-4 text-left  
+ 
+  `,
+base: [
+  "relative font-open-sans" ,
+  "flex flex-col",
+  "w-[100%]",
+  "min-w-[100%] min-h-[100%]",
+  "overflow-hidden",
+  "bg-plumb-surface text-plumb-ink",
+  "dark:bg-plumb-dark-canvas dark:text-plumb-darkText",
+].join(" "),
+  // Use when the page itself should scroll
+  scroll: [
+  
+    "overflow-y-auto"
+  ].join(" "),
+
+
+  padded: [
+    "px-4 sm:px-6 lg:px-8",
+    "pt-8 pb-24",
+  ].join(" "),
+
+  // Safe-area-aware layout for native pages
+  native: [
+    "pt-[env(safe-area-inset-top,0px)]",
+    "pb-[calc(6rem+env(safe-area-inset-bottom,0px))]",
+  ].join(" "),
+
+  // Centered content container
+  inner: [
+    "mx-auto w-[100%] bg-plumb-surface  dark:bg-plumb-dark-surface sm:px-10 md:px-16 lg:px-20",
+  ].join(" "),
+
+  // Narrower reading/content container
+  reading: [
+    "mx-auto w-[100%] max-w-3xl",
+  ].join(" "),
+},
 
 hash: {
   thread: `
@@ -248,7 +316,7 @@ hash: {
   ].join(" "),
 
   input: [
-    "w-full min-w-0 rounded-full border-0 bg-transparent",
+    "w-[100%] rounded-full border-0 bg-plumb-canvas dark:bg-transparent",
     "px-4  py-3 text-plumb-ink",
     "placeholder:text-plumb-muted",
     "focus:outline-none focus:ring-0",
@@ -301,8 +369,8 @@ hash: {
 
 base: [
 "inline-flex items-center justify-center",
-"rounded-full",
-"font-medium",
+"rounded-full text-base",
+"font-medium font-open-sans",
 "transition-all duration-200 ease-out",
 "transform-gpu",
 "hover:-translate-y-0.5",
@@ -320,11 +388,11 @@ base: [
 "motion-reduce:transform-none",
 "motion-reduce:transition-none",
 ].join(" "),
+
 primary: [
   "dark:border-plumb-mintLight dark:border dark:border-2 btn  dark:text-plumb-mintLight",
     "rounded-full font-semiBold  ",
-  "text-base ",
-  "py-2 px-6 text-[1rem] ",
+  
   "bg-plumb-mint dark:bg-transparent dark:border-plumb-button-primary-bg dark:text-plumb-button-primary-bg text-plumb-darkText",
   "shadow-sm",
   "hover:bg-plumb-mint/60 hover:border-plumb-mintLight hover:border-3",
@@ -332,14 +400,14 @@ primary: [
   "active:shadow-sm",
 ].join(" "),
 
-
+danger:[" broder-plumb-button-danger-bg border text-plumb-button-danger-bg border-1 border dark:bg-transparent text-white font-open-sans py-4 px-6 rounded-full bg-plumb-button-danger-bg ",].join(" "),
 
   
 secondary: [
   "py-2 px-6 text-[1rem] ",
   "dark:border dark:text-plumb-button-secondary-bg dark:border-plumb-button-secondary-bg hover:border-3 dark:border-2",
   "rounded-full",
-"text-base",
+
 "bg-plumb-button-secondary-bg",
 "text-white",
 "shadow-sm",
@@ -358,38 +426,6 @@ secondary: [
     "hover:bg-plumb-button-accent-hover",
   ].join(" "),
 
-  // danger: [
-  //    "text-base",
-  //       "rounded-full",
-  //   "bg-plumb-button-danger-bg",
-  //   "text-white",
-  //   "dark:bg-transparent border-plumb-button-danger-bg border-1 dark:text-plumb-button-danger-bg dark:border dark:border-button-danger-bg",
-  //   "hover:bg-plumb-button-danger-hover",
-  // ].join(" "),
-
-  // agree: [
-  //    "text-base",
-  //       "rounded-full",
-  //       "bg-plumb-button-primary-hover",
-  //       "font-bold",
-      
-  //   "text-white",
-  //   "hover:bg-plumb-mintHover",
-  // ].join(" "),
-
-  // cancel: [
-  //    "text-base",
-  //       "rounded-full",
-  //   "border border-plumb-border",
-  //   "bg-transparent",
-  //   "text-plumb-muted",
-  //   "hover:border-plumb-mint",
-  //   "hover:text-plumb-ink",
-  //   "dark:border-plumb-darkBorder",
-  //   "dark:text-plumb-darkMuted",
-  //   "dark:hover:border-plumb-mintLight",
-  //   "dark:hover:text-plumb-darkText",
-  // ].join(" "),
 ghost: [
 "text-base",
 "bg-transparent",
@@ -502,45 +538,8 @@ utilityActive: [
 ].join(" "),
 
    },
-  pageShell: {
-  // Shared page foundation
-base: [
-  "relative",
-  "flex flex-col",
-  "w-full",
-  "min-w-0 min-h-0",
-  "overflow-hidden",
-  "bg-plumb-surface text-plumb-ink",
-  "dark:bg-plumb-dark-canvas dark:text-plumb-darkText",
-].join(" "),
-  // Use when the page itself should scroll
-  scroll: [
-  
-    // "overflow-y-auto overscroll-y-contain",
-  ].join(" "),
 
-  // Standard responsive page padding
-  padded: [
-    "px-4 sm:px-6 lg:px-8",
-    "pt-8 pb-24",
-  ].join(" "),
 
-  // Safe-area-aware layout for native pages
-  native: [
-    "pt-[env(safe-area-inset-top,0px)]",
-    "pb-[calc(6rem+env(safe-area-inset-bottom,0px))]",
-  ].join(" "),
-
-  // Centered content container
-  inner: [
-    "mx-auto w-[100%] bg-plumb-surface  dark:bg-plumb-dark-surface sm:px-10 md:px-16 lg:px-20",
-  ].join(" "),
-
-  // Narrower reading/content container
-  reading: [
-    "mx-auto w-[100%] max-w-3xl",
-  ].join(" "),
-},
 addToCollection: {
   content: shared.page.canvas,
 
@@ -591,94 +590,7 @@ addToCollection: {
     dark:hover:text-plumb-softBlue
   `,
 },
-// addToCollection: {
-//   content: `min-h-[100dvh] bg-plumb-canvas text-plumb-ink dark:bg-plumb-dark-canvas dark:text-plumb-darkText`,
-//   wrap: `mx-auto w-full max-w-[50em] px-4 pb-24 pt-8 sm:px-6`,
-//   header: `mb-8`,
-//   eyebrow: `text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-plumb-mint dark:text-plumb-mintLight`,
-//   heading: `mt-2 font-serif text-3xl font-medium tracking-tight text-plumb-ink dark:text-plumb-darkText sm:text-4xl`,
-//   sectionTitle: `mt-1 font-serif text-2xl font-medium text-plumb-ink dark:text-plumb-darkText`,
-//   body: `mt-2 max-w-xl text-sm leading-6 text-plumb-muted dark:text-plumb-darkMuted`,
-//   card: `rounded-2xl border border-plumb-border bg-plumb-elevated shadow-sm dark:border-plumb-darkBorder dark:bg-plumb-dark-elevated`,
-//   itemCard: `p-5`,
-//   itemType: `text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-plumb-blueSea dark:text-plumb-softBlue`,
-//   itemTitle: `mt-2 truncate font-serif text-2xl font-medium tracking-tight text-plumb-ink dark:text-plumb-darkText`,
-//   itemDescription: `mt-2 text-sm leading-6 text-plumb-muted dark:text-plumb-darkMuted`,
-//   itemStatus: `mt-3 text-xs text-plumb-subtle dark:text-plumb-darkSubtle`,
-//   itemBadge: `shrink-0 rounded-full border border-plumb-blueSea/40 bg-plumb-blueSea/5 px-3 py-1.5 text-xs font-medium text-plumb-blueSea dark:border-plumb-softBlue/40 dark:bg-plumb-softBlue/5 dark:text-plumb-softBlue`,
-//   section: `mb-8`,
-//   createRow: `flex items-center justify-between gap-4 p-4`,
-//   createTitle: `text-sm font-medium text-plumb-ink dark:text-plumb-darkText`,
-//   createDescription: `mt-1 text-xs leading-5 text-plumb-muted dark:text-plumb-darkMuted`,
-//   createButton: `shrink-0 border border-plumb-blueSea bg-plumb-blueSea text-white dark:border-plumb-softBlue dark:bg-plumb-softBlue dark:text-plumb-ink`,
-//   controls: `mb-5 flex flex-col gap-3 sm:flex-row`,
-//   select: `w-full rounded-full border border-plumb-border bg-plumb-elevated px-4 py-3 text-sm text-plumb-ink shadow-sm outline-none focus:border-plumb-mint focus:ring-2 focus:ring-plumb-focus/40 dark:border-plumb-darkBorder dark:bg-plumb-dark-elevated dark:text-plumb-darkText dark:focus:border-plumb-mintLight sm:w-40`,
-//   search: `flex min-w-0 flex-1 items-center rounded-full border border-plumb-border bg-plumb-elevated px-4 shadow-sm transition-colors focus-within:border-plumb-mint focus-within:ring-2 focus-within:ring-plumb-focus/40 dark:border-plumb-darkBorder dark:bg-plumb-dark-elevated dark:focus-within:border-plumb-mintLight`,
-//   searchLabel: `mr-2 shrink-0 text-xs font-semibold uppercase tracking-wide text-plumb-subtle dark:text-plumb-darkSubtle`,
-//   searchInput: `min-w-0 w-full flex-1 bg-transparent py-3 text-sm text-plumb-ink outline-none placeholder:text-plumb-subtle dark:text-plumb-darkText dark:placeholder:text-plumb-darkSubtle`,
-//   list: `rounded-2xl border border-plumb-border bg-plumb-elevated p-3 shadow-sm dark:border-plumb-darkBorder dark:bg-plumb-dark-elevated sm:p-5`,
-//   empty: `rounded-2xl border border-dashed border-plumb-border bg-plumb-surface px-6 py-10 text-center text-sm text-plumb-muted dark:border-plumb-darkBorder dark:bg-plumb-dark-surface dark:text-plumb-darkMuted`,
-//   backButton: `shrink-0 rounded-full border border-plumb-border bg-plumb-elevated px-4 py-2 text-sm font-medium text-plumb-muted transition-colors hover:border-plumb-blueSea hover:text-plumb-blueSea focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plumb-focus focus-visible:ring-offset-2 dark:border-plumb-darkBorder dark:bg-plumb-dark-elevated dark:text-plumb-darkMuted dark:hover:border-plumb-softBlue dark:hover:text-plumb-softBlue dark:focus-visible:ring-plumb-mintLight dark:focus-visible:ring-offset-plumb-dark-canvas`,
-//   state: `mx-auto flex min-h-[70dvh] w-full max-w-[50em] flex-col items-center justify-center px-4 text-center sm:px-6`,
-//   stateIcon: `mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-plumb-blueSea/10 text-plumb-blueSea dark:bg-plumb-softBlue/10 dark:text-plumb-softBlue`,
-//   stateHeading: `mt-2 font-serif text-2xl font-medium text-plumb-ink dark:text-plumb-darkText`,
-//   stateBody: `mt-2 max-w-md text-sm leading-6 text-plumb-muted dark:text-plumb-darkMuted`,
-//   stateAction: `mt-6`,
-//   loading: `space-y-4`,
-//   skeleton: `rounded-xl bg-plumb-surface motion-safe:animate-pulse dark:bg-plumb-dark-surface`,
-//   row: `
-//   flex w-[100%] min-w-0 items-center gap-3
-//   rounded-full border border-plumb-border
-//   bg-plumb-elevated px-4 py-3 shadow-sm
-//   dark:border-plumb-darkBorder
-//   dark:bg-plumb-dark-elevated
-// `,
 
-// rowLink: `
-//   flex min-h-10 min-w-0 flex-1 items-center
-//   rounded-full text-left
-//   focus-visible:outline-none
-//   focus-visible:ring-2 focus-visible:ring-plumb-focus
-//   focus-visible:ring-offset-2
-//   focus-visible:ring-offset-plumb-elevated
-//   dark:focus-visible:ring-plumb-mintLight
-//   dark:focus-visible:ring-offset-plumb-dark-elevated
-// `,
-
-// rowTitle: `
-//   block truncate text-sm font-medium
-//   text-plumb-ink transition-colors
-//   hover:text-plumb-blueSea
-//   dark:text-plumb-darkText
-//   dark:hover:text-plumb-softBlue
-// `,
-
-// pending: `
-//   flex min-h-10 shrink-0 items-center gap-2
-//   rounded-full bg-plumb-blueSea/10
-//   px-4 py-2 text-xs font-medium
-//   text-plumb-blueSea
-//   dark:bg-plumb-softBlue/10
-//   dark:text-plumb-softBlue
-// `,
-
-// spinner: `
-//   h-4 w-4 animate-spin rounded-full
-//   border-2 border-current/30 border-t-current
-//   motion-reduce:animate-none
-// `,
-
-// addPill: `
-//   border border-plumb-mint/40
-//   bg-plumb-mint/10 text-plumb-mint
-//   hover:border-plumb-mint
-//   hover:bg-plumb-mint/20
-//   dark:border-plumb-mintLight/40
-//   dark:bg-plumb-mintLight/10
-//   dark:text-plumb-mintLight
-//   dark:hover:border-plumb-mintLight
-//   dark:hover:bg-plumb-mintLight/20
-// `,
 
 // addedPill: `
 //   border border-plumb-blueSea/40
@@ -1140,7 +1052,7 @@ mine: {
   `,
 
   header: `
-    flex flex-col gap-8 px-4 max-w-4xl mx-auto
+    flex flex-col px-4 max-w-4xl mx-auto
     sm:flex-row sm:items-center 
   `,
 
@@ -1432,115 +1344,9 @@ mine: {
     dark:group-hover:text-plumb-mintLight
   `,
 
-//   emptyCollection: `
-//     py-8
-//     text-sm
-//     text-plumb-muted
-//     dark:text-plumb-darkMuted
-//   `,
 
-//   section: [
-//     "w-[100%]",
-//     "bg-transparent",
-//     "text-plumb-ink dark:text-plumb-darkText",
-//   ].join(" "),
 
-//   header: [
-//     "flex flex-col gap-5",
 
-//     "bg-transparent pb-5",
- 
-//     "sm:flex-row sm:items-end sm:justify-between",
-//   ].join(" "),
-
-//   searchLabel: "sr-only",
-
-//   searchInput: [
-//     "min-h-12 w-[100%] sm:max-w-[18rem]",
-//     "rounded-full border px-4 py-2.5",
-//     "border-plumb-borderStrong bg-transparent",
-//     "text-sm text-plumb-ink",
-//     "placeholder:text-plumb-muted",
-//     "transition-colors",
-//     "focus:outline-none focus-visible:ring-2",
-//     "focus-visible:ring-plumb-focus",
-//     "focus-visible:outline focus-visible:outline-1",
-//     "focus-visible:outline-plumb-mintHover",
-//     "dark:border-plumb-darkBorderStrong",
-//     "dark:text-plumb-darkText",
-//     "dark:placeholder:text-plumb-darkMuted",
-//     "dark:focus-visible:outline-plumb-mintLight",
-//     "motion-reduce:transition-none",
-//   ].join(" "),
-
-//   list: [
-//     "mt-8 space-y-0",
-//     "bg-transparent",
-//   ].join(" "),
-
-//   article: [
-   
-//     "bg-transparent ",
-  
-//   ].join(" "),
-
-//   storyList: [
-//     "mt-3 list-none space-y-3 p-0",
-//   ].join(" "),
-
-//   storyRow: [
-//     "group list-none",
-//   ].join(" "),
-
-//   storyButton: [
-//     "flex min-h-12 w-[100%]",
-//     "items-start justify-between gap-2",
-  
-//     "bg-transparent py-3",
-//     "text-left",
-//     "transition-colors duration-150",
-
-//     "motion-reduce:transition-none",
-//   ].join(" "),
-
-//   storyContent: [
-//     "min-w-0 flex-1",
-//   ].join(" "),
-
-//   storyTitle: [
-//     "break-words font-serif text-base",
-//     "leading-snug",
-//     "text-plumb-ink",
-//     "transition-colors duration-150",
-//     "group-hover:text-plumb-mintHover",
-//     "group-hover:underline group-hover:underline-offset-4",
-//     "group-focus-visible:underline",
-//     "group-focus-visible:underline-offset-4",
-//     "dark:text-plumb-darkText",
-//     "dark:group-hover:text-plumb-mintLight",
-//     "motion-reduce:transition-none",
-//   ].join(" "),
-
-//   storyDescription: [
-//     "mt-1 text-sm leading-relaxed",
-//     "text-plumb-muted dark:text-plumb-darkMuted",
-//   ].join(" "),
-
-//   arrow: [
-//     "shrink-0 pt-0.5",
-//     "text-base font-medium",
-//     "text-plumb-muted",
-//     "transition-transform duration-150",
-//     "group-hover:translate-x-1",
-//     "dark:text-plumb-darkMuted",
-//     "motion-reduce:transition-none",
-//   ].join(" "),
-
-//   emptyCollection: [
-//     "py-4 pl-4 text-sm italic",
-//     "text-plumb-muted dark:text-plumb-darkMuted",
-//     "sm:pl-5",
-//   ].join(" "),
 },
   page: [
     "mx-auto  ",
@@ -1750,54 +1556,6 @@ collection: {
     motion-reduce:animate-none
   `,
 },
-// collection: {
-//   page: [
-//     "  pb-20 overflow-y-auto ",
-//     "bg-plumb-surface text-plumb-ink",
-//     "dark:bg-plumb-dark-canvas dark:text-plumb-darkText",
-//   ].join(" "),
-
-//   section: [
-//     "border-plumb-borderStrong",
-//     "dark:border-plumb-darkBorderStrong",
-//   ].join(" "),
-
-//   card: [
-//     "rounded-2xl border p-5",
-//     "border-plumb-borderStrong bg-plumb-paper",
-//     "transition-all duration-200",
-//     "hover:-translate-y-0.5 hover:border-plumb-mintHover",
-//     "dark:border-plumb-darkBorderStrong",
-//     "dark:bg-plumb-dark-surface",
-//     "dark:hover:border-plumb-mintLight",
-//   ].join(" "),
-
-//   heading: [
-//     "font-serif text-2xl sm:text-3xl",
-//     "text-plumb-ink dark:text-plumb-darkText",
-//   ].join(" "),
-
-//   body: [
-//     "font-open-sans text-base leading-relaxed",
-//     "text-plumb-text dark:text-plumb-darkText",
-//   ].join(" "),
-
-//   muted: [
-//     "text-plumb-muted dark:text-plumb-darkMuted",
-//   ].join(" "),
-
-//   empty: [
-//     "rounded-2xl border border-dashed p-8 text-center",
-//     "border-plumb-borderStrong",
-//     "dark:border-plumb-darkBorderStrong",
-//   ].join(" "),
-
-//   skeleton: [
-//     "animate-pulse rounded-2xl",
-//     "bg-plumb-border dark:bg-plumb-dark-surface",
-//     "motion-reduce:animate-none",
-//   ].join(" "),
-// },
 
 navbar: {
   desktop: [
@@ -2229,6 +1987,8 @@ page: {
   ].join(" "),
 },
 text: {
+  label:["text-plumb-ink dark:text-plumb-darkText"].join(" "),
+  subLabel:["text-plumb-ink dark:text-plumb-darkText"].join(" "),
   display: [
     "font-serif font-semibold",
     "text-3xl sm:text-4xl",
@@ -2291,7 +2051,7 @@ text: {
 tabs: {
 
 pill: {
-  container: `w-full min-w-0 max-w-full`,
+  container: `w-full min-w-0 max-w-4xl mx-auto`,
   wrapper: `
     flex w-full min-w-0 max-w-full
     flex-nowrap items-center justify-start gap-1
@@ -2316,15 +2076,8 @@ pill: {
   inactive: `text-plumb-muted bg-plumb-canvas hover:text-plumb-ink dark:text-plumb-darkMuted dark:hover:text-plumb-darkText`,
 },
 
-  // pill: {
-  //   container: `w-[100%] `,
-  //   wrapper: `flex items-center overflow-x-scroll  justify-center gap-1 rounded-xl bg-plumb-surface  px-4 dark:bg-plumb-dark-surface`,
-  //   button: `shrink-0 rounded-full px-6 py-2 transition-colors duration-200 sm:text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plumb-focus focus-visible:ring-offset-2 focus-visible:ring-offset-plumb-canvas dark:focus-visible:ring-mintLight dark:focus-visible:ring-offset-plumb-dark-canvas`,
-  //   active: `bg-plumb-mint text-plumb-darkText shadow-sm dark:bg-plumb-mintLight dark:text-plumb-ink`,
-  //   inactive: `text-plumb-muted bg-plumb-canvas hover:text-plumb-ink dark:text-plumb-darkMuted dark:hover:text-plumb-darkText`,
-  // },
 wrapper: [
-  "flex w-max w-[100%] gap-1 items-center justify-start",
+  "flex w-max  gap-1 items-center justify-start",
   "overflow-x-scroll overflow-x-contain",
 
   
@@ -2390,24 +2143,24 @@ scrollDown: {
 
 
 
-input: [
-  "w-[100%] max-w-sm",
-  " bg-plumb-canvas  dark:bg-plumb-darkCanvas border border-1 border-plumb-mintLight/30",
+// input: [
+//   "w-[100%] max-w-sm",
+//   " bg-plumb-canvas  dark:bg-plumb-darkCanvas border border-1 border-plumb-mintLight/30",
 
 
-  "text-plumb-ink  dark:text-plumb-darkText rounded-2xl",
-  "px-4 py-3",
-  "placeholder:text-plumb-muted",
-  "dark:border-plumb-darkBorderStrong",
-  "",
-  "dark:placeholder:text-plumb-darkMuted",
-  "focus:outline-none",
-  "focus-visible:ring-2",
-  "focus-visible:ring-plumb-focus",
-  "focus-visible:ring-offset-2",
-  "focus-visible:ring-offset-paper",
-  "dark:focus-visible:ring-offset-plumb-dark-canvas",
-].join(" "),
+//   "text-plumb-ink  dark:text-plumb-darkText rounded-2xl",
+//   "px-4 py-3",
+//   "placeholder:text-plumb-muted",
+//   "dark:border-plumb-darkBorderStrong",
+//   "",
+//   "dark:placeholder:text-plumb-darkMuted",
+//   "focus:outline-none",
+//   "focus-visible:ring-2",
+//   "focus-visible:ring-plumb-focus",
+//   "focus-visible:ring-offset-2",
+//   "focus-visible:ring-offset-paper",
+//   "dark:focus-visible:ring-offset-plumb-dark-canvas",
+// ].join(" "),
 
 
 
@@ -2706,7 +2459,7 @@ dashboardItem: {
   ].join(" "),
 },
 pill: {
-  base: `inline-flex min-h-10 items-center gap-2 rounded-full px-4 py-2.5 text-xs font-medium shadow-sm
+  base: `inline-flex  items-center gap-2 rounded-full px-4 py-2.5 text-xs font-medium shadow-sm
 duration-200`,
   //  transition-[transform,background-color,border-color,color,box-shadow] 
   interactive: `cursor-pointer hover:-translate-y-0.5

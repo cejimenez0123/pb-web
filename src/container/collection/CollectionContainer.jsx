@@ -79,30 +79,24 @@ const PAGE =
 const SECTION =
   "py-8 sm:py-10";
 
-const BUTTON =
-  "inline-flex items-center justify-center h-11 px-5 rounded-full " +
-  "text-sm font-medium transition-all duration-200 " +
-  "focus-visible:outline-none focus-visible:ring-2 " +
-  "focus-visible:ring-button-primary-bg/40 " +
-  "focus-visible:ring-offset-2 " +
-  "focus-visible:ring-offset-plumb-surface " +
-  "dark:focus-visible:ring-offset-base-bgDark " +
-  "disabled:cursor-not-allowed disabled:opacity-60";
+const BUTTON = styles.button.base
 
 const SECONDARY_BUTTON =
-  `${styles.button.secondary} ${BUTTON}`;
+  `${styles.button.secondary} px-6 py-3 ${BUTTON}`;
 
 const PRIMARY_BUTTON =
-  `${styles.button.primary} ${BUTTON}`;
+  `${styles.button.primary} px-6 py-3 ${BUTTON}`;
 
-// const TEXT_BUTTON =
-//   "inline-flex items-center    bg-plumb-blueSea text-plumb-darkText  gap-2 text-sm " +
-//   "text-text-secondary transition-colors " +
-//   "hover:text-text-brand focus-visible:outline-none " +
-//   "focus-visible:ring-2 focus-visible:ring-button-primary-bg/40 " +
-//   "focus-visible:ring-offset-2 " +
-//   "focus-visible:ring-offset-plumb-surface " +
-//   "dark:focus-visible:ring-offset-base-bgDark";
+
+const TEXT_BUTTON =
+  "inline-flex items-center  rounded-full   text-plumb-blueSea dark:text-plumb-darkText  gap-2 text-base font-open-sans " +
+  "text-text-secondary transition-colors " +
+  "hover:text-text-brand focus-visible:outline-none " +
+  "focus-visible:ring-2 focus-visible:ring-button-primary-bg/40 " +
+  "focus-visible:ring-offset-2 " +
+  "focus-visible:ring-offset-plumb-surface " +
+  "dark:focus-visible:ring-offset-base-bgDark";
+
 
 // ---------------------------------------------------------
 // Main page
@@ -832,9 +826,7 @@ export default function CollectionContainer() {
     <IonContent>
     <ErrorBoundary>
 <main className={styles.collection.page}>
-        {/* --------------------------------------------- */}
-        {/* Header / Room identity */}
-        {/* --------------------------------------------- */}
+ 
 
         <section className="border-b border-card-border dark:border-white/10">
           <div className={`${PAGE} pt-10 pb-8 sm:pt-14`}>
