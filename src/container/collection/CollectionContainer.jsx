@@ -1222,7 +1222,7 @@ function InsideRoom({
   }
 
   return (
-    <div className="pt-8">
+    <div className={"pt-8 "+styles.pageShell.body}>
       <RoomSectionHeading
         eyebrow="Inside"
         title="What's here"
