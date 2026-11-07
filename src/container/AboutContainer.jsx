@@ -5,6 +5,7 @@ import Context from "../context";
 import useScrollTracking from "../core/useScrollTracking";
 import ScrollDownButton from "../components/ScrollDownButton";
 import styles from "../styles/style";
+import { Capacitor } from "@capacitor/core";
 
 
 export default function AboutContainer() {
@@ -12,13 +13,13 @@ export default function AboutContainer() {
   const router = useIonRouter();
 
   useScrollTracking({ name: "About" });
-
+const isNative = Capacitor.isNativePlatform()
   return (
     <IonContent
 scrollY={true}
 fullscreen={true}
 >
- <main className={[styles.pageShell.base].join(" ")}>
+ <main className={[styles.pageShell.base,isNative?styles.pageShell.body:styles.pageShell.padded].join(" ")}>
   
       <p className={styles.about.eyebrow+ " dark:bg-transparent"}>
         About
