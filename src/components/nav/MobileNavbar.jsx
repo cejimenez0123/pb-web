@@ -18,7 +18,7 @@ const {
   handleProfile,
   handleAbout,
   handleSearch,
-  handleLogin,
+
 } = useNavbarNavigation(currentProfile);
 
   const isLoggedIn = !!currentProfile;
@@ -95,6 +95,7 @@ const {
             <MobileNavItem
               label="Write"
               onClick={handleWrite}
+              active={true}
             />
           )}
 

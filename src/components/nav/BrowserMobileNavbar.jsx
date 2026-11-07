@@ -8,7 +8,7 @@ import { signOutAction } from "../../actions/UserActions";
 
 function BrowserMobileNavbar({
   currentProfile,
-  showSearch = true,
+
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -22,7 +22,7 @@ const {
   handleSearch,
   handleLogin,
 } = useNavbarNavigation(currentProfile);
-
+  const dispatch = useDispatch()
   const isLoggedIn = !!currentProfile;
 
   const closeMenu = () => {
@@ -33,7 +33,7 @@ const {
     closeMenu();
     handler();
   };
-  const dispatch = useDispatch()
+
   const handleSignOut = async () => {
      closeMenu();
     try{

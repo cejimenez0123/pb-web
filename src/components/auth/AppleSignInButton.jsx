@@ -4,6 +4,7 @@ import applelogo from "../../images/logo/Applelogo.png";
 import { SocialLogin } from '@capgo/capacitor-social-login';
 
 function AppleSignInButton({ onUserSignIn }) {
+
   const handleAppleSignIn = async () => {
     try {
       const { result } = await SocialLogin.login({

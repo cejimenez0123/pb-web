@@ -3,19 +3,19 @@ import React, {
   useState,
   useEffect,
   useLayoutEffect,
-  useContext,
+
   useRef,
 } from "react";
 import { IonText, IonSpinner, IonImg, IonRow } from "@ionic/react";
-import { useDispatch } from "react-redux";
 import { SocialLogin } from "@capgo/capacitor-social-login";
 // import DeviceCheck from "./DeviceCheck";
 import { Preferences } from "@capacitor/preferences";
 import Googlelogo from "../images/logo/googlelogo.png";
-import ErrorBoundary from "../ErrorBoundary";
-import { sendGAEvent } from "../core/ga4";
+import { ErrorBoundary } from "@sentry/react";
 import { Capacitor } from "@capacitor/core";
 import { useAlert } from "../core/useAlert";
+import initSocialLogin from "./initSocialLogin";
+
    const CLIENT_ID = import.meta.env.VITE_OAUTH2_CLIENT_ID;
 function GoogleLoginInner({ drive, onUserSignIn }) {
   const [bootstrapping, setBootstrapping] = useState(true);
@@ -31,41 +31,13 @@ function GoogleLoginInner({ drive, onUserSignIn }) {
   const googleButtonRef = useRef(null);
   const isNative =Capacitor.isNativePlatform()
 
-const [googleReady, setGoogleReady] = useState(!isNative);
+
 
   const driveTokenKey = "googledrivetoken";
 
   // ---------------------------
 
-// useEffect(() => {
-//   if (!isNative) return;
 
-
-useEffect(() => {
-  if (!isNative) return;
-
-  const initializeGoogle = async () => {
-    try {
-      await SocialLogin.initialize({
-        google: {
-          webClientId: CLIENT_ID,
-          ...(Capacitor.getPlatform() === "ios" && {
-            iOSClientId: import.meta.env.VITE_IOS_OAUTH2_CLIENT_ID,
-          }),
-          mode: "online",
-        },
-      });
-
-      setGoogleReady(true);
-    } catch (error) {
-      console.error("Google initialization failed:", error);
-      setLoginError(error.message || "Google initialization failed.");
-    }
-  };
-
-  initializeGoogle();
-  
-}, [isNative]);
 
 
   useLayoutEffect(() => {
@@ -125,12 +97,15 @@ useEffect(() => {
   }, []);
 
 const nativeGoogleSignIn = async () => {
-  if (pending || !googleReady) return;
+  if (pending) return;
 
   setPending(true);
   setLoginError(null);
 
   try {
+    // Ensure native social login is initialized.
+    await initSocialLogin();
+
     const user = await SocialLogin.login({
       provider: "google",
       options: {
@@ -149,13 +124,15 @@ const nativeGoogleSignIn = async () => {
     }
 
     const profile = result.profile || {};
+
     const idToken =
       result.idToken || result.authentication?.idToken;
+
     const accessToken =
       result.accessToken?.token || result.accessToken;
 
     if (!idToken) {
-      throw new Error("Missing Google ID token (required for login)");
+      throw new Error("Missing Google ID token");
     }
 
     const payload = {
@@ -167,6 +144,7 @@ const nativeGoogleSignIn = async () => {
     };
 
     await onUserSignIn?.(payload);
+
     setSignedIn(true);
   } catch (err) {
     console.error("GOOGLE NATIVE LOGIN ERROR:", err);
@@ -175,9 +153,7 @@ const nativeGoogleSignIn = async () => {
     setPending(false);
   }
 };
-// const nativeGoogleSignIn = async () => {
-//   if (pending) return;
-  
+
 
   // ---------------------------
   // 5️⃣ Web login
@@ -256,14 +232,22 @@ const handleCredentialResponse = async (response) => {
   return (
     <div className="flex flex-col justify-center items-center w-full min-h-full">
       <div
-      onClick={!pending && googleReady ? () => {
-  showPrompt({
-    message: "Google Sign-In asks for permission to access Google Drive. We only read files you share. Not Required",
-    agreeText: "Continue",
-    agree: () => nativeGoogleSignIn(),
-    type: "prompt",
-  });
-} : undefined}
+   onClick={
+  !pending
+    ? () => {
+        if (isNative) {
+          showPrompt({
+            message:
+              "Google Sign-In asks for permission to access Google Drive. We only read files you share. Not Required",
+            agreeText: "Continue",
+            agree: nativeGoogleSignIn,
+            type: "prompt",
+          });
+        }
+      }
+    : undefined
+}
+  
        
         className="bg-gray-200 btn rounded-full flex h-[4rem] w-[10rem] mt-8"
       >

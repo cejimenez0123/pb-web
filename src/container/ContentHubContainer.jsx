@@ -29,7 +29,7 @@ function ContentHubContainer() {
   return (
     <IonContent fullscreen={true} scrollY={true}>
       <ErrorBoundary>
-%  <main className={[styles.pageShell.base].join(" ")}>
+ <main className={[styles.pageShell.base].join(" ")}>
         <ContentHubContent />
      </main>
       </ErrorBoundary>

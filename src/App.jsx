@@ -279,31 +279,12 @@ function App(props) {
    * not on every Redux/media-query/navigation rerender.
    */
   useEffect(() => {
-    const initialize = async () => {
-      try {
-        await SocialLogin.initialize({
-          apple: {
-            clientId: IOS_CLIENT_ID,
-          },
-          google: {
-            webClientId: CLIENT_ID,
-            iOSClientId: IOS_CLIENT_ID,
-            iOSServerClientId: CLIENT_ID,
-          },
-        });
+    if (!Capacitor.isNativePlatform()) return;
 
-        initSocialLogin(CLIENT_ID, IOS_CLIENT_ID);
-      } catch (error) {
-        console.error(
-          "Error initializing social login:",
-          error
-        );
-      }
-    };
-
-    initialize();
+    initSocialLogin().catch((error) => {
+      console.error("Native social login initialization failed:", error);
+    });
   }, []);
-
   /*
    * Resolve login state exactly once when the application loads.
    */

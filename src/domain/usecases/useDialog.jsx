@@ -43,6 +43,7 @@ export const useDialog = () => {
             data.breakpoint ?? 0.25,
         })
       );
+      closeDialog()
     },
     [dispatch]
   );

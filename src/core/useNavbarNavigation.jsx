@@ -1,11 +1,12 @@
 import { useIonRouter } from "@ionic/react";
 import { useDispatch } from "react-redux";
 import Paths from "./paths";
+import { useSelector } from "react-redux";
 
-export default function useNavbarNavigation(currentProfile) {
+export default function useNavbarNavigation() {
   const router = useIonRouter();
   const dispatch = useDispatch();
-
+const {currentProfile}= useSelector(state=>state.users)
   const navigate = (path, direction = "forward") => {
     router.push(path, direction);
   };
@@ -19,10 +20,7 @@ export default function useNavbarNavigation(currentProfile) {
   const handleLogin = () => navigate(Paths.login);
 
   const handleProfile = () => {
-    if (!currentProfile?.id) {
-      console.warn("Cannot navigate to profile: profile ID is missing.");
-      return;
-    }
+
 
     router.push(
       Paths.myProfile,
@@ -42,5 +40,6 @@ export default function useNavbarNavigation(currentProfile) {
     handleProfile,
     handleAbout,
     handleLogin,
+ 
   };
 }

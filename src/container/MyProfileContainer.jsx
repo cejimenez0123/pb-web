@@ -131,7 +131,7 @@ function MyProfileContainer() {
     <IonContent scrollY={true} fullscreen={true}>
       <ErrorBoundary>
    
-            <main className={styles.pageShell.base+" "+styles.pageShell.scroll}>
+            <main className={[styles.pageShell.base,styles.pageShell.topMargin,styles.pageShell.scroll].join(" ")}>
              <div className={""}>
 <section
   aria-labelledby="my-profile-heading"

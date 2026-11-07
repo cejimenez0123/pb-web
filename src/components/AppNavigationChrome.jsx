@@ -2,6 +2,7 @@
 import { useLocation } from "react-router";
 import NavbarContainer from "../container/NavbarContainer";
 import Paths from "../core/paths";
+import { useDialog } from "../domain/usecases/useDialog";
 
 function AppNavigationChrome({
   isDesktop,
@@ -29,7 +30,7 @@ function AppNavigationChrome({
   const showTopNavbar = isDesktop;
   const showBottomNavbar =
     isMobileOrTablet && !shouldHideBottomNavbar;
-
+ const {dialog}=useDialog()
   return (
     <>
       {/* Desktop */}
@@ -43,7 +44,7 @@ function AppNavigationChrome({
       )}
 
       {/* Mobile / Tablet */}
-      {showBottomNavbar && (
+      {showBottomNavbar && !dialog.isOpen && (
         <div >
           <NavbarContainer
             isDesktop={false}

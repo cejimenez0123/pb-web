@@ -9,6 +9,7 @@ import useNavbarNavigation from '../core/useNavbarNavigation';
 import MobileNavbar from '../components/nav/MobileNavbar';
 import SignInButton from '../components/nav/SignInButton';
 import BrowserMobileNavbar from '../components/nav/BrowserMobileNavbar';
+import { useDialog } from '../domain/usecases/useDialog';
 
 function NavbarContainer({ isDesktop,currentProfile }) {
 
@@ -18,6 +19,7 @@ function NavbarContainer({ isDesktop,currentProfile }) {
   const isSearchPage =
     location?.pathname === '/search';
     const isNative = Capacitor.isNativePlatform()
+    const {dialog}=useDialog()
   return (
     <>
       {isDesktop ? (
@@ -26,7 +28,7 @@ function NavbarContainer({ isDesktop,currentProfile }) {
           showSearch={!isSearchPage}
         />
       ) : (
-       isNative?isLoggedIn && <MobileNavbar
+       isNative?isLoggedIn &&  <MobileNavbar
           currentProfile={currentProfile}
           showSearch={!isSearchPage}
         />:
