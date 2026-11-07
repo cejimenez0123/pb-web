@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { IonText, useIonRouter } from "@ionic/react";
 import { useSelector } from "react-redux";
 import Context from "../../context";
-import { sendGAEvent } from "../../core/ga4";
+// import { sendGAEvent } from "../../core/ga4";
 import { deleteStoryFromCollection, addStoryListToCollection } from "../../actions/CollectionActions";
 import checkResult from "../../core/checkResult";
 import Enviroment from "../../core/Enviroment";
@@ -125,7 +125,7 @@ const { showAlert}=useAlert()
 
   const copyShareLink = () => {
 closeDialog()
-    sendGAEvent("story_share_copy_link", { story_id: page.id, source: getShareSource() });
+    // sendGAEvent("story_share_copy_link", { story_id: page.id, source: getShareSource() });
     navigator.clipboard.writeText(Enviroment.domain + Paths.page.createRoute(page.id)).then(() => {
  
       showAlert({message:"Link is Copied",type:AlertType.success})
@@ -157,7 +157,7 @@ const BLOCK_REASONS = [
             onClick={async () => {
               resetDialog();
               if (profile && (await Preferences.get({ key: "token" })).value) {
-                sendGAEvent("story_add_to_collection_click", { story_id: page.id, source: getShareSource() });
+                // sendGAEvent("story_add_to_collection_click", { story_id: page.id, source: getShareSource() });
                 router.push(Paths.addStoryToCollection.story(page.id));
               } else {
                 setError("Please Sign Up");
@@ -174,7 +174,7 @@ const BLOCK_REASONS = [
             <div
               className="py-3"
               onClick={() => {
-                sendGAEvent("story_edit_open", { story_id: page.id, source: getShareSource() });
+                // sendGAEvent("story_edit_open", { story_id: page.id, source: getShareSource() });
                 openDialog({ ...dialog, isOpen: false });
                 router.push(Paths.editPage.createRoute(page.id, page.type));
               }}

@@ -1,5 +1,5 @@
 
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { IonContent, useIonRouter } from "@ionic/react";
 import { useSelector } from "react-redux";
 
@@ -14,6 +14,14 @@ import styles from "../styles/style.js";
 import ErrorBoundary from "../ErrorBoundary.jsx";
 import RoomsPreviewSection from "../components/collection/RoomsPreviewSection.jsx";
 import OpenWorkSection from "../components/OpenWorkSection.jsx";
+import { Feature } from "framer-motion";
+import FeaturedEventSection from "../components/events/FeaturedEventSection.jsx";
+import { useDispatch } from "react-redux";
+import { getMyStories } from "../actions/StoryActions.jsx";
+import storyRepo from "../data/storyRepo.js";
+import { useAlert } from "../core/useAlert.jsx";
+import AlertType from "../core/AlertType.js";
+import { Preferences } from "@capacitor/preferences";
 
 // Keep fallback references stable.
 // Do not use `|| []` or `|| {}` directly inside a selector.
@@ -48,70 +56,288 @@ function ContentHubContainer() {
 |
 */
 
+
 function useHomeData() {
+  const dispatch = useDispatch();
+const [publicEvents, setPublicEvents] = useState([]);
+const [loadingEvents, setLoadingEvents] = useState(false);
   const currentProfile = useSelector(
     (state) => state.users.currentProfile
   );
 
-  const recommendedStories = useSelector(
-    (state) => state.pages.recommendedStories
-  );
-
-  const stories = Array.isArray(recommendedStories)
-    ? recommendedStories
-    : EMPTY_ARRAY;
+  const [stories, setStories] = useState(EMPTY_ARRAY);
+  const [loadingStories, setLoadingStories] = useState(false);
 
   const profileCollections = Array.isArray(
     currentProfile?.profileToCollections
   )
     ? currentProfile.profileToCollections
     : EMPTY_ARRAY;
+useEffect(() => {
+  let cancelled = false;
 
+  const loadEvents = async () => {
+    setLoadingEvents(true);
+
+    try {
+      const res = await storyRepo.fetchEvents({
+        days: 21,
+      });
+
+      if (cancelled) return;
+
+      const rawEvents = (res?.events || []).flatMap(
+        (group) => group.events || []
+      );
+
+      const normalizedEvents = rawEvents.map((event) => {
+        const description = event.description || "";
+
+        // Extract hashtags from the public event description.
+        const hashtags = (
+          description.match(/#[\w-]+/g) || []
+        ).map((tag) => tag.toLowerCase());
+
+        const startDate =
+          event.start?.dateTime || event.start?.date;
+
+        return {
+          id: event.id,
+          title: event.summary || "Untitled event",
+          description,
+          hashtags,
+          startDate,
+          googleLink: event.htmlLink || "",
+          location: event.location || "",
+        };
+      });
+
+      setPublicEvents(normalizedEvents);
+    } catch (error) {
+      if (!cancelled) {
+        console.error("Unable to load public events:", error);
+        setPublicEvents([]);
+      }
+    } finally {
+      if (!cancelled) {
+        setLoadingEvents(false);
+      }
+    }
+  };
+
+  loadEvents();
+
+  return () => {
+    cancelled = true;
+  };
+}, []);
+  // Fetch the user's stories
+  useEffect(() => {
+    if (!currentProfile?.id) {
+      setStories([]);
+      return;
+    }
+
+    let cancelled = false;
+
+    const loadStories = async () => {
+      setLoadingStories(true);
+
+      try {
+        const result = await dispatch(
+          getMyStories({
+            skip: 0,
+            take: 100,
+          })
+        );
+
+        if (cancelled) return;
+
+        if (getMyStories.fulfilled.match(result)) {
+          setStories(result.payload?.pageList ?? []);
+        } else {
+          console.error(
+            "Unable to load home stories:",
+            result.payload
+          );
+          setStories([]);
+        }
+      } catch (error) {
+        if (cancelled) return;
+
+        console.error("Unable to load home stories:", error);
+        setStories([]);
+      } finally {
+        if (!cancelled) {
+          setLoadingStories(false);
+        }
+      }
+    };
+
+    loadStories();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [currentProfile?.id, dispatch]);
+
+  // Only drafts and fragments, newest first
   const openStories = useMemo(() => {
     return stories
-      .filter((story) => {
-        if (!story) return false;
-        if (!story.status) return true;
-
-        return ["draft", "fragment", "workshop"].includes(
-          String(story.status).toLowerCase()
-        );
-      })
+      .filter((story) =>
+        ["draft", "fragment"].includes(
+          String(story?.status ?? "").toLowerCase()
+        )
+      )
       .sort((a, b) => {
         const aDate = new Date(
-          a?.updated ||
-            a?.updatedAt ||
-            a?.created ||
-            a?.createdAt ||
-            0
+          a?.updated || a?.updatedAt ||
+          a?.created || a?.createdAt || 0
         ).getTime();
 
         const bDate = new Date(
-          b?.updated ||
-            b?.updatedAt ||
-            b?.created ||
-            b?.createdAt ||
-            0
+          b?.updated || b?.updatedAt ||
+          b?.created || b?.createdAt || 0
         ).getTime();
 
         return bDate - aDate;
       })
-      .slice(0, 4);
+      .slice(0, 7);
   }, [stories]);
 
+  // Is there anything the user has worked on in the last week?
+  const hasRecentOpenStory = useMemo(() => {
+    const oneWeekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+
+    return openStories.some((story) => {
+      const date = new Date(
+        story?.updated ||
+        story?.updatedAt ||
+        story?.created ||
+        story?.createdAt ||
+        0
+      ).getTime();
+
+      return date >= oneWeekAgo;
+    });
+  }, [openStories]);
+const suggestedEvent = useMemo(() => {
+  // Recent writing takes priority over event suggestions.
+  if (hasRecentOpenStory) return null;
+
+  const now = Date.now();
+
+  return publicEvents
+    .map((event) => {
+      const matchingHashtag = event.hashtags.find((tag) =>
+        ["#openmic", "#workshop"].includes(tag)
+      );
+
+      if (!matchingHashtag) return null;
+
+      const timestamp = new Date(event.startDate).getTime();
+
+      if (!Number.isFinite(timestamp) || timestamp < now) {
+        return null;
+      }
+
+      const date = new Date(timestamp);
+
+      return {
+        ...event,
+        hashtag: matchingHashtag,
+        timestamp,
+        dateLabel: date.toLocaleDateString("en-US", {
+          weekday: "long",
+          month: "long",
+          day: "numeric",
+          hour: "numeric",
+          minute: "2-digit",
+        }),
+      };
+    })
+    .filter(Boolean)
+    .sort((a, b) => a.timestamp - b.timestamp)[0] ?? null;
+}, [publicEvents, hasRecentOpenStory]);
   const homeRooms = useMemo(() => {
     return profileCollections
       .filter((item) => item?.collection?.id)
       .slice(0, 4);
   }, [profileCollections]);
 
-  return {
-    currentProfile,
-    stories,
-    openStories,
-    homeRooms,
-  };
+return {
+  currentProfile,
+  stories,
+  openStories,
+  loadingStories,
+  hasRecentOpenStory,
+  homeRooms,
+  suggestedEvent,
+  loadingEvents,
+};
 }
+// function useHomeData() {
+//   const currentProfile = useSelector(
+//     (state) => state.users.currentProfile
+//   );
+
+ 
+
+
+
+//   const profileCollections = Array.isArray(
+//     currentProfile?.profileToCollections
+//   )
+//     ? currentProfile.profileToCollections
+//     : EMPTY_ARRAY;
+
+//   const openStories = useMemo(() => {
+//     return stories
+//       .filter((story) => {
+//         if (!story) return false;
+//         if (!story.status) return true;
+
+//         return ["draft", "fragment", "workshop"].includes(
+//           String(story.status).toLowerCase()
+//         );
+//       })
+//       .sort((a, b) => {
+//         const aDate = new Date(
+//           a?.updated ||
+//             a?.updatedAt ||
+//             a?.created ||
+//             a?.createdAt ||
+//             0
+//         ).getTime();
+
+//         const bDate = new Date(
+//           b?.updated ||
+//             b?.updatedAt ||
+//             b?.created ||
+//             b?.createdAt ||
+//             0
+//         ).getTime();
+
+//         return bDate - aDate;
+//       })
+//       .slice(0, 4);
+//   }, [stories]);
+// console.log("STR")
+// console.log(stories)
+// console.log(openStories)
+//   const homeRooms = useMemo(() => {
+//     return profileCollections
+//       .filter((item) => item?.collection?.id)
+//       .slice(0, 4);
+//   }, [profileCollections]);
+
+//   return {
+//     currentProfile,
+//     stories,
+//     openStories,
+//     homeRooms,
+//   };
+// }
 
 /*
 |--------------------------------------------------------------------------
@@ -126,8 +352,21 @@ function ContentHubContent() {
     currentProfile,
     openStories,
     homeRooms,
+suggestedEvent
+  
   } = useHomeData();
+  const eventCol = useMemo(() => {
+    const profileCollections =
+      currentProfile?.profileToCollections;
 
+    if (!profileCollections) return null;
+
+    return (
+      profileCollections.find(
+        (item) => item.type === "events"
+      )?.collection || null
+    );
+  }, [currentProfile?.profileToCollections]);
   const { openDialog, closeDialog } = useDialog();
 
   /*
@@ -200,13 +439,64 @@ function ContentHubContent() {
       breakpoint: 1,
     });
   };
-
+const goToEvent =(id)=>{
+  router.push(Paths.page.createRoute(id))
+}
   /*
   |--------------------------------------------------------------------------
   | Render
   |--------------------------------------------------------------------------
   */
+ const {showAlert,showPrompt}=useAlert()
+const handleSelectSuggestedEvent = async (event) => {
+  if (!event) return;
 
+  const eidMatch = event.googleLink?.match(/[?&]eid=([^&]+)/);
+
+  const gid =
+    event.googleCalendarId ||
+    (eidMatch ? eidMatch[1] : "");
+
+  try {
+    const { value: token } = await Preferences.get({
+      key: "token",
+    });
+
+    if (!token || !gid) {
+      showAlert({
+        message: "Sign in to save this event to your Events.",
+        type: AlertType.info,
+      });
+      return;
+    }
+
+    const data = await storyRepo.saveEvent({
+      event: {
+        ...event,
+        summary: event.title || event.summary,
+        googleCalendarId: gid,
+      },
+    });
+
+showPrompt({
+  message: "Added to your Events! Want to take a look?",
+  agreeText: "View event",
+  disagreeText: "Maybe later",
+  agree: () => {
+    if (data?.story?.id) {
+      router.push(Paths.page.createRoute(data.story.id));
+    }
+  },
+});
+
+
+  } catch (err) {
+    showAlert({
+      message: err?.message || "Couldn't save this event.",
+      type: AlertType.error,
+    });
+  }
+};
   return (
     <div
    
@@ -219,14 +509,16 @@ function ContentHubContent() {
           onRooms={goToRooms}
           onWorkshop={goToWorkshop}
         />
+<FeaturedEventSection  currentProfile={currentProfile} onViewEvents={goToEvents}/>
 
-      <UpcomingEventsSection events={[]} onViewEvents={()=>{goToEvents()}}/>
 
-        <OpenWorkSection
-          stories={openStories}
-          onWrite={goToWrite}
-          onSelectStory={goToStory}
-        />
+     <OpenWorkSection
+  stories={openStories}
+  suggestedEvent={suggestedEvent}
+  onWrite={goToWrite}
+  onSelectStory={goToStory}
+  onSelectEvent={handleSelectSuggestedEvent}
+/>
 
         <RoomsPreviewSection
           rooms={homeRooms}
@@ -352,64 +644,7 @@ function HomeHeader({
 */
 
 
-function WorkRow({ story, onClick }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-label={`Open ${story?.title || "untitled story"}`}
-      className="
-        group flex min-h-16 w-[100%] min-w-0
-        items-center justify-between gap-5
-        border-b border-plumb-border
-        py-4 text-left transition-colors
-        last:border-b-0
-        hover:bg-plumb-surface/70
-        focus-visible:outline-none
-        focus-visible:ring-2 focus-visible:ring-inset
-        focus-visible:ring-plumb-focus
-        dark:border-plumb-darkBorder
-        dark:hover:bg-plumb-dark-surface
-        motion-reduce:transition-none
-      "
-    >
-      <div className="min-w-0">
-        <h3
-          className={`
-            ${styles.text.subheading}
-            truncate font-serif
-          `}
-        >
-          {story?.title || "Untitled"}
-        </h3>
 
-        {story?.status && (
-          <p
-            className={`
-              ${styles.text.metadata}
-              mt-1 uppercase tracking-[0.08em]
-            `}
-          >
-            {formatStatus(story.status)}
-          </p>
-        )}
-      </div>
-
-      <span
-        aria-hidden="true"
-        className="
-          shrink-0 text-xl
-          text-plumb-muted transition-transform
-          group-hover:translate-x-1
-          dark:text-plumb-darkMuted
-          motion-reduce:transform-none
-        "
-      >
-        →
-      </span>
-    </button>
-  );
-}
 
 /*
 |--------------------------------------------------------------------------

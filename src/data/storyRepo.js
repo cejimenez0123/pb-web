@@ -273,17 +273,52 @@ storyUrl = Enviroment.url + "/story";
 // 👇 mount prefix — your error log says "POST /events/save", so the router is at /events
 eventUrl = Enviroment.url + "/events";
 
+  // -----------------------------------------
+  // EVENTS
+  // -----------------------------------------
+
+  eventUrl = Enviroment.url + "/events";
+
+  // Fetch events saved in the current profile's Events collection.
+  async getSavedEvents() {
+    const headers = await this.getAuthHeaders();
+
+    const res = await axios.get(
+      `${this.eventUrl}/save`,
+      { headers }
+    );
+
+    return res.data;
+  }
+
+  // Save an event to the current profile's Events collection.
+  async saveEvent({ event } = {}) {
+    if (!event) {
+      throw new Error("No event provided");
+    }
+
+    const headers = await this.getAuthHeaders();
+
+    const res = await axios.post(
+      `${this.eventUrl}/save`,
+      { event },
+      { headers }
+    );
+
+    return res.data;
+  }
+
 // Save a single transformed event. Server creates the shared story on first-ever
 // save (authored by plumbumofficial) and links it into THIS profile's events collection.
-async saveEvent({ event } = {}) {
-  const headers = await this.getAuthHeaders();
-  const res = await axios.post(
-    Enviroment.url + "/events/save",
-    { event },
-    { headers }
-  );
-  return res.data; // { story, created, linked, alreadySaved }
+// async saveEvent({ event } = {}) {
+//   const headers = await this.getAuthHeaders();
+//   const res = await axios.post(
+//     Enviroment.url + "/events/save",
+//     { event },
+//     { headers }
+//   );
+//   return res.data; // { story, created, linked, alreadySaved }
 
-}
+// }
 }
 export default new StoryRepo()

@@ -2,8 +2,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { useState, useEffect, useMemo } from "react";
 import { getPublicStories } from "../actions/PageActions.jsx";
 import { getPublicCollections } from "../actions/CollectionActions.js";
-import { getPublicLibraries } from "../actions/LibraryActions.jsx";
-import checkResult from "../core/checkResult.js";
 import { BookListItem } from "../components/collection/BookListItem.jsx";
 
 import ScrollDownButton from "../components/ScrollDownButton.jsx";
@@ -15,6 +13,7 @@ import { IonContent, useIonRouter } from "@ionic/react";
 import styles from "../styles/style.js";
 import SectionHeader from "../components/pieces/SectionHeader.jsx";
 import StoryCard from "../components/lovehome/StoryCard.jsx";
+import { getPublicLibraries } from "../actions/LibraryActions.jsx";
 
 
 
@@ -30,26 +29,29 @@ function shuffle(items = []) {
 function DiscoveryContainer() {
 
 
-  const currentProfile = useSelector(
-    (state) => state.users.currentProfile
-  );
+
 
   const router = useIonRouter();
   const dispatch = useDispatch();
 
-  const {
-    collections: cols,
-    books,
-    libraries,
-    pagesInView,
-  } = useSelector((state) => ({
-    collections: state.books.collections || [],
-    books: state.books.books || [],
-    libraries: state.books.libraries || [],
-    pagesInView: state.pages.pagesInView || [],
-  }));
+const cols = useSelector(
+  (state) => state.books.collections ?? EMPTY_ARRAY
+);
 
-  // const [search, setSearch] = useState("");
+const books = useSelector(
+  (state) => state.books.books ?? EMPTY_ARRAY
+);
+
+const libraries = useSelector(
+  (state) => state.books.libraries ?? EMPTY_ARRAY
+);
+
+const pagesInView = useSelector(
+  (state) => state.pages.pagesInView ?? EMPTY_ARRAY
+);
+const currentProfile = useSelector((state)=>state.users.currentProfile)
+
+
   const [shelfKey, setShelfKey] = useState(0);
 
   useScrollTracking({
@@ -58,11 +60,11 @@ function DiscoveryContainer() {
 
 
 
-
-  const fetchContentItems = () => {
-    dispatch(getPublicStories());
-    dispatch(getPublicCollections());
-  };
+const fetchContentItems = () => {
+  dispatch(getPublicStories());
+  dispatch(getPublicCollections());
+  dispatch(getPublicLibraries());
+}
 const fetchFragments=()=>{
 dispatch(
   getPublicStories({
@@ -145,9 +147,7 @@ useEffect(()=>{
     setShelfKey((current) => current + 1);
   };
 
-  const handleClearSearch = () => {
-    setSearch("");
-  };
+
 
   const handleJoin = () => {
     router.push(Paths.onboard);

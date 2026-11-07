@@ -162,7 +162,7 @@ dark:bg-transparent
       dark:bg-plumb-dark-elevated
     `,
           elevated: " p-3 "+shared.surface.elevated,
-      head:"max-w-3xl mx-auto  w-[100%]",
+      head:"max-w-3xl mx-auto mt-8 w-[100%]",
       headInner:"px-2",
 body:"max-w-3xl mx-auto px-2  w-[100%]",
     content:[" max-w-3xl  flex"].join(" "),
@@ -180,11 +180,11 @@ body:"max-w-3xl mx-auto px-2  w-[100%]",
 base: [
   "relative font-open-sans" ,
   "flex flex-col",
-   "pt-8 pb-24",
+   "pt-24 pb-24",
   "w-[100%]",
   "min-w-[100%] min-h-[100%]",
   "overflow-hidden",
-  "bg-plumb-surface text-plumb-ink",
+  "bg-plumb-surface  text-plumb-ink",
   "dark:bg-plumb-dark-canvas dark:text-plumb-darkText",
 ].join(" "),
   // Use when the page itself should scroll
@@ -193,7 +193,7 @@ base: [
     "overflow-y-auto"
   ].join(" "),
 
-  topMargin:[""].join(" "),
+  
   padded: [
     "px-4 sm:px-6 lg:px-8",
     "pt-8 pb-24",

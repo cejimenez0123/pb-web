@@ -86,19 +86,12 @@ const PRIMARY_BUTTON =
   `${styles.button.primary} px-6  py-3 ${styles.button.base}`;
 
 
-// =========================================================
-// MAIN
-// =========================================================
 
 export default function EditCollectionContainer() {
   const { id } = useParams();
 
   const router = useIonRouter();
   const dispatch = useDispatch();
-  const [savingContent, setSavingContent] = useState(false);
-const [savingDetails, setSavingDetails] = useState(false);
-const saving = savingDetails||savingContent
-
   const { showAlert } = useAlert();
 
   const {
@@ -107,9 +100,9 @@ const saving = savingDetails||savingContent
     resetDialog,
   } = useDialog();
 
-  // -------------------------------------------------------
+  // =======================================================
   // REDUX
-  // -------------------------------------------------------
+  // =======================================================
 
   const currentProfile = useSelector(
     (state) => state.users.currentProfile
@@ -119,66 +112,43 @@ const saving = savingDetails||savingContent
     (state) => state.books.collectionInView
   );
 
-  // -------------------------------------------------------
-  // STATE
-  // -------------------------------------------------------
+  // =======================================================
+  // LOCAL STATE
+  // =======================================================
 
   const [loading, setLoading] = useState(true);
 
+  const [savingContent, setSavingContent] = useState(false);
+  const [savingDetails, setSavingDetails] = useState(false);
+
+  const saving = savingContent || savingDetails;
 
   const [title, setTitle] = useState("");
   const [purpose, setPurpose] = useState("");
 
   const [isPrivate, setIsPrivate] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
-
   const [followersAre, setFollowersAre] = useState(
     RoleType.commenter
   );
 
   const [content, setContent] = useState([]);
+  const [removedItems, setRemovedItems] = useState([]);
 
   const [search, setSearch] = useState("");
   const [openHashtag, setOpenHashtag] = useState(false);
-  const [removedItems, setRemovedItems] = useState([]);
-const handleRemoveContent = (item) => {
-  setContent((current) =>
-    current.filter((entry) => entry.id !== item.id)
-  );
 
-  setRemovedItems((current) => [
-    ...current,
-    item,
-  ]);
-};
-const handleUndoRemove = (item) => {
-  setContent((current) => {
-    if (current.some((entry) => entry.id === item.id)) {
-      return current;
-    }
-
-    return [...current, item].sort(
-      (a, b) =>
-        (a.index ?? Number.MAX_SAFE_INTEGER) -
-        (b.index ?? Number.MAX_SAFE_INTEGER)
-    );
-  });
-
-  setRemovedItems((current) =>
-    current.filter((entry) => entry.id !== item.id)
-  );
-};
-  // -------------------------------------------------------
+  // =======================================================
   // COLLECTION MATCH
-  // -------------------------------------------------------
+  // =======================================================
 
   const collectionMatchesRoute =
     Boolean(colInView?.id) &&
     String(colInView.id) === String(id);
 
-  // -------------------------------------------------------
+  // =======================================================
   // PERMISSIONS
-  // -------------------------------------------------------
+  // =======================================================
 
   const {
     canSee,
@@ -222,7 +192,7 @@ const handleUndoRemove = (item) => {
 
     let cancelled = false;
 
-    async function loadCollection() {
+    const loadCollection = async () => {
       setLoading(true);
 
       try {
@@ -267,7 +237,7 @@ const handleUndoRemove = (item) => {
           type: AlertType.error,
         });
       }
-    }
+    };
 
     loadCollection();
 
@@ -286,42 +256,36 @@ const handleUndoRemove = (item) => {
     setTitle(colInView.title ?? "");
     setPurpose(colInView.purpose ?? "");
 
-    setIsPrivate(
-      colInView.isPrivate ?? true
-    );
-
-    setIsOpen(
-      colInView.isOpenCollaboration ?? false
-    );
+    setIsPrivate(colInView.isPrivate ?? true);
+    setIsOpen(colInView.isOpenCollaboration ?? false);
 
     setFollowersAre(
-      colInView.followersAre ??
-      RoleType.commenter
+      colInView.followersAre ?? RoleType.commenter
     );
 
-    const pages = (
-      colInView.storyIdList ?? []
-    )
-      .map((stc, index) => {
-        if (!stc?.story) return null;
+    const pages = (colInView.storyIdList ?? [])
+      .map((relationship, index) => {
+        if (!relationship?.story) return null;
 
         return new StoryToCollection(
-          stc.id,
-          stc.index ?? index,
-          stc.collectionId || colInView.id,
-          stc.story,
+          relationship.id,
+          relationship.index ?? index,
+          relationship.collectionId || colInView.id,
+          relationship.story,
           currentProfile
         );
       })
-      .filter(Boolean);
+      .filter(Boolean)
+      .map((item) => ({
+        ...item,
+        kind: "page",
+      }));
 
     const childCollections = (
       colInView.childCollections ?? []
     )
       .map((relationship, index) => {
-        if (!relationship?.childCollection) {
-          return null;
-        }
+        if (!relationship?.childCollection) return null;
 
         return new CollectionToCollection(
           relationship.id,
@@ -331,29 +295,116 @@ const handleUndoRemove = (item) => {
           currentProfile
         );
       })
-      .filter(Boolean);
-
-    setContent([
-      ...pages.map((item) => ({
-        ...item,
-        kind: "page",
-      })),
-
-      ...childCollections.map((item) => ({
+      .filter(Boolean)
+      .map((item) => ({
         ...item,
         kind: "room",
-      })),
+      }));
+
+    const combinedContent = [
+      ...pages,
+      ...childCollections,
     ].sort(
       (a, b) =>
         (a.index ?? Number.MAX_SAFE_INTEGER) -
         (b.index ?? Number.MAX_SAFE_INTEGER)
-    ));
+    );
 
+    setContent(combinedContent);
+    setRemovedItems([]);
   }, [
     collectionMatchesRoute,
     colInView?.id,
     currentProfile?.id,
   ]);
+
+  // =======================================================
+  // REMOVE CONTENT
+  // =======================================================
+
+  const handleRemoveContent = (item) => {
+    const existingItem = content.find(
+      (entry) => entry.id === item.id
+    );
+
+    if (!existingItem) return;
+
+    const originalIndex = content.indexOf(existingItem);
+
+    setRemovedItems((current) => [
+      ...current.filter(
+        (entry) => entry.id !== item.id
+      ),
+      {
+        ...existingItem,
+        index: originalIndex,
+      },
+    ]);
+
+    setContent((current) =>
+      current.filter(
+        (entry) => entry.id !== item.id
+      )
+    );
+  };
+
+  // =======================================================
+  // UNDO ONE REMOVAL
+  // =======================================================
+
+  const handleUndoRemove = (item) => {
+    setContent((current) => {
+      if (
+        current.some(
+          (entry) => entry.id === item.id
+        )
+      ) {
+        return current;
+      }
+
+      return [...current, item].sort(
+        (a, b) =>
+          (a.index ?? Number.MAX_SAFE_INTEGER) -
+          (b.index ?? Number.MAX_SAFE_INTEGER)
+      );
+    });
+
+    setRemovedItems((current) =>
+      current.filter(
+        (entry) => entry.id !== item.id
+      )
+    );
+  };
+
+  // =======================================================
+  // UNDO ALL REMOVALS
+  // =======================================================
+
+  const handleUndoAll = () => {
+    const itemsToRestore = [...removedItems];
+
+    setContent((current) => {
+      const restored = [...current];
+
+      itemsToRestore.forEach((item) => {
+        if (
+          !restored.some(
+            (entry) => entry.id === item.id
+          )
+        ) {
+          restored.push(item);
+        }
+      });
+
+      return restored.sort(
+        (a, b) =>
+          (a.index ?? Number.MAX_SAFE_INTEGER) -
+          (b.index ?? Number.MAX_SAFE_INTEGER)
+      );
+    });
+
+    setRemovedItems([]);
+  };
 
   // =======================================================
   // FILTER CONTENT
@@ -390,10 +441,9 @@ const handleUndoRemove = (item) => {
     }
 
     setSavingDetails(true);
-try{
-  // colInView
-    
-  const result = await dispatch(
+
+    try {
+      const result = await dispatch(
         patchCollectionDetails({
           id,
           title: title.trim(),
@@ -425,12 +475,11 @@ try{
           showAlert({
             message:
               error?.message ||
-              "Unable to update Room details.",
+              "Unable to update room details.",
             type: AlertType.error,
           });
         }
       );
-
     } catch (error) {
       showAlert({
         message:
@@ -441,8 +490,8 @@ try{
     } finally {
       setSavingDetails(false);
     }
-  
-  }
+  };
+
   // =======================================================
   // SAVE ROOM CONTENT
   // =======================================================
@@ -494,27 +543,33 @@ try{
         }
       });
 
+      const result = await dispatch(
+        patchCollectionContent({
+          id,
+          storyToCol,
+          colToCol,
+        })
+      );
 
-const result = await dispatch(patchCollectionContent({id:id,storyToCol:storyToCol,colToCol}))
       checkResult(
         result,
-       (payload) => {
-  if (payload?.collection) {
-    dispatch(
-      updatePaginatedItem({
-        key: "collections",
-        item: payload.collection,
-      })
-    );
-  }
+        (payload) => {
+          if (payload?.collection) {
+            dispatch(
+              updatePaginatedItem({
+                key: "collections",
+                item: payload.collection,
+              })
+            );
+          }
 
-  setRemovedItems([]);
+          setRemovedItems([]);
 
-  showAlert({
-    message: "Room contents updated.",
-    type: AlertType.success,
-  });
-},
+          showAlert({
+            message: "Room contents updated.",
+            type: AlertType.success,
+          });
+        },
         (error) => {
           showAlert({
             message:
@@ -524,7 +579,6 @@ const result = await dispatch(patchCollectionContent({id:id,storyToCol:storyToCo
           });
         }
       );
-
     } catch (error) {
       showAlert({
         message:
@@ -597,7 +651,6 @@ const result = await dispatch(patchCollectionContent({id:id,storyToCol:storyToCo
               );
 
               resetDialog();
-
               router.push(Paths.myProfile);
             },
             (error) => {
@@ -609,7 +662,6 @@ const result = await dispatch(patchCollectionContent({id:id,storyToCol:storyToCo
               });
             }
           );
-
         } catch (error) {
           showAlert({
             message:
@@ -626,10 +678,7 @@ const result = await dispatch(patchCollectionContent({id:id,storyToCol:storyToCo
     });
   };
 
-  // =======================================================
-  // SINGLE PAGE / SINGLE IONCONTENT
-  // =======================================================
-
+  // Your existing JSX return starts here:
   return (
           <IonContent
         fullscreen={true}
@@ -714,7 +763,13 @@ const result = await dispatch(patchCollectionContent({id:id,storyToCol:storyToCo
             
 
            
-                  <secion className={"  mx-auto "+styles.pageShell.header+""+styles.pageShell.body}>
+                 <section
+  className={[
+    "mx-auto",
+    styles.pageShell.header,
+    styles.pageShell.body,
+  ].filter(Boolean).join(" ")}
+>
                   <h1
                     className="
                       font-serif
@@ -764,7 +819,7 @@ const result = await dispatch(patchCollectionContent({id:id,storyToCol:storyToCo
   </div>
           
 </section>
-     </secion>
+     </section>
 
   
     
@@ -848,7 +903,7 @@ const result = await dispatch(patchCollectionContent({id:id,storyToCol:storyToCo
                       what followers can do.
                     </p>
    
-                    <SettingRow
+                                    <SettingRow
                       title={
                         isPrivate
                           ? "Private room"
@@ -860,7 +915,7 @@ const result = await dispatch(patchCollectionContent({id:id,storyToCol:storyToCo
                           : "Anyone can discover and enter this room."
                       }
                       action={
-                        <button
+                        <div
                           type="button"
                           onClick={() =>
                             setIsPrivate((value) => !value)
@@ -872,11 +927,11 @@ const result = await dispatch(patchCollectionContent({id:id,storyToCol:storyToCo
                           }
                         >
                           {isPrivate ? "Private" : "Public"}
-                        </button>
+                        </div>
                       }
                     />
 
-                    <SettingRow
+                                    <SettingRow
                       title={
                         isOpen
                           ? "Open collaboration"
@@ -888,7 +943,7 @@ const result = await dispatch(patchCollectionContent({id:id,storyToCol:storyToCo
                           : "Participation is limited to people you give access to."
                       }
                       action={
-                        <button
+                        <div
                           type="button"
                           onClick={() =>
                             setIsOpen((value) => !value)
@@ -900,11 +955,11 @@ const result = await dispatch(patchCollectionContent({id:id,storyToCol:storyToCo
                           }
                         >
                           {isOpen ? "Open" : "Closed"}
-                        </button>
+                        </div>
                       }
                     />
 
-                    <SettingRow
+                                     <SettingRow
                       title="Follower role"
                       description="The role given when someone follows this room."
                       action={
@@ -1032,15 +1087,15 @@ buttonClass={"bg-transparent border-plumb-mint/70 text-plumb-mint/70"}
                  
 
                   <div className="p-5 sm:p-6">
-
-                    <SortableList
-                    removedItems={removedItems}
-                      items={filteredContent}
-                      isFiltered={search.trim().length > 0}
-                      onOrderChange={setContent}
-                      onDelete={handleRemoveContent}
-                
-                    />
+<SortableList
+  items={filteredContent}
+  removedItems={removedItems}
+  isFiltered={search.trim().length > 0}
+  onOrderChange={setContent}
+  onDelete={handleRemoveContent}
+  onUndoAll={handleUndoAll}
+  onUndoRemove={handleUndoRemove}
+/>
 
                   </div>
    </section>
@@ -1079,7 +1134,7 @@ buttonClass={"bg-transparent border-plumb-mint/70 text-plumb-mint/70"}
 
           </IonContent>)
   
-}
+
     {/* <button
                     type="button"
                     onClick={handleSave}
@@ -1122,9 +1177,7 @@ function SettingRow({
           gap-4
         "
       >
-
-        <div className="min-w-0">
-
+        <div className="min-w-0 flex-1">
           <h3 className="text-sm font-medium text-text-primary dark:text-cream">
             {title}
           </h3>
@@ -1132,13 +1185,11 @@ function SettingRow({
           <p className="mt-1 text-sm leading-relaxed text-text-secondary">
             {description}
           </p>
-
         </div>
 
-        <div className="shrink-0">
+        <div className="flex w-full shrink-0 justify-start sm:w-[120px] sm:justify-end">
           {action}
         </div>
-
       </div>
     </div>
   );
@@ -1257,4 +1308,5 @@ function formatRoomType(type) {
         char.toUpperCase()
       )
   );
+}
 }

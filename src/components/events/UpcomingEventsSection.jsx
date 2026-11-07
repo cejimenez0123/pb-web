@@ -1,9 +1,204 @@
+// import SectionHeader from "../pieces/SectionHeader";
+// import EmptyState from "../general/EmptyState";
+// import shortName from "../../core/shortName";
+// import { useMemo } from "react";
+
+// export default function UpcomingEventsSection({
+//   events = [],
+//   currentProfile,
+//   onViewEvents,
+// }) {
+// console.log(events)
+//   return (
+//     <section className="mt-14" aria-label="Upcoming events">
+//       <SectionHeader
+//         eyebrow="For you"
+//         title="Something happening"
+//         actionLabel="See all events ↗"
+//         onAction={onViewEvents}
+//           buttonClass={" dark:bg-transparent text-lg  border-1 border border-plumb-mintLight/20 rounded-full bg-plumb-mintLight/20 text-plumb-mint  dark:text-plumb-mintLight"}
+    
+//         // buttonClass={"bg-transparent text-plumb-blueSea border font-open-sans text-lg border-plumb-surface rounded-full"}
+//       />
+
+//       <div className="mt-6">
+//         {events.length > 0 ? (
+//           <div className="space-y-3">
+//             {events.map((event) => {
+//               console.log("Full event:", event);
+// console.log("Available fields:", Object.keys(event));
+//               return(
+
+//               <article
+             
+//   key={event.id}
+//                 className="
+//                   rounded-2xl
+//                   border border-card-border
+//                   bg-plumb-surface
+//                   p-5
+//                   dark:bg-plumb-dark-surface
+//                 "
+//               >
+//                 <div className="flex items-start justify-between gap-4">
+//                   <div className="min-w-0">
+//                     {event.data && (
+//   <span className="shrink-0 text-sm font-medium text-text-secondary">
+//     {toDate(event.start)?.toLocaleTimeString("en-US", {
+//       hour: "numeric",
+//       minute: "2-digit",
+//     })}
+//   </span>
+// )}
+//               {/* <p className="text-xs font-medium uppercase tracking-[0.12em] text-text-brand">
+//   {eventDayLabel(event.start)}
+// </p> */}
+// <p className="text-xs font-medium uppercase tracking-[0.12em] text-text-brand">
+// {eventDayLabel(event.data)}
+// </p>
+//                     <h3 className="mt-1 font-serif text-xl leading-tight text-text-primary dark:text-text-dark">
+//                       {event.title || "Untitled event"}
+//                     </h3>
+//                   </div>
+
+//                   <span className="shrink-0 text-sm font-medium text-text-secondary">
+//                 {extractEventDate(event.data)?.toLocaleTimeString("en-US", {
+//   hour: "numeric",
+//   minute: "2-digit",
+// }) || "Time TBD"}
+//                   </span>
+//                 </div>
+
+//                 {event.location && (
+//                   <p className="mt-4 text-sm leading-relaxed text-text-secondary">
+//                     {event.location}
+//                   </p>
+//                 )}
+
+//                 {event.description && (
+//                   <p className="mt-3 text-sm leading-relaxed text-text-secondary">
+//                     {shortName(event.description, 140)}
+//                   </p>
+//                 )}
+
+//                 {(event.area || event.moreInfoUrl) && (
+//                   <div className="mt-5 flex items-center justify-between">
+//                     {event.area && (
+//                       <span className="text-xs uppercase tracking-wide text-text-secondary">
+//                         {event.area}
+//                       </span>
+//                     )}
+
+//                     {event.moreInfoUrl && (
+//                       <a
+//                         href={event.moreInfoUrl}
+//                         target="_blank"
+//                         rel="noopener noreferrer"
+//                         className="text-sm font-medium text-text-brand hover:opacity-70"
+//                       >
+//                         More info →
+//                       </a>
+//                     )}
+//                   </div>
+//                 )}
+//                 {/*  */}
+//               </article>
+//             )})}
+//             {/*  */}
+//           </div>
+//         ) : (
+//           <EmptyState
+//             title="Quiet calendar."
+//             description="Nothing you've saved is happening today or tomorrow."
+//           />
+//         )}
+//       </div>
+//     </section>
+//   );
+// }
+
+
+
+// function toDate(value) {
+//   if (!value) return null;
+
+//   const date = value instanceof Date
+//     ? value
+//     : new Date(value);
+
+//   return Number.isNaN(date.getTime()) ? null : date;
+// }
+
+// function sameDay(a, b) {
+//   const dateA = toDate(a);
+//   const dateB = toDate(b);
+
+//   if (!dateA || !dateB) return false;
+
+//   return (
+//     dateA.getFullYear() === dateB.getFullYear() &&
+//     dateA.getMonth() === dateB.getMonth() &&
+//     dateA.getDate() === dateB.getDate()
+//   );
+// }
+
+// function extractEventDate(data) {
+//   if (!data) return null;
+
+//   const match = String(data).match(
+//     /<time\b[^>]*\bdatetime=["']([^"']+)["']/i
+//   );
+
+//   if (!match) return null;
+
+//   const value = match[1];
+
+//   // Date-only values should remain local calendar dates.
+//   const dateOnly = value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+
+//   const date = dateOnly
+//     ? new Date(+dateOnly[1], +dateOnly[2] - 1, +dateOnly[3])
+//     : new Date(value);
+
+//   return Number.isNaN(date.getTime()) ? null : date;
+// }
+
+// function sameDay(a, b) {
+//   return (
+//     a.getFullYear() === b.getFullYear() &&
+//     a.getMonth() === b.getMonth() &&
+//     a.getDate() === b.getDate()
+//   );
+// }
+
+// function eventDayLabel(data) {
+//   const date = extractEventDate(data);
+
+//   if (!date) return "Date TBD";
+
+//   const today = new Date();
+
+//   if (sameDay(date, today)) return "Today";
+
+//   const tomorrow = new Date(today);
+//   tomorrow.setDate(tomorrow.getDate() + 1);
+
+//   if (sameDay(date, tomorrow)) return "Tomorrow";
+
+//   return date.toLocaleDateString("en-US", {
+//     weekday: "long",
+//     month: "short",
+//     day: "numeric",
+//   });
+// }
+
 import SectionHeader from "../pieces/SectionHeader";
 import EmptyState from "../general/EmptyState";
 import shortName from "../../core/shortName";
 
 export default function UpcomingEventsSection({
   events = [],
+  currentProfile,
   onViewEvents,
 }) {
   return (
@@ -13,78 +208,92 @@ export default function UpcomingEventsSection({
         title="Something happening"
         actionLabel="See all events ↗"
         onAction={onViewEvents}
-          buttonClass={" dark:bg-transparent text-lg  border-1 border border-plumb-mintLight/20 rounded-full bg-plumb-mintLight/20 text-plumb-mint  dark:text-plumb-mintLight"}
-    
-        // buttonClass={"bg-transparent text-plumb-blueSea border font-open-sans text-lg border-plumb-surface rounded-full"}
+        buttonClass="
+          dark:bg-transparent
+          text-lg
+          border border-plumb-mintLight/20
+          rounded-full
+          bg-plumb-mintLight/20
+          text-plumb-mint
+          dark:text-plumb-mintLight
+        "
       />
 
       <div className="mt-6">
         {events.length > 0 ? (
           <div className="space-y-3">
-            {events.map((event) => (
-              <article
-                key={event.storyId}
-                className="
-                  rounded-2xl
-                  border border-card-border
-                  bg-plumb-surface
-                  p-5
-                  dark:bg-plumb-dark-surface
-                "
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <div className="min-w-0">
-                    <p className="text-xs font-medium uppercase tracking-[0.12em] text-text-brand">
-                      {eventDayLabel(event.start)}
+            {events.map((event) => {
+              const eventDate = extractEventDate(event.data);
+              const eventTime = formatEventTime(eventDate);
+              const metadata = extractEventMetadata(event.data);
+
+              const location = event.location || metadata.location;
+              const area = event.area || metadata.area;
+              const moreInfoUrl =
+                event.moreInfoUrl || metadata.moreInfoUrl;
+
+              return (
+                <article
+                  key={event.id}
+                  className="
+                    rounded-2xl
+                    border border-card-border
+                    bg-plumb-surface
+                    p-5
+                    dark:bg-plumb-dark-surface
+                  "
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="min-w-0">
+                      <p className="text-xs font-medium uppercase tracking-[0.12em] text-text-brand">
+                        {eventDayLabel(eventDate)}
+                      </p>
+
+                      <h3 className="mt-1 font-serif text-xl leading-tight text-text-primary dark:text-text-dark">
+                        {event.title || "Untitled event"}
+                      </h3>
+                    </div>
+
+                    <span className="shrink-0 text-sm font-medium text-text-secondary">
+                      {eventTime || "Time TBD"}
+                    </span>
+                  </div>
+
+                  {location && (
+                    <p className="mt-4 text-sm leading-relaxed text-text-secondary">
+                      {location}
                     </p>
+                  )}
 
-                    <h3 className="mt-1 font-serif text-xl leading-tight text-text-primary dark:text-text-dark">
-                      {event.title || "Untitled event"}
-                    </h3>
-                  </div>
+                  {event.description && (
+                    <p className="mt-3 text-sm leading-relaxed text-text-secondary">
+                      {shortName(event.description, 140)}
+                    </p>
+                  )}
 
-                  <span className="shrink-0 text-sm font-medium text-text-secondary">
-                    {new Date(event.start).toLocaleTimeString("en-US", {
-                      hour: "numeric",
-                      minute: "2-digit",
-                    })}
-                  </span>
-                </div>
+                  {(area || moreInfoUrl) && (
+                    <div className="mt-5 flex items-center justify-between gap-3">
+                      {area && (
+                        <span className="text-xs uppercase tracking-wide text-text-secondary">
+                          {area}
+                        </span>
+                      )}
 
-                {event.location && (
-                  <p className="mt-4 text-sm leading-relaxed text-text-secondary">
-                    {event.location}
-                  </p>
-                )}
-
-                {event.description && (
-                  <p className="mt-3 text-sm leading-relaxed text-text-secondary">
-                    {shortName(event.description, 140)}
-                  </p>
-                )}
-
-                {(event.area || event.moreInfoUrl) && (
-                  <div className="mt-5 flex items-center justify-between">
-                    {event.area && (
-                      <span className="text-xs uppercase tracking-wide text-text-secondary">
-                        {event.area}
-                      </span>
-                    )}
-
-                    {event.moreInfoUrl && (
-                      <a
-                        href={event.moreInfoUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-sm font-medium text-text-brand hover:opacity-70"
-                      >
-                        More info →
-                      </a>
-                    )}
-                  </div>
-                )}
-              </article>
-            ))}
+                      {moreInfoUrl && (
+                        <a
+                          href={moreInfoUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-sm font-medium text-text-brand hover:opacity-70"
+                        >
+                          More info →
+                        </a>
+                      )}
+                    </div>
+                  )}
+                </article>
+              );
+            })}
           </div>
         ) : (
           <EmptyState
@@ -97,12 +306,76 @@ export default function UpcomingEventsSection({
   );
 }
 
-function eventDayLabel(date) {
+/* --------------------------------
+   Date helpers
+--------------------------------- */
+
+// Accepts a Date or date string.
+function toDate(value) {
+  if (!value) return null;
+
+  const date = value instanceof Date
+    ? value
+    : new Date(value);
+
+  return Number.isNaN(date.getTime()) ? null : date;
+}
+
+// Extracts the date from the HTML stored in Story.data.
+function extractEventDate(data) {
+  if (!data) return null;
+
+  const match = String(data).match(
+    /<time\b[^>]*\bdatetime=["']([^"']+)["']/i
+  );
+
+  if (!match) return null;
+
+  const value = match[1].trim();
+
+  // A date-only value should not be shifted by timezone conversion.
+  const dateOnly = value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+
+  if (dateOnly) {
+    const [, year, month, day] = dateOnly;
+
+    const date = new Date(
+      Number(year),
+      Number(month) - 1,
+      Number(day)
+    );
+
+    return Number.isNaN(date.getTime()) ? null : date;
+  }
+
+  return toDate(value);
+}
+
+// Compares local calendar days.
+function sameDay(a, b) {
+  const dateA = toDate(a);
+  const dateB = toDate(b);
+
+  if (!dateA || !dateB) return false;
+
+  return (
+    dateA.getFullYear() === dateB.getFullYear() &&
+    dateA.getMonth() === dateB.getMonth() &&
+    dateA.getDate() === dateB.getDate()
+  );
+}
+
+// Returns Today, Tomorrow, or the formatted event date.
+function eventDayLabel(value) {
+  const date = toDate(value);
+
+  if (!date) return "Date TBD";
+
   const today = new Date();
 
   if (sameDay(date, today)) return "Today";
 
-  const tomorrow = new Date();
+  const tomorrow = new Date(today);
   tomorrow.setDate(tomorrow.getDate() + 1);
 
   if (sameDay(date, tomorrow)) return "Tomorrow";
@@ -114,10 +387,54 @@ function eventDayLabel(date) {
   });
 }
 
-function sameDay(a, b) {
-  return (
-    a.getFullYear() === b.getFullYear() &&
-    a.getMonth() === b.getMonth() &&
-    a.getDate() === b.getDate()
+// Formats the event's local time.
+function formatEventTime(date) {
+  if (!date) return null;
+
+  return date.toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+  });
+}
+
+/* --------------------------------
+   Event HTML metadata helpers
+--------------------------------- */
+
+// Extracts location, area, and organizer link
+// from the HTML stored in Story.data.
+function extractEventMetadata(data) {
+  const result = {
+    location: "",
+    area: "",
+    moreInfoUrl: "",
+  };
+
+  if (!data) return result;
+
+  const html = String(data);
+
+  const getText = (label) => {
+    const escaped = label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+    const match = html.match(
+      new RegExp(
+        `<li>\\s*<strong>${escaped}:<\\/strong>\\s*([^<]+)`,
+        "i"
+      )
+    );
+
+    return match?.[1]?.trim() || "";
+  };
+
+  result.location = getText("Where");
+  result.area = getText("Area");
+
+  const linkMatch = html.match(
+    /<a\b[^>]*href=["']([^"']+)["'][^>]*>\s*More info\s*<\/a>/i
   );
+
+  result.moreInfoUrl = linkMatch?.[1] || "";
+
+  return result;
 }

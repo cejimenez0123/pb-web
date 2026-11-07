@@ -14,6 +14,7 @@ import {
 
 import Paths from "../../core/paths.js";
 import checkResult from "../../core/checkResult.js";
+import formatStatus from "../core/formatStatus.jsx";
 
 
 /*
@@ -1435,20 +1436,3 @@ function getRoomType(
 }
 
 
-function formatStatus(
-  status
-) {
-  const labels = {
-    draft: "Draft",
-    fragment: "Fragment",
-    workshop: "Workshop",
-    finished: "Finished",
-  };
-
-  return (
-    labels[
-      String(status).toLowerCase()
-    ] ||
-    status
-  );
-}

@@ -4,8 +4,9 @@ function FeaturedEventSection({
   onViewEvents,
   currentProfile,
 }) {
+
   // Keep empty until the Home event data source is connected.
-  const upcomingEvents = EMPTY_ARRAY;
+  const upcomingEvents =currentProfile.profileToCollections.find(c=>c.type=="events").collection.storyIdList??EMPTY_ARRAY
 
   return (
     <section
@@ -14,7 +15,7 @@ function FeaturedEventSection({
     >
       <UpcomingEventsSection
         profile={currentProfile}
-        events={upcomingEvents}
+        events={upcomingEvents.map(t=>t.story)}
         onViewEvents={onViewEvents}
       />
     </section>

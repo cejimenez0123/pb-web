@@ -40,10 +40,10 @@ export const useDialog = () => {
           onClose: data.onClose ?? null,
 
           breakpoint:
-            data.breakpoint ?? 0.25,
+            data.breakpoint ?? 0.1,
         })
       );
-      closeDialog()
+    
     },
     [dispatch]
   );

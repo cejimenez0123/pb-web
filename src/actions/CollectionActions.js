@@ -511,7 +511,36 @@ const getRoomRecommendations = createAsyncThunk(
     }
   }
 );
+
+
+const fetchSavedEvents = createAsyncThunk(
+  "events/fetchSavedEvents",
+  async (_, { rejectWithValue }) => {
+    try {
+      return await storyRepo.getSavedEvents();
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.error || error.message
+      );
+    }
+  }
+);
+
+const saveEvent = createAsyncThunk(
+  "events/saveEvent",
+  async ({ event }, { rejectWithValue }) => {
+    try {
+      return await storyRepo.saveEvent({ event });
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.error || error.message
+      );
+    }
+  }
+);
 export {
+  fetchSavedEvents,
+  saveEvent,
     getPublicBooks,
     saveRoleToCollection,
     getPublicCollections,
@@ -523,7 +552,6 @@ export {
     getProtectCollectionStories,
     getCollectionRecommendations,
     getProfileRecommendations,
-
     fetchCollection,
     fetchCollectionProtected,
     setCollectionInView,

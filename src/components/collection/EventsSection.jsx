@@ -25,17 +25,7 @@ export default function EventsSection({
   return (
     <section>
       <div
-        // className="
-        //   flex
-        //   flex-col
-        //   gap-5
-        //   border-b
-        //   border-card-border
-        //   pb-5
-        //   sm:flex-row
-        //   sm:items-end
-        //   sm:justify-between
-        // "
+ 
       >
         <div>
  
@@ -46,6 +36,7 @@ export default function EventsSection({
         <div>
           <h2
             id="archive-heading"
+            onClick={()=>router.push(Paths.collection.createRoute(id))}
             className={styles.profile.mine.sectionTitle}
           >
             Events

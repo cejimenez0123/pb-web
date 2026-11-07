@@ -1,3 +1,4 @@
+import styles from "../../styles/style";
 
 function FeaturedEventCard({ event, onClick }) {
   return (

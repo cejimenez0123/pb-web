@@ -42,7 +42,7 @@ const liClass=" dark:bg-base-bg dark:border-b dark:border-1 dark:border-plumb-su
   const MENU=<svg xmlns="http://www.w3.org/2000/svg" className="my-auto" viewBox="0 0 24 24" height="40px" width="40px" fill="#FFFFFF"><path d="M3,18V16H21v2H3Zm0-5V11H21v2H3ZM3,8V6H21V8H3Z"/></svg>
   return (
     <div className="dropdown dropdown-bottom  dropdown-end items-center flex-shrink-0">
-      <div tabIndex={0} role="button" className="rounded-2xl   dark:border p-1 border-2 dark:border-2 dark:border-plumb-darkText">
+      <div tabIndex={0} role="button" className="rounded-2xl   dark:border p-1 border-2 dark:border-2 bg-plumb-mint dark:bg-transparent dark:border-plumb-mint">
     {MENU}
       </div>
       <ul
