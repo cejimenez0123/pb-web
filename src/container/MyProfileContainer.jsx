@@ -131,7 +131,7 @@ function MyProfileContainer() {
     <IonContent scrollY={true} fullscreen={true}>
       <ErrorBoundary>
    
-            <div className={styles.pageShell.base+" "+styles.pageShell.scroll}>
+            <main className={styles.pageShell.base+" "+styles.pageShell.scroll}>
              <div className={""}>
 <section
   aria-labelledby="my-profile-heading"
@@ -282,7 +282,7 @@ function MyProfileContainer() {
             </div>
           {/* </div>
         </main> */}
-        </div>
+        </main>
       </ErrorBoundary>
     </IonContent>
   );

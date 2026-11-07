@@ -75,7 +75,7 @@ useEffect(() => {
 
   return (
     <IonContent>
-      <main className={styles.pageShell.base}>
+      <main className={[styles.pageShell.base].join(" ")}>
     <WriteLanding
       search={search}
       onSearch={setSearch}

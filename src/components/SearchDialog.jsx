@@ -308,16 +308,14 @@ useEffect(() => {
   return (
     <IonContent
       fullscreen
-      className={styles.search.page}
-      style={{
-        "--background": "transparent",
-      }}
+    
+ 
     >
       <ErrorBoundary>
-        <main className={styles.search.inner}>
+         <main className={[styles.pageShell.base].join(" ")}>
           {/* Search heading and input */}
 
-          <header className={styles.search.header}>
+          <header className={styles.pageShell.head}>
             <h1 className={styles.search.title}>
               Search
             </h1>

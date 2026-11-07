@@ -5,6 +5,7 @@ import validateEmail from "../core/validateEmail";
 import Context from "../context";
 import { IonContent } from "@ionic/react";
 import { useDialog } from "../domain/usecases/useDialog";
+import ErrorBoundary from "../ErrorBoundary";
 
 // ── Layout ───────────────────────────────────────────
 const WRAP  = "max-w-xl mx-auto py-6 px-4 pb-24";
@@ -72,6 +73,8 @@ export default function FeedbackContainer() {
 
   return (
     <IonContent className=" page-content "fullscreen>
+      <ErrorBoundary>
+%  <main className={[styles.pageShell.base].join(" ")}>
       <div className="min-h-full  pb-24">
         <div className={WRAP}>
 
@@ -163,6 +166,8 @@ export default function FeedbackContainer() {
 
         </div>
       </div>
+      </main>
+      </ErrorBoundary>
     </IonContent>
   );
 }

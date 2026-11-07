@@ -13,7 +13,9 @@ export default function UpcomingEventsSection({
         title="Something happening"
         actionLabel="See all events ↗"
         onAction={onViewEvents}
-        buttonClass={"bg-transparent text-plumb-blueSea border font-open-sans text-lg border-plumb-surface rounded-full"}
+          buttonClass={" dark:bg-transparent text-lg  border-1 border border-plumb-mintLight/20 rounded-full bg-plumb-mintLight/20 text-plumb-mint  dark:text-plumb-mintLight"}
+    
+        // buttonClass={"bg-transparent text-plumb-blueSea border font-open-sans text-lg border-plumb-surface rounded-full"}
       />
 
       <div className="mt-6">

@@ -5,6 +5,7 @@ import { IonContent, useIonRouter } from "@ionic/react";
 import CalendarEmbed from "../components/CalendarEmbed";
 import Paths from "../core/paths";
 import styles from "../styles/style";
+import ErrorBoundary from "../ErrorBoundary";
 
 const WRAP = "max-w-3xl mx-auto px-5";
 const PAGE_Y = "pt-12 pb-16";
@@ -19,13 +20,11 @@ export default function CalendarContainer() {
 
   return (
     <IonContent
-      className="
-        page-content
-        bg-plumb-surface
-        dark:bg-plumb-dark-canvas
-      "
+   
       fullscreen={true}
     >
+      <ErrorBoundary>
+       <main className={[styles.pageShell.base].join(" ")}>
       <div className={`${WRAP} ${PAGE_Y}`}>
         <p
           className="
@@ -95,6 +94,8 @@ export default function CalendarContainer() {
 
         <CalendarEmbed />
       </div>
+      </main>
+      </ErrorBoundary>
     </IonContent>
   );
 }

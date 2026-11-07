@@ -18,9 +18,8 @@ export default function AboutContainer() {
 scrollY={true}
 fullscreen={true}
 >
-  <div className="mx-4 pt-16 dark:bg-transparent" >
-     {/* <div  className="bg-transparent">
-     <div  className="bg-transparent"> */}
+ <main className={[styles.pageShell.base].join(" ")}>
+  
       <p className={styles.about.eyebrow+ " dark:bg-transparent"}>
         About
       </p>
@@ -107,10 +106,8 @@ fullscreen={true}
         />
 <AboutLegalFooter />
       </div>
-      {/* </div>
-     
-      </div> */}
-      </div>
+  
+      </main>
     </IonContent>
   );
 }

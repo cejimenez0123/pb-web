@@ -156,7 +156,6 @@ useEffect(()=>{
   return (
     <IonContent 
 
-    // className="page-content">
     >
       <main className={styles.pageShell.base+" "+styles.pageShell.scroll}>
         <div >

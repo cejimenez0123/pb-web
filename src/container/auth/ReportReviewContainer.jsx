@@ -1,12 +1,11 @@
 
-// export default ReportsReviewPage;
+
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { IonContent } from "@ionic/react";
 
 import { useDialog } from "../../domain/usecases/useDialog";
 import { banUser, dismissReports, getBlockEvents, getPendingReports } from "../../actions/ModerationAcitons";
-// NOTE: assumed action names — swap these for whatever you actually name
 
 import ErrorBoundary from "../../ErrorBoundary";
 import { useAlert } from "../../core/useAlert";
@@ -174,6 +173,7 @@ const {
   return (
     <IonContent className="page-content" scrollY={true}>
       <ErrorBoundary>
+           <main className={[styles.pageShell.base].join(" ")}>
         <div className="p-4 max-w-lg mx-auto">
           <h1 className="text-xl font-semibold text-soft mb-4">Moderation</h1>
 
@@ -271,6 +271,7 @@ const {
             </>
           )}
         </div>
+        </main>
       </ErrorBoundary>
     </IonContent>
   );

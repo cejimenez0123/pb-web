@@ -29,9 +29,9 @@ function ContentHubContainer() {
   return (
     <IonContent fullscreen={true} scrollY={true}>
       <ErrorBoundary>
-    
+%  <main className={[styles.pageShell.base].join(" ")}>
         <ContentHubContent />
-     
+     </main>
       </ErrorBoundary>
     </IonContent>
   );
@@ -209,7 +209,7 @@ function ContentHubContent() {
 
   return (
     <div
-    className={styles.pageShell.base}
+   
 
     >
       <div className="mx-auto w-full px-4 pt-14 max-w-5xl">

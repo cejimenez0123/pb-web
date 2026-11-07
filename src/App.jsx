@@ -107,6 +107,7 @@ import WriteContainer from "./components/page/WriteContainer.jsx";
 import AppNavigationChrome from "./components/AppNavigationChrome.jsx";
 import useTermsAcceptance from "./core/useTermsAcceptance.jsx";
 import ContentHubContainer from "./container/ContentHubContainer.jsx";
+import styles from "./styles/style.js";
 
 const CLIENT_ID = import.meta.env.VITE_OAUTH2_CLIENT_ID;
 const IOS_CLIENT_ID = import.meta.env.VITE_IOS_CLIENT_ID;
@@ -118,9 +119,9 @@ setupIonicReact();
 function LoadingPlaceholder() {
   return (
     <IonContent>
-      <div className="flex h-full items-center justify-center">
+       <main className={[styles.pageShell.base].join(" ")}>
         <IonSpinner name="crescent" />
-      </div>
+      </main>
     </IonContent>
   );
 }
