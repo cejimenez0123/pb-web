@@ -49,6 +49,7 @@ import Enviroment from "../../core/Enviroment.js";
 import { useMediaQuery } from "react-responsive";
 import styles from "../../styles/style.js";
 import PageTypeSelector from "../../components/PageTypeSelector.jsx";
+import ErrorBoundary from "../../ErrorBoundary.jsx";
 
 const CONTAINER =
   "mx-auto w-full  max-w-3xl rounded-lg bg-base-bg p-4 shadow-sm md:p-6";
@@ -669,19 +670,7 @@ useEffect(() => {
   /*
    * This can be passed to EditorDiv when it creates a story itself.
    */
-  const createPageAction = useCallback(
-    async (data) => {
-      if (hasCreatedRef.current) return;
-
-      hasCreatedRef.current = true;
-      setIsSaved(false);
-
-      await saveStory({
-        data,
-      });
-    },
-    [saveStory]
-  );
+  
 
   const fetchFiles = useCallback(async () => {
     try {
@@ -1110,13 +1099,10 @@ const openConfirmDeleteDialog = useCallback(() => {
         fullscreen
         className="page-content"
       >
-        <div
-          className="
-            flex min-h-[100dvh] flex-col
-       
-          "
-        >
-          <header className="w-full pt-2 md:pt-4">
+        <ErrorBoundary>
+     
+<main className={[styles.pageShell.base,styles.pageShell.scroll,styles.pageShell.body].join(" ")}>
+          <header className={styles.pageShell.head}>
             <div
               className="
                 mx-auto flex
@@ -1236,10 +1222,10 @@ const openConfirmDeleteDialog = useCallback(() => {
                 </div>
 
               </div>
-            {/* </div> */}
+       
           </header>
 
-          <main className="w-full  pb-24 pt-2  md:pb-10 md:pt-4">
+          <section className="">
             <div className="mx-auto w-full max-w-3xl">
               <div className={CONTAINER}>
                 <PageTypeSelector
@@ -1270,7 +1256,7 @@ const openConfirmDeleteDialog = useCallback(() => {
                             option.value
                           )
                         }
-                        className={`${styles.button.base} ${styles.button.small} ${
+                        className={`${styles.button.base}  ${styles.button.small} ${
                           isActive
                             ? "ring-2 ring-plumb-mint/40"
                             : "opacity-75"
@@ -1308,8 +1294,10 @@ const openConfirmDeleteDialog = useCallback(() => {
               />
             </div>
             </div>
-          </main>
-        </div>
+          </section>
+     </main>   
+      
+        </ErrorBoundary>
       </IonContent>
     </EditorContext.Provider>
   );

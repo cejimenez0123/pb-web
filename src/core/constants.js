@@ -1,7 +1,7 @@
 const PageType  = {
     text: "html",
     picture:"image",
-    video:"video",
+    // video:"video",
     link:"link"
 }
 

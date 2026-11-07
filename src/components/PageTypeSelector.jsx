@@ -23,16 +23,16 @@ import styles from "../styles/style";
       </>
     ),
   },
-  {
-    value: "video",
-    label: "Video",
-    icon: (
-      <>
-        <rect x="3" y="5" width="18" height="14" rx="3" />
-        <path d="m10 9 5 3-5 3z" />
-      </>
-    ),
-  },
+  // {
+  //   value: "video",
+  //   label: "Video",
+  //   icon: (
+  //     <>
+  //       <rect x="3" y="5" width="18" height="14" rx="3" />
+  //       <path d="m10 9 5 3-5 3z" />
+  //     </>
+  //   ),
+  // },
   {
     value: "link",
     label: "Link",

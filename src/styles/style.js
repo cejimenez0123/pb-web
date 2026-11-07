@@ -221,15 +221,34 @@ hash: {
     flex flex-col gap-3
     min-w-0 w-full
   `,
+    //  group
+    //     w-[100%]
+    //     text-left
+    //     transition-all
+    //     duration-200
+    //     focus:outline-none
+    //     focus:ring-2
+    //     focus:ring-soft/40
+    //     focus:ring-offset-2
+    //     focus:ring-offset-cream
+    //     dark:focus:ring-offset-base-bgDark
 
   card: `
-    relative flex min-w-0 flex-col gap-4
-    rounded-2xl border p-4 sm:p-5
-    bg-plumb-surface
-    border-plumb-mint/20
+    relative flex flex-col gap-4
+    rounded-2xl  p-4 sm:p-5
+  border
+border-1 border-plumb-darkSurface/10
+  
     shadow-sm
-    dark:bg-plumb-dark-surface
-    dark:border-darkMuted/20
+    transition-all
+     duration-200
+
+   
+  focus:ring-2
+    focus:ring-soft/40
+    focus:ring-offset-2
+      focus:ring-offset-cream
+     dark:focus:ring-offset-base-bgDark
     dark:shadow-none
   `,
 

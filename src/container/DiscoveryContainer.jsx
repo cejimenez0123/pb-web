@@ -195,12 +195,13 @@ useEffect(()=>{
               title={"Start somewhere."}
               description={" A few pieces people have intentionally left open."}
               eyebrow={"Open Shelf"}
+              buttonClass={" dark:bg-transparent bg-plumb-blueSea border-plumb-blueSea text-plumb-surface dark:text-plumb-blueSea"}
               onAction={()=>{
  handleLookAgain()
               }}
               actionLabel={"Look again ↗"}/>
                    <div className="mt-7 overflow-hidden">
-                   <div className="flex gap-5 overflow-x-auto pb-4">
+                   <div className="flex gap-5 px-8 min-h-[16.2rem] overflow-x-auto pb-4">
                       {shelfStories.map((book) => {
                         return(
                         <div
@@ -242,7 +243,8 @@ useEffect(()=>{
 
               {/* Rooms */}
               {shelfLibraries.length > 0 && (
-                <section className="mt-20 sm:mt-28">
+                <>
+                {/* // <section className=" sm:mt-28"> */}
                   <div className="flex flex-col gap-5 border-b border-base-content/10 pb-5 sm:flex-row sm:items-end sm:justify-between dark:border-white/10">
                    <SectionHeader eyebrow={"Places to linger"}
                    title={"Find a Room."}
@@ -252,7 +254,7 @@ useEffect(()=>{
                   </div>
 
                   <div className="mt-7 overflow-hidden">
-                    <div className="flex gap-5 overflow-x-auto pb-4">
+                    <div className="flex px-4 gap-5 overflow-x-auto pb-4">
                       {shelfLibraries.map((library) => (
                         <div
                           key={library.id}
@@ -263,7 +265,8 @@ useEffect(()=>{
                       ))}
                     </div>
                   </div>
-                </section>
+                  </>
+                // </section>
               )}
 
               {/* Light invitation */}

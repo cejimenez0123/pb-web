@@ -14,9 +14,7 @@ function OpenWorkSection({
 
   return (
     <section className={`mt-14 ${shared.layout.pagePadding}`}>
-      {/* <SectionHeader
-   
-      /> */}
+  
  
       
    

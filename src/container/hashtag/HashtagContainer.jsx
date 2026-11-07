@@ -47,6 +47,7 @@ import usePaginatedResource from "../../core/usePaginatedResource.jsx";
 
 import grid from "../../images/grid.svg";
 import stream from "../../images/stream.svg";
+import styles from "../../styles/style.js";
 
 
 // ---------------------------------------------------------
@@ -426,27 +427,24 @@ export default function HashtagContainer() {
   // -------------------------------------------------------
   // Main
   // -------------------------------------------------------
-
+const margin = `  
+              border-b
+              border-card-border
+              py-4
+              dark:border-white/10 mb-4
+            `
   return (
     <IonContent
-      fullscreen
-      className="page-content"
+      fullscreen={true}
+      scrollY={true}
+      
     >
       <ErrorBoundary>
-         <main className=" h-[100%]  w-[100%]  overflow-scroll bg-plumb-surface  text-text-primary">
+         <main
+         className={[styles.pageShell.base,styles.pageShell.scroll].join(" ")}
+          // className=" h-[100%]  w-[100%]  overflow-scroll bg-plumb-surface  text-text-primary"
+          >
    
-{/* 
-        <main
-          className="
-            min-h-[100%]
-            overflow-y-scroll
-            overscroll-contain
-            bg-plumb-surface 
-            text-text-primary
-            dark:bg-base-bgDark
-            dark:text-cream
-          "
-        > */}
 
           {/* ================================================= */}
           {/* Hashtag identity */}
@@ -456,7 +454,8 @@ export default function HashtagContainer() {
             className="
               border-b
               border-card-border
-              dark:border-white/10
+              py-4
+              dark:border-white/10 mb-4
             "
           >
             <div
@@ -554,34 +553,19 @@ export default function HashtagContainer() {
 
           {libraries.length > 0 && (
             <section
-              className="
-                border-b
-                border-card-border
-                dark:border-white/10
-              "
+         
             >
-              <div
-                className={`${PAGE} ${SECTION}`}
-              >
-
+           
+<div className={styles.pageShell.body+{margin}}>
                 <SectionHeading
                   eyebrow="Rooms"
                   title="Libraries"
                   description="Larger rooms gathered around this idea."
                 />
-
-                <div
-                  className="
-                    mt-7
-                    flex
-                    gap-4
-                    overflow-x-auto
-                    no-scrollbar
-                    pb-2
-                    -mx-1
-                    px-1
-                  "
-                >
+</div>
+         
+     <div className="mt-7 overflow-hidden">
+                    <div className="flex gap-5 justify-center overflow-x-auto pb-4">
                   {libraries.map((library) => (
                     <div
                       key={library.id}
@@ -596,8 +580,8 @@ export default function HashtagContainer() {
                       />
                     </div>
                   ))}
-                </div>
-
+            
+</div>
               </div>
             </section>
           )}
@@ -608,12 +592,12 @@ export default function HashtagContainer() {
           {/* ================================================= */}
 
           <section
-            className={`${PAGE} ${SECTION}`}
+         
           >
-
+<div className={styles.pageShell.body+{margin}}>
             <SectionHeading
-              eyebrow="Rooms"
-              title="Collections"
+              eyebrow="Tap in"
+              title="Rooms"
               description={
                 regularCollections.length > 0
                   ? "Places writers have intentionally gathered their work."
@@ -621,19 +605,13 @@ export default function HashtagContainer() {
               }
             />
 
-
+</div>
+   <div className="mt-7 overflow-hidden">
+                    <div className="flex gap-5 justify-center overflow-x-auto pb-4">
             {regularCollections.length > 0 ? (
 
-              <div
-                className="
-                  mt-7
-                  grid
-                  grid-cols-1
-                  sm:grid-cols-2
-                  gap-4
-                "
-              >
-                {regularCollections.map(
+  
+                regularCollections.map(
                   (collection) => (
                     <div
                       key={collection.id}
@@ -644,8 +622,7 @@ export default function HashtagContainer() {
                       />
                     </div>
                   )
-                )}
-              </div>
+                )
 
             ) : (
 
@@ -655,6 +632,8 @@ export default function HashtagContainer() {
               />
 
             )}
+                          </div>
+</div>
 
           </section>
 
@@ -664,15 +643,12 @@ export default function HashtagContainer() {
           {/* ================================================= */}
 
           <section
-            className="
-              border-t
-              border-card-border
-              dark:border-white/10
-            "
+         className={styles.pageShell.body+{margin}}
+      
           >
 
             <div
-              className={`${PAGE} ${SECTION}`}
+ 
             >
 
               <div
@@ -731,16 +707,17 @@ export default function HashtagContainer() {
 
               </div>
 
-
+<div className={styles.pageShell.body}>
               {stories.length > 0 ? (
 
                 <div
                   className={`
                     mt-7
-                    ${
-                      isGrid
-                        ? "grid grid-cols-1 sm:grid-cols-2 gap-4"
-                        : "space-y-4"
+                    // ${
+                    //   isGrid
+                    //     ? "grid grid-cols-1 sm:grid-cols-2 gap-4"
+                        // :
+                        "space-y-4"
                     }
                   `}
                 >
@@ -771,7 +748,7 @@ export default function HashtagContainer() {
                 />
 
               )}
-
+</div>
             </div>
 
           </section>
@@ -784,11 +761,11 @@ export default function HashtagContainer() {
           {items?.length > 0 && (
 
             <section
-              className="
-                border-t
-                border-card-border
-                dark:border-white/10
-              "
+              // className="
+              //   border-t
+              //   border-card-border
+              //   dark:border-white/10
+              // "
             >
 
               <div
@@ -980,15 +957,11 @@ function EmptySection({
 function HashtagLoading() {
   return (
     <IonContent
-      fullscreen
-      className="page-content"
+      fullscreen={true}
+      
     >
       <main
-        className="
-          min-h-[100%]
-          bg-plumb-surface 
-          dark:bg-base-bgDark
-        "
+      className={[styles.pageShell.base,styles.pageShell.scroll].join(" ")}
       >
 
         {/* Hero */}
@@ -1001,7 +974,7 @@ function HashtagLoading() {
           "
         >
           <div
-            className={`${PAGE} pt-10 sm:pt-14 pb-10`}
+            className={` pt-10 sm:pt-14 pb-10`}
           >
 
             <div

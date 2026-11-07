@@ -1,3 +1,6 @@
+import truncate from "html-truncate";
+import styles from "../../styles/style";
+
 function StoryCard({
   story,
   view,
@@ -19,61 +22,50 @@ function formatDate(date) {
     year: "numeric",
   }).format(parsed);
 }
+const description =truncate(story.description, Math.floor(300), {
+      ellipsis: "…",
+    })
+
+            // ${
+        //   isGrid
+        //     ? `
+            
+        //       rounded-2xl
+        //       border
+        //       border-plumb-mint/40
+           
+        //       p-6
+        //       sm:p-7
+        //       hover:-translate-y-1
+        //       hover:border-plumb-mint/80
+          
+        //     `
+        //     : `
+        //       rounded-2xl
+        //       border
+        //       border-plumb-mint/30
+        //       bg-cream/45
+        //       px-6
+        //       py-5
+        //       sm:px-7
+        //       hover:border-plumb-mint/80
+        //       hover:bg-base-bg
+        //     `
+        // // }
   return (
     <div
       type="button"
       onClick={() => onSelect(story)}
-      className={`
-        group
-        w-[100%]
-        text-left
-        transition-all
-        duration-200
-        focus:outline-none
-        focus:ring-2
-        focus:ring-soft/40
-        focus:ring-offset-2
-        focus:ring-offset-cream
-        dark:focus:ring-offset-base-bgDark
-
-        ${
-          isGrid
-            ? `
-              min-h-[210px]
-              rounded-2xl
-              border
-              border-plumb-mint/40
-           
-              p-6
-              sm:p-7
-              hover:-translate-y-1
-              hover:border-plumb-mint/80
-          
-            `
-            : `
-              rounded-2xl
-              border
-              border-plumb-mint/30
-              bg-cream/45
-              px-6
-              py-5
-              sm:px-7
-              hover:border-plumb-mint/80
-              hover:bg-base-bg
-            `
-        }
-
-        dark:bg-base-bgDark/40
+      className={styles.hash.card+
+        ` 
+border
+border-1 border-plumb-darkSurface
+justify-between
+        dark:bg-base-bg
         dark:hover:bg-base-bgDark/70
       `}
     >
-      <div
-        className={" "+
-          isGrid
-            ? "flex h-[100%] flex-col justify-between gap-10"
-            : "flex w-[100%] items-center justify-between gap-6"
-        }
-      >
+
         <div className="min-w-0">
           <div className="flex items-center gap-3">
             {story.status && (
@@ -99,40 +91,42 @@ function formatDate(date) {
               text-soft
               dark:text-cream
               ${
-                isGrid
-                  ? "text-[1.45rem] sm:text-[1.6rem]"
-                  : "text-lg sm:text-xl"
+               
+                   "text-lg sm:text-xl"
               }
             `}
           >
             {story.title || "Untitled"}
           </h3>
-
+<div className="       min-h-[8em]">
           {story.description && (
             <p
               className={`
+        
                 mt-2
                 font-serif
                 leading-relaxed
                 text-soft/55
                 dark:text-cream/55
                 ${
-                  isGrid
-                    ? "line-clamp-2 text-sm"
-                    : "hidden max-w-xl text-sm sm:block"
+                  // isGrid
+                  //   ? "line-clamp-2 text-sm"
+                    // : 
+                    "hidden max-w-xl text-sm sm:block"
                 }
               `}
             >
-              {story.description}
+          {description}
+         
             </p>
           )}
+          </div>
         </div>
 
         <div
           className={
-            isGrid
-              ? "flex items-end justify-between"
-              : "flex shrink-0 items-center gap-5"
+           
+               "shrink-0 items-center "
           }
         >
           <span className="text-xs text-soft/45 dark:text-cream/40">
@@ -155,7 +149,7 @@ function formatDate(date) {
             →
           </span>
         </div>
-      </div>
+     
     </div>
   );
 }

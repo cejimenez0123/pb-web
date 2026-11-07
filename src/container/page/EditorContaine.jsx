@@ -27,6 +27,7 @@ import TopBarDropdown from "../../components/page/TopBarDropdown.jsx";
 import EditorFooter from "../../components/page/EditorFooter.jsx";
 import getBackground from "../../core/getbackground.jsx";
 import { useMediaQuery } from "react-responsive";
+import styles from "../../styles/style.js";
 
 
 
@@ -145,7 +146,13 @@ useEffect(() => {
   }
   fetchStory();
 }, [id]);
+const [draftValue, setDraftValue] = useState(
+  parameters?.data || ""
+);
 
+useEffect(() => {
+  setDraftValue(parameters?.data || "");
+}, [parameters?.data]);
   // ── Text autosave: create on first content, then debounce updates ──
   useEffect(() => {
     if (isMediaType && !id) return;
@@ -182,12 +189,18 @@ useEffect(() => {
 
 
   }, [parameters.data, parameters.title, parameters.status, parameters.isPrivate, parameters.commentable, parameters.id]);
+// const hasCreatedRef = useRef()
+  const createPageAction = useCallback(
+  async (data) => {
+    if (hasCreated.current) return null;
 
-  const createPageAction = async (data) => {
+    hasCreated.current = true;
     setIsSaved(false);
-    await saveStory({ data });
-    setIsSaved(true);
-  };
+
+    return await saveStory({ data });
+  },
+  [saveStory]
+);
 
   const setStory = (story) => {
     dispatch(setHtmlContent(story?.data));
@@ -318,7 +331,7 @@ useEffect(() => {
     });
   };
 
-  const handleView = () => router.push(Paths.page.createRoute(effectiveId));
+ 
 
   const handleChange = (key, value) => {
     setParameters((prev) => ({ ...prev, [key]: value }));
@@ -346,23 +359,6 @@ useEffect(() => {
     });
   };
 
-  const openFeedback = (isFeedback) => {
-    openDialog({
-      disagree:closeDialog,
-      disagreeText: "Close",
-      scrollY: false,
-      text: (
-        <FeedbackDialog
-          page={editPage}
-          isFeedback={isFeedback}
-          handleChange={(e) => handleChange("description", e)}
-          handleFeedback={(feedbackDesc) => handleFeedback(feedbackDesc)}
-          handlePostPublic={(desc) => handlePostPublic(desc)}
-          handleClose={() => closeDialog()}
-        />
-      ),
-    });
-  };
 
 
 
@@ -379,7 +375,7 @@ useEffect(() => {
         fullscreen
         className="page-content"
       >
-
+<main className={styles.pageShell.base+" "+styles.pageShell.scroll}></main>
                 <EditorDiv
                     page={editPage}
                     isSaved={isSaved}

@@ -1,7 +1,6 @@
 
-import React, { useState } from "react";
+import { useState } from "react";
 import styles from "../../styles/style";
-import ImportWorkSection from "../page/ImportWorkSection";
 import StoryCard from "./StoryCard";
 import SectionHeader from "../pieces/SectionHeader";
 

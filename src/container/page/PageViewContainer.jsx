@@ -44,7 +44,7 @@ export default function PageViewContainer() {
   const router = useIonRouter();
   const currentProfile = useSelector((state) => state.users.currentProfile);
   const page = useSelector((state) => state.pages.pageInView);
-
+console.log(page)
 const { canSee, canAdd, canEdit } = useMemo(
   () => computePermissions(page, currentProfile, STORY_CONFIG),
   [page, currentProfile]  // ← add page
