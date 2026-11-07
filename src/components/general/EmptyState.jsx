@@ -8,11 +8,11 @@ function EmptyState({
 }) {
   return (
     <div
-    className={styles.pageShell.body}
+    className={styles.pageShell.body+" flex flex-col"}
     //  className={styles.tabs.container+" text-center py-2"}
     >
 
-      <h1      className={styles.tabs.text.heading}
+      <h1      className={styles.tabs.text.heading+" mx-auto"}
   
       >
         {title}
@@ -20,7 +20,8 @@ function EmptyState({
 
       {description && (
         <p
-          className={styles.tabs.text.body}
+        
+          className={styles.tabs.text.body+" mx-auto"}
   
         >
           {description}
@@ -31,10 +32,10 @@ function EmptyState({
         <div
           type="button"
           onClick={onAction}
-          className={styles.button.primary + "  mb-4 px-6 py-3 " +styles.button.base}
+          className={styles.button.accent + "       mx-auto " +styles.button.base}
 
         >
-          {action}
+          <span className="mx-auto my-auto">{action}</span>
         </div>
       )}
     </div>

@@ -61,6 +61,12 @@ elevated: "#fffef5",
 tab: "#8fd8b569",
 // "#d6e3d7ff",
   button: {
+    room: {
+  bg: "#70D9C0",
+  text: "#12261f",
+  hover: "#8BE5D0",
+  glow: "#70D9C0",
+},
       primary: {
         bg: "#40906f",
         text: "#ffffff",

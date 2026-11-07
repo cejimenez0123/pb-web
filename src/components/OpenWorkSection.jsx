@@ -38,6 +38,7 @@ function OpenWorkSection({
           description="Start with a line, a fragment, or whatever is on your mind."
           action="Start writing"
           onAction={onWrite}
+          
         />
       )}
     </section>

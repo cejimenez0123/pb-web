@@ -11,8 +11,9 @@ export default function UpcomingEventsSection({
       <SectionHeader
         eyebrow="For you"
         title="Something happening"
-        actionLabel="See all events"
+        actionLabel="See all events ↗"
         onAction={onViewEvents}
+        buttonClass={"bg-transparent text-plumb-blueSea border font-open-sans text-lg border-plumb-surface rounded-full"}
       />
 
       <div className="mt-6">

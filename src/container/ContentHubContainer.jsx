@@ -291,6 +291,7 @@ function HomeHeader({
           type="button"
           onClick={onWrite}
           className={`
+    
             ${styles.button.base}
             ${styles.button.primary}
             ${styles.button.large}

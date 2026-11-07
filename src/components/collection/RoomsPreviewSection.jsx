@@ -1,3 +1,4 @@
+import styles from "../../styles/style";
 import EmptyState from "../general/EmptyState";
 import SectionHeader from "../pieces/SectionHeader";
 
@@ -15,6 +16,7 @@ function RoomsPreviewSection({
         description="Places to gather the stories, ideas, and things you want to keep close."
         actionLabel="+ Make a room"
         onAction={onViewRooms}
+        buttonClass={" dark:bg-transparent text-lg bg-plumb-button-room-bg/20  border-plumb-button-room-bg/20 text-plumb-mint  dark:text-plumb-mintLight"}
       />
 
       {rooms.length > 0 ? (
