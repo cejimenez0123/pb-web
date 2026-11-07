@@ -95,9 +95,9 @@ const {
      
           aria-label="Main navigation"
         >
-          <DesktopNavItem onClick={handleHome}>
+          {/* <DesktopNavItem onClick={handleHome}>
             Home
-          </DesktopNavItem>
+          </DesktopNavItem> */}
 
           <DesktopNavItem onClick={handleDiscover}>
             Discover

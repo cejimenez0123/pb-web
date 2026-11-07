@@ -1,5 +1,6 @@
 import { useIonRouter } from "@ionic/react";
 import Paths from "../../core/paths";
+import styles from "../../styles/style";
 
 
 function SignInButton({ mobile = false }) {
@@ -11,16 +12,7 @@ function SignInButton({ mobile = false }) {
       onClick={() =>
         router.push(Paths.login, 'forward')
       }
-      className="
-        text-text-secondary
-        hover:text-text-primary
-        transition-colors
-        whitespace-nowrap
-        tracking-[-0.02em]
-           text-[1.2em]
-        bg-transparent
-        
-      "
+          className={styles.navbar.mobileItem}
     >
       Sign in
     </button>
