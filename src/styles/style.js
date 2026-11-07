@@ -1780,12 +1780,12 @@ menuButton: [
 
     "flex items-center text-[1.2rem]",
 
-    // "text-base",
+
     "leading-none",
     "text-left",
     "tracking-[-0.02em]",
-    "text-plumb-darkText bg-transparent dark:text-plumb-mintLight",
-    // "text-plumb-mintLight bg-transparent",
+    "text-plumb-darkText bg-transparent dark:text-plumb-surface",
+
     "transition-colors duration-150",
     "hover:bg-white/10",
     "hover:text-white",

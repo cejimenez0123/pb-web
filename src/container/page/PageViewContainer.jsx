@@ -14,6 +14,7 @@ import useScrollTracking from "../../core/useScrollTracking.jsx";
 import checkResult from "../../core/checkResult.js";
 
 import computePermissions from "../../core/compusePermissions.jsx";
+import styles from "../../styles/style.js";
 
 // ── Module level — stable references, never recreated ─────────────────────────
 const EMPTY_COMMENTS = [];
@@ -29,12 +30,17 @@ const STORY_CONFIG = {
 };
 
 // Layout
-const WRAP    = "max-w-[50em] mx-auto px-4";
-const SECTION = "pt-8 sm:pt-10 lg:pt-12";
+const WRAP    = ""
+// ""max-w-[50em] mx-auto px-4";
+const SECTION = ""
+// "pt-8 sm:pt-10 lg:pt-12";
 const BLOCK   = "py-4";
-const HEADING = "text-[1em] font-bold text-plumb-ink dark:text-plumb-darkText px-4 ";
-const CARD    = ["bg-[#f4f4e0] dark:bg-slate-900", "rounded-xl shadow-sm", "transition-colors duration-300"].join(" ");
-const FADE    = "transition-opacity duration-500";
+const HEADING = ""
+// "text-[1em] font-bold text-plumb-ink dark:text-plumb-darkText px-4 ";
+const CARD    = ""
+// ["bg-[#f4f4e0] dark:bg-slate-900", "rounded-xl shadow-sm", "transition-colors duration-300"].join(" ");
+const FADE    = ""
+// "transition-opacity duration-500";
 const CENTER  = "text-center mx-auto";
 
 export default function PageViewContainer() {
@@ -164,25 +170,26 @@ const ready = !pending && page && String(page.id) === String(id);
   return (
     <ErrorBoundary>
       <IonContent
-        fullscreen
-        className="ion-padding-bottom page-content"
+        fullscreen={true}
+        scrollY={true}
+   
       >
-        <div
-          className="relative pb-32 min-h-screen bg-[#f4f4e0] dark:bg-slate-950 transition-colors duration-300"
-          style={{ WebkitUserSelect: "text", userSelect: "text" }}
-        >
+        <main className={[styles.pageShell.base,styles.pageShell.scroll].join(" ")}>
+      
+          <section className={styles.pageShell.body}>
           {!ready && <PageViewSkeleton />}
-
-          <div className={`${FADE} ${pending ? "opacity-0 pointer-events-none" : "opacity-100"}`}>
+ {/* className={`${FADE} ${pending ? "opacity-0 pointer-events-none" : "opacity-100"}`} */}
+          <div>
         {ready && (canSee || page.authorId === currentProfile?.id)&& (
-              <div className={WRAP} style={{ WebkitUserSelect: "text", userSelect: "text" }}>
-                <div className={`${CARD} ${BLOCK}`}>
+       
+              <div style={{ WebkitUserSelect: "text", userSelect: "text" }} >
+          
                   <PageViewItem page={page} canEdit={canEdit}  currentProfile={currentProfile} />
                   <div className={SECTION}>
                     <h6 className={HEADING+" "}>Responses</h6>
                   </div>
                   <CommentThread page={page} comments={rootComments} rawComments={comments} />
-                </div>
+             
               </div>
             )}
 
@@ -210,7 +217,9 @@ const ready = !pending && page && String(page.id) === String(id);
               </div>
             )}
           </div>
-        </div>
+          </section>
+   
+        </main>
       </IonContent>
     </ErrorBoundary>
   );

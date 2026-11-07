@@ -36,47 +36,55 @@ const handleMenuClick = (action) => (e) => {
       disagree: null,
     });
   };
-
+const liClass=" dark:bg-base-bg dark:border-b dark:border-1 dark:border-plumb-surface/30 pt-3 pb-2 text-center cursor-pointer"
+        const pLiClass="text-plumb-ink dark:text-plumb-darkText"
   useEffect(() => { checkAccessToken() }, []);
   const MENU=<svg xmlns="http://www.w3.org/2000/svg" className="my-auto" viewBox="0 0 24 24" height="40px" width="40px" fill="#FFFFFF"><path d="M3,18V16H21v2H3Zm0-5V11H21v2H3ZM3,8V6H21V8H3Z"/></svg>
   return (
     <div className="dropdown dropdown-bottom  dropdown-end items-center flex-shrink-0">
-      <div tabIndex={0} role="button" className="rounded-2xl bg-plumb-mint dark:border p-1 border-2 dark:border-2 dark:border-plumb-darkText">
+      <div tabIndex={0} role="button" className="rounded-2xl   dark:border p-1 border-2 dark:border-2 dark:border-plumb-darkText">
     {MENU}
       </div>
       <ul
         tabIndex={0}
-        className="dropdown-content menu  bg-plumb-mint text-center rounded-box shadow-lg z-[10] py-2"
+        className="dropdown-content menu  bg-plumb-paper dark:bg-plumb-dark-surface text-center rounded-box shadow-lg z-[10] py-2"
         style={{ minWidth: "12rem" }}
       >
                 {editPage && (
   <li
-    className="dark:text-plumb-darkText pt-3 pb-2 text-center cursor-pointer"
+  className={liClass}
+    // className="text-plumb-surface pt-3 pb-2 text-center cursor-pointer"
     onClick={handleMenuClick(() =>
    
          openFeedback(false)
        
     )}
   >
-    Share
+   <p className={pLiClass}> Share</p>
   </li>
 )}
-        <li className="dark:text-plumb-darkText pt-3 pb-2 cursor-pointer"
+        <li   
+         className={liClass}
+        // className="dark:text-plumb-surface pt-3 pb-2 text-center cursor-pointer"
           onClick={() => router.push(Paths.addStoryToCollection.story(id))}>
-          Add to Collection
+        <p className={pLiClass}>Add to Collection</p> 
         </li>
         {accessToken && (
-          <li className="dark:text-plumb-darkText pt-3 pb-2 cursor-pointer"
+          <li  
+           className={liClass}
+          //  className="dark:text-plumb-surface dark:bg-transparent dark:border-b dark:border-1 dark:border-plumb-surface pt-3 pb-2 text-center cursor-pointer"
             onClick={() => openGoogleDrive()}>
-            Google Doc Import
+           <p className={pLiClass}>Google Doc Import</p> 
           </li>
         )}
 
     
         {editPage && (
-          <li className="dark:text-plumb-darkText pt-3 pb-2 cursor-pointer"
+          <li 
+           className={liClass}
+          // className="dark:text-plumb-surface pt-3 pb-2 text-center cursor-pointer"
             onClick={() => openRoleFormDialog(parameters.page)}>
-            Manage Access
+            <p className={pLiClass}>Manage Access</p>
           </li>
         )}
       </ul>

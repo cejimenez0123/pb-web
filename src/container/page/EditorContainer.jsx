@@ -118,7 +118,7 @@ function createEmptyParameters({
   const currentProfile = useSelector(
     (state) => state.users.currentProfile
   );
-
+const hasCreatedRef =useRef()
   const {
     editPage,
     pageInView,
@@ -153,7 +153,7 @@ const pageInViewId = pageInView?.id;
   const [accessToken, setAccessToken] = useState(null);
   const [isSaved, setIsSaved] = useState(true);
   const [openHashtag, setOpenHashtag] = useState(false);
-const hasCreatedRef = useRef(false);
+
 const hasLoadedRef = useRef(false);
 const lastSavedRef = useRef(null);
 const activeRequestIdRef = useRef(null);
@@ -1087,6 +1087,35 @@ const openConfirmDeleteDialog = useCallback(() => {
   handleDelete,
   openDialog,
 ]);
+const createPageAction = useCallback(
+  async (data) => {
+    if (hasCreatedRef.current) return null;
+
+    hasCreatedRef.current = true;
+    setIsSaved(false);
+
+    const result = await saveStory({ data });
+
+    // Allow another attempt if creation failed.
+    if (!result) {
+      hasCreatedRef.current = false;
+    }
+
+    return result;
+  },
+  [saveStory]
+);
+//   const createPageAction = useCallback(
+//   async (data) => {
+//     if (hasCreated.current) return null;
+
+//     hasCreated.current = true;
+//     setIsSaved(false);
+
+//     return await saveStory({ data });
+//   },
+//   [saveStory]
+// );
   return (
     <EditorContext.Provider
       value={{
@@ -1256,7 +1285,7 @@ const openConfirmDeleteDialog = useCallback(() => {
                             option.value
                           )
                         }
-                        className={`${styles.button.base}  ${styles.button.small} ${
+                        className={`${styles.button.base} dark:text-plumb-surface  ${styles.button.small} ${
                           isActive
                             ? "ring-2 ring-plumb-mint/40"
                             : "opacity-75"

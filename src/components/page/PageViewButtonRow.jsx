@@ -93,16 +93,16 @@ export default function PageViewButtonRow({
       <div
         type="button"
         onClick={setCommenting}
-       className={styles.button.base
-        +["  dark:border dark:border-1 px-6 py-2 btn  dark:border-plumb-mintLight dark:text-plumb-mintLight",
-    "rounded-full    ",
-  "text-base ",
+       className={[styles.button.base,styles.button.primary].join(" ")}
+//         +["  dark:border dark:border-1 px-6 py-2 btn  dark:border-plumb-mintLight dark:text-plumb-mintLight",
+//     "rounded-full    ",
+//   "text-base ",
   
-  "text-plumb-mint text-bold bg-transparent   ",
+//   "text-plumb-mint text-bold bg-transparent   ",
 
-  "hover:bg-plumb-mint/40",
-].join(" ")
-       }
+//   "hover:bg-plumb-mint/40",
+// ].join(" ")
+      //  }
      
       >
         Comment

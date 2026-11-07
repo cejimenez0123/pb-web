@@ -61,7 +61,7 @@ const dispatch =useDispatch()
   };
 
   const header = () => (
-    <div className="bg-transparent  dark:bg-base-bgDark border-b border-t   py-2  border-base-border dark:border-soft rounded-xl shadow-sm px-4 flex items-start justify-between gap-4">
+    <div className="bg-transparent   border-b border-t   py-2  border-base-border dark:border-soft rounded-xl shadow-sm px-4 flex items-start justify-between gap-4">
       <div className="flex flex-col flex-1 min-w-0">
         <div className="flex items-center gap-3">
           {page?.author && (

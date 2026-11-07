@@ -103,7 +103,7 @@ import OAuthCallback from "./container/page/OauthCallback.jsx";
 import PageViewContainer from "./container/page/PageViewContainer";
 import CollectionsContainer from "./container/collection/CollectionsContainer.jsx";
 import WriteContainer from "./components/page/WriteContainer.jsx";
-import { useDialog } from "./domain/usecases/useDialog.jsx";
+
 import AppNavigationChrome from "./components/AppNavigationChrome.jsx";
 import useTermsAcceptance from "./core/useTermsAcceptance.jsx";
 import ContentHubContainer from "./container/ContentHubContainer.jsx";

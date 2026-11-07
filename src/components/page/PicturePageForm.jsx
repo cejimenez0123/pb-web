@@ -1,243 +1,4 @@
 
-// import {
-//   IonLabel,
-//   IonInput,
-//   IonText,
-//   IonImg,
-//   useIonRouter,
-// } from "@ionic/react";
-// import React, { memo } from "react";
-// import { useState, useContext, useEffect } from "react";
-// import { useParams } from "react-router";
-// import { useSelector, useDispatch } from "react-redux";
-
-// import { PageType } from "../../core/constants";
-// import { setHtmlContent } from "../../actions/PageActions.jsx";
-// import isValidUrl from "../../core/isValidUrl";
-// import LinkPreview from "../LinkPreview";
-// import Context from "../../context";
-// import { uploadPicture } from "../../actions/ProfileActions.jsx";
-// import { Camera, CameraResultType, CameraSource } from "@capacitor/camera";
-// import { Capacitor } from "@capacitor/core";
-
-// export default function PicturePageForm({ handleChange, type, isSaved, setIsSaved, parameters, createPageAction }) {
-//   const page = useSelector((state) => state.pages.editingPage);
-//   const { type: typeOrNull } = useParams();
-//   let path = location.pathname.split("/")
-//   const id = path[path.length-1] !== "edit"
-
-//   const pageType = typeOrNull || type;
-//   const { setError } = useContext(Context);
-//   const dispatch = useDispatch();
-//   const [file, setFile] = useState(null);
-//   const [url, setUrl] = useState(null);
-//   const htmlContent = useSelector(state => state.pages.editorHtmlContent);
-//   const [uploading, setUploading] = useState(false);
-//   const [isUploaded, setIsUploaded] = useState(false);
-//   const isNative = Capacitor.isNativePlatform();
-// const hasContent = !(pageType==PageType.picture && !!(htmlContent?.trim())) || (pageType==PageType.link && !!htmlContent.trim())
-//   const pickImage = async () => {
-//     try {
-//       const image = await Camera.getPhoto({
-//         quality: 80,
-//         resultType: CameraResultType.Uri,
-//         source: CameraSource.Photos,
-//       });
-
-//       let mimeType = image.format;
-//       if (mimeType) mimeType = mimeType.toLowerCase();
-
-//       const isValid = mimeType === "jpeg" || mimeType === "jpg" || mimeType === "png";
-//       if (!isValid) {
-//         setError("Only JPG and PNG images are allowed");
-//         return;
-//       }
-
-//       dispatch(setHtmlContent(image.webPath));
-
-//       if (isNative) {
-//         setFile({ path: image.path, format: mimeType });
-//       } else {
-//         const response = await fetch(image.webPath);
-//         const blob = await response.blob();
-//         if (!["image/jpeg", "image/png"].includes(blob.type)) {
-//           setError("Only JPG and PNG images are allowed");
-//           return;
-//         }
-//         const file = new File([blob], "image.jpg", { type: blob.type });
-//         setFile(file);
-//       }
-//     } catch (err) {
-//       console.error("Image pick error:", err);
-//     }
-//   };
-
-//   const handleInput = (e) => {
-//     const value = e.detail?.value ?? e.target.value;
-//     setUrl(value);
-//     handleChange("data", value);
-//     dispatch(setHtmlContent(value));
-//   };
-
-//   useEffect(() => {
-//     if (type === PageType.link || type === PageType.picture) {
-//       handleChange("data", htmlContent);
-//     }
-//   }, [htmlContent]);
-
-//   const uploadPictureFile = async () => {
-//     if (!file) { setError("No File"); return null; }
-//     try {
-//       const { url } = await dispatch(uploadPicture({ file })).unwrap();
-//       handleChange("data", url);
-//       dispatch(setHtmlContent(url));
-//       return url;
-//     } catch (err) {
-//       console.error("Upload failed", err);
-//       return null;
-//     }
-//   };
-// const handleCreate = async () => {
-//   setUploading(true);
-//   setIsSaved(false);
-//   try {
-//     if (type === PageType.picture) {
-//       let finalUrl = null;
-
-//       // only use parameters.data if it's already a real remote URL
-//       if (parameters.data?.startsWith("http")) {
-//         finalUrl = parameters.data;
-//       } else if (file) {
-//         finalUrl = await uploadPictureFile();
-//       }
-
-//       if (!finalUrl) { setError("No image uploaded"); return; }
-//       await createPageAction(finalUrl);
-//     } else {
-//       await createPageAction(url);
-//     }
-//     setIsUploaded(true);
-//   } finally {
-//     setUploading(false);
-//   }
-// };
-//   // const handleCreate = async () => {
-//   //   setUploading(true);
-//   //   setIsSaved(false);
-//   //   try {
-//   //     if (type === PageType.picture) {
-//   //       let finalUrl = parameters.data;
-//   //       if (!finalUrl && file) {
-//   //         finalUrl = await uploadPictureFile();
-//   //       }
-//   //       if (!finalUrl) { setError("No image uploaded"); return; }
-//   //       await createPageAction(finalUrl);
-//   //     } else {
-//   //       await createPageAction(url);
-//   //     }
-//   //     setHasContent(true);
-//   //     setIsUploaded(true);
-//   //   } finally {
-//   //     setUploading(false);
-//   //   }
-//   // };
-
-//   const handleFileChange = (e) => {
-//     const file = e.target.files?.[0];
-//     if (!file) return;
-//     if (!["image/jpeg", "image/png"].includes(file.type)) {
-//       setError("Only JPG and PNG images are allowed");
-//       return;
-//     }
-//     setFile(file);
-//     const reader = new FileReader();
-//     reader.onload = () => dispatch(setHtmlContent(reader.result));
-//     reader.readAsDataURL(file);
-//   };
-
-//   return (
-//     <div className="flex flex-col w-full max-w-xl mx-auto">
-
-//       {(!isUploaded) && (type === PageType.link || type === PageType.picture) && (
-//         <>
-//           <IonLabel className="text-emerald-700 mb-1">
-//             {type === PageType.link ? "URL" : "Image URL / Upload"}
-//           </IonLabel>
-//           <IonInput
-//             value={htmlContent}
-//             onIonChange={handleInput}
-//             placeholder={type === PageType.link ? "https://example.com" : "Paste image URL"}
-//             className="border border-emerald-300 dark:text-cream text-soft rounded-md px-2 mb-2"
-//             disabled={uploading}
-//           />
-//         </>
-//       )}
-
-//       {(!isUploaded) && type === PageType.picture ? (
-//         isNative ? (
-//           <button onClick={pickImage} className="btn bg-emerald-600 text-white mt-2">
-//             Choose Image
-//           </button>
-//         ) : (
-//           <input
-//             type="file"
-//             accept="image/png, image/jpeg"
-//             onChange={handleFileChange}
-//             className="mb-2 file-input"
-//           />
-//         )
-//       ) : null}
-
-//       {type === PageType.link && parameters.data && !isValidUrl(parameters.data) && (
-//         <IonText className="text-red-500 text-sm mt-1">Invalid URL</IonText>
-//       )}
-
-//       <div className="w-full mt-4">
-//         {!isUploaded && !hasContent && (
-//           <div className="w-full h-[3.5em] rounded-xl bg-gray-100 text-gray-400 flex items-center justify-center text-sm">
-//             Add {type === PageType.link ? "a valid URL" : "an image"} to continue
-//           </div>
-//         )}
-
-// {!id && (type === PageType.link || type === PageType.picture) && (
-//   (type === PageType.link && hasContent) ||
-//   (type === PageType.picture && !hasContent)
-// ) && (
-//   <button
-//     onClick={handleCreate}
-//     disabled={uploading}
-//     className="w-full h-[3.5em] mt-4 rounded-xl bg-emerald-600 text-white font-semibold active:scale-[0.98] disabled:opacity-50 transition"
-//   >
-//     {uploading ? "Uploading..." : "Create"}
-//   </button>
-// )}
-//       </div>
-
-//       <div className="mt-4">
-//         <RenderPreview type={type} src={htmlContent || parameters.data} />
-//       </div>
-//     </div>
-//   );
-// }
-
-// const RenderPreview = memo(({ src, type }) => {
-//   if (!src) return null;
-
-//   if (type === PageType.link) {
-//     return <LinkPreview url={src} />;
-//   }
-
-//   if (type === PageType.picture) {
-//     return (
-//       <div className="mt-4 flex justify-center">
-//         <IonImg src={src} className="rounded-xl max-h-[300px]" />
-//       </div>
-//     );
-//   }
-
-//   return null;
-// });
-
 
 import React, { useContext, useEffect, useState } from "react";
 import { IonInput, IonLabel, IonText, IonImg } from "@ionic/react";
@@ -256,6 +17,9 @@ import {
 } from "@capacitor/camera";
 
 import { Capacitor } from "@capacitor/core";
+import styles from "../../styles/style.js";
+import { useAlert } from "../../core/useAlert.jsx";
+import AlertType from "../../core/AlertType.js";
 
 const ACCEPTED_IMAGE_TYPES = [
   "image/jpeg",
@@ -271,7 +35,8 @@ export default function PicturePageForm({
   createPageAction,
 }) {
   const dispatch = useDispatch();
-  const { setError } = useContext(Context);
+  const {showAlert}=useAlert()
+
 
   const [file, setFile] = useState(null);
   const [filePreview, setFilePreview] = useState(null);
@@ -329,7 +94,7 @@ const handleInput = (event) => {
     if (!selectedFile) return;
 
     if (!ACCEPTED_IMAGE_TYPES.includes(selectedFile.type)) {
-      setError("Only JPG and PNG images are allowed.");
+      showAlert({message:"Only JPG and PNG images are allowed.",type:AlertType.error});
       return;
     }
 
@@ -355,7 +120,8 @@ const handleInput = (event) => {
       });
 
       if (!image.webPath) {
-        setError("Unable to read the selected image.");
+              showAlert({message:"Unable to read the selected image",type:AlertType.error});
+    
         return;
       }
 
@@ -363,7 +129,8 @@ const handleInput = (event) => {
       const blob = await response.blob();
 
       if (!ACCEPTED_IMAGE_TYPES.includes(blob.type)) {
-        setError("Only JPG and PNG images are allowed.");
+         showAlert({message:"Only JPG and PNG images are allowed.",type:AlertType.error});
+ 
         return;
       }
 
@@ -383,7 +150,8 @@ const handleInput = (event) => {
       }
 
       console.error("Image selection failed:", error);
-      setError("Unable to select this image.");
+        showAlert({message:"Unable to select this image.",type:AlertType.error});
+
     }
   };
 
@@ -412,10 +180,9 @@ updateValue(uploadedUrl);
       return uploadedUrl;
     } catch (error) {
       console.error("Image upload failed:", error);
-
-      setError(
-        error?.message || "Unable to upload this image."
-      );
+ showAlert({message:     error?.message || "Unable to upload this image.",type:AlertType.error});
+  
+    
 
       return null;
     }
@@ -438,11 +205,10 @@ updateValue(uploadedUrl);
       }
 
       if (!finalValue || !isValidUrl(finalValue)) {
-        setError(
-          isPicture
+         showAlert({message:      isPicture
             ? "Please upload an image or enter a valid image URL."
-            : "Please enter a valid URL."
-        );
+            : "Please enter a valid URL.",type:AlertType.error});
+     
         if (isExistingPage) {
   if (!file) {
     updateValue(finalValue);
@@ -474,7 +240,8 @@ setIsSaved?.(true);
       // the remote URL to that autosave pipeline.
     } catch (error) {
       console.error("Unable to save media page:", error);
-      setError(error?.message || "Unable to save this page.");
+      showAlert({message:error?.message || "Unable to save this page.",type:AlertType.error});
+ 
     } finally {
       setUploading(false);
     }
@@ -599,30 +366,31 @@ setIsSaved?.(true);
 
       {/* Save/create */}
       {!isExistingPage && (
-        <button
+        <div
           type="button"
           onClick={handleSave}
           disabled={uploading || !hasContent}
-          className="mt-2 h-12 w-full rounded-xl bg-plumb-mint font-semibold text-white transition hover:opacity-90 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
+          className={[styles.button.base,styles.button.primary].join(" ")}
+          // className="mt-2 h-12 w-full rounded-xl bg-plumb-mint font-semibold text-white transition hover:opacity-90 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
         >
           {uploading
             ? file
               ? "Uploading image..."
               : "Creating page..."
             : "Create page"}
-        </button>
+        </div>
       )}
 
 {isExistingPage && (
-  <button
+  <div
     type="button"
     onClick={handleSave}
     disabled={
       uploading ||
       (!file && draftValue.trim() === (parameters?.data || "").trim())
     }
-    className="h-12 w-full rounded-xl bg-plumb-mint font-semibold text-white transition hover:opacity-90 disabled:opacity-50"
-  >
+    className={[styles.button.base,styles.button.primary].join(" ")}
+    >
     {uploading
       ? "Saving..."
       : file
@@ -630,7 +398,7 @@ setIsSaved?.(true);
         : isPicture
           ? "Save image URL"
           : "Save link"}
-  </button>
+  </div>
 )}
       
     </div>
