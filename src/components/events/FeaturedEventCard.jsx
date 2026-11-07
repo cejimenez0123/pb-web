@@ -6,7 +6,7 @@ function FeaturedEventCard({ event, onClick }) {
       type="button"
       onClick={onClick}
       className="
-        group block w-full rounded-2xl
+        group block w-[100%] rounded-2xl
         border border-plumb-border
         bg-plumb-elevated p-6 text-left
         transition-all duration-200

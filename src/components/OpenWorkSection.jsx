@@ -18,7 +18,7 @@ function OpenWorkSection({
   const hasStories = stories.length > 0;
 
   return (
-    <section className={`mt-14 ${shared.layout.pagePadding}`}>
+    <section className={`mt-14 `}>
       <SectionHeader
         title="Open Work"
         eyebrow="Still open"
@@ -134,11 +134,11 @@ export default OpenWorkSection
 function WorkList({ stories, onSelectStory }) {
   return (
     <div
-      className="
+      className={styles.pageShell.body+`
         mt-4 space-y-1
         border-y border-plumb-border
         dark:border-plumb-darkBorder
-      "
+      `}
     >
       {stories.map((story) => (
         <WorkRow

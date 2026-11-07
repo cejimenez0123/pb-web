@@ -1,206 +1,67 @@
-// import SectionHeader from "../pieces/SectionHeader";
-// import EmptyState from "../general/EmptyState";
-// import shortName from "../../core/shortName";
-// import { useMemo } from "react";
-
-// export default function UpcomingEventsSection({
-//   events = [],
-//   currentProfile,
-//   onViewEvents,
-// }) {
-// console.log(events)
-//   return (
-//     <section className="mt-14" aria-label="Upcoming events">
-//       <SectionHeader
-//         eyebrow="For you"
-//         title="Something happening"
-//         actionLabel="See all events ↗"
-//         onAction={onViewEvents}
-//           buttonClass={" dark:bg-transparent text-lg  border-1 border border-plumb-mintLight/20 rounded-full bg-plumb-mintLight/20 text-plumb-mint  dark:text-plumb-mintLight"}
-    
-//         // buttonClass={"bg-transparent text-plumb-blueSea border font-open-sans text-lg border-plumb-surface rounded-full"}
-//       />
-
-//       <div className="mt-6">
-//         {events.length > 0 ? (
-//           <div className="space-y-3">
-//             {events.map((event) => {
-//               console.log("Full event:", event);
-// console.log("Available fields:", Object.keys(event));
-//               return(
-
-//               <article
-             
-//   key={event.id}
-//                 className="
-//                   rounded-2xl
-//                   border border-card-border
-//                   bg-plumb-surface
-//                   p-5
-//                   dark:bg-plumb-dark-surface
-//                 "
-//               >
-//                 <div className="flex items-start justify-between gap-4">
-//                   <div className="min-w-0">
-//                     {event.data && (
-//   <span className="shrink-0 text-sm font-medium text-text-secondary">
-//     {toDate(event.start)?.toLocaleTimeString("en-US", {
-//       hour: "numeric",
-//       minute: "2-digit",
-//     })}
-//   </span>
-// )}
-//               {/* <p className="text-xs font-medium uppercase tracking-[0.12em] text-text-brand">
-//   {eventDayLabel(event.start)}
-// </p> */}
-// <p className="text-xs font-medium uppercase tracking-[0.12em] text-text-brand">
-// {eventDayLabel(event.data)}
-// </p>
-//                     <h3 className="mt-1 font-serif text-xl leading-tight text-text-primary dark:text-text-dark">
-//                       {event.title || "Untitled event"}
-//                     </h3>
-//                   </div>
-
-//                   <span className="shrink-0 text-sm font-medium text-text-secondary">
-//                 {extractEventDate(event.data)?.toLocaleTimeString("en-US", {
-//   hour: "numeric",
-//   minute: "2-digit",
-// }) || "Time TBD"}
-//                   </span>
-//                 </div>
-
-//                 {event.location && (
-//                   <p className="mt-4 text-sm leading-relaxed text-text-secondary">
-//                     {event.location}
-//                   </p>
-//                 )}
-
-//                 {event.description && (
-//                   <p className="mt-3 text-sm leading-relaxed text-text-secondary">
-//                     {shortName(event.description, 140)}
-//                   </p>
-//                 )}
-
-//                 {(event.area || event.moreInfoUrl) && (
-//                   <div className="mt-5 flex items-center justify-between">
-//                     {event.area && (
-//                       <span className="text-xs uppercase tracking-wide text-text-secondary">
-//                         {event.area}
-//                       </span>
-//                     )}
-
-//                     {event.moreInfoUrl && (
-//                       <a
-//                         href={event.moreInfoUrl}
-//                         target="_blank"
-//                         rel="noopener noreferrer"
-//                         className="text-sm font-medium text-text-brand hover:opacity-70"
-//                       >
-//                         More info →
-//                       </a>
-//                     )}
-//                   </div>
-//                 )}
-//                 {/*  */}
-//               </article>
-//             )})}
-//             {/*  */}
-//           </div>
-//         ) : (
-//           <EmptyState
-//             title="Quiet calendar."
-//             description="Nothing you've saved is happening today or tomorrow."
-//           />
-//         )}
-//       </div>
-//     </section>
-//   );
-// }
-
-
-
-// function toDate(value) {
-//   if (!value) return null;
-
-//   const date = value instanceof Date
-//     ? value
-//     : new Date(value);
-
-//   return Number.isNaN(date.getTime()) ? null : date;
-// }
-
-// function sameDay(a, b) {
-//   const dateA = toDate(a);
-//   const dateB = toDate(b);
-
-//   if (!dateA || !dateB) return false;
-
-//   return (
-//     dateA.getFullYear() === dateB.getFullYear() &&
-//     dateA.getMonth() === dateB.getMonth() &&
-//     dateA.getDate() === dateB.getDate()
-//   );
-// }
-
-// function extractEventDate(data) {
-//   if (!data) return null;
-
-//   const match = String(data).match(
-//     /<time\b[^>]*\bdatetime=["']([^"']+)["']/i
-//   );
-
-//   if (!match) return null;
-
-//   const value = match[1];
-
-//   // Date-only values should remain local calendar dates.
-//   const dateOnly = value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-
-//   const date = dateOnly
-//     ? new Date(+dateOnly[1], +dateOnly[2] - 1, +dateOnly[3])
-//     : new Date(value);
-
-//   return Number.isNaN(date.getTime()) ? null : date;
-// }
-
-// function sameDay(a, b) {
-//   return (
-//     a.getFullYear() === b.getFullYear() &&
-//     a.getMonth() === b.getMonth() &&
-//     a.getDate() === b.getDate()
-//   );
-// }
-
-// function eventDayLabel(data) {
-//   const date = extractEventDate(data);
-
-//   if (!date) return "Date TBD";
-
-//   const today = new Date();
-
-//   if (sameDay(date, today)) return "Today";
-
-//   const tomorrow = new Date(today);
-//   tomorrow.setDate(tomorrow.getDate() + 1);
-
-//   if (sameDay(date, tomorrow)) return "Tomorrow";
-
-//   return date.toLocaleDateString("en-US", {
-//     weekday: "long",
-//     month: "short",
-//     day: "numeric",
-//   });
-// }
 
 import SectionHeader from "../pieces/SectionHeader";
 import EmptyState from "../general/EmptyState";
 import shortName from "../../core/shortName";
+import AlertType from "../../core/AlertType";
+import { useAlert } from "../../core/useAlert";
+import { Preferences } from "@capacitor/preferences";
+import storyRepo from "../../data/storyRepo";
+import { useIonRouter } from "@ionic/react";
+import Paths from "../../core/paths";
 
 export default function UpcomingEventsSection({
   events = [],
   currentProfile,
   onViewEvents,
 }) {
+ const {showAlert,showPrompt}=useAlert()
+ const router =useIonRouter()
+  const handleSelectSuggestedEvent = async (event) => {
+  if (!event) return;
+
+  const eidMatch = event.googleLink?.match(/[?&]eid=([^&]+)/);
+
+  const gid =
+    event.googleCalendarId ||
+    (eidMatch ? eidMatch[1] : "");
+
+  try {
+    const { value: token } = await Preferences.get({
+      key: "token",
+    });
+
+
+
+    const data = await storyRepo.saveEvent({
+      event: {
+        ...event,
+        summary: event.title || event.summary,
+        googleCalendarId: gid,
+      },
+    });
+
+showPrompt({
+  message: "Added to your Events! Want to take a look?",
+  agreeText: "View event",
+  disagreeText: "Maybe later",
+  agree: () => {
+         token?data?.story?.id && router.push(Paths.page.createRoute(data.story.id)): window.open(
+          event.googleLink,
+          "_blank",
+          "noopener,noreferrer"
+        );
+    
+  },
+});
+
+
+  } catch (err) {
+    showAlert({
+      message: err?.message || "Couldn't save this event.",
+      type: AlertType.error,
+    });
+  }
+};
   return (
     <section className="mt-14" aria-label="Upcoming events">
       <SectionHeader
@@ -236,12 +97,14 @@ export default function UpcomingEventsSection({
                 <article
                   key={event.id}
                   className="
+                  hover:bg-plumb-mintLight/50
                     rounded-2xl
                     border border-card-border
                     bg-plumb-surface
                     p-5
                     dark:bg-plumb-dark-surface
                   "
+                  onClick={()=>handleSelectSuggestedEvent(event)}
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div className="min-w-0">
