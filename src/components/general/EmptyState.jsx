@@ -7,7 +7,10 @@ function EmptyState({
   onAction,
 }) {
   return (
-    <div className={styles.tabs.container+" text-center py-2"}>
+    <div
+    className={styles.pageShell.body}
+    //  className={styles.tabs.container+" text-center py-2"}
+    >
 
       <h1      className={styles.tabs.text.heading}
   
@@ -28,7 +31,7 @@ function EmptyState({
         <div
           type="button"
           onClick={onAction}
-          className={styles.button.primary + "  mb-4" }
+          className={styles.button.primary + "  mb-4 px-6 py-3 " +styles.button.base}
 
         >
           {action}

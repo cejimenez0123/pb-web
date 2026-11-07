@@ -1297,15 +1297,16 @@ const openConfirmDeleteDialog = useCallback(() => {
                   />
                 </div>
               </div>
-
+<div className={styles.pageShell.padded}>
               <EditorFooter
                 pageInView={pageInView}
                       effectiveId={effectiveId}
-                // effectiveId={effectiveId}
+             
                 openConfirmDeleteDialog={
                   openConfirmDeleteDialog
                 }
               />
+            </div>
             </div>
           </main>
         </div>

@@ -1,73 +1,34 @@
 import { useSelector, useDispatch } from "react-redux";
-import { useState, useEffect, useLayoutEffect, useContext, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { getPublicStories } from "../actions/PageActions.jsx";
 import { getPublicCollections } from "../actions/CollectionActions.js";
 import { getPublicLibraries } from "../actions/LibraryActions.jsx";
 import checkResult from "../core/checkResult.js";
 import { BookListItem } from "../components/collection/BookListItem.jsx";
-// import { initGA } from "../core/ga4.js";
+
 import ScrollDownButton from "../components/ScrollDownButton.jsx";
-import Context from "../context.jsx";
 import Paths from "../core/paths.js";
 import useScrollTracking from "../core/useScrollTracking.jsx";
 import sortItems from "../core/sortItems.js";
 import { IonContent, useIonRouter } from "@ionic/react";
-import PageList from "../components/page/PageList.jsx";
+
 import styles from "../styles/style.js";
-
-const PAGE_WRAP =
-   styles.content.surface+"bg-plumb-dark-surface"+"mx-auto min-h-screen bg-plumb-surface  pb-28 pt-10 text-base-content dark:bg-base-bgDark";
-
-const CONTENT_WRAP =
-  "mx-auto w-[100%] max-w-6xl px-5 sm:px-8 lg:px-10";
-
-const SEARCH_INPUT = 
-styles.input + "w-[100%] rounded-full border border-base-content/15 bg-plumb-surface  px-5 py-4 text-base-content outline-none transition placeholder:text-base-content/45 focus:border-soft focus:ring-2 focus:ring-soft/20 dark:border-white/15 dark:bg-base-bgDark";
-
-const PILL =
-  "rounded-full border bg-emerald-800 text-plumb-darkText border-base-content/15 px-4 py-2 text-sm transition dark:border-white/15";
+import SectionHeader from "../components/pieces/SectionHeader.jsx";
+import StoryCard from "../components/lovehome/StoryCard.jsx";
 
 
 
-const itemVariants = {
-  hidden: {
-    opacity: 0,
-    y: 12,
-  },
-  show: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.3,
-      ease: "easeOut",
-    },
-  },
-};
+
+
 
 function shuffle(items = []) {
   return [...items].sort(() => Math.random() - 0.5);
 }
 
-function getItemTitle(item) {
-  return (
-    item?.title ||
-    item?.story?.title ||
-    item?.collection?.title ||
-    ""
-  );
-}
 
-function getItemDescription(item) {
-  return (
-    item?.description ||
-    item?.story?.description ||
-    item?.collection?.purpose ||
-    ""
-  );
-}
 
 function DiscoveryContainer() {
-  const { setSeo } = useContext(Context);
+
 
   const currentProfile = useSelector(
     (state) => state.users.currentProfile
@@ -88,39 +49,32 @@ function DiscoveryContainer() {
     pagesInView: state.pages.pagesInView || [],
   }));
 
-  const [search, setSearch] = useState("");
+  // const [search, setSearch] = useState("");
   const [shelfKey, setShelfKey] = useState(0);
 
   useScrollTracking({
     name: "discovery",
   });
 
-  // useLayoutEffect(() => {
-  //   initGA();
-  // }, []);
 
-  useEffect(() => {
-    fetchContentItems();
-    fetchLibraries();
-  }, []);
+
 
   const fetchContentItems = () => {
     dispatch(getPublicStories());
     dispatch(getPublicCollections());
   };
+const fetchFragments=()=>{
+dispatch(
+  getPublicStories({
+    status: "fragment",
+  })
+);
+}
 
-  const fetchLibraries = () => {
-    dispatch(getPublicLibraries())
-      .then((result) =>
-        checkResult(
-          result,
-          () => {},
-          () => {}
-        )
-      )
-      .catch(() => {});
-  };
-
+useEffect(()=>{
+  fetchFragments()
+  fetchContentItems()
+},[])
   /*
    * Collections that actually contain stories.
    *
@@ -155,26 +109,7 @@ function DiscoveryContainer() {
    * loaded into Redux without creating a second search
    * architecture.
    *
-   * Later this can move to a server-side search endpoint
-   * without changing the presentation model.
-   */
-  const searchedItems = useMemo(() => {
-    const query = search.trim().toLowerCase();
 
-    if (!query) {
-      return sortedItems;
-    }
-
-    return sortedItems.filter((item) => {
-      const title = getItemTitle(item).toLowerCase();
-      const description = getItemDescription(item).toLowerCase();
-
-      return (
-        title.includes(query) ||
-        description.includes(query)
-      );
-    });
-  }, [search, sortedItems]);
 
   /*
    * The default shelf is intentionally finite.
@@ -183,19 +118,21 @@ function DiscoveryContainer() {
    * A new shelf is created when the user chooses
    * "Look again."
    */
-  const shelfItems = useMemo(() => {
-    return shuffle(
-      search.trim()
-        ? searchedItems
-        : sortedItems
-    ).slice(0, 8);
-  }, [
-    shelfKey,
-    search,
-    searchedItems,
-    sortedItems,
-  ]);
-
+  // const shelfItems = useMemo(() => {
+  //   return shuffle(
+  //     search.trim()
+  //       ? searchedItems
+  //       : sortedItems
+  //   ).slice(0, 8);
+  // }, [
+  //   shelfKey,
+  //   search,
+  //   searchedItems,
+  //   sortedItems,
+  // ]);
+ const shelfStories = useMemo(() => {
+    return shuffle(pagesInView).slice(0, 6);
+  }, [shelfKey, pagesInView]);
   const shelfCollections = useMemo(() => {
     return shuffle(books).slice(0, 6);
   }, [shelfKey, books]);
@@ -221,20 +158,19 @@ function DiscoveryContainer() {
 
     // className="page-content">
     >
-      <main className={PAGE_WRAP}>
-        <div className={CONTENT_WRAP}>
+      <main className={styles.pageShell.base+" "+styles.pageShell.scroll}>
+        <div >
 
           {/* Intro */}
-          <header className="pt-8 sm:pt-12 lg:pt-16">
-            <p className="text-sm uppercase tracking-[0.14em] text-base-content/55">
+          <header className={styles.pageShell.head+" pb-8 px-4"}>
+            <p className="text-sm uppercase px-2 tracking-[0.14em] text-base-content/55">
               Discover
             </p>
 
             <h1 
-            className={styles.content.text.super}
+            className={styles.text.display}
             >
-            {/* // className="mt-4 max-w-3xl font-serif text-[2.9rem] font-bold leading-[1] tracking-tight sm:text-[4.5rem] lg:text-[5rem]"> */}
-              Find something
+                Find something
               <br />
               to fall into.
             </h1>
@@ -248,148 +184,45 @@ function DiscoveryContainer() {
             </p>
           </header>
 
-          {/* Search */}
-          <section className="mt-10 max-w-3xl sm:mt-12">
-            <div className="relative">
-              <input
-                type="search"
-                value={search}
-                onChange={(event) =>
-                  setSearch(event.target.value)
-                }
-                placeholder="Search stories or collections..."
-                aria-label="Search stories or collections"
-                className={styles.search.searchbar+" py-2 px-6 w-[100%] max-w-60"}
-                
-            
-              />
+       
+      
 
-              {search && (
-                <button
-                  type="button"
-                  onClick={handleClearSearch}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full px-3 py-1 text-sm text-base-content/55 transition hover:bg-base-content/5 hover:text-base-content"
-                >
-                  Clear
-                </button>
-              )}
-            </div>
-          </section>
+       
+            <section>
+           <div>
+           
+              <SectionHeader 
+              title={"Start somewhere."}
+              description={" A few pieces people have intentionally left open."}
+              eyebrow={"Open Shelf"}
+              onAction={()=>{
+ handleLookAgain()
+              }}
+              actionLabel={"Look again ↗"}/>
+                   <div className="mt-7 overflow-hidden">
+                   <div className="flex gap-5 overflow-x-auto pb-4">
+                      {shelfStories.map((book) => {
+                        return(
+                        <div
+                          key={book.id}
+                          className="min-w-[17rem] max-w-[20rem] shrink-0"
+                        >
+                          <StoryCard story={book}/>
+                        </div>)}
+                      )}
+                      </div>
+                      </div>
+                      </div>
+                     
+             
 
-          {/* Search results */}
-          {search.trim() ? (
-            <section className="mt-14">
-              <div className="flex items-end justify-between gap-4 border-b border-base-content/10 pb-4 dark:border-white/10">
-                <div>
-                  <p className="text-xs uppercase tracking-[0.12em] text-base-content/50">
-                    Search
-                  </p>
 
-                  <h2 className="mt-2 font-serif text-2xl font-bold sm:text-3xl">
-                    {searchedItems.length > 0
-                      ? "Things you can enter"
-                      : "Nothing matches yet."}
-                  </h2>
-                </div>
-
-                {searchedItems.length > 0 && (
-                  <span className="hidden text-sm text-base-content/50 sm:block">
-                    {searchedItems.length} result
-                    {searchedItems.length === 1
-                      ? ""
-                      : "s"}
-                  </span>
-                )}
-              </div>
-
-              {searchedItems.length > 0 ? (
-                <div className="mt-8">
-                  <PageList
-                    items={searchedItems.slice(0, 12)}
-                    shortenTo={200}
-                  />
-                </div>
-              ) : (
-                <div className="mt-6 rounded-2xl border border-dashed border-base-content/20 px-6 py-16 text-center dark:border-white/20">
-                  <p className="font-serif text-xl">
-                    Nothing matches yet.
-                  </p>
-
-                  <p className="mt-2 text-sm text-base-content/55">
-                    Try a shorter word, a title, or a subject.
-                  </p>
-                </div>
-              )}
-            </section>
-          ) : (
-            <>
-              {/* Open shelf */}
-              <section className="mt-16 sm:mt-20">
-                <div className="flex flex-col gap-5 border-b border-base-content/10 pb-5 sm:flex-row sm:items-end sm:justify-between dark:border-white/10">
-                  <div>
-                    <p className="text-xs uppercase tracking-[0.12em] text-base-content/50">
-                      Open shelf
-                    </p>
-
-                    <h2 className="mt-2 font-serif text-2xl font-bold sm:text-3xl">
-                      Start somewhere.
-                    </h2>
-
-                    <p
-                      className={styles.content.text.body}
-                    >
-                    A few pieces people have intentionally
-                      left open.
-                    </p>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={handleLookAgain}
-                    className={`${PILL} self-start hover:border-soft hover:bg-soft/10 sm:self-auto`}
-                  >
-                    Look again ↗
-                  </button>
-                </div>
-
-                {shelfItems.length > 0 ? (
-                  <div className="mt-7">
-                    <PageList
-                      key={shelfKey}
-                      items={shelfItems}
-                      shortenTo={200}
-                    />
-                  </div>
-                ) : (
-                  <div className="mt-6 rounded-2xl border border-dashed border-base-content/20 px-6 py-16 text-center dark:border-white/20">
-                    <p className="font-serif text-xl">
-                      The shelf is still being built.
-                    </p>
-
-                    <p className="mt-2 text-sm text-base-content/55">
-                      Check back soon.
-                    </p>
-                  </div>
-                )}
-              </section>
-
-              {/* Collections */}
-              {shelfCollections.length > 0 && (
-                <section className="mt-20 sm:mt-28">
-                  <div className="flex items-end justify-between gap-4 border-b border-base-content/10 pb-5 dark:border-white/10">
-                    <div>
-                      <p className="text-xs uppercase tracking-[0.12em] text-base-content/50">
-                        Go deeper
-                      </p>
-
-                      <h2 className="mt-2 font-serif text-2xl font-bold sm:text-3xl">
-                        Enter a collection.
-                      </h2>
-
-                      <p className="mt-2 max-w-xl font-serif text-base text-base-content/60">
-                        One story can lead somewhere bigger.
-                      </p>
-                    </div>
+        <SectionHeader eyebrow={"Go deeper"}
+        title={"Enter a room."}
+        description={"One story can lead somewhere bigger."}/>
+                  <div 
+                       >
+         
                   </div>
 
                   <div className="mt-7 overflow-hidden">
@@ -404,27 +237,18 @@ function DiscoveryContainer() {
                       ))}
                     </div>
                   </div>
-                </section>
-              )}
+          
+              {/* )} */}
 
               {/* Rooms */}
               {shelfLibraries.length > 0 && (
                 <section className="mt-20 sm:mt-28">
                   <div className="flex flex-col gap-5 border-b border-base-content/10 pb-5 sm:flex-row sm:items-end sm:justify-between dark:border-white/10">
-                    <div>
-                      <p className="text-xs uppercase tracking-[0.12em] text-base-content/50">
-                        Places to linger
-                      </p>
-
-                      <h2 className="mt-2 font-serif text-2xl font-bold sm:text-3xl">
-                        Find a Room.
-                      </h2>
-
-                      <p className="mt-2 max-w-xl font-serif text-base text-base-content/60">
-                        Writing lives somewhere. Rooms are
-                        where people keep coming back.
-                      </p>
-                    </div>
+                   <SectionHeader eyebrow={"Places to linger"}
+                   title={"Find a Room."}
+                   description={`Writing lives somewhere. Rooms are
+                        where people keep coming back.`}/>
+       
                   </div>
 
                   <div className="mt-7 overflow-hidden">
@@ -465,8 +289,8 @@ function DiscoveryContainer() {
                   </div>
                 </section>
               )}
-            </>
-          )}
+            </section>
+     
         </div>
       </main>
     </IonContent>
@@ -475,3 +299,38 @@ function DiscoveryContainer() {
 
 export default DiscoveryContainer;
 
+
+function getItemTitle(item) {
+  return (
+    item?.name ||
+    item?.title ||
+    item?.username
+
+  );
+}
+  
+
+  function getItemDescription(item) {
+  return (
+    item?.description ||
+    item?.story?.description ||
+    item?.collection?.purpose ||
+    ""
+  );
+}
+
+
+function getItemAuthor(item = {}, type) {
+  if (type !== "story") {
+    return null;
+  }
+
+  return (
+    item.authorName ||
+    item.authorUsername ||
+    item.username ||
+    item.author?.username ||
+    item.author?.name ||
+    null
+  );
+}

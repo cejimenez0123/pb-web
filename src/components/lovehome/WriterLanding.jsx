@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import styles from "../../styles/style";
 import ImportWorkSection from "../page/ImportWorkSection";
 import StoryCard from "./StoryCard";
+import SectionHeader from "../pieces/SectionHeader";
 
 export default function WriteLanding({
   stories = [],
@@ -75,108 +76,47 @@ export default function WriteLanding({
 
             <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
               <div>
-                <p className="text-xs uppercase tracking-[0.12em] text-soft/55">
+                {/* <p className="text-xs uppercase tracking-[0.12em] text-soft/55">
                   Your work
                 </p>
 
                 <h2 className="mt-2 font-serif text-[1.9rem] font-bold leading-tight sm:text-[2.25rem]">
                   Pick up where you left off
-                </h2>
+                </h2> */}
+                <SectionHeader eyebrow={"Your work"}
+                title={"Pick up where you left off"}/>
               </div>
 
               {/* View toggle */}
-              {stories.length > 0 && (
-                <div
-                  className="
-                    flex
-                    w-fit
-                    items-center
-                    rounded-full
-                    border
-                    border-soft/15
-                    bg-cream/70
-                    p-1
-                    dark:bg-base-bgDark/60
-                  "
-                >
-                  <button
-                    type="button"
-                    onClick={() => setView("grid")}
-                    aria-label="Grid view"
-                    aria-pressed={view === "grid"}
-                    className={`
-                      rounded-full
-                      px-4
-                      py-2
-                      text-xs
-                      uppercase
-                      tracking-[0.08em]
-                      transition-colors
-                      ${
-                        view === "grid"
-                          ? "bg-soft text-cream"
-                          : "text-soft/55 hover:text-soft dark:text-cream/55 dark:hover:text-cream"
-                      }
-                    `}
-                  >
-                    Grid
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setView("list")}
-                    aria-label="List view"
-                    aria-pressed={view === "list"}
-                    className={`
-                      rounded-full
-                      px-4
-                      py-2
-                      text-xs
-                      uppercase
-                      tracking-[0.08em]
-                      transition-colors
-                      ${
-                        view === "list"
-                          ? "bg-soft text-cream"
-                          : "text-soft/55 hover:text-soft dark:text-cream/55 dark:hover:text-cream"
-                      }
-                    `}
-                  >
-                    List
-                  </button>
-                </div>
-              )}
-            </div>
+           
+         </div>
 
             {/* Search */}
             <div className="relative w-[100%] max-w-2xl">
-              <label
-                htmlFor="story-search"
-                className="sr-only"
-              >
-                Search your writing
-              </label>
+            
 
               <div
-                className="
-                  flex
-                  w-[100%]
-                  items-center
-                  rounded-full
-                  border
-                  border-2
-                  border-plumb-mintLight
-                  bg-cream/50
-                  transition-colors
-                  focus-within:border-soft/40
-                  focus-within:bg-cream
-                  dark:bg-base-bgDark/40
-                  dark:focus-within:bg-base-bgDark/70
-                "
+              className={styles.input.search.searchWrap}
+                // className="
+                //   flex
+                //   w-[100%]
+                //   items-center
+                //   rounded-full
+                //   border
+                //   border-2
+                //   border-plumb-mintLight
+                //   bg-cream/50
+                //   transition-colors
+                //   focus-within:border-soft/40
+                //   focus-within:bg-cream
+                //   dark:bg-base-bgDark/40
+                //   dark:focus-within:bg-base-bgDark/70
+                // "
               >
                 <span
                   aria-hidden="true"
-                  className="pl-5 text-soft/45 dark:text-cream/40"
+                  className={styles.input.search.searchLabel+" bg-transparent"}
+                  // className="pl-5 text-soft/45 dark:text-cream/40"
                 >
                   ⌕
                 </span>
@@ -187,18 +127,20 @@ export default function WriteLanding({
                   value={search}
                   onChange={(e) => onSearch(e.target.value)}
                   placeholder="Search your writing..."
-                  className="
-                    w-[100%]
-                    bg-transparent
-                    px-3
-                    py-3.5
-                    text-sm
-                    text-soft
-                    placeholder:text-soft/40
-                    focus:outline-none
-                    dark:text-cream
-                    dark:placeholder:text-cream/35
-                  "
+                  className={styles.input.search.input}
+                  // className="
+                  //   w-[100%]
+                  //   bg-plumb-canvas
+                  //   dark:bg-transparent
+                  //   px-3
+                  //   py-3.5
+                  //   text-sm
+                  //   text-soft
+                  //   placeholder:text-soft/40
+                  //   focus:outline-none
+                  //   dark:text-cream
+                  //   dark:placeholder:text-cream/35
+                  // "
                 />
 
                 {search && (
@@ -248,17 +190,18 @@ export default function WriteLanding({
             </div>
           ) : stories.length > 0 ? (
             <div
-              className={
-                view === "grid"
-                  ? "mt-10 grid w-[100%] grid-cols-1 gap-5 sm:grid-cols-2 lg:gap-7"
-                  : "mt-10 flex w-[100%] flex-col gap-4"
+              className={" w-[100%] mt-8 flex flex-col gap-4"
+                // view === "grid"
+                //   ? "mt-10 grid w-[100%] grid-cols-1 gap-5 sm:grid-cols-2 lg:gap-7"
+                //   : "mt-10 flex w-[100%] flex-col gap-4"
               }
             >
               {stories.map((story) => (
                 <StoryCard
                   key={story.id}
                   story={story}
-                  view={view}
+                  view={""}
+                  // view={view}
                   onSelect={onSelectStory}
                 />
               ))}

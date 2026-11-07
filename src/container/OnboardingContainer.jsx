@@ -1099,7 +1099,9 @@ export default function OnboardingContainer() {
         style={{ "--padding-bottom": "10rem" }}
         fullscreen
       >
+        <main className={styles.pageShell.base+" "+styles.pageShell.padded}>
         <ThankYou user={user} />
+        </main>
       </IonContent>
     );
   }
@@ -1111,6 +1113,7 @@ export default function OnboardingContainer() {
       // style={{ "--padding-bottom": "10rem" }}
       fullscreen
     >
+      <main className={styles.pageShell.base+" "}>
       <div className="min-h-full w-[100%] max-w-xl mx-auto bg-plumb-surface dark:bg-plumb-dark-canvas">
         {activeTab !== "tab0" && (
           <Progress
@@ -1161,6 +1164,7 @@ export default function OnboardingContainer() {
           />
         )}
       </div>
+      </main>
     </IonContent>
   );
 }

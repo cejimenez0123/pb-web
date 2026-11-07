@@ -102,18 +102,18 @@ pr-2
     border-plumb-mintLight`,
   `  dark:bg-transparent   bg-plumb-canvas
 `,`
-    text-sm text-plumb-ink dark:text-plumb-darkSurface
+   shadow-sm text-sm text-plumb-ink dark:text-plumb-darkSurface
     placeholder:text-plumb-subtle`,`
     outline-none
  `,`
     transition-colors
     focus:border-plumb-mint
-    focus:ring-2 focus:ring-plumb-focus/40
+
     dark:border-plumb-darkBorder
     dark:text-plumb-darkText
     dark:placeholder:text-plumb-darkSubtle
     dark:focus:border-plumb-mintLight
-    dark:focus:ring-plumb-mintLight/30
+  
   
   `].join(" "),
   
@@ -129,12 +129,12 @@ dark:bg-transparent
     outline-none
     transition-colors
     focus:border-plumb-mint
-    focus:ring-2 focus:ring-plumb-focus/40
+ 
    
     dark:text-plumb-darkText
     dark:placeholder:text-plumb-darkSubtle
     dark:focus:border-plumb-mintLight
-    dark:focus:ring-plumb-mintLight/30
+
 
   `,},
                base: [
@@ -366,9 +366,9 @@ hash: {
 
   header: "space-y-3 text-center",
 
-  fields: "space-y-5",
+  fields: "space-y-5 flex flex-col",
 
-  field: "space-y-2",
+  field: "space-y-2 my-2",
 
   inputWrap: [
     "flex w-full items-center rounded-xl border",
@@ -466,7 +466,7 @@ primary: [
   "active:shadow-sm",
 ].join(" "),
 
-danger:[" broder-plumb-button-danger-bg  border text-plumb-button-danger-bg border-1 border dark:bg-transparent text-white font-open-sans py-4 px-6 rounded-full bg-plumb-button-danger-bg ",].join(" "),
+danger:[" border-plumb-button-danger-bg  text-plumb-button-danger border  border-1 border bg-transparent text-white font-open-sans rounded-full  ",].join(" "),
 
   
 secondary: [
@@ -580,7 +580,9 @@ iconUtility: [
   "inline-flex  shrink-0 items-center justify-center",
   "rounded-full",
   "bg-transparent",
-  "text-plumb-muted",
+  "dark:text-plumb-darkText",
+  "text-plumb-blueSea border-plumb-blueSea border-1 border ",
+ 
   "transition-colors duration-150",
   "hover:bg-plumb-mint/10",
   "hover:text-plumb-mintHover",

@@ -965,14 +965,15 @@ const toggleHashtag = (tag) => {
           aria-expanded={showAllHashtags}
           className={[
             filterButtonClass(false),
-            "inline-flex items-center gap-1",
+            "inline-flex  items-center gap-1",
           ].join(" ")}
         >
+          <span className="flex flex-row text-plumb-muted">
           {showAllHashtags ? "Less" : "More"}
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 20 20"
-            fill="none"
+            fill="currentColor"
             stroke="currentColor"
             strokeWidth="1.75"
             className={[
@@ -987,6 +988,7 @@ const toggleHashtag = (tag) => {
               strokeLinejoin="round"
             />
           </svg>
+          </span>
         </button>
       )}
     </div>
@@ -1093,11 +1095,33 @@ const toggleHashtag = (tag) => {
           })}
         </div>
       </section>
+            <div className={styles.input.search.searchWrap}>
+                          <span
+                
+                    className={styles.input.search.searchLabel}
+                  >
+                    Search:
+                  </span>
 
-      <div>
+              <input
+                  htmlFor="calendar-event-search"
+                type="search"
+                   value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+                 placeholder="Search by event or hashtag"
+                aria-label="calendar-event-search"
+                className={styles.input.search.input}
+               
+              />
+
+       
+            </div>
+      {/* <div>
         <label
           htmlFor="calendar-event-search"
-          className={styles.text.metadata + " mb-2 block"}
+          className={styles.search.}
+          xxxxxxx
+          // className={styles.text.metadata + " mb-2 block"}
         >
           Search events
         </label>
@@ -1114,7 +1138,7 @@ const toggleHashtag = (tag) => {
             "focus-visible:outline-none",
           ].join(" ")}
         />
-      </div>
+      </div> */}
 
       <div>
         <h2 className={styles.text.title}>

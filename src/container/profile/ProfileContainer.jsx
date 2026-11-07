@@ -423,7 +423,7 @@ function ProfileContainer() {
 />
 </div>
 <div className={styles.pageShell.body}>
-            {/* Search, follow, and profile actions */}
+          
             <div className={styles.profile.searchRow}>
               <input
                 type="search"
@@ -434,13 +434,7 @@ function ProfileContainer() {
                 className={styles.profile.search}
               />
 
-              <div className={"flex flex-row justify-between"}>
-          
-
-
-
-            
-              </div>
+       
             </div>
                <section className={"mx-4 "+styles.pageShell.body}>
                        <div             className={styles.tabs.pill.container+" justify-center "+styles.tabs.pill.wrapper}>

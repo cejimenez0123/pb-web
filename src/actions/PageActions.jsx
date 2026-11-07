@@ -4,22 +4,48 @@ import commentRepo from "../data/commentRepo"
 import likeRepo from "../data/likeRepo"
 import profileRepo from "../data/profileRepo"
 
-const getPublicStories = createAsyncThunk("page/getPublicStories",async (thunkApi)=>{
+// const getPublicStories = createAsyncThunk("page/getPublicStories",async (thunkApi)=>{
   
-  try{
-    const data = await storyRepo.getPublicStories()
+//   try{
+//     const data = await storyRepo.getPublicStories()
     
 
-return {
-    stories:data.stories
-  }
+// return {
+//     stories:data.stories
+//   }
 
-    }catch(err){
-      return {error: err}
-    }
+//     }catch(err){
+//       return {error: err}
+//     }
   
-})
+// })
+const getPublicStories = createAsyncThunk(
+  "page/getPublicStories",
+  async (
+    { skip = 0, take = 20, status } = {},
+    thunkApi
+  ) => {
+    try {
+      const data = await storyRepo.getPublicStories({
+        skip,
+        take,
+        status,
+      });
 
+      return {
+        stories: data.stories,
+        skip: data.skip,
+        take: data.take,
+        totalCount: data.totalCount,
+        hasMore: data.hasMore,
+      };
+    } catch (err) {
+      return thunkApi.rejectWithValue(
+        err?.response?.data || err?.message || "Unable to fetch stories."
+      );
+    }
+  }
+);
 const setHtmlContent = createAction(
   'pages/setHtmlContent',(html)=>{
       return {

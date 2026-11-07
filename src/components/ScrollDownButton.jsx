@@ -26,7 +26,7 @@ export default function ScrollDownButton({text="↓ Scroll for more",onClick,onB
   return isVisible ? (
     <button
       onClick={onClick?onClick:scrollToBottom}
-      className={styles.scrollDown.button}
+      className={styles.scrollDown.button+" border border-1 border-plumb-secondary-bg"}
       >
       
       {text}

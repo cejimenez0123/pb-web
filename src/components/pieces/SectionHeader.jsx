@@ -12,7 +12,10 @@ function SectionHeader({
   const s = styles.sectionHeader;
 
   return (
-    <div className={s.container}>
+    <div 
+    className={styles.pageShell.body+" px-2"}
+  
+    >
       <div className={s.layout}>
         <div className={s.content}>
           {eyebrow && (

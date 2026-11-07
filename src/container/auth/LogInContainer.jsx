@@ -33,7 +33,8 @@ export default function LogInContainer({ currentProfile }) {
 
   return (
     <IonContent className="page-content" fullscreen>
-      <div className="min-h-full flex items-start justify-center px-6 pt-16 pb-30 md:py-20">
+      <div className={styles.pageShell.base+" px-4"}>
+        
         <LogInCard
           setSigningIn={setSigningIn}
           setLogInError={(msg) =>
@@ -213,8 +214,8 @@ const promptTermsAcceptance = useTermsAcceptance();
   };
 
   return (
-    <main className="w-full max-w-md mx-auto text-emerald-800">
-      <div className="space-y-9">
+    // <main className="w-full max-w-md mx-auto text-emerald-800">
+      <div className={styles.pageShell.body+" "+styles.pageShell.padded}>
 
         {/* Header */}
         <header className="space-y-3 text-center">
@@ -239,13 +240,8 @@ const promptTermsAcceptance = useTermsAcceptance();
 
 
           {/* Email */}
-       <div className="mt-6 space-y-2">
-            {/* <label
-              htmlFor="login-email"
-      className={styles.text.body}
-            >
-              Email
-            </label> */}
+       <div className={styles.login.fields}>
+    
 
             <div className={styles.login.field}>
   <label
@@ -259,7 +255,7 @@ const promptTermsAcceptance = useTermsAcceptance();
     className="
       flex w-full min-w-0 items-center gap-2
       rounded-full min-h-12 border border-plumb-borderStrong
-      bg-plumb-paper px-4
+      bg-plumb-canvas px-4
       transition-all duration-200
       focus-within:border-plumb-mint
       focus-within:ring-2 focus-within:ring-plumb-mint/20
@@ -281,8 +277,8 @@ const promptTermsAcceptance = useTermsAcceptance();
       disabled={pending}
       className="
         h-14 w-full min-w-0 flex-1
-        border-0 bg-transparent px-
-        text-base text-plumb-ink
+        border-0 bg-plumb-canvas dark:bg-transparent px-
+     text-plumb-ink dark:text-plumb-darkText
         placeholder:text-plumb-subtle
         outline-none ring-0
         focus:border-0 focus:outline-none focus:ring-0
@@ -309,7 +305,7 @@ const promptTermsAcceptance = useTermsAcceptance();
     className="
       flex w-full min-w-0 items-center gap-2
       rounded-full min-h-12 border border-plumb-borderStrong
-      bg-plumb-paper px-4
+     bg-plumb-canvas px-4
       transition-all duration-200
       focus-within:border-plumb-mint
       focus-within:ring-2 focus-within:ring-plumb-mint/20
@@ -430,33 +426,29 @@ const promptTermsAcceptance = useTermsAcceptance();
 
         {/* Secondary actions */}
         <div className="pt-1 text-cente flex flex-col space-y-3">
-          <button
+          <div
             type="button"
             onClick={() => router.push(Paths.onboard)}
-              className={`
-    ${styles.button.base}
-    ${styles.button.ghost}
-    ${styles.button.medium}
-   w-72
-    mx-auto
-  `}
-      
+
+         className={"my-4"+" text-center border-plumb-surface border border-1 rounded-full py-3 hover:bg-plumb-mint/30 font-bold text-plumb-ink dark:text-plumb-darkText font-open-sans"}
           >
             First time here?
-          </button>
+          </div>
 
-          <button
+          <div
             type="button"
             onClick={handleForgotPasswordDialog}
-            className={styles.button.primary+" max-w-72  py-4 mx-auto"}
+            className={styles.button.base+" border border-1 border-button-secondary-bg "+styles.button.secondary}
+         
+    
       
           >
             Forgot password?
-          </button>
+          </div>
         </div>
 
       </div>
-    </main>
+    // </main>
   );
 }
 

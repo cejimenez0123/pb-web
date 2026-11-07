@@ -380,10 +380,12 @@ const applySize = useCallback((px) => {
           onPaste={handlePaste}
           className="
   rich-editor__body
-  bg-cream
-  text-text-primary
-  dark:bg-plumb-surface Dark
-  dark:text-cream
+dark:bg-transparent
+dark:text-plumb-darkText
+bg-plumb-canvas
+text-plumb-ink
+
+
   min-h-[220px]
   px-5
   py-4
