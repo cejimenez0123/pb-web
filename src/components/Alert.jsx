@@ -27,20 +27,36 @@ function Alert() {
           exit={{ opacity: 0, y: -12 }}
           transition={{ duration: 0.2 }}
           className="
-            pointer-events-none
-            fixed
-            inset-x-0
-            top-4
-            z-[100000]
-            mx-auto
-            w-[calc(100%-1rem)]
-            max-w-[42rem]
-            px-0
-            sm:top-6
-            sm:w-[calc(100%-2rem)]
-            md:top-8
-            motion-reduce:transition-none
-          "
+  pointer-events-none
+  fixed
+  inset-x-0
+  z-[100000]
+  mx-auto
+  w-[calc(100%-1rem)]
+  max-w-3xl
+  px-0
+
+top-[calc(env(safe-area-inset-top,0px)+2.5rem)]
+
+  sm:top-[calc(env(safe-area-inset-top,0px)+1.75rem)]
+
+  motion-reduce:transition-none
+"
+          // className="
+          //   pointer-events-none
+          //   fixed
+          //   inset-x-0
+          //   top-4
+          //   z-[100000]
+          //   mx-auto
+          //   w-[calc(100%-1rem)]
+          //   max-w-[42rem]
+          //   px-0
+          //   sm:top-6
+          //   sm:w-[calc(100%-2rem)]
+          //   md:top-8
+          //   motion-reduce:transition-none
+          // "
           aria-live={isPrompt ? "assertive" : "polite"}
           aria-atomic="true"
         >

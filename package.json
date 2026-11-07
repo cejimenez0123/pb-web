@@ -15,7 +15,7 @@
     "build": "npx vite build",
  
     "run-ios": "npx vite build --mode main && npx cap sync ios && npx cap run ios",
-    "run-android": "npx vite build --mode main && npx cap sync android && npx cap run android"
+    "run-and": "npx vite build --mode main && npx cap sync android && npx cap run android"
   },
   "dependencies": {
     "@capacitor-firebase/messaging": "^8.5.2",
