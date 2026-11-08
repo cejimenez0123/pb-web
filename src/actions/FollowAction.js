@@ -8,7 +8,7 @@ const createFollow = createAsyncThunk(
   async ({ follower, following }, { rejectWithValue }) => {
     try {
      console.log("[createFollow] Calling repository");
-
+console.log(follower,following)
 const data = await followRepo.create({ follower, following });
 
 console.log("[createFollow] Repository returned:", data);

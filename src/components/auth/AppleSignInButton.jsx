@@ -1,10 +1,11 @@
 
-import { IonImg, IonText } from '@ionic/react';
+
 import applelogo from "../../images/logo/Applelogo.png";
 import { SocialLogin } from '@capgo/capacitor-social-login';
 
-function AppleSignInButton({ onUserSignIn }) {
+import styles from '../../styles/style';
 
+function AppleSignInButton({ onUserSignIn }) {
   const handleAppleSignIn = async () => {
     try {
       const { result } = await SocialLogin.login({
@@ -27,10 +28,13 @@ function AppleSignInButton({ onUserSignIn }) {
   return (
     <div
       onClick={handleAppleSignIn}
-      className='bg-black btn flex flex-row rounded-full flex mx-auto h-[3rem] text-white  mt-8'
+      className={[styles.button.base.slice(1,styles.button.base.length),"bg-plumb-ink w-[180px]  py-2 rounded-full text-plumb-surface"].join(" ")}
+      // className='bg-plumb-ink btn flex flex-row rounded-full flex mx-auto text-white  mt-8'
     >
-      <img src={applelogo} className='max-h-5 my-auto max-w-5' />
-      <h6 class='text-[.85rem] my-auto '>Sign in with Apple</h6>
+      <div className="flex flex-row mx-aut my-auto">
+      <img src={applelogo} className='max-h-5 my-auto mr-2 max-w-5' />
+      <h6 className='text-sm my-auto '>Sign in with Apple</h6>
+      </div>
     </div>
   );
 }

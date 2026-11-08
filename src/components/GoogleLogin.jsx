@@ -2,15 +2,14 @@
 import  {
   useState,
   useEffect,
-  useLayoutEffect,
+
   useRef,
 } from "react";
 
 import {
   IonText,
   IonSpinner,
-  IonImg,
-  IonRow,
+
 } from "@ionic/react";
 
 import { SocialLogin } from "@capgo/capacitor-social-login";
@@ -20,7 +19,7 @@ import { Capacitor } from "@capacitor/core";
 
 import Googlelogo from "../images/logo/googlelogo.png";
 import { useAlert } from "../core/useAlert";
-import initSocialLogin from "./initSocialLogin";
+
 
 const CLIENT_ID = import.meta.env.VITE_OAUTH2_CLIENT_ID;
 
@@ -33,7 +32,67 @@ function GoogleLoginInner({ drive, onUserSignIn }) {
   
 
   const { showPrompt } = useAlert();
+const loginInProgressRef = useRef(false);
+const credentialHandlerRef = useRef(null);
+  const handleCredentialResponse = async (response) => {
+   if (loginInProgressRef.current) return;
 
+loginInProgressRef.current = true;
+setPending(true);
+
+    setLoginError(null);
+
+    try {
+      if (!response?.credential) {
+        throw new Error("Missing Google credential");
+      }
+
+      const webIdToken = response.credential;
+
+      let decoded;
+
+      try {
+        const tokenPayload = webIdToken.split(".")[1];
+
+        if (!tokenPayload) {
+          throw new Error("Missing token payload");
+        }
+
+        decoded = JSON.parse(
+          atob(
+            tokenPayload
+              .replace(/-/g, "+")
+              .replace(/_/g, "/")
+          )
+        );
+      } catch {
+        throw new Error("Invalid Google token format");
+      }
+
+      const payload = {
+        email: decoded?.email,
+        name: decoded?.name || decoded?.given_name,
+        googleId: decoded?.sub,
+        idToken: webIdToken,
+      };
+
+      if (!payload.email || !payload.googleId) {
+        throw new Error("Invalid Google user data");
+      }
+
+      await onUserSignIn?.(payload);
+
+      setSignedIn(true);
+    } catch (error) {
+      console.error("GOOGLE WEB LOGIN ERROR:", error);
+
+      setLoginError(error.message || "Login failed");
+    } finally {
+  loginInProgressRef.current = false;
+  setPending(false);
+}
+  };
+credentialHandlerRef.current = handleCredentialResponse;
   const googleButtonRef = useRef(null);
   const isNative = Capacitor.isNativePlatform();
 
@@ -42,46 +101,68 @@ function GoogleLoginInner({ drive, onUserSignIn }) {
   // ---------------------------
   // 1. Load Google Identity Services (WEB ONLY)
   // ---------------------------
-  useLayoutEffect(() => {
-    if (isNative) return;
+  // useLayoutEffect(() => {
+  //   if (isNative) return;
 
-    if (window.google?.accounts?.id) {
-      setGisLoaded(true);
-      return;
-    }
+  //   if (window.google?.accounts?.id) {
+  //     setGisLoaded(true);
+  //     return;
+  //   }
 
-    const existingScript = document.querySelector(
-      'script[src="https://accounts.google.com/gsi/client"]'
-    );
+  //   const existingScript = document.querySelector(
+  //     'script[src="https://accounts.google.com/gsi/client"]'
+  //   );
 
-    if (existingScript) {
-      const handleLoad = () => setGisLoaded(true);
-      const handleError = () =>
-        setLoginError("Failed to load Google Sign-In script");
+  //   if (existingScript) {
+  //     const handleLoad = () => setGisLoaded(true);
+  //     const handleError = () =>
+  //       setLoginError("Failed to load Google Sign-In script");
 
-      existingScript.addEventListener("load", handleLoad);
-      existingScript.addEventListener("error", handleError);
+  //     existingScript.addEventListener("load", handleLoad);
+  //     existingScript.addEventListener("error", handleError);
 
-      return () => {
-        existingScript.removeEventListener("load", handleLoad);
-        existingScript.removeEventListener("error", handleError);
-      };
-    }
+  //     return () => {
+  //       existingScript.removeEventListener("load", handleLoad);
+  //       existingScript.removeEventListener("error", handleError);
+  //     };
+  //   }
 
-    const script = document.createElement("script");
+  //   const script = document.createElement("script");
 
-    script.src = "https://accounts.google.com/gsi/client";
-    script.async = true;
-    script.defer = true;
+  //   script.src = "https://accounts.google.com/gsi/client";
+  //   script.async = true;
+  //   script.defer = true;
 
-    script.onload = () => setGisLoaded(true);
+  //   script.onload = () => setGisLoaded(true);
 
-    script.onerror = () =>
-      setLoginError("Failed to load Google Sign-In script");
+  //   script.onerror = () =>
+  //     setLoginError("Failed to load Google Sign-In script");
 
-    document.body.appendChild(script);
-  }, [isNative]);
+  //   document.body.appendChild(script);
+  // }, [isNative]);
+useEffect(() => {
+  if (isNative) return;
 
+  let active = true;
+
+  loadGoogleIdentityServices()
+    .then(() => {
+      if (active) {
+        setGisLoaded(true);
+        setLoginError(null);
+      }
+    })
+    .catch((error) => {
+      if (active) {
+        console.error("Google GIS loading error:", error);
+        setLoginError(error.message);
+      }
+    });
+
+  return () => {
+    active = false;
+  };
+}, [isNative]);
   // ---------------------------
   // 2. Restore stored session
   // ---------------------------
@@ -128,9 +209,11 @@ function GoogleLoginInner({ drive, onUserSignIn }) {
   // 3. Native Google login
   // ---------------------------
   const nativeGoogleSignIn = async () => {
-    if (pending) return;
+    if (loginInProgressRef.current) return;
 
-    setPending(true);
+loginInProgressRef.current = true;
+setPending(true);
+    
     setLoginError(null);
 
     try {
@@ -184,119 +267,126 @@ function GoogleLoginInner({ drive, onUserSignIn }) {
       setLoginError(
         error.message || "Google Sign-In failed."
       );
-    } finally {
-      setPending(false);
-    }
+    }finally {
+  loginInProgressRef.current = false;
+  setPending(false);
+}
   };
 
   // ---------------------------
   // 4. Web credential response
   // ---------------------------
-  const handleCredentialResponse = async (response) => {
-    if (pending) return;
 
-    setPending(true);
-    setLoginError(null);
-
-    try {
-      if (!response?.credential) {
-        throw new Error("Missing Google credential");
-      }
-
-      const webIdToken = response.credential;
-
-      let decoded;
-
-      try {
-        const tokenPayload = webIdToken.split(".")[1];
-
-        if (!tokenPayload) {
-          throw new Error("Missing token payload");
-        }
-
-        decoded = JSON.parse(
-          atob(
-            tokenPayload
-              .replace(/-/g, "+")
-              .replace(/_/g, "/")
-          )
-        );
-      } catch {
-        throw new Error("Invalid Google token format");
-      }
-
-      const payload = {
-        email: decoded?.email,
-        name: decoded?.name || decoded?.given_name,
-        googleId: decoded?.sub,
-        idToken: webIdToken,
-      };
-
-      if (!payload.email || !payload.googleId) {
-        throw new Error("Invalid Google user data");
-      }
-
-      await onUserSignIn?.(payload);
-
-      setSignedIn(true);
-    } catch (error) {
-      console.error("GOOGLE WEB LOGIN ERROR:", error);
-
-      setLoginError(error.message || "Login failed");
-    } finally {
-      setPending(false);
-    }
-  };
 
   // ---------------------------
   // 5. Initialize and render WEB Google button
   // ---------------------------
-  useEffect(() => {
-    if (isNative || !gisLoaded || signedIn) return;
+  // ---------------------------
+// 5. Initialize and render WEB Google button
+// ---------------------------
+useEffect(() => {
+  if (isNative || !gisLoaded || signedIn) return;
 
-    if (!window.google?.accounts?.id) return;
-    if (!googleButtonRef.current) return;
-
+  let active = true;
+const mountGoogleButton = async () => {
+  try {
     if (!CLIENT_ID) {
-      setLoginError("Google OAuth client ID is missing.");
-      return;
+      throw new Error("Google OAuth client ID is missing.");
     }
- initSocialLogin().then(()=>{
+
+    if (!active || !googleButtonRef.current) return;
+
+    if (!window.google?.accounts?.id) {
+      throw new Error("Google Identity Services is unavailable.");
+    }
+
     window.google.accounts.id.initialize({
       client_id: CLIENT_ID,
-      callback: handleCredentialResponse,
+      callback: (response) => {
+        credentialHandlerRef.current?.(response);
+      },
     });
 
-    googleButtonRef.current.innerHTML = "";
+    const container = googleButtonRef.current;
 
-    // window.google.accounts.id.renderButton(
-    //   googleButtonRef.current,
-    //   {
-    //     theme: "outline",
-    //     size: "large",
-    //     text: "signin_with",
-    //     width: 240,
-    //   }
-    // );
-window.google.accounts.id.renderButton(
-  googleButtonRef.current,
-  {
-    type: "standard",
-    theme: "outline",
-    size: "large",
-    text: drive ? "continue_with" : "signin_with",
-    shape: "pill",
-    logo_alignment: "center",
-    width: 160,
+    container.replaceChildren();
+
+    window.google.accounts.id.renderButton(container, {
+      type: "standard",
+      theme: "outline",
+      size: "large",
+      text: "signin_with",
+      shape: "pill",
+      logo_alignment: "center",
+      width: 160,
+    });
+
+  } catch (error) {
+    console.error("Google button initialization error:", error);
+
+    if (active) {
+      setLoginError(error.message);
+    }
   }
-);
-    return () => {
-      if (googleButtonRef.current) {
-        googleButtonRef.current.innerHTML = "";
-      }
-    };
-  })
-  }, [isNative, gisLoaded, signedIn, CLIENT_ID]);
+};
+  // const mountGoogleButton = async () => {
+  //   try {
+  //     if (!CLIENT_ID) {
+  //       throw new Error("Google OAuth client ID is missing.");
+  //     }
+
+  //     // await initSocialLogin();
+
+  //     if (!active || !googleButtonRef.current) return;
+
+  //     if (!window.google?.accounts?.id) {
+  //       throw new Error("Google Identity Services is unavailable.");
+  //     }
+
+  //     window.google.accounts.id.initialize({
+  //       client_id: CLIENT_ID,
+  //       callback: (response) => {
+  //         credentialHandlerRef.current?.(response);
+  //       },
+  //     });
+
+  //     if (!active || !googleButtonRef.current) return;
+
+  //     const container = googleButtonRef.current;
+
+  //     container.replaceChildren();
+
+  //     window.google.accounts.id.renderButton(container, {
+  //       type: "standard",
+  //       theme: "outline",
+  //       size: "large",
+  //       text: "signin_with",
+  //       shape: "pill",
+  //       logo_alignment: "center",
+  //       width: 160,
+  //     });
+
+  //   } catch (error) {
+  //     console.error("Google button initialization error:", error);
+
+  //     if (active) {
+  //       setLoginError(
+  //         error.message || "Unable to initialize Google Sign-In."
+  //       );
+  //     }
+  //   }
+  // };
+
+  mountGoogleButton();
+
+  return () => {
+    active = false;
+
+    if (googleButtonRef.current) {
+      googleButtonRef.current.replaceChildren();
+    }
+  };
+}, [isNative, gisLoaded, signedIn]);
 
   // ---------------------------
   // 6. UI
@@ -312,11 +402,11 @@ window.google.accounts.id.renderButton(
   return (
     <div className="flex flex-col justify-center items-center w-full min-h-full">
 
-      {isNative ? (
-        <div
+    {isNative? (<>
+            <div
           onClick={
-            !pending
-              ? () => {
+        
+            () => {
                   showPrompt({
                     message:
                       "Google Sign-In asks for permission to access Google Drive. We only read files you share. Not Required",
@@ -324,33 +414,25 @@ window.google.accounts.id.renderButton(
                     agree: nativeGoogleSignIn,
                     type: "prompt",
                   });
-                }
-              : undefined
-          }
-          className="bg-gray-200 btn rounded-full flex h-[4rem] w-[10rem] mt-8"
-        >
-          <IonRow>
-            <IonImg
-              src={Googlelogo}
-              className="max-h-5 max-w-5 mx-3 my-auto"
-            />
+                }}>
+ <img src={Googlelogo} className="max-h-5 max-w-5 mx-3 my-auto" />
+          <h6 className="text-black my-auto">
+            {drive ? "Access Google Drive" : "Sign in"}
+          </h6>
 
-            <IonText className="text-black my-auto">
-              {drive ? "Access Google Drive" : "Sign in"}
-            </IonText>
-          </IonRow>
-        </div>
-      ) : (
-        <div
-          ref={googleButtonRef}
-          className="flex justify-center mt-8"
+                </div>
+              
+    </>):<>
+    <div
+         ref={googleButtonRef}
+          className="flex justify-center py-2 mt-8"
         />
-      )}
+    </>}
 
       {loginError && (
-        <IonText color="danger" className="mt-3">
+        <h5 color="danger" className="mt-3">
           {loginError}
-        </IonText>
+        </h5>
       )}
     </div>
   );
@@ -364,3 +446,61 @@ export default function GoogleLogin(props) {
   );
 }
 
+
+
+
+let googleScriptPromise = null;
+
+function loadGoogleIdentityServices() {
+  if (window.google?.accounts?.id) {
+    return Promise.resolve();
+  }
+
+  if (googleScriptPromise) {
+    return googleScriptPromise;
+  }
+
+  googleScriptPromise = new Promise((resolve, reject) => {
+    let script = document.querySelector(
+      'script[src="https://accounts.google.com/gsi/client"]'
+    );
+
+    const handleLoad = () => {
+      if (window.google?.accounts?.id) {
+        resolve();
+      } else {
+        googleScriptPromise = null;
+        reject(new Error("Google Identity Services unavailable."));
+      }
+    };
+
+    const handleError = () => {
+      googleScriptPromise = null;
+      reject(new Error("Failed to load Google Sign-In script."));
+    };
+
+    if (script) {
+      script.addEventListener("load", handleLoad, { once: true });
+      script.addEventListener("error", handleError, { once: true });
+
+      // Handle scripts that loaded before listeners were attached.
+      if (window.google?.accounts?.id) {
+        resolve();
+      }
+
+      return;
+    }
+
+    script = document.createElement("script");
+    script.src = "https://accounts.google.com/gsi/client";
+    script.async = true;
+    script.defer = true;
+
+    script.addEventListener("load", handleLoad, { once: true });
+    script.addEventListener("error", handleError, { once: true });
+
+    document.head.appendChild(script);
+  });
+
+  return googleScriptPromise;
+}

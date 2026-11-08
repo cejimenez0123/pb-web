@@ -37,6 +37,7 @@ import Pill from "../../components/Pill";
 import ListPill from "../../components/page/ListPill";
 import SectionHeader from "../../components/pieces/SectionHeader";
 import PlumbButton from "../../components/profile/FollowButton";
+import { useAlert } from "../../core/useAlert";
 
 const TABS = {
   POSTS: "pages",
@@ -210,17 +211,15 @@ function ProfileContainer() {
 
   // Follow / unfollow
  const [isUpdatingFollow, setIsUpdatingFollow] = useState(false);
-
+const {showPrompt}=useAlert()
 const onClickFollow = async () => {
     console.log("[Follow] Handler reached");
-  if (
-    isUpdatingFollow ||
-    !profile?.id ||
-    !currentProfile?.id ||
-    profile.id === currentProfile.id
-  ) {
-    return;
-  }
+if(!currentProfile?.id){
+  showPrompt({message:"You need to join Plumbum frist!",agreeText:"Apply",
+    agree:()=>{
+        router.push(Paths.apply())
+  }})
+}
 
   setIsUpdatingFollow(true);
 
