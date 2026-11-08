@@ -296,13 +296,7 @@ useEffect(() => {
       (filter) => filter.key === selectedFilter
     )?.label ?? "Results";
 
-  /*
-   * Result renderer
-   *
-   * Native buttons provide keyboard interaction,
-   * focus handling, and accessible activation without
-   * manually recreating button behavior.
-   */
+  
 
 
   return (
@@ -312,7 +306,7 @@ useEffect(() => {
  
     >
       <ErrorBoundary>
-         <main className={[styles.pageShell.base].join(" ")}>
+         <main className={[styles.pageShell.base,styles.pageShell.padded].join(" ")}>
           {/* Search heading and input */}
 
           <header className={styles.pageShell.head}>
@@ -386,7 +380,7 @@ useEffect(() => {
           {/* Filters */}
 
           <div
-            className={styles.search.filterRow}
+            className={[styles.search.filterRow,styles.pageShell.body].join(" ")}
             role="group"
             aria-label="Filter search results"
           >
@@ -439,7 +433,7 @@ useEffect(() => {
                   </h2>
 
                   {personalResults.length > 0 ? (
-                    <div>
+                    <div className={[styles.pageShell.body].join(" ")}>
               { personalResults.map((result)=><ResultItem result={result} index={result.id}/>)}
                    </div>
                   ) : (
@@ -497,7 +491,7 @@ useEffect(() => {
             !searchError &&
             results.length > 0 && (
               <section
-                className={styles.search.section}
+                className={[styles.pageShell.body,"mb-4"].join(" ")}
                 aria-label="Search results"
               >
                 <h2 className={styles.search.sectionTitle}>
@@ -511,7 +505,7 @@ useEffect(() => {
                   </span>
                 </h2>
 
-                <div >
+           <div className={[styles.pageShell.body].join(" ")}>
                   {results.map((result)=>{
                 
                    return <ResultItem result={result} index={result.id}/>

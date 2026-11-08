@@ -49,7 +49,7 @@ console.log(item)
     return (
       <div
         key={`${result?.objectID}-${index}`}
-       className={styles.pageShell.row.outer+" my-2"}
+       className={styles.pageShell.row.outer+" border-plumb-mintLight/60  my-2"}
   
         onClick={() => handleResultClick(result)}
         aria-label={`Open ${typeLabel}: ${title}`}

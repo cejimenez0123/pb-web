@@ -505,118 +505,7 @@ const toggleHashtag = (tag) => {
   list,
   savedEvents,
 ]);
-// useEffect(() => {
-//   let source = list;
 
-//   if (selectedFilter === "plumbum") {
-//     source = list.filter((event) =>
-//       event.description?.includes("☀️")
-//     );
-//   } else if (selectedFilter === "saved") {
-//     source = savedEvents;
-//   } else if (EVENT_CATEGORIES[selectedFilter]) {
-//     source = list.filter((event) =>
-//       matchesEventCategory(event, selectedFilter)
-//     );
-//   }
-
-//   let filtered = source;
-
-//   if (selectedArea) {
-//     filtered = filtered.filter((event) =>
-//       event.area
-//         ?.toLowerCase()
-//         .includes(selectedArea.toLowerCase())
-//     );
-//   }
-
-//   if (searchTerm.trim()) {
-//     const lower = searchTerm.trim().toLowerCase();
-
-//     filtered = filtered.filter(
-//       (event) =>
-//         event.summary?.toLowerCase().includes(lower) ||
-//         event.hashtags?.some((tag) =>
-//           tag.toLowerCase().includes(lower)
-//         )
-//     );
-//   }
-
-//   if (selectedDateFilter !== "all") {
-//     filtered = filtered.filter((event) =>
-//       matchesDateFilter(
-//         getEventStartDate(event),
-//         selectedDateFilter
-//       )
-//     );
-//   }
-
-//   setEvents(filtered);
-//   setCurrentPage(1);
-// }, [
-//   selectedFilter,
-//   selectedDateFilter,
-//   selectedArea,
-//   searchTerm,
-//   list,
-//   savedEvents,
-// ]);
-  // useEffect(() => {
-  //   let source = list;
-
-  //   if (selectedFilter === "plumbum") {
-  //     source = list.filter((event) =>
-  //       event.description?.includes("☀️")
-  //     );
-  //   } else if (selectedFilter === "neighbourhood") {
-  //     source = list.filter(
-  //       (event) => !event.description?.includes("☀️")
-  //     );
-  //   } else if (selectedFilter === "saved") {
-  //     source = savedEvents;
-  //   }
-
-  //   let filtered = source;
-
-  //   if (selectedArea) {
-  //     filtered = filtered.filter((event) =>
-  //       event.area
-  //         ?.toLowerCase()
-  //         .includes(selectedArea.toLowerCase())
-  //     );
-  //   }
-
-  //   if (searchTerm.trim()) {
-  //     const lower = searchTerm.trim().toLowerCase();
-
-  //     filtered = filtered.filter(
-  //       (event) =>
-  //         event.summary?.toLowerCase().includes(lower) ||
-  //         event.hashtags?.some((tag) =>
-  //           tag.toLowerCase().includes(lower)
-  //         )
-  //     );
-  //   }
-
-  //   if (selectedDateFilter !== "all") {
-  //     filtered = filtered.filter((event) =>
-  //       matchesDateFilter(
-  //         getEventStartDate(event),
-  //         selectedDateFilter
-  //       )
-  //     );
-  //   }
-
-  //   setEvents(filtered);
-  //   setCurrentPage(1);
-  // }, [
-  //   selectedFilter,
-  //   selectedDateFilter,
-  //   selectedArea,
-  //   searchTerm,
-  //   list,
-  //   savedEvents,
-  // ]);
 
   const openGooglemaps = (event) => {
     if (!event.rawLocation) {
@@ -1116,29 +1005,7 @@ const toggleHashtag = (tag) => {
 
        
             </div>
-      {/* <div>
-        <label
-          htmlFor="calendar-event-search"
-          className={styles.search.}
-          xxxxxxx
-          // className={styles.text.metadata + " mb-2 block"}
-        >
-          Search events
-        </label>
 
-        <input
-          id="calendar-event-search"
-          type="search"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="Search by event or hashtag"
-          className={[
-            styles.input,
-            "text-base",
-            "focus-visible:outline-none",
-          ].join(" ")}
-        />
-      </div> */}
 
       <div>
         <h2 className={styles.text.title}>

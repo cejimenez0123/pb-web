@@ -180,7 +180,7 @@ body:"max-w-3xl mx-auto px-2  w-[100%]",
 base: [
   "relative font-open-sans" ,
   "flex flex-col",
-   "pt-24 pb-24",
+   "pt-20 pb-24",
   "w-[100%]",
   "min-w-[100%] min-h-[100%]",
   "overflow-hidden",
@@ -1777,8 +1777,8 @@ menuButton: [
   ].join(" "),
 
   mobileItem: [
-
-    "flex items-center text-[1.2rem]",
+    "px-2 py-1",
+    "flex items-center text-[1rem]",
 
 
     "leading-none",
@@ -2134,7 +2134,7 @@ text: {
 tabs: {
 
 pill: {
-  container: `w-full mt-4 min-w-0 max-w-4xl mx-auto`,
+  container: `w-[100%] mt-4 justify-center  min-w-0 px-2 max-w-4xl mx-auto`,
   wrapper: [
   "flex w-max  gap-1 items-center justify-start",
   "overflow-x-scroll overflow-x-contain",

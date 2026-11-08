@@ -42,6 +42,7 @@ export default function PaginatedList({
 
   return (
     <div
+ 
       className={`
         space-y-2
         bg-cream

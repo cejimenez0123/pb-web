@@ -3,8 +3,7 @@ import { IonContent, useIonViewDidLeave, useIonViewWillEnter, useIonRouter, IonB
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
-
-import { createFollow, deleteFollow } from "../../actions/FollowAction";
+import {createFollow,deleteFollow} from "../../actions/FollowAction"
 import { fetchProfile } from "../../actions/UserActions";
 import {
   getPublicProfilePages,
@@ -78,10 +77,9 @@ function ProfileContainer() {
   const [search, setSearch] = useState("");
   const [tab, setTab] = useState(TABS.POSTS);
   const [isLoading, setIsLoading] = useState(true);
-  const [isReady, setIsReady] = useState(false);
+
   const [following, setFollowing] = useState(null);
-  const [followerCount, setFollowerCount] = useState(0);
-  const [followingCount, setFollowingCount] = useState(0);
+
   const [isSelf, setIsSelf] = useState(false);
   const [locationName, setLocationName] = useState(
     "Location not specified"
@@ -157,7 +155,7 @@ function ProfileContainer() {
 
     const timeout = setTimeout(() => {
       setIsLoading(false);
-      setIsReady(true);
+      // setIsReady(true);
     }, 120);
 
     return () => clearTimeout(timeout);
@@ -175,8 +173,8 @@ function ProfileContainer() {
       dispatch(setCollections({ collections: profile.collections }));
     }
 
-    setFollowerCount(profile._count?.followers ?? 0);
-    setFollowingCount(profile._count?.following ?? 0);
+    // setFollowerCount(profile._count?.followers ?? 0);
+    // setFollowingCount(profile._count?.following ?? 0);
   }, [profile, dispatch]);
 
   useEffect(() => {
@@ -211,29 +209,51 @@ function ProfileContainer() {
   });
 
   // Follow / unfollow
-  const onClickFollow = debounce(() => {
-    if (!profile || !currentProfile) return;
-    if (profile.id === currentProfile.id) return;
+ const [isUpdatingFollow, setIsUpdatingFollow] = useState(false);
 
-    if (following) {
-      dispatch(deleteFollow({ follow: following })).then(() => {
-        setFollowerCount((prev) => Math.max(0, prev - 1));
-        setFollowing(null);
-      });
+const onClickFollow = async () => {
+    console.log("[Follow] Handler reached");
+  if (
+    isUpdatingFollow ||
+    !profile?.id ||
+    !currentProfile?.id ||
+    profile.id === currentProfile.id
+  ) {
+    return;
+  }
+
+  setIsUpdatingFollow(true);
+
+  try {
+    if (following?.id) {
+      await dispatch(
+        deleteFollow({ follow: following })
+      ).unwrap();
+
+      setFollowing(null);
+      setFollowerCount((prev) => Math.max(0, prev - 1));
     } else {
-      dispatch(
+      // const result = await dispatch(createFoll)
+      const result = await dispatch(
         createFollow({
           follower: currentProfile,
           following: profile,
         })
-      ).then((res) => {
-        checkResult(res, (payload) => {
-          setFollowerCount((prev) => prev + 1);
-          setFollowing(payload.follow);
-        });
-      });
+      ).unwrap();
+
+      if (!result?.follow) {
+        throw new Error("Follow record was not returned.");
+      }
+
+      setFollowing(result.follow);
+      setFollowerCount((prev) => prev + 1);
     }
-  }, 200);
+  } catch (error) {
+    console.error("Follow action failed:", error);
+  } finally {
+    setIsUpdatingFollow(false);
+  }
+};
 
   if (!profile || isLoading) {
     return (
@@ -369,7 +389,7 @@ function ProfileContainer() {
                     })}
                 </div>
               )}
-            </header>
+         
 
       
             <ReportContentDialog
@@ -411,19 +431,18 @@ function ProfileContainer() {
               </div>
             )}
          
-<div className={styles.pageShell.body}>
-  <FollowButton 
-  label={following?"Following":"Follow"}
-  following={following}
-
+<div className={""}>
+ <FollowButton
+  label={following ? "Following" : "Follow"}
+  following={!!following}
   isSelf={isSelf}
-
-    onClick={onClickFollow}
-    disabled={isSelf}
+  onClick={onClickFollow}
+  disabled={isSelf || isUpdatingFollow}
 />
 </div>
+   </header>
 <div className={styles.pageShell.body}>
-          
+       
             <div className={styles.profile.searchRow}>
               <input
                 type="search"
@@ -436,19 +455,21 @@ function ProfileContainer() {
 
        
             </div>
-               <section className={"mx-4 "+styles.pageShell.body}>
-                       <div             className={styles.tabs.pill.container+" justify-center "+styles.tabs.pill.wrapper}>
-       
+      
+         
+ 
+            <div             className={styles.tabs.pill.container+" justify-around pb-4 "}>
            
               <TabBar
+           
                 tabs={tabs}
                 active={tab}
                 onChange={setTab}
               />
       
-</div>
+ </div>  
             {/* Tab content */}
-            <div className=" mx-4" >
+            <div className={styles.pageShell.body} >
               {tab === TABS.POSTS && (
                 <>
                                    <div className=" mx-4" >
@@ -496,6 +517,7 @@ function ProfileContainer() {
           </h2>
 
         </div>
+   
                   <PaginatedList
                     cacheKey={`collections:${id}`}
                     fetcher={getPublicProfileCollections}
@@ -556,7 +578,7 @@ function ProfileContainer() {
             </section>
             
           </div>
-          </section>
+          {/* </section> */}
           </div>
           </main>
      </ErrorBoundary>

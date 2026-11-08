@@ -19,7 +19,7 @@ function NavbarContainer({ isDesktop,currentProfile }) {
   const isSearchPage =
     location?.pathname === '/search';
     const isNative = Capacitor.isNativePlatform()
-    const {dialog}=useDialog()
+   
   return (
     <>
       {isDesktop ? (

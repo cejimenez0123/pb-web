@@ -58,8 +58,7 @@ const description =truncate(story.description, Math.floor(300), {
       onClick={() => onSelect(story)}
       className={styles.hash.card+
         ` 
-border
-border-1 border-plumb-darkSurface
+
 justify-between
         dark:bg-base-bg
         dark:hover:bg-base-bgDark/70

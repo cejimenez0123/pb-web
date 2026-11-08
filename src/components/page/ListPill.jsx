@@ -4,7 +4,7 @@ export default function ListPill({ item, onClick }) {
 
   return (
     <li
-      key={usingItem?.id}
+      key={usingItem?.id??item.id}
       className="group list-none w-[100%]"
     >
       <div

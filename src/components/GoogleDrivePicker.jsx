@@ -22,6 +22,7 @@ export default function GoogleDrivePicker({ onFilePicked, onReauthenticateNeeded
 
 
 const nativeGoogleSignIn = async () => {
+
     try {
 
       const user = await SocialLogin.login({

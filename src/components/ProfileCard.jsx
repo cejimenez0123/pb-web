@@ -145,9 +145,7 @@ setProfilePic(src)
              </span>
           
                 :<div className="skeleton max-w-36 object-fit max-h-36  mb-2 rounded-lg"/>}
-{/*           
-        <h5 className="text-[0.8em]
-            ">{profile.username}</h5> */}
+
             </div>     <div>
             <div className="px-3 pt-3 flex flex-col justify-between  ">
           
@@ -155,15 +153,11 @@ setProfilePic(src)
         </div>
         </div>
          <div className="mt-3 mx-auto w-[20em] justify-between flex flex-row">
-                {/* <FollowDiv following={following} onClickFollow={onClickFollow}/>
-                <div onClick={openDialog} className="text-emerald-800 text-center mx-4">
-                    <h5 className="text-[1rem] my-auto">Followers</h5>
-                <h6>{profile.followers.length}</h6>
-                </div> */}
+             
         </div>
            
             </div>
-        {/* </div> */}
+    
   
         </div>)
     }

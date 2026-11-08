@@ -487,7 +487,7 @@ purpose=" Select stories or Rooms to
       
             </div>
    
-            <div             className={styles.tabs.pill.container+" justify-around pb-4 "+styles.tabs.pill.wrapper}>
+            <div             className={styles.tabs.pill.container+" justify-around pb-4 "}>
            
               <TabBar
            

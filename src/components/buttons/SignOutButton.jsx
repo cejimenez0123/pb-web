@@ -6,7 +6,7 @@ import Paths from "../../core/paths";
 import styles from "../../styles/style";
 import { signOutAction } from "../../actions/UserActions";
 
-export default function SignOutButton({ mobile = false }) {
+export default function SignOutButton({ mobile = false,onClick }) {
   const dispatch = useDispatch();
   const router = useIonRouter();
 
@@ -44,7 +44,7 @@ export default function SignOutButton({ mobile = false }) {
           className={styles.navbar.mobileItem}
 
     >
-      Sign out
+      <h6 className="text-[1rem]"> Sign out</h6>
     </button>
   );
 }

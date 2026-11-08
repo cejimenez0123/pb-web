@@ -5,6 +5,10 @@ import { useDispatch } from "react-redux";
 import styles from "../../styles/style";
 import { SocialLogin } from "@capgo/capacitor-social-login";
 import { signOutAction } from "../../actions/UserActions";
+import { Capacitor } from "@capacitor/core";
+import SignOutButton from "../buttons/SignOutButton";
+import SignInButton from "./SignInButton";
+import BrowserNavItem from "./BroswerNavItem";
 
 function BrowserMobileNavbar({
   currentProfile,
@@ -25,17 +29,15 @@ const {
   const dispatch = useDispatch()
   const isLoggedIn = !!currentProfile;
 
-  const closeMenu = () => {
-    setMenuOpen(false);
-  };
+
 
   const navigateAndClose = (handler) => {
-    closeMenu();
+    setMenuOpen(false);
     handler();
   };
 
   const handleSignOut = async () => {
-     closeMenu();
+  setMenuOpen(false);
     try{
          dispatch(
       signOutAction({
@@ -132,14 +134,14 @@ catch (error) {
         className='w-[100%] dark:bg-plumb-dark-surface   '
           aria-label="Mobile navigation"
         >
-          <MobileBrowserNavItem
+          <BrowserNavItem
             label="Home"
             onClick={() =>
               navigateAndClose(handleHome)
             }
           />
 
-          <MobileBrowserNavItem
+          <BrowserNavItem
             label="Discover"
             onClick={() =>
               navigateAndClose(handleDiscover)
@@ -147,7 +149,7 @@ catch (error) {
           />
 
           {isLoggedIn && (
-            <MobileBrowserNavItem
+            <BrowserNavItem
               label="Write"
               onClick={() =>
                 navigateAndClose(handleWrite)
@@ -156,7 +158,7 @@ catch (error) {
             />
           )}
 
-          <MobileBrowserNavItem
+          <BrowserNavItem
             label="Events"
             onClick={() =>
               navigateAndClose(handleEvents)
@@ -164,7 +166,7 @@ catch (error) {
           />
 
           {isLoggedIn && (
-            <MobileBrowserNavItem
+            <BrowserNavItem
               label="You"
               onClick={() =>
                 navigateAndClose(handleProfile)
@@ -172,27 +174,12 @@ catch (error) {
             />
           )}
 
-          {!isLoggedIn && (
-            <MobileBrowserNavItem
-              label="About"
-              onClick={() =>
-                navigateAndClose(handleAbout)
-              }
-            />
-          )}
 
-          {!isLoggedIn && (
-            
-            <MobileBrowserNavItem
-              label="Sign in"
-              onClick={() =>
-                navigateAndClose(handleLogin)
-              }
-            />
-        
-          )}
-       {isLoggedIn &&  <MobileBrowserNavItem label={"Sign Out"} onClick={handleSignOut}/>}
-     
+           <div className='  hover:bg-white/10 dark:hover:bg-plumb-mint/15 dark:bg-plumb-dark-surface bg-emerald-800 border-b border-1 border-plumb-darkText/30 py-2 text-plumb-ink w-[100%] hover:bg-plumb-mintHover'>
+   
+{isLoggedIn?<SignOutButton onClick={()=>setMenuOpen(false)} mobile={true} />:<SignInButton mobile={true} onClick={()=>setMenuOpen(false)} />}
+</div>
+
         </nav>
       )}
 
@@ -200,40 +187,3 @@ catch (error) {
   );
 }
 export default BrowserMobileNavbar
-
-function MobileBrowserNavItem({
-  label,
-  onClick,
-  active = true,
-}) {
-  return (
-    <div className='    "hover:bg-white/10 dark:hover:bg-plumb-mint/15 dark:bg-plumb-dark-surface bg-emerald-800 border-b border-1 border-plumb-darkText/30 py-2 text-plumb-ink w-[100%] hover:bg-plumb-mintHover'>
-    <button
-      type="button"
-      onClick={onClick}
-            // text-base
-      className={`
- 
-        flex
-        items-center
-        px-2
-        py-1
-        text-white
- bg-transparent
-        leading-none
-        text-left
-        tracking-[-0.02em]
-        transition-colors
-        ${
-          active
-            ? 'text-text-primary'
-            : 'text-text-secondary hover:text-text-primary'
-        }
-      `}
-      aria-current={active ? 'page' : undefined}
-    >
-      <h6 className='text-[1rem]'>{label}</h6>
-    </button>
-    </div>
-  );
-}

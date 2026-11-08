@@ -1,27 +1,61 @@
+
+
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import followRepo from "../data/followRepo";
 
+const createFollow = createAsyncThunk(
+  "follow/createFollow",
+  async ({ follower, following }, { rejectWithValue }) => {
+    try {
+     console.log("[createFollow] Calling repository");
 
+const data = await followRepo.create({ follower, following });
 
-const createFollow = createAsyncThunk("follow/createFollow",    async ({follower,following},thunkApi) => {
-    try{
-    let data = await followRepo.create({follower,following})
-    return {follow:data.follow}
+console.log("[createFollow] Repository returned:", data);
 
-    }catch(error){
-    
-        return {error}
+      if (data?.error || !data?.follow) {
+        return rejectWithValue(
+          data?.error?.message || "Unable to create follow."
+        );
+      }
+
+      return { follow: data.follow };
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.error?.message ||
+        error.response?.data?.error ||
+        error.message ||
+        "Unable to create follow."
+      );
     }
-})
-const deleteFollow = createAsyncThunk("follow/deleteFollow",    async ({follow},thunkApi) => {
-    try{
-    let data = await followRepo.delete({id:follow.id})
-    return {profile:data.profile,followed:data.followed}
+  }
+);
 
-    }catch(error){
-        
-        return {profile:null,error}
+const deleteFollow = createAsyncThunk(
+  "follow/deleteFollow",
+  async ({ follow }, { rejectWithValue }) => {
+    try {
+      const data = await followRepo.delete({ id: follow.id });
+
+      if (data?.error) {
+        return rejectWithValue(
+          data.error?.message || "Unable to delete follow."
+        );
+      }
+
+      return {
+        profile: data.profile,
+        followed: data.followed,
+      };
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.error?.message ||
+        error.response?.data?.error ||
+        error.message ||
+        "Unable to delete follow."
+      );
     }
-})
+  }
+);
 
-export {deleteFollow,createFollow}
+export { deleteFollow, createFollow };

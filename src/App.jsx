@@ -55,14 +55,11 @@ import Paths from "./core/paths";
 import Enviroment from "./core/Enviroment.js";
 import CURRENT_TERMS_VERSION from "./core/CURRENT_TERMS_VERSION.jsx";
 import PageWrapper from "./core/PageWrapper.jsx";
-import { watchBackground } from "./core/getbackground.jsx";
 
-import ErrorBoundary from "./ErrorBoundary.jsx";
 import PrivateRoute from "./PrivateRoute";
 
 import Alert from "./components/Alert.jsx";
 import Dialog from "./components/Dialog.jsx";
-import NavbarContainer from "./container/NavbarContainer";
 import SearchDialog from "./components/SearchDialog";
 import initSocialLogin from "./components/initSocialLogin.jsx";
 
@@ -251,28 +248,8 @@ function App(props) {
     url: "https://plumbum.app",
   });
 
-  /*
-   * Do this once, rather than on every App render.
-   * If watchBackground returns a cleanup function, React invokes it on
-   * unmount.
-   */
-  useEffect(() => {
-    const cleanup = watchBackground?.();
+ 
 
-    return () => {
-      if (typeof cleanup === "function") {
-        cleanup();
-      }
-    };
-  }, []);
-
-  /*
-   * classList.add is safe repeatedly, but this belongs in an effect instead
-   * of running in the component function on every render.
-   */
-  useEffect(() => {
-    document.documentElement.classList.add("dark");
-  }, []);
 
   /*
    * Social-login setup should run once per client-ID configuration,
@@ -879,14 +856,7 @@ function RootRoute() {
                     )}
                   />
 
-                  {/*
-                   * IMPORTANT:
-                   * Put specific story editor routes before the generic
-                   * story/page route below.
-                   *
-                   * Existing story:
-                   * /story/:id/:type/edit
-                   */}
+              
                   <Route
                     exact
                     path="/story/:id/:type/edit"

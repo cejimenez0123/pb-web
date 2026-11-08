@@ -25,7 +25,8 @@ export default function CalendarContainer() {
     >
       <ErrorBoundary>
        <main className={[styles.pageShell.base].join(" ")}>
-      <div className={`${WRAP} ${PAGE_Y}`}>
+  
+      <div className={styles.pageShell.head}>
         <p
           className="
             open-sans-medium
@@ -91,9 +92,11 @@ export default function CalendarContainer() {
             </button>
           </p>
         )}
-
+        </div>
+<div className={styles.pageShell.body}>
         <CalendarEmbed />
-      </div>
+        </div>
+      {/* </div> */}
       </main>
       </ErrorBoundary>
     </IonContent>

@@ -17,7 +17,10 @@ const TabBar = ({
       aria-label={ariaLabel}
   
     >
-      <div className={styles.tabs.pill.container+" px-2 "+styles.tabs.pill.wrapper}>
+      <div 
+      className={[styles.tabs.pill.wrapper].join(" ")}
+  
+      >
         {tabs.map((tab) => {
           const isActive = active === tab.key;
 

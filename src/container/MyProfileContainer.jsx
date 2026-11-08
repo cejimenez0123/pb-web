@@ -200,7 +200,7 @@ function MyProfileContainer() {
   </div>
 </section>
 
-                      <div             className={styles.tabs.pill.container+" "+styles.tabs.pill.wrapper}>
+                      <div             className={styles.tabs.pill.container}>
        
            
               <TabBar

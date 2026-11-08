@@ -160,21 +160,7 @@ const searchMultipleIndexes = createAsyncThunk(
     }
   }
 );
-// const searchMultipleIndexes = createAsyncThunk(
-//   "users/searchMultipleIndexes",
-//   async (params, thunkApi) => {
-//     const { query, filters = [],profileId} = params;
 
-//     try {
-//       const data = await algoliaRepo.search(query, profileId,filters);
-
-//       return { results: data.results??[] };
-//     } catch (error) {
-//       console.error("Search failed:", error);
-//       return thunkApi.rejectWithValue({ error: "Search failed" });
-//     }
-//   }
-// );
 const setCurrentProfile = createAction("user/setCurrentProfile", (params)=> {
 
 

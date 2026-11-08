@@ -1,48 +1,19 @@
-// import { useState } from "react";
-// import styles from "../../styles/style";
-
-// const FollowButton = ({isSelf,currentProfile,following,onClick}) => {
-
-  
-//     if(isSelf){
-//       return    <div
-    
-//       className={styles.button.base+styles.button.accent+" mx-4 "}
-     
-        
-       
-  
-//     >
-//       {"Self"}
-//     </div>
-//     }
-//   return (
-//     <button
-//       onClick={onClick}
-//       className={styles.button.base+" "+(following?styles.button.primary:styles.button.secondary)}
-    
-//     >
-//       {following? "Following" : "Follow"}
-//     </button>
-//   );
-// };
-// export default FollowButton
 
 import styles from "../../styles/style";
 
-const PlumbButton = ({
-  isSelf,
+const FollowButton = ({
+  isSelf = false,
   label,
-  following,
+  following = false,
   onClick,
   disabled = false,
 }) => {
-
   if (isSelf) {
     return (
       <div
         className={
           styles.button.base +
+          " " +
           styles.button.accent +
           " mx-4"
         }
@@ -52,24 +23,26 @@ const PlumbButton = ({
     );
   }
 
+  const isFollowing = Boolean(following);
+
   return (
     <button
       type="button"
       onClick={onClick}
       disabled={disabled}
-      aria-pressed={following}
+      aria-pressed={isFollowing}
+      aria-label={isFollowing ? "Unfollow profile" : "Follow profile"}
       className={
         styles.button.base +
         " " +
-        (following
+        (isFollowing
           ? styles.button.primary
           : styles.button.secondary)
       }
     >
-      {label}
-      {/* {following ? "Following" : "Follow"} */}
+      {label || (isFollowing ? "Following" : "Follow")}
     </button>
   );
 };
 
-export default PlumbButton
+export default FollowButton;

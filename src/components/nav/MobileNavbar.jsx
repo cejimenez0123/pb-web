@@ -45,7 +45,9 @@ const {
           {isLoggedIn ? (
             <SignOutButton mobile />
           ) : (
-            <SignInButton mobile />
+            <SignInButton onClick={()=>{
+              
+            }} mobile />
           )}
         </div>
       </header>
