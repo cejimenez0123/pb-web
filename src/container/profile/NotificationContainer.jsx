@@ -4,9 +4,10 @@ import { fetchNotifcations, markNotificationsRead } from "../../actions/ProfileA
 import NotificationItem from "../../components/profile/NotificationItem";
 import { IonList, IonContent } from "@ionic/react";
 import SectionHeader from "../../components/pieces/SectionHeader";
+import styles from "../../styles/style";
 
-const WRAP = "max-w-2xl mx-auto ";
-const SECTION = "space-y-4 pt-10 ";
+
+const SECTION = styles.pageShell.body
 
 export default function NotificationContainer({ currentProfile }) {
   const dispatch = useDispatch();
@@ -30,15 +31,16 @@ export default function NotificationContainer({ currentProfile }) {
   );
 
   return (
-    <IonContent className="page-content">
-      <div className="px-4 bg-cream dark:bg-base-bgDark">
+    <IonContent  fullscreen={true}
+    scrollY={true}>
+      <main className={styles.pageShell.base+" "+styles.pageShell.scroll}>
         {/* Today */}
         {todayItems.length > 0 && (
-          <section className={`${SECTION} bg-cream dark:bg-base-bgDark`}>
+          <section className={`${SECTION}  `}>
             <SectionHeader title="Today" />
-            <div className="space-y-2 bg-cream dark:bg-base-bgDark">
+            <div className="space-y-2 ">
               {todayItems.map((item, i) => (
-                <div className="py-2 bg-cream dark:bg-base-bgDark" key={i}>
+                <div className=" " key={i}>
                   <NotificationItem
                     item={item}
                     lastNotified={currentProfile.lastNotified}
@@ -51,28 +53,28 @@ export default function NotificationContainer({ currentProfile }) {
 
         {/* Earlier */}
         {olderItems.length > 0 && (
-          <section className={`${SECTION} bg-cream dark:bg-base-bgDark`}>
+          <section className={`${SECTION}`}>
             <SectionHeader title="Earlier" />
-            <IonList >
+        <div className="flex flex-col">
               {olderItems.map((item, i) => (
-                <div className="py-2 bg-cream dark:bg-base-bgDark" key={i}>
+                <div className="py-2 " key={i}>
                   <NotificationItem
                     item={item}
                     lastNotified={currentProfile.lastNotified}
                   />
                 </div>
               ))}
-            </IonList>
+            </div>
           </section>
         )}
 
         {/* Empty state */}
         {items.length === 0 && (
-          <div className="text-center bg-cream dark:bg-base-bgDark dark:text-cream text-text-secondary mt-12 text-lg">
+          <div className="text-center   mt-12 text-lg">
             No notifications yet. Relax, nothing new today!
           </div>
         )}
-      </div>
+  </main>
     </IonContent>
   );
 }

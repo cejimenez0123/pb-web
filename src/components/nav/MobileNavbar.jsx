@@ -18,7 +18,7 @@ const {
   handleProfile,
   handleAbout,
   handleSearch,
-
+handleNotifications
 } = useNavbarNavigation(currentProfile);
 
   const isLoggedIn = !!currentProfile;
@@ -105,7 +105,10 @@ const {
             label="Events"
             onClick={handleEvents}
           />
-
+    {isLoggedIn && <MobileNavItem
+            label="Notifications"
+            onClick={handleNotifications}
+          />}
           {isLoggedIn ? (
             <MobileNavItem
               label="You"

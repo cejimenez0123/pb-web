@@ -10,7 +10,7 @@ const {currentProfile}= useSelector(state=>state.users)
   const navigate = (path, direction = "forward") => {
     router.push(path, direction);
   };
-
+ const handleNotifications = () => navigate(Paths.notifications);
   const handleSearch = () => navigate("/search");
   const handleWrite = () => navigate(Paths.write);
   const handleHome = () => router.push("/");
@@ -40,6 +40,7 @@ const {currentProfile}= useSelector(state=>state.users)
     handleProfile,
     handleAbout,
     handleLogin,
+    handleNotifications
  
   };
 }

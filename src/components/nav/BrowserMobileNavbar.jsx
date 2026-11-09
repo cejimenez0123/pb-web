@@ -22,11 +22,12 @@ const {
   handleWrite,
   handleEvents,
   handleProfile,
-  handleAbout,
+
   handleSearch,
-  handleLogin,
+
+  handleNotifications
 } = useNavbarNavigation(currentProfile);
-  const dispatch = useDispatch()
+ 
   const isLoggedIn = !!currentProfile;
 
 
@@ -36,32 +37,7 @@ const {
     handler();
   };
 
-  const handleSignOut = async () => {
-  setMenuOpen(false);
-    try{
-         dispatch(
-      signOutAction({
-        profile: currentProfile,
-      }))
-         if (Capacitor.isNativePlatform()) {
-        await SocialLogin.logout({
-          provider: 'google',
-        });
-      }
-    
-    }
-catch (error) {
-      console.error(
-        'Social login logout failed:',
-        error
-      );
-    
-    }
 
-
-    
-
-  };
   return (
     <div    >
 
@@ -134,6 +110,7 @@ catch (error) {
         className='w-[100%] dark:bg-plumb-dark-surface   '
           aria-label="Mobile navigation"
         >
+          
           <BrowserNavItem
             label="Home"
             onClick={() =>
@@ -164,7 +141,12 @@ catch (error) {
               navigateAndClose(handleEvents)
             }
           />
-
+         {isLoggedIn && <BrowserNavItem
+            label={(<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="24px" width="24px" fill="#FFFFFF"><path d="M4,19V17H6V10Q6,7.93 7.25,6.31T10.5,4.2V3.5q0-0.63 0.44-1.06T12,2t1.06,0.44T13.5,3.5V4.2q2,0.5 3.25,2.11T18,10v7h2v2H4Zm8-7.5ZM12,22q-0.82,0-1.41-0.59T10,20h4q0,0.82-0.59,1.41T12,22ZM8,17h8V10q0-1.65-1.17-2.82T12,6T9.18,7.18T8,10v7Z"/></svg>)}
+            onClick={() =>
+              navigateAndClose(handleNotifications)
+            }
+          />}
           {isLoggedIn && (
             <BrowserNavItem
               label="You"

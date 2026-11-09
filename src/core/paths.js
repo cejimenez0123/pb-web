@@ -81,6 +81,6 @@ const Paths ={
     profile:{route:()=>{return `/profile/:id/view`},
             createRoute:(id)=>{return `/profile/${id}/view`}},
     myProfile:`/profile`,
-    notifications:()=>{return"/profile/alert"}
+    notifications:"/profile/alert"
 }
 export default Paths

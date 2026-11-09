@@ -10,7 +10,7 @@ function SignInButton({ mobile = false,onClick }) {
     <button
       type="button"
       onClick={() =>{
-        onClick()
+       onClick && onClick()
         router.push(Paths.login, 'forward')}
       }
           className={styles.navbar.mobileItem}

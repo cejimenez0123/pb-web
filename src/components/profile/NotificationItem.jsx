@@ -16,7 +16,7 @@ export default function NotificationItem({ item, lastNotified }) {
   }
 
   const containerClasses =
-    "border-emerald-600 border-opacity-50 border-2 rounded-2xl p-4  shadow-lg  bg-base-bg flex flex-col justify-center w-full max-w-[40rem] mx-auto cursor-pointer hover:bg-emerald-50 transition duration-300 ease-in-out";
+    "border-emerald-600 border-opacity-50 bg-plumb-canvas dark:bg-transparent border-2 rounded-2xl p-4  shadow-lg  flex flex-col justify-center w-full max-w-[40rem] mx-auto cursor-pointer transition duration-300 ease-in-out";
 
   const renderHeader = (profile, rightText) => (
     <div className="flex flex-row items-center justify-between gap-4 w-full">
@@ -109,7 +109,7 @@ case "comment": {
           onClick={() => router.push(Paths.page.createRoute(comment.story.id))}
           className={containerClasses}
         >
-          <div className="flex flex-row bg-base-bg items-center justify-between gap-3 w-full">
+          <div className="flex flex-row items-center justify-between gap-3 w-full">
             <div className="flex items-center gap-2 truncate">
               <ProfileCircle profile={comment.profile} color="emerald-700" />
               <span className="text-soft dark:text-cream text-[0.75rem] open-sans-medium truncate">

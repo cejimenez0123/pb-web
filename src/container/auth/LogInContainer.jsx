@@ -59,7 +59,7 @@ const promptTermsAcceptance = useTermsAcceptance();
 
   const {
     openDialog,
-    resetDialog,
+  
     closeDialog,
     dialog,
   } = useDialog();
@@ -366,14 +366,14 @@ const promptTermsAcceptance = useTermsAcceptance();
 <div className="text-center p-8">
 
           {/* Primary action */}
-          <div
+          <button
   type="submit"
   disabled={pending}
   className={"dark:border dark:border-2 bg-plumb-mint dark:bg-transparent dark:border-plumb-mintLight min-w-[90%] hover:ring-offset-1 hover:ring-1 rounded-full "+styles.button.base}
  
 >
  <p className=" text-plumb-darkText dark:text-plumb-mintLight text-l py-3">{pending ? "Logging in..." : "Log In"}</p> 
-</div>
+</button>
 
 </div>
         </form>

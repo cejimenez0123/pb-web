@@ -76,12 +76,13 @@ if (bookmarkRelation) {
             ),
           }));
 
-          setBookmarked(false);
+     
 
           showAlert({
             message: "Removed from your archive.",
             type: "success",
           });
+               setBookmarked(false);
         },
         (error) => {
           console.error(error);
@@ -112,12 +113,13 @@ if (bookmarkRelation) {
             setArchiveCol(updatedCollection);
           }
 
-          setBookmarked(true);
 
           showAlert({
             message: "Saved to your archive.",
             type: "success",
           });
+
+          setBookmarked(true);
         },
         (error) => {
           console.error(error);
@@ -140,59 +142,7 @@ if (bookmarkRelation) {
     setSavingBookmark(false);
   }
 };
-//  const handleBookmark = async () => {
-//   if (bookmarked || savingBookmark) return;
 
-//   if (!archiveCol?.id) {
-//     showAlert({
-//       message: "Your archive isn't available yet. Please try again.",
-//       type: "error",
-//     });
-//     return;
-//   }
-
-//   if (!page?.id) return;
-
-//   setSavingBookmark(true);
-
-//   try {
-//     const result = await dispatch(
-//       addStoryListToCollection({
-//         id: archiveCol.id,
-//         list: [page.id],
-//         profile,
-//       })
-//     );
-
-//     checkResult(
-//       result,
-//       () => {
-//         setBookmarked(true);
-
-//         showAlert({
-//           message: "Saved to your archive.",
-//           type: "success",
-//         });
-//       },
-//       (err) => {
-//         console.log(err)
-//         showAlert({
-//           message: "Couldn't save this story. Please try again.",
-//           type: "error",
-//         });
-//       }
-//     );
-//   } catch (error) {
-//     console.log("x")
-//     console.log(error)
-//     showAlert({
-//       message: error?.message || "Couldn't save this story. Please try again.",
-//       type: "error",
-//     });
-//   } finally {
-//     setSavingBookmark(false);
-//   }
-// };
 
   const onClickShare = () => {
     openDialog({
@@ -274,7 +224,7 @@ if (bookmarkRelation) {
 >
   {savingBookmark ? (
     <span className="loading loading-spinner loading-sm" />
-  ) : bookmarked ? (
+  ) : !bookmarked ? (
     // Filled bookmark
     <svg
       viewBox="0 0 24 24"
@@ -298,37 +248,7 @@ if (bookmarkRelation) {
     </svg>
   )}
 </button>
- {/* <button
-  type="button"
-  onClick={handleBookmark}
-  disabled={bookmarked || savingBookmark}
-  aria-label={
-    savingBookmark
-      ? "Saving to archive"
-      : bookmarked
-        ? "Saved to archive"
-        : "Save to archive"
-  }
-  aria-pressed={bookmarked}
-  className={`${styles.button.iconUtility} ${
-    bookmarked ? styles.button.utilityActive : ""
-  } disabled:cursor-default disabled:opacity-70`}
->
-  {savingBookmark ? (
-    <span className="loading loading-spinner loading-sm" />
-  ) : bookmarked?(
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      height="28px"
-      width="28px"
-      fill="currentColor"
-      aria-hidden="true"
-    >
-      <path d="M5,21V5Q5,4.17 5.59,3.59T7,3h6q0,0.57 0,1q0,0.42 0,1H7V17.95l5-2.15l5,2.15V11q0.57 0 1,0t1,0V21l-7-3L5,21ZM7,5h6H12H7ZM17,9V7H15V5h2V3h2V5h2V7H19V9H17Z" />
-    </svg>
-  ):<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="24px" width="24px" fill="currentColor"><path d="M5,21V5Q5,4.17 5.59,3.59T7,3H17q0.82,0 1.41,0.59T19,5V21l-7-3L5,21Z"/></svg>}
-</button> */}
+
       </div>
     </div>
   );

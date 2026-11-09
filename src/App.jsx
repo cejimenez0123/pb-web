@@ -721,7 +721,7 @@ function RootRoute() {
 
                   <Route
                     exact
-                    path={Paths.notifications()}
+                    path={Paths.notifications}
                     render={() => (
                       <PageWrapper>
                         <PrivateRoute>
