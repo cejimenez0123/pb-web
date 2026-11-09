@@ -33,7 +33,7 @@ function AppleSignInButton({ onUserSignIn }) {
     >
       <div className="flex flex-row mx-aut my-auto">
       <img src={applelogo} className='max-h-5 my-auto mr-2 max-w-5' />
-      <h6 className='text-sm my-auto '>Sign in with Apple</h6>
+      <h6 className='text-sm my-auto '>Sign in</h6>
       </div>
     </div>
   );

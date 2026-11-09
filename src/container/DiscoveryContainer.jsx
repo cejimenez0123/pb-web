@@ -194,7 +194,7 @@ useEffect(()=>{
               title={"Start somewhere."}
               description={" A few pieces people have intentionally left open."}
               eyebrow={"Open Shelf"}
-              buttonClass={" dark:bg-transparent bg-plumb-blueSea border-plumb-blueSea text-plumb-surface dark:text-plumb-blueSea"}
+              buttonClass={" bg-transparent  dark:text-plumb-surface"}
               onAction={()=>{
  handleLookAgain()
               }}

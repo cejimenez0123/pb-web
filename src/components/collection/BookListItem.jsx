@@ -34,23 +34,13 @@ function BookListItem({ book }) {
     <div
       onClick={navigateToBook}
       className={styles.hash.card+" h-[12em]"}
-//  className={[
-//         // Fixed golden ratio dimensions — 16rem wide, 10rem tall (1:1.618)
-//         "w-[16rem] h-[10rem]",
-//         "flex-shrink-0",          // prevents squishing in horizontal scroll
-//         "flex flex-col justify-between",
-//         "rounded-xl border border-purple dark:border-purple",
-//         "bg-base-bg dark:bg-base-bgDark",
-//         "shadow-md mx-2 p-4",
-//         "cursor-pointer transition-all duration-200",
-//         "active:scale-[0.98] hover:shadow-lg",
-//       ].join(" ")}  style={{ WebkitTapHighlightColor: "transparent" }}
+
     >
 
-      <h3 className="font-bold text-plumb-mint  dark:text-plumb-darkText text-lg truncate">
+      <h3 className="font-bold text-plumb-ink dark:text-plumb-surface text-lg truncate">
         {shortName(book.title, 30)}
       </h3>
-      <p className="text-sm text-plumb-mint  dark:text-plumb-darkText opacity-80 line-clamp-3">
+      <p className="text-sm text-plumb-ink  dark:text-plumb-surface  opacity-80 line-clamp-3">
         {book?.purpose?.length <= 65
           ? book.purpose
           : book.purpose.slice(0, 65) + "..."}

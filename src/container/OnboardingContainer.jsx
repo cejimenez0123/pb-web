@@ -43,7 +43,7 @@ const onboardingStyles = {
 
   field: [
     styles.input,
-    "block !w-[100%] max-w-none ",
+    "block !w-[100%]  max-w-none ",
     "min-h-12 px-4 py-3.5",
     "text-base leading-relaxed",
     "border-plumb-borderStrong dark:border-plumb-darkBorderStrong",
@@ -160,7 +160,7 @@ const onboardingStyles = {
     styles.button.base,
     styles.button.cancel,
     styles.button.large,
-    "min-h-12 w-full px-5",
+    "min-h-12 w-full px-5 rounded-full",
   ].join(" "),
 
   linkButton: [
@@ -341,7 +341,7 @@ function OptionChips({
               active ? onboardingStyles.optionSelected : "",
             ].join(" ")}
           >
-            <span
+            {/* <span
               aria-hidden="true"
               className={
                 active
@@ -350,7 +350,7 @@ function OptionChips({
               }
             >
               {active ? "✓" : ""}
-            </span>
+            </span> */}
             <span>{option}</span>
           </button>
         );
@@ -387,7 +387,7 @@ function NavButtons({
   loading = false,
 }) {
   return (
-    <div className="mt-auto flex flex-col gap-3 pt-6 sm:flex-row">
+    <div className="mt-auto flex  flex-col gap-3 pt-6 sm:flex-row">
       {onBack && (
         <button
           type="button"
@@ -418,7 +418,7 @@ function OtherInput({ selected, value, onChange, placeholder }) {
   return (
     <div className="mt-3">
       <input
-        className={onboardingStyles.field}
+        className={onboardingStyles.field+" rounded-full"}
         type="text"
         value={value || ""}
         onChange={(e) => onChange(e.target.value)}
@@ -562,7 +562,7 @@ function Step1({
           <Question label="What name do you want us to use?" id="fullName">
             <input
               id="fullName"
-              className={onboardingStyles.field}
+              className={onboardingStyles.field+" rounded-full"}
               type="text"
               value={local.fullName || ""}
               onChange={(e) =>
@@ -576,7 +576,7 @@ function Step1({
           <Question label="What's your email?" id="email">
             <input
               id="email"
-              className={onboardingStyles.field}
+              className={onboardingStyles.field+" rounded-full"}
               type="email"
               value={local.email || ""}
               onChange={(e) =>
@@ -590,7 +590,7 @@ function Step1({
           <Question label="Instagram" helper="Optional" id="igHandle">
             <input
               id="igHandle"
-              className={onboardingStyles.field}
+              className={onboardingStyles.field+" rounded-full"}
               type="text"
               value={local.igHandle || ""}
               onChange={(e) =>
@@ -1109,9 +1109,8 @@ export default function OnboardingContainer() {
   return (
     <IonContent
       ref={contentRef}
-      className="page-content"
-      // style={{ "--padding-bottom": "10rem" }}
-      fullscreen
+   scrollY={true}
+      fullscreen={true}
     >
       <main className={styles.pageShell.base+" "}>
       <div className="min-h-full w-[100%] max-w-xl mx-auto bg-plumb-surface dark:bg-plumb-dark-canvas">

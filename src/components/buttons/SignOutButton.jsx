@@ -16,6 +16,7 @@ export default function SignOutButton({ mobile = false,onClick }) {
 
   const handleSignOut = async () => {
     try {
+      onClick()
       if (Capacitor.isNativePlatform()) {
         await SocialLogin.logout({
           provider: 'google',
