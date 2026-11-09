@@ -1,9 +1,7 @@
 import { PageType } from "./constants";
 
 
-const isClip = import.meta.env.MODE === "clip";  // or use a VITE flag
 
-const basename = isClip ? "/clip" : "/";
 const Paths ={
     terms:"/terms",
     newsletter:()=>`/newsletter`,

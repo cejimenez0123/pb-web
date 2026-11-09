@@ -14,10 +14,10 @@ export default function WriteLanding({
     onFileSelected,
   onGoogleFilePicked,
 }) {
-  const [view, setView] = useState("grid");
+
 
   return (
-    <div lassName="">
+    <div className="">
       <div className="mx-auto w-[100%] max-w-5xl px-6 py-16 sm:px-10 sm:py-20 lg:px-12 lg:py-24">
 
         {/* Header */}
@@ -36,12 +36,10 @@ export default function WriteLanding({
         </header>
 
         {/* Begin */}
-        <button
+        <div
           type="button"
           onClick={onBegin}
-             // text-base
-            // font-medium
-            // text-cream    bg-soft   rounded-full
+           
           className={`
             mt-10
           
@@ -62,7 +60,7 @@ export default function WriteLanding({
           `}
         >
           Begin something new
-        </button>
+        </div>
 {/* <ImportWorkSection
   onFileSelected={onFileSelected}
   onGoogleFilePicked={onGoogleFilePicked}
@@ -75,13 +73,7 @@ export default function WriteLanding({
 
             <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
               <div>
-                {/* <p className="text-xs uppercase tracking-[0.12em] text-soft/55">
-                  Your work
-                </p>
-
-                <h2 className="mt-2 font-serif text-[1.9rem] font-bold leading-tight sm:text-[2.25rem]">
-                  Pick up where you left off
-                </h2> */}
+               
                 <SectionHeader eyebrow={"Your work"}
                 title={"Pick up where you left off"}/>
               </div>
@@ -91,83 +83,30 @@ export default function WriteLanding({
          </div>
 
             {/* Search */}
-            <div className="relative w-[100%] max-w-2xl">
-            
-
-              <div
-              className={styles.input.search.searchWrap}
-                // className="
-                //   flex
-                //   w-[100%]
-                //   items-center
-                //   rounded-full
-                //   border
-                //   border-2
-                //   border-plumb-mintLight
-                //   bg-cream/50
-                //   transition-colors
-                //   focus-within:border-soft/40
-                //   focus-within:bg-cream
-                //   dark:bg-base-bgDark/40
-                //   dark:focus-within:bg-base-bgDark/70
-                // "
-              >
-                <span
-                  aria-hidden="true"
-                  className={styles.input.search.searchLabel+" bg-transparent"}
-                  // className="pl-5 text-soft/45 dark:text-cream/40"
-                >
-                  ⌕
-                </span>
-
+            {/* <div className="relative w-[100%] max-w-2xl"> */}
+          
+<div>
+             <label className="w-full sm:max-w-[18rem]">
+          <span className="sr-only">
+            Search
+          </span>
+              
                 <input
                   id="story-search"
                   type="search"
                   value={search}
                   onChange={(e) => onSearch(e.target.value)}
                   placeholder="Search your writing..."
-                  className={styles.input.search.input}
-                  // className="
-                  //   w-[100%]
-                  //   bg-plumb-canvas
-                  //   dark:bg-transparent
-                  //   px-3
-                  //   py-3.5
-                  //   text-sm
-                  //   text-soft
-                  //   placeholder:text-soft/40
-                  //   focus:outline-none
-                  //   dark:text-cream
-                  //   dark:placeholder:text-cream/35
-                  // "
+                  className={styles.profile.mine.search+" "}
+          
                 />
 
-                {search && (
-                  <button
-                    type="button"
-                    onClick={() => onSearch("")}
-                    aria-label="Clear search"
-                    className="
-                      mr-2
-                      shrink-0
-                      rounded-full
-                      px-3
-                      py-1.5
-                      text-xs
-                      text-soft/50
-                      transition-colors
-                      hover:bg-soft/10
-                      hover:text-soft
-                      dark:text-cream/45
-                      dark:hover:text-cream
-                    "
-                  >
-                    Clear
-                  </button>
-                )}
+              
+                </label>
               </div>
-            </div>
+         
           </div>
+        
 
           {/* Results */}
           {loading ? (
@@ -190,9 +129,7 @@ export default function WriteLanding({
           ) : stories.length > 0 ? (
             <div
               className={" w-[100%] mt-8 flex flex-col gap-4"
-                // view === "grid"
-                //   ? "mt-10 grid w-[100%] grid-cols-1 gap-5 sm:grid-cols-2 lg:gap-7"
-                //   : "mt-10 flex w-[100%] flex-col gap-4"
+          
               }
             >
               {stories.map((story) => (

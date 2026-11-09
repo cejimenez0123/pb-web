@@ -97,7 +97,7 @@ justify-between
           >
             {story.title || "Untitled"}
           </h3>
-<div className="       min-h-[8em]">
+<div className="   min-h-[6em]    sm:min-h-[8em]">
           {story.description && (
             <p
               className={`
@@ -107,12 +107,9 @@ justify-between
                 leading-relaxed
                 text-soft/55
                 dark:text-cream/55
-                ${
-                  // isGrid
-                  //   ? "line-clamp-2 text-sm"
-                    // : 
-                    "hidden max-w-xl text-sm sm:block"
-                }
+              
+                    hidden max-w-xl text-sm sm:block"
+                
               `}
             >
           {description}

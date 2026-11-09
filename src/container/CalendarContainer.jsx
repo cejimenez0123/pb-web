@@ -11,7 +11,7 @@ const WRAP = "max-w-3xl mx-auto px-5";
 const PAGE_Y = "pt-12 pb-16";
 
 export default function CalendarContainer() {
-  const isClip = import.meta.env.MODE === "clip";
+
   const currentProfile = isClip
     ? null
     : useSelector((state) => state.users.currentProfile);

@@ -39,7 +39,7 @@ function ToolbarButton({ title, icon, action, active, disabled }) {
       title={title}
       onMouseDown={(e) => { e.preventDefault(); if (!disabled) action(); }}
       className={[
-        "flex items-center justify-center min-w-8 min-h-8 rounded-lg text-sm transition-all duration-150",
+        "flex items-center dark:bg-transparent dark:text-transparent justify-center min-w-8 min-h-8 rounded-lg text-sm transition-all duration-150",
         active
           ? ""
           : "",
@@ -64,9 +64,8 @@ function ToolbarSelect({ value, options, onChange, title, className = "" }) {
       onMouseDown={(e) => e.stopPropagation()}
       className={[
  
-        "text-xs px-1 py-1 rounded-lg border border-1 dark:bg-transparent ",
-        // "bg-plumb-surface  text-text-primary",
-        // "focus:outline-none focus:ring-2 focus:ring-soft cursor-pointer",
+        "text-xs  bg-plumb-canvas text-plumb-ink dark:text-transparent  px-1 py-1 rounded-lg border border-1 dark:bg-transparent ",
+    
         className,
       ].join(" ")}
     >
