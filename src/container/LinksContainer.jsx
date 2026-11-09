@@ -1,13 +1,13 @@
 
-import { useContext, useLayoutEffect } from "react";
+
 import LinkNode from "../components/LinkNode";
 import Paths from "../core/paths";
-import logo from "../images/icon.ico"
 import events from "../images/icons/event.svg"
 import pen from "../images/icons/pen.svg"
 import anvil from "../images/icons/anvil.png"
 import { IonContent } from "@ionic/react";
 import ErrorBoundary from "../ErrorBoundary";
+import styles from "../styles/style";
 let domain = import.meta.env.VITE_DOMAIN
 if(import.meta.env.VITE_NODE_ENV=="dev"){
   domain=import.meta.env.VITE_DEV_DOMAIN
@@ -24,11 +24,13 @@ export default function LinksContainer(props){
  const showThirdSaturdayNode = isThirdSaturday();
 
 
-    return(<ErrorBoundary>
-     <IonContent fullscreen={true} scrollY={true} style={{"--padding-bottom":"6rem"}}>
-     
-            <h2 className="text-xl lora-bold mx-auto mt-12 text-emerald-700 mb-8 text-center">Keep up with us!<p>Click links below to discover more!</p></h2>
-            <ul className={`md:mx-auto  w-page-mobile-content grid gap-2 grid-cols-2 md:flex md:flex-col lg:w-page-content mx-auto md:mx-4`}>
+    return(
+     <IonContent fullscreen={true} scrollY={true} >
+      <ErrorBoundary>
+     <main className={[styles.pageShell.base,styles.pageShell.scroll].join(" ")}>
+      <div className={styles.pageShell.body}>
+            <h2 className={styles.text.heading}>Keep up with us!<p>Click links below to discover more!</p></h2>
+            <ul className={``}>
                 
                 
        
@@ -55,14 +57,7 @@ export default function LinksContainer(props){
                     title={"Founder's Cohort"}
                     description={"Capped at 200 members. Be part of Plumbum, and access exlusive benifits as we grow."}/>
                     </li> 
-                  {/* <LinkNode image={clinic}
-                  name={""}
-                  links={[{name:"Book a Session",url:"https://calendly.com/solemilio-decibao"},
-             
-                  ]}
-                  title={"Creative Writing Clinics "}
-                  description={"Connect with our founder, Sol Emilio, to discuss your writing and explore the support that fits your project."}/>
-              */}
+         
                     <li>
                    
                <LinkNode image={events}
@@ -83,7 +78,9 @@ export default function LinksContainer(props){
 />
                </li> 
             </ul>
-    
+            </div>
+            </main>
+    </ErrorBoundary>
     </IonContent>
-</ErrorBoundary>)
+)
 }

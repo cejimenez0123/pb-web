@@ -27,20 +27,7 @@ const DATE_FILTERS = [
   { key: "thisWeekend", label: "This weekend" },
   { key: "nextWeekend", label: "Next weekend" },
 ];
-// const FILTERS = [
-//   { key: "all", label: "All events" },
-//   { key: "openMics", label: "🎤 Open Mics" },
-//   { key: "djDance", label: "🎧 DJ & Dance" },
-//   { key: "workshops", label: "✍️ Workshops" },
-//   { key: "plumbum", label: "Plumbum" },
-//   { key: "saved", label: "Saved" },
-// ];
-// const FILTERS = [
-//   { key: "all", label: "All" },
-//   { key: "plumbum", label: "Plumbum" },
-//   { key: "neighbourhood", label: "Neighbourhood" },
-//   { key: "saved", label: "Saved" },
-// ];
+
 
 const AREAS = [
   { label: "Downtown", emoji: "🏙️" },

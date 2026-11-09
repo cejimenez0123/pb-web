@@ -27,14 +27,9 @@ export default {
       'grid-mobile-content':"45.8vw",
 
   // New standardized widths
-  'content-narrow': '31rem',
-  'content-standard': '48rem',
-  'content-wide': '55rem',
+
 
   // Page layout
-  'page-max': '50em',
-  'page-fluid': '97vw',
-  'page-content-fluid': '95vw',
 
   // Grid layout
   'grid-column': '31.6vw',

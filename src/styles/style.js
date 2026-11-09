@@ -1643,6 +1643,16 @@ collection: {
 },
 
 navbar: {
+  header:  [
+  "fixed top-0 left-0 right-0 z-[100]",
+  "flex flex-row items-center justify-between",
+  "w-[100%] box-border",
+  "px-[4%]",
+  "min-h-[calc(3.5rem+env(safe-area-inset-top,0px))]",
+  "pt-[env(safe-area-inset-top,0px)]",
+  "bg-plumb-mintHover dark:bg-plumb-dark-surface",
+  "border-b border-plumb-mint dark:border-plumb-darkBorder",
+].join(" "),
   desktop: [
     "w-[100%] pl-4 min-h-20",
     "flex items-center",
@@ -1685,7 +1695,7 @@ menuButton: [
     " gap-1 flex flex-col",
     "bg-plumb-mintHover dark:bg-plumb-dark-surface",
 
-  // "min-h-8 ",
+
    
     "z-40",
   ].join(" "),
@@ -1699,11 +1709,11 @@ menuButton: [
   mobileInner: [
     "w-full",
     "flex items-center justify-between",
-    // "px-4 py-3",
+  
   ].join(" "),
 
   wordmark: [
-  
+    "text-base",
     "font-serif",
     "font-semibold",
     "leading-none",
@@ -1779,13 +1789,15 @@ menuButton: [
   ].join(" "),
 
   mobileItem: [
-    "px-2 py-1",
-    "flex items-center text-[1rem]",
+ "my-auto mx-auto flex-1 font-open-sans",
+    // "mx-auto items-center text-base",
 
 
-    "leading-none",
-    "text-left",
-    "tracking-[-0.02em]",
+
+    "min-w-[3em]",
+    // "leading-none",
+    "text-center",
+    // "tracking-[-0.02em]",
     "text-plumb-darkText bg-transparent dark:text-plumb-surface",
 
     "transition-colors duration-150",
@@ -1803,6 +1815,7 @@ menuButton: [
   ].join(" "),
 mobileNative: [
   "fixed",
+  "flex flex-row justify-between px-4",
   "top-0",
   "left-0",
   "right-0",
@@ -1818,18 +1831,17 @@ mobileNative: [
 ].join(" "),
 
 mobileNativeInner: [
-  "flex",
-  "w-[100%]",
+  "flex flex-row",
+  "w-[86%]",
+  "mx-auto",
   "min-h-14",
-  "items-center",
   "justify-between",
-  "px-4",
+  "",
 ].join(" "),
 
 mobileNativeWordmark: [
   "bg-transparent",
-  "font-serif",
-  "text-lg",
+ 
   "font-semibold",
   "tracking-tight",
 "text-plumb-darkText dark:text-plumb-mintLight",
@@ -1842,23 +1854,7 @@ mobileNativeWordmark: [
   "rounded-md",
 ].join(" "),
 
-
-  mobileNativeItem: [
-    "flex flex-1",
-    "min-w-0 min-h-14",
-    "items-center justify-center",
-    "px-1 py-3",
-    "text-sm sm:text-base",
-    "leading-none",
-    "tracking-[-0.02em]",
-    "text-plumb-mintLight",
-    "transition-colors duration-150",
-    "hover:text-white",
-    "focus-visible:outline-none",
-    "focus-visible:ring-2",
-    "focus-visible:ring-inset",
-    "focus-visible:ring-plumb-focus",
-  ].join(" "),
+mobileNativeItem:" px-2 font-serif  text-plumb-surface my-auto  text-base bg-transparent",
 
   mobileNativeItemActive: [
     "text-white",
@@ -2206,7 +2202,7 @@ scrollDown: {
     "z-[60]",
     "rounded-full px-4 py-2",
     "font-semibold shadow-lg transition-colors duration-300",
-    "bg-plumb-ink text-plumb-paper",
+    "bg-plumb-mint text-plumb-paper",
     "hover:bg-plumb-mintHover",
     "dark:bg-plumb-dark-surface dark:text-plumb-darkText",
     "dark:hover:bg-plumb-dark-surface",

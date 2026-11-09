@@ -13,9 +13,9 @@ function SignInButton({ mobile = false,onClick }) {
        onClick && onClick()
         router.push(Paths.login, 'forward')}
       }
-          className={styles.navbar.mobileItem}
+           className={styles.navbar.mobileNativeItem}
     >
-    <h6 className="text-[1rem]">Sign in</h6> 
+    <h6 className="text-base">Sign in</h6> 
     </button>
   );
 }

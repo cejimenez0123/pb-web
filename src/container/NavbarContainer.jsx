@@ -31,7 +31,7 @@ function NavbarContainer({ isDesktop,currentProfile }) {
           currentProfile={currentProfile}
           showSearch={!isSearchPage}
         />:
-  
+
         <BrowserMobileNavbar  showSearch={!isSearchPage} currentProfile={currentProfile}/>
       )}
     </>

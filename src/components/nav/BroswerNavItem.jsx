@@ -11,11 +11,11 @@ function BrowserNavItem({
       onClick={onClick}
             // text-base
       className={`
- 
+ font-serif
         flex
         items-center
         px-2
-        py-1
+     
         text-white
  bg-transparent
         leading-none

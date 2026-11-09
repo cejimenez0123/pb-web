@@ -3,6 +3,7 @@ import Capacitor
 import FirebaseCore
 import GoogleSignIn
 import FirebaseMessaging
+import UserNotifications
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 

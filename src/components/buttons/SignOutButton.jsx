@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import Paths from "../../core/paths";
 import styles from "../../styles/style";
 import { signOutAction } from "../../actions/UserActions";
+import { Capacitor } from "@capacitor/core";
 
 export default function SignOutButton({ mobile = false,onClick }) {
   const dispatch = useDispatch();
@@ -42,7 +43,7 @@ export default function SignOutButton({ mobile = false,onClick }) {
     <button
       type="button"
       onClick={handleSignOut}
-          className={styles.navbar.mobileItem}
+    className={styles.navbar.mobileNativeItem}   
 
     >
       <h6 className="text-[1rem]"> Sign out</h6>

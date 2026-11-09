@@ -1,11 +1,10 @@
+
 import { useState } from "react";
 import useNavbarNavigation from "../../core/useNavbarNavigation";
 import SearchButton from "./SearchButton";
 import { useDispatch } from "react-redux";
 import styles from "../../styles/style";
-import { SocialLogin } from "@capgo/capacitor-social-login";
-import { signOutAction } from "../../actions/UserActions";
-import { Capacitor } from "@capacitor/core";
+
 import SignOutButton from "../buttons/SignOutButton";
 import SignInButton from "./SignInButton";
 import BrowserNavItem from "./BroswerNavItem";
