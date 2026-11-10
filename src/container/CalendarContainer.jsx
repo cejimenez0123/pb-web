@@ -7,14 +7,10 @@ import Paths from "../core/paths";
 import styles from "../styles/style";
 import ErrorBoundary from "../ErrorBoundary";
 
-const WRAP = "max-w-3xl mx-auto px-5";
-const PAGE_Y = "pt-12 pb-16";
 
 export default function CalendarContainer() {
 
-  const currentProfile = isClip
-    ? null
-    : useSelector((state) => state.users.currentProfile);
+  const currentProfile =  useSelector((state) => state.users.currentProfile);
 
   const router = useIonRouter();
 

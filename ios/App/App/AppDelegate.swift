@@ -3,7 +3,6 @@ import Capacitor
 import FirebaseCore
 import GoogleSignIn
 import FirebaseMessaging
-import UserNotifications
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
@@ -88,19 +87,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Feel free to add additional processing here, but if you want the App API to support
         // tracking app url opens, make sure to keep this call
         return ApplicationDelegateProxy.shared.application(application, continue: userActivity, restorationHandler: restorationHandler)
-    }
-    func application(
-        _ application: UIApplication,
-        configurationForConnecting connectingSceneSession: UISceneSession,
-        options: UIScene.ConnectionOptions
-    ) -> UISceneConfiguration {
-        let configuration = UISceneConfiguration(
-            name: "Default Configuration",
-            sessionRole: connectingSceneSession.role
-        )
-
-        configuration.delegateClass = SceneDelegate.self
-        return configuration
     }
 
 }
