@@ -26,6 +26,7 @@ import PlumbHead from "../head.jsx";
 import TabBar from "../../components/TabBar.jsx";
 import SelectedItems from "../../components/collection/SelectableItems.jsx";
 import SelectableItem from "../../components/collection/SelectableItem.jsx";
+import usePaginatedResource from "../../core/usePaginatedResource.jsx";
 
 const filterTypes = {
   filter: "Filter",
@@ -166,6 +167,7 @@ export default function AddToCollectionContainer() {
       ],
     }
   );
+  
 
   /*
    * IDs already inside the target Room.
@@ -334,8 +336,12 @@ if (storyList.length > 0) {
   }
 };
 
-
-
+const colRes = usePaginatedResource({cacheKey:`collection:room-${colInView.id}`,
+fetcher:getMyCollections,
+pageSize:8})
+const pageRes = usePaginatedResource({cacheKey:`collection:page-${colInView.id}`,
+fetcher:getMyStories,
+pageSize:8})
 
   if (!canSee || !canAdd) {
     return <NoPermissionUI />;
@@ -346,7 +352,7 @@ if (storyList.length > 0) {
       <IonContent >
       <main 
       className={styles.pageShell.base}
-      // className="min-h-[100dvh] bg-plumb-surface  dark:bg-base-bgDark">
+     
         ><div className="mx-auto max-w-[50em] px-4 py-12">
           <div className="animate-pulse space-y-4">
             <div className="h-8 rounded-xl bg-gray-200 dark:bg-plumb-surface Dark" />
@@ -409,8 +415,7 @@ purpose=" Select stories or Rooms to
                   ,     <div>
                     <span className="my-auto">
                 <p  className={styles.text.muted+" text-center mx-8"}
-                // className="text-sm font-medium  text-center mx-8 text-gray-800 ">
-                >
+                 >
                   {selectedCount === 0
                     ? "Nothing selected"
                     : `${selectedCount} selected`}
@@ -516,7 +521,8 @@ purpose=" Select stories or Rooms to
 
    
       <PaginatedList
-        cacheKey={`add-stories-${colInView.id}`}
+      resource={pageRes}
+  
         fetcher={getMyStories}
         pageSize={8}
         className="space-y-2"
@@ -615,8 +621,8 @@ purpose=" Select stories or Rooms to
 
       {/* Available collections */}
       <PaginatedList
-        cacheKey={`add-collections-${colInView.id}`}
-        fetcher={getMyCollections}
+      resource={colRes}
+       
         pageSize={8}
         className="space-y-2"
         renderItem={(collection) => {

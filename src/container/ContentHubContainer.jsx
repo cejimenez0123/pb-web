@@ -8,13 +8,10 @@ import { PageType } from "../core/constants.js";
 import { useDialog } from "../domain/usecases/useDialog.jsx";
 
 import CreateCollectionForm from "../components/collection/CreateCollectionForm.jsx";
-import UpcomingEventsSection from "../components/events/UpcomingEventsSection.jsx";
-
 import styles from "../styles/style.js";
 import ErrorBoundary from "../ErrorBoundary.jsx";
 import RoomsPreviewSection from "../components/collection/RoomsPreviewSection.jsx";
 import OpenWorkSection from "../components/OpenWorkSection.jsx";
-import { Feature } from "framer-motion";
 import FeaturedEventSection from "../components/events/FeaturedEventSection.jsx";
 import { useDispatch } from "react-redux";
 import { getMyStories } from "../actions/StoryActions.jsx";

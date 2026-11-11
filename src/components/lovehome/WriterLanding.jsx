@@ -40,31 +40,11 @@ export default function WriteLanding({
           type="button"
           onClick={onBegin}
            
-          className={`
-            mt-10
-          
-         
-            px-7
-            py-4
-         ${styles.button.primary}
-            transition-all
-            duration-200
-            hover:-translate-y-0.5
-            hover:bg-emerald-900
-            focus:outline-none
-            focus:ring-2
-            focus:ring-soft
-            focus:ring-offset-2
-            focus:ring-offset-cream
-            dark:focus:ring-offset-base-bgDark
-          `}
+ className={[styles.button.base,styles.button.primary," my-4"].join(" ")}
         >
           Begin something new
         </div>
-{/* <ImportWorkSection
-  onFileSelected={onFileSelected}
-  onGoogleFilePicked={onGoogleFilePicked}
-/> */}
+
         {/* Existing work */}
         <section className="mt-28 sm:mt-32">
 
@@ -137,7 +117,7 @@ export default function WriteLanding({
                   key={story.id}
                   story={story}
                   view={""}
-                  // view={view}
+                 
                   onSelect={onSelectStory}
                 />
               ))}

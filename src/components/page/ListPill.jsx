@@ -1,10 +1,10 @@
-export default function ListPill({ item, onClick }) {
+export default function ListPill({ key, item, onClick }) {
   const usingItem = item?.collection || item?.story;
   const title = usingItem?.title?.trim() || "Untitled";
 
   return (
     <li
-      key={usingItem?.id??item.id}
+      key={key??usingItem?.id??item.id}
       className="group list-none w-[100%]"
     >
       <div

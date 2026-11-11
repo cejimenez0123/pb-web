@@ -3,7 +3,7 @@ import ProfileCircle from "../components/profile/ProfileCircle";
 import styles from "../styles/style";
 
 function PlumbHead({isWorkshop=null,buttons=[],label=null,onClick,title="Untitled",backText="Rooms",type,purpose="",isPrivate=false,profile=null}){
-    const router = useIonRouter()
+
     return( <section className={styles.pageShell.head}>
           <div className={`w-full max-w-[52rem] mt-4 mx-auto px-4 sm:px-6 lg:px-8" pt-10 pb-8 sm:pt-14`}>
             <button

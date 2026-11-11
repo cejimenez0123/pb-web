@@ -1,48 +1,32 @@
 
-
+import { Fragment } from "react";
 import PaginationControls from "../PaginationControls";
-import usePaginatedResource from "../../core/usePaginatedResource";
 
 export default function PaginatedList({
-  cacheKey,
-  fetcher,
-  pageSize = 20,
+  resource,
+ 
   renderItem,
-  params = {},
-  search = "",
   emptyState = null,
   className = "",
-  enabled = true,
-
-  // "controls" | "infinite" | "none"
   pagination = "controls",
 }) {
+  
   const {
-    page,
+    items = [],
+    page = 1,
     setPage,
-    items,
-    totalPages,
-    loading,
-    hasMore,
-  } = usePaginatedResource({
-    cacheKey,
-    fetcher,
-    pageSize,
-    params,
-    search,
-    enabled,
-    infinite: pagination === "infinite",
-  });
+    totalPages = 1,
+    loading = false,
+    hasMore = false,
+  } = resource ?? {};
 
   const loadMore = () => {
     if (loading || !hasMore) return;
-
     setPage(page + 1);
   };
 
   return (
     <div
- 
       className={`
         space-y-2
         bg-cream
@@ -63,13 +47,17 @@ export default function PaginatedList({
           </div>
         )
       )}
-<div className=" gap-2 flex w-[100%] flex-col">
-      {items.map((item, index) => (
-    
-          <>{renderItem(item, index)}</>
-    
-      ))}
-</div>
+
+      {items.length > 0 && (
+        <div className="flex w-[100%] flex-col gap-2">
+          {items.map((item, index) => (
+            <Fragment key={item?.id ?? index}>
+              {renderItem(item, index)}
+            </Fragment>
+          ))}
+        </div>
+      )}
+
       {items.length > 0 && pagination === "controls" && (
         <PaginationControls
           page={page}
@@ -79,26 +67,20 @@ export default function PaginatedList({
         />
       )}
 
-      {items.length > 0 && pagination === "infinite" && hasMore && (
-        <div className="flex justify-center py-8">
-          <button
-            type="button"
-            onClick={loadMore}
-            disabled={loading}
-            className="
-             
-              pb-1
-              text-sm
-              text-gray-600
-              transition-colors
-           
-              disabled:opacity-40
-            "
-          >
-            {loading ? "Loading…" : "Load more"}
-          </button>
-        </div>
-      )}
+      {items.length > 0 &&
+        pagination === "infinite" &&
+        hasMore && (
+          <div className="flex justify-center py-8">
+            <button
+              type="button"
+              onClick={loadMore}
+              disabled={loading}
+              className="pb-1 text-sm text-gray-600 transition-colors disabled:opacity-40"
+            >
+              {loading ? "Loading…" : "Load more"}
+            </button>
+          </div>
+        )}
     </div>
   );
 }

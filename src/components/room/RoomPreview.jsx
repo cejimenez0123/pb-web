@@ -24,8 +24,8 @@ function formatRoomType(type) {
   );
 }
 
-export default function RoomPreview({ room }) {
-  const router = useIonRouter();
+export default function RoomPreview({ room,router}) {
+
 
   if (!room) return null;
 

@@ -307,9 +307,9 @@ useEffect(() => {
     >
       <ErrorBoundary>
          <main className={[styles.pageShell.base,styles.pageShell.padded].join(" ")}>
-          {/* Search heading and input */}
+       
 
-          <header className={styles.pageShell.head}>
+          <header className={styles.pageShell.head+" mt-4 pt-8"}>
             <h1 className={styles.search.title}>
               Search
             </h1>

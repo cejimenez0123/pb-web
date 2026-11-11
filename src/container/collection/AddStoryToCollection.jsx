@@ -30,6 +30,8 @@ import Pill from "../../components/Pill";
 import shortName from "../../core/shortName";
 import { useDialog } from "../../domain/usecases/useDialog";
 import styles from "../../styles/style";
+import usePaginatedResource from "../../core/usePaginatedResource";
+import EmptyState from "../../components/general/EmptyState";
 
 // ── Helpers ──────────────────────────────────────────
 
@@ -236,11 +238,19 @@ function NoPermissionUI() {
 }
 
 // ── Main Component ───────────────────────────────────
-
+const PAGE_SIZE=8
 export default function AddStoryToCollection() {
   const router = useIonRouter();
   const dispatch = useDispatch();
 
+  // const 
+  // cacheKey={`add-item-${itemType}-${item.id}-collections`}
+  //                 fetcher={getMyCollections}
+  //                 pageSize={8}
+  //                 className="space-y-2"
+  //                 renderItem={renderCollection}
+  //                 search={search.trim()}
+  //                 emptyState={<EmptyCollections />}
   const { id, type } = useParams();
 
   const itemType = type || "story";
@@ -266,8 +276,14 @@ export default function AddStoryToCollection() {
     resetDialog,
   } = useDialog();
 
-  // ── Load selected item ─────────────────────────────
-
+   const resource = usePaginatedResource({
+    cacheKey:`add-item-${itemType}-${id}-collections`,
+    fetcher:getMyCollections,
+    search:search,
+    enabled:true, 
+    infinite:true,
+    pageSize:PAGE_SIZE
+  })
   useEffect(() => {
     let cancelled = false;
 
@@ -420,9 +436,9 @@ export default function AddStoryToCollection() {
   return (
     <IonContent fullscreen={true}
     scrollY={true}>
-      <main className={styles.pageShell.base+" "+styles.pageShell.scroll}>
+      <main className={styles.pageShell.base}>
         <ErrorBoundary>
-          <div className={styles.addToCollection.wrap}>
+          <div className={styles.pageShell.head}>
        
  <button
                   type="button"
@@ -497,13 +513,14 @@ export default function AddStoryToCollection() {
 
             {/* Existing Rooms */}
 
-          
+          </div>
+          <div className={styles.pageShell.body}>
       
               <div id="existing-rooms-heading">
                 <CollectionHeader />
               </div>
   <section aria-labelledby="existing-rooms-heading"
-          className={styles.pageShell.body+ ""}>
+          className={styles.pageShell.body}>
      
                 <label
                   htmlFor="room-search"
@@ -533,16 +550,20 @@ export default function AddStoryToCollection() {
                 </div>
      
 
-              <div className={styles.addToCollection.list}>
-                <PaginatedList
-                  cacheKey={`add-item-${itemType}-${item.id}-collections`}
-                  fetcher={getMyCollections}
-                  pageSize={8}
-                  className="space-y-2"
-                  renderItem={renderCollection}
-                  search={search.trim()}
-                  emptyState={<EmptyCollections />}
+              <div className={styles.pageShell.base}>
+                   <PaginatedList
+                 renderItem={renderCollection}
+                 emptyState={ <EmptyState
+              text={
+                search
+                  ? "No matching stories."
+                  : "No stories yet."
+              }
+            />}
+            className=""
+                resource={resource}
                 />
+             
               </div>
             </section>
           </div>

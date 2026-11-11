@@ -21,23 +21,20 @@ import TabBar from "../../components/TabBar";
 
 import PaginatedList from "../../components/page/PaginatedList";
 
-import CommunitiesPanel from "../../components/profile/CommunitiesPanel";
 import AboutPanel from "../../components/profile/AboutPanel";
 import RecommendedProfiles from "../../components/page/RecommendedProfile";
 import ReportContentDialog from "../../components/auth/ReportProfileDialog";
 
 import fetchCity from "../../core/fetchCity";
-import debounce from "../../core/debounce";
 import Paths from "../../core/paths";
-import checkResult from "../../core/checkResult";
 import styles from "../../styles/style";
 
 import horiz from "../../images/icons/more_vert.svg";
 import Pill from "../../components/Pill";
 import ListPill from "../../components/page/ListPill";
-import SectionHeader from "../../components/pieces/SectionHeader";
-import PlumbButton from "../../components/profile/FollowButton";
 import { useAlert } from "../../core/useAlert";
+import usePaginatedResource from "../../core/usePaginatedResource";
+import { truncate } from "lodash";
 
 const TABS = {
   POSTS: "pages",
@@ -80,7 +77,7 @@ function ProfileContainer() {
   const [isLoading, setIsLoading] = useState(true);
 
   const [following, setFollowing] = useState(null);
-
+  const communityStyles = styles.communities
   const [isSelf, setIsSelf] = useState(false);
   const [locationName, setLocationName] = useState(
     "Location not specified"
@@ -88,19 +85,32 @@ function ProfileContainer() {
   const [isReportDialogOpen, setReportDialogOpen] = useState(false);
   const [isBlockDialogOpen, setBlockDialogOpen] = useState(false);
   const [success, setSuccess] = useState(null);
+const pageResources = usePaginatedResource({
+cacheKey:`stories-${id}`,
+fetcher:getPublicProfilePages,
+  params:{ profileId: id },
+  pageSize:8
+             
+})
+const comResource = usePaginatedResource({
+  cacheKey:`communities-${id}`,
+  pageSize:8,
+fetcher:(args) =>
+                    getPublicProfileCollections({
+                      profileId: id,
+                      ...args,
+                    })
+                  
+})
+  const colResource = usePaginatedResource({
+    cacheKey:`collections-${id}`,
+                    fetcher:getPublicProfileCollections,
+                    params:{ profileId: id },
+                    pageSize:8,
+                    
+  })
 
-  const collections = useMemo(
-    () =>
-      collectionsRaw
-        .filter(Boolean)
-        .filter((col) => col?.childCollections?.length === 0)
-        .filter(
-          (col) =>
-            !search ||
-            col.title?.toLowerCase().includes(search.toLowerCase())
-        ),
-    [collectionsRaw, search]
-  );
+
 
   const communities = useMemo(
     () =>
@@ -430,7 +440,7 @@ if(!currentProfile?.id){
               </div>
             )}
          
-<div className={""}>
+<div className={"mt-4 "}>
  <FollowButton
   label={following ? "Following" : "Follow"}
   following={!!following}
@@ -457,15 +467,15 @@ if(!currentProfile?.id){
       
          
  
-            <div             className={styles.tabs.pill.container+" justify-around pb-4 "}>
-           
+            <div             className={styles.tabs.pill.container+"justify-around pb-4 "}>
+           <div className="w-[100%] ">
               <TabBar
-           
+           className="mx-auto"
                 tabs={tabs}
                 active={tab}
                 onChange={setTab}
               />
-      
+      </div>
  </div>  
             {/* Tab content */}
             <div className={styles.pageShell.body} >
@@ -484,24 +494,24 @@ if(!currentProfile?.id){
                     {/* <SectionHeader title="All Pages" /> */}
 
                     <PaginatedList
-                      cacheKey={`stories:${id}`}
-                      key="getPublicProfilePages"
-                      fetcher={getPublicProfilePages}
-                      params={{ profileId: id }}
-                      pageSize={8}
-                      renderItem={(page) => (
-                        <ListPill item={{story:page}}
+                    resource={pageResources}
+                    
+                    emptyState={<EmptyState text="No posts yet." />}
+                   renderItem={(page) => (
+                        <ListPill 
+                        key={page?.id}
+                        item={{story:page}}
+                            params={{ profileId: id }}
                         onClick={()=>{
                            router.push(
                               Paths.page.createRoute(page.id)
                             )
-                        }}/>
-                      )}/>
+                        }}/>)}
+
+                      />
              
 
-                  {pages.length === 0 && (
-                    <EmptyState text="No posts yet." />
-                  )}
+               
                 </>
               )}
 
@@ -516,22 +526,19 @@ if(!currentProfile?.id){
           </h2>
 
         </div>
-   
-                  <PaginatedList
-                    cacheKey={`collections:${id}`}
-                    fetcher={getPublicProfileCollections}
-                    params={{ profileId: id }}
-                    pageSize={8}
-                    renderItem={(collection) => (
-                      <ListPill item={{collection:collection}}
-                      onClick={()=>{
-                        router.push(
-                            Paths.collection.createRoute(collection.id))
-                      }}
-                      />
-               
-                    )}
-                  />
+             <PaginatedList
+                    resource={colResource}
+                   renderItem={(page) => (
+                        <ListPill 
+                        key={page?.id}
+                        item={{story:page}}
+                            params={{ profileId: id }}
+                        onClick={()=>{
+                           router.push(
+                              Paths.page.createRoute(page.id)
+                            )
+                        }}/>)}/>
+
              </>
               )}
 
@@ -547,17 +554,35 @@ if(!currentProfile?.id){
           </h2>
 
         </div>
-                <CommunitiesPanel
-                  id={id}
-                  fetch={(args) =>
-                    getPublicProfileCollections({
-                      profileId: id,
-                      ...args,
-                    })
-                  }
-                  communities={communities}
-                  router={router}
-                />
+        <PaginatedList 
+        resource={comResource}
+         renderItem={(c) => (
+        <div
+          key={c.id}
+          onClick={() => router.push(Paths.collection.createRoute(c.id))}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              router.push(Paths.collection.createRoute(c.id));
+            }
+          }}
+          className={communityStyles.item+" h-[6rem] "}
+        >
+          <p className={communityStyles.title}>
+            {c.title?.length > 0 ? c.title : "Untitled"}
+          </p>
+
+          {c.purpose && (
+            <p className={communityStyles.purpose}>
+              {truncate(c.purpose,84)}
+            </p>
+          )}
+        </div>
+      )}
+        />
+             
                 </>
              
               )}

@@ -19,14 +19,10 @@ export default function PortfolioSection({
   searchInput,
   setSearchInput,
   debouncedSearch,
+  resource
 }) {
-  const portfolioCollection =
-    profile?.profileToCollections?.find(
-      (ptc) => ptc.type === "portfolio"
-    )?.collection;
-
-
-
+  console.log("FOx")
+console.log(resource)
   return (
     <section
       aria-labelledby="portfolio-heading"
@@ -35,6 +31,7 @@ export default function PortfolioSection({
           <div className={styles.profile.mine.sectionHeader}>
         <div>
           <h2
+          onClick={()=>router.push(Paths.collection.createRoute())}
             id="archive-heading"
             className={styles.profile.mine.sectionTitle}
           >
@@ -60,29 +57,19 @@ export default function PortfolioSection({
           />
         </div>
       <div className={styles.profile.portfolio.list}>
-        <PaginatedList
-          cacheKey="profile:portfolio"
-          params={{
-            type: "portfolio",
-          }}
-          fetcher={getMyStories}
-          pageSize={PAGE_SIZE}
-          pagination="infinite"
-          enabled={!!profile?.id}
-          search={debouncedSearch}
-          emptyState={
-            <EmptyState
+                  <PaginatedList
+  resource={resource}
+ 
+  emptyState={ <EmptyState
               text={
                 search
-                  ? "No matching work."
-                  : "No portfolio work yet."
+                  ? "No matching stories."
+                  : "No stories yet."
               }
-            />
-          }
-          renderItem={(item) => (
-            <>
-                    <ListPill
-            router={router}
+            />}
+  renderItem={(item) => (
+    <ListPill 
+     router={router}
               key={item.id}
               item={{story:item}}
               profile={profile}
@@ -91,12 +78,11 @@ export default function PortfolioSection({
                   Paths.page.createRoute(item.id)
                 )
               }
-            />
-          </>
-      
-          )
-        }
-        />
+    />
+
+  )}
+/>
+
       </div>
     </section>
   );

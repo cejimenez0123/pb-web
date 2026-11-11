@@ -19,20 +19,7 @@ export default function DetailsSection({
 
   return (
     <section aria-labelledby="details-heading">
-      {/* <div className={styles.profile.mine.sectionHeader}>
-        <div>
-          <h2
-            id="details-heading"
-            className={styles.profile.mine.sectionTitle}
-          >
-            Details
-          </h2>
 
-          <p className={styles.profile.mine.sectionDescription}>
-            A little more about me.
-          </p>
-        </div>
-      </div> */}
     <div className={styles.profile.mine.sectionHeader}>
         <div>
           <h2
@@ -47,18 +34,7 @@ export default function DetailsSection({
           </p>
         </div>
 
-          {/* <input
-            id="portfolio-search"
-            type="search"
-            value={searchInput ?? ""}
-            onChange={(e) => {
-              const value = e.target.value;
-              setSearchInput(value);
-              setSearch(value);
-            }}
-            placeholder="Search portfolio"
-            className={styles.profile.portfolio.searchInput}
-          /> */}
+     
         </div>
       <div className={styles.profile.mine.details.content}>
         <AboutPanel

@@ -103,48 +103,7 @@ async getProtectedProfileStories({ profileId, skip = 0, take = 20 } = {}) {
       
         return res.data
     }
-//     async getMyStories({
-//   skip = 0,
-//   status,
-//   take = 50,
-//   search = "",
-//   type,
-// } = {}) {
-//   try {
-//     const headers = await this.getAuthHeaders();
 
-//     const res = await axios.get(
-//       Enviroment.url + "/story/profile/protected",
-//       {
-//         headers: headers,
-
-//         params: {
-//           type,
-//           status,
-//           skip,
-//           take,
-//           search,
-//         },
-//       }
-//     );
-
-//     return res.data;
-//   } catch (e) {
-//     console.error("getMyStories failed:", e);
-//     throw e;
-//   }
-// }
-
-
-
-  
-
-//     return res.data;
-//   } catch (e) {
-//     console.error("getMyStories failed:", e);
-//     throw e;
-//   }
-// }
     
 
 async getMyStories({

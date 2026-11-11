@@ -7,7 +7,7 @@ import {
 } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory, useParams } from "react-router";
+import {  useParams } from "react-router";
 
 import { useAlert } from "../../core/useAlert.jsx";
 import AlertType from "../../core/AlertType.js";
@@ -47,13 +47,12 @@ import computePermissions from "../../core/compusePermissions.jsx";
 import useScrollTracking from "../../core/useScrollTracking.jsx";
 
 
-import { IonButton, IonContent, useIonRouter } from "@ionic/react";
+import { IonContent, useIonRouter } from "@ionic/react";
 
 import RoomPreview from "../../components/room/RoomPreview.jsx";
 import styles from "../../styles/style.js";
 import TabBar from "../../components/TabBar.jsx";
 import PlumbHead from "../head.jsx";
-import FollowButton from "../../components/profile/FollowButton.jsx";
 import PlumbButton from "../../components/profile/FollowButton.jsx";
 
 // ---------------------------------------------------------
@@ -91,14 +90,7 @@ const PRIMARY_BUTTON =
   `${styles.button.primary} px-6 py-3 ${BUTTON}`;
 
 
-const TEXT_BUTTON =
-  "inline-flex items-center  rounded-full   text-plumb-blueSea dark:text-plumb-darkText  gap-2 text-base font-open-sans " +
-  "text-text-secondary transition-colors " +
-  "hover:text-text-brand focus-visible:outline-none " +
-  "focus-visible:ring-2 focus-visible:ring-button-primary-bg/40 " +
-  "focus-visible:ring-offset-2 " +
-  "focus-visible:ring-offset-plumb-surface " +
-  "dark:focus-visible:ring-offset-base-bgDark";
+
 
 
 // ---------------------------------------------------------
@@ -107,7 +99,7 @@ const TEXT_BUTTON =
 
 export default function CollectionContainer() {
   const { id } = useParams();
-  const history = useHistory();
+
   const dispatch = useDispatch();
 const router = useIonRouter()
   const { showAlert } = useAlert();
@@ -961,23 +953,25 @@ type={collection.type}
             <div className={styles.pageShell.body+" pt-4 "+styles.pageShell.section}>
               {tab === "inside" && (
                 <InsideRoom
+                router={router}
                   collection={collection}
                   canAdd={canAdd}
                   canEdit={canEdit}
-                  history={history}
+                
                 />
               )}
 
               {tab === "members" && (
                 <MemberTab
                   collection={collection}
-                  history={history}
+                 router={router}
                 />
               )}
 
               {tab === "about" && (
                 <AboutTab
                   collection={collection}
+                      router={router}
                 />
               )}
             </div>
@@ -1009,7 +1003,8 @@ type={collection.type}
 
               <RecommendedRooms
                 rooms={recommended.items}
-                history={history}
+                router={router}
+           
               />
             </div>
           </section>
@@ -1029,7 +1024,7 @@ function InsideRoom({
   collection,
   canAdd,
   canEdit,
-  history,
+ router
 }) {
   const currentProfileId = useSelector(
     (state) => state.users.currentProfile?.id
@@ -1107,7 +1102,7 @@ function InsideRoom({
             <button
               type="button"
               onClick={() =>
-                history.push(
+                router.push(
                   Paths.addToCollection.createRoute(
                     collection.id
                   )
@@ -1154,7 +1149,7 @@ function InsideRoom({
               <RoomPreview
                 key={`room-${entry.content.id}-${index}`}
                 room={entry.content}
-                history={history}
+             router={router}
               />
             );
           }
@@ -1166,13 +1161,10 @@ function InsideRoom({
   );
 }
 
-// =========================================================
-// MEMBERS
-// =========================================================
-
 function MemberTab({
   collection,
-  history,
+  router
+
 }) {
   const roles = useMemo(() => {
     const contributors = [
@@ -1222,7 +1214,7 @@ function MemberTab({
               key={member.profile.id}
               type="button"
               onClick={() =>
-                history.push(
+                router.push(
                   Paths.profile.createRoute(
                     member.profile.id
                   )
@@ -1277,10 +1269,6 @@ function MemberTab({
     </section>
   );
 }
-
-// =========================================================
-// ABOUT
-// =========================================================
 
 function AboutTab({
   collection,
@@ -1342,16 +1330,10 @@ function AboutTab({
   );
 }
 
-// =========================================================
-// TABS
-// =========================================================
-
-
-
 
 function RecommendedRooms({
   rooms,
-  history,
+  router
 }) {
   return (
     <div
@@ -1367,7 +1349,8 @@ function RecommendedRooms({
         <RoomPreview
           key={room.id}
           room={room}
-          history={history}
+          router={router}
+     
         />
       ))}
     </div>

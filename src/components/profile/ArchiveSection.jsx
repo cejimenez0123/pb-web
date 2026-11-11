@@ -13,6 +13,7 @@ function ArchiveSection({
   searchInput,
   setSearchInput,
   debouncedSearch,
+  resource,
   storiesParams,
 }) {
   return (
@@ -52,25 +53,19 @@ function ArchiveSection({
       </div>
 
       <div className="mt-6">
-        <PaginatedList
-          cacheKey="stories"
-          params={storiesParams}
-          fetcher={getMyStories}
-          pageSize={PAGE_SIZE}
-          enabled={!!profile?.id}
-          search={debouncedSearch}
-          emptyState={
-            <EmptyState
+                <PaginatedList
+               
+  resource={resource}
+  emptyState={ <EmptyState
               text={
                 search
                   ? "No matching stories."
                   : "No stories yet."
               }
-            />
-          }
-          renderItem={(item) => (
-            <ListPill
-            router={router}
+            />}
+  renderItem={(item) => (
+    <ListPill 
+     router={router}
               key={item.id}
               item={{story:item}}
               profile={profile}
@@ -79,9 +74,11 @@ function ArchiveSection({
                   Paths.page.createRoute(item.id)
                 )
               }
-            />
-          )}
-        />
+    />
+
+  )}
+/>
+
       </div>
     </section>
   );

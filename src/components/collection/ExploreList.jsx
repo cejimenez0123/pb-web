@@ -2,10 +2,11 @@
 
 
 import { useEffect, useRef, useState } from "react";
-import { useHistory } from "react-router-dom";
+
 import RoomPreview from "../room/RoomPreview";
 import PaginationControls from "../PaginationControls";
 import styles from "../../styles/style.js";
+import { useIonRouter } from "@ionic/react";
 
 const PAGE =
   "mx-auto w-[100%] max-w-[52rem] px-4 sm:px-6 lg:max-w-[76rem] lg:px-8 2xl:max-w-[96rem]";
@@ -52,7 +53,7 @@ export default function ExploreList({
   setPage,
   totalCount,
 }) {
-  const history = useHistory();
+  const router = useIonRouter()
 
   const [animatedItems, setAnimatedItems] = useState([]);
   const prevItemsRef = useRef(null);
@@ -207,7 +208,7 @@ export default function ExploreList({
                   >
                     <RoomPreview
                       room={item}
-                      history={history}
+               router={router}
                     />
                   </div>
                 );

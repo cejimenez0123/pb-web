@@ -19,6 +19,7 @@ export default function EventsSection({
   setSearch,
   searchInput,
   setSearchInput,
+  resource,
   debouncedSearch,
 }) {
   const id = profile.profileToCollections.find(ptc=>ptc.type=="events").collection.id
@@ -72,33 +73,24 @@ export default function EventsSection({
       </div>
 
       <div className="mt-8">
-        <PaginatedList
-          cacheKey="profile:events"
-          params={{
-            type: "events",
-          }}
-          fetcher={getMyStories}
-          pageSize={PAGE_SIZE}
-          pagination="infinite"
-          enabled={!!profile?.id}
-          search={debouncedSearch}
-          emptyState={
-            <EmptyState
+              <PaginatedList
+              items={resource?.items}
+  resource={resource}
+   emptyState={ <EmptyState
               text={
                 search
-                  ? "No matching events."
-                  : "No events yet."
+                  ? "No matching stories."
+                  : "No stories yet."
               }
-            />
-          }
-          renderItem={(item) => (
-            <EventListItem
+            />}
+  renderItem={(item) => (
+       <EventListItem
               key={item.collection?.id}
               item={item}
               router={router}
             />
-          )}
-        />
+  )}/>
+      
       </div>
     </section>
   );

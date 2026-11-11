@@ -3,10 +3,10 @@ import styles from "../../styles/style";
 
 function StoryCard({
   story,
-  view,
+
   onSelect,
 }) {
-  const isGrid = view === "grid";
+  
 function formatDate(date) {
   if (!date) return "";
 
@@ -22,36 +22,11 @@ function formatDate(date) {
     year: "numeric",
   }).format(parsed);
 }
-const description =truncate(story.description, Math.floor(300), {
+const description =truncate(story?.description??"", Math.floor(300), {
       ellipsis: "…",
     })
 
-            // ${
-        //   isGrid
-        //     ? `
-            
-        //       rounded-2xl
-        //       border
-        //       border-plumb-mint/40
-           
-        //       p-6
-        //       sm:p-7
-        //       hover:-translate-y-1
-        //       hover:border-plumb-mint/80
-          
-        //     `
-        //     : `
-        //       rounded-2xl
-        //       border
-        //       border-plumb-mint/30
-        //       bg-cream/45
-        //       px-6
-        //       py-5
-        //       sm:px-7
-        //       hover:border-plumb-mint/80
-        //       hover:bg-base-bg
-        //     `
-        // // }
+      
   return (
     <div
       type="button"

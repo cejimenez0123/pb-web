@@ -179,19 +179,7 @@ const router = useIonRouter()
   // ----------------------------------------------------------
 
   const handleCreate = () => {
-    if (Paths?.collections?.createRoute) {
-      alert("ADD the CReate form thigns")
-      // history.push(
-      //   Paths.collections.createRoute()
-      // );
-      return;
-    }
-
-    // if (Paths?.collection?.createRoute) {
-    //   history.push(
-    //     Paths.collection.createRoute()
-    //   );
-    // }
+    
   };
 
 

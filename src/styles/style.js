@@ -2132,7 +2132,7 @@ text: {
 tabs: {
 
 pill: {
-  container: `w-[100%] mt-4 justify-center mt-4  min-w-0 px-2 max-w-4xl mx-auto`,
+  container: `w-[100%] mt-4 pt-4 justify-center  min-w-0 px-2 max-w-4xl mx-auto`,
   wrapper: [
   "flex w-max  gap-1 items-center justify-start",
   "overflow-x-scroll overflow-x-contain",

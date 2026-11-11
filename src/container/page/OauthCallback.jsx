@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import { Capacitor } from "@capacitor/core";
 
 const OAuthCallback = () => {
   useEffect(() => {

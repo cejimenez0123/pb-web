@@ -86,10 +86,7 @@ export default function usePaginatedResource({
 }) {
   const dispatch = useDispatch();
 
-  /*
-   * Keep the selector stable even if the caller creates a new params
-   * object on every render.
-   */
+
   const paramsSignature = useMemo(
     () => stableSerialize(params ?? {}),
     [params]
@@ -102,23 +99,7 @@ export default function usePaginatedResource({
 
   const normalizedSearch = String(search ?? "").trim();
 
-  /*
-   * IMPORTANT:
-   *
-   * The cache key contains:
-   *
-   *   cacheKey
-   *   search
-   *   params
-   *
-   * This prevents something like:
-   *
-   *   workshops + radius 10
-   *
-   * from accidentally reusing:
-   *
-   *   workshops + radius 50
-   */
+
   const key = useMemo(() => {
     const parts = [cacheKey];
 
