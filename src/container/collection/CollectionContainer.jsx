@@ -75,11 +75,9 @@ const TABS = {
  
    
   ];
-const PAGE =
-  "w-full max-w-[52rem] mt-4 mx-auto px-4 sm:px-6 lg:px-8";
+const PAGE =""
 
-const SECTION =
-  "py-8 sm:py-10";
+const SECTION =""
 
 const BUTTON = styles.button.base
 
@@ -835,7 +833,7 @@ const [isArchived,setIsArchived]=useState(initArchived)
   return (
     <IonContent>
     <ErrorBoundary>
-<main className={styles.pageShell.base+" "+styles.pageShell.padded+" "+styles.pageShell.scroll}>
+<main className={styles.pageShell.base+" "+styles.pageShell.scroll}>
  
 
         
@@ -851,8 +849,8 @@ type={collection.type}
 
 
         <section className="border-b border-card-border dark:border-white/10">
-          <div className={`${PAGE} py-4`}>
-            <div className="flex flex-wrap items-center gap-2">
+          <div className={``}>
+            <div className="flex max-w-2xl p-2 mt-4 mx-auto flex-wrap items-center gap-2">
               
 <PlumbButton
   currentProfile={currentProfile}
@@ -935,11 +933,11 @@ type={collection.type}
         {/* Room tabs and content */}
         {/* --------------------------------------------- */}
 
-        <section className={"mx-4 "+styles.pageShell.body}>
+        <section className={""}>
       
     
    
-            <div             className={styles.tabs.pill.container+" justify-around pb-4 "}>
+            <div             className={styles.tabs.pill.container+" max-w-2xl mx-auto flex justify-center justify-around pb-4 "}>
            
               <TabBar
            
@@ -950,7 +948,7 @@ type={collection.type}
       
  </div>  
        
-            <div className={styles.pageShell.body+" pt-4 "+styles.pageShell.section}>
+            <div className={styles.pageShell.body}>
               {tab === "inside" && (
                 <InsideRoom
                 router={router}

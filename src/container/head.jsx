@@ -5,7 +5,8 @@ import styles from "../styles/style";
 function PlumbHead({isWorkshop=null,buttons=[],label=null,onClick,title="Untitled",backText="Rooms",type,purpose="",isPrivate=false,profile=null}){
 
     return( <section className={styles.pageShell.head}>
-          <div className={`w-full max-w-[52rem] mt-4 mx-auto px-4 sm:px-6 lg:px-8" pt-10 pb-8 sm:pt-14`}>
+      <div className={styles.pageShell.headInner}>
+          {/* <div className={`w-full max-w-[52rem] mt-4 mx-auto  sm:px-6 lg:px-8" pt-10 pb-8 sm:pt-14`}> */}
             <button
               
                 onClick={onClick}
@@ -115,9 +116,13 @@ function PlumbHead({isWorkshop=null,buttons=[],label=null,onClick,title="Untitle
               )}
             </div>
           </div>
-          <div className="flex my-4 flex-wrap px-2 gap-2">
+          {/* <div className="bg-red-100"> */}
+          <div >
+          <div className="flex  p-2 mb-4 flex-wrap  gap-3">
             {buttons.map(button=>button)}
           </div>
+          </div>
+        
         </section>)
 }
 export default PlumbHead

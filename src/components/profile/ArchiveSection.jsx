@@ -6,6 +6,7 @@ import ListPill from "../page/ListPill";
 import PaginatedList from "../page/PaginatedList";
 
 function ArchiveSection({
+  id,
   profile,
   router,
   search,
@@ -21,6 +22,7 @@ function ArchiveSection({
         <div>
           <h2
             id="archive-heading"
+            onClick={()=>router.push(Paths.collection.createRoute(id))}
             className={styles.profile.mine.sectionTitle}
           >
             Archive

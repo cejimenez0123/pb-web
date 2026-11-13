@@ -1,10 +1,1533 @@
+// import "../../styles/Editor.css";
+// import "../../App.css";
+
+// import { useDispatch, useSelector } from "react-redux";
+// import {
+//   useCallback,
+//   useContext,
+//   useEffect,
+//   useRef,
+//   useState,
+// } from "react";
+// import { useParams } from "react-router";
+// import { IonContent, useIonRouter } from "@ionic/react";
+// import { Preferences } from "@capacitor/preferences";
+// import axios from "axios";
+
+// import Paths from "../../core/paths";
+// import { PageType } from "../../core/constants";
+
+// import {
+//   createStory,
+//   deleteStory,
+//   getStory,
+//   updateStory,
+// } from "../../actions/StoryActions";
+
+// import {
+//   removeFromPaginatedKey,
+//   setEditingPage,
+//   setHtmlContent,
+//   setPageInView,
+//   setPageType,
+// } from "../../actions/PageActions.jsx";
+
+// import checkResult from "../../core/checkResult";
+// import debounce from "../../core/debounce.js";
+// import { useAlert } from "../../core/useAlert.jsx";
+// import AlertType from "../../core/AlertType.js";
+
+// import EditorContext from "./EditorContext";
+// import FeedbackDialog from "../../components/page/FeedbackDialog";
+// import { useDialog } from "../../domain/usecases/useDialog.jsx";
+// import EditorDiv from "../../components/page/EditorDiv.jsx";
+// import TopBarDropdown from "../../components/page/TopBarDropdown.jsx";
+// import EditorFooter from "../../components/page/EditorFooter.jsx";
+
+// import Enviroment from "../../core/Enviroment.js";
+// import { useMediaQuery } from "react-responsive";
+// import styles from "../../styles/style.js";
+// import PageTypeSelector from "../../components/PageTypeSelector.jsx";
+// import ErrorBoundary from "../../ErrorBoundary.jsx";
+
+// const CONTAINER =
+//   "mx-auto w-full  max-w-3xl rounded-lg bg-base-bg p-4 shadow-sm md:p-6";
+
+// const DRIVE_TOKEN_KEY = "googledrivetoken";
+
+// const STATUS_OPTIONS = [
+//   { value: "draft", label: "Draft" },
+//   { value: "fragment", label: "Fragment" },
+//   { value: "workshop", label: "Workshop" },
+//   { value: "finished", label: "Published" },
+// ];
+
+// function normalizeType(value) {
+//   if (value === "text") {
+//     return PageType.text;
+//   }
+
+//   return value || PageType.text;
+// }
+
+// function createEmptyParameters({
+//   routeId,
+//   type,
+//   currentProfile,
+// }) {
+//   return {
+//     id:
+//       routeId && routeId !== "new"
+//         ? routeId
+//         : null,
+//     data: "",
+//     title: "",
+//     description: "",
+//     status: "draft",
+//     isPrivate: true,
+//     commentable: true,
+//     needsFeedback: false,
+//     type,
+//     authorId: currentProfile?.id ?? null,
+//     profileId: currentProfile?.id ?? "",
+//     profile: currentProfile ?? null,
+//     page: null,
+//   };
+// }
+
+//  export default function EditorContainer() {
+//   const dispatch = useDispatch();
+//   const router = useIonRouter();
+
+//   const {
+//     id: routeId,
+//     type: paramType,
+//   } = useParams();
+
+//   const { showAlert } = useAlert();
+//   const isPhone = useMediaQuery({ query: '(max-width: 750px)' });
+
+
+//   const {
+//     openDialog,
+//     closeDialog,
+//     resetDialog,
+//   } = useDialog();
+
+//   const currentProfile = useSelector(
+//     (state) => state.users.currentProfile
+//   );
+// const hasCreatedRef =useRef()
+//   const {
+//     editPage,
+//     pageInView,
+//     pageType: sliceType,
+//   } = useSelector((state) => state.pages);
+// const pageInViewId = pageInView?.id;
+//   const initialType = normalizeType(paramType || sliceType);
+
+//   const isNewStory =
+//     !routeId || routeId === "new";
+
+//   const [parameters, setParameters] = useState(() =>
+//     createEmptyParameters({
+//       routeId,
+//       type: initialType,
+//       currentProfile,
+//     })
+//   );
+
+//   // The selected editor type lives in the existing story parameters.
+//   // This allows the selector to update the rendered editor without a
+//   // separate state value that can drift out of sync.
+//   const type = normalizeType(parameters.type || initialType);
+
+//   const isMediaType =
+//     type === PageType.picture ||
+//     type === PageType.link;
+
+//   const [files, setFiles] = useState([]);
+//   const [accessToken, setAccessToken] = useState(null);
+//   const [isSaved, setIsSaved] = useState(true);
+//   const [openHashtag, setOpenHashtag] = useState(false);
+
+// const hasLoadedRef = useRef(false);
+// const lastSavedRef = useRef(null);
+// const lastScheduledRef = useRef(null);
+// const activeRequestIdRef = useRef(null);
+// const debouncedSaveRef = useRef(null);
+
+// const isDeletedRef = useRef(false);
+//   const showError = useCallback(
+//     (error) => {
+//       showAlert({
+//         message:
+//           error?.message ||
+//           "Something went wrong.",
+//         type: AlertType.error,
+//       });
+//     },
+//     [showAlert]
+//   );
+// const setStory = useCallback(
+//   (story) => {
+//     if (!story?.id) return;
+
+//     /*
+//      * ---------------------------------------------------------
+//      * PREVENT DUPLICATE INITIALIZATION
+//      * ---------------------------------------------------------
+//      */
+//     if (
+//       hasLoadedRef.current &&
+//       parametersRef.current.id === story.id
+//     ) {
+//       return;
+//     }
+
+//     /*
+//      * ---------------------------------------------------------
+//      * NORMALIZE STORY
+//      * ---------------------------------------------------------
+//      */
+//     const storyType = normalizeType(story.type || type);
+
+//     const loadedPayload = {
+//       id: story.id,
+//       data: story.data ?? "",
+//       title: story.title ?? "",
+//       description: story.description ?? "",
+//       status: story.status || "draft",
+//       isPrivate: story.isPrivate ?? true,
+//       commentable: story.commentable ?? true,
+//       needsFeedback: story.needsFeedback ?? false,
+//       type: storyType,
+//     };
+
+//     const nextParameters = {
+//       ...parametersRef.current,
+//       ...loadedPayload,
+//       page: story,
+//     };
+
+//     /*
+//      * ---------------------------------------------------------
+//      * ESTABLISH ACTIVE STORY
+//      * ---------------------------------------------------------
+//      */
+//     activeRequestIdRef.current = story.id;
+
+//     hasCreatedRef.current = true;
+//     hasLoadedRef.current = true;
+
+//     /*
+//      * ---------------------------------------------------------
+//      * ESTABLISH AUTOSAVE BASELINE
+//      * ---------------------------------------------------------
+//      *
+//      * The loaded server version is the last known saved
+//      * version. Nothing should be scheduled merely because
+//      * this story was loaded.
+//      */
+//     lastSavedRef.current = loadedPayload;
+//     lastScheduledRef.current = null;
+
+//     /*
+//      * ---------------------------------------------------------
+//      * SYNCHRONIZE REACT STATE
+//      * ---------------------------------------------------------
+//      */
+//     parametersRef.current = nextParameters;
+//     setParameters(nextParameters);
+
+//     /*
+//      * ---------------------------------------------------------
+//      * SYNCHRONIZE REDUX STATE
+//      * ---------------------------------------------------------
+//      */
+//     dispatch(
+//       setEditingPage({
+//         page: story,
+//       })
+//     );
+
+//     dispatch(
+//       setPageInView({
+//         page: story,
+//       })
+//     );
+
+//     dispatch(
+//       setPageType({
+//         type: storyType,
+//       })
+//     );
+
+//     dispatch(setHtmlContent(loadedPayload.data));
+
+//     /*
+//      * ---------------------------------------------------------
+//      * MARK INITIAL LOAD COMPLETE
+//      * ---------------------------------------------------------
+//      */
+//     setIsSaved(true);
+//   },
+//   [dispatch, type]
+// );
+//   const saveStory = useCallback(
+//   async (incoming = {}) => {
+//     if (!currentProfile?.id) return null;
+//     if (isDeletedRef.current) return null;
+
+//     const currentParameters =
+//       parametersRef.current;
+
+//     const resolvedId =
+//       incoming.id ??
+//       currentParameters.id ??
+//       routeId ??
+//       null;
+
+//     const payload = {
+//       ...currentParameters,
+//       ...incoming,
+//       id: resolvedId,
+//       type:
+//         incoming.type ??
+//         currentParameters.type ??
+//         type,
+//       authorId: currentProfile.id,
+//       profileId: currentProfile.id,
+//       profile: currentProfile,
+//     };
+    
+
+//     const shouldCreate =
+//       !resolvedId ||
+//       resolvedId === "new";
+
+//     if (shouldCreate) {
+//       const result = await dispatch(
+//         createStory({
+//           ...payload,
+//           id: null,
+//         })
+//       );
+
+//       return checkResult(
+//         result,
+//         (response) => {
+//           const story = response?.story;
+
+//           if (!story?.id) {
+//             hasCreatedRef.current = false;
+
+//             showError(
+//               new Error(
+//                 "The story was created, but no story ID was returned."
+//               )
+//             );
+
+//             return null;
+//           }
+
+//           hasCreatedRef.current = true;
+
+//           setStory(story);
+
+//           window.history.replaceState(
+//             null,
+//             "",
+//             Paths.editPage.createRoute(
+//               story.id,
+//               story.type
+//             )
+//           );
+
+//           return story;
+//         },
+//         (error) => {
+//           hasCreatedRef.current = false;
+//           setIsSaved(false);
+//           showError(error);
+
+//           return null;
+//         }
+//       );
+//     }
+
+//     // isSavingRef.current = true;
+
+//     try {
+//       const result = await dispatch(
+//         updateStory({
+//           ...payload,
+//           id: resolvedId,
+//         })
+//       );
+
+//       return checkResult(
+//         result,
+//         (response) => {
+//           setIsSaved(true);
+
+//           return response?.story ?? response;
+//         },
+//         (error) => {
+//           setIsSaved(false);
+//           showError(error);
+
+//           return null;
+//         }
+//       );
+//     } finally {
+//       // isSavingRef.current = false;
+//     }
+//   },
+//   [
+//     currentProfile,
+//     dispatch,
+//     routeId,
+//     setStory,
+//     showError,
+//     type,
+//   ]
+// );
+
+// const parametersRef = useRef(parameters);
+
+// useEffect(() => {
+//   parametersRef.current = parameters;
+// }, [parameters]);
+
+//   const effectiveId =
+//     parameters.id || routeId;
+
+
+
+//   const handleChange = useCallback(
+//     (key, value) => {
+//       setParameters((previous) => ({
+//         ...previous,
+//         [key]: value,
+//       }));
+//     },
+//     []
+//   );
+
+//   /*
+//    * One debounced update pipeline.
+//    *
+//    * This does not interact with editor DOM content. It only persists
+//    * a fully resolved story payload.
+//    */
+//   useEffect(() => {
+//   const debouncedSave = debounce(
+//     async (payload) => {
+//       if (isDeletedRef.current) return;
+//       if (!payload?.id || payload.id === "new") return;
+
+//       // isSavingRef.current = true;
+
+//       try {
+//         const result = await dispatch(
+//           updateStory(payload)
+//         );
+
+//         checkResult(
+//           result,
+//           () => {
+//             setIsSaved(true);
+//           },
+//           (error) => {
+//             setIsSaved(false);
+//             showError(error);
+//           }
+//         );
+//       } finally {
+     
+//       }
+//     },
+//     750
+//   );
+
+//   debouncedSaveRef.current =
+//     debouncedSave;
+
+//   return () => {
+//     if (
+//       typeof debouncedSave.cancel ===
+//       "function"
+//     ) {
+//       debouncedSave.cancel();
+//     }
+//   };
+// }, [dispatch, showError]);
+//   /*
+//    * Close any open dialog once when the editor first mounts.
+//    */
+
+//   /*
+//    * Reset all state for a new story.
+//    *
+//    * This is intentionally based on route identity, not on animations,
+//    * component keys, or a Framer Motion lifecycle.
+//    */
+//   // useEffect(() => {
+//   //   if (!isNewStory) return;
+
+//   //   hasCreatedRef.current = false;
+//   //   hasLoadedRef.current = false;
+//   //   lastSavedRef.current = null;
+//   //   activeRequestIdRef.current = null;
+
+//   //   dispatch(setEditingPage({ page: null }));
+//   //   dispatch(setPageInView({ page: null }));
+//   //   dispatch(setHtmlContent(""));
+//   //   dispatch(setPageType({ type: initialType }));
+
+//   //   setParameters(
+//   //     createEmptyParameters({
+//   //       routeId: null,
+//   //       type: initialType,
+//   //       currentProfile,
+//   //     })
+//   //   );
+
+//   //   setIsSaved(true);
+//   // }, [
+//   //   currentProfile,
+//   //   dispatch,
+//   //   isNewStory,
+//   //   routeId,
+//   //   paramType,
+//   // ]);
+
+// useEffect(() => {
+//   if (!currentProfile?.id) return;
+//   if (isDeletedRef.current) return;
+
+//   if (isMediaType && isNewStory) return;
+
+//   const hasMeaningfulContent =
+//     Boolean(parameters.data?.trim()) ||
+//     Boolean(parameters.title?.trim());
+
+//   if (!hasMeaningfulContent) return;
+
+//   const resolvedId = parameters.id || routeId;
+
+//   /*
+//    * ---------------------------------------------------------
+//    * CREATE
+//    * ---------------------------------------------------------
+//    */
+//   if (!resolvedId || resolvedId === "new") {
+//     if (hasCreatedRef.current) return;
+
+//     hasCreatedRef.current = true;
+//     setIsSaved(false);
+
+//     saveStory();
+//     return;
+//   }
+
+//   /*
+//    * ---------------------------------------------------------
+//    * WAIT FOR INITIAL STORY LOAD
+//    * ---------------------------------------------------------
+//    *
+//    * Never update a story until its existing server data
+//    * has been loaded into the editor.
+//    */
+//   if (!hasLoadedRef.current) return;
+
+//   /*
+//    * ---------------------------------------------------------
+//    * BUILD EDITABLE PAYLOAD
+//    * ---------------------------------------------------------
+//    */
+//   const payload = {
+//     id: resolvedId,
+//     data: parameters.data || "",
+//     title: parameters.title || "",
+//     description: parameters.description || "",
+//     status: parameters.status || "draft",
+//     isPrivate: parameters.isPrivate ?? true,
+//     commentable: parameters.commentable ?? true,
+//     needsFeedback: parameters.needsFeedback ?? false,
+//     type,
+//   };
+
+//   const fingerprint = JSON.stringify(payload);
+
+//   const savedFingerprint = JSON.stringify(
+//     lastSavedRef.current
+//   );
+
+//   /*
+//    * ---------------------------------------------------------
+//    * NOTHING HAS CHANGED
+//    * ---------------------------------------------------------
+//    *
+//    * If the content has returned to the last successfully
+//    * saved version, don't send another update.
+//    */
+//   if (fingerprint === savedFingerprint) {
+//     lastScheduledRef.current = null;
+//     return;
+//   }
+
+//   /*
+//    * ---------------------------------------------------------
+//    * ALREADY SCHEDULED
+//    * ---------------------------------------------------------
+//    *
+//    * Avoid scheduling the same payload repeatedly.
+//    */
+//   if (fingerprint === lastScheduledRef.current) {
+//     return;
+//   }
+
+//   /*
+//    * ---------------------------------------------------------
+//    * SCHEDULE UPDATE
+//    * ---------------------------------------------------------
+//    */
+//   lastScheduledRef.current = fingerprint;
+
+//   setIsSaved(false);
+
+//   debouncedSaveRef.current?.({
+//     ...parametersRef.current,
+//     ...payload,
+//     authorId: currentProfile.id,
+//     profileId: currentProfile.id,
+//     profile: currentProfile,
+//   });
+// }, [
+//   currentProfile?.id,
+//   isMediaType,
+//   isNewStory,
+//   parameters.data,
+//   parameters.title,
+//   parameters.description,
+//   parameters.status,
+//   parameters.isPrivate,
+//   parameters.commentable,
+//   parameters.needsFeedback,
+//   parameters.id,
+//   routeId,
+//   saveStory,
+//   type,
+// ]);
+// useEffect(() => {
+//   const profileId =
+//     currentProfile?.id ?? null;
+
+//   const profileChanged =
+//     parametersRef.current.authorId !==
+//       profileId ||
+//     parametersRef.current.profileId !==
+//       (profileId ?? "");
+
+//   const typeChanged =
+//     parametersRef.current.type !== type;
+
+//   if (!profileChanged && !typeChanged) {
+//     return;
+//   }
+
+//   setParameters((previous) => ({
+//     ...previous,
+//     type,
+//     authorId: profileId,
+//     profileId: profileId ?? "",
+//     profile: currentProfile ?? null,
+//   }));
+// }, [currentProfile, type]);
+//   /*
+//    * Applies loaded server data to application state.
+//    *
+//    * `parameters.data` is the content source EditorDiv should render.
+//    * Redux editorHtmlContent is updated only as a compatibility mirror for
+//    * other parts of your application that might still read it.
+//    */
+ 
+
+
+//   /*
+//    * Fetch a story only when a real story ID is in the route.
+//    *
+//    * The cancellation flag prevents a delayed response from a previous route
+//    * from injecting old data into the current editor.
+//    */
+//   useEffect(() => {
+//   if (isNewStory || !routeId) return;
+
+//   // Already loaded into this editor.
+//   if (
+//     hasLoadedRef.current &&
+//     parametersRef.current.id === routeId
+//   ) {
+//     return;
+//   }
+
+//   // Redux already has this story.
+//   if (pageInViewId === routeId && pageInView) {
+//     setStory(pageInView);
+//     return;
+//   }
+
+//   let cancelled = false;
+
+//   activeRequestIdRef.current = routeId;
+
+//   dispatch(
+//     getStory({
+//       id: routeId,
+//     })
+//   ).then((result) => {
+//     if (cancelled) return;
+
+//     if (
+//       activeRequestIdRef.current !== routeId
+//     ) {
+//       return;
+//     }
+
+//     checkResult(
+//       result,
+//       (payload) => {
+//         if (!cancelled && payload?.story) {
+//           setStory(payload.story);
+//         }
+//       },
+//       (error) => {
+//         if (!cancelled) {
+//           showError(error);
+//         }
+//       }
+//     );
+//   });
+
+//   return () => {
+//     cancelled = true;
+//   };
+// }, [
+//   dispatch,
+//   isNewStory,
+//   routeId,
+//   pageInViewId,
+//   pageInView,
+//   setStory,
+//   showError,
+// ]);
+
+
+// useEffect(() => {
+//   if (!currentProfile?.id) return;
+//   if (isDeletedRef.current) return;
+
+//   if (isMediaType && isNewStory) return;
+
+//   const hasMeaningfulContent =
+//     Boolean(parameters.data?.trim()) ||
+//     Boolean(parameters.title?.trim());
+
+//   if (!hasMeaningfulContent) return;
+
+//   const resolvedId =
+//     parameters.id || routeId;
+
+//   /*
+//    * ---------------------------------------------------------
+//    * CREATE
+//    * ---------------------------------------------------------
+//    */
+//   if (!resolvedId || resolvedId === "new") {
+//     if (hasCreatedRef.current) return;
+
+//     hasCreatedRef.current = true;
+//     setIsSaved(false);
+
+//     saveStory();
+
+//     return;
+//   }
+
+//   /*
+//    * Don't autosave the story until its server version
+//    * has actually been loaded.
+//    */
+//   if (!hasLoadedRef.current) return;
+
+//   /*
+//    * Build a fingerprint of the editable story state.
+//    *
+//    * Only these values should cause an autosave.
+//    */
+//   // const payload = {
+//   //   id: resolvedId,
+//   //   data: parameters.data || "",
+//   //   title: parameters.title || "",
+//   //   description: parameters.description || "",
+//   //   status: parameters.status || "draft",
+//   //   isPrivate:
+//   //     parameters.isPrivate ?? true,
+//   //   commentable:
+//   //     parameters.commentable ?? true,
+//   //   needsFeedback:
+//   //     parameters.needsFeedback ?? false,
+//   //   type,
+//   // };
+// const payload = {
+//   id: resolvedId,
+//   data: parameters.data || "",
+//   title: parameters.title || "",
+//   description: parameters.description || "",
+//   status: parameters.status || "draft",
+//   isPrivate: parameters.isPrivate ?? true,
+//   commentable: parameters.commentable ?? true,
+//   needsFeedback: parameters.needsFeedback ?? false,
+//   type: parameters.type || type,
+// };
+//   const currentPayload =
+//     JSON.stringify(payload);
+
+//   const previousPayload =
+//     JSON.stringify(lastSavedRef.current);
+
+//   /*
+//    * Nothing actually changed.
+//    */
+//   if (currentPayload === previousPayload) {
+//     return;
+//   }
+
+//   /*
+//    * Don't schedule another save while the exact same
+//    * payload is already waiting in the debounce.
+//    */
+//   lastSavedRef.current = payload;
+
+//   setIsSaved(false);
+
+//   debouncedSaveRef.current?.({
+//     ...parametersRef.current,
+//     ...payload,
+//     authorId: currentProfile.id,
+//     profileId: currentProfile.id,
+//     profile: currentProfile,
+//   });
+// }, [
+//   currentProfile?.id,
+//   isMediaType,
+//   isNewStory,
+//   parameters.data,
+//   parameters.title,
+//   parameters.description,
+//   parameters.status,
+//   parameters.isPrivate,
+//   parameters.commentable,
+//   parameters.needsFeedback,
+//   parameters.id,
+//   routeId,
+//   saveStory,
+//   type,
+// ]);
+//   /*
+//    * This can be passed to EditorDiv when it creates a story itself.
+//    */
+  
+
+//   const fetchFiles = useCallback(async () => {
+//     try {
+//       const { value: token } =
+//         await Preferences.get({
+//           key: DRIVE_TOKEN_KEY,
+//         });
+
+//       if (!token) {
+//         setFiles([]);
+//         setAccessToken(null);
+
+//         return;
+//       }
+
+//       const response = await fetch(
+//         'https://www.googleapis.com/drive/v3/files?q=mimeType="application/vnd.google-apps.document"&fields=files(id,name,mimeType,iconLink)',
+//         {
+//           headers: {
+//             Authorization: `Bearer ${token}`,
+//             Accept: "application/json",
+//           },
+//         }
+//       );
+
+//       if (response.status === 401) {
+//         throw new Error(
+//           "Your Google Drive session has expired."
+//         );
+//       }
+
+//       if (!response.ok) {
+//         throw new Error(
+//           "Unable to load Google Drive documents."
+//         );
+//       }
+
+//       const data = await response.json();
+
+//       setFiles(data.files || []);
+//       setAccessToken(token);
+//     } catch (error) {
+//       console.error(
+//         "Google Drive API error:",
+//         error
+//       );
+
+//       setFiles([]);
+//       setAccessToken(null);
+//     }
+//   }, []);
+
+//   useEffect(() => {
+//     fetchFiles();
+//   }, [fetchFiles]);
+
+//   /*
+//    * Critical behavior:
+//    * Imported content replaces parameters.data.
+//    *
+//    * It is intentionally NOT passed to `debouncedSave` directly, because
+//    * direct saving bypasses React state and can leave EditorDiv with stale or
+//    * independently appended content.
+//    */
+//   const onFilePicked = useCallback(
+//     async (file) => {
+//       try {
+//         if (!file?.id || !accessToken) return;
+
+//         const url =
+//           "https://www.googleapis.com/drive/v3/files/" +
+//           `${file.id}/export?mimeType=text/html`;
+
+//         const response = await axios.get(url, {
+//           headers: {
+//             Authorization: `Bearer ${accessToken}`,
+//           },
+//           responseType: "text",
+//         });
+
+//         setParameters((previous) => ({
+//           ...previous,
+//           data: response.data || "",
+//           status: "draft",
+//           needsFeedback: true,
+//           type: PageType.text,
+//         }));
+
+//         resetDialog();
+//       } catch (error) {
+//         console.error(
+//           "Error importing Google document:",
+//           error
+//         );
+
+//         showError(error);
+//       }
+//     },
+//     [
+//       accessToken,
+//       resetDialog,
+//       showError,
+//     ]
+//   );
+
+//   const openGoogleDrive = useCallback(() => {
+//     if (!accessToken) {
+//       showAlert({
+//         message:
+//           "No Google Drive access token was found.",
+//         type: AlertType.error,
+//       });
+
+//       return;
+//     }
+
+//     openDialog({
+//       title: null,
+//       text: (
+//         <div
+//           style={{
+//             "--background":
+//               Enviroment.palette.base.surface,
+//           }}
+//           className="rounded-xl bg-cream p-3"
+//         >
+//           <div
+//             className={
+//               isPhone
+//                 ? "grid grid-cols-2 gap-3 overflow-y-auto"
+//                 : "grid grid-cols-3 gap-4 overflow-y-auto"
+//             }
+//             style={{
+//               maxHeight: "70vh",
+//               padding: "0.5rem",
+//             }}
+//           >
+//             {files.length === 0 ? (
+//               <p className="col-span-full p-4 text-center text-sm text-slate-500">
+//                 No Google Docs were found.
+//               </p>
+//             ) : (
+//               files.map((file) => (
+//                 <button
+//                   key={file.id}
+//                   type="button"
+//                   onClick={() => onFilePicked(file)}
+//                   className="
+//                     flex flex-col items-center justify-center
+//                     rounded-xl border border-blueSea
+//                     border-opacity-20 bg-base-bg px-3 py-3
+//                     shadow-md transition-all duration-150
+//                     hover:border-blueSea hover:shadow-lg
+//                     focus:outline-none focus:ring-2
+//                     focus:ring-emerald-300
+//                   "
+//                 >
+//                   <img
+//                     src={file.iconLink}
+//                     alt=""
+//                     className="mb-2 h-10 w-10 rounded"
+//                   />
+
+//                   <span className="w-full break-words text-center text-sm   dark:text-plumb-darkText text-plumb-ink">
+//                     {file.name}
+//                   </span>
+//                 </button>
+//               ))
+//             )}
+//           </div>
+//         </div>
+//       ),
+//     });
+//   }, [
+//     accessToken,
+//     files,
+//     isPhone,
+//     onFilePicked,
+//     openDialog,
+//     showAlert,
+//   ]);
+
+//   const handleView = useCallback(() => {
+//     if (!effectiveId || effectiveId === "new") {
+//       return;
+//     }
+
+//     router.push(
+//       Paths.page.createRoute(effectiveId),
+//       "forward"
+//     );
+//   }, [effectiveId, router]);
+
+//   const handlePostPublic = useCallback(
+//     (description) => {
+//       if (
+//         !effectiveId ||
+//         effectiveId === "new"
+//       ) {
+//         return;
+//       }
+
+//       const payload = {
+//         ...parameters,
+//         id: effectiveId,
+//         description,
+//         isPrivate: false,
+//         status: "finished",
+//         needsFeedback: true,
+//       };
+
+//       dispatch(updateStory(payload)).then(
+//         (result) =>
+//           checkResult(
+//             result,
+//             () => {
+//               setIsSaved(true);
+//               resetDialog();
+
+//               router.push(
+//                 Paths.page.createRoute(effectiveId),
+//                 "forward"
+//               );
+//             },
+//             (error) => {
+//               showError(error);
+//             }
+//           )
+//       );
+//     },
+//     [
+//       dispatch,
+//       effectiveId,
+//       parameters,
+//       resetDialog,
+//       router,
+//       showError,
+//     ]
+//   );
+
+//   const handleFeedback = useCallback(
+//     (description) => {
+//       if (
+//         !effectiveId ||
+//         effectiveId === "new"
+//       ) {
+//         return;
+//       }
+
+//       const payload = {
+//         ...parameters,
+//         id: effectiveId,
+//         description,
+//         status: "workshop",
+//         needsFeedback: true,
+//       };
+
+//       dispatch(updateStory(payload)).then(
+//         (result) =>
+//           checkResult(
+//             result,
+//             () => {
+//               setIsSaved(true);
+//               resetDialog();
+
+//               router.push(
+//                 Paths.workshop.createRoute(
+//                   effectiveId
+//                 ),
+//                 "forward"
+//               );
+//             },
+//             (error) => {
+//               showError(error);
+//             }
+//           )
+//       );
+//     },
+//     [
+//       dispatch,
+//       effectiveId,
+//       parameters,
+//       resetDialog,
+//       router,
+//       showError,
+//     ]
+//   );
+
+//   const openFeedback = useCallback(
+//     (isFeedback) => {
+//       openDialog({
+//         disagree: closeDialog,
+//         disagreeText: "Close",
+//         scrollY: false,
+//         text: (
+//           <FeedbackDialog
+//             page={editPage}
+//             isFeedback={isFeedback}
+//             handleChange={(value) =>
+//               handleChange("description", value)
+//             }
+//             handleFeedback={handleFeedback}
+//             handlePostPublic={handlePostPublic}
+//             handleClose={closeDialog}
+//           />
+//         ),
+//       });
+//     },
+//     [
+//       closeDialog,
+//       editPage,
+//       handleChange,
+//       handleFeedback,
+//       handlePostPublic,
+//       openDialog,
+//     ]
+//   );
+//   const handleDelete = useCallback(() => {
+//   const storyId =
+//     parametersRef.current.id ||
+//     routeId;
+
+//   if (!storyId || storyId === "new") {
+//     return;
+//   }
+
+//   const storyToDelete = {
+//     ...parametersRef.current,
+//     id: storyId,
+//   };
+
+//   // Stop pending autosave.
+//   debouncedSaveRef.current?.cancel?.();
+
+//   // Prevent any future autosave.
+//   isDeletedRef.current = true;
+
+//   // Prevent creation/update logic.
+//   hasCreatedRef.current = true;
+
+//   dispatch(
+//     deleteStory(storyToDelete)
+//   ).then((result) => {
+//     checkResult(
+//       result,
+//       () => {
+//         dispatch(
+//           removeFromPaginatedKey({
+//             key: "stories",
+//             id: storyId,
+//           })
+//         );
+
+//         dispatch(
+//           removeFromPaginatedKey({
+//             key: "recommended",
+//             id: storyId,
+//           })
+//         );
+
+//         dispatch(
+//           setEditingPage({
+//             page: null,
+//           })
+//         );
+
+//         dispatch(
+//           setPageInView({
+//             page: null,
+//           })
+//         );
+
+//         dispatch(
+//           setHtmlContent("")
+//         );
+
+//         closeDialog();
+
+//         router.push(
+//           Paths.home,
+//           "root"
+//         );
+//       },
+//       (error) => {
+//         isDeletedRef.current = false;
+//         hasCreatedRef.current = false;
+
+//         showError(error);
+//       }
+//     );
+//   });
+// }, [
+//   closeDialog,
+//   dispatch,
+//   routeId,
+//   router,
+//   showError,
+// ]);
+
+
+// const openConfirmDeleteDialog = useCallback(() => {
+//   openDialog({
+//     title: "Are you sure you want to delete this page?",
+//     text: parametersRef.current.title || "Untitled",
+
+//     disagreeText: "Close",
+//     disagree: closeDialog,
+
+//     agreeText: "Delete",
+//     agree: handleDelete,
+//   });
+// }, [
+//   closeDialog,
+//   handleDelete,
+//   openDialog,
+// ]);
+// const createPageAction = useCallback(
+//   async (data) => {
+//     if (hasCreatedRef.current) return null;
+
+//     hasCreatedRef.current = true;
+//     setIsSaved(false);
+
+//     const result = await saveStory({ data });
+
+//     // Allow another attempt if creation failed.
+//     if (!result) {
+//       hasCreatedRef.current = false;
+//     }
+
+//     return result;
+//   },
+//   [saveStory]
+// );
+
+//   return (
+//     <EditorContext.Provider
+//       value={{
+//         page: editPage,
+//         parameters,
+//         setParameters,
+//       }}
+//     >
+//       <IonContent
+//         fullscreen
+//         className="page-content"
+//       >
+//         <ErrorBoundary>
+     
+// <main className={[styles.pageShell.base].join(" ")}>
+//           <header className={styles.pageShell.head}>
+//             <span className="">
+//             <div
+//               className="
+//                 mx-auto flex
+//                 flex-col gap-1 rounded-lg
+//                 border border-plumb-blueSea/50
+            
+//         p-2
+//               border-2
+//                 dark:border-base-borderDark
+               
+//               "
+//             >
+//               <div className="flex   flex-row gap-2">
+                
+//                   <input
+//                     type="text"
+//                     value={parameters.title}
+//                     onChange={(event) =>
+//                       handleChange(
+//                         "title",
+//                         event.target.value
+//                       )
+//                     }
+//                     placeholder="Untitled"
+//                     aria-label="Story title"
+               
+//                     className="
+//                bg-plumb-canvas
+//                       flex-grow rounded-md border
+//                    text-plumb-ink
+//                    dark:text-plumb-darkText
+                    
+//                       text-[1rem] font-bold
+//                     outline-none
+//                       focus:ring-2 focus:ring-emerald-500
+                    
+//                     "
+//                   />
+//            <TopBarDropdown
+//                     router={router}
+//                     id={effectiveId}
+//                     handleView={handleView}
+//                     editPage={pageInView}
+//                     handleChange={handleChange}
+//                     openFeedback={openFeedback}
+//                     parameters={parameters}
+//                     openGoogleDrive={openGoogleDrive}
+//                     setOpenHashtag={setOpenHashtag}
+//                     openHashtag={openHashtag}
+//                     openConfirmDeleteDialog={
+//                       openConfirmDeleteDialog
+//                     }
+//                   />
+//                   </div>
+                  
+//                   <div className=" flex flex-row gap-2 py-1">
+                
+//                     {isSaved ? (
+//                       <h6 className="flex items-center gap-1 text-sm my-auto translate-y-[0.5pt] font-semibold ">
+//                         ✅ Saved
+//                       </h6>
+//                     ) : (
+//                       <h6 className="flex items-center gap-1 text-sm my-auto translate-y-[0.5pt] font-semibold  ">
+//                         💾 Saving...
+//                       </h6>
+//                     )}
+    
+//                     <VisibilityBadge
+//                       isPrivate={parameters.isPrivate}
+//                       toggle={() =>
+//                         handleChange(
+//                           "isPrivate",
+//                           !parameters.isPrivate
+//                         )
+//                       }
+//                     />
+// {/* </div> */}
+//                     {effectiveId &&
+//                       effectiveId !== "new" && (
+//                         <div
+//                           type="button"
+//                           onClick={handleView}
+//                           className="
+//                             inline-flex items-center gap-1
+//                             rounded-full border
+//                             px-6 py-[3px]
+//                             text-xs font-medium  
+//                             transition-colors
+//                             hover:bg-emerald-50
+//                             dark:border-plumb-mintLight
+//                             border-plumb-blueSea/50
+//                             dark:hover:bg-emerald-900/30
+//                           "
+//                         >
+//                           <svg
+//                             width="12"
+//                             height="12"
+//                             viewBox="0 0 24 24"
+//                             fill="none"
+//                             stroke="currentColor"
+//                             strokeWidth="2"
+//                             strokeLinecap="round"
+//                             strokeLinejoin="round"
+//                             aria-hidden="true"
+//                           >
+//                             <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+//                             <circle
+//                               cx="12"
+//                               cy="12"
+//                               r="3"
+//                             />
+//                           </svg>
+
+//                           Preview
+//                         </div>
+//                       )}
+//                   {/* </div> */}
+//                 </div>
+
+//               </div>
+//        </span>
+//           </header>
+
+//           <section className="">
+//             <div className="mx-auto w-full max-w-3xl">
+//               <div className={CONTAINER}>
+//                 <PageTypeSelector
+//                   value={type}
+//                   onChange={(nextType) => {
+//                     handleChange("type", nextType);
+//                     dispatch(setPageType({ type: nextType }));
+//                   }}
+//                 />
+
+//                 <div
+//                 className="gap-1 flex-row flex mx-auto items-center justify-center mb-4 mt-4 w-fit rounded-full"
+            
+//                 >
+//                   {STATUS_OPTIONS.map((option) => {
+//                     const isActive =
+//                       parameters.status ===
+//                       option.value;
+
+//                     return (
+//                       <button
+//                         key={option.value}
+//                         type="button"
+//                         aria-pressed={isActive}
+//                         onClick={() =>
+//                           handleChange(
+//                             "status",
+//                             option.value
+//                           )
+//                         }
+//                         className={`${styles.button.base} dark:text-plumb-surface  ${styles.button.small} ${
+//                           isActive
+//                             ? "ring-2 ring-plumb-mint/40"
+//                             : "opacity-75"
+//                         }`}
+
+//                       >
+//                         {option.label}
+//                       </button>
+//                     );
+//                   })}
+//                 </div>
+
+//                 <div className="editor-toolbar-wrapper">
+//                   <EditorDiv
+//                     page={editPage}
+//                     isSaved={isSaved}
+//                     setIsSaved={setIsSaved}
+//                     handleChange={handleChange}
+//                     parameters={parameters}
+//                     type={type}
+//                     createPageAction={
+//                       createPageAction
+//                     }
+//                   />
+//                 </div>
+//               </div>
+// <div className={styles.pageShell.padded}>
+//               <EditorFooter
+//                 pageInView={pageInView}
+//                       effectiveId={effectiveId}
+             
+//                 openConfirmDeleteDialog={
+//                   openConfirmDeleteDialog
+//                 }
+//               />
+//             </div>
+//             </div>
+//           </section>
+//      </main>   
+      
+//         </ErrorBoundary>
+//       </IonContent>
+//     </EditorContext.Provider>
+//   );
+// }
+
+// function VisibilityBadge({
+//   isPrivate,
+//   toggle,
+// }) {
+//   const base = ` max-w-min flex gap-2 flex-row text-sm px-6 py-1 rounded-full`
+                  
+  
+//   return (
+//     <div
+//       // type="button"
+//       onClick={toggle}
+//       aria-label="Change visibility"
+//       className={
+//         "" +
+//         (isPrivate
+//           ? `${base} border-plumb-blueSea border border-1   dark:text-plumb-blueSea hover:bg-gray-200`
+//           : `${base} border-plumb-mintLight border border-1  dark:text-plumb-mintLight hover:bg-emerald-200`)
+//       }
+//     >
+//       <span aria-hidden="true">
+//         {isPrivate ? "🔒" : "🌍"}
+//       </span>
+
+//    {isPrivate ? "Private" : "Public"}
+//     </div>
+//   );
+// }
+
+
 import "../../styles/Editor.css";
 import "../../App.css";
 
 import { useDispatch, useSelector } from "react-redux";
 import {
   useCallback,
-  useContext,
   useEffect,
   useRef,
   useState,
@@ -32,9 +1555,6 @@ import {
   setPageType,
 } from "../../actions/PageActions.jsx";
 
-import checkResult from "../../core/checkResult";
-import debounce from "../../core/debounce.js";
-import Context from "../../context";
 import { useAlert } from "../../core/useAlert.jsx";
 import AlertType from "../../core/AlertType.js";
 
@@ -52,7 +1572,7 @@ import PageTypeSelector from "../../components/PageTypeSelector.jsx";
 import ErrorBoundary from "../../ErrorBoundary.jsx";
 
 const CONTAINER =
-  "mx-auto w-full  max-w-3xl rounded-lg bg-base-bg p-4 shadow-sm md:p-6";
+  "mx-auto w-full max-w-3xl rounded-lg bg-base-bg p-4 shadow-sm md:p-6";
 
 const DRIVE_TOKEN_KEY = "googledrivetoken";
 
@@ -62,6 +1582,12 @@ const STATUS_OPTIONS = [
   { value: "workshop", label: "Workshop" },
   { value: "finished", label: "Published" },
 ];
+
+/*
+ * ---------------------------------------------------------
+ * HELPERS
+ * ---------------------------------------------------------
+ */
 
 function normalizeType(value) {
   if (value === "text") {
@@ -88,7 +1614,7 @@ function createEmptyParameters({
     isPrivate: true,
     commentable: true,
     needsFeedback: false,
-    type,
+    type: normalizeType(type),
     authorId: currentProfile?.id ?? null,
     profileId: currentProfile?.id ?? "",
     profile: currentProfile ?? null,
@@ -96,7 +1622,39 @@ function createEmptyParameters({
   };
 }
 
- export default function EditorContainer() {
+/*
+ * Only fields that are persisted as editable story content
+ * participate in save comparisons.
+ */
+function getEditableSnapshot(parameters = {}) {
+  return {
+    data: parameters.data ?? "",
+    title: parameters.title ?? "",
+    description: parameters.description ?? "",
+    status: parameters.status || "draft",
+    isPrivate: parameters.isPrivate ?? true,
+    commentable: parameters.commentable ?? true,
+    needsFeedback: parameters.needsFeedback ?? false,
+    type: normalizeType(parameters.type),
+  };
+}
+
+function snapshotsMatch(first, second) {
+  if (!first || !second) return false;
+
+  return (
+    JSON.stringify(first) ===
+    JSON.stringify(second)
+  );
+}
+
+/*
+ * ---------------------------------------------------------
+ * COMPONENT
+ * ---------------------------------------------------------
+ */
+
+export default function EditorContainer() {
   const dispatch = useDispatch();
   const router = useIonRouter();
 
@@ -106,8 +1664,10 @@ function createEmptyParameters({
   } = useParams();
 
   const { showAlert } = useAlert();
-  const isPhone = useMediaQuery({ query: '(max-width: 750px)' });
 
+  const isPhone = useMediaQuery({
+    query: "(max-width: 750px)",
+  });
 
   const {
     openDialog,
@@ -118,19 +1678,25 @@ function createEmptyParameters({
   const currentProfile = useSelector(
     (state) => state.users.currentProfile
   );
-const hasCreatedRef =useRef()
+
   const {
     editPage,
     pageInView,
     pageType: sliceType,
   } = useSelector((state) => state.pages);
-  const story = editPage || pageInView || {};
-   const storyData = editPage?.data || pageInView?.data || "";
-const pageInViewId = pageInView?.id;
-  const initialType = normalizeType(paramType || sliceType);
 
   const isNewStory =
     !routeId || routeId === "new";
+
+  const initialType = normalizeType(
+    paramType || sliceType
+  );
+
+  /*
+   * ---------------------------------------------------------
+   * STATE
+   * ---------------------------------------------------------
+   */
 
   const [parameters, setParameters] = useState(() =>
     createEmptyParameters({
@@ -140,100 +1706,56 @@ const pageInViewId = pageInView?.id;
     })
   );
 
-  // The selected editor type lives in the existing story parameters.
-  // This allows the selector to update the rendered editor without a
-  // separate state value that can drift out of sync.
-  const type = normalizeType(parameters.type || initialType);
+  const [files, setFiles] = useState([]);
+  const [accessToken, setAccessToken] = useState(null);
+  const [isSaved, setIsSaved] = useState(true);
+  const [saveError, setSaveError] = useState(false);
+  const [openHashtag, setOpenHashtag] = useState(false);
+
+  const type = normalizeType(
+    parameters.type || initialType
+  );
 
   const isMediaType =
     type === PageType.picture ||
     type === PageType.link;
 
-  const [files, setFiles] = useState([]);
-  const [accessToken, setAccessToken] = useState(null);
-  const [isSaved, setIsSaved] = useState(true);
-  const [openHashtag, setOpenHashtag] = useState(false);
-
-const hasLoadedRef = useRef(false);
-const lastSavedRef = useRef(null);
-const activeRequestIdRef = useRef(null);
-const debouncedSaveRef = useRef(null);
-
-const isDeletedRef = useRef(false);
-
-
-const setStory = useCallback(
-  (story) => {
-    if (!story?.id) return;
-
-    if (
-      hasLoadedRef.current &&
-      parametersRef.current.id === story.id
-    ) {
-      return;
-    }
-
-    const storyType = normalizeType(story.type || type);
-    const storyData = story.data || "";
-
-    hasCreatedRef.current = true;
-    hasLoadedRef.current = true;
-    activeRequestIdRef.current = story.id;
-
-    const loadedPayload = {
-      id: story.id,
-      data: storyData,
-      title: story.title || "",
-      description: story.description || "",
-      status: story.status || "draft",
-      isPrivate: story.isPrivate ?? true,
-      commentable: story.commentable ?? true,
-      needsFeedback: story.needsFeedback ?? false,
-      type: storyType,
-    };
-
-    lastSavedRef.current = loadedPayload;
-
-    dispatch(
-      setEditingPage({
-        page: story,
-      })
-    );
-
-    dispatch(
-      setPageInView({
-        page: story,
-      })
-    );
-
-    dispatch(
-      setPageType({
-        type: storyType,
-      })
-    );
-
-    dispatch(setHtmlContent(storyData));
-
-    setParameters((previous) => ({
-      ...previous,
-      ...loadedPayload,
-      page: story,
-    }));
-
-    setIsSaved(true);
-  },
-  [dispatch, type]
-);
-
-const parametersRef = useRef(parameters);
-
-useEffect(() => {
-  parametersRef.current = parameters;
-}, [parameters]);
-
   const effectiveId =
     parameters.id || routeId;
-console.log(effectiveId)
+
+  /*
+   * ---------------------------------------------------------
+   * REFS
+   * ---------------------------------------------------------
+   */
+
+  const parametersRef = useRef(parameters);
+
+  const hasLoadedRef = useRef(false);
+  const hasCreatedRef = useRef(false);
+
+  const isSavingRef = useRef(false);
+  const isDeletedRef = useRef(false);
+
+  const saveRequestedRef = useRef(false);
+
+  const activeRequestIdRef = useRef(null);
+
+  const lastSavedRef = useRef(null);
+
+  const saveTimerRef = useRef(null);
+  const persistLatestRef = useRef(null);
+
+  const routeIdentityRef = useRef(
+    `${routeId || "new"}:${paramType || ""}`
+  );
+
+  /*
+   * ---------------------------------------------------------
+   * ERROR HANDLING
+   * ---------------------------------------------------------
+   */
+
   const showError = useCallback(
     (error) => {
       showAlert({
@@ -246,431 +1768,680 @@ console.log(effectiveId)
     [showAlert]
   );
 
-  const handleChange = useCallback(
-    (key, value) => {
-      setParameters((previous) => ({
-        ...previous,
-        [key]: value,
-      }));
+  /*
+   * ---------------------------------------------------------
+   * PARAMETER UPDATES
+   * ---------------------------------------------------------
+   *
+   * All changes update the ref immediately and then React
+   * state. This keeps asynchronous save operations reading
+   * the latest editor values.
+   */
+
+  const updateParameters = useCallback(
+    (updater) => {
+      const previous = parametersRef.current;
+
+      const next =
+        typeof updater === "function"
+          ? updater(previous)
+          : {
+              ...previous,
+              ...updater,
+            };
+
+      parametersRef.current = next;
+      setParameters(next);
+
+      return next;
     },
     []
   );
 
-  /*
-   * One debounced update pipeline.
-   *
-   * This does not interact with editor DOM content. It only persists
-   * a fully resolved story payload.
-   */
-  useEffect(() => {
-  const debouncedSave = debounce(
-    async (payload) => {
-      if (isDeletedRef.current) return;
-      if (!payload?.id || payload.id === "new") return;
-
-      // isSavingRef.current = true;
-
-      try {
-        const result = await dispatch(
-          updateStory(payload)
-        );
-
-        checkResult(
-          result,
-          () => {
-            setIsSaved(true);
-          },
-          (error) => {
-            setIsSaved(false);
-            showError(error);
-          }
-        );
-      } finally {
-        // isSavingRef.current = false;
-      }
+  const handleChange = useCallback(
+    (key, value) => {
+      updateParameters((previous) => ({
+        ...previous,
+        [key]: value,
+      }));
     },
-    750
+    [updateParameters]
   );
 
-  debouncedSaveRef.current =
-    debouncedSave;
+  /*
+   * ---------------------------------------------------------
+   * SAVE TIMER
+   * ---------------------------------------------------------
+   */
 
-  return () => {
-    if (
-      typeof debouncedSave.cancel ===
-      "function"
-    ) {
-      debouncedSave.cancel();
+  const clearSaveTimer = useCallback(() => {
+    if (saveTimerRef.current) {
+      clearTimeout(saveTimerRef.current);
+      saveTimerRef.current = null;
     }
-  };
-}, [dispatch, showError]);
-  /*
-   * Close any open dialog once when the editor first mounts.
-   */
+  }, []);
+
+  const scheduleSave = useCallback(
+    (delay = 750) => {
+      if (isDeletedRef.current) return;
+
+      clearSaveTimer();
+
+      saveTimerRef.current = setTimeout(() => {
+        saveTimerRef.current = null;
+
+        if (isDeletedRef.current) return;
+
+        /*
+         * If a request is already running, record that
+         * another save is needed when it finishes.
+         */
+        if (isSavingRef.current) {
+          saveRequestedRef.current = true;
+          return;
+        }
+
+        persistLatestRef.current?.();
+      }, delay);
+    },
+    [clearSaveTimer]
+  );
 
   /*
-   * Reset all state for a new story.
+   * ---------------------------------------------------------
+   * PERSIST LATEST STORY
+   * ---------------------------------------------------------
    *
-   * This is intentionally based on route identity, not on animations,
-   * component keys, or a Framer Motion lifecycle.
+   * This is the only function that creates or updates a
+   * story during normal editor operation.
    */
-  useEffect(() => {
-    if (!isNewStory) return;
 
-    hasCreatedRef.current = false;
-    hasLoadedRef.current = false;
-    lastSavedRef.current = null;
-    activeRequestIdRef.current = null;
+  const persistLatest = useCallback(async () => {
+    if (!currentProfile?.id) return null;
+    if (isDeletedRef.current) return null;
 
-    dispatch(setEditingPage({ page: null }));
-    dispatch(setPageInView({ page: null }));
-    dispatch(setHtmlContent(""));
-    dispatch(setPageType({ type: initialType }));
+    if (isSavingRef.current) {
+      saveRequestedRef.current = true;
+      return null;
+    }
 
-    setParameters(
-      createEmptyParameters({
-        routeId: null,
-        type: initialType,
-        currentProfile,
-      })
-    );
+    const current = parametersRef.current;
 
-    setIsSaved(true);
+    const hasMeaningfulContent =
+      Boolean(current.data?.trim()) ||
+      Boolean(current.title?.trim());
+
+    if (!hasMeaningfulContent) return null;
+
+    const snapshot = getEditableSnapshot(current);
+
+    /*
+     * Nothing has changed since the last confirmed save.
+     */
+    if (
+      snapshotsMatch(
+        snapshot,
+        lastSavedRef.current
+      )
+    ) {
+      setIsSaved(true);
+      setSaveError(false);
+      return current.page ?? null;
+    }
+
+    isSavingRef.current = true;
+    saveRequestedRef.current = false;
+
+    setIsSaved(false);
+    setSaveError(false);
+
+    try {
+      const resolvedId =
+        current.id || routeId || null;
+
+      const isCreating =
+        !resolvedId || resolvedId === "new";
+
+      const payload = {
+        ...current,
+        ...snapshot,
+        id: isCreating ? null : resolvedId,
+        authorId: currentProfile.id,
+        profileId: currentProfile.id,
+        profile: currentProfile,
+      };
+
+      const response = isCreating
+        ? await dispatch(
+            createStory(payload)
+          ).unwrap()
+        : await dispatch(
+            updateStory(payload)
+          ).unwrap();
+
+      if (isDeletedRef.current) return null;
+
+      const savedStory = response?.story;
+
+      /*
+       * A new story must return an ID before the editor
+       * can transition to update mode.
+       */
+      if (isCreating && !savedStory?.id) {
+        throw new Error(
+          "The story was created, but no story ID was returned."
+        );
+      }
+
+      /*
+       * The exact snapshot sent to the server is now
+       * confirmed as saved.
+       */
+      lastSavedRef.current = snapshot;
+
+      /*
+       * Creation establishes the permanent ID.
+       * Do not replace the latest editor parameters with
+       * the server response: the user may have continued
+       * typing while creation was in progress.
+       */
+      if (isCreating) {
+        const latest = parametersRef.current;
+
+        const createdParameters = {
+          ...latest,
+          id: savedStory.id,
+          page: savedStory,
+        };
+
+        parametersRef.current = createdParameters;
+        setParameters(createdParameters);
+
+        activeRequestIdRef.current = savedStory.id;
+        hasCreatedRef.current = true;
+        hasLoadedRef.current = true;
+
+        dispatch(
+          setEditingPage({
+            page: savedStory,
+          })
+        );
+
+        dispatch(
+          setPageInView({
+            page: savedStory,
+          })
+        );
+
+        dispatch(
+          setPageType({
+            type: normalizeType(
+              savedStory.type || snapshot.type
+            ),
+          })
+        );
+
+        window.history.replaceState(
+          null,
+          "",
+          Paths.editPage.createRoute(
+            savedStory.id,
+            savedStory.type || snapshot.type
+          )
+        );
+      }
+
+      /*
+       * Compare the latest editor values with the
+       * version that the server just confirmed.
+       */
+      const latestSnapshot =
+        getEditableSnapshot(
+          parametersRef.current
+        );
+
+      const latestIsSaved =
+        snapshotsMatch(
+          latestSnapshot,
+          lastSavedRef.current
+        );
+
+      setIsSaved(latestIsSaved);
+      setSaveError(false);
+
+      /*
+       * If edits occurred during the request, save
+       * the newer version immediately afterward.
+       */
+      if (
+        !latestIsSaved ||
+        saveRequestedRef.current
+      ) {
+        scheduleSave(0);
+      }
+
+      return savedStory ?? response;
+    } catch (error) {
+      setIsSaved(false);
+      setSaveError(true);
+
+      showError(error);
+
+      return null;
+    } finally {
+      isSavingRef.current = false;
+
+      /*
+       * Do not lose a save request that was made while
+       * the previous request was still in flight.
+       */
+      if (
+        saveRequestedRef.current &&
+        !isDeletedRef.current
+      ) {
+        saveRequestedRef.current = false;
+        scheduleSave(0);
+      }
+    }
   }, [
     currentProfile,
     dispatch,
-    isNewStory,
     routeId,
-    paramType,
+    scheduleSave,
+    showError,
   ]);
 
-
-useEffect(() => {
-  const profileId =
-    currentProfile?.id ?? null;
-
-  const profileChanged =
-    parametersRef.current.authorId !==
-      profileId ||
-    parametersRef.current.profileId !==
-      (profileId ?? "");
-
-  const typeChanged =
-    parametersRef.current.type !== type;
-
-  if (!profileChanged && !typeChanged) {
-    return;
-  }
-
-  setParameters((previous) => ({
-    ...previous,
-    type,
-    authorId: profileId,
-    profileId: profileId ?? "",
-    profile: currentProfile ?? null,
-  }));
-}, [currentProfile, type]);
-  /*
-   * Applies loaded server data to application state.
-   *
-   * `parameters.data` is the content source EditorDiv should render.
-   * Redux editorHtmlContent is updated only as a compatibility mirror for
-   * other parts of your application that might still read it.
-   */
- 
-
+  persistLatestRef.current = persistLatest;
 
   /*
-   * Fetch a story only when a real story ID is in the route.
+   * ---------------------------------------------------------
+   * SAVE IMMEDIATELY
+   * ---------------------------------------------------------
    *
-   * The cancellation flag prevents a delayed response from a previous route
-   * from injecting old data into the current editor.
+   * Used by explicit actions such as publishing,
+   * requesting feedback, and editor-driven creation.
    */
+
+  const saveChangesNow = useCallback(
+    async (changes = {}) => {
+      if (isDeletedRef.current) return null;
+
+      updateParameters((previous) => ({
+        ...previous,
+        ...changes,
+      }));
+
+      clearSaveTimer();
+
+      return persistLatestRef.current?.() ?? null;
+    },
+    [clearSaveTimer, updateParameters]
+  );
+
+  /*
+   * ---------------------------------------------------------
+   * INITIALIZE LOADED STORY
+   * ---------------------------------------------------------
+   */
+
+  const setStory = useCallback(
+    (story) => {
+      if (!story?.id) return;
+
+      /*
+       * Ignore duplicate initialization of the same story.
+       */
+      if (
+        hasLoadedRef.current &&
+        parametersRef.current.id === story.id
+      ) {
+        return;
+      }
+
+      const storyType = normalizeType(
+        story.type || type
+      );
+
+      const loadedParameters = {
+        ...parametersRef.current,
+        id: story.id,
+        data: story.data ?? "",
+        title: story.title ?? "",
+        description: story.description ?? "",
+        status: story.status || "draft",
+        isPrivate: story.isPrivate ?? true,
+        commentable: story.commentable ?? true,
+        needsFeedback: story.needsFeedback ?? false,
+        type: storyType,
+        authorId:
+          story.authorId ??
+          currentProfile?.id ??
+          null,
+        profileId:
+          story.profileId ??
+          currentProfile?.id ??
+          "",
+        profile: currentProfile ?? null,
+        page: story,
+      };
+
+      activeRequestIdRef.current = story.id;
+
+      hasCreatedRef.current = true;
+      hasLoadedRef.current = true;
+
+      /*
+       * The loaded server version is the saved baseline.
+       */
+      lastSavedRef.current =
+        getEditableSnapshot(loadedParameters);
+
+      parametersRef.current = loadedParameters;
+      setParameters(loadedParameters);
+
+      dispatch(
+        setEditingPage({
+          page: story,
+        })
+      );
+
+      dispatch(
+        setPageInView({
+          page: story,
+        })
+      );
+
+      dispatch(
+        setPageType({
+          type: storyType,
+        })
+      );
+
+      dispatch(
+        setHtmlContent(loadedParameters.data)
+      );
+
+      setIsSaved(true);
+      setSaveError(false);
+    },
+    [currentProfile, dispatch, type]
+  );
+
+  /*
+   * ---------------------------------------------------------
+   * ROUTE CHANGES
+   * ---------------------------------------------------------
+   *
+   * Reset editor state when moving to another story.
+   */
+
   useEffect(() => {
-  if (isNewStory || !routeId) return;
-
-  // Already loaded into this editor.
-  if (
-    hasLoadedRef.current &&
-    parametersRef.current.id === routeId
-  ) {
-    return;
-  }
-
-  // Redux already has this story.
-  if (pageInViewId === routeId && pageInView) {
-    setStory(pageInView);
-    return;
-  }
-
-  let cancelled = false;
-
-  activeRequestIdRef.current = routeId;
-
-  dispatch(
-    getStory({
-      id: routeId,
-    })
-  ).then((result) => {
-    if (cancelled) return;
+    const nextIdentity =
+      `${routeId || "new"}:${paramType || ""}`;
 
     if (
-      activeRequestIdRef.current !== routeId
+      routeIdentityRef.current === nextIdentity
     ) {
       return;
     }
 
-    checkResult(
-      result,
-      (payload) => {
-        if (!cancelled && payload?.story) {
-          setStory(payload.story);
+    routeIdentityRef.current = nextIdentity;
+
+    clearSaveTimer();
+
+    activeRequestIdRef.current =
+      routeId || null;
+
+    hasCreatedRef.current = false;
+    hasLoadedRef.current = false;
+    isDeletedRef.current = false;
+
+    saveRequestedRef.current = false;
+    lastSavedRef.current = null;
+
+    const nextParameters =
+      createEmptyParameters({
+        routeId,
+        type: normalizeType(
+          paramType || sliceType
+        ),
+        currentProfile,
+      });
+
+    parametersRef.current = nextParameters;
+    setParameters(nextParameters);
+
+    setIsSaved(true);
+    setSaveError(false);
+
+    dispatch(
+      setEditingPage({
+        page: null,
+      })
+    );
+
+    dispatch(
+      setPageInView({
+        page: null,
+      })
+    );
+
+    dispatch(setHtmlContent(""));
+
+    dispatch(
+      setPageType({
+        type: normalizeType(
+          paramType || sliceType
+        ),
+      })
+    );
+  }, [
+    clearSaveTimer,
+    currentProfile,
+    dispatch,
+    paramType,
+    routeId,
+    sliceType,
+  ]);
+
+  /*
+   * ---------------------------------------------------------
+   * LOAD EXISTING STORY
+   * ---------------------------------------------------------
+   */
+
+  useEffect(() => {
+    if (isNewStory || !routeId) return;
+
+    if (
+      hasLoadedRef.current &&
+      parametersRef.current.id === routeId
+    ) {
+      return;
+    }
+
+    let cancelled = false;
+
+    activeRequestIdRef.current = routeId;
+
+    const loadStory = async () => {
+      try {
+        /*
+         * Reuse Redux data if the requested story is
+         * already available.
+         */
+        if (pageInView?.id === routeId) {
+          if (
+            !cancelled &&
+            activeRequestIdRef.current === routeId
+          ) {
+            setStory(pageInView);
+          }
+
+          return;
         }
-      },
-      (error) => {
+
+        const response = await dispatch(
+          getStory({
+            id: routeId,
+          })
+        ).unwrap();
+
+        if (cancelled) return;
+
+        if (
+          activeRequestIdRef.current !== routeId
+        ) {
+          return;
+        }
+
+        if (!response?.story) {
+          throw new Error(
+            "The requested story could not be loaded."
+          );
+        }
+
+        setStory(response.story);
+      } catch (error) {
         if (!cancelled) {
           showError(error);
         }
       }
-    );
-  });
-
-  return () => {
-    cancelled = true;
-  };
-}, [
-  dispatch,
-  isNewStory,
-  routeId,
-  pageInViewId,
-  pageInView,
-  setStory,
-  showError,
-]);
-
-  const saveStory = useCallback(
-  async (incoming = {}) => {
-    if (!currentProfile?.id) return null;
-    if (isDeletedRef.current) return null;
-
-    const currentParameters =
-      parametersRef.current;
-
-    const resolvedId =
-      incoming.id ??
-      currentParameters.id ??
-      routeId ??
-      null;
-
-    const payload = {
-      ...currentParameters,
-      ...incoming,
-      id: resolvedId,
-      type:
-        incoming.type ??
-        currentParameters.type ??
-        type,
-      authorId: currentProfile.id,
-      profileId: currentProfile.id,
-      profile: currentProfile,
     };
 
-    const shouldCreate =
-      !resolvedId ||
-      resolvedId === "new";
+    loadStory();
 
-    if (shouldCreate) {
-      const result = await dispatch(
-        createStory({
-          ...payload,
-          id: null,
-        })
-      );
-
-      return checkResult(
-        result,
-        (response) => {
-          const story = response?.story;
-
-          if (!story?.id) {
-            hasCreatedRef.current = false;
-
-            showError(
-              new Error(
-                "The story was created, but no story ID was returned."
-              )
-            );
-
-            return null;
-          }
-
-          hasCreatedRef.current = true;
-
-          setStory(story);
-
-          window.history.replaceState(
-            null,
-            "",
-            Paths.editPage.createRoute(
-              story.id,
-              story.type
-            )
-          );
-
-          return story;
-        },
-        (error) => {
-          hasCreatedRef.current = false;
-          setIsSaved(false);
-          showError(error);
-
-          return null;
-        }
-      );
-    }
-
-    // isSavingRef.current = true;
-
-    try {
-      const result = await dispatch(
-        updateStory({
-          ...payload,
-          id: resolvedId,
-        })
-      );
-
-      return checkResult(
-        result,
-        (response) => {
-          setIsSaved(true);
-
-          return response?.story ?? response;
-        },
-        (error) => {
-          setIsSaved(false);
-          showError(error);
-
-          return null;
-        }
-      );
-    } finally {
-      // isSavingRef.current = false;
-    }
-  },
-  [
-    currentProfile,
+    return () => {
+      cancelled = true;
+    };
+  }, [
     dispatch,
+    isNewStory,
+    pageInView,
     routeId,
     setStory,
     showError,
-    type,
-  ]
-);
-useEffect(() => {
-  if (!currentProfile?.id) return;
-  if (isDeletedRef.current) return;
-
-  if (isMediaType && isNewStory) return;
-
-  const hasMeaningfulContent =
-    Boolean(parameters.data?.trim()) ||
-    Boolean(parameters.title?.trim());
-
-  if (!hasMeaningfulContent) return;
-
-  const resolvedId =
-    parameters.id || routeId;
+  ]);
 
   /*
    * ---------------------------------------------------------
-   * CREATE
+   * AUTOSAVE
    * ---------------------------------------------------------
-   */
-  if (!resolvedId || resolvedId === "new") {
-    if (hasCreatedRef.current) return;
-
-    hasCreatedRef.current = true;
-    setIsSaved(false);
-
-    saveStory();
-
-    return;
-  }
-
-  /*
-   * Don't autosave the story until its server version
-   * has actually been loaded.
-   */
-  if (!hasLoadedRef.current) return;
-
-  /*
-   * Build a fingerprint of the editable story state.
    *
-   * Only these values should cause an autosave.
+   * This is the only autosave effect.
    */
-  const payload = {
-    id: resolvedId,
-    data: parameters.data || "",
-    title: parameters.title || "",
-    description: parameters.description || "",
-    status: parameters.status || "draft",
-    isPrivate:
-      parameters.isPrivate ?? true,
-    commentable:
-      parameters.commentable ?? true,
-    needsFeedback:
-      parameters.needsFeedback ?? false,
-    type,
-  };
 
-  const currentPayload =
-    JSON.stringify(payload);
+  useEffect(() => {
+    if (!currentProfile?.id) return;
+    if (isDeletedRef.current) return;
 
-  const previousPayload =
-    JSON.stringify(lastSavedRef.current);
+    /*
+     * New image/link stories should wait for their
+     * actual content before being created.
+     */
+    if (isMediaType && isNewStory) return;
+
+    const hasMeaningfulContent =
+      Boolean(parameters.data?.trim()) ||
+      Boolean(parameters.title?.trim());
+
+    if (!hasMeaningfulContent) return;
+
+    /*
+     * Do not update an existing story before its
+     * server version has loaded.
+     */
+    if (
+      !isNewStory &&
+      !hasLoadedRef.current
+    ) {
+      return;
+    }
+
+    setIsSaved(false);
+    setSaveError(false);
+
+    scheduleSave();
+  }, [
+    currentProfile?.id,
+    isMediaType,
+    isNewStory,
+    parameters,
+    scheduleSave,
+  ]);
 
   /*
-   * Nothing actually changed.
+   * ---------------------------------------------------------
+   * PROFILE METADATA
+   * ---------------------------------------------------------
    */
-  if (currentPayload === previousPayload) {
-    return;
-  }
+
+  useEffect(() => {
+    if (!currentProfile?.id) return;
+
+    const current =
+      parametersRef.current;
+
+    if (
+      current.authorId === currentProfile.id &&
+      current.profileId === currentProfile.id &&
+      current.profile === currentProfile
+    ) {
+      return;
+    }
+
+    updateParameters((previous) => ({
+      ...previous,
+      authorId: currentProfile.id,
+      profileId: currentProfile.id,
+      profile: currentProfile,
+    }));
+  }, [
+    currentProfile,
+    updateParameters,
+  ]);
 
   /*
-   * Don't schedule another save while the exact same
-   * payload is already waiting in the debounce.
+   * ---------------------------------------------------------
+   * CLEANUP
+   * ---------------------------------------------------------
    */
-  lastSavedRef.current = payload;
 
-  setIsSaved(false);
+  useEffect(() => {
+    return () => {
+      clearSaveTimer();
+    };
+  }, [clearSaveTimer]);
 
-  debouncedSaveRef.current?.({
-    ...parametersRef.current,
-    ...payload,
-    authorId: currentProfile.id,
-    profileId: currentProfile.id,
-    profile: currentProfile,
-  });
-}, [
-  currentProfile?.id,
-  isMediaType,
-  isNewStory,
-  parameters.data,
-  parameters.title,
-  parameters.description,
-  parameters.status,
-  parameters.isPrivate,
-  parameters.commentable,
-  parameters.needsFeedback,
-  parameters.id,
-  routeId,
-  saveStory,
-  type,
-]);
   /*
-   * This can be passed to EditorDiv when it creates a story itself.
+   * ---------------------------------------------------------
+   * EDITOR-DRIVEN CREATION
+   * ---------------------------------------------------------
    */
-  
+
+  const createPageAction = useCallback(
+    async (data) => {
+      if (isDeletedRef.current) return null;
+
+      if (data !== undefined) {
+        updateParameters((previous) => ({
+          ...previous,
+          data,
+        }));
+      }
+
+      clearSaveTimer();
+
+      return persistLatestRef.current?.() ?? null;
+    },
+    [clearSaveTimer, updateParameters]
+  );
+
+  /*
+   * ---------------------------------------------------------
+   * GOOGLE DRIVE
+   * ---------------------------------------------------------
+   */
 
   const fetchFiles = useCallback(async () => {
     try {
@@ -682,7 +2453,6 @@ useEffect(() => {
       if (!token) {
         setFiles([]);
         setAccessToken(null);
-
         return;
       }
 
@@ -727,14 +2497,6 @@ useEffect(() => {
     fetchFiles();
   }, [fetchFiles]);
 
-  /*
-   * Critical behavior:
-   * Imported content replaces parameters.data.
-   *
-   * It is intentionally NOT passed to `debouncedSave` directly, because
-   * direct saving bypasses React state and can leave EditorDiv with stale or
-   * independently appended content.
-   */
   const onFilePicked = useCallback(
     async (file) => {
       try {
@@ -751,7 +2513,7 @@ useEffect(() => {
           responseType: "text",
         });
 
-        setParameters((previous) => ({
+        updateParameters((previous) => ({
           ...previous,
           data: response.data || "",
           status: "draft",
@@ -773,6 +2535,7 @@ useEffect(() => {
       accessToken,
       resetDialog,
       showError,
+      updateParameters,
     ]
   );
 
@@ -834,7 +2597,7 @@ useEffect(() => {
                     className="mb-2 h-10 w-10 rounded"
                   />
 
-                  <span className="w-full break-words text-center text-sm   dark:text-plumb-darkText text-plumb-ink">
+                  <span className="w-full break-words text-center text-sm dark:text-plumb-darkText text-plumb-ink">
                     {file.name}
                   </span>
                 </button>
@@ -853,6 +2616,12 @@ useEffect(() => {
     showAlert,
   ]);
 
+  /*
+   * ---------------------------------------------------------
+   * NAVIGATION
+   * ---------------------------------------------------------
+   */
+
   const handleView = useCallback(() => {
     if (!effectiveId || effectiveId === "new") {
       return;
@@ -864,8 +2633,14 @@ useEffect(() => {
     );
   }, [effectiveId, router]);
 
+  /*
+   * ---------------------------------------------------------
+   * PUBLISH
+   * ---------------------------------------------------------
+   */
+
   const handlePostPublic = useCallback(
-    (description) => {
+    async (description) => {
       if (
         !effectiveId ||
         effectiveId === "new"
@@ -873,46 +2648,38 @@ useEffect(() => {
         return;
       }
 
-      const payload = {
-        ...parameters,
-        id: effectiveId,
+      const story = await saveChangesNow({
         description,
         isPrivate: false,
         status: "finished",
         needsFeedback: true,
-      };
+      });
 
-      dispatch(updateStory(payload)).then(
-        (result) =>
-          checkResult(
-            result,
-            () => {
-              setIsSaved(true);
-              resetDialog();
+      if (!story) return;
 
-              router.push(
-                Paths.page.createRoute(effectiveId),
-                "forward"
-              );
-            },
-            (error) => {
-              showError(error);
-            }
-          )
+      resetDialog();
+
+      router.push(
+        Paths.page.createRoute(effectiveId),
+        "forward"
       );
     },
     [
-      dispatch,
       effectiveId,
-      parameters,
       resetDialog,
       router,
-      showError,
+      saveChangesNow,
     ]
   );
 
+  /*
+   * ---------------------------------------------------------
+   * FEEDBACK / WORKSHOP
+   * ---------------------------------------------------------
+   */
+
   const handleFeedback = useCallback(
-    (description) => {
+    async (description) => {
       if (
         !effectiveId ||
         effectiveId === "new"
@@ -920,42 +2687,26 @@ useEffect(() => {
         return;
       }
 
-      const payload = {
-        ...parameters,
-        id: effectiveId,
+      const story = await saveChangesNow({
         description,
         status: "workshop",
         needsFeedback: true,
-      };
+      });
 
-      dispatch(updateStory(payload)).then(
-        (result) =>
-          checkResult(
-            result,
-            () => {
-              setIsSaved(true);
-              resetDialog();
+      if (!story) return;
 
-              router.push(
-                Paths.workshop.createRoute(
-                  effectiveId
-                ),
-                "forward"
-              );
-            },
-            (error) => {
-              showError(error);
-            }
-          )
+      resetDialog();
+
+      router.push(
+        Paths.workshop.createRoute(effectiveId),
+        "forward"
       );
     },
     [
-      dispatch,
       effectiveId,
-      parameters,
       resetDialog,
       router,
-      showError,
+      saveChangesNow,
     ]
   );
 
@@ -988,140 +2739,112 @@ useEffect(() => {
       openDialog,
     ]
   );
-  const handleDelete = useCallback(() => {
-  const storyId =
-    parametersRef.current.id ||
-    routeId;
 
-  if (!storyId || storyId === "new") {
-    return;
-  }
+  /*
+   * ---------------------------------------------------------
+   * DELETE
+   * ---------------------------------------------------------
+   */
 
-  const storyToDelete = {
-    ...parametersRef.current,
-    id: storyId,
-  };
+  const handleDelete = useCallback(async () => {
+    const storyId =
+      parametersRef.current.id || routeId;
 
-  // Stop pending autosave.
-  debouncedSaveRef.current?.cancel?.();
-
-  // Prevent any future autosave.
-  isDeletedRef.current = true;
-
-  // Prevent creation/update logic.
-  hasCreatedRef.current = true;
-
-  dispatch(
-    deleteStory(storyToDelete)
-  ).then((result) => {
-    checkResult(
-      result,
-      () => {
-        dispatch(
-          removeFromPaginatedKey({
-            key: "stories",
-            id: storyId,
-          })
-        );
-
-        dispatch(
-          removeFromPaginatedKey({
-            key: "recommended",
-            id: storyId,
-          })
-        );
-
-        dispatch(
-          setEditingPage({
-            page: null,
-          })
-        );
-
-        dispatch(
-          setPageInView({
-            page: null,
-          })
-        );
-
-        dispatch(
-          setHtmlContent("")
-        );
-
-        closeDialog();
-
-        router.push(
-          Paths.home,
-          "root"
-        );
-      },
-      (error) => {
-        isDeletedRef.current = false;
-        hasCreatedRef.current = false;
-
-        showError(error);
-      }
-    );
-  });
-}, [
-  closeDialog,
-  dispatch,
-  routeId,
-  router,
-  showError,
-]);
-
-
-const openConfirmDeleteDialog = useCallback(() => {
-  openDialog({
-    title: "Are you sure you want to delete this page?",
-    text: parametersRef.current.title || "Untitled",
-
-    disagreeText: "Close",
-    disagree: closeDialog,
-
-    agreeText: "Delete",
-    agree: handleDelete,
-  });
-}, [
-  closeDialog,
-  handleDelete,
-  openDialog,
-]);
-const createPageAction = useCallback(
-  async (data) => {
-    if (hasCreatedRef.current) return null;
-
-    hasCreatedRef.current = true;
-    setIsSaved(false);
-
-    const result = await saveStory({ data });
-
-    // Allow another attempt if creation failed.
-    if (!result) {
-      hasCreatedRef.current = false;
+    if (!storyId || storyId === "new") {
+      return;
     }
 
-    return result;
-  },
-  [saveStory]
-);
-//   const createPageAction = useCallback(
-//   async (data) => {
-//     if (hasCreated.current) return null;
+    clearSaveTimer();
 
-//     hasCreated.current = true;
-//     setIsSaved(false);
+    isDeletedRef.current = true;
+    saveRequestedRef.current = false;
 
-//     return await saveStory({ data });
-//   },
-//   [saveStory]
-// );
+    try {
+      await dispatch(
+        deleteStory({
+          page: {
+            ...parametersRef.current,
+            id: storyId,
+          },
+        })
+      ).unwrap();
+
+      dispatch(
+        removeFromPaginatedKey({
+          key: "stories",
+          id: storyId,
+        })
+      );
+
+      dispatch(
+        removeFromPaginatedKey({
+          key: "recommended",
+          id: storyId,
+        })
+      );
+
+      dispatch(
+        setEditingPage({
+          page: null,
+        })
+      );
+
+      dispatch(
+        setPageInView({
+          page: null,
+        })
+      );
+
+      dispatch(setHtmlContent(""));
+
+      closeDialog();
+
+      router.push(
+        Paths.home,
+        "root"
+      );
+    } catch (error) {
+      isDeletedRef.current = false;
+      showError(error);
+    }
+  }, [
+    clearSaveTimer,
+    closeDialog,
+    dispatch,
+    routeId,
+    router,
+    showError,
+  ]);
+
+  const openConfirmDeleteDialog = useCallback(() => {
+    openDialog({
+      title:
+        "Are you sure you want to delete this page?",
+      text:
+        parametersRef.current.title || "Untitled",
+      disagreeText: "Close",
+      disagree: closeDialog,
+      agreeText: "Delete",
+      agree: handleDelete,
+    });
+  }, [
+    closeDialog,
+    handleDelete,
+    openDialog,
+  ]);
+
+  /*
+   * ---------------------------------------------------------
+   * RENDER
+   * ---------------------------------------------------------
+   */
+
   return (
     <EditorContext.Provider
       value={{
         page: editPage,
         parameters,
-        setParameters,
+        setParameters: updateParameters,
       }}
     >
       <IonContent
@@ -1129,75 +2852,79 @@ const createPageAction = useCallback(
         className="page-content"
       >
         <ErrorBoundary>
-     
-<main className={[styles.pageShell.base,styles.pageShell.scroll,styles.pageShell.body].join(" ")}>
-          <header className={styles.pageShell.head}>
-            <div
-              className="
-                mx-auto flex
-                flex-col gap-1 rounded-lg
-                border border-plumb-blueSea/50
-             p-4
-              border-2
-                dark:border-base-borderDark
-               
-              "
+          <main
+            className={[
+              styles.pageShell.base,
+            ].join(" ")}
+          >
+            <header
+              className={styles.pageShell.head}
             >
-              <div className="flex w-full flex-row gap-2">
-                
-                  <input
-                    type="text"
-                    value={parameters.title}
-                    onChange={(event) =>
-                      handleChange(
-                        "title",
-                        event.target.value
-                      )
-                    }
-                    placeholder="Untitled"
-                    aria-label="Story title"
-               
-                    className="
-               bg-plumb-canvas
-                      flex-grow rounded-md border
-                   text-plumb-ink
-                   dark:text-plumb-darkText
-                    
-                      p-2 text-[1rem] font-bold
-                    outline-none
-                      focus:ring-2 focus:ring-emerald-500
-                    
-                    "
-                  />
-           <TopBarDropdown
-                    router={router}
-                    id={effectiveId}
-                    handleView={handleView}
-                    editPage={pageInView}
-                    handleChange={handleChange}
-                    openFeedback={openFeedback}
-                    parameters={parameters}
-                    openGoogleDrive={openGoogleDrive}
-                    setOpenHashtag={setOpenHashtag}
-                    openHashtag={openHashtag}
-                    openConfirmDeleteDialog={
-                      openConfirmDeleteDialog
-                    }
-                  />
+              <span>
+                <div
+                  className="
+                    mx-auto flex flex-col gap-1
+                    rounded-lg border-2
+                    border-plumb-blueSea/50
+                    p-2 dark:border-base-borderDark
+                  "
+                >
+                  <div className="flex flex-row gap-2">
+                    <input
+                      type="text"
+                      value={parameters.title}
+                      onChange={(event) =>
+                        handleChange(
+                          "title",
+                          event.target.value
+                        )
+                      }
+                      placeholder="Untitled"
+                      aria-label="Story title"
+                      className="
+                        flex-grow rounded-md border
+                        bg-plumb-canvas
+                        text-[1rem] font-bold
+                        text-plumb-ink
+                        outline-none
+                        focus:ring-2
+                        focus:ring-emerald-500
+                        dark:text-plumb-darkText
+                      "
+                    />
+
+                    <TopBarDropdown
+                      router={router}
+                      id={effectiveId}
+                      handleView={handleView}
+                      editPage={pageInView}
+                      handleChange={handleChange}
+                      openFeedback={openFeedback}
+                      parameters={parameters}
+                      openGoogleDrive={openGoogleDrive}
+                      setOpenHashtag={setOpenHashtag}
+                      openHashtag={openHashtag}
+                      openConfirmDeleteDialog={
+                        openConfirmDeleteDialog
+                      }
+                    />
                   </div>
-                  <div className=" flex flex-row gap-2 py-1">
-                
+
+                  <div className="flex flex-row gap-2 py-1">
                     {isSaved ? (
-                      <h6 className="flex items-center gap-1 text-sm my-auto translate-y-[0.5pt] font-semibold ">
+                      <h6 className="my-auto flex translate-y-[0.5pt] items-center gap-1 text-sm font-semibold">
                         ✅ Saved
                       </h6>
+                    ) : saveError ? (
+                      <h6 className="my-auto flex items-center gap-1 text-sm font-semibold text-red-600">
+                        ⚠️ Not saved
+                      </h6>
                     ) : (
-                      <h6 className="flex items-center gap-1 text-sm my-auto translate-y-[0.5pt] font-semibold  ">
+                      <h6 className="my-auto flex items-center gap-1 text-sm font-semibold">
                         💾 Saving...
                       </h6>
                     )}
-                    {/* </div> */}
-{/* <div className="w-[5em]"> */}
+
                     <VisibilityBadge
                       isPrivate={parameters.isPrivate}
                       toggle={() =>
@@ -1207,21 +2934,20 @@ const createPageAction = useCallback(
                         )
                       }
                     />
-{/* </div> */}
+
                     {effectiveId &&
                       effectiveId !== "new" && (
-                        <div
+                        <button
                           type="button"
                           onClick={handleView}
                           className="
                             inline-flex items-center gap-1
                             rounded-full border
-                            px-6 py-[3px]
-                            text-xs font-medium  
-                            transition-colors
+                            border-plumb-blueSea/50
+                            px-6 py-[3px] text-xs
+                            font-medium transition-colors
                             hover:bg-emerald-50
                             dark:border-plumb-mintLight
-                            border-plumb-blueSea/50
                             dark:hover:bg-emerald-900/30
                           "
                         >
@@ -1245,117 +2971,138 @@ const createPageAction = useCallback(
                           </svg>
 
                           Preview
-                        </div>
+                        </button>
                       )}
-                  {/* </div> */}
+                  </div>
                 </div>
+              </span>
+            </header>
 
-              </div>
-       
-          </header>
+            <section>
+              <div className="mx-auto w-full max-w-3xl">
+                <div className={CONTAINER}>
+                  <PageTypeSelector
+                    value={type}
+                    onChange={(nextType) => {
+                      handleChange(
+                        "type",
+                        nextType
+                      );
 
-          <section className="">
-            <div className="mx-auto w-full max-w-3xl">
-              <div className={CONTAINER}>
-                <PageTypeSelector
-                  value={type}
-                  onChange={(nextType) => {
-                    handleChange("type", nextType);
-                    dispatch(setPageType({ type: nextType }));
-                  }}
-                />
+                      dispatch(
+                        setPageType({
+                          type: nextType,
+                        })
+                      );
+                    }}
+                  />
+
+                  <div
+                    className="
+                      mx-auto mb-4 mt-4
+                      flex w-fit flex-row
+                      items-center justify-center gap-1
+                      rounded-full
+                    "
+                  >
+                    {STATUS_OPTIONS.map((option) => {
+                      const isActive =
+                        parameters.status ===
+                        option.value;
+
+                      return (
+                        <button
+                          key={option.value}
+                          type="button"
+                          aria-pressed={isActive}
+                          onClick={() =>
+                            handleChange(
+                              "status",
+                              option.value
+                            )
+                          }
+                          className={`
+                            ${styles.button.base}
+                            ${styles.button.small}
+                            dark:text-plumb-surface
+                            ${
+                              isActive
+                                ? "ring-2 ring-plumb-mint/40"
+                                : "opacity-75"
+                            }
+                          `}
+                        >
+                          {option.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  <div className="editor-toolbar-wrapper">
+                    <EditorDiv
+                      page={editPage}
+                      isSaved={isSaved}
+                      setIsSaved={setIsSaved}
+                      handleChange={handleChange}
+                      parameters={parameters}
+                      type={type}
+                      createPageAction={
+                        createPageAction
+                      }
+                    />
+                  </div>
+                </div>
 
                 <div
-                className="gap-1 flex-row flex mx-auto items-center justify-center mb-4 mt-4 w-fit rounded-full"
-            
+                  className={styles.pageShell.padded}
                 >
-                  {STATUS_OPTIONS.map((option) => {
-                    const isActive =
-                      parameters.status ===
-                      option.value;
-
-                    return (
-                      <button
-                        key={option.value}
-                        type="button"
-                        aria-pressed={isActive}
-                        onClick={() =>
-                          handleChange(
-                            "status",
-                            option.value
-                          )
-                        }
-                        className={`${styles.button.base} dark:text-plumb-surface  ${styles.button.small} ${
-                          isActive
-                            ? "ring-2 ring-plumb-mint/40"
-                            : "opacity-75"
-                        }`}
-
-                      >
-                        {option.label}
-                      </button>
-                    );
-                  })}
-                </div>
-
-                <div className="editor-toolbar-wrapper">
-                  <EditorDiv
-                    page={editPage}
-                    isSaved={isSaved}
-                    setIsSaved={setIsSaved}
-                    handleChange={handleChange}
-                    parameters={parameters}
-                    type={type}
-                    createPageAction={
-                      createPageAction
+                  <EditorFooter
+                    pageInView={pageInView}
+                    effectiveId={effectiveId}
+                    openConfirmDeleteDialog={
+                      openConfirmDeleteDialog
                     }
                   />
                 </div>
               </div>
-<div className={styles.pageShell.padded}>
-              <EditorFooter
-                pageInView={pageInView}
-                      effectiveId={effectiveId}
-             
-                openConfirmDeleteDialog={
-                  openConfirmDeleteDialog
-                }
-              />
-            </div>
-            </div>
-          </section>
-     </main>   
-      
+            </section>
+          </main>
         </ErrorBoundary>
       </IonContent>
     </EditorContext.Provider>
   );
 }
 
+/*
+ * ---------------------------------------------------------
+ * VISIBILITY BADGE
+ * ---------------------------------------------------------
+ */
+
 function VisibilityBadge({
   isPrivate,
   toggle,
 }) {
-  const base = ` max-w-min flex gap-2 flex-row text-sm px-6 py-1 rounded-full`
-                  
-  
+  const base =
+    "max-w-min flex flex-row gap-2 rounded-full px-6 py-1 text-sm";
+
   return (
-    <div
-      // type="button"
+    <button
+      type="button"
       onClick={toggle}
       aria-label="Change visibility"
+      aria-pressed={!isPrivate}
       className={
-        "" +
-        (isPrivate
-          ? `${base} border-plumb-blueSea border border-1   dark:text-plumb-blueSea hover:bg-gray-200`
-          : `${base} border-plumb-mintLight border border-1  dark:text-plumb-mintLight hover:bg-emerald-200`)
+        isPrivate
+          ? `${base} border border-plumb-blueSea hover:bg-gray-200 dark:text-plumb-blueSea`
+          : `${base} border border-plumb-mintLight hover:bg-emerald-200 dark:text-plumb-mintLight`
       }
     >
       <span aria-hidden="true">
         {isPrivate ? "🔒" : "🌍"}
       </span>
 
-   {isPrivate ? "Private" : "Public"}
-    </div>
+      {isPrivate ? "Private" : "Public"}
+    </button>
   );
 }

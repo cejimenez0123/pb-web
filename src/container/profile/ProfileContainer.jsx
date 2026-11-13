@@ -1,12 +1,12 @@
 
-import { IonContent, useIonViewDidLeave, useIonViewWillEnter, useIonRouter, IonButton } from "@ionic/react";
-import { useEffect, useMemo, useState } from "react";
+import { IonContent, useIonViewDidLeave, useIonViewWillEnter, useIonRouter,} from "@ionic/react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import {createFollow,deleteFollow} from "../../actions/FollowAction"
 import { fetchProfile } from "../../actions/UserActions";
 import {
-  getPublicProfilePages,
+
   setPagesInView,
 } from "../../actions/PageActions";
 import {
@@ -85,77 +85,118 @@ function ProfileContainer() {
   const [isReportDialogOpen, setReportDialogOpen] = useState(false);
   const [isBlockDialogOpen, setBlockDialogOpen] = useState(false);
   const [success, setSuccess] = useState(null);
-const pageResources = usePaginatedResource({
-cacheKey:`stories-${id}`,
-fetcher:getPublicProfilePages,
-  params:{ profileId: id },
-  pageSize:8
-             
-})
-const comResource = usePaginatedResource({
-  cacheKey:`communities-${id}`,
-  pageSize:8,
-fetcher:(args) =>
-                    getPublicProfileCollections({
-                      profileId: id,
-                      ...args,
-                    })
-                  
-})
-  const colResource = usePaginatedResource({
-    cacheKey:`collections-${id}`,
-                    fetcher:getPublicProfileCollections,
-                    params:{ profileId: id },
-                    pageSize:8,
-                    
-  })
+  const portfolioResource = usePaginatedResource({
+    cacheKey: `public-portfolio-${id}`,
+    fetcher: getPublicProfileCollections,
+    params: { profileId: id },
+    pageSize: 8,
+    enabled: Boolean(id),
+    infinite: true,
+  });
 
+  // All portfolio collections loaded so far.
+  const portfolioCollections = portfolioResource.items;
 
+  // Search is local to the portfolio data already loaded.
+  const normalizedSearch = search.trim().toLowerCase();
 
+  const matchesSearch = useCallback(
+    (value) =>
+      String(value ?? "")
+        .toLowerCase()
+        .includes(normalizedSearch),
+    [normalizedSearch]
+  );
+
+  // Communities are exclusively library collections.
   const communities = useMemo(
     () =>
-      collectionsRaw
-        .filter(
-          (col) =>
-            col &&
-            (col.type === "library" || col?.childCollections?.length > 0)
-        )
-        .filter(
-          (col) =>
-            !search ||
-            col.title?.toLowerCase().includes(search.toLowerCase())
-        ),
-    [collectionsRaw, search]
+      portfolioCollections.filter(
+        (collection) => collection?.type === "library"
+      ),
+    [portfolioCollections]
   );
 
-  const pages = useMemo(
+  // Books are exclusively book collections.
+  const books = useMemo(
     () =>
-      pagesRaw
-        .filter(Boolean)
-        .filter(
-          (page) =>
-            !search ||
-            page.title?.toLowerCase().includes(search.toLowerCase())
-        ),
-    [pagesRaw, search]
+      portfolioCollections.filter(
+        (collection) => collection?.type === "book"
+      ),
+    [portfolioCollections]
   );
 
-  const recentPosts = useMemo(
+  // Stories are gathered from the portfolio collections.
+  // Deduplicate stories that appear in more than one collection.
+  const posts = useMemo(() => {
+    const storiesById = new Map();
+
+    portfolioCollections.forEach((collection) => {
+      (collection?.storyIdList ?? []).forEach((association) => {
+        const story = association?.story;
+
+        if (
+          !story?.id ||
+          story.isPrivate !== false ||
+          story.status === "draft"
+        ) {
+          return;
+        }
+
+        if (!storiesById.has(story.id)) {
+          storiesById.set(story.id, story);
+        }
+      });
+    });
+
+    return Array.from(storiesById.values()).sort(
+      (a, b) =>
+        new Date(b.updated ?? b.created ?? 0) -
+        new Date(a.updated ?? a.created ?? 0)
+    );
+  }, [portfolioCollections]);
+
+  const visiblePosts = useMemo(
     () =>
-      [...pagesRaw]
-        .filter(Boolean)
-        .sort(
-          (a, b) =>
-            new Date(b.updated ?? b.created) -
-            new Date(a.updated ?? a.created)
-        )
-        .slice(0, 5),
-    [pagesRaw]
+      posts.filter(
+        (post) =>
+          !normalizedSearch ||
+          matchesSearch(post.title) ||
+          matchesSearch(post.description)
+      ),
+[posts, normalizedSearch, matchesSearch]
+  );
+
+  const visibleCommunities = useMemo(
+    () =>
+      communities.filter(
+        (collection) =>
+          !normalizedSearch ||
+          matchesSearch(collection.title) ||
+          matchesSearch(collection.purpose)
+      ),
+    [communities, normalizedSearch, matchesSearch]
+  );
+
+  const visibleBooks = useMemo(
+    () =>
+      books.filter(
+        (collection) =>
+          !normalizedSearch ||
+          matchesSearch(collection.title) ||
+          matchesSearch(collection.purpose) ||
+          (collection.childCollections ?? []).some(
+            (relation) =>
+              matchesSearch(relation?.childCollection?.title) ||
+              matchesSearch(relation?.childCollection?.purpose)
+          )
+      ),
+    [books, normalizedSearch, matchesSearch]
   );
 
   const tabs = [
     { key: TABS.POSTS, label: "Posts" },
-    { key: TABS.COLLECTIONS, label: "Rooms" },
+    { key: TABS.COLLECTIONS, label: "Collections" },
     { key: TABS.COMMUNITIES, label: "Communities" },
     { key: TABS.ABOUT, label: "About" },
   ];
@@ -286,7 +327,7 @@ if(!currentProfile?.id){
          <main className={styles.pageShell.base+" "+styles.pageShell.scroll+" "}>
        
             <header 
-            className={styles.pageShell.head+" px-4"}
+            className={styles.pageShell.head+" px-2"}
             >
               <div className="flex flex-row justify-end">    {!isSelf && (
                   <div className="dropdown dropdown-end shrink-0">
@@ -342,7 +383,7 @@ if(!currentProfile?.id){
               </div>
 
               {communities.length > 0 && (
-                <section className="mt-4 space-y-2">
+                <section className="my-4 space-y-2">
                   <p className={styles.profile.sectionLabel}>
                     Communities
                   </p>
@@ -352,6 +393,7 @@ if(!currentProfile?.id){
                       <Pill
                         key={community.id}
                         label={community.title}
+                        baseClass=" bg-plumb-blueSea/10 hover:bg-plumb-accent"
                         onClick={() =>
                           router.push(
                             Paths.collection.createRoute(community.id)
@@ -367,7 +409,7 @@ if(!currentProfile?.id){
               
 
               {(profile.bio || profile.selfStatement) && (
-                <p className={styles.profile.body}>
+                <p className={styles.profile.body+" my-4"}>
                   {profile.bio ?? profile.selfStatement}
                 </p>
               )}
@@ -450,159 +492,372 @@ if(!currentProfile?.id){
 />
 </div>
    </header>
-<div className={styles.pageShell.body}>
-       
-            <div className={styles.profile.searchRow}>
-              <input
-                type="search"
-                value={search}
-                onChange={(event) => setSearch(event.target.value)}
-                placeholder="Search this profile"
-                aria-label="Search this profile"
-                className={styles.profile.search}
-              />
+{/*  */}
 
-       
-            </div>
-      
          
- 
-            <div             className={styles.tabs.pill.container+"justify-around pb-4 "}>
-           <div className="w-[100%] ">
-              <TabBar
-           className="mx-auto"
-                tabs={tabs}
-                active={tab}
-                onChange={setTab}
-              />
-      </div>
- </div>  
-            {/* Tab content */}
-            <div className={styles.pageShell.body} >
-              {tab === TABS.POSTS && (
-                <>
-                                   <div className=" mx-4" >
-          <h2
-            id="post-heading"
-            className={styles.profile.mine.sectionTitle}
-          >
-  Posts
-          </h2>
+                              {/* Portfolio navigation and content */}
+            <section className="px-3 pb-8">
+              {/* Search */}
+              <div className={`${styles.profile.searchRow} mb-4`}>
+                <input
+                  type="search"
+                  value={search}
+                  onChange={(event) => setSearch(event.target.value)}
+                  placeholder="Search this profile"
+                  aria-label="Search this profile"
+                  className={styles.profile.search}
+                />
+              </div>
 
-        </div>
+              {/* Tabs */}
+              <div className={`${styles.tabs.pill.container} mb-5`}>
+                <TabBar
+                  tabs={tabs}
+                  active={tab}
+                  onChange={setTab}
+                  className="mx-auto"
+                />
+              </div>
 
-      
-                    <PaginatedList
-                    resource={pageResources}
-                    
-                    emptyState={<EmptyState text="No posts yet." />}
-                   renderItem={(page) => (
-                        <ListPill 
-                        key={page?.id}
-                        item={{story:page}}
-                            params={{ profileId: id }}
-                        onClick={()=>{
-                           router.push(
-                              Paths.page.createRoute(page.id)
+              <div className={styles.pageShell.body}>
+                {/* Initial portfolio loading */}
+                {portfolioResource.isLoading &&
+                  portfolioCollections.length === 0 && (
+                    <div
+                      className="space-y-4 py-6"
+                      role="status"
+                      aria-live="polite"
+                    >
+                      {[1, 2, 3].map((item) => (
+                        <div
+                          key={item}
+                          className={styles.profile.skeletonCard}
+                        />
+                      ))}
+                      <span className="sr-only">
+                        Loading portfolio
+                      </span>
+                    </div>
+                  )}
+
+                {/* Posts */}
+                {tab === TABS.POSTS &&
+                  !(
+                    portfolioResource.isLoading &&
+                    portfolioCollections.length === 0
+                  ) && (
+                    <section aria-labelledby="profile-posts-heading">
+                      <div className="mb-4">
+                        <h2
+                          id="profile-posts-heading"
+                          className={styles.profile.mine.sectionTitle}
+                        >
+                          Posts
+                        </h2>
+                        <p className={styles.profile.body}>
+                          Writing shared through this portfolio.
+                        </p>
+                      </div>
+
+                      {visiblePosts.length > 0 ? (
+                        <div className="space-y-3">
+                          {visiblePosts.map((post) => (
+                            <ListPill
+                              key={post.id}
+                              item={{ story: post }}
+                              onClick={() =>
+                                router.push(
+                                  Paths.page.createRoute(post.id)
+                                )
+                              }
+                            />
+                          ))}
+                        </div>
+                      ) : (
+                        <EmptyState
+                          text={
+                            normalizedSearch
+                              ? "No posts match your search."
+                              : "No public posts in this portfolio yet."
+                          }
+                        />
+                      )}
+                    </section>
+                  )}
+
+                {/* Collections / Books */}
+                {tab === TABS.COLLECTIONS &&
+                  !(
+                    portfolioResource.isLoading &&
+                    portfolioCollections.length === 0
+                  ) && (
+                    <section aria-labelledby="profile-collections-heading">
+                      <div className="mb-4">
+                        <h2
+                          id="profile-collections-heading"
+                          className={styles.profile.mine.sectionTitle}
+                        >
+                          Collections
+                        </h2>
+                        <p className={styles.profile.body}>
+                          Books and collections shared in this portfolio.
+                        </p>
+                      </div>
+
+                      {visibleBooks.length > 0 ? (
+                        <div className="space-y-5">
+                          {visibleBooks.map((collection) => {
+                            const children = (
+                              collection.childCollections ?? []
                             )
-                        }}/>)}
+                              .map(
+                                (relation) => relation?.childCollection
+                              )
+                              .filter(
+                                (child) =>
+                                  child && child.isPrivate === false
+                              );
 
-                      />
-             
+                            return (
+                              <article
+                                key={collection.id}
+                                className="space-y-3"
+                              >
+                                <div
+                                  role="link"
+                                  tabIndex={0}
+                                  onClick={() =>
+                                    router.push(
+                                      Paths.collection.createRoute(
+                                        collection.id
+                                      )
+                                    )
+                                  }
+                                  onKeyDown={(event) => {
+                                    if (
+                                      event.key === "Enter" ||
+                                      event.key === " "
+                                    ) {
+                                      event.preventDefault();
+                                      router.push(
+                                        Paths.collection.createRoute(
+                                          collection.id
+                                        )
+                                      );
+                                    }
+                                  }}
+                                  className={`${communityStyles.item} cursor-pointer`}
+                                >
+                                  <p className={communityStyles.title}>
+                                    {collection.title?.trim() ||
+                                      "Untitled"}
+                                  </p>
 
-               
-                </>
-              )}
+                                  {collection.purpose && (
+                                    <p className={communityStyles.purpose}>
+                                      {truncate(collection.purpose, 120)}
+                                    </p>
+                                  )}
+                                </div>
 
-              {tab === TABS.COLLECTIONS && (
-               <>
-                                       <div className=" mx-4" >
-          <h2
-            id="archive-heading"
-            className={styles.profile.mine.sectionTitle}
-          >
-     Room
-          </h2>
+                                {children.length > 0 && (
+                                  <div className="pl-3">
+                                    <p className={`${styles.profile.sectionLabel} mb-2`}>
+                                      Inside this collection
+                                    </p>
 
-        </div>
-             <PaginatedList
-                    resource={colResource}
-                   renderItem={(page) => (
-                        <ListPill 
-                        key={page?.id}
-                        item={{story:page}}
-                            params={{ profileId: id }}
-                        onClick={()=>{
-                           router.push(
-                              Paths.page.createRoute(page.id)
+                                    <div className="flex flex-wrap gap-2">
+                                      {children.map((child) => (
+                                        <Pill
+                                          key={child.id}
+                                          label={
+                                            child.title?.trim() ||
+                                            "Untitled"
+                                          }
+                                          onClick={() =>
+                                            router.push(
+                                              Paths.collection.createRoute(
+                                                child.id
+                                              )
+                                            )
+                                          }
+                                        />
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+                              </article>
+                            );
+                          })}
+                        </div>
+                      ) : (
+                        <EmptyState
+                          text={
+                            normalizedSearch
+                              ? "No collections match your search."
+                              : "No public collections in this portfolio yet."
+                          }
+                        />
+                      )}
+                    </section>
+                  )}
+
+                {/* Communities */}
+                {tab === TABS.COMMUNITIES &&
+                  !(
+                    portfolioResource.isLoading &&
+                    portfolioCollections.length === 0
+                  ) && (
+                    <section aria-labelledby="profile-communities-heading">
+                      <div className="mb-4">
+                        <h2
+                          id="profile-communities-heading"
+                          className={styles.profile.mine.sectionTitle}
+                        >
+                          Communities
+                        </h2>
+                        <p className={styles.profile.body}>
+                          Communities this profile has chosen to share.
+                        </p>
+                      </div>
+
+                      {visibleCommunities.length > 0 ? (
+                        <div className="space-y-5">
+                          {visibleCommunities.map((community) => {
+                            const children = (
+                              community.childCollections ?? []
                             )
-                        }}/>)}/>
+                              .map(
+                                (relation) => relation?.childCollection
+                              )
+                              .filter(
+                                (child) =>
+                                  child && child.isPrivate === false
+                              );
 
-             </>
-              )}
+                            return (
+                              <article
+                                key={community.id}
+                                className="space-y-3"
+                              >
+                                <div
+                                  role="link"
+                                  tabIndex={0}
+                                  onClick={() =>
+                                    router.push(
+                                      Paths.collection.createRoute(
+                                        community.id
+                                      )
+                                    )
+                                  }
+                                  onKeyDown={(event) => {
+                                    if (
+                                      event.key === "Enter" ||
+                                      event.key === " "
+                                    ) {
+                                      event.preventDefault();
+                                      router.push(
+                                        Paths.collection.createRoute(
+                                          community.id
+                                        )
+                                      );
+                                    }
+                                  }}
+                                  className={`${communityStyles.item} cursor-pointer`}
+                                >
+                                  <p className={communityStyles.title}>
+                                    {community.title?.trim() ||
+                                      "Untitled"}
+                                  </p>
 
-              {tab === TABS.COMMUNITIES && (
-                <>
-          
-                       <div className=" mx-4" >
-          <h2
-            id="archive-heading"
-            className={styles.profile.mine.sectionTitle}
-          >
-       Communities
-          </h2>
+                                  {community.purpose && (
+                                    <p className={communityStyles.purpose}>
+                                      {truncate(community.purpose, 120)}
+                                    </p>
+                                  )}
+                                </div>
 
-        </div>
-        <PaginatedList 
-        resource={comResource}
-         renderItem={(c) => (
-        <div
-          key={c.id}
-          onClick={() => router.push(Paths.collection.createRoute(c.id))}
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault();
-              router.push(Paths.collection.createRoute(c.id));
-            }
-          }}
-          className={communityStyles.item+" h-[6rem] "}
-        >
-          <p className={communityStyles.title}>
-            {c.title?.length > 0 ? c.title : "Untitled"}
-          </p>
+                                {children.length > 0 && (
+                                  <div className="pl-3">
+                                    <p className={`${styles.profile.sectionLabel} mb-2`}>
+                                      Related collections
+                                    </p>
 
-          {c.purpose && (
-            <p className={communityStyles.purpose}>
-              {truncate(c.purpose,84)}
-            </p>
-          )}
-        </div>
-      )}
-        />
-             
-                </>
-             
-              )}
+                                    <div className="flex flex-wrap gap-2">
+                                      {children.map((child) => (
+                                        <Pill
+                                          key={child.id}
+                                          label={
+                                            child.title?.trim() ||
+                                            "Untitled"
+                                          }
+                                          onClick={() =>
+                                            router.push(
+                                              Paths.collection.createRoute(
+                                                child.id
+                                              )
+                                            )
+                                          }
+                                        />
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+                              </article>
+                            );
+                          })}
+                        </div>
+                      ) : (
+                        <EmptyState
+                          text={
+                            normalizedSearch
+                              ? "No communities match your search."
+                              : "No public communities in this portfolio yet."
+                          }
+                        />
+                      )}
+                    </section>
+                  )}
 
-              {tab === TABS.ABOUT && (
-                    <div className=" mx-4" >
-                <AboutPanel
-                  router={router}
-                  profile={profile}
-                  locationName={locationName}
-                /></div>
-              )}
-          
-            {/* Recommendations */}
-            <section className="pb-6">
-              <RecommendedProfiles profileId={id} />
+                {/* About */}
+                {tab === TABS.ABOUT && (
+                  <section aria-label="About this profile">
+                    <AboutPanel
+                      router={router}
+                      profile={profile}
+                      locationName={locationName}
+                    />
+                  </section>
+                )}
+
+                {/* Portfolio pagination */}
+                {tab !== TABS.ABOUT &&
+                  portfolioResource.hasMore && (
+                    <div className="flex justify-center py-7">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          portfolioResource.setPage(
+                            portfolioResource.page + 1
+                          )
+                        }
+                        disabled={portfolioResource.isLoading}
+                        className={`${styles.profile.menuButton} px-5 py-3`}
+                      >
+                        {portfolioResource.isLoading
+                          ? "Loading..."
+                          : "Load more"}
+                      </button>
+                    </div>
+                  )}
+
+                {/* Recommendations */}
+                <section className="pt-8 pb-6">
+                  <RecommendedProfiles profileId={id} />
+                </section>
+              </div>
             </section>
-            
-          </div>
-          {/* </section> */}
-          </div>
+          {/*  */}
           </main>
      </ErrorBoundary>
       </IonContent>

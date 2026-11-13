@@ -132,13 +132,18 @@ async getMyCollections({
   return res.data;
 }
 async getPublicProfileCollections({ id, skip = 0, take = 20 }) {
-  const res = await axios.get(this.url + `/profile/${id}/public`, {
-    params: { skip, take },
-  });
+  const res = await axios.get(
+    `${this.url}/profile/${id}/public`,
+    {
+      params: {
+        skip,
+        take,
+      },
+    }
+  );
 
   return res.data;
 }
-
 async getProtectedProfileCollections({ id, skip = 0, take = 20 }) {
   const headers = await this.getAuthHeaders();
 

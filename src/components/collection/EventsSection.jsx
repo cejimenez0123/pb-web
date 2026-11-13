@@ -6,6 +6,7 @@ import EmptyState from "../general/EmptyState";
 import styles from "../../styles/style";
 
 export default function EventsSection({
+  id,
   profile,
   router,
   search,

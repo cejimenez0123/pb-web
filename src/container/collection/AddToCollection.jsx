@@ -400,6 +400,7 @@ purpose=" Select stories or Rooms to
          onClick={save}
           className={`
             ${styles.button.base} 
+            mx-1
             ${styles.button.primary} 
           
           `}

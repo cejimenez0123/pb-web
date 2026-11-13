@@ -49,7 +49,7 @@ export default function PaginatedList({
       )}
 
       {items.length > 0 && (
-        <div className="flex w-[100%] flex-col gap-2">
+        <div className="flex gap-2 flex-col">
           {items.map((item, index) => (
             <Fragment key={item?.id ?? index}>
               {renderItem(item, index)}

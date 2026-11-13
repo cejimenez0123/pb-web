@@ -1,5 +1,5 @@
 const shared = {
-  
+    bodyWidth:"max-w-3xl",
   // Page foundations
   page: {
     canvas: `
@@ -165,8 +165,8 @@ dark:bg-transparent
 
           elevated: " p-3 "+shared.surface.elevated,
 
-      head:"max-w-3xl mx-auto mt-8 w-[100%]",
-      headInner:"px-2",
+      head:"max-w-3xl mx-auto mt-8 px-1 pb-2 w-[100%]",
+      headInner:"px-4",
 body:"max-w-3xl mx-auto px-2  w-[100%]",
     content:[" max-w-3xl  flex"].join(" "),
    section:["mx-auto max-w-page space-y-4 mt-4 mb-8"].join(" "),
@@ -428,7 +428,7 @@ border-1 border-plumb-darkSurface/10
 
   communities: {
   item: [
-    "p-4  mx-4 rounded-xl",
+    "p-4  rounded-xl",
     "bg-plumb-surface dark:bg-plumb-dark-surface",
     "text-left",
    
@@ -1521,7 +1521,7 @@ pill: {
   statLabel: "text-xs text-plumb-muted dark:text-plumb-darkMuted",
 
   searchRow: [
-    "flex flex-col gap-3 py-5",
+    "flex flex-col gap-2 max-w-2xl  mx-auto py-5",
     "sm:flex-row sm:items-center",
   ].join(" "),
 
@@ -2140,7 +2140,7 @@ text: {
 tabs: {
 
 pill: {
-  container: `w-[100%] mt-4 pt-4 justify-center  min-w-0 px-2 max-w-4xl mx-auto`,
+  container: "my-4 px-4 max-w-3xl mx-auto flex flex-row justify-center overflow-x-scroll",
   wrapper: [
   "flex w-max  gap-1 items-center justify-start",
   "overflow-x-scroll overflow-x-contain",

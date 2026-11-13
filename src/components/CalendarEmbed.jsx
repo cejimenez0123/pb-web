@@ -35,51 +35,7 @@ const AREAS = [
   { label: "Queens", emoji: "👑" },
   { label: "Virtual", emoji: "💻" },
 ];
-// const EVENT_CATEGORIES = {
-//   openMics: [
-//     "openmic",
-//     "openmics",
-//     "poetry",
-//     "spokenword",
-//     "karaoke",
-//     "comedy",
-//   ],
-//   djDance: [
-//     "dj",
-//     "djs",
-//     "dance",
-//     "danceparty",
-//     "queerdanceparty",
-//     "queerparty",
-//     "alldjlineup",
-//     "popvspunk",
-//     "emo",
-//     "rave",
-//     "clubnight",
-//     "djnights",
-//   ],
-//   workshops: [
-//     "workshop",
-//     "workshops",
-//     "writing",
-//     "writersblock",
-//     "generativewriting",
-//     "creativewriting",
-//     "writinggroup",
-//   ],
-// };
-const FILTERS = [
-  { key: "all", label: "All events" },
-  { key: "plumbum", label: "Plumbum" },
-  { key: "saved", label: "Saved" },
-];
 
-// function normalizeTag(value = "") {
-//   return value
-//     .toLowerCase()
-//     .replace(/^#/, "")
-//     .replace(/[^a-z0-9]/g, "");
-// }
 
 function getPopularHashtags(events) {
   const counts = new Map();
@@ -756,7 +712,7 @@ const toggleHashtag = (tag) => {
         aria-label="Loading events"
       />
 
-      <section aria-label="Filter events by date">
+      <section className=" px-2 " aria-label="Filter events by date">
         <p className={styles.text.metadata + " mb-2"}>
           When
         </p>

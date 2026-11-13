@@ -136,10 +136,10 @@ function wrapSelectionInline(styles = {}) {
 }
 
 // ─── Main RichEditor ────────────────────────────────────────────────────────
-export default function RichEditor({ handleChange }) {
-  const htmlContent = useSelector((state) => state.pages.editorHtmlContent);
+export default function RichEditor({   value = "",
+  handleChange }) {
+const lastEmittedValueRef = useRef(value || "");
   const editorRef = useRef(null);
-  const hasInitialized = useRef(false);
 
   const [formats, setFormats] = useState({
     bold: false, italic: false, underline: false, strikethrough: false,
@@ -147,16 +147,45 @@ export default function RichEditor({ handleChange }) {
     align: "none", font: "Default", size: "16px",
   });
 
-  useEffect(() => {
-    const el = editorRef.current;
-    if (!el || hasInitialized.current) return;
-    el.innerHTML = htmlContent || "";
-    hasInitialized.current = true;
-  }, [htmlContent]);
+useEffect(() => {
+  const editor = editorRef.current;
+  if (!editor) return;
 
-  const emitChange = useCallback(() => {
-    handleChange?.(editorRef.current?.innerHTML ?? "");
-  }, [handleChange]);
+  const nextValue = value || "";
+
+  // This value was already produced by the editor itself.
+  // Don't rewrite the DOM or disturb the cursor.
+  if (nextValue === lastEmittedValueRef.current) {
+    return;
+  }
+
+  // This is an external update: initial load, story switch,
+  // or another component updating the document.
+  if (editor.innerHTML !== nextValue) {
+    editor.innerHTML = nextValue;
+  }
+
+  lastEmittedValueRef.current = nextValue;
+}, [value]);
+// useEffect(() => {
+//   const editor = editorRef.current;
+
+//   if (!editor) return;
+
+//   const nextValue = value || "";
+
+//   // Don't rewrite the DOM while the user is editing.
+//   // This also prevents unnecessary cursor-position resets.
+//   if (editor.innerHTML !== nextValue) {
+//     editor.innerHTML = nextValue;
+//   }
+// }, [value]);
+const emitChange = useCallback(() => {
+  const content = editorRef.current?.innerHTML ?? "";
+
+  lastEmittedValueRef.current = content;
+  handleChange?.(content);
+}, [handleChange]);
 
   // ── Detect if cursor is inside a given tag ──────────────────────────────
   const isInsideTag = useCallback((tag) => {
@@ -251,26 +280,7 @@ const restoreSelection = useCallback(() => {
   }
 }, []);
 
-// useEffect(() => {
-//   const handler = () => {
-//     const sel = window.getSelection();
-//     if (
-//       sel && sel.rangeCount > 0 && !sel.isCollapsed &&
-//       editorRef.current?.contains(sel.anchorNode)
-//     ) {
-//       savedRange.current = sel.getRangeAt(0).cloneRange();
-//     }
-//   };
-//   document.addEventListener("selectionchange", handler);
-//   return () => document.removeEventListener("selectionchange", handler);
-// }, []);
-// const applyFont = useCallback((font) => {
-//   editorRef.current?.focus();
-//   restoreSelection();
-//   document.execCommand("fontName", false, font === "Default" ? "inherit" : font);
-//   updateFormatState();
-//   emitChange();
-// }, [restoreSelection, updateFormatState, emitChange]);
+
 const applyFont = useCallback((font) => {
   editorRef.current?.focus();
   restoreSelection();
@@ -331,7 +341,7 @@ const applySize = useCallback((px) => {
       >
         {/* ── Toolbar ── */}
         <div
-          className="flex flex-wrap items-center gap-0.5 px-3 py-2 overflow-x-auto"
+          className="flex flex-wrap items-center gap-0.5 px-1 py-2 overflow-x-auto"
           style={{ background: "var(--bg-surface)", borderBottom: "1px solid var(--border)" }}
           onMouseDown={(e) => e.preventDefault()}
         >
@@ -386,7 +396,7 @@ text-plumb-ink
 
 
   min-h-[220px]
-  px-5
+  px-2
   py-4
   focus:outline-none
   prose

@@ -6,6 +6,7 @@ import styles from "../../styles/style";
 import ListPill from "../page/ListPill";
 
 export default function PortfolioSection({
+  id,
   profile,
   router,
   search,
@@ -15,6 +16,7 @@ export default function PortfolioSection({
   debouncedSearch,
   resource,
 }) {
+  
   return (
     <section
       aria-labelledby="portfolio-heading"
@@ -25,7 +27,7 @@ export default function PortfolioSection({
           <h2
             id="portfolio-heading"
             onClick={() =>
-              router.push(Paths.collection.createRoute())
+              router.push(Paths.collection.createRoute(id))
             }
             className={styles.profile.mine.sectionTitle}
           >
@@ -78,9 +80,7 @@ export default function PortfolioSection({
                 key={item.id}
                 className={styles.profile.portfolio.article}
               >
-                <h3 className="mb-3">
-                  {collection.title}
-                </h3>
+            
 
                 {stories.length > 0 ? (
                   <div className="flex flex-col gap-2">

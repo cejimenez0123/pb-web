@@ -13,12 +13,12 @@ export default function EditorDiv({
   type,
   createPageAction,
 }) {
-  const handleEditorChange = useCallback(
-    (content) => {
-      handleChange("data", content);
-    },
-    [handleChange]
-  );
+const handleEditorChange = useCallback(
+  (content) => {
+    handleChange("data", content);
+  },
+  [handleChange]
+);
 
   if (type === PageType.link || type === PageType.picture) {
     return (
@@ -33,5 +33,8 @@ export default function EditorDiv({
     );
   }
 
-  return <RichEditor handleChange={handleEditorChange} />;
+  return <RichEditor
+  value={parameters.data || ""}
+  handleChange={handleEditorChange}
+/>
 }

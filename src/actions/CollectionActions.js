@@ -328,7 +328,6 @@ const getMyCollections = createAsyncThunk(
     }
   }
 );
-
 const getPublicProfileCollections = createAsyncThunk(
   "collection/getPublicProfileCollections",
   async (params, thunkApi) => {
@@ -340,14 +339,41 @@ const getPublicProfileCollections = createAsyncThunk(
       });
 
       return {
-        collections: data.collections,
-        totalCount: data.totalCount,
+        collections: Array.isArray(data?.collections)
+          ? data.collections
+          : [],
+        totalCount: Number(data?.totalCount) || 0,
       };
     } catch (err) {
-      return thunkApi.rejectWithValue(err?.response?.data || err.message);
+      return thunkApi.rejectWithValue(
+        err?.response?.data || err.message
+      );
     }
   }
 );
+// const getPublicProfileCollections = createAsyncThunk(
+//   "collection/getPublicProfileCollections",
+//   async (params, thunkApi) => {
+//     try {
+//       const data = await collectionRepo.getPublicProfileCollections({
+//         id: params.profileId,
+//         skip: params.skip,
+//         take: params.take,
+//       });
+
+//       return {
+//         collections: Array.isArray(data?.collections)
+//           ? data.collections
+//           : [],
+//         totalCount: Number(data?.totalCount) || 0,
+//       };
+//     } catch (err) {
+//       return thunkApi.rejectWithValue(
+//         err?.response?.data || err.message
+//       );
+//     }
+//   }
+// );
 
 const getProtectedProfileCollections = createAsyncThunk(
   "collection/getProtectedProfileCollections",

@@ -22,7 +22,7 @@ export default function CalendarContainer() {
       <ErrorBoundary>
        <main className={[styles.pageShell.base,].join(" ")}>
   
-      <div className={styles.pageShell.head}>
+      <div className={styles.pageShell.head+" px-2"}>
         <p
           className="
             open-sans-medium
@@ -44,6 +44,7 @@ export default function CalendarContainer() {
             sm:text-5xl
             leading-tight
             mb-6
+          
             text-plumb-ink
             dark:text-plumb-darkText
           "
@@ -56,6 +57,7 @@ export default function CalendarContainer() {
             lora-medium
             max-w-xl
             mb-8
+            px-2
             text-plumb-muted
             dark:text-plumb-darkMuted
           "
