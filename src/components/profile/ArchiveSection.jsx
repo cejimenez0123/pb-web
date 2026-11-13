@@ -1,10 +1,10 @@
-import { getMyStories } from "../../actions/StoryActions";
+
 import Paths from "../../core/paths";
 import styles from "../../styles/style";
 import EmptyState from "../general/EmptyState";
 import ListPill from "../page/ListPill";
 import PaginatedList from "../page/PaginatedList";
-const PAGE_SIZE = 8
+
 function ArchiveSection({
   profile,
   router,
@@ -14,7 +14,6 @@ function ArchiveSection({
   setSearchInput,
   debouncedSearch,
   resource,
-  storiesParams,
 }) {
   return (
     <section aria-labelledby="archive-heading">
@@ -53,34 +52,53 @@ function ArchiveSection({
       </div>
 
       <div className="mt-6">
-                <PaginatedList
-               
-  resource={resource}
-  emptyState={ <EmptyState
+        <PaginatedList
+          resource={resource}
+          emptyState={
+            <EmptyState
               text={
-                search
+                debouncedSearch
                   ? "No matching stories."
                   : "No stories yet."
               }
-            />}
-  renderItem={(item) => (
-    <ListPill 
-     router={router}
-              key={item.id}
-              item={{story:item}}
-              profile={profile}
-              onClick={() =>
-                router.push(
-                  Paths.page.createRoute(item.id)
-                )
-              }
-    />
+            />
+          }
+          renderItem={(item) => {
+            const collection = item?.collection;
 
-  )}
-/>
+            const stories = collection?.storyIdList ?? [];
 
+            return (
+              <div
+                key={collection?.id ?? item.id}
+                className="space-y-3"
+              >
+                {stories.map((entry) => {
+                  const story = entry?.story;
+
+                  if (!story?.id) return null;
+
+                  return (
+                    <ListPill
+                      key={story.id}
+                      router={router}
+                      item={{ story }}
+                      profile={profile}
+                      onClick={() =>
+                        router.push(
+                          Paths.page.createRoute(story.id)
+                        )
+                      }
+                    />
+                  );
+                })}
+              </div>
+            );
+          }}
+        />
       </div>
     </section>
   );
 }
-export default ArchiveSection
+
+export default ArchiveSection;

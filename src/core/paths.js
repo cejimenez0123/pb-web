@@ -38,8 +38,8 @@ const Paths ={
     } },
     collections: "/collections",
     collection:{
-        route: ()=>{return '/collection/:id/view'},
-        createRoute:(id)=>{return "/collection/"+id+"/view"}
+        route: ()=>{return '/col/:id/view'},
+        createRoute:(id)=>{return "/col/"+id+"/view"}
     },
     editor:
     {

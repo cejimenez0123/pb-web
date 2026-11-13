@@ -1,9 +1,9 @@
+
 import PaginatedList from "../page/PaginatedList";
 import Paths from "../../core/paths";
 import shortName from "../../core/shortName";
 import EmptyState from "../general/EmptyState";
 import styles from "../../styles/style";
-
 
 export default function EventsSection({
   profile,
@@ -15,75 +15,78 @@ export default function EventsSection({
   resource,
   debouncedSearch,
 }) {
-  const id = profile.profileToCollections.find(ptc=>ptc.type=="events").collection.id
-  return (
-    <section>
-      <div
- 
-      >
-        <div>
- 
-      
-        
+  const eventsCollection = profile?.profileToCollections?.find(
+    (item) => item.type === "events"
+  )?.collection;
 
-<div className={styles.profile.mine.sectionHeader}>
+  const collectionId = eventsCollection?.id;
+
+  return (
+    <section aria-labelledby="events-heading">
+      <div className={styles.profile.mine.sectionHeader}>
         <div>
           <h2
-            id="archive-heading"
-            onClick={()=>router.push(Paths.collection.createRoute(id))}
-            className={styles.profile.mine.sectionTitle}
+            id="events-heading"
+            onClick={() => {
+              if (collectionId) {
+                router.push(
+                  Paths.collection.createRoute(collectionId)
+                );
+              }
+            }}
+            className={[
+              styles.profile.mine.sectionTitle,
+              collectionId ? "cursor-pointer" : "",
+            ].join(" ")}
           >
             Events
           </h2>
 
           <p className={styles.profile.mine.sectionDescription}>
-           Where you meet the world"
+            Where you meet the world
           </p>
         </div>
 
         <label className="w-full sm:max-w-[18rem]">
           <span className="sr-only">
-            Search
+            Search events
           </span>
 
-
-        <input
-          value={searchInput}
-          onChange={(e) => {
-            const value = e.target.value;
-            setSearchInput(value);
-            setSearch(value);
-          }}
-          placeholder="Search"
-          className={styles.profile.mine.search}
-        />
+          <input
+            type="search"
+            value={searchInput}
+            onChange={(e) => {
+              const value = e.target.value;
+              setSearchInput(value);
+              setSearch(value);
+            }}
+            placeholder="Search"
+            aria-label="Search events"
+            className={styles.profile.mine.search}
+          />
         </label>
       </div>
 
-
-        </div>
-
-      </div>
-
       <div className="mt-8">
-              <PaginatedList
-              items={resource?.items}
-  resource={resource}
-   emptyState={ <EmptyState
+        <PaginatedList
+          resource={resource}
+          emptyState={
+            <EmptyState
               text={
-                search
+                debouncedSearch
                   ? "No matching stories."
                   : "No stories yet."
               }
-            />}
-  renderItem={(item) => (
-       <EventListItem
-              key={item.collection?.id}
+            />
+          }
+          renderItem={(item) => (
+            <EventListItem
+              key={item.id}
               item={item}
               router={router}
             />
-  )}/>
-      
+          )}
+        />
       </div>
     </section>
   );
@@ -91,29 +94,24 @@ export default function EventsSection({
 
 function EventListItem({ item, router }) {
   const collection = item?.collection;
-  const stories = item?.stories || [];
 
-  if (!collection) {
-    return null;
-  }
+  const stories = collection?.storyIdList ?? [];
+
+  if (!collection) return null;
 
   return (
-    <article
-      className="
-        w-[100%]
-        border-b
-        border-soft
-        py-6
-        first:pt-0
-      "
-    >
+    <article className="w-[100%] border-b border-soft py-6 first:pt-0">
+      {stories.length > 0 ? (
+        <div className="space-y-4">
+          {stories.map((entry) => {
+            const story = entry?.story;
 
+            if (!story?.id) return null;
 
-      {/* STORIES INSIDE EVENT */}
-      {stories.length > 0 && (
-        
-          <div className="space-y-4">
-            {stories.map((story) => (
+            const title =
+              story.title?.trim() || "Untitled";
+
+            return (
               <button
                 key={story.id}
                 type="button"
@@ -128,7 +126,6 @@ function EventListItem({ item, router }) {
                   w-[100%]
                   items-start
                   justify-between
-                 
                   border-b
                   border-soft
                   py-3
@@ -136,7 +133,7 @@ function EventListItem({ item, router }) {
                   last:border-b-0
                 "
               >
-                <div className="min-w-0 ">
+                <div className="min-w-0">
                   <p
                     className="
                       font-serif
@@ -148,18 +145,16 @@ function EventListItem({ item, router }) {
                       group-hover:text-emerald-800
                     "
                   >
-                  {story.title}
+                    {title}
                   </p>
 
                   {story.description && (
-                    <p
-                      className="
-                        mt-1
-                        text-sm
-                        leading-relaxed
-                        text-gray-500
-                      "
-                    >
+                    <p className="
+                      mt-1
+                      text-sm
+                      leading-relaxed
+                      text-gray-500
+                    ">
                       {shortName(story.description, 80)}
                     </p>
                   )}
@@ -180,13 +175,10 @@ function EventListItem({ item, router }) {
                   →
                 </span>
               </button>
-            ))}
-          </div>
-  
-      )}
-
-      {/* EMPTY COLLECTION */}
-      {stories.length === 0 && (
+            );
+          })}
+        </div>
+      ) : (
         <p className="mt-4 ml-4 text-sm italic text-gray-400 sm:ml-5">
           No stories in this event yet.
         </p>
