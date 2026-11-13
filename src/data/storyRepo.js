@@ -142,13 +142,15 @@ async getMyStories({
         profileId,
         data,
         isPrivate,
-        // approvalScore,
+
         type,
         title,
         commentable}){
        let headers = await this.getAuthHeaders()
+
+
         const res = await axios.post(this.url,{
-            title,data,isPrivate,authorId:profileId,commentable:commentable,
+            title:title.trim().length>0?title:"Untitled",data,isPrivate,authorId:profileId,commentable:commentable,
             type
     },{headers})
 

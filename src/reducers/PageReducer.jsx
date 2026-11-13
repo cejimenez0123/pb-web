@@ -218,15 +218,7 @@ const pageSlice = createSlice({
   state.loading = false;
   state.error = payload?.message || payload || "Failed to fetch stories";
 })
-//       .addCase(deleteStory.fulfilled, (state, { payload }) => {
-//   state.pageInView = null;
-//   state.pagesInView = state.pagesInView.filter(
-//     (page) => page.id !== payload.id
-//   );
-//   state.recommendedStories = state.recommendedStories.filter(
-//     (story) => story.id !== payload.id
-//   );
-// })
+
 .addCase(clearPagesInView.type,(state)=>{
       state.pagesInView = []
     }).addCase(removeContentByProfileId, (state, { payload }) => {

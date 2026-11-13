@@ -20,7 +20,7 @@ export default function CalendarContainer() {
       fullscreen={true}
     >
       <ErrorBoundary>
-       <main className={[styles.pageShell.base].join(" ")}>
+       <main className={[styles.pageShell.base,"px-2"].join(" ")}>
   
       <div className={styles.pageShell.head}>
         <p

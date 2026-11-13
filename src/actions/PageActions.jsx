@@ -4,21 +4,6 @@ import commentRepo from "../data/commentRepo"
 import likeRepo from "../data/likeRepo"
 import profileRepo from "../data/profileRepo"
 
-// const getPublicStories = createAsyncThunk("page/getPublicStories",async (thunkApi)=>{
-  
-//   try{
-//     const data = await storyRepo.getPublicStories()
-    
-
-// return {
-//     stories:data.stories
-//   }
-
-//     }catch(err){
-//       return {error: err}
-//     }
-  
-// })
 const getPublicStories = createAsyncThunk(
   "page/getPublicStories",
   async (

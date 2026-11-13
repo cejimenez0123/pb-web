@@ -647,30 +647,7 @@ title="Open collaboration"
         disabled={submitting}
         className={styles.button.base+" "+styles.button.primary+ " hover:bg-plumb-mintLight/40 dark:border-plumb-mintLight dark:border dark:border-1"}
        onClick={handleSubmit}
-        // className="
-        //   flex
-        //   min-h-[3.5rem]
-        //   w-full
-        //   items-center
-        //   justify-center
-        //   rounded-full
-        //   bg-button-secondary-bg
-        //   px-6
-        //   py-3
-        //   text-base
-        //   font-semibold
-        //   text-white
-        //   shadow-sm
-        //   transition
-        //   hover:brightness-95
-        //   focus-visible:outline
-        //   focus-visible:outline-2
-        //   focus-visible:outline-offset-2
-        //   focus-visible:outline-blueSea
-        //   active:scale-[0.99]
-        //   disabled:cursor-not-allowed
-        //   disabled:opacity-60
-        // "
+
       >
         {submitting
           ? "Making your Room..."

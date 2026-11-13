@@ -1,16 +1,9 @@
-
-
-// import EmptyState from "../EmptyState";
 import PaginatedList from "../page/PaginatedList";
 import Paths from "../../core/paths";
-
-import { getMyStories } from "../../actions/StoryActions";
 import shortName from "../../core/shortName";
-import SectionHeader from "../pieces/SectionHeader";
 import EmptyState from "../general/EmptyState";
 import styles from "../../styles/style";
 
-const PAGE_SIZE = 8;
 
 export default function EventsSection({
   profile,

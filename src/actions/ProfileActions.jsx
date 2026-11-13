@@ -6,7 +6,6 @@ import {storage} from  "../core/di"
 import {  ref, uploadBytes,getDownloadURL   } from "firebase/storage";
 import { Preferences } from "@capacitor/preferences";
 import Enviroment from "../core/Enviroment";
-import axios from "axios";
 import { Capacitor } from "@capacitor/core";
 import { FirebaseStorage } from "@capacitor-firebase/storage";
 const addNotification = createAction("profile/ADD_NOTIFICATION",(notification)=>{
@@ -204,7 +203,20 @@ const fetchProfiles = createAsyncThunk("users/fetchProfiles",async (params,thunk
     profiles:data.profiles
   }
 })
+const getMyProfileCollections = createAsyncThunk(
+  "profile/getMyProfileCollections",
+  async (params, thunkApi) => {
+    try {
+      return await profileRepo.getMyProfileCollections(params);
+    } catch (error) {
+      return thunkApi.rejectWithValue(
+        error?.response?.data || error.message
+      );
+    }
+  }
+);
  export {
+  getMyProfileCollections,
     createProfile,
     uploadPicture,
     uploadProfilePicture,

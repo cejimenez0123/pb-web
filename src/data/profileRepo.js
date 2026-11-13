@@ -30,7 +30,7 @@ async getMyProfiles() {
   const headers = await this.getAuthHeaders();
 
   try {
-    const res = await axios.get(this.url + "/protected", { headers });
+    const res = await axios.get(this.url + "/me", { headers });
   
     return res.data;
   } catch (e) {
@@ -55,7 +55,7 @@ try{
     async notifications({seen,profile}){
     let headers = await this.getAuthHeaders()
 
-        let res = await axios.get(this.url+"/alert",{headers:headers,params:{
+        let res = await axios.get(this.url+"/me/alert",{headers:headers,params:{
 seen:seen
         }})
      
@@ -76,13 +76,13 @@ seen:seen
 
         const {id}=params
         
-        let res = await axios.get(this.url+"/"+id+"/protected",{headers:headers})
+        let res = await axios.get(this.url+"/protected/"+id,{headers:headers})
       
         return res.data
     }
     async getProfile(params){
         const {id}=params
-        let res = await axios.get(this.url+"/"+id+"/public")
+        let res = await axios.get(this.url+"/"+id+"")
         return res.data
     }
     async markNotificationsRead() {
@@ -98,16 +98,13 @@ seen:seen
     async updateProfile(params){
         let headers = await this.getAuthHeaders()
 
-        let res = await axios.put(this.url+"/"+params.profile.id,{
+        let res = await axios.patch(this.url+"/"+params.profile.id,{
             ...params
         },{headers:headers})
     
         return res.data
     }
-  async getProfileBookmarkCollection({ profileId }) {
-  let res = await axios.get(this.url + "/" + profileId + "/collection");
-  return res.data;
-}
+
     async createBookmark({profile,collection}){
              const headers = await this.getAuthHeaders();
 
@@ -116,10 +113,7 @@ let res = await axios.post(
   {},
   { headers })
  return res.data
-    // }
-
-        // let res = await axios.post(this.url+"/"+profile.id+"/collection/"+collection.id)
-        // return res.data
+  
     }
 async recommend({profileId,limit=10}){
      const { data } = await axios.get(this.url+`/${profileId}/recommendations`, {
@@ -127,6 +121,19 @@ async recommend({profileId,limit=10}){
       });
       return data
     }
+    async getMyProfileCollections(params = {}) {
+  const headers = await this.getAuthHeaders();
+
+  const res = await axios.get(
+    this.url + "/collections/protected",
+    {
+      headers,
+      params,
+    }
+  );
+
+  return res.data;
+}
 }
 
 export default new ProfileRepo()

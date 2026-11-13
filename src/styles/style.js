@@ -154,14 +154,17 @@ dark:bg-transparent
       row:{
         outer:["w-[100%] flex flex-row justify-between px-6 py-3",
           " border border-1 rounded-full py-3 "].join(" "),
-       }, elevated: `
+       },
+        elevated: `
       rounded-2xl border
       border-plumb-border
       bg-plumb-elevated
       dark:border-plumb-darkBorder
       dark:bg-plumb-dark-elevated
     `,
+
           elevated: " p-3 "+shared.surface.elevated,
+
       head:"max-w-3xl mx-auto mt-8 w-[100%]",
       headInner:"px-2",
 body:"max-w-3xl mx-auto px-2  w-[100%]",
@@ -178,7 +181,7 @@ body:"max-w-3xl mx-auto px-2  w-[100%]",
  
   `,
 base: [
-  "relative font-open-sans" ,
+  "relative  font-open-sans" ,
   "flex flex-col",
    "pt-20 pb-24",
   "w-[100%]",
@@ -2069,7 +2072,12 @@ page: {
 },
 text: {
   label:["text-plumb-ink dark:text-plumb-darkText"].join(" "),
-  subLabel:["text-plumb-ink dark:text-plumb-darkText"].join(" "),
+  subLabel:["text-plumb-seaBlue",
+" font-semibold font-open-sans dark:text-plumb-surface   "
+
+
+  ].join(" "),
+  
   display: [
     "font-serif font-semibold",
     "text-3xl sm:text-4xl",

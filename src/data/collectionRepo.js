@@ -228,11 +228,7 @@ async getProtectedProfileCollections({ id, skip = 0, take = 20 }) {
 
         return res.data
     }
-    async getProfileLibraries({profile}){
-    
-        let res = await axios.get(Enviroment.url+"/profile/"+profile.id+"/library")
-        return res.data
-    }
+
     
     async fetchCollection({id}){
            

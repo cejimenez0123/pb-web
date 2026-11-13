@@ -491,8 +491,7 @@ if(!currentProfile?.id){
 
         </div>
 
-                    {/* <SectionHeader title="All Pages" /> */}
-
+      
                     <PaginatedList
                     resource={pageResources}
                     

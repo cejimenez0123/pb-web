@@ -11,11 +11,9 @@ import {
 import {
   IonApp,
   IonContent,
-  IonFooter,
   IonRouterOutlet,
   IonSpinner,
   setupIonicReact,
-  // useIonRouter,
   useIonViewWillEnter,
 } from "@ionic/react";
 
@@ -33,17 +31,14 @@ import { LoadScript } from "@react-google-maps/api";
 import { Capacitor } from "@capacitor/core";
 import { Preferences } from "@capacitor/preferences";
 import { SplashScreen } from "@capacitor/splash-screen";
-import { SocialLogin } from "@capgo/capacitor-social-login";
 
 import { useMediaQuery } from "react-responsive";
 
 import {
-  acceptTerms,
   getCurrentProfile,
   setAuthResolved,
   setSignedInFalse,
   setSignedInTrue,
-  signOutAction,
 } from "./actions/UserActions";
 
 import { getPublicStories } from "./actions/PageActions.jsx";
@@ -105,9 +100,6 @@ import AppNavigationChrome from "./components/AppNavigationChrome.jsx";
 import useTermsAcceptance from "./core/useTermsAcceptance.jsx";
 import ContentHubContainer from "./container/ContentHubContainer.jsx";
 import styles from "./styles/style.js";
-
-const CLIENT_ID = import.meta.env.VITE_OAUTH2_CLIENT_ID;
-const IOS_CLIENT_ID = import.meta.env.VITE_IOS_CLIENT_ID;
 
 const GOOGLE_MAPS_LIBRARIES = ["places"];
 
@@ -990,4 +982,5 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(App);
+
 

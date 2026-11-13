@@ -174,11 +174,11 @@ const ready = !pending && page && String(page.id) === String(id);
         scrollY={true}
    
       >
-        <main className={[styles.pageShell.base,styles.pageShell.scroll].join(" ")}>
+        <main className={[styles.pageShell.base,styles.pageShell.scroll," pt-4"].join(" ")}>
       
           <section className={styles.pageShell.body}>
           {!ready && <PageViewSkeleton />}
- {/* className={`${FADE} ${pending ? "opacity-0 pointer-events-none" : "opacity-100"}`} */}
+
           <div>
         {ready && (canSee || page.authorId === currentProfile?.id)&& (
        
