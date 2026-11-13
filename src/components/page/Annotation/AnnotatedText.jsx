@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import CommentPopover from "./CommentPopover";
 import { truncate } from "lodash";
 import styles from "../../../styles/style";
+import SelectionToolbar from "./SelectionToolbar";
 const EMPTY_COMMENTS = [];
 function AnnotatedText({ html, page, shortenTo,onAnnotationComment, showAnnotations }) {
   const dispatch = useDispatch();
