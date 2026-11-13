@@ -123,7 +123,7 @@ my-auto
 bg-plumb-canvas
 dark:bg-transparent
  
-  py-2 px-2 w-[100%]
+  py-2 px-2 
     text-sm text-plumb-ink
     placeholder:text-plumb-subtle
     outline-none

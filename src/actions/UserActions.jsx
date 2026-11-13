@@ -316,10 +316,7 @@ return {error: new Error("Error: Deleting useer account"+err.message)
 }})
 
 
-const  searchDialogToggle = createAction("users/searchDialogToggle",(params,thunkApi)=>{
-  const {open} = params
-  return {payload: open}
-})
+
 
 const setEvents = createAction("users/addEVents", (params)=> {
 
@@ -348,7 +345,7 @@ export {logIn,
         setSignedInTrue,
         setSignedInFalse,
         setDialog,
-        searchDialogToggle,
+
         searchMultipleIndexes,
         deletePicture,
         updateSubscription,

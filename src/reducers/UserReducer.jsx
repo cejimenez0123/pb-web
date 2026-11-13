@@ -9,7 +9,7 @@ import {    logIn ,
             setDialog,
             setSignedInTrue,
             setSignedInFalse,
-            searchDialogToggle,
+           
             searchMultipleIndexes,
             updateProfile,
             useReferral,
@@ -48,7 +48,7 @@ const initialState = {
     profileInView: null,
     profilesInView: [],
     searchResults: [],
-    searchDialogOpen: false,
+
     error: "",
     dialog: { text: "", title: "", agree: null, onClose: null, isOpen: false, agreeText: "agree", disagreeText: "Close" },
     alert: { isOpen: false, message: null, type: null,agree: null, agreeText: null, disagreeText: null, disagree:null }
@@ -245,9 +245,7 @@ const userSlice = createSlice({
             const list = state.userApprovals.filter(ua => ua != null && payload.userApproval && ua.id != payload.userApproval.id)
             state.userApprovals = list
         })
-        .addCase(searchDialogToggle.type, (state, { payload }) => {
-            state.searchDialogOpen = payload
-        })
+     
         .addCase(searchMultipleIndexes.fulfilled, (state, { payload }) => {
             state.searchResults = payload.results
         })

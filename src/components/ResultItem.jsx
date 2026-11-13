@@ -10,7 +10,7 @@ const TYPE_LABELS = {
 };
 
   const ResultItem = ({result, index}) => {
-    console.log("result" +JSON.stringify(result))
+  
     const item = result?.item ?? {};
 
 const router = useIonRouter()
@@ -49,7 +49,7 @@ console.log(item)
     return (
       <div
         key={`${result?.objectID}-${index}`}
-       className={styles.pageShell.row.outer+" border-plumb-mintLight/60  my-2"}
+       className={styles.pageShell.row.outer+" border-plumb-blueSea/60        "}
   
         onClick={() => handleResultClick(result)}
         aria-label={`Open ${typeLabel}: ${title}`}

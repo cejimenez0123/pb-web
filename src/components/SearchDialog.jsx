@@ -30,7 +30,7 @@ const FILTERS = [
 ];
 
 
-
+const INITIAL_SEARCH_QUERY = " ";
 const normalize = (value) =>
   typeof value === "string"
     ? value.trim().toLowerCase()
@@ -124,9 +124,10 @@ const [searchAttempt, setSearchAttempt] = useState(0);
   );
 
   const [searchText, setSearchText] = useState("");
+const [searchQuery, setSearchQuery] = useState(INITIAL_SEARCH_QUERY);;
   const [selectedFilter, setSelectedFilter] = useState("all");
   const [searchScope, setSearchScope] = useState("all");
-
+const shouldShowRemoteResults = searchScope === "all";
   const [searchContent, setSearchContent] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
   const [searchError, setSearchError] = useState(false);
@@ -189,9 +190,9 @@ const [searchAttempt, setSearchAttempt] = useState(0);
    * requests when unrelated profile fields change.
    */
 useEffect(() => {
-  const query = searchText.trim();
+  const query = searchQuery.trim();
 
-  if (searchScope !== "all" || !query) {
+if (searchScope !== "all") {
     setSearchContent([]);
     setIsSearching(false);
     setSearchError(false);
@@ -210,18 +211,16 @@ useEffect(() => {
         : [selectedFilter];
 
     try {
-      const result = await dispatch(searchMultipleIndexes({
+      const result = await dispatch(
+        searchMultipleIndexes({
           query,
           filters,
-          // profileId: currentProfileId,
         })
       );
 
       if (cancelled) return;
 
-      if (
-        result.meta?.requestStatus !== "fulfilled"
-      ) {
+      if (result.meta?.requestStatus !== "fulfilled") {
         console.error(
           "Search request rejected:",
           result.payload || result.error
@@ -250,15 +249,16 @@ useEffect(() => {
 
       setSearchContent(normalizedResults);
       setSearchError(false);
-      setIsSearching(false);
     } catch (error) {
       if (cancelled) return;
 
       console.error("Search failed:", error);
-
       setSearchContent([]);
       setSearchError(true);
-      setIsSearching(false);
+    } finally {
+      if (!cancelled) {
+        setIsSearching(false);
+      }
     }
   };
 
@@ -269,7 +269,7 @@ useEffect(() => {
   };
 }, [
   dispatch,
-  searchText,
+  searchQuery,
   selectedFilter,
   searchScope,
   currentProfileId,
@@ -316,8 +316,24 @@ useEffect(() => {
 
             <div className={styles.search.searchWrap}>
 
-             
-       <IonSearchbar
+   <IonSearchbar
+  value={searchText}
+  debounce={350}
+  className={`${styles.search.searchbar} plumb-searchbar`}
+  placeholder="Stories, writers, rooms..."
+  aria-label="Search Plumbum"
+  showClearButton="focus"
+  onIonInput={(event) => {
+    const value =
+      event.detail?.value ??
+      event.target?.value ??
+      "";
+
+    setSearchText(value);
+    setSearchQuery(value);
+  }}
+/>
+       {/* <IonSearchbar
   value={searchText}
   debounce={350}
   className={`${styles.search.searchbar} plumb-searchbar`}
@@ -333,15 +349,15 @@ useEffect(() => {
     console.log("[Search] Input event:", value);
     setSearchText(value);
   }}
-/>
+/> */}
      </div>
           </header>
-
+     <span className={" max-w-[100%] "+" "}>   
           {/* Search scope */}
 
           {currentProfile && (
             <div
-              className={styles.search.scopeRow}
+              className={[styles.search.scopeRow, " mx-auto max-w-3xl"].join(" ")}
               role="group"
               aria-label="Search location"
             >
@@ -380,7 +396,8 @@ useEffect(() => {
           {/* Filters */}
 
           <div
-            className={[styles.search.filterRow,styles.pageShell.body].join(" ")}
+          className={"  max-w-3xl mx-auto"}
+          
             role="group"
             aria-label="Filter search results"
           >
@@ -452,18 +469,18 @@ useEffect(() => {
               )}
             </>
           )}
-
+</span>
+<span>
           {/* Loading */}
-
-          {hasQuery && isSearching && (
-            <div
-              className={styles.search.loading}
-              role="status"
-              aria-live="polite"
-            >
-              Searching...
-            </div>
-          )}
+{shouldShowRemoteResults && isSearching && (
+  <div
+    className={styles.search.loading}
+    role="status"
+    aria-live="polite"
+  >
+    {hasQuery ? "Searching..." : "Discovering..."}
+  </div>
+)}
 
           {/* Error */}
 
@@ -484,52 +501,62 @@ useEffect(() => {
     
             </div>
           )}
+</span>
+<span>
+        {shouldShowRemoteResults &&
+  !isSearching &&
+  !searchError &&
+  results.length > 0 && (
+    <section
+      className={[ "mb-4",styles.pageShell.body].join(" ")}
+      aria-label="Search results"
+    >
+      <h2 className={styles.search.sectionTitle}>
+        {hasQuery
+          ? selectedFilter === "all"
+            ? "Results"
+            : activeFilterLabel
+          : "Discover"}
+        {hasQuery && (
+          <span className="sr-only">
+            {` for ${searchText.trim()}`}
+          </span>
+        )}
+      </h2>
 
+      <div className={"max-w-3xl mx-auto flex gap-2 flex-col"}>
+        {results.map((result) => (
+          <ResultItem
+            key={`${result.type}:${result.objectID}`}
+            result={result}
+            index={result.objectID}
+          />
+        ))}
+      </div>
+    </section>
+  )} 
          
-          {hasQuery &&
-            !isSearching &&
-            !searchError &&
-            results.length > 0 && (
-              <section
-                className={[styles.pageShell.body,"mb-4"].join(" ")}
-                aria-label="Search results"
-              >
-                <h2 className={styles.search.sectionTitle}>
-                  {searchScope === "mine"
-                    ? "Your Work"
-                    : selectedFilter === "all"
-                    ? "Results"
-                    : activeFilterLabel}
-                  <span className="sr-only">
-                    {` for ${searchText.trim()}`}
-                  </span>
-                </h2>
-
-           <div className={[styles.pageShell.body].join(" ")}>
-                  {results.map((result)=>{
-                
-                   return <ResultItem result={result} index={result.id}/>
-                  })}
-                </div>
-              </section>
-            )}
-
+</span>
           {/* No results */}
 
-          {hasQuery &&
-            !isSearching &&
-            !searchError &&
-            results.length === 0 && (
-              <section className={styles.search.empty}>
-                <h2 className={styles.search.emptyTitle}>
-                  Nothing found for “{searchText.trim()}”.
-                </h2>
+{shouldShowRemoteResults &&
+  !isSearching &&
+  !searchError &&
+  results.length === 0 && (
+    <section className={styles.search.empty}>
+      <h2 className={styles.search.emptyTitle}>
+        {hasQuery
+          ? `Nothing found for “${searchText.trim()}”.`
+          : "Nothing to discover just yet."}
+      </h2>
 
-                <p className={styles.search.emptyText}>
-                  Try another word, writer, or related idea.
-                </p>
-              </section>
-            )}
+      <p className={styles.search.emptyText}>
+        {hasQuery
+          ? "Try another word, writer, or related idea."
+          : "Check back as more stories, writers, and rooms are shared."}
+      </p>
+    </section>
+  )}
         </main>
       </ErrorBoundary>
     </IonContent>

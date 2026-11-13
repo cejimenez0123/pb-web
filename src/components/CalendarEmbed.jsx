@@ -555,11 +555,13 @@ const toggleHashtag = (tag) => {
   }
 
   const renderEvent = (event, index) => (
-    <li key={`${event.googleLink || event.summary}-${index}`}>
+    <li key={`${event.googleLink || event.summary}-${index}`}
+    
+    className="px-2">
       <article
         className={[
           styles.event.card,
-          "cursor-pointer",
+          "cursor-pointer ",
         ].join(" ")}
       >
         <div className="flex justify-between gap-4">
@@ -785,7 +787,8 @@ const toggleHashtag = (tag) => {
         </div>
       </section>
 {/* /// */}
-<section aria-label="Filter events by hashtag">
+<section aria-label="Filter events by hashtag"
+className="px-4">
   <div className="mb-2 flex items-center justify-between gap-3">
     <p className={styles.text.metadata}>
       Popular hashtags
@@ -871,72 +874,14 @@ const toggleHashtag = (tag) => {
   )}
 </section>
 
-{/* <section aria-label="Filter events by collection">
-  <p className={styles.text.metadata + " mb-2"}>
-    Browse
-  </p>
 
-  <div
-    className="flex flex-wrap gap-2"
-    role="group"
-    aria-label="Browse events"
-  >
-    {FILTERS.map((filter) => {
-      const active = selectedFilter === filter.key;
-
-      return (
-        <button
-          key={filter.key}
-          type="button"
-          onClick={() => setSelectedFilter(filter.key)}
-          aria-pressed={active}
-          className={filterButtonClass(active)}
-        >
-          {filter.label}
-        </button>
-      );
-    })}
-  </div>
-</section> */}
-{/*  */}
-      {/* <section aria-label="Filter events by type">
-        <p className={styles.text.metadata + " mb-2"}>
-          Event type
-        </p>
-
-        <div
-          className="flex flex-wrap gap-2"
-          role="group"
-          aria-label="Filter events by type"
-        >
-          {FILTERS.map((filter) => {
-            const active =
-              selectedFilter === filter.key;
-
-            return (
-              <button
-                key={filter.key}
-                type="button"
-                onClick={() =>
-                  setSelectedFilter(filter.key)
-                }
-                aria-pressed={active}
-                className={filterButtonClass(active)}
-              >
-                {filter.label}
-              </button>
-            );
-          })}
-        </div>
-      </section> */}
-
-      <section aria-label="Filter events by area">
+      <section aria-label="Filter events by area" className="px-4">
         <p className={styles.text.metadata + " mb-2"}>
           Area
         </p>
 
         <div
-          className="flex flex-wrap gap-2"
+          className="flex flex-wrap gap-2 "
           role="group"
           aria-label="Filter events by area"
         >
@@ -971,7 +916,8 @@ const toggleHashtag = (tag) => {
           })}
         </div>
       </section>
-            <div className={styles.input.search.searchWrap}>
+      <section className={"px-2"}>
+            <div className={styles.input.search.searchWrap+" px-4"}>
                           <span
                 
                     className={styles.input.search.searchLabel}
@@ -992,9 +938,9 @@ const toggleHashtag = (tag) => {
 
        
             </div>
+</section>
 
-
-      <div>
+      <div className="px-4">
         <h2 className={styles.text.title}>
           Coming up
         </h2>

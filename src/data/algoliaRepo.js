@@ -36,22 +36,7 @@ async search(query = "", filters = []) {
 
   return res.data;
 }
-//   async search(query="",profileId, filters = []) {
-//   const headers = await this.getAuthHeaders();
 
-//   const params = { q: query??"" ,profileId};
-
-//   filters.forEach((f, idx) => {
-//     params[idx] = f;
-//   });
-
-//   const res = await axios.get(`${Enviroment.url}/api/algolia/search`, {
-//     headers,
-//     params,
-//   });
-
-//   return res.data;
-// }
 
   async saveObject(indexName, object) {
     const headers = await this.getAuthHeaders();
