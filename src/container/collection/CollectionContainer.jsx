@@ -543,10 +543,15 @@ const [isArchived,setIsArchived]=useState(initArchived)
   // -------------------------------------------------------
 
   const handleBookmark = async () => {
-    const tcid = collection.parentCollections?.find(
-        (item) =>
-          item.parentCollectionId === homeCol.id
-      ).id
+    // const tcid = collection.parentCollections?.find(
+    //     (item) =>
+    //       item.parentCollectionId === homeCol.id
+    //   ).id
+    //       const archive =
+      let homeCol = currentProfile.profileToCollections.find(
+        (col) => col.type === "home"
+      )
+
     if (!currentProfile) {
       showAlert({
         message: "Please sign in",
@@ -937,7 +942,7 @@ type={collection.type}
       
     
    
-            <div             className={styles.tabs.pill.container+" max-w-2xl mx-auto flex justify-center justify-around pb-4 "}>
+            <div             className={styles.tabs.pill.container+" max-w-2xl mx-auto flex justify-center justify-around pb-40 "}>
            
               <TabBar
            
@@ -948,7 +953,7 @@ type={collection.type}
       
  </div>  
        
-            <div className={styles.pageShell.body}>
+            <div className={styles.pageShell.body+" pb-20"}>
               {tab === "inside" && (
                 <InsideRoom
                 router={router}

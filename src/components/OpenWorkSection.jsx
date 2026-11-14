@@ -16,7 +16,7 @@ function OpenWorkSection({
   onSelectEvent,
 }) {
   const hasStories = stories.length > 0;
-
+  const pages = stories.slice(0,2)
   return (
     <section className={`mt-14 `}>
       <SectionHeader
@@ -48,7 +48,7 @@ function OpenWorkSection({
   </div>
 ) : hasStories ? (
         <WorkList
-          stories={stories}
+          stories={stories.slice(0,3)}
           onSelectStory={onSelectStory}
         />
       ) : (

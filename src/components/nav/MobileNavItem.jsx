@@ -1,4 +1,5 @@
 export default function MobileNavItem({
+  willRender=true,
   label,
   onClick,
   active = true

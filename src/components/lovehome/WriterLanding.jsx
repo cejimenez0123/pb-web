@@ -66,7 +66,7 @@ function AllItemsDialog({
   const isStories = type === "stories";
 
   return (
-    <div className="bg-cream dark:bg-plumb-dark-surface">
+    <div className="bg-plumb-surface        dark:bg-transprent">
       <div className="mb-5">
         <input
           type="search"
@@ -173,7 +173,7 @@ function ProfileCollectionPill({
 
 function RoomCard({ room, onSelect }) {
   return (
-    <button
+    <div
       type="button"
       onClick={() => onSelect?.(room)}
       className="
@@ -185,14 +185,17 @@ function RoomCard({ room, onSelect }) {
         gap-4
         rounded-2xl
         border
+        border-1
+         dark:border-plumb-surface
+        dark:hover:border-plumb-mintLight
+        dark:bg-transparent
         border-soft/15
               bg-plumb-canvas
         p-5
         text-left
         transition-colors
         hover:bg-soft/5
-        dark:border-cream/10
-        dark:hover:bg-cream/5
+
       "
     >
       <div
@@ -206,7 +209,7 @@ function RoomCard({ room, onSelect }) {
           rounded-xl
           bg-soft/10
           text-soft
-          dark:bg-cream/10
+          dark:bg-transprent
           dark:text-cream
         "
       >
@@ -249,7 +252,7 @@ function RoomCard({ room, onSelect }) {
       >
         →
       </span>
-    </button>
+    </div>
   );
 }
 

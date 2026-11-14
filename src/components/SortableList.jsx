@@ -149,7 +149,7 @@ export default function SortableList({
   }
 
   return (
-    <div className="w-[100%] space-y-4">
+    <div className=" space-y-4">
 
       <div className="
         flex items-center justify-between
@@ -158,7 +158,7 @@ export default function SortableList({
         <div>
           <p className="
             text-sm font-semibold
-            text-plumb-ink dark:text-cream
+            text-plumb-ink dark:text-plumb-surface
           ">
             Your collection
           </p>
@@ -226,6 +226,7 @@ export default function SortableList({
                           group relative
                           flex items-center gap-3
                           min-w-0 w-[100%]
+                          dark:bg-base-bg
                           rounded-2xl
                           border
                           p-3 sm:p-4
@@ -233,14 +234,14 @@ export default function SortableList({
 
                           ${snapshot.isDragging
                             ? `
-                              bg-plumb-canvas dark:bg-[#202923]
+                           
                               border-blue-400
                               shadow-xl shadow-blue-400/15
                               rotate-[1deg]
                               z-50
                             `
                             : `
-                           bg-plumb-canvas dark:bg-base-bg
+                        
                               border-gray-200 dark:border-white/10
                               shadow-sm
                               hover:border-blue-300
@@ -263,7 +264,8 @@ export default function SortableList({
                             h-11 w-9
                             rounded-xl
                             text-gray-400
-                            dark:text-gray-500
+                            dark:text-gray-100
+                          
                             hover:text-blue-500
                             dark:hover:text-blue-400
                             hover:bg-blue-50
@@ -307,7 +309,7 @@ export default function SortableList({
                             block w-[100%] truncate
                             text-sm sm:text-base
                             font-semibold
-                            text-plumb-ink dark:text-cream
+                            text-plumb-ink dark:text-plumb-surface
                             group-hover:text-blue-600
                             dark:group-hover:text-blue-400
                             transition-colors
@@ -342,7 +344,7 @@ export default function SortableList({
                             h-10 w-10
                             rounded-xl
                             text-gray-400
-                            dark:text-gray-500
+                            dark:text-gray-100
                             hover:text-red-500
                             hover:bg-red-50
                             dark:hover:bg-red-500/10

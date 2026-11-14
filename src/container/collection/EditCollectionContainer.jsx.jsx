@@ -973,11 +973,12 @@ export default function EditCollectionContainer() {
                             px-6
                             rounded-full
                             border
-                            border-plumb-mint
-                            border-1
+                            border-plumb-mintLight
+                            border-2
                             bg-plumb-canvas
                             text-plumb-ink
-                         
+                         dark:bg-transparent
+                         dark:text-plumb-surface
                             font-open-sans
                             text-sm
                         
@@ -1053,7 +1054,7 @@ onAction={handleSaveContent}
   actionLabel={
     savingContent ? "Saving Items..." : "Save Items"
   }
-buttonClass={"bg-transparent border-plumb-mint/70 text-plumb-mint/70"}
+buttonClass={"bg-transparent rounded-full  border-plumb-mint/70 text-plumb-mint/70 dark:border-plumb-mintLight dark:text-plumb-mintLight"}
 />
           
 
@@ -1086,7 +1087,7 @@ buttonClass={"bg-transparent border-plumb-mint/70 text-plumb-mint/70"}
 
                  
 
-                  <div className="p-5 sm:p-6">
+                  <div className="sm:p-6">
 <SortableList
   items={filteredContent}
   removedItems={removedItems}

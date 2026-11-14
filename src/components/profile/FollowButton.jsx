@@ -26,7 +26,7 @@ const FollowButton = ({
   const isFollowing = Boolean(following);
 
   return (
-    <button
+    <div
       type="button"
       onClick={onClick}
       disabled={disabled}
@@ -41,7 +41,7 @@ const FollowButton = ({
       }
     >
       {label || (isFollowing ? "Following" : "Follow")}
-    </button>
+    </div>
   );
 };
 

@@ -244,34 +244,63 @@ useEffect(() => {
     );
   };
   const { canSee } = computePermissions(
-    page,
-    currentProfile,
-    {
-      isOwner: (story, profile) => {
-        if (!story || !profile) return false;
+  page,
+  currentProfile,
+  {
+    isOwner: (story, profile) => {
+      if (!story || !profile) return false;
 
-        return (
-          story.author?.id === profile.id ||
-          story.profileId === profile.id ||
-          story.authorId === profile.id
-        );
-      },
+      return (
+        story.author?.id === profile.id ||
+        story.profileId === profile.id ||
+        story.authorId === profile.id
+      );
+    },
 
-      getAccessList: (story) =>
-        story.betaReaders ?? [],
+    getAccessList: (story) =>
+      (story.betaReaders ?? []).filter(
+        (entry) => entry.approved === true
+      ),
 
-      getAccessRole: (entry) =>
-        entry.permission,
+    getAccessRole: (entry) => entry.permission ?? entry.role,
 
-      isPrivate: (story) =>
-        story.isPrivate,
+    isPrivate: (story) => story.isPrivate,
 
-      isOpen: () => false,
+    isOpen: () => false,
 
-      canWriteRoles: ["commenter", "editor"],
-      canEditRoles: ["editor"],
-    }
-  );
+    canWriteRoles: ["commenter", "editor"],
+    canEditRoles: ["editor"],
+  }
+);
+  // const { canSee } = computePermissions(
+  //   page,
+  //   currentProfile,
+  //   {
+  //     isOwner: (story, profile) => {
+  //       if (!story || !profile) return false;
+
+  //       return (
+  //         story.author?.id === profile.id ||
+  //         story.profileId === profile.id ||
+  //         story.authorId === profile.id
+  //       );
+  //     },
+
+  //     getAccessList: (story) =>
+  //       story.betaReaders ?? [],
+
+  //     getAccessRole: (entry) =>
+  //       entry.permission,
+
+  //     isPrivate: (story) =>
+  //       story.isPrivate,
+
+  //     isOpen: () => false,
+
+  //     canWriteRoles: ["commenter", "editor"],
+  //     canEditRoles: ["editor"],
+  //   }
+  // );
   /*
    * LIKE
    */
@@ -640,7 +669,7 @@ const handleBookmark = async (event) => {
 
         {/* PRIVATE STORIES NEVER RENDER THEIR BODY */}
         {page.isPrivate? (
-          <div className="mx-auto">
+          <div className="mx-auto px-4">
             <h3 className="text-center">
               This Story is private.
             </h3>
