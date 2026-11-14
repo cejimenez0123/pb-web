@@ -75,9 +75,10 @@ try{
   });
   
   }})
-  const getMyStories = createAsyncThunk(
+
+const getMyStories = createAsyncThunk(
   "pages/getMyStories",
-  async (params, thunkApi) => {
+  async (params = {}, thunkApi) => {
     try {
       const data = await storyRepo.getMyStories(params);
 
@@ -86,7 +87,8 @@ try{
         hasMore: data.hasMore,
         skip: data.skip,
         take: data.take,
-        pageList: data.items,
+        pageList: data.stories ?? [],
+        append: Boolean(params.append),
       };
     } catch (e) {
       return thunkApi.rejectWithValue(
@@ -95,6 +97,47 @@ try{
     }
   }
 );
+
+// const getMyStories = createAsyncThunk(
+//   "pages/getMyStories",
+//   async (params, thunkApi) => {
+//     try {
+//       const data = await storyRepo.getMyStories(params);
+
+//       return {
+//         totalCount: data.totalCount,
+//         hasMore: data.hasMore,
+//         skip: data.skip,
+//         take: data.take,
+//         pageList: data.stories ?? [],
+//       };
+//     } catch (e) {
+//       return thunkApi.rejectWithValue(
+//         e?.response?.data || e.message
+//       );
+//     }
+//   }
+// );
+//   const getMyStories = createAsyncThunk(
+//   "pages/getMyStories",
+//   async (params, thunkApi) => {
+//     try {
+//       const data = await storyRepo.getMyStories(params);
+// console.log(data)
+//       return {
+//         totalCount: data.totalCount,
+//         hasMore: data.hasMore,
+//         skip: data.skip,
+//         take: data.take,
+//         pageList: data.items,
+//       };
+//     } catch (e) {
+//       return thunkApi.rejectWithValue(
+//         e?.response?.data || e.message
+//       );
+//     }
+//   }
+// );
 const createStory = createAsyncThunk("pages/createStory",async (params,thunkApi)=>{
   try{
 

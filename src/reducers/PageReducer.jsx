@@ -15,7 +15,7 @@ import {
           getPublicStories,
           setPagesInView,
           setPageType,
-          appendToMyStories,
+       
        
         } from "../actions/PageActions.jsx"
         
@@ -28,7 +28,11 @@ import { removeContentByProfileId } from "../actions/ModerationAcitons.jsx"
 
 
 const initialState = {pagesInView:[],
-  myPages:[],
+myPages: [],
+
+
+myStoriesLoading: false,
+
     pagination: {
     skip: 0,
     take: 20,
@@ -63,13 +67,7 @@ const pageSlice = createSlice({
         state.pagesInView=[]
         state.storyToCollectionList = []
       }
-    }).addCase(appendToMyStories, (state, action) => {
-    if (action.meta?.arg?.skip === 0) {
-        state.myPages = action.payload.pages;
-    } else {
-        state.myPages = [...state.myPages, ...action.payload.pages];
-    }
-}).addCase(fetchRecommendedStories.fulfilled,(state,{payload})=>{
+    }).addCase(fetchRecommendedStories.fulfilled,(state,{payload})=>{
      state.loading=false
       state.recommendedStories = payload.stories
     }).addCase(appendToPagesInView.type,(state,{payload})=>{
@@ -199,13 +197,32 @@ const pageSlice = createSlice({
   state.recommendedStories = state.recommendedStories.filter(
     (story) => story.id !== payload.id
   );
-}).addCase(getMyStories.pending, (state) => {
-  state.loading = true;
 })
+.addCase(getMyStories.pending, (state) => {
+  state.myStoriesLoading = true;
+})
+
 .addCase(getMyStories.fulfilled, (state, { payload }) => {
   state.loading = false;
 
-  state.myPages = payload.pageList || [];
+  const incomingStories = payload.pageList || [];
+
+  if (payload.append) {
+    const existingIds = new Set(
+      (state.myPages || []).map((story) => story.id)
+    );
+
+    const newStories = incomingStories.filter(
+      (story) => !existingIds.has(story.id)
+    );
+
+    state.myPages = [
+      ...(state.myPages || []),
+      ...newStories,
+    ];
+  } else {
+    state.myPages = incomingStories;
+  }
 
   state.pagination = {
     skip: payload.skip,
@@ -214,10 +231,45 @@ const pageSlice = createSlice({
     hasMore: payload.hasMore,
   };
 })
-.addCase(getMyStories.rejected, (state, { payload }) => {
-  state.loading = false;
-  state.error = payload?.message || payload || "Failed to fetch stories";
+
+// .addCase(getMyStories.fulfilled, (state, { payload }) => {
+//   state.myStoriesLoading = false;
+
+//   state.myPages = payload.pageList || [];
+
+//   state.pagination = {
+//     skip: payload.skip,
+//     take: payload.take,
+//     totalCount: payload.totalCount,
+//     hasMore: payload.hasMore,
+//   };
+// })
+.addCase(getMyStories.rejected, (state) => {
+  state.myStoriesLoading = false;
 })
+
+
+// .addCase(getMyStories.pending, (state) => {
+//   state.loading = true;
+// })
+// .addCase(getMyStories.fulfilled, (state, { payload }) => {
+//   console.log("REd")
+//   console.log(payload)
+//   state.loading = false;
+
+//   state.myPages = payload.pageList || [];
+
+//   state.pagination = {
+//     skip: payload.skip,
+//     take: payload.take,
+//     totalCount: payload.totalCount,
+//     hasMore: payload.hasMore,
+//   };
+// })
+// .addCase(getMyStories.rejected, (state, { payload }) => {
+//   state.loading = false;
+//   state.error = payload?.message || payload || "Failed to fetch stories";
+// })
 
 .addCase(clearPagesInView.type,(state)=>{
       state.pagesInView = []

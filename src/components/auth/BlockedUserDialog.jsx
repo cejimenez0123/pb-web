@@ -71,7 +71,7 @@ export default function BlockedUsersDialog({ isOpen, onClose }) {
 
       openDialog({
         title: "Blocked Users",
-        height: 60,
+    
         text: () => (
           <div className="p-4 max-h-64 overflow-auto">
             {!Array.isArray(blockedProfiles) || blockedProfiles.length === 0 ? (

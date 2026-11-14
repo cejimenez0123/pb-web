@@ -308,35 +308,47 @@ closeDialog()
 "
           />
 
-          {isModal ? (
-            <motion.div
-              className="
-                fixed
-                inset-0
-                z-50
-                flex
-                items-center
-                justify-center
-                p-4
-                sm:p-6
-              "
-              initial={{
-                opacity: 0,
-                scale: 0.97,
-              }}
-              animate={{
-                opacity: 1,
-                scale: 1,
-              }}
-              exit={{
-                opacity: 0,
-                scale: 0.97,
-              }}
-              transition={{
-                duration: 0.2,
-                ease: "easeOut",
-              }}
-            >
+          {isModal ?
+           (
+     <motion.div
+    drag="y"
+    dragConstraints={{
+      top: 0,
+      bottom: 0,
+    }}
+    dragElastic={0.15}
+    onDragEnd={(event, info) => {
+      if (
+        info.offset.y > 120 ||
+        info.velocity.y > 800
+      ) {
+        handleClose();
+      }
+    }}
+    initial={{
+      y: "100%",
+    }}
+    animate={{
+      y: 0,
+    }}
+    exit={{
+      y: "100%",
+    }}
+    transition={{
+      type: "spring",
+      stiffness: 320,
+      damping: 32,
+    }}
+    className="
+      fixed
+      inset-x-0
+      top-[2dvh]
+      bottom-0
+      z-50
+      flex
+      justify-center
+    "
+  >
               <DialogPanel
                 dialog={dialog}
                 dialogRef={dialogRef}
@@ -348,46 +360,47 @@ closeDialog()
                 onClose={handleClose}
               />
             </motion.div>
-          ) : (
-            <motion.div
-              drag="y"
-              dragConstraints={{
-                top: 0,
-              }}
-              dragElastic={0.2}
-              onDragEnd={(
-                event,
-                info
-              ) => {
-                if (
-                  info.offset.y > 120 ||
-                  info.velocity.y > 800
-                ) {
-                  handleClose();
-                }
-              }}
-              initial={{
-                y: "100%",
-              }}
-              animate={{
-                y: 0,
-              }}
-              exit={{
-                y: "100%",
-              }}
-              transition={{
-                type: "spring",
-                stiffness: 320,
-                damping: 32,
-              }}
-              className="
-                fixed
-                bottom-0
-                left-0
-                right-0
-                z-50
-              "
-            >
+          ) :
+           (
+           <motion.div
+    drag="y"
+    dragConstraints={{
+      top: 0,
+      bottom: 0,
+    }}
+    dragElastic={0.15}
+    onDragEnd={(event, info) => {
+      if (
+        info.offset.y > 120 ||
+        info.velocity.y > 800
+      ) {
+        handleClose();
+      }
+    }}
+    initial={{
+      y: "100%",
+    }}
+    animate={{
+      y: 0,
+    }}
+    exit={{
+      y: "100%",
+    }}
+    transition={{
+      type: "spring",
+      stiffness: 320,
+      damping: 32,
+    }}
+    className="
+      fixed
+      inset-x-0
+      top-[2dvh]
+      bottom-0
+      z-50
+      flex
+      justify-center
+    "
+  >
               <DialogPanel
                 dialog={dialog}
                 dialogRef={dialogRef}
@@ -414,7 +427,7 @@ function DialogPanel({
   isModal,
   onClose,
 }) {
-  const height = dialog.height ?? 90;
+  const height = dialog.height ?? 96;
 
   return (
     <div
@@ -426,11 +439,14 @@ function DialogPanel({
         ? { "aria-describedby": descriptionId }
         : {})}
       tabIndex={-1}
-      style={
-        isModal
-          ? undefined
-          : { height: `${height}vh` }
+ style={
+  isModal
+    ? undefined
+    : {
+        height: "100%",
+        maxHeight: "100%",
       }
+}
       className={`
         flex flex-col overflow-hidden
         text-plumb-ink dark:text-plumb-darkText
@@ -447,7 +463,7 @@ function DialogPanel({
               dark:bg-plumb-dark-surface
             `
             : `
-              max-h-[95dvh]
+              max-h-full
               rounded-t-3xl
               border-t border-plumb-border
               bg-plumb-paper

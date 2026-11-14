@@ -243,14 +243,7 @@ export default function AddStoryToCollection() {
   const router = useIonRouter();
   const dispatch = useDispatch();
 
-  // const 
-  // cacheKey={`add-item-${itemType}-${item.id}-collections`}
-  //                 fetcher={getMyCollections}
-  //                 pageSize={8}
-  //                 className="space-y-2"
-  //                 renderItem={renderCollection}
-  //                 search={search.trim()}
-  //                 emptyState={<EmptyCollections />}
+
   const { id, type } = useParams();
 
   const itemType = type || "story";
