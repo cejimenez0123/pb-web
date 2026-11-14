@@ -3,6 +3,9 @@ export default function MobileNavItem({
   onClick,
   active = true
 }) {
+  if(!willRender){
+    return null
+  }
   return (
     <button
       type="button"

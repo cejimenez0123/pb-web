@@ -419,15 +419,6 @@ useEffect(() => {
    
   ];
 
-  const shouldHideBottomNavbar =
-    hiddenPaths.some((path) =>
-      location.pathname.startsWith(path)
-    );
-
-  const showTopNavbar = isDesktop;
-
-  const showBottomNavbar =
-    isMobileOrTablet
   
 
   /*
@@ -611,8 +602,7 @@ function RootRoute() {
                     path="/discovery"
                     render={() => (
                       <PageWrapper
-                        showBackbutton={false}
-                        showSearchButton
+                  
                       >
                         <DiscoveryContainer />
                       </PageWrapper>

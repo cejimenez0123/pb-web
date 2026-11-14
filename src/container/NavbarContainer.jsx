@@ -10,35 +10,46 @@ import MobileNavbar from '../components/nav/MobileNavbar';
 import SignInButton from '../components/nav/SignInButton';
 import BrowserMobileNavbar from '../components/nav/BrowserMobileNavbar';
 
-function NavbarContainer({ isDesktop,currentProfile }) {
 
 
+
+
+export default function NavbarContainer({
+  isDesktop,
+  currentProfile,
+}) {
   const location = useLocation();
-  const isLoggedIn = !!currentProfile;
+const isLoggedIn = !!currentProfile?.id
   const isSearchPage =
-    location?.pathname === '/search';
-    const isNative = Capacitor.isNativePlatform()
-   
-  return (
-    <>
-      {isDesktop ? (
-        <DesktopNavbar
-          currentProfile={currentProfile}
-          showSearch={!isSearchPage}
-        />
-      ) : (
-       isNative?isLoggedIn &&  <MobileNavbar
-          currentProfile={currentProfile}
-          showSearch={!isSearchPage}
-        />:
+    location?.pathname === "/search";
 
-        <BrowserMobileNavbar  showSearch={!isSearchPage} currentProfile={currentProfile}/>
-      )}
-    </>
+  const isNative = Capacitor.isNativePlatform();
+
+  if (isDesktop) {
+    return (
+      <DesktopNavbar
+        currentProfile={currentProfile}
+        showSearch={!isSearchPage}
+      />
+    );
+  }
+
+  if (isNative&&isLoggedIn) {
+    return (
+      <MobileNavbar
+        currentProfile={currentProfile}
+        showSearch={!isSearchPage}
+      />
+    );
+  }
+
+  return (
+    <BrowserMobileNavbar
+      currentProfile={currentProfile}
+      showSearch={!isSearchPage}
+    />
   );
 }
-
-export default NavbarContainer;
 
 
 /* =========================================================
@@ -53,7 +64,7 @@ export default NavbarContainer;
 
 function DesktopNavbar({
   currentProfile,
-  showSearch = true,
+  // showSearch = true,
 }) {
 const {
   handleHome,
@@ -63,7 +74,7 @@ const {
   handleProfile,
   handleAbout,
   handleSearch,
-  handleLogin,
+
   handleNotifications
 } = useNavbarNavigation(currentProfile);
 
@@ -108,7 +119,7 @@ const {
           {isLoggedIn && (
             <DesktopNavItem
               onClick={handleWrite}
-              active
+              
             >
               Write
             </DesktopNavItem>
@@ -126,7 +137,7 @@ const {
         {isLoggedIn && (
             <DesktopNavItem
               onClick={handleNotifications}
-              active
+          
             >
            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="24px" width="24px" fill="#FFFFFF"><path d="M4,19V17H6V10Q6,7.93 7.25,6.31T10.5,4.2V3.5q0-0.63 0.44-1.06T12,2t1.06,0.44T13.5,3.5V4.2q2,0.5 3.25,2.11T18,10v7h2v2H4Zm8-7.5ZM12,22q-0.82,0-1.41-0.59T10,20h4q0,0.82-0.59,1.41T12,22ZM8,17h8V10q0-1.65-1.17-2.82T12,6T9.18,7.18T8,10v7Z"/></svg>
             </DesktopNavItem>
@@ -134,11 +145,11 @@ const {
           {!currentProfile && <DesktopNavItem onClick={handleAbout}>
             About
           </DesktopNavItem>}
-              {showSearch && (
+              {/* {showSearch && ( */}
             <SearchButton
               onClick={handleSearch}
             />
-          )}
+          {/* )} */}
         </nav>
 
 
@@ -167,6 +178,36 @@ const {
 }
 
 
+// function DesktopNavItem({
+//   children,
+//   onClick,
+//   active = false,
+// }) {
+//   return (
+//     <button
+//       type="button"
+//       onClick={onClick}
+//       className={`
+//         text-[1.2em]
+//         leading-none
+//         bg-transparent
+
+//         tracking-[-0.02em]
+//         transition-colors
+//         duration-150
+//         ${
+//           active
+//             ? 'text-text-primary'
+//             : 'text-text-secondary hover:text-text-primary'
+//         }
+//       `}
+//     >
+//       {children}
+//     </button>
+//   );
+// }
+
+
 function DesktopNavItem({
   children,
   onClick,
@@ -176,18 +217,17 @@ function DesktopNavItem({
     <button
       type="button"
       onClick={onClick}
+      aria-current={active ? "page" : undefined}
       className={`
         text-[1.2em]
         leading-none
         bg-transparent
-        text-white
         tracking-[-0.02em]
-        transition-colors
-        duration-150
+        transition-colors duration-150
         ${
           active
-            ? 'text-text-primary'
-            : 'text-text-secondary hover:text-text-primary'
+            ? "text-white font-semibold"
+            : "text-white/70 hover:text-white"
         }
       `}
     >
@@ -195,9 +235,6 @@ function DesktopNavItem({
     </button>
   );
 }
-
-
-
 
 
 

@@ -3,6 +3,7 @@ import { useLocation } from "react-router";
 import NavbarContainer from "../container/NavbarContainer";
 import Paths from "../core/paths";
 import { useDialog } from "../domain/usecases/useDialog";
+import ErrorBoundary from "../ErrorBoundary";
 
 function AppNavigationChrome({
   isDesktop,
@@ -33,6 +34,7 @@ function AppNavigationChrome({
  const {dialog}=useDialog()
   return (
     <>
+    <ErrorBoundary>
       {/* Desktop */}
       {showTopNavbar && (
 
@@ -52,6 +54,7 @@ function AppNavigationChrome({
           />
        </div>
       )}
+      </ErrorBoundary>
     </>
   );
 }

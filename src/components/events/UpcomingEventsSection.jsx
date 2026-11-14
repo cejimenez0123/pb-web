@@ -83,7 +83,7 @@ showPrompt({
       <div className="mt-6">
         {events.length > 0 ? (
           <div className="space-y-3">
-            {events.map((event) => {
+            {events.slice(0,2).map((event) => {
               const eventDate = extractEventDate(event.data);
               const eventTime = formatEventTime(eventDate);
               const metadata = extractEventMetadata(event.data);

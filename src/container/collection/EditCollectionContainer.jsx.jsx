@@ -690,7 +690,7 @@ export default function EditCollectionContainer() {
                  
 
             <main
-            className={styles.pageShell.base+" flex flex-col gap-8 "+styles.pageShell.padded}
+            className={styles.pageShell.base+" pb-8 flex flex-col gap-8 "}
            
             >
 

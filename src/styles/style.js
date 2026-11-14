@@ -183,7 +183,7 @@ body:"max-w-3xl mx-auto px-2  w-[100%]",
 base: [
   "relative  font-open-sans" ,
   "flex flex-col",
-   "pt-20 pb-24",
+   "pt-20 pb-30",
   "w-[100%]",
   "min-w-[100%] min-h-[100%]",
   "overflow-hidden",

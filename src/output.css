@@ -419,6 +419,23 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 .filter {
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
+
+/* Keep scrollable page content above the mobile navigation */
+body.has-mobile-bottom-nav ion-content {
+  --padding-bottom: var(--mobile-navbar-total-height);
+}
+
+/* Also support regular page scroll containers */
+body.has-mobile-bottom-nav .app-scroll-container {
+  padding-bottom: var(--mobile-navbar-total-height);
+  scroll-padding-bottom: var(--mobile-navbar-total-height);
+}
+
+/* Avoid horizontal or vertical overflow caused by the navbar */
+body.has-mobile-bottom-nav {
+  --mobile-content-bottom: var(--mobile-navbar-total-height);
+}
+
 :root{
   --text-color:#02120A;
   --tertiary: #DBDBDB;
@@ -442,6 +459,7 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
   0 16px 16px hsl(0deg 0% 0% / 0.075);
 
 }
+
 
 
 

@@ -49,6 +49,10 @@ function MyProfileContainer() {
 
 
   const [tab, setTab] = useState(TABS.PORTFOLIO);
+  const [homeSearchInput, setHomeSearchInput] =
+    useState("");
+     const [homeSearch, setHomeSearch] =
+    useState("");
 
   const [portfolioSearchInput, setPortfolioSearchInput] =
     useState("");
@@ -74,7 +78,10 @@ function MyProfileContainer() {
     portfolioSearch,
     300
   );
-
+ const homeDebouncedSearch = useDebounce(
+    portfolioSearch,
+    300
+  );
   const archiveDebouncedSearch = useDebounce(
     archiveSearch,
     300
@@ -103,9 +110,9 @@ const homeCollectionsResource = usePaginatedResource({
   fetcher: getMyProfileCollections,
   pageSize: 4,
   enabled: authResolved && Boolean(profile),
-  search:""
+  search:homeDebouncedSearch
 });
-console.log(profile.profileToCollections)
+
 const eventCollectionsResource = usePaginatedResource({
   params: { type: "events" },
 cacheKey: "profile:collections",
@@ -137,7 +144,7 @@ const profileCollectionIds = useMemo(() => {
 
   return associations.reduce((ids, association) => {
     if (association?.type && association?.collectionId) {
-      ids[association.type] = association.collectionId;
+      ids[association.type] = association?.collectionId;
     }
 
     return ids;
@@ -284,21 +291,23 @@ const tabs = [
                 aria-live="polite"
                 className={styles.profile.mine.content+" px-4"}
               >
-                    {tab === TABS.HOME && (<HomeSection 
-                    id={tabs.find(t=>t.key==TABS.HOME).collectionId}
+                    {tab === TABS.HOME && (
+                      
+                      <HomeSection 
+                    id={tabs.find(t=>t.key==TABS.HOME)?.collectionId}
  profile={profile}
   resource={homeCollectionsResource}
   router={router}
   search={portfolioSearch}
   setSearch={setPortfolioSearch}
-  searchInput={portfolioSearchInput}
-  setSearchInput={setPortfolioSearchInput}
-  debouncedSearch={portfolioDebouncedSearch}
+  searchInput={homeSearchInput}
+  setSearchInput={setHomeSearchInput}
+  debouncedSearch={homeDebouncedSearch}
                     
                     />)}
         {tab === TABS.PORTFOLIO && (
 <PortfolioSection
-id={tabs.find(t=>t.key==TABS.PORTFOLIO).collectionId}
+id={tabs.find(t=>t.key==TABS.PORTFOLIO)?.collectionId}
 
   profile={profile}
   resource={portfolioCollectionsResource}
@@ -314,7 +323,7 @@ id={tabs.find(t=>t.key==TABS.PORTFOLIO).collectionId}
 
                 {tab === TABS.ARCHIVE && (
                   <ArchiveSection
-                  id={tabs.find(t=>t.key==TABS.ARCHIVE).collectionId}
+                  id={tabs.find(t=>t.key==TABS.ARCHIVE)?.collectionId}
     profile={profile}
     router={router}
      search={archiveSearch}
@@ -344,7 +353,7 @@ id={tabs.find(t=>t.key==TABS.PORTFOLIO).collectionId}
 
                 {tab === TABS.EVENTS && (
                   <EventsSection
-                  id={tabs.find(t=>t.key==TABS.EVENTS).collectionId}
+                  id={tabs.find(t=>t.key==TABS.EVENTS)?.collectionId}
                    profile={profile}
     router={router}
 
