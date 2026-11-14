@@ -9,7 +9,7 @@ function BrowserNavItem({
     <button
       type="button"
       onClick={onClick}
-            // text-base
+           
       className={`
  font-serif
         flex

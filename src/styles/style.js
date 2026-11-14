@@ -488,7 +488,7 @@ primary: [
   "active:shadow-sm",
 ].join(" "),
 
-danger:[" border-plumb-button-danger-bg  text-plumb-button-danger border  border-1 border bg-transparent text-white font-open-sans rounded-full  ",].join(" "),
+danger:[" border-plumb-button-danger-bg  text-white border  border-1 border bg-red-500 dark:bg-transparent dark:text-white font-open-sans rounded-full  ",].join(" "),
 
   
 secondary: [

@@ -563,44 +563,9 @@ title="Open collaboration"
           dark:checked:border-plumb-mintLight
           dark:focus-visible:ring-plumb-mintLight
         "/>
-    // <input
-    //           type="checkbox"
-    //           name="visibility"
-    //           value="private"
-    //           checked={
-    //             formData.isPrivate === true
-    //           }
-    //       onChange={() =>
-    //         setFormData((previous) => ({
-    //           ...previous,
-    //           isOpenCollaboration:
-    //             !previous.isOpenCollaboration,
-    //         }))
-    //       }
-    //           className="
-    //             h-4
-    //             w-4
-    //             dark:bg-base-bg
-    //         dark:text-plumb-darkText
-           
-    //             accent-blueSea
-    //             focus-visible:outline
-    //             focus-visible:outline-2
-    //             focus-visible:outline-offset-2
-    //             focus-visible:outline-blueSea
-    //           "
-    //         />
+
 }
-          // checked={
-          // id="open-collaboration"
-          // title="Open collaboration"
-          // description="People who can find this Room can add to it when collaboration is open."
-          // checked={
-          //   formData.isOpenCollaboration
-          // }
-          
-          // tooltip="Open collaboration controls whether people can contribute without you assigning them a writing or editing role first."
-        />
+             />
       </fieldset>
 
       {/* Initial writing */}

@@ -29,8 +29,7 @@ function AppleSignInButton({ onUserSignIn }) {
     <div
       onClick={handleAppleSignIn}
       className={[styles.button.base.slice(1,styles.button.base.length),"bg-plumb-ink w-[180px]  py-2 rounded-full text-plumb-surface"].join(" ")}
-      // className='bg-plumb-ink btn flex flex-row rounded-full flex mx-auto text-white  mt-8'
-    >
+       >
       <div className="flex flex-row mx-aut my-auto">
       <img src={applelogo} className='max-h-5 my-auto mr-2 max-w-5' />
       <h6 className='text-sm my-auto '>Sign in</h6>

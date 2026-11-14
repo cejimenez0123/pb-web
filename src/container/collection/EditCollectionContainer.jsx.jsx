@@ -1057,7 +1057,7 @@ buttonClass={"bg-transparent border-plumb-mint/70 text-plumb-mint/70"}
 />
           
 
-                  <div className="px-5 sm:px-6 pb-4">
+                  <div className="px-5 mt-8 sm:px-6 pb-4">
 
    <div className={styles.input.search.searchWrap}>
                   <span
@@ -1102,13 +1102,13 @@ buttonClass={"bg-transparent border-plumb-mint/70 text-plumb-mint/70"}
    
      </section>            
 <section className={styles.pageShell.body+" flex flex-row justify-between"}>
-                  <button
+                  <div
                     type="button"
                     onClick={handleDelete}
-                    className={styles.button.danger}
+                    className={[styles.button.base,styles.button.danger].join(" ")}
                   >
-                    Delete room
-                  </button>
+                   <h6 className="my-auto mx-auto">Delete room</h6> 
+                  </div>
 
                   
 

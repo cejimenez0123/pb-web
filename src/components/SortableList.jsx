@@ -1,9 +1,5 @@
 
-import React, {
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import React, { useCallback } from "react";
 
 import {
   DragDropContext,
@@ -11,15 +7,39 @@ import {
   Draggable,
 } from "react-beautiful-dnd";
 
-import {
-  useIonRouter,
-} from "@ionic/react";
-
-import dragHandle from "../images/icons/drag_handle.svg";
+import { useIonRouter } from "@ionic/react";
 import Paths from "../core/paths";
-const DRAG_HANDLE=<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="24px" width="24px" fill="currentColor"><path d="M9,20q-0.82,0-1.41-0.59T7,18t0.59-1.41T9,16q0.83,0 1.41,0.59Q11,17.18 11,18t-0.59,1.41T9,20Zm6,0q-0.82,0-1.41-0.59T13,18t0.59-1.41T15,16t1.41,0.59Q17,17.18 17,18t-0.59,1.41T15,20ZM9,14q-0.82,0-1.41-0.59T7,12t0.59-1.41T9,10q0.83,0 1.41,0.59Q11,11.18 11,12t-0.59,1.41T9,14Zm6,0q-0.82,0-1.41-0.59T13,12t0.59-1.41T15,10t1.41,0.59Q17,11.18 17,12t-0.59,1.41T15,14ZM9,8Q8.18,8 7.59,7.41T7,6T7.59,4.59T9,4q0.83,0 1.41,0.59Q11,5.18 11,6T10.41,7.41T9,8Zm6,0q-0.82,0-1.41-0.59T13,6t0.59-1.41T15,4t1.41,0.59Q17,5.18 17,6T16.41,7.41T15,8Z"/></svg>
+
+const DRAG_HANDLE = (
+  <svg
+    viewBox="0 0 24 24"
+    width="22"
+    height="22"
+    fill="currentColor"
+    aria-hidden="true"
+  >
+    <path d="M9 5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Zm6 0a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3ZM9 10.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Zm6 0a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3ZM9 16a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Zm6 0a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Z" />
+  </svg>
+);
+
+const getId = (entry) =>
+  String(
+    entry?.id ??
+    entry?.item?.id ??
+    ""
+  );
+
+const getTitle = (entry) =>
+  entry?.childCollection?.title ||
+  entry?.story?.title ||
+  "Untitled";
+
+const isRoom = (entry) =>
+  entry?.kind === "room" ||
+  Boolean(entry?.childCollection);
+
 export default function SortableList({
-  items,
+  items = [],
   onOrderChange,
   onDelete,
   removedItems = [],
@@ -30,218 +50,411 @@ export default function SortableList({
 }) {
   const router = useIonRouter();
 
-  const memoizedItems = useMemo(
-    () => items ?? [],
-    [items]
-  );
+  const listItems = Array.isArray(items) ? items : [];
 
-  const [listItems, setListItems] =
-    useState(memoizedItems);
+  const handleNavigate = useCallback((entry) => {
+    if (entry?.childCollection?.id) {
+      router.push(
+        Paths.collection.createRoute(entry.childCollection.id)
+      );
+      return;
+    }
 
+    if (entry?.story?.id) {
+      router.push(
+        Paths.page.createRoute(entry.story.id)
+      );
+    }
+  }, [router]);
 
-  // =======================================================
-  // SYNC FROM PARENT
-  // =======================================================
+  const handleDragEnd = (result) => {
+    if (
+      disableDrag ||
+      isFiltered ||
+      !result.destination ||
+      result.destination.index === result.source.index
+    ) {
+      return;
+    }
 
-  useEffect(() => {
-    setListItems(
-      memoizedItems
+    const reordered = [...listItems];
+
+    const [moved] = reordered.splice(
+      result.source.index,
+      1
     );
-  }, [memoizedItems]);
 
+    reordered.splice(
+      result.destination.index,
+      0,
+      moved
+    );
 
-  // =======================================================
-  // DRAG END
-  // =======================================================
-const handleOnDragEnd = (result) => {
-  if (disableDrag || isFiltered) {
-    return;
-  }
-
-  if (!result.destination) {
-    return;
-  }
-
-  const newList = Array.from(listItems);
-
-  const [movedItem] = newList.splice(
-    result.source.index,
-    1
-  );
-
-  newList.splice(
-    result.destination.index,
-    0,
-    movedItem
-  );
-
-  const normalized = newList.map(
-    (entry, index) => ({
+    const normalized = reordered.map((entry, index) => ({
       ...entry,
       index,
-      item: {
-        ...entry.item,
-        index,
-      },
-    })
-  );
+      ...(entry.item
+        ? {
+            item: {
+              ...entry.item,
+              index,
+            },
+          }
+        : {}),
+    }));
 
-  setListItems(normalized);
+    onOrderChange?.(normalized);
+  };
 
-  onOrderChange(normalized);
-};
-
-  // =======================================================
-  // DELETE
-  // =======================================================
-const handleDelete = (event, entry) => {
-  event.preventDefault();
-  event.stopPropagation();
-
-  onDelete(entry);
-};
-const handleNavigate = (entry) => {
-  console.log("ENTRY:", entry);
-  console.log("story:", entry?.story);
-  console.log("childCollection:", entry?.childCollection);
-
-  if (entry?.childCollection?.id) {
-    router.push(
-      Paths.collection.createRoute(
-        entry.childCollection.id
-      )
-    );
-
-    return;
-  }
-
-  if (entry?.story?.id) {
-    router.push(
-      Paths.page.createRoute(
-        entry.story.id
-      )
-    );
-  }
-};
-
-  // =======================================================
-  // EMPTY
-  // =======================================================
+  const handleDelete = (event, entry) => {
+    event.preventDefault();
+    event.stopPropagation();
+    onDelete?.(entry);
+  };
 
   if (!listItems.length) {
     return (
-      <div
-        className="
-          my-4
-          h-[20em]
-          flex
-          items-center
-          justify-center
-          rounded-2xl
-          border
-          border-dashed
-          border-card-border
-          dark:border-white/10
-        "
-      >
-        <div className="text-center px-6">
+      <div className="
+        my-5 min-h-[18rem]
+        flex flex-col items-center justify-center
+        rounded-3xl border-2 border-dashed
+        border-blue-200 dark:border-blue-400/20
+        bg-blue-50/50 dark:bg-blue-400/[0.04]
+        px-6 text-center
+      ">
+        <span className="
+          mb-4 flex h-14 w-14 items-center justify-center
+          rounded-2xl bg-blue-100 dark:bg-blue-400/10
+          text-blue-500 dark:text-blue-400
+          text-2xl
+        ">
+          ✳
+        </span>
 
-          <p className="font-serif text-xl text-text-primary dark:text-cream">
-            Nothing here yet.
-          </p>
+        <p className="
+          font-serif text-xl
+          text-plumb-ink dark:text-cream
+        ">
+          A little room to grow.
+        </p>
 
-          <p className="mt-2 text-sm text-text-secondary">
-            Add a page or room to begin.
-          </p>
-
-        </div>
+        <p className="
+          mt-2 max-w-xs text-sm
+          text-text-secondary
+        ">
+          Add a page or room and start building your collection.
+        </p>
       </div>
     );
   }
 
+  return (
+    <div className="w-[100%] space-y-4">
 
-return(<DragDropContext onDragEnd={handleOnDragEnd}>
-  <Droppable droppableId="sortableList">
-    {(provided) => (
-      <ul
-        {...provided.droppableProps}
-        ref={provided.innerRef}
-        className="space-y-[1.618rem] w-[100%]"
-      >
-        {/* Your Draggable items */}
-
-        {provided.placeholder}
-      </ul>
-    )}
-  </Droppable>
-
-  {removedItems.length > 0 && (
-    <div className="
-      mt-5 w-[100%]
-      rounded-xl
-      border border-plumb-mint/30
-      bg-plumb-surface
-      dark:bg-base-bg
-      p-4 space-y-3
-    ">
-      <div className="flex items-center justify-between gap-3">
+      <div className="
+        flex items-center justify-between
+        gap-3 px-1
+      ">
         <div>
-          <p className="text-sm font-medium text-plumb-ink dark:text-cream">
-            {removedItems.length === 1
-              ? "1 item removed"
-              : `${removedItems.length} items removed`}
+          <p className="
+            text-sm font-semibold
+            text-plumb-ink dark:text-cream
+          ">
+            Your collection
           </p>
 
-          <p className="mt-1 text-xs text-text-secondary">
-            Changes haven't been saved yet.
+          <p className="
+            mt-0.5 text-xs
+            text-text-secondary
+          ">
+            Drag to arrange your pages and rooms.
           </p>
         </div>
 
-        <button
-          type="button"
-          onClick={onUndoAll}
-          className="
-            shrink-0 rounded-full
-            border border-plumb-mint
-            px-4 py-2 text-sm font-medium
-            text-plumb-mint
-            hover:bg-plumb-mint/10
-          "
-        >
-          Undo all
-        </button>
+        <span className="
+          shrink-0 rounded-full
+          bg-blue-100 dark:bg-blue-400/10
+          px-3 py-1.5
+          text-xs font-semibold
+          text-blue-600 dark:text-blue-400
+        ">
+          {listItems.length} {listItems.length === 1 ? "item" : "items"}
+        </span>
       </div>
 
-      {removedItems.length > 1 && (
-        <div className="
-          border-t border-card-border
-          dark:border-white/10
-          pt-2 space-y-2
-        ">
-          {removedItems.map((item) => (
-            <div
-              key={item.id}
-              className="flex items-center justify-between gap-3 text-sm"
+      <DragDropContext onDragEnd={handleDragEnd}>
+        <Droppable
+          droppableId="collection-sortable-list"
+          isDropDisabled={disableDrag || isFiltered}
+        >
+          {(provided, snapshot) => (
+            <ul
+              ref={provided.innerRef}
+              {...provided.droppableProps}
+              className={`
+                flex flex-col gap-3
+                w-[100%] min-w-0
+                rounded-2xl
+                transition-colors duration-150
+                ${snapshot.isDraggingOver
+                  ? "bg-blue-400/[0.06] ring-2 ring-blue-400/20 p-2"
+                  : ""}
+              `}
             >
-              <span className="truncate text-text-secondary">
-                {item.kind === "room"
-                  ? item.childCollection?.title
-                  : item.story?.title}
-              </span>
+              {listItems.map((entry, index) => {
+                const id = getId(entry);
 
-              <button
-                type="button"
-                onClick={() => onUndoRemove(item)}
-                className="shrink-0 font-medium text-plumb-mint"
-              >
-                Restore
-              </button>
+                if (!id) return null;
+
+                const room = isRoom(entry);
+
+                return (
+                  <Draggable
+                    key={id}
+                    draggableId={id}
+                    index={index}
+                    isDragDisabled={disableDrag || isFiltered}
+                  >
+                    {(provided, snapshot) => (
+                      <li
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        style={{
+                          ...provided.draggableProps.style,
+                        }}
+                        className={`
+                          group relative
+                          flex items-center gap-3
+                          min-w-0 w-[100%]
+                          rounded-2xl
+                          border
+                          p-3 sm:p-4
+                          transition-all duration-150
+
+                          ${snapshot.isDragging
+                            ? `
+                              bg-plumb-canvas dark:bg-[#202923]
+                              border-blue-400
+                              shadow-xl shadow-blue-400/15
+                              rotate-[1deg]
+                              z-50
+                            `
+                            : `
+                           bg-plumb-canvas dark:bg-base-bg
+                              border-gray-200 dark:border-white/10
+                              shadow-sm
+                              hover:border-blue-300
+                              dark:hover:border-blue-400/40
+                              hover:shadow-md
+                            `
+                          }
+                        `}
+                      >
+
+                        {/* Drag handle */}
+                        <button
+                          type="button"
+                          {...provided.dragHandleProps}
+                          disabled={disableDrag || isFiltered}
+                          aria-label={`Drag to reorder ${getTitle(entry)}`}
+                          className="
+                            shrink-0
+                            flex items-center justify-center
+                            h-11 w-9
+                            rounded-xl
+                            text-gray-400
+                            dark:text-gray-500
+                            hover:text-blue-500
+                            dark:hover:text-blue-400
+                            hover:bg-blue-50
+                            dark:hover:bg-blue-400/10
+                            active:cursor-grabbing
+                            cursor-grab
+                            touch-none
+                            transition-colors
+                            disabled:cursor-default
+                            disabled:opacity-30
+                          "
+                        >
+                          {DRAG_HANDLE}
+                        </button>
+
+                        {/* Number */}
+                        <span className="
+                          shrink-0
+                          flex items-center justify-center
+                          h-8 w-8
+                          rounded-lg
+                          bg-gray-100 dark:bg-white/[0.06]
+                          text-xs font-semibold
+                          tabular-nums
+                          text-gray-500 dark:text-gray-400
+                        ">
+                          {String(index + 1).padStart(2, "0")}
+                        </span>
+
+                        {/* Content */}
+                        <button
+                          type="button"
+                          onClick={() => handleNavigate(entry)}
+                          className="
+                            flex-1 min-w-0
+                            flex flex-col items-start
+                            gap-1 text-left
+                          "
+                        >
+                          <span className="
+                            block w-[100%] truncate
+                            text-sm sm:text-base
+                            font-semibold
+                            text-plumb-ink dark:text-cream
+                            group-hover:text-blue-600
+                            dark:group-hover:text-blue-400
+                            transition-colors
+                          ">
+                            {getTitle(entry)}
+                          </span>
+
+                          <span className="
+                            flex items-center gap-1.5
+                            text-[11px] font-medium
+                            text-text-secondary
+                          ">
+                            <span className={`
+                              h-1.5 w-1.5 rounded-full
+                              ${room
+                                ? "bg-amber-400"
+                                : "bg-blue-400"}
+                            `} />
+
+                            {room ? "Room" : "Page"}
+                          </span>
+                        </button>
+
+                        {/* Delete */}
+                        <button
+                          type="button"
+                          onClick={(event) => handleDelete(event, entry)}
+                          aria-label={`Remove ${getTitle(entry)}`}
+                          className="
+                            shrink-0
+                            flex items-center justify-center
+                            h-10 w-10
+                            rounded-xl
+                            text-gray-400
+                            dark:text-gray-500
+                            hover:text-red-500
+                            hover:bg-red-50
+                            dark:hover:bg-red-500/10
+                            transition-colors
+                          "
+                        >
+                          <svg
+                            viewBox="0 0 24 24"
+                            width="19"
+                            height="19"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="1.7"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <path d="M4 7h16M10 11v6m4-6v6M5 7l1 14h12l1-14M9 7V4h6v3" />
+                          </svg>
+                        </button>
+
+                      </li>
+                    )}
+                  </Draggable>
+                );
+              })}
+
+              {provided.placeholder}
+            </ul>
+          )}
+        </Droppable>
+      </DragDropContext>
+
+      {/* Removed items */}
+      {removedItems.length > 0 && (
+        <div className="
+          rounded-2xl
+          border border-blue-200 dark:border-blue-400/20
+          bg-blue-50/70 dark:bg-blue-400/[0.05]
+          p-4 space-y-3
+        ">
+          <div className="
+            flex items-center justify-between gap-3
+          ">
+            <div>
+              <p className="
+                text-sm font-semibold
+                text-plumb-ink dark:text-cream
+              ">
+                {removedItems.length} {removedItems.length === 1
+                  ? "item removed"
+                  : "items removed"}
+              </p>
+
+              <p className="
+                mt-1 text-xs text-text-secondary
+              ">
+                Your changes haven't been saved yet.
+              </p>
             </div>
-          ))}
+
+            <button
+              type="button"
+              onClick={onUndoAll}
+              className="
+                shrink-0 rounded-full
+                bg-blue-400 px-4 py-2
+                text-xs font-semibold text-white
+                hover:bg-blue-500
+                transition-colors
+              "
+            >
+              Undo all
+            </button>
+          </div>
+
+          <div className="space-y-2">
+            {removedItems.map((item) => (
+              <div
+                key={getId(item)}
+                className="
+                  flex items-center justify-between
+                  gap-3 border-t
+                  border-blue-200/70
+                  dark:border-white/10
+                  pt-2
+                "
+              >
+                <span className="
+                  min-w-0 truncate text-sm
+                  text-text-secondary
+                ">
+                  {getTitle(item)}
+                </span>
+
+                <button
+                  type="button"
+                  onClick={() => onUndoRemove?.(item)}
+                  className="
+                    shrink-0 text-xs font-semibold
+                    text-blue-600 dark:text-blue-400
+                    hover:underline
+                  "
+                >
+                  Restore
+                </button>
+              </div>
+            ))}
+          </div>
         </div>
       )}
-    </div>
-  )}
-</DragDropContext>)
 
+    </div>
+  );
 }
+
