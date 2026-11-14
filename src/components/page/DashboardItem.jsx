@@ -1,8 +1,12 @@
+
 import React, {
-  useContext,
   useEffect,
+  useMemo,
   useState,
 } from "react";
+
+import { useDispatch, useSelector } from "react-redux";
+import { useIonRouter } from "@ionic/react";
 
 import "../../Dashboard.css";
 
@@ -16,49 +20,32 @@ import {
   deleteStoryFromCollection,
 } from "../../actions/CollectionActions";
 
-import { useDispatch, useSelector } from "react-redux";
-import { IonImg } from "@ionic/react";
-
-import bookmarkfill from "../../images/bookmarkfill.svg";
-import bookmarkoutline from "../../images/bookmarkadd.svg";
-
 import checkResult from "../../core/checkResult";
 import Paths from "../../core/paths";
-
-import ProfileCircle from "../profile/ProfileCircle";
-import Context from "../../context";
-import ShareList from "./ShareList";
-
-import { useIonRouter } from "@ionic/react";
-import { useDialog } from "../../domain/usecases/useDialog";
 import computePermissions from "../../core/compusePermissions";
-import DataElement from "./DataElement";
 import { useAlert } from "../../core/useAlert";
 import AlertType from "../../core/AlertType";
-import styles from "../../styles/style";
+import { useDialog } from "../../domain/usecases/useDialog";
+
+import ProfileCircle from "../profile/ProfileCircle";
+import ShareList from "./ShareList";
+import DataElement from "./DataElement";
 import StoryPreview from "./StoryPreview";
+
+import styles from "../../styles/style";
 import { PageType } from "../../core/constants";
 
-const DEFAULT_PREVIEW_LENGTH = 500;
-
-const getPreviewLength = (value) => {
-  const length = Number(value);
-
-  return Number.isFinite(length) && length > 0
-    ? Math.floor(length)
-    : DEFAULT_PREVIEW_LENGTH;
-};
-
 const theme = styles.dashboardItem;
+const EMPTY_ARRAY = [];
 
-/**
- * Get the readable text length without counting HTML markup.
- * DataElement remains responsible for rendering the actual story content.
+const DEFAULT_PREVIEW_LENGTH = 300;
+const BOOKMARK=(<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="24px" width="24px" fill="currentColor"><path d="M5,21V5Q5,4.17 5.59,3.59T7,3H17q0.82,0 1.41,0.59T19,5V21l-7-3L5,21Zm2-3.05l5-2.15l5,2.15V5H7V17.95ZM7,5H17H12H7Z"/></svg>)
+const BOOKMARK_FILL=(<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="24px" width="24px" fill="currentColor"><path d="M5,21V5Q5,4.17 5.59,3.59T7,3H17q0.82,0 1.41,0.59T19,5V21l-7-3L5,21Z"/></svg>)
+/*
+ * Remove HTML markup when calculating preview length.
  */
-const getStoryTextLength = (data) => {
-  if (typeof data !== "string") {
-    return 0;
-  }
+function getStoryTextLength(data) {
+  if (typeof data !== "string") return 0;
 
   return data
     .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, " ")
@@ -73,7 +60,52 @@ const getStoryTextLength = (data) => {
     .replace(/&#\d+;|&#x[\da-f]+;/gi, " ")
     .replace(/\s+/g, " ")
     .trim().length;
-};
+}
+
+/*
+ * Find an existing bookmark.
+ *
+ * Archive takes priority over Home.
+ */
+
+
+/*
+ * Find the preferred destination for a new bookmark.
+ */
+
+function getProfileCollections(profile) {
+  const collections = profile?.profileToCollections;
+
+  return Array.isArray(collections)
+    ? collections.flat(Infinity).filter(Boolean)
+    : [];
+}
+
+function getHomeCollection(profile) {
+  return getProfileCollections(profile).find(
+    (item) =>
+      item?.type === "home" &&
+      (item.collectionId || item.collection?.id)
+  ) ?? null;
+}
+
+function findHomeBookmark(profile, storyId) {
+  if (!storyId) return null;
+
+  const home = getHomeCollection(profile);
+
+  const storyLink = home?.collection?.storyIdList?.find(
+    (item) => String(item?.storyId) === String(storyId)
+  );
+
+  if (!storyLink) return null;
+
+  return {
+    ...storyLink,
+    stId: storyLink.id || storyLink._id,
+    collectionId: home.collectionId || home.collection?.id,
+  };
+}
 
 function DashboardItem({
   page,
@@ -81,364 +113,75 @@ function DashboardItem({
   shortenTo,
   showPermissionRequest = true,
 }) {
- 
+  const dispatch = useDispatch();
+  const router = useIonRouter();
 
-  const {showPrompt,showAlert}=useAlert()
-  const [archive, setArchive] = useState(null);
-  const [likeFound, setLikeFound] = useState(null);
-  const [bookmarked, setBookmarked] = useState(null);
-
-  const [permissionRequestState, setPermissionRequestState] =
-    useState("idle");
+  const { showPrompt, showAlert } = useAlert();
+  const { openDialog } = useDialog();
 
   const currentProfile = useSelector(
     (state) => state.users.currentProfile
   );
 
-  const dispatch = useDispatch();
-  const router = useIonRouter();
+const [bookmarkOverride, setBookmarkOverride] = useState(undefined);
 
-  const { openDialog, resetDialog } = useDialog();
+const bookmarkKey = `${currentProfile?.id || ""}:${page?.id || ""}`;
+
+const reduxBookmark = useMemo(
+  () => findHomeBookmark(currentProfile, page?.id),
+  [currentProfile, page?.id]
+);
+
+const bookmarked =
+  bookmarkOverride?.key === bookmarkKey
+    ? bookmarkOverride.value
+    : reduxBookmark;
+
+  // Local state is reserved for UI feedback and pending operations.
+  const [likeFound, setLikeFound] = useState(null);
+
+  const [bookmarkPending, setBookmarkPending] =
+    useState(false);
+
+  const [likePending, setLikePending] =
+    useState(false);
 
 
-  /*
-   * -------------------------------------------------------------------------
-   * PRIVACY / PERMISSIONS
-   * -------------------------------------------------------------------------
-   */
-  const { canSee } = computePermissions(page, currentProfile, {
-    isOwner: (story, profile) => {
-      if (!story || !profile) return false;
-
-      return (
-        story.author?.id === profile.id ||
-        story.profileId === profile.id ||
-        story.authorId === profile.id
-      );
-    },
-
-    getAccessList: (story) => story.betaReaders ?? [],
-    getAccessRole: (entry) => entry.permission,
-    isPrivate: (story) => story.isPrivate,
-    isOpen: () => false,
-
-    canWriteRoles: ["commenter", "editor"],
-    canEditRoles: ["editor"],
-  });
 
   /*
-   * -------------------------------------------------------------------------
-   * ARCHIVE
-   * -------------------------------------------------------------------------
+   * Keep local interaction state synchronized with Redux.
    */
-  const getArchive = () => {
-    if (!currentProfile?.profileToCollections) {
-      return;
-    }
+useEffect(() => {
+  if (!currentProfile?.id || !page?.id) {
+    setLikeFound(null);
+    return;
+  }
 
-    const archivePtc =
-      currentProfile.profileToCollections.find(
-        (ptc) => ptc?.type === "archive"
-      );
-
-    setArchive(archivePtc?.collection || null);
-  };
-
-  /*
-   * -------------------------------------------------------------------------
-   * LIKE / BOOKMARK STATE
-   * -------------------------------------------------------------------------
-   */
-  useEffect(() => {
-    if (!currentProfile?.id || !page) {
-      setLikeFound(null);
-      setBookmarked(null);
-      return;
-    }
-
-    const foundLike =
-      currentProfile.likedStories?.find(
-        (like) => like?.storyId === page.id
-      );
-
-    setLikeFound(foundLike ?? null);
-
-    const bookmarkCollections =
-      currentProfile.profileToCollections || [];
-
-    const archivePtc =
-      bookmarkCollections.find(
-        (ptc) => ptc?.type === "archive"
-      );
-
-    const archiveStc =
-      archivePtc?.collection?.storyIdList?.find(
-        (story) => story.storyId === page.id
-      );
-
-    const homePtc =
-      bookmarkCollections.find(
-        (ptc) => ptc?.type === "home"
-      );
-
-    const homeStc =
-      homePtc?.collection?.storyIdList?.find(
-        (story) => story.storyId === page.id
-      );
-
-    setBookmarked(
-      archiveStc
-        ? {
-            ...archiveStc,
-            collectionId: archivePtc.collectionId,
-          }
-        : homeStc
-        ? {
-            ...homeStc,
-            collectionId: homePtc.collectionId,
-          }
-        : null
+  const foundLike =
+    currentProfile.likedStories?.find(
+      (like) => like?.storyId === page.id
     );
-  }, [currentProfile, page]);
 
+  setLikeFound(foundLike ?? null);
+}, [currentProfile, page?.id]);
   /*
-   * -------------------------------------------------------------------------
-   * LIKE
-   * -------------------------------------------------------------------------
+   * Preview calculations.
    */
-  const handleApprovalClick = () => {
-    if (!currentProfile) {
-      return showAlert({
-        message: "Please Sign Up to Like",
-        type: AlertType.success,
-      });
-    }
+  const previewLength = useMemo(() => {
+    const value = Number(shortenTo);
 
-    if (likeFound) {
-      const previousLike = likeFound;
-      setLikeFound(null);
+    return Number.isFinite(value) && value > 0
+      ? Math.floor(value)
+      : DEFAULT_PREVIEW_LENGTH;
+  }, [shortenTo]);
 
-      dispatch(
-        deletePageApproval({
-          id: previousLike.id,
-        })
-      ).then((res) =>
-        checkResult(
-          res,
-          () => {},
-          (err) => {
-            setLikeFound(previousLike);
-            console.error(err);
-          }
-        )
-      );
-
-      return;
-    }
-
-    setLikeFound(true);
-
-    dispatch(
-      createPageApproval({
-        story: page,
-        profile: currentProfile,
-      })
-    ).then((res) =>
-      checkResult(
-        res,
-        (payload) => {
-          const found =
-            payload.profile?.likedStories?.find(
-              (like) => like?.storyId === page.id
-            );
-
-          setLikeFound(found ?? true);
-        },
-        (err) => {
-          setLikeFound(null);
-          console.error(err);
-        }
-      )
-    );
-  };
+  const storyTextLength = useMemo(
+    () => getStoryTextLength(page?.data),
+    [page?.data]
+  );
 
   /*
-   * -------------------------------------------------------------------------
-   * BOOKMARK
-   * -------------------------------------------------------------------------
-   */
-  const handleBookmark = (event) => {
-    event?.preventDefault();
-    event?.stopPropagation();
-
-    if (!currentProfile) {
-     showPrompt({message:"Become a user first!",agreeText:"Yes!",agree:()=>router.push(Paths.onboard)
-        ,disagreeText:"Later"
-      })
-    
-    }
-
-    const bookmarkCollections =
-      currentProfile.profileToCollections || [];
-
-    const archivePtc =
-      bookmarkCollections.find(
-        (ptc) => ptc?.type === "archive"
-      );
-
-    const homePtc =
-      bookmarkCollections.find(
-        (ptc) => ptc?.type === "home"
-      );
-
-    if (bookmarked) {
-      dispatch(
-        deleteStoryFromCollection({
-          storyId: bookmarked.storyId || page.id,
-          collectionId: bookmarked.collectionId,
-        })
-      ).then((res) =>
-        checkResult(
-          res,
-          () => {
-            resetDialog();
-            setBookmarked(null);
-          },
-          (err) =>
-          showAlert({
-        message:  "Error removing bookmark: " + err.message,
-        type: AlertType.error
-      })
-             
-            
-        )
-      );
-
-      return;
-    }
-
-    // Preserve the existing preference: Archive first, then Home.
-    const targetPtc = archivePtc || homePtc;
-
-    if (!targetPtc?.collectionId) {
-      return;
-    }
-
-    dispatch(
-      addStoryListToCollection({
-        id: targetPtc.collectionId,
-        list: [page],
-        profile: currentProfile,
-      })
-    ).then((res) =>
-      checkResult(
-        res,
-        (payload) => {
-          const stc =
-            payload.collection?.storyIdList?.find(
-              (story) => story.storyId === page.id
-            );
-
-          setBookmarked(
-            stc
-              ? {
-                  ...stc,
-                  collectionId: targetPtc.collectionId,
-                }
-              : null
-          );
-
-          setSuccess("Added Successfully");
-        },
-        (err) =>showAlert({
-        message:  "Error removing bookmark: " + err.message,
-        type: AlertType.error
-      })
-        
-      )
-    );
-  };
-
-  /*
-   * -------------------------------------------------------------------------
-   * OPEN STORY
-   * -------------------------------------------------------------------------
-   */
-  const handleClickComment = (event) => {
-    event?.preventDefault();
-    event?.stopPropagation();
-
-    if (!page?.id) {
-      return;
-    }
-
-    router.push(
-      Paths.page.createRoute(page.id),
-      "forward"
-    );
-  };
-
-  /*
-   * -------------------------------------------------------------------------
-   * SHARE
-   * -------------------------------------------------------------------------
-   */
-  const onClickShare = (event) => {
-    event?.preventDefault();
-    event?.stopPropagation();
-
-    getArchive();
-
-    openDialog({
-      isOpen: true,
-      title: null,
-      scrollY: false,
-      height: 50,
-
-      text: (
-        <ShareList
-          page={page}
-          profile={currentProfile}
-          authorProfile={page.author}
-          archive={archive}
-          setArchive={setArchive}
-          bookmark={bookmarked}
-          setBookmarked={setBookmarked}
-        />
-      ),
-
-      agree: null,
-      agreeText: null,
-      breakpoint: 0.95,
-    });
-  };
-
-  /*
-   * -------------------------------------------------------------------------
-   * PERMISSION REQUEST
-   * -------------------------------------------------------------------------
-   *
-   * UI-only placeholder until the request endpoint exists.
-   */
-  const handleRequestPermission = () => {
-    if (!currentProfile) {
-      return showAlert({
-        message: "Please Sign Up to Request Access",
-        type: AlertType.success,
-      });
-    }
-
-    setPermissionRequestState("pending");
-
-    setTimeout(() => {
-      setPermissionRequestState("requested");
-    }, 300);
-  };
-
-  /*
-   * -------------------------------------------------------------------------
-   * LOADING
-   * -------------------------------------------------------------------------
+   * Loading state.
    */
   if (!page) {
     return (
@@ -449,6 +192,9 @@ function DashboardItem({
     );
   }
 
+  /*
+   * Author information.
+   */
   const authorName =
     page.author?.username ||
     page.author?.name ||
@@ -459,25 +205,325 @@ function DashboardItem({
     page.authorId ||
     page.profileId;
 
-  const isPrivateStory = !canSee;
-
-  // const storyTextLength = getStoryTextLength(page.data);
-
-const previewLength =
-  Number.isFinite(Number(shortenTo)) && Number(shortenTo) > 0
-    ? Math.floor(Number(shortenTo))
-    : 300;
-
-const storyTextLength = getStoryTextLength(page.data);
-
-const hasMoreContent =
-  !isPrivateStory &&
-  page.type === PageType.text &&
-  storyTextLength > previewLength;
   /*
-   * -------------------------------------------------------------------------
+   * Privacy / permissions.
+   */
+
+
+ 
+
+  const hasMoreContent =
+
+    page.type === PageType.text &&
+    storyTextLength > previewLength;
+
+  /*
+   * Navigation.
+   */
+  const handleOpenStory = (event) => {
+    event?.preventDefault();
+    event?.stopPropagation();
+
+    if (!page.id) return;
+
+    router.push(
+      Paths.page.createRoute(page.id),
+      "forward"
+    );
+  };
+
+  const handleOpenProfile = (event) => {
+    event?.preventDefault();
+    event?.stopPropagation();
+
+    if (!authorId) return;
+
+    router.push(
+      Paths.profile.createRoute(authorId),
+      "forward"
+    );
+  };
+  const { canSee } = computePermissions(
+    page,
+    currentProfile,
+    {
+      isOwner: (story, profile) => {
+        if (!story || !profile) return false;
+
+        return (
+          story.author?.id === profile.id ||
+          story.profileId === profile.id ||
+          story.authorId === profile.id
+        );
+      },
+
+      getAccessList: (story) =>
+        story.betaReaders ?? [],
+
+      getAccessRole: (entry) =>
+        entry.permission,
+
+      isPrivate: (story) =>
+        story.isPrivate,
+
+      isOpen: () => false,
+
+      canWriteRoles: ["commenter", "editor"],
+      canEditRoles: ["editor"],
+    }
+  );
+  /*
+   * LIKE
+   */
+  const handleApprovalClick = async (event) => {
+    event?.preventDefault();
+    event?.stopPropagation();
+
+    if (!currentProfile?.id || likePending) {
+      if (!currentProfile?.id) {
+        showAlert({
+          message: "Please sign up to like stories.",
+          type: AlertType.success,
+        });
+      }
+
+      return;
+    }
+
+    setLikePending(true);
+
+    const previousLike = likeFound;
+
+    // Optimistic update.
+    setLikeFound(previousLike ? null : true);
+
+    try {
+      const action = previousLike
+        ? deletePageApproval({
+            id: previousLike.id,
+          })
+        : createPageApproval({
+            story: page,
+            profile: currentProfile,
+          });
+
+      const result = await dispatch(action);
+
+      checkResult(
+        result,
+        (payload) => {
+          if (previousLike) {
+            setLikeFound(null);
+            return;
+          }
+
+          const createdLike =
+            payload?.profile?.likedStories?.find(
+              (item) => item?.storyId === page.id
+            );
+
+          setLikeFound(createdLike ?? true);
+        },
+        (error) => {
+          setLikeFound(previousLike);
+
+          console.error(
+            "Story reaction failed:",
+            error
+          );
+        }
+      );
+    } catch (error) {
+      setLikeFound(previousLike);
+      console.error("Story reaction failed:", error);
+    } finally {
+      setLikePending(false);
+    }
+  };
+
+  /*
+   * BOOKMARK
+   */
+ 
+
+const handleBookmark = async (event) => {
+  event?.preventDefault();
+  event?.stopPropagation();
+
+  if (bookmarkPending) return;
+
+  if (!currentProfile?.id) {
+    showPrompt({
+      message: "Join Plumbum to save this story.",
+      agreeText: "Yes!",
+      agree: () => router.push(Paths.onboard),
+      disagreeText: "Later",
+    });
+    return;
+  }
+
+  if (!page?.id) return;
+
+  const home = getHomeCollection(currentProfile);
+  const collectionId = home?.collectionId || home?.collection?.id;
+
+  if (!collectionId) {
+    showAlert({
+      message: "Your Home collection isn't available.",
+      type: AlertType.error,
+    });
+    return;
+  }
+
+  setBookmarkPending(true);
+
+  try {
+    if (bookmarked) {
+      // The delete endpoint requires the StoryToCollection ID.
+      const stId = bookmarked.stId || bookmarked.id || bookmarked._id;
+
+      if (!stId) {
+        throw new Error(
+          "The saved story relationship ID is missing. Refresh your profile and try again."
+        );
+      }
+
+      const result = await dispatch(
+        deleteStoryFromCollection({ stId })
+      );
+
+      checkResult(
+        result,
+        () => {
+          setBookmarkOverride({
+            key: bookmarkKey,
+            value: null,
+          });
+
+          showAlert({
+            message: "Removed from Home.",
+            type: AlertType.success,
+          });
+        },
+        (error) => {
+          showAlert({
+            message: error?.message || "Couldn't remove this story.",
+            type: AlertType.error,
+          });
+        }
+      );
+
+      return;
+    }
+
+    // This matches addStoryListToCollection's actual signature.
+    const result = await dispatch(
+      addStoryListToCollection({
+        id: collectionId,
+        list: [page],
+        profile: currentProfile,
+      })
+    );
+
+    checkResult(
+      result,
+      (payload) => {
+        // Preserve the relationship ID if the API returns it.
+        const addedLink = payload?.collection?.storyIdList?.find(
+          (item) => String(item?.storyId) === String(page.id)
+        );
+
+        setBookmarkOverride({
+          key: bookmarkKey,
+          value: {
+            ...(addedLink || {}),
+            storyId: page.id,
+            stId: addedLink?.id || addedLink?._id,
+            collectionId,
+          },
+        });
+
+        showAlert({
+          message: "Added to Home.",
+          type: AlertType.success,
+        });
+      },
+      (error) => {
+        showAlert({
+          message: error?.message || "Couldn't save this story.",
+          type: AlertType.error,
+        });
+      }
+    );
+  } catch (error) {
+    showAlert({
+      message:
+        error?.message || "Something went wrong. Please try again.",
+      type: AlertType.error,
+    });
+  } finally {
+    setBookmarkPending(false);
+  }
+};
+
+
+
+  /*
+   * SHARE
+   */
+  const onClickShare = (event) => {
+  event?.preventDefault();
+  event?.stopPropagation();
+
+  openDialog({
+    isOpen: true,
+    title: null,
+    scrollY: false,
+
+
+    text: (
+      <ShareList
+        page={page}
+        profile={currentProfile}
+        authorProfile={page.author}
+      />
+    ),
+
+
+ 
+  });
+};
+  const handleShare = (event) => {
+    event?.preventDefault();
+    event?.stopPropagation();
+
+    openDialog({
+ 
+
+      text: (
+        <ShareList
+          page={page}
+          profile={currentProfile}
+          authorProfile={page.author}
+
+      
+        />
+      ),
+
+   
+    });
+  };
+
+
+  const handleRequestPermission = () => {
+    showAlert({
+      message: "Permission requests are coming soon.",
+      type: AlertType.success,
+    });
+  };
+
+  /*
    * CARD
-   * -------------------------------------------------------------------------
    */
   return (
     <article
@@ -488,51 +534,46 @@ const hasMoreContent =
     >
       {/* AUTHOR */}
       <header className={theme.header}>
-  <div className="flex flex-row">
-    <div className="mx-2 my-auto">
-    <ProfileCircle
-      includeUsername={false}
-      profile={
-        page.author || {
-          id: authorId,
-          username: authorName,
-        }
-      }
-    />
-</div>
-    <div
-      type="button"
-      disabled={!authorId}
-      onClick={() => {
-        if (!authorId) return;
+        <div className="flex flex-row min-w-0">
+          <div className="mx-2 my-auto shrink-0">
+            <ProfileCircle
+              includeUsername={false}
+              profile={
+                page.author || {
+                  id: authorId,
+                  username: authorName,
+                }
+              }
+            />
+          </div>
 
-        router.push(
-          Paths.profile.createRoute(authorId),
-          "forward"
-        );
-      }}
-      className={`
-        -translate-y-1
-        min-w-0
-        truncate
-        text-left
-       my-auto
-        ${theme.authorName}
-      `}
-      aria-label={`View ${authorName}'s profile`}
-    >
-      <span className="block truncate">
-        {authorName}
-      </span>
+          <button
+            type="button"
+            disabled={!authorId}
+            onClick={handleOpenProfile}
+            className={`
+              -translate-y-1
+              min-w-0
+              truncate
+              text-left
+              my-auto
+              ${theme.authorName}
+            `}
+            aria-label={`View ${authorName}'s profile`}
+          >
+            <span className="block truncate">
+              {authorName}
+            </span>
 
-      <span className={`block ${theme.metadata}`}>
-        {isPrivateStory
-          ? "Private Story"
-          : page.status || "Story"}
-      </span>
-    </div>
-  </div>
-{!isPrivateStory && (
+            <span className={`block ${theme.metadata}`}>
+              {page.isPrivate
+                ? "Private Story"
+                : page.status || "Story"}
+            </span>
+          </button>
+        </div>
+
+        {/* BOOKMARK */}
   <button
     type="button"
     onClick={handleBookmark}
@@ -567,93 +608,79 @@ const hasMoreContent =
     }
     aria-pressed={Boolean(bookmarked)}
   >
-    <svg
-      viewBox="0 0 24 24"
-      aria-hidden="true"
-      className="h-[24px] w-[24px]"
-      fill={bookmarked ? "currentColor" : "none"}
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M6 4.75A1.75 1.75 0 0 1 7.75 3h8.5A1.75 1.75 0 0 1 18 4.75V21l-6-3.75L6 21V4.75Z" />
-    </svg>
-  </button>
-)}
-
-</header>
     
+    {bookmarked? BOOKMARK_FILL:BOOKMARK}
+
+  </button>
+
+
+
+
+      </header>
 
       {/* TITLE AND STORY PREVIEW */}
       <div className={theme.content}>
-        <div
+        <button
           type="button"
-          onClick={handleClickComment}
+          onClick={handleOpenStory}
           className={theme.titleButton}
         >
           <h6 className={styles.text.subheading}>
-            {page.title  || "Untitled"}
+            {page.title || "Untitled"}
           </h6>
-        </div>
+        </button>
 
         {page.description && (
-          <p className={`${styles.text.muted} mt-2 text-sm px-4 leading-relaxed`}>
+          <p
+            className={`${styles.text.muted} mt-2 text-sm px-4 leading-relaxed`}
+          >
             {page.description}
           </p>
         )}
 
         {/* PRIVATE STORIES NEVER RENDER THEIR BODY */}
-        {isPrivateStory ? (
-          <div className={`mx-auto`}>
-            <h3 className={"text-center "}>
+        {page.isPrivate? (
+          <div className="mx-auto">
+            <h3 className="text-center">
               This Story is private.
             </h3>
 
-            <p className={"mx-auto text-center"}>
+            <p className="mx-auto text-center">
               Ask {authorName} for permission to read it.
             </p>
 
             {showPermissionRequest && (
-              <div
+              <button
                 type="button"
                 onClick={handleRequestPermission}
-                disabled={
-                  permissionRequestState === "pending" ||
-                  permissionRequestState === "requested"
-                }
-                className={theme.permissionButton +" mx-auto text-center"}
+                className={`${theme.permissionButton} mx-auto text-center`}
               >
-                {permissionRequestState === "pending"
-                  ? "Requesting…"
-                  : permissionRequestState === "requested"
-                  ? "Request sent"
-                  : "Request permission"}
-              </div>
+                Request permission
+              </button>
             )}
           </div>
         ) : (
           <>
-          <div className={theme.excerpt}>
-            <div className="mt-4 mx-2">
-  {page.type === PageType.text ? (
-    <StoryPreview
-      page={page}
-      shortenTo={previewLength}
-    />
-  ) : (
-    <DataElement
-      isGrid={isGrid}
-      page={page}
-    />
-  )}
-</div>
-     </div>
+            <div className={theme.excerpt}>
+              <div className="mt-4 mx-2">
+                {page.type === PageType.text ? (
+                  <StoryPreview
+                    page={page}
+                    shortenTo={previewLength}
+                  />
+                ) : (
+                  <DataElement
+                    isGrid={isGrid}
+                    page={page}
+                  />
+                )}
+              </div>
+            </div>
 
             {hasMoreContent && (
               <button
                 type="button"
-                onClick={handleClickComment}
+                onClick={handleOpenStory}
                 className={theme.continue}
                 aria-label={`Continue reading ${page.title || "this story"}`}
               >
@@ -665,16 +692,18 @@ const hasMoreContent =
         )}
       </div>
 
-      {/* QUIET PARTICIPATION ACTIONS */}
-      <footer className={theme.actions}>
-        {!isPrivateStory && (
+      {/* PARTICIPATION ACTIONS */}
+      <footer className={""}>
+        {canSee && (
           <>
             <button
               type="button"
               onClick={handleApprovalClick}
+              disabled={likePending}
               className={`
                 ${theme.action}
                 ${likeFound ? theme.actionActive : ""}
+                disabled:opacity-50
               `}
               aria-label={
                 likeFound
@@ -683,12 +712,16 @@ const hasMoreContent =
               }
               aria-pressed={Boolean(likeFound)}
             >
-              {likeFound ? "Yea'd" : "Yea"}
+              {likePending
+                ? "..."
+                : likeFound
+                ? "Yea'd"
+                : "Yea"}
             </button>
 
             <button
               type="button"
-              onClick={handleClickComment}
+              onClick={handleOpenStory}
               className={theme.action}
             >
               Comment
@@ -698,7 +731,7 @@ const hasMoreContent =
 
         <button
           type="button"
-          onClick={onClickShare}
+          onClick={handleShare}
           className={theme.action}
         >
           Share

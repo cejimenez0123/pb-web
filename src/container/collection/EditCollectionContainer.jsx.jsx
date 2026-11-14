@@ -1105,7 +1105,7 @@ buttonClass={"bg-transparent border-plumb-mint/70 text-plumb-mint/70"}
                   <div
                     type="button"
                     onClick={handleDelete}
-                    className={[styles.button.base,styles.button.danger].join(" ")}
+                    className={[styles.button.base," rounded-full  ",styles.button.danger]}
                   >
                    <h6 className="my-auto mx-auto">Delete room</h6> 
                   </div>

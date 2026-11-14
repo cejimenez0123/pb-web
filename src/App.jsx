@@ -855,23 +855,13 @@ function RootRoute() {
                     render={() => editorPage}
                   />
 
-                  {/*
-                   * Preserve your named route if Paths.editPage.route is a
-                   * different legacy editor path, for example /story/edit.
-                   *
-                   * Keep it exact and above generic page viewing.
-                   */}
+           
                   <Route
                     exact
                     path={Paths.editPage.route}
                     render={() => editorPage}
                   />
 
-                  {/*
-                   * Generic page/story view must remain AFTER editor routes.
-                   * It should ideally be exact if Paths.page.route() is not
-                   * intended to match nested editor URLs.
-                   */}
                   <Route
                     exact
                     path={Paths.page.route()}

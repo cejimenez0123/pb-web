@@ -183,7 +183,7 @@ body:"max-w-3xl mx-auto px-2  w-[100%]",
 base: [
   "relative  font-open-sans" ,
   "flex flex-col",
-   "pt-20 pb-30",
+  
   "w-[100%]",
   "min-w-[100%] min-h-[100%]",
   "overflow-hidden",
@@ -488,7 +488,10 @@ primary: [
   "active:shadow-sm",
 ].join(" "),
 
-danger:[" border-plumb-button-danger-bg  text-white border  border-1 border bg-red-500 dark:bg-transparent dark:text-white font-open-sans rounded-full  ",].join(" "),
+danger:[" border-plumb-button-danger-bg bg-transparent",
+  " text-white border  border-1 border",
+  " dark:bg-transparent",
+  " font-open-sans rounded-full  ",].join(" "),
 
   
 secondary: [

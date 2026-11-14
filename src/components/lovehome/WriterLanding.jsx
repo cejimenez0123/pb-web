@@ -371,7 +371,7 @@ export default function WriteLanding({
 
   // Show a short preview on the landing page.
   const previewStories = visibleStories.slice(0, 8);
-  const previewRooms = visibleRooms.slice(0, 8);
+  const previewRooms = visibleRooms.slice(0, 4);
 
   /* -----------------------------------------------------
      Dialog actions

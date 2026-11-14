@@ -17,6 +17,7 @@ import Pill from "../Pill";
 import { useAlert } from "../../core/useAlert";
 import AlertType from "../../core/AlertType";
 import InfoTooltip from "../InfoTooltip";
+import styles from "../../styles/style";
 
 const ROLE_OPTIONS = [
   {
@@ -455,9 +456,9 @@ export default function RoleForm({ item }) {
               px-3
               py-1.5
               text-xs
-              text-white
+              text-plumb-muted
               font-semibold
-             dark:text-plumb-darkText
+             dark:text-plumb-surface
         
             "
           >
@@ -499,7 +500,7 @@ export default function RoleForm({ item }) {
             "--color":
               Enviroment.palette.text.primary,
           }}
-          className="px-0"
+          className=""
         />
       </div>
 
@@ -521,8 +522,9 @@ export default function RoleForm({ item }) {
         
         "
       >
+
         <div className="flex flex-wrap gap-x-3 gap-y-1.5">
-          {ROLE_OPTIONS.map((option) => (
+          {(!search?.trim().length>0) && ROLE_OPTIONS.map((option) => (
             <div
               key={option.value}
               className="
@@ -530,6 +532,7 @@ export default function RoleForm({ item }) {
                 items-center
                 gap-1
                 text-[11px]
+                bg
                 leading-tight
               "
             >
@@ -547,6 +550,24 @@ export default function RoleForm({ item }) {
               </span>
             </div>
           ))}
+        </div>
+            <div
+          className="
+          mt-8
+            flex
+            items-center
+            justify-between
+            gap-2
+          "
+        >
+          <div      onClick={handleResetAllRoles} className={[styles.button.base,styles.button.accent].join(" ")}>
+  <h5 className="mx-auto my-auto text-base">Reset access</h5>
+</div>
+     
+<div  onClick={handlePatchRoles} className={[styles.button.base,styles.button.primary].join(" ")}>
+  <h5 className="mx-auto my-auto text-base">{saving ? "Saving..." : "Save changes"}</h5>
+</div>
+    
         </div>
       </div>
 
@@ -633,41 +654,41 @@ export default function RoleForm({ item }) {
                         }
                         aria-label={`Access for ${profile.username}`}
                         className={`
-                          min-h-[42px]
-                          max-w-[145px]
+                          bg-plumb-canvas
+                          dark:bg-transparent
                           appearance-none
                           rounded-full
                           border
                           py-2
                           pl-3
                           pr-8
-                          text-xs
+                          text-sm
+                          border-2 
                           font-semibold
                           outline-none
                           transition-all
                           focus:ring-2
                           focus:ring-button-primary/30
+                                  text-plumb-ink
+                                  
                           ${
                             isOwner
                               ? `
                                 cursor-default
-                                border-button-primary/30
-                    
-                                text-white
+                                border-button-primary/30                           
                               `
                               : hasAccess
                               ? `
+                              border-plumb-accent-blue/70
                                 cursor-pointer
                                 border-button-primary
-                        
-                                text-white
                                 hover:border-button-primary
                               `
                               : `
+                          border-plumb-accent-blue/30
                                 cursor-pointer
-                                border-border-soft
-                          
-                                text-text-secondary
+                                border-border-soft      
+                             
                                 hover:border-button-primary
                                 hover:text-text-brand
                               `
@@ -675,7 +696,7 @@ export default function RoleForm({ item }) {
                         `}
                       >
                         {isOwner ? (
-                          <option value="owner">
+                          <option value="owner" className="text-plumb-ink">
                             Owner
                           </option>
                         ) : (
@@ -683,6 +704,8 @@ export default function RoleForm({ item }) {
                             <option
                               key={option.value}
                               value={option.value}
+                              className="text-plumb-ink"
+                              
                             >
                               {option.label}
                             </option>
@@ -788,42 +811,7 @@ export default function RoleForm({ item }) {
   
         "
       >
-        <div
-          className="
-            flex
-            items-center
-            justify-between
-            gap-2
-          "
-        >
-          <Pill
-            label="Reset access"
-            onClick={handleResetAllRoles}
-            variant="secondary"
-            baseClass="
-              border
-              border-border-soft
-        
-              text-text-secondary
-   
-              dark:border-border-soft
-       
-              dark:text-cream
-            "
-          />
-
-          <Pill
-            label={saving ? "Saving..." : "Save changes"}
-            onClick={handlePatchRoles}
-            variant="primary"
-            baseClass="
-          
-              text-white
-              shadow-sm
-              hover:opacity-90
-            "
-          />
-        </div>
+    
       </div>
     </div>
   );

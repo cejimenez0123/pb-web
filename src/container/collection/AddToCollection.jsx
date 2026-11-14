@@ -584,7 +584,7 @@ purpose=" Select stories or Rooms to
               }
               subtitle={story.status}
               actionLabel="Add"
-              // accent="blue"
+         
               onAction={() =>
                 addStory(story)
               }

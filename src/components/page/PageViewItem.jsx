@@ -53,10 +53,9 @@ const dispatch =useDispatch()
     openDialog({
       isOpen: true,
       title: "",
-      height: 60,
+   
       text: <CommentInput page={page} anchorText={anchorText} />,
-    //  disagreeText: "Close",
-    //   disagree: closeDialog
+   
     });
   };
 

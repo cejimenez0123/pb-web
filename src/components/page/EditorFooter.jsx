@@ -86,9 +86,8 @@ function EditorFooter({ pageInView, effectiveId, openConfirmDeleteDialog }) {
               type="button"
               onClick={openConfirmDeleteDialog}
               aria-label="Delete story"
-              className={[styles.button.base,styles.button.danger," "].join(" ")}
-              // className={styles.button.base+" group inline-flex min-h-11 items-center  gap-2 rounded-2xl border border-red-600/90 dark:bg-transparent dark:text-red-600/90 border-2  px-4 py-3 text-sm font-semibold transition-all bg-red-600/90 text-plumb-darkText px-6 duration-200 hover:border-red-300 hover:bg-red-100 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 dark:border-red-900/70   dark:hover:border-red-700  dark:hover:bg-red-950/50"
-              // }
+              className={[styles.button.base," rounded-full  ",styles.button.danger].join(" ")}
+          
               >
               {DELETE_ICON}
               <span className="text-plumb-button-danger-bg ">Delete</span>
