@@ -13,6 +13,8 @@ import "../../Dashboard.css";
 import {
   deletePageApproval,
   createPageApproval,
+    requestStoryAccess,
+  getStoryAccessStatus,
 } from "../../actions/PageActions";
 
 import {
@@ -22,7 +24,7 @@ import {
 
 import checkResult from "../../core/checkResult";
 import Paths from "../../core/paths";
-import computePermissions from "../../core/compusePermissions";
+
 import { useAlert } from "../../core/useAlert";
 import AlertType from "../../core/AlertType";
 import { useDialog } from "../../domain/usecases/useDialog";
@@ -34,6 +36,7 @@ import StoryPreview from "./StoryPreview";
 
 import styles from "../../styles/style";
 import { PageType } from "../../core/constants";
+import computePermissions from "../../core/compusePermissions";
 
 const theme = styles.dashboardItem;
 const EMPTY_ARRAY = [];
@@ -115,7 +118,8 @@ function DashboardItem({
 }) {
   const dispatch = useDispatch();
   const router = useIonRouter();
-
+const [accessStatus, setAccessStatus] = useState("none");
+const [accessPending, setAccessPending] = useState(false);
   const { showPrompt, showAlert } = useAlert();
   const { openDialog } = useDialog();
 
@@ -179,7 +183,70 @@ useEffect(() => {
     () => getStoryTextLength(page?.data),
     [page?.data]
   );
+useEffect(() => {
+  let active = true;
 
+  if (
+    !page?.id ||
+    !page?.isPrivate ||
+    !currentProfile?.id
+  ) {
+    setAccessStatus("none");
+    return () => {
+      active = false;
+    };
+  }
+
+  // Owners and already-approved readers don't need a request.
+  const alreadyApproved = page.betaReaders?.some(
+    (entry) =>
+      entry.profileId === currentProfile.id &&
+      entry.approved === true
+  );
+
+  const isOwner =
+    page.authorId === currentProfile.id ||
+    page.author?.id === currentProfile.id;
+
+  if (alreadyApproved || isOwner) {
+    setAccessStatus("approved");
+
+    return () => {
+      active = false;
+    };
+  }
+
+  setAccessStatus("checking");
+
+  dispatch(
+    getStoryAccessStatus({ id: page.id })
+  )
+    .unwrap()
+    .then((result) => {
+      if (active) {
+        setAccessStatus(result.status || "none");
+      }
+    })
+    .catch((error) => {
+      console.error("Unable to check story access:", error);
+
+      if (active) {
+        setAccessStatus("none");
+      }
+    });
+
+  return () => {
+    active = false;
+  };
+}, [
+  dispatch,
+  page?.id,
+  page?.isPrivate,
+  page?.authorId,
+  page?.author?.id,
+  page?.betaReaders,
+  currentProfile?.id,
+]);
   /*
    * Loading state.
    */
@@ -256,13 +323,14 @@ useEffect(() => {
         story.authorId === profile.id
       );
     },
+getAccessList: (story) =>
+  (story.betaReaders ?? []).filter(
+    (entry) => entry.approved === true
+  ),
 
-    getAccessList: (story) =>
-      (story.betaReaders ?? []).filter(
-        (entry) => entry.approved === true
-      ),
-
-    getAccessRole: (entry) => entry.permission ?? entry.role,
+getAccessRole: (entry) =>
+  entry.role ?? entry.permission,
+  
 
     isPrivate: (story) => story.isPrivate,
 
@@ -272,38 +340,7 @@ useEffect(() => {
     canEditRoles: ["editor"],
   }
 );
-  // const { canSee } = computePermissions(
-  //   page,
-  //   currentProfile,
-  //   {
-  //     isOwner: (story, profile) => {
-  //       if (!story || !profile) return false;
 
-  //       return (
-  //         story.author?.id === profile.id ||
-  //         story.profileId === profile.id ||
-  //         story.authorId === profile.id
-  //       );
-  //     },
-
-  //     getAccessList: (story) =>
-  //       story.betaReaders ?? [],
-
-  //     getAccessRole: (entry) =>
-  //       entry.permission,
-
-  //     isPrivate: (story) =>
-  //       story.isPrivate,
-
-  //     isOpen: () => false,
-
-  //     canWriteRoles: ["commenter", "editor"],
-  //     canEditRoles: ["editor"],
-  //   }
-  // );
-  /*
-   * LIKE
-   */
   const handleApprovalClick = async (event) => {
     event?.preventDefault();
     event?.stopPropagation();
@@ -544,13 +581,75 @@ const handleBookmark = async (event) => {
   };
 
 
-  const handleRequestPermission = () => {
+const handleRequestPermission = async (event) => {
+  event?.preventDefault();
+  event?.stopPropagation();
+
+  if (accessPending || accessStatus === "pending") {
+    return;
+  }
+
+  if (!currentProfile?.id) {
+    showPrompt({
+      message: "Join Plumbum to request access to this story.",
+      agreeText: "Join Plumbum",
+      agree: () => router.push(Paths.onboard),
+      disagreeText: "Later",
+    });
+
+    return;
+  }
+
+  if (!page?.id) return;
+
+  setAccessPending(true);
+
+  try {
+    const result = await dispatch(
+      requestStoryAccess({ id: page.id })
+    ).unwrap();
+
+    setAccessStatus(result.status || "pending");
+
     showAlert({
-      message: "Permission requests are coming soon.",
+      message:
+        result.status === "approved"
+          ? "You already have access to this story."
+          : "Your permission request has been sent.",
       type: AlertType.success,
     });
-  };
+  } catch (error) {
+    console.error("Story permission request failed:", error);
 
+    // Handle a duplicate request gracefully.
+    if (error?.status === 409 || error?.response?.status === 409) {
+      try {
+        const result = await dispatch(
+          getStoryAccessStatus({ id: page.id })
+        ).unwrap();
+
+        setAccessStatus(result.status || "pending");
+        return;
+      } catch (e){
+        showAlert({message:e.message,type:AlertType.error})
+        // Fall through to the error message.
+      }
+    }
+
+    showAlert({
+      message:
+        error?.error ||
+        error?.message ||
+        "Unable to request permission. Please try again.",
+      type: AlertType.error,
+    });
+  } finally {
+    setAccessPending(false);
+  }
+};
+ if(!(page.isPrivate && !canSee && accessStatus !== "approved")){
+return null
+ }
   /*
    * CARD
    */
@@ -668,26 +767,44 @@ const handleBookmark = async (event) => {
         )}
 
         {/* PRIVATE STORIES NEVER RENDER THEIR BODY */}
-        {page.isPrivate? (
-          <div className="mx-auto px-4">
-            <h3 className="text-center">
-              This Story is private.
-            </h3>
+   {page.isPrivate && !canSee && accessStatus !== "approved" ? (
+     <div className="mx-auto px-4 py-5 text-center">
+  <h3 className="text-center font-medium">
+    This Story is private.
+  </h3>
 
-            <p className="mx-auto text-center">
-              Ask {authorName} for permission to read it.
-            </p>
+  <p className="mx-auto mt-2 text-center text-sm text-plumb-muted dark:text-plumb-darkMuted">
+    Ask {authorName} for permission to read it.
+  </p>
 
-            {showPermissionRequest && (
-              <button
-                type="button"
-                onClick={handleRequestPermission}
-                className={`${theme.permissionButton} mx-auto text-center`}
-              >
-                Request permission
-              </button>
-            )}
-          </div>
+  {showPermissionRequest && (
+    <button
+      type="button"
+      onClick={handleRequestPermission}
+      disabled={
+        accessPending ||
+        accessStatus === "pending" ||
+        accessStatus === "checking"
+      }
+      className={`
+        ${theme.permissionButton}
+        mx-auto
+        mt-4
+        text-center
+        disabled:cursor-not-allowed
+        disabled:opacity-60
+      `}
+    >
+      {accessPending
+        ? "Sending request..."
+        : accessStatus === "checking"
+        ? "Checking access..."
+        : accessStatus === "pending"
+        ? "Request pending"
+        : "Request permission"}
+    </button>
+  )}
+</div>
         ) : (
           <>
             <div className={theme.excerpt}>
@@ -723,7 +840,7 @@ const handleBookmark = async (event) => {
 
       {/* PARTICIPATION ACTIONS */}
       <footer className={""}>
-        {canSee && (
+  {(canSee || accessStatus === "approved") && (
           <>
             <button
               type="button"

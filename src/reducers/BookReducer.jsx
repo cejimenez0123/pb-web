@@ -64,11 +64,20 @@ state.loading = true
     state.groups = payload.groups
 }).addCase(clearCollections.type,(state)=>{
     state.collections=[]
-}).addCase(deleteCollectionFromCollection.fulfilled,(state,{payload})=>{
-    const {collection}=payload
+})
+.addCase(deleteCollectionFromCollection.fulfilled, (state, action) => {
+  const updatedCollection = action.payload?.collection;
 
-  
-}).addCase(deleteCollectionFromCollection.rejected,(state,{payload})=>{
+  if (
+    !action.payload?.error &&
+    updatedCollection?.id &&
+    String(updatedCollection.id) ===
+      String(state.collectionInView?.id)
+  ) {
+    state.collectionInView = updatedCollection;
+  }
+})
+.addCase(deleteCollectionFromCollection.rejected,(state,{payload})=>{
     state.error=payload.error
 }).addCase(getRecommendedCollectionsProfile.fulfilled,(state,{payload})=>{
     state.recommendedCols = payload.collections
@@ -174,20 +183,15 @@ state.collectionInView = payload.collection
 .addCase(getMyCollections.rejected, (state) => {
   state.myCollectionsLoading = false;
 })
-// .addCase(getMyCollections.fulfilled, (state, { payload }) => {
-//     if (payload.collections) {
-//         state.myCollections = payload.collections;
-//     }
-//     state.loading = false;
-// }).addCase(getMyCollections.pending,(state,payload)=>{
-//     state.loading = true
-// })
-// .addCase(getMyCollections.rejected,(state,{payload})=>{
 
-//     state.loading = false
-// })
 .addCase(saveRoleToCollection.fulfilled,(state,{payload})=>{
     state.role = payload.role
+}).addCase(fetchCollection.rejected, (state, action) => {
+  state.loading = false;
+  state.error =
+    action.payload?.error ??
+    action.error?.message ??
+    "";
 }).addCase(fetchCollection.pending,(state)=>{
     state.loading=true
 }).addCase(fetchCollection.fulfilled,(state,{payload})=>{

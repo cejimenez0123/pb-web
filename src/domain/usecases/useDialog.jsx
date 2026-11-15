@@ -1,10 +1,7 @@
 
-import {
-  useDispatch,
-  useSelector,
-} from "react-redux";
-
-import { setDialog } from "../../actions/UserActions.jsx";
+import { useDispatch } from "react-redux";
+import { setDialog } from "../../actions/UserActions";
+import { useSelector } from "react-redux";
 import { useCallback } from "react";
 
 export const useDialog = () => {

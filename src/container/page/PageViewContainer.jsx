@@ -174,7 +174,7 @@ const ready = !pending && page && String(page.id) === String(id);
         scrollY={true}
    
       >
-        <main className={[styles.pageShell.base,styles.pageShell.scroll," pt-4"].join(" ")}>
+        <main className={[styles.pageShell.base,styles.pageShell.scroll].join(" ")}>
       
           <section className={styles.pageShell.body}>
           {!ready && <PageViewSkeleton />}

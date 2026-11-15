@@ -246,19 +246,9 @@ const Dialog = () => {
   }, []);
 
   const handleClose = () => {
-    // if (resetTimerRef.current) {
-    //   clearTimeout(
-    //     resetTimerRef.current
-    //   );
-    // }
-
-    // setVisible(false);
-closeDialog()
-    // resetTimerRef.current =
-    //   setTimeout(() => {
-    //     resetDialog();
-    //     resetTimerRef.current = null;
-    //   }, 250);
+ 
+resetDialog()
+  
   };
 
   if (!dialog && !visible) {
@@ -292,8 +282,23 @@ closeDialog()
         <>
           {/* Backdrop */}
           <motion.div
+  aria-hidden="true"
+  onClick={handleClose}
+  initial={{ opacity: 0 }}
+  animate={{ opacity: 1 }}
+  exit={{ opacity: 0 }}
+  transition={{ duration: 0.2 }}
+  className="
+    fixed inset-0 z-40
+    bg-plumb-ink/40
+    backdrop-blur-sm
+    dark:bg-black/60
+  "
+/>
+          {/* <motion.div
             aria-hidden="true"
-            onClick={handleClose}
+            onClick={()=>handleClose()}
+            // onClick={handleClose}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -306,7 +311,7 @@ closeDialog()
   backdrop-blur-sm
   dark:bg-black/60
 "
-          />
+          /> */}
 
           {isModal ?
            (
@@ -339,15 +344,16 @@ closeDialog()
       stiffness: 320,
       damping: 32,
     }}
-    className="
-      fixed
-      inset-x-0
-      top-[2dvh]
-      bottom-0
-      z-50
-      flex
-      justify-center
-    "
+className="
+  fixed
+  inset-x-0
+  top-[2dvh]
+  bottom-0
+  z-50
+  flex
+  items-end
+  justify-center
+"
   >
               <DialogPanel
                 dialog={dialog}
@@ -392,14 +398,24 @@ closeDialog()
       damping: 32,
     }}
     className="
-      fixed
-      inset-x-0
-      top-[2dvh]
-      bottom-0
-      z-50
-      flex
-      justify-center
-    "
+  fixed
+  inset-x-0
+  top-[2dvh]
+  bottom-0
+  z-50
+  flex
+  items-end
+  justify-center
+"
+    // className="
+    //   fixed
+    //   inset-x-0
+    //   top-[2dvh]
+    //   bottom-0
+    //   z-50
+    //   flex
+    //   justify-center
+    // "
   >
               <DialogPanel
                 dialog={dialog}
@@ -427,7 +443,7 @@ function DialogPanel({
   isModal,
   onClose,
 }) {
-  const height = dialog.height ?? 96;
+const height = dialog.height || "100%"
 
   return (
     <div
@@ -439,22 +455,23 @@ function DialogPanel({
         ? { "aria-describedby": descriptionId }
         : {})}
       tabIndex={-1}
- style={
+style={
   isModal
     ? undefined
     : {
-        height: "100%",
+        height,
         maxHeight: "100%",
+        flexShrink: 0,
       }
 }
       className={`
-        flex flex-col overflow-hidden
+        flex flex-col w-1 w-[100%] overflow-hidden
         text-plumb-ink dark:text-plumb-darkText
         ${
           isModal
             ? `
               max-h-[min(90dvh,48rem)]
-              w-full max-w-2xl
+               max-w-2xl
               rounded-3xl border
               border-plumb-border
               bg-plumb-elevated

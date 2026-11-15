@@ -317,7 +317,7 @@ const {closeDialog}=useDialog()
             w-[100%]
             rounded-xl
             border
-            border-gray-300
+            border-plumb-mintLight
      
             px-4
             py-4
@@ -330,7 +330,7 @@ const {closeDialog}=useDialog()
             focus:border-blueSea
             focus:ring-2
             focus:ring-blueSea/20
-            dark:border-gray-700
+           border-plumb-mintLight
      dark:text-plumb-darkText
             dark:text-cream
           "
@@ -362,7 +362,7 @@ const {closeDialog}=useDialog()
             resize-y
             rounded-xl
             border
-            border-gray-300
+                  border-plumb-mintLight
          px-4
             py-4
             text-base
@@ -375,9 +375,9 @@ const {closeDialog}=useDialog()
             focus:border-blueSea
             focus:ring-2
             focus:ring-blueSea/20
-            dark:border-gray-700
+             border-plumb-mintLight
            bg-transparent
-            dark:text-cream
+            dark:text-plumb-surface
           "
         />
       </div>
@@ -405,8 +405,7 @@ const {closeDialog}=useDialog()
               bg-transparent
             rounded-2xl
             border
-            border-gray-200
-            dark:border-gray-700
+           border-plumb-mintLight
           "
         >
           <label
@@ -416,12 +415,12 @@ const {closeDialog}=useDialog()
               items-center
               gap-3
               border-b
-              border-gray-200
+    
            
               px-4
               py-4
               
-              dark:border-gray-700
+           border-plumb-mintLight
             dark:text-plumb-darkText
             "
           >
@@ -551,7 +550,7 @@ title="Open collaboration"
         aria-label="Enable open collaboration"
         className="
           checkbox checkbox-md
-          border-plumb-borderStrong
+     
           [--chkbg:theme(colors.green.700)]
           [--chkfg:white]
           checked:border-plumb-mint
@@ -559,7 +558,7 @@ title="Open collaboration"
           focus-visible:ring-2
           focus-visible:ring-plumb-focus
           focus-visible:ring-offset-2
-          dark:border-plumb-darkBorderStrong
+     border-plumb-mintLight
           dark:checked:border-plumb-mintLight
           dark:focus-visible:ring-plumb-mintLight
         "/>
@@ -574,6 +573,8 @@ title="Open collaboration"
           className="
             rounded-2xl
             border
+
+       
             border-blueSea/20
             bg-softBlue/20
             px-4
@@ -631,9 +632,9 @@ function SettingRow({
       className="
         rounded-xl
         border
-        border-card-border
+         border-plumb-mintLight
         p-4
-        dark:border-white/10
+      
       "
     >
       <div

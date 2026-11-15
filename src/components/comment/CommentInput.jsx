@@ -80,7 +80,7 @@ export default function CommentInput({
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex h-full w-full flex-col gap-4 p-4"
+      className="flex h-full w-[100%] flex-col gap-4 "
     >
       {anchorText && (
         <blockquote className="

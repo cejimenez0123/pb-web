@@ -151,6 +151,10 @@ dark:bg-transparent
     },
 
     pageShell: {
+       sectionLabel: [
+    "text-xs font-semibold uppercase tracking-wider",
+    "text-plumb-muted dark:text-plumb-darkMuted",
+  ].join(" "),
       row:{
         outer:["w-[100%] flex flex-row justify-between px-6 py-3",
           " border border-1 rounded-full py-3 "].join(" "),
@@ -1954,6 +1958,7 @@ importWork: {
     "pt-6 dark:border-plumb-darkBorderStrong",
   ].join(" "),
 
+  
   sectionLabel: [
     "mb-3 font-open-sans text-xs font-medium",
     "uppercase tracking-widest",

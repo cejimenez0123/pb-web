@@ -131,14 +131,17 @@ async getMyCollections({
 
   return res.data;
 }
-async getPublicProfileCollections({ id, skip = 0, take = 20 }) {
+async getPublicProfileCollections({ id, profileId, skip = 0, take = 20 }) {
+  const profileIdToFetch = id || profileId;
+
+  if (!profileIdToFetch) {
+    throw new Error("A profile ID is required.");
+  }
+
   const res = await axios.get(
-    `${this.url}/profile/${id}/public`,
+    `${this.url}/profile/${profileIdToFetch}/public`,
     {
-      params: {
-        skip,
-        take,
-      },
+      params: { skip, take },
     }
   );
 

@@ -50,13 +50,14 @@ const dispatch =useDispatch()
   }, []);
 
   const handleOpenCommentInput = (anchorText = null) => {
-    openDialog({
-      isOpen: true,
-      title: "",
-   
-      text: <CommentInput page={page} anchorText={anchorText} />,
-   
-    });
+        openDialog({
+          title: "Create comment",
+       
+          text: (
+          <CommentInput page={page} anchorText={anchorText} />
+          ),
+
+        });
   };
 
   const header = () => (

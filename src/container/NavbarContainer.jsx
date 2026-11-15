@@ -42,13 +42,15 @@ const isLoggedIn = !!currentProfile?.id
       />
     );
   }
-
+if(!isNative){
   return (
     <BrowserMobileNavbar
       currentProfile={currentProfile}
       showSearch={!isSearchPage}
     />
   );
+}
+return null
 }
 
 
@@ -178,34 +180,6 @@ const {
 }
 
 
-// function DesktopNavItem({
-//   children,
-//   onClick,
-//   active = false,
-// }) {
-//   return (
-//     <button
-//       type="button"
-//       onClick={onClick}
-//       className={`
-//         text-[1.2em]
-//         leading-none
-//         bg-transparent
-
-//         tracking-[-0.02em]
-//         transition-colors
-//         duration-150
-//         ${
-//           active
-//             ? 'text-text-primary'
-//             : 'text-text-secondary hover:text-text-primary'
-//         }
-//       `}
-//     >
-//       {children}
-//     </button>
-//   );
-// }
 
 
 function DesktopNavItem({

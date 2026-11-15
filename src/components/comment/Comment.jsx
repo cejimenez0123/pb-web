@@ -114,23 +114,21 @@ export default function Comment({
   const handleOpenReply = () => {
     openDialog({
       title: "Reply",
-      height: 60,
-      text: (
-        <CommentInput
+      
+      text: <CommentInput
           page={page}
           parentComment={comment}
           handleClose={closeDialog}
         />
-      ),
-      disagreeText: "Close",
-      disagree: closeDialog,
+      ,
+       breakpoint: 1,
     });
   };
 
   const handleEdit = () => {
     openDialog({
       title: "Edit comment",
-      height: 60,
+
       text: (
         <CommentInput
           page={page}
@@ -139,8 +137,7 @@ export default function Comment({
           handleClose={closeDialog}
         />
       ),
-      disagreeText: "Close",
-      disagree: closeDialog,
+    
     });
   };
 
@@ -199,7 +196,7 @@ export default function Comment({
   const handleSeeReplies = () => {
     openDialog({
       title: "Conversation",
-      height: 85,
+  
       text: (
         <div className="flex min-w-0 flex-col gap-4 overflow-y-auto px-3 py-3">
           <div className={styles.hash.conversationContext}>
@@ -280,7 +277,7 @@ export default function Comment({
 
     openDialog({
       title: "Save as story",
-      height: 40,
+  
       text: (
         <div className="flex flex-col gap-3 p-4">
           <p className="text-sm leading-relaxed text-plumb-muted dark:text-darkMuted">

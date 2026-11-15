@@ -248,34 +248,62 @@ try{
 })
 
 
-
-
-const fetchProfile = createAsyncThunk("users/fetchProfile", async function(params,thunkApi){
-  
+const fetchProfile = createAsyncThunk(
+  "users/fetchProfile",
+  async (params, thunkApi) => {
     try {
-      const token =(await Preferences.get({key:"token"})).value
-      if(token){
-   
-        let data = await profileRepo.getProfileProtected(params)
-     
-        return{
-          profile:data.profile
-        }
-      }else{
-        
-        let data = await profileRepo.getProfile(params)
+      const token = (await Preferences.get({ key: "token" })).value;
 
+      const data = token
+        ? await profileRepo.getProfileProtected(params)
+        : await profileRepo.getProfile(params);
 
-        return{
-          profile:data.profile
-        }
+      if (!data?.profile) {
+        return thunkApi.rejectWithValue(
+          data?.message || "Profile could not be found."
+        );
       }
-    }catch(e){
-      return thunkApi.rejectWithValue(e)
+
+      return {
+        profile: data.profile,
+        isPrivate: Boolean(data.isPrivate),
+      };
+    } catch (error) {
+      return thunkApi.rejectWithValue(
+        error.response?.data?.message ||
+        error.message ||
+        "Unable to retrieve profile."
+      );
     }
+  }
+);
+// const fetchProfile = createAsyncThunk("users/fetchProfile", async function(params,thunkApi){
+  
+//     try {
+//       const token =(await Preferences.get({key:"token"})).value
+//       if(token){
+   
+//         let data = await profileRepo.getProfileProtected(params)
+     
+//         return{
+//           profile:data.profile
+//         }
+//       }else{
+        
+//         let data = await profileRepo.getProfile(params)
+
+
+//         return{
+//           profile:data.profile
+//         }
+//       }
+//     }catch(e){
+//       return thunkApi.rejectWithValue(e)
+//     }
   
   
-  })
+//   })
+
   const setProfileInView = createAction("users/setProfileInView", (params)=> {
 
     const {profile} = params

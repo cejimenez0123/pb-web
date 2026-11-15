@@ -328,14 +328,16 @@ const getMyCollections = createAsyncThunk(
     }
   }
 );
+
+
 const getPublicProfileCollections = createAsyncThunk(
   "collection/getPublicProfileCollections",
-  async (params, thunkApi) => {
+  async (params = {}, thunkApi) => {
     try {
       const data = await collectionRepo.getPublicProfileCollections({
-        id: params.profileId,
-        skip: params.skip,
-        take: params.take,
+        id: params.id ?? params.profileId,
+        skip: params.skip ?? 0,
+        take: params.take ?? 8,
       });
 
       return {
@@ -343,6 +345,9 @@ const getPublicProfileCollections = createAsyncThunk(
           ? data.collections
           : [],
         totalCount: Number(data?.totalCount) || 0,
+        skip: Number(data?.skip) || 0,
+        take: Number(data?.take) || 8,
+        hasMore: Boolean(data?.hasMore),
       };
     } catch (err) {
       return thunkApi.rejectWithValue(
@@ -351,29 +356,7 @@ const getPublicProfileCollections = createAsyncThunk(
     }
   }
 );
-// const getPublicProfileCollections = createAsyncThunk(
-//   "collection/getPublicProfileCollections",
-//   async (params, thunkApi) => {
-//     try {
-//       const data = await collectionRepo.getPublicProfileCollections({
-//         id: params.profileId,
-//         skip: params.skip,
-//         take: params.take,
-//       });
 
-//       return {
-//         collections: Array.isArray(data?.collections)
-//           ? data.collections
-//           : [],
-//         totalCount: Number(data?.totalCount) || 0,
-//       };
-//     } catch (err) {
-//       return thunkApi.rejectWithValue(
-//         err?.response?.data || err.message
-//       );
-//     }
-//   }
-// );
 
 const getProtectedProfileCollections = createAsyncThunk(
   "collection/getProtectedProfileCollections",

@@ -17,14 +17,14 @@ function SectionHeader({
   
     >
       <div className={s.layout}>
-        <div className={s.content}>
+        <div className={s.content+" h-[100%]"}>
           {eyebrow && (
             <p className={s.eyebrow}>
               {eyebrow}
             </p>
           )}
 
-          <h2 className={s.title}>
+          <h2 className={s.title+" my-auto"}>
             {title}
           </h2>
 
@@ -39,10 +39,11 @@ function SectionHeader({
           <div
             type="button"
             onClick={onAction}
-            className={styles.button.base+` ${buttonClass}`}
+            className={[styles.button.base, "rounded-full ",buttonClass].join(" ")}
+   
             
           >
-            {actionLabel}
+            <h6 className="my-auto   ">{actionLabel}</h6>
           </div>
         )}
       </div>

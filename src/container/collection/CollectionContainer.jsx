@@ -54,6 +54,7 @@ import styles from "../../styles/style.js";
 import TabBar from "../../components/TabBar.jsx";
 import PlumbHead from "../head.jsx";
 import PlumbButton from "../../components/profile/FollowButton.jsx";
+import InsideRoom from "../../components/collection/InsideRoom.jsx";
 
 // ---------------------------------------------------------
 // Layout
@@ -110,11 +111,12 @@ const router = useIonRouter()
   const collection = useSelector(
     (state) => state.books.collectionInView
   );
-
-  const collections = useSelector(
-    (state) => state.books.collections
-  );
-
+let works = []
+let rooms = []
+if(collection.storyIdList || collection.childCollections){
+works = collection?.storyIdList?.map(s=>s?.story)
+let rooms = collection?.childColletions?.map(t=>t?.childCollection)??[]
+}
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
   const [tab, setTab] = useState(TABS.INSIDE);
@@ -162,7 +164,7 @@ const router = useIonRouter()
       ],
     }
   );
-const [following,setFollowing]=useState(!!role)
+// const [following,setFollowing]=useState(!!role)
   // -------------------------------------------------------
   // Load collection
   // -------------------------------------------------------
@@ -181,62 +183,111 @@ const [following,setFollowing]=useState(!!role)
       setLoadError(false);
 
       try {
-        const action = currentProfile
-          ? fetchCollectionProtected({ id })
-          : fetchCollection({ id });
+        const action = currentProfile?.id
+  ? fetchCollectionProtected({ id })
+  : fetchCollection({ id });
 
-        const result = await dispatch(action);
+const result = await dispatch(action);
 
-        if (cancelled) return;
+if (cancelled) return;
 
-        checkResult(
-          result,
-          (payload) => {
-            if (cancelled) return;
+checkResult(
+  result,
+  (payload) => {
+    const col = payload?.collection;
 
-            const col = payload?.collection;
+    if (!col) {
+      setLoadError(true);
+      setLoading(false);
+      return;
+    }
 
-            if (!col) {
-              setLoadError(true);
-              setLoading(false);
-              return;
-            }
+    const sortedPages = [...(col.storyIdList ?? [])]
+      .filter((item) => item?.story)
+      .sort(
+        (a, b) => (a.index ?? 0) - (b.index ?? 0)
+      )
+      .map((item) => item.story);
 
-            const sortedPages = [
-              ...(col.storyIdList ?? []),
-            ]
-              .filter((item) => item?.story)
-              .sort(
-                (a, b) =>
-                  (a.index ?? 0) - (b.index ?? 0)
-              )
-              .map((item) => item.story);
+    dispatch(setPagesInView({ pages: sortedPages }));
 
-            dispatch(
-              setPagesInView({
-                pages: sortedPages,
-              })
-            );
+    setLoading(false);
+  },
+  (error) => {
+    setLoadError(true);
+    setLoading(false);
 
-            setLoading(false);
-          },
-          (error) => {
-            if (cancelled) return;
+    showAlert({
+      message:
+        error?.status === 403
+          ? "You do not have permission to view this room."
+          : error?.message ||
+            error ||
+            "Failed to load this room.",
+      type: AlertType.error,
+    });
+  }
+);
+      }
+      // { 
 
-            setLoadError(true);
-            setLoading(false);
+      //   const action = currentProfile
+      //     ? fetchCollectionProtected({ id })
+      //     : fetchCollection({ id });
 
-            showAlert({
-              message:
-                error?.status === 403
-                  ? "You do not have permission to view this room."
-                  : error?.message ||
-                    "Failed to load this room.",
-              type: AlertType.error,
-            });
-          }
-        );
-      } catch (error) {
+      //   const result = await dispatch(action);
+
+      //   if (cancelled) return;
+
+      //   checkResult(
+      //     result,
+      //     (payload) => {
+      //       if (cancelled) return;
+
+      //       const col = payload?.collection;
+
+      //       if (!col) {
+      //         setLoadError(true);
+      //         setLoading(false);
+      //         return;
+      //       }
+
+      //       const sortedPages = [
+      //         ...(col.storyIdList ?? []),
+      //       ]
+      //         .filter((item) => item?.story)
+      //         .sort(
+      //           (a, b) =>
+      //             (a.index ?? 0) - (b.index ?? 0)
+      //         )
+      //         .map((item) => item.story);
+
+      //       dispatch(
+      //         setPagesInView({
+      //           pages: sortedPages,
+      //         })
+      //       );
+
+      //       setLoading(false);
+      //     },
+      //     (error) => {
+      //       if (cancelled) return;
+
+      //       setLoadError(true);
+      //       setLoading(false);
+
+      //       showAlert({
+      //         message:
+      //           error?.status === 403
+      //             ? "You do not have permission to view this room."
+      //             : error?.message ||
+      //               "Failed to load this room.",
+      //         type: AlertType.error,
+      //       });
+      //     }
+      //   );
+      // }
+       catch (error) {
         if (cancelled) return;
 
         setLoadError(true);
@@ -262,20 +313,9 @@ const [following,setFollowing]=useState(!!role)
   // Clear stale lists when changing rooms
   // -------------------------------------------------------
 
-  useEffect(() => {
-    dispatch(
-      setCollections({
-        collections: [],
-      })
-    );
-
-    dispatch(
-      setPagesInView({
-        pages: [],
-      })
-    );
-  }, [id, dispatch]);
-
+useEffect(() => {
+  dispatch(setPagesInView({ pages: [] }));
+}, [id, dispatch]);
   // -------------------------------------------------------
   // Home / Archive system rooms
   // -------------------------------------------------------
@@ -305,7 +345,37 @@ const [following,setFollowing]=useState(!!role)
       )?.collection || null
     );
   }, [currentProfile?.profileToCollections]);
+// -------------------------------------------------------
+// Relationship state — derived from the Redux collection
+// -------------------------------------------------------
 
+const homeRelationship = useMemo(() => {
+  if (!isCurrentCollection || !homeCol?.id) return null;
+
+  return (
+    collection.parentCollections?.find(
+      (item) =>
+        String(item.parentCollectionId) === String(homeCol.id)
+    ) ?? null
+  );
+}, [collection, homeCol, isCurrentCollection]);
+
+const archiveRelationship = useMemo(() => {
+  if (!isCurrentCollection || !archiveCol?.id) return null;
+
+  return (
+    collection.parentCollections?.find(
+      (item) =>
+        String(item.parentCollectionId) === String(archiveCol.id)
+    ) ?? null
+  );
+}, [collection, archiveCol, isCurrentCollection]);
+
+const isBookmarked = Boolean(homeRelationship);
+const isArchived = Boolean(archiveRelationship);
+const following = Boolean(role);
+
+const bookmarkLock = useRef(false);
   // -------------------------------------------------------
   // Collection history
   // -------------------------------------------------------
@@ -370,357 +440,474 @@ const [following,setFollowing]=useState(!!role)
   // -------------------------------------------------------
   // Follow
   // -------------------------------------------------------
+// -------------------------------------------------------
+// Follow / unfollow
+// -------------------------------------------------------
 
-  const handleFollow = async () => {
-    if (actionLock.current) return;
+const handleFollow = async () => {
+  if (actionLock.current) return;
 
-    actionLock.current = true;
+  if (!currentProfile || !isCurrentCollection) {
+    showAlert({
+      message: "Please sign in",
+      type: AlertType.error,
+    });
+    return;
+  }
 
-    try {
-      if (!currentProfile || !isCurrentCollection) {
+  actionLock.current = true;
+
+  try {
+    let followRole =
+      collection.followersAre ?? RoleType.commenter;
+
+    if (currentProfile.id === collection.profileId) {
+      followRole = RoleType.editor;
+    }
+
+    const result = await dispatch(
+      postCollectionRole({
+        type: followRole,
+        profileId: currentProfile.id,
+        collectionId: collection.id,
+      })
+    );
+
+    checkResult(
+      result,
+      () => {
         showAlert({
-          message: "Please sign in",
+          message: "You are now following this room.",
+          type: AlertType.success,
+        });
+      },
+      (error) => {
+        showAlert({
+          message:
+            error?.message ||
+            error ||
+            "Unable to follow this room.",
           type: AlertType.error,
         });
-
-        return;
       }
+    );
+  } catch (error) {
+    showAlert({
+      message:
+        error?.message || "Unable to follow this room.",
+      type: AlertType.error,
+    });
+  } finally {
+    actionLock.current = false;
+  }
+};
 
-      let followRole =
-        collection.followersAre ??
-        RoleType.commenter;
+const handleUnfollow = async () => {
+  if (actionLock.current) return;
 
-      if (
-        currentProfile.id ===
-        collection.profileId
-      ) {
-        followRole = RoleType.editor;
+  if (currentProfile?.id === collection?.profileId) {
+    showAlert({
+      message: "This is yours — you cannot unfollow your own room.",
+      type: AlertType.error,
+    });
+    return;
+  }
+
+  if (!currentProfile || !role) {
+    showAlert({
+      message: "Please sign in",
+      type: AlertType.error,
+    });
+    return;
+  }
+
+  actionLock.current = true;
+
+  try {
+    const result = await dispatch(
+      deleteCollectionRole({
+        id: collection.id,
+        role,
+      })
+    );
+
+    checkResult(
+      result,
+      () => {
+        showAlert({
+          message: "Unfollowed room.",
+          type: AlertType.success,
+        });
+      },
+      (error) => {
+        showAlert({
+          message:
+            error?.message ||
+            error ||
+            "Unable to unfollow this room.",
+          type: AlertType.error,
+        });
       }
+    );
+  } catch (error) {
+    showAlert({
+      message:
+        error?.message || "Unable to unfollow this room.",
+      type: AlertType.error,
+    });
+  } finally {
+    actionLock.current = false;
+  }
+};
+  // const handleFollow = async () => {
+  //   if (actionLock.current) return;
 
-      const result = await dispatch(
-        postCollectionRole({
-          type: followRole,
-          profileId: currentProfile.id,
-          collectionId: collection.id,
-        })
-      );
+  //   actionLock.current = true;
 
-      checkResult(
-        result,
-        () => {
-          setFollowing(true)
-          showAlert({
-            message:
-              "You are now following this room.",
-            type: AlertType.success,
-          });
-        },
-        (error) => {
-          showAlert({
-            message:
-              error?.message ||
-              "Unable to follow this room.",
-            type: AlertType.error,
-          });
-        }
-      );
-    } catch (error) {
-      showAlert({
-        message:
-          error?.message ||
-          "Unable to follow this room.",
-        type: AlertType.error,
-      });
-    } finally {
-      actionLock.current = false;
-    }
-  };
+  //   try {
+  //     if (!currentProfile || !isCurrentCollection) {
+  //       showAlert({
+  //         message: "Please sign in",
+  //         type: AlertType.error,
+  //       });
+
+  //       return;
+  //     }
+
+  //     let followRole =
+  //       collection.followersAre ??
+  //       RoleType.commenter;
+
+  //     if (
+  //       currentProfile.id ===
+  //       collection.profileId
+  //     ) {
+  //       followRole = RoleType.editor;
+  //     }
+
+  //     const result = await dispatch(
+  //       postCollectionRole({
+  //         type: followRole,
+  //         profileId: currentProfile.id,
+  //         collectionId: collection.id,
+  //       })
+  //     );
+
+  //     checkResult(
+  //       result,
+  //       () => {
+  //         setFollowing(true)
+  //         showAlert({
+  //           message:
+  //             "You are now following this room.",
+  //           type: AlertType.success,
+  //         });
+  //       },
+  //       (error) => {
+  //         showAlert({
+  //           message:
+  //             error?.message ||
+  //             "Unable to follow this room.",
+  //           type: AlertType.error,
+  //         });
+  //       }
+  //     );
+  //   } catch (error) {
+  //     showAlert({
+  //       message:
+  //         error?.message ||
+  //         "Unable to follow this room.",
+  //       type: AlertType.error,
+  //     });
+  //   } finally {
+  //     actionLock.current = false;
+  //   }
+  // };
 
   // -------------------------------------------------------
   // Unfollow
   // -------------------------------------------------------
 
-  const handleUnfollow = async () => {
-    if (
-      currentProfile?.id ===
-      collection?.profile?.id
-    ) {
+  // const handleUnfollow = async () => {
+  //   if (
+  //     currentProfile?.id ===
+  //     collection?.profile?.id
+  //   ) {
   
-      showAlert({
-        message:
-          "This is yours — you cannot unfollow your own room.",
-        type: AlertType.error,
-      });
+  //     showAlert({
+  //       message:
+  //         "This is yours — you cannot unfollow your own room.",
+  //       type: AlertType.error,
+  //     });
 
-      return;
-    }
+  //     return;
+  //   }
 
-    if (!currentProfile || !role) {
-      showAlert({
-        message: "Please sign in",
-        type: AlertType.error,
-      });
+  //   if (!currentProfile || !role) {
+  //     showAlert({
+  //       message: "Please sign in",
+  //       type: AlertType.error,
+  //     });
 
-      return;
-    }
+  //     return;
+  //   }
 
-    try {
-      const result = await dispatch(
-        deleteCollectionRole({
-          id,
-          role,
-        })
-      );
+  //   try {
+  //     const result = await dispatch(
+  //       deleteCollectionRole({
+  //         id,
+  //         role,
+  //       })
+  //     );
 
-      checkResult(
-        result,
-        () => {
-          showAlert({
-            message: "Unfollowed room.",
-            type: AlertType.success,
-          });
-        },
-        (error) => {
-          showAlert({
-            message:
-              error?.message ||
-              "Unable to unfollow this room.",
-            type: AlertType.error,
-          });
-        }
-      );
-    } catch (error) {
-      showAlert({
-        message:
-          error?.message ||
-          "Unable to unfollow this room.",
-        type: AlertType.error,
-      });
-    }
-        setFollowing(false)
-  };
+  //     checkResult(
+  //       result,
+  //       () => {
+  //         showAlert({
+  //           message: "Unfollowed room.",
+  //           type: AlertType.success,
+  //         });
+  //       },
+  //       (error) => {
+  //         showAlert({
+  //           message:
+  //             error?.message ||
+  //             "Unable to unfollow this room.",
+  //           type: AlertType.error,
+  //         });
+  //       }
+  //     );
+  //   } catch (error) {
+  //     showAlert({
+  //       message:
+  //         error?.message ||
+  //         "Unable to unfollow this room.",
+  //       type: AlertType.error,
+  //     });
+  //   }
+  //       setFollowing(false)
+  // };
 
   // -------------------------------------------------------
   // Bookmark / Archive state
   // -------------------------------------------------------
 
-  const initBookmarked = useMemo(() => {
-    if (!isCurrentCollection || !homeCol) {
-      return null;
-    }
+  // const initBookmarked = useMemo(() => {
+  //   if (!isCurrentCollection || !homeCol) {
+  //     return null;
+  //   }
 
-    return (
-      collection.parentCollections?.find(
-        (item) =>
-          item.parentCollectionId === homeCol.id
-      ) || null
-    );
-  }, [
-    collection,
-    isCurrentCollection,
-    homeCol,
-  ]);
-const [isBookmarked,setIsBookmarked]=useState(initBookmarked)
-  const initArchived = useMemo(() => {
-    if (!isCurrentCollection || !archiveCol) {
-      return null;
-    }
+  //   return (
+  //     collection.parentCollections?.find(
+  //       (item) =>
+  //         item.parentCollectionId === homeCol.id
+  //     ) || null
+  //   );
+  // }, [
+  //   collection,
+  //   isCurrentCollection,
+  //   homeCol,
+  // ]);
+// const [isBookmarked,setIsBookmarked]=useState(initBookmarked)
+  // const initArchived = useMemo(() => {
+  //   if (!isCurrentCollection || !archiveCol) {
+  //     return null;
+  //   }
 
-    return (
-      collection.parentCollections?.find(
-        (item) =>
-          item.parentCollectionId === archiveCol.id
-      ) || null
-    );
-  }, [
-    collection,
-    isCurrentCollection,
-    archiveCol,
-  ]);
-const [isArchived,setIsArchived]=useState(initArchived)
+  //   return (
+  //     collection.parentCollections?.find(
+  //       (item) =>
+  //         item.parentCollectionId === archiveCol.id
+  //     ) || null
+  //   );
+  // }, [
+  //   collection,
+  //   isCurrentCollection,
+  //   archiveCol,
+  // ]);
+// const [isArchived,setIsArchived]=useState(initArchived)
   // -------------------------------------------------------
   // Save / unsave Home
   // -------------------------------------------------------
 
-  const handleBookmark = async () => {
-    // const tcid = collection.parentCollections?.find(
-    //     (item) =>
-    //       item.parentCollectionId === homeCol.id
-    //   ).id
-    //       const archive =
-      let homeCol = currentProfile.profileToCollections.find(
-        (col) => col.type === "home"
-      )
+  // const handleBookmark = async () => {
+  //   // const tcid = collection.parentCollections?.find(
+  //   //     (item) =>
+  //   //       item.parentCollectionId === homeCol.id
+  //   //   ).id
+  //   //       const archive =
+  //     let homeCol = currentProfile.profileToCollections.find(
+  //       (col) => col.type === "home"
+  //     )
 
-    if (!currentProfile) {
-      showAlert({
-        message: "Please sign in",
-        type: AlertType.error,
-      });
+  //   if (!currentProfile) {
+  //     showAlert({
+  //       message: "Please sign in",
+  //       type: AlertType.error,
+  //     });
 
-      return;
-    }
+  //     return;
+  //   }
 
-    if (!homeCol || !isCurrentCollection) {
-      return;
-    }
+  //   if (!homeCol || !isCurrentCollection) {
+  //     return;
+  //   }
 
-    setBookmarkLoading(true);
+  //   setBookmarkLoading(true);
 
-    try {
-      if (!isBookmarked) {
-        const result = await dispatch(
-          addCollectionListToCollection({
-            id: homeCol.id,
-            list: [collection.id],
-            profile: currentProfile,
-          })
-        );
+  //   try {
+  //     if (!isBookmarked) {
+  //       const result = await dispatch(
+  //         addCollectionListToCollection({
+  //           id: homeCol.id,
+  //           list: [collection.id],
+  //           profile: currentProfile,
+  //         })
+  //       );
 
-        checkResult(
-          result,
-          () => {
-            setIsBookmarked(true)
-            showAlert({
-              message: "Saved to Home.",
-              type: AlertType.success,
-            });
-          },
-          (error) => {
-            showAlert({
-              message:
-                error?.message ||
-                "Unable to save to Home.",
-              type: AlertType.error,
-            });
-          }
-        );
-      } else {
-        const result = await dispatch(
-          deleteCollectionFromCollection({
-            tcId: tcid,
-          })
-        );
+  //       checkResult(
+  //         result,
+  //         () => {
+  //           setIsBookmarked(true)
+  //           showAlert({
+  //             message: "Saved to Home.",
+  //             type: AlertType.success,
+  //           });
+  //         },
+  //         (error) => {
+  //           showAlert({
+  //             message:
+  //               error?.message ||
+  //               "Unable to save to Home.",
+  //             type: AlertType.error,
+  //           });
+  //         }
+  //       );
+  //     } else {
+  //       const result = await dispatch(
+  //         deleteCollectionFromCollection({
+  //           tcId: tcid,
+  //         })
+  //       );
 
-        checkResult(
-          result,
-          () => {
-                setIsBookmarked(false)
-            showAlert({
-              message: "Removed from Home.",
-              type: AlertType.success,
-            });
-          },
-          (error) => {
-            showAlert({
-              message:
-                error?.message ||
-                "Unable to remove from Home.",
-              type: AlertType.error,
-            });
-          }
-        );
-      }
-    } catch (error) {
+  //       checkResult(
+  //         result,
+  //         () => {
+  //               setIsBookmarked(false)
+  //           showAlert({
+  //             message: "Removed from Home.",
+  //             type: AlertType.success,
+  //           });
+  //         },
+  //         (error) => {
+  //           showAlert({
+  //             message:
+  //               error?.message ||
+  //               "Unable to remove from Home.",
+  //             type: AlertType.error,
+  //           });
+  //         }
+  //       );
+  //     }
+  //   } catch (error) {
 
-      showAlert({
-        message:
-          error?.message ||
-          "Unable to update Home.",
-        type: AlertType.error,
-      });
-    } 
-  };
+  //     showAlert({
+  //       message:
+  //         error?.message ||
+  //         "Unable to update Home.",
+  //       type: AlertType.error,
+  //     });
+  //   } 
+  // };
 
   // -------------------------------------------------------
   // Save / unsave Archive
   // -------------------------------------------------------
+// -------------------------------------------------------
+// Save / remove from Home or Archive
+// -------------------------------------------------------
 
-  const handleArchive = async () => {
-        const tcid = collection.parentCollections?.find(
-        (item) =>
-          item.parentCollectionId === archiveCol.id
-      ).id
-    if (!currentProfile) {
-      showAlert({
-        message: "Please sign in",
-        type: AlertType.error,
-      });
+const updateCollectionLocation = async (destination) => {
+  if (bookmarkLock.current || bookmarkLoading) return;
 
-      return;
+  if (!currentProfile) {
+    showAlert({
+      message: "Please sign in",
+      type: AlertType.error,
+    });
+    return;
+  }
+
+  if (!isCurrentCollection) return;
+
+  const isHome = destination === "home";
+  const targetCollection = isHome ? homeCol : archiveCol;
+  const relationship = isHome
+    ? homeRelationship
+    : archiveRelationship;
+
+  if (!targetCollection?.id) return;
+
+  bookmarkLock.current = true;
+  setBookmarkLoading(true);
+
+  try {
+    let result;
+
+    if (relationship?.id) {
+      result = await dispatch(
+        deleteCollectionFromCollection({
+          tcId: relationship.id,
+        })
+      );
+    } else {
+      result = await dispatch(
+        addCollectionListToCollection({
+          id: targetCollection.id,
+          list: [collection.id],
+          profile: currentProfile,
+        })
+      );
     }
 
-    if (!archiveCol || !isCurrentCollection) {
-      return;
-    }
-
-    setBookmarkLoading(true);
-
-    try {
-      if (!isArchived) {
-        const result = await dispatch(
-          addCollectionListToCollection({
-            id: archiveCol.id,
-            list: [collection.id],
-            profile: currentProfile,
-          })
-        );
-
-        checkResult(
-          result,
-          () => {
-            setIsArchived(true)
-            showAlert({
-              message: "Saved to Archive.",
-              type: AlertType.success,
-            });
-          },
-          (error) => {
-            showAlert({
-              message:
-                error?.message ||
-                "Unable to save to Archive.",
-              type: AlertType.error,
-            });
-          }
-        );
-      } else {
-        const result = await dispatch(
-          deleteCollectionFromCollection({
-            tcId: isArchived.id,
-          })
-        );
-
-        checkResult(
-          result,
-          () => {
-            setIsArchived(false)
-            showAlert({
-              message: "Removed from Archive.",
-              type: AlertType.success,
-            });
-          },
-          (error) => {
-            showAlert({
-              message:
-                error?.message ||
-                "Unable to remove from Archive.",
-              type: AlertType.error,
-            });
-          }
-        );
+    checkResult(
+      result,
+      () => {
+        showAlert({
+          message: relationship
+            ? `Removed from ${isHome ? "Home" : "Archive"}.`
+            : `Saved to ${isHome ? "Home" : "Archive"}.`,
+          type: AlertType.success,
+        });
+      },
+      (error) => {
+        showAlert({
+          message:
+            error?.message ||
+            error ||
+            `Unable to update ${isHome ? "Home" : "Archive"}.`,
+          type: AlertType.error,
+        });
       }
-    } catch (error) {
-      showAlert({
-        message:
-          error?.message ||
-          "Unable to update Archive.",
-        type: AlertType.error,
-      });
-    } finally {
-      setBookmarkLoading(false);
-    }
-  };
+    );
+  } catch (error) {
+    showAlert({
+      message:
+        error?.message ||
+        `Unable to update ${isHome ? "Home" : "Archive"}.`,
+      type: AlertType.error,
+    });
+  } finally {
+    bookmarkLock.current = false;
+    setBookmarkLoading(false);
+  }
+};
+
+const handleBookmark = () =>
+  updateCollectionLocation("home");
+
+const handleArchive = () =>
+  updateCollectionLocation("archive");
 
   // -------------------------------------------------------
   // Loading
@@ -942,7 +1129,9 @@ type={collection.type}
       
     
    
-            <div             className={styles.tabs.pill.container+" max-w-2xl mx-auto flex justify-center justify-around pb-40 "}>
+           
+                      <div             className={styles.tabs.pill.container+" "}>
+       
            
               <TabBar
            
@@ -953,11 +1142,13 @@ type={collection.type}
       
  </div>  
        
-            <div className={styles.pageShell.body+" pb-20"}>
+            <div className={"px-2 pb-36"}>
               {tab === "inside" && (
                 <InsideRoom
                 router={router}
-                  collection={collection}
+                rooms={rooms}
+                collection={collection}
+                works={works}
                   canAdd={canAdd}
                   canEdit={canEdit}
                 
@@ -1005,7 +1196,7 @@ type={collection.type}
               </div>
 
               <RecommendedRooms
-                rooms={recommended.items}
+                rooms={rooms}
                 router={router}
            
               />
@@ -1023,146 +1214,17 @@ type={collection.type}
 // INSIDE ROOM
 // =========================================================
 
-function InsideRoom({
-  collection,
-  canAdd,
-  canEdit,
- router
-}) {
-  const currentProfileId = useSelector(
-    (state) => state.users.currentProfile?.id
-  );
+// function InsideRoom({
+//   collection,
+//   canAdd,
+//   canEdit,
+//  router
+// }) {
+//   const currentProfileId = useSelector(
+//     (state) => state.users.currentProfile?.id
+//   );
 
-  const orderedContent = useMemo(() => {
-    const pages = (
-      collection?.storyIdList ?? []
-    )
-      .filter((item) => item?.story)
-      .map((item, index) => ({
-        kind: "page",
-        content: item.story,
-        index: item.index ?? index,
-      }));
-
-    const rooms = (
-      collection?.childCollections ?? []
-    )
-      .filter((item) => item?.childCollection)
-      .map((item, index) => ({
-        kind: "room",
-        content: item.childCollection,
-        index: item.index ?? index,
-      }));
-
-    return [...pages, ...rooms].sort((a, b) => {
-      const aIndex =
-        a.index == null
-          ? Number.POSITIVE_INFINITY
-          : a.index;
-
-      const bIndex =
-        b.index == null
-          ? Number.POSITIVE_INFINITY
-          : b.index;
-
-      return aIndex - bIndex;
-    });
-  }, [collection]);
-
-  const isOwner =
-    collection?.profileId === currentProfileId;
-
-  const canModify =
-    canEdit ||
-    isOwner ||
-    collection?.isOpenCollaboration;
-
-  if (!orderedContent.length) {
-    return (
-      <div className="pt-8">
-        <div
-          className="
-            rounded-2xl
-            border
-            border-dashed
-            border-card-border
-            p-8
-            text-center
-            dark:border-white/10
-            sm:p-12
-          "
-        >
-          <p className="font-serif text-2xl text-text-primary dark:text-cream">
-            Nothing lives here yet.
-          </p>
-
-          <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-text-secondary dark:text-gray-300">
-            A room can hold writing, other rooms,
-            or both. Start somewhere.
-          </p>
-
-          {(canModify || canAdd) && (
-            <button
-              type="button"
-              onClick={() =>
-                router.push(
-                  Paths.addToCollection.createRoute(
-                    collection.id
-                  )
-                )
-              }
-              className={`${PRIMARY_BUTTON} mt-6`}
-            >
-              Add something
-            </button>
-          )}
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className={"pt-8 "+styles.pageShell.body}>
-      <RoomSectionHeading
-        eyebrow="Inside"
-        title="What's here"
-        description="Writing and rooms collected together."
-      />
-
-      <div className="mt-8 space-y-10">
-        {orderedContent.map((entry, index) => {
-          if (entry.kind === "page") {
-            return (
-              <div
-                key={`page-${entry.content.id}-${index}`}
-              >
-                <PageList
-                  items={[entry.content]}
-                  isGrid={false}
-                  hasMore={false}
-                  getMore={() => {}}
-                  forFeedback={false}
-                />
-              </div>
-            );
-          }
-
-          if (entry.kind === "room") {
-            return (
-              <RoomPreview
-                key={`room-${entry.content.id}-${index}`}
-                room={entry.content}
-             router={router}
-              />
-            );
-          }
-
-          return null;
-        })}
-      </div>
-    </div>
-  );
-}
+// }
 
 function MemberTab({
   collection,
@@ -1195,7 +1257,7 @@ function MemberTab({
   }, [collection]);
 
   return (
-    <section className="pt-8">
+    <section className={["pt-8",styles.pageShell.body].join(" ")}>
       <RoomSectionHeading
         eyebrow="People"
         title="Members"

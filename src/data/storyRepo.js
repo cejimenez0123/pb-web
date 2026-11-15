@@ -269,17 +269,27 @@ eventUrl = Enviroment.url + "/events";
     return res.data;
   }
 
-// Save a single transformed event. Server creates the shared story on first-ever
-// save (authored by plumbumofficial) and links it into THIS profile's events collection.
-// async saveEvent({ event } = {}) {
-//   const headers = await this.getAuthHeaders();
-//   const res = await axios.post(
-//     Enviroment.url + "/events/save",
-//     { event },
-//     { headers }
-//   );
-//   return res.data; // { story, created, linked, alreadySaved }
+async requestStoryAccess({ id }) {
+  const headers = await this.getAuthHeaders();
 
-// }
+  const res = await axios.post(
+    `${this.url}/${id}/request-access`,
+    {},
+    { headers }
+  );
+
+  return res.data;
+}
+
+async getStoryAccessStatus({ id }) {
+  const headers = await this.getAuthHeaders();
+
+  const res = await axios.get(
+    `${this.url}/${id}/access-request`,
+    { headers }
+  );
+
+  return res.data;
+}
 }
 export default new StoryRepo()

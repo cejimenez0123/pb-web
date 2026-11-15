@@ -79,13 +79,17 @@ function GoogleLoginInner({ drive, onUserSignIn }) {
           driveToken.value &&
           expiry.value &&
           Date.now() < parseInt(expiry.value, 10);
+if (email.value && googleId.value) {
+  setAccessToken(valid ? driveToken.value : null);
+  setIdToken(storedIdToken.value || null);
+  setSignedIn(true);
+}
+        // if (email.value && googleId.value && valid) {
+        //   setAccessToken(driveToken.value);
+        //   setIdToken(storedIdToken.value);
 
-        if (email.value && googleId.value && valid) {
-          setAccessToken(driveToken.value);
-          setIdToken(storedIdToken.value);
-
-          setSignedIn(true);
-        }
+        //   setSignedIn(true);
+        // }
       } catch (e) {
         console.error(e);
       } finally {
@@ -96,56 +100,132 @@ function GoogleLoginInner({ drive, onUserSignIn }) {
     loadStoredUser();
   }, []);
 
-
 const nativeGoogleSignIn = async () => {
-  await initSocialLogin()
   if (pending) return;
-  
+
   setPending(true);
   setLoginError(null);
-  
+
   try {
-    const user = await SocialLogin.login({
+    await initSocialLogin();
+
+    const response = await SocialLogin.login({
       provider: "google",
       options: {
         scopes: [
           "email",
           "profile",
-          "https://www.googleapis.com/auth/drive.file",
+          ...(drive
+            ? ["https://www.googleapis.com/auth/drive.file"]
+            : []),
         ],
       },
     });
 
-    const result = user?.result;
+    const result = response?.result;
 
-    if (!result) throw new Error("No Google result returned");
+    if (!result) {
+      throw new Error("Google returned an empty response.");
+    }
+
+    console.log("GOOGLE NATIVE RESPONSE:", result);
 
     const profile = result.profile || {};
-    const idToken = result.idToken || result.authentication?.idToken;
-    const accessToken = result.accessToken?.token || result.accessToken;
+    const idToken = result.idToken;
+
+    const accessToken =
+      typeof result.accessToken === "string"
+        ? result.accessToken
+        : result.accessToken?.token;
 
     if (!idToken) {
-      throw new Error("Missing Google ID token (required for login)");
+      throw new Error(
+        "Google did not return an ID token. Check native OAuth configuration."
+      );
     }
 
     const payload = {
       email: profile.email,
-      name: profile.name,
+      name:
+        profile.name ||
+        [profile.givenName, profile.familyName]
+          .filter(Boolean)
+          .join(" "),
       googleId: profile.id,
       idToken,
-      driveAccessToken: accessToken,
+      ...(accessToken && {
+        driveAccessToken: accessToken,
+      }),
     };
+
+    if (!payload.email || !payload.googleId) {
+      throw new Error("Google returned incomplete profile information.");
+    }
 
     await onUserSignIn?.(payload);
 
     setSignedIn(true);
   } catch (err) {
     console.error("GOOGLE NATIVE LOGIN ERROR:", err);
-    setLoginError(err.message || "Google Sign-In failed.");
+
+    setLoginError(
+      err?.message || "Google Sign-In failed."
+    );
   } finally {
     setPending(false);
   }
 };
+
+
+// const nativeGoogleSignIn = async () => {
+//   await initSocialLogin()
+//   if (pending) return;
+  
+//   setPending(true);
+//   setLoginError(null);
+  
+//   try {
+//     const user = await SocialLogin.login({
+//       provider: "google",
+//       options: {
+//         scopes: [
+//           "email",
+//           "profile",
+//           "https://www.googleapis.com/auth/drive.file",
+//         ],
+//       },
+//     });
+
+//     const result = user?.result;
+
+//     if (!result) throw new Error("No Google result returned");
+
+//     const profile = result.profile || {};
+//     const idToken = result.idToken || result.authentication?.idToken;
+//     const accessToken = result.accessToken?.token || result.accessToken;
+
+//     if (!idToken) {
+//       throw new Error("Missing Google ID token (required for login)");
+//     }
+
+//     const payload = {
+//       email: profile.email,
+//       name: profile.name,
+//       googleId: profile.id,
+//       idToken,
+//       driveAccessToken: accessToken,
+//     };
+
+//     await onUserSignIn?.(payload);
+
+//     setSignedIn(true);
+//   } catch (err) {
+//     console.error("GOOGLE NATIVE LOGIN ERROR:", err);
+//     setLoginError(err.message || "Google Sign-In failed.");
+//   } finally {
+//     setPending(false);
+//   }
+// };
   // ---------------------------
   // 5️⃣ Web login
   // ---------------------------

@@ -45,7 +45,10 @@ const initialState = {
     followedBooks: [],
     followedProfiles: [],
     followedLibraries: [],
-    profileInView: null,
+   profileInView: null,
+profileLoading: false,
+profileError: null,
+profileRequestId: null,
     profilesInView: [],
     searchResults: [],
 
@@ -170,13 +173,30 @@ const userSlice = createSlice({
             state.loading = false;
             state.authResolved = true;
         })
-        .addCase(fetchProfile.pending, (state) => {})
-        .addCase(fetchProfile.fulfilled, (state, { payload }) => {
-            state.profileInView = payload.profile
-        })
-        .addCase(fetchProfile.rejected, (state, { payload }) => {
-            state.error = payload.error
-        })
+       .addCase(fetchProfile.pending, (state, action) => {
+  state.profileLoading = true;
+  state.profileError = null;
+  state.profileRequestId = action.meta.requestId;
+})
+
+.addCase(fetchProfile.fulfilled, (state, action) => {
+  if (state.profileRequestId !== action.meta.requestId) return;
+
+  state.profileInView = action.payload.profile;
+  state.profileLoading = false;
+  state.profileError = null;
+  state.profileRequestId = null;
+})
+
+.addCase(fetchProfile.rejected, (state, action) => {
+  if (state.profileRequestId !== action.meta.requestId) return;
+
+  state.profileLoading = false;
+  state.profileError =
+    action.payload || action.error.message || "Unable to retrieve profile.";
+  state.profileRequestId = null;
+  state.profileInView = null;
+})
         .addCase(setProfileInView, (state, { payload }) => {
             state.profileInView = payload.profile
         })
@@ -214,15 +234,7 @@ const userSlice = createSlice({
     isOpen: true,
   };
 })
-        // .addCase(setDialog.type, (state, { payload }) => {
-        //     if (payload) {
-        //         if (payload.isOpen == false) {
-        //             state.dialog.isOpen = false
-        //         } else {
-        //             state.dialog = payload ?? { text: "", title: "", agree: () => {}, onClose: () => {}, isOpen: false, agreeText: "agree", disagreeText: "Close" }
-        //         }
-        //     }
-        // })
+  
         .addCase(fetchProfileRecommendations.pending, (state) => {
         state.recommendationsStatus = "loading";
         state.recommendationsError = null;

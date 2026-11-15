@@ -323,6 +323,35 @@ const promoteCommentToStory = createAsyncThunk(
     }
   }
 );
+const requestStoryAccess = createAsyncThunk(
+  "pages/requestStoryAccess",
+  async ({ id }, thunkApi) => {
+    try {
+      return await storyRepo.requestStoryAccess({ id });
+    } catch (error) {
+      return thunkApi.rejectWithValue(
+        error?.response?.data || {
+          message: error.message || "Unable to request story access.",
+        }
+      );
+    }
+  }
+);
+
+const getStoryAccessStatus = createAsyncThunk(
+  "pages/getStoryAccessStatus",
+  async ({ id }, thunkApi) => {
+    try {
+      return await storyRepo.getStoryAccessStatus({ id });
+    } catch (error) {
+      return thunkApi.rejectWithValue(
+        error?.response?.data || {
+          message: error.message || "Unable to check story access.",
+        }
+      );
+    }
+  }
+);
   export {
           pagesLoading,
           setHtmlContent,
@@ -357,5 +386,6 @@ const promoteCommentToStory = createAsyncThunk(
          setCurrentPage,
          initKey,
          updatePaginatedItem,
-    
+    requestStoryAccess,
+    getStoryAccessStatus
         } 

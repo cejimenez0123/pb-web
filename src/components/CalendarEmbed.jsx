@@ -505,8 +505,7 @@ const toggleHashtag = (tag) => {
           )}
         </div>
       ),
-      // disagreeText: "Close",
-      disagree: closeDialog,
+
     });
   }
 

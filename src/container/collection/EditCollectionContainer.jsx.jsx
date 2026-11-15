@@ -792,7 +792,7 @@ export default function EditCollectionContainer() {
                     onClick={openRoleForm}
                     className={SECONDARY_BUTTON}
                   >
-                    Manage access
+                    <h6 className="mx-auto my-auto">Manage access</h6>
                   </div>
 
 
@@ -815,7 +815,7 @@ export default function EditCollectionContainer() {
     disabled={savingDetails}
     className={PRIMARY_BUTTON}
   >
-      {savingDetails ? "Saving details..." : "Save room details"}
+      <h6 className="mx-auto my-auto">{savingDetails ? "Saving details..." : "Save room details"}</h6>
   </div>
           
 </section>

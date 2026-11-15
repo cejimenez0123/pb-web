@@ -70,6 +70,7 @@ showPrompt({
         actionLabel="See all events ↗"
         onAction={onViewEvents}
         buttonClass="
+        
           dark:bg-transparent
           text-lg
           border border-plumb-mintLight/20

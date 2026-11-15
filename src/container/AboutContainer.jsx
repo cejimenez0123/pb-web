@@ -39,7 +39,7 @@ fullscreen={true}
 {/* BOOGIE*/}
    <section className={styles.about.start+" mt-8"}>
         <div className={styles.about.section}>
-          <p className={styles.about.sectionLabel}>
+          <p className={styles.pageShell.sectionLabel}>
             Start here
           </p>
 
