@@ -32,6 +32,7 @@ pageSize:8})
 
 // console.log(colRes)
 const stories =pageRes.items
+console.log(stories)
 const rooms =colRes.items
   const storiesLoading = useSelector(
     (state) => state.pages.loading
