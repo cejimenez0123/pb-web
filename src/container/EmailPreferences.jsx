@@ -15,10 +15,9 @@ export default function EmailPreferences() {
   const selectRef = useRef()
   const router = useIonRouter()
   const dispatch = useDispatch()
-const location = useLocation();
 
-  const searchParams  = new URLSearchParams(location.search);
-
+ const searchParams = useIonRouter().routeInfo.search
+ 
   const [token,setToken]=useState("")
   const [unsubscribed,setUnsubscribed]=useState(false)
   const [frequency, setFrequency] = useState(1);

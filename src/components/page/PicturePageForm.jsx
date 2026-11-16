@@ -1,6 +1,6 @@
 
 
-import React, { useContext, useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import { IonInput, IonLabel, IonText, IonImg } from "@ionic/react";
 import { useDispatch } from "react-redux";
 
@@ -8,12 +8,11 @@ import { PageType } from "../../core/constants";
 import { uploadPicture } from "../../actions/ProfileActions.jsx";
 import isValidUrl from "../../core/isValidUrl";
 import LinkPreview from "../LinkPreview";
-import Context from "../../context";
 
 import {
   Camera,
-  CameraResultType,
-  CameraSource,
+
+  MediaTypeSelection,
 } from "@capacitor/camera";
 
 import { Capacitor } from "@capacitor/core";
@@ -112,47 +111,31 @@ const handleInput = (event) => {
   };
 
   const pickImage = async () => {
-    try {
-      const image = await Camera.getPhoto({
-        quality: 85,
-        resultType: CameraResultType.Uri,
-        source: CameraSource.Photos,
-      });
+const { results = [] } = await Camera.chooseFromGallery({
+  mediaType: MediaTypeSelection.All,
+  allowMultipleSelection: false,
+  limit: 1,
+  includeMetadata: true,
+});
 
-      if (!image.webPath) {
-              showAlert({message:"Unable to read the selected image",type:AlertType.error});
-    
-        return;
-      }
+const image = results.find(
+  (item) => item.type === MediaType.Photo
+);
 
-      const response = await fetch(image.webPath);
-      const blob = await response.blob();
+if (!image?.webPath) {
+  throw new Error("Unable to access the selected image.");
+}
 
-      if (!ACCEPTED_IMAGE_TYPES.includes(blob.type)) {
-         showAlert({message:"Only JPG and PNG images are allowed.",type:AlertType.error});
- 
-        return;
-      }
+const response = await fetch(image.webPath);
+const blob = await response.blob();
 
-      const extension =
-        blob.type === "image/png" ? "png" : "jpg";
+const selectedFile = new File(
+  [blob],
+  `image-${Date.now()}.${blob.type === "image/png" ? "png" : "jpg"}`,
+  { type: blob.type }
+);
 
-      const selectedFile = new File(
-        [blob],
-        `image-${Date.now()}.${extension}`,
-        { type: blob.type }
-      );
-
-      prepareFile(selectedFile);
-    } catch (error) {
-      if (error?.message?.toLowerCase().includes("cancel")) {
-        return;
-      }
-
-      console.error("Image selection failed:", error);
-        showAlert({message:"Unable to select this image.",type:AlertType.error});
-
-    }
+prepareFile(selectedFile);
   };
 
   const uploadSelectedImage = async () => {
@@ -246,6 +229,67 @@ setIsSaved?.(true);
       setUploading(false);
     }
   };
+//   const handleSave = async () => {
+//     if (uploading) return;
+
+//     if (!isPicture && !isLink) return;
+
+//     setUploading(true);
+
+//     try {
+//       let finalValue = value.trim();
+
+//       if (isPicture && file) {
+//         finalValue = await uploadSelectedImage();
+
+//         if (!finalValue) return;
+//       }
+
+//       if (!finalValue || !isValidUrl(finalValue)) {
+//          showAlert({message:      isPicture
+//             ? "Please upload an image or enter a valid image URL."
+//             : "Please enter a valid URL.",type:AlertType.error});
+     
+//         if (isExistingPage) {
+//   if (!file) {
+//     updateValue(finalValue);
+//   }
+
+//   return;
+// }
+
+// // const result = await createPageAction(finalValue);
+
+// if (!result) return;
+
+// setIsSaved?.(true);
+
+//         return;
+//       }
+// // const result = await dispatch(
+// //   uploadPicture({ file })
+// // ).unwrap();
+// const result = await dispatch(
+//   uploadPicture({ file })
+// ).unwrap();
+
+// const uploadedUrl = result.url;
+
+// const savedStory = await createPageAction(uploadedUrl);
+
+// if (!savedStory) {
+//   throw new Error("Unable to save the picture page.");
+// }
+
+
+//     } catch (error) {
+//       console.error("Unable to save media page:", error);
+//       showAlert({message:error?.message || "Unable to save this page.",type:AlertType.error});
+ 
+//     } finally {
+//       setUploading(false);
+//     }
+//   };
 
   const previewSource = filePreview || value;
 

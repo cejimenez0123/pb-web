@@ -333,23 +333,7 @@ if (searchScope !== "all") {
     setSearchQuery(value);
   }}
 />
-       {/* <IonSearchbar
-  value={searchText}
-  debounce={350}
-  className={`${styles.search.searchbar} plumb-searchbar`}
-  placeholder="Stories, writers, rooms..."
-  aria-label="Search Plumbum"
-  showClearButton="focus"
-  onIonInput={(event) => {
-    const value =
-      event.detail?.value ??
-      event.target?.value ??
-      "";
 
-    console.log("[Search] Input event:", value);
-    setSearchText(value);
-  }}
-/> */}
      </div>
           </header>
      <span className={" max-w-[100%] "+" "}>   

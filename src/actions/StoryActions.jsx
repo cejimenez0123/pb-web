@@ -81,7 +81,7 @@ const getMyStories = createAsyncThunk(
   async (params = {}, thunkApi) => {
     try {
       const data = await storyRepo.getMyStories(params);
-
+console.log
       return {
         totalCount: data.totalCount,
         hasMore: data.hasMore,

@@ -3,7 +3,7 @@
 import { useEffect, useState,  useMemo, useCallback, useRef } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { createStory, } from '../actions/StoryActions';
-import { setPageInView, } from '../actions/PageActions.jsx';
+import { setEditingPage, setPageInView, } from '../actions/PageActions.jsx';
 import { sendGAEvent } from '../core/ga4.js';
 import Paths from '../core/paths';
 import checkResult from '../core/checkResult';
@@ -225,8 +225,12 @@ scrollY: false,
     })).then(res => checkResult(res, payload => {
       if (!payload.story) return showAlert({ message: "COULD NOT CREATE STORY", type: AlertType.error });
 
-      dispatch(setPageInView({ page: payload?.story }));
-      router.push(Paths.editPage.createRoute(payload?.story?.id,payload?.story?.type), 'forward', 'push');
+      const {story}=payload
+      dispatch(setPageInView({ page: story }));
+      dispatch(setEditingPage({page: story}))
+        router.push(
+Paths.editor.createRoute(story.id)
+    );
     }));
   }, 5);
 const fetchStories = useCallback(async (skip, take) => {

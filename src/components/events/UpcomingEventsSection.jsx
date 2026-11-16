@@ -8,6 +8,7 @@ import { Preferences } from "@capacitor/preferences";
 import storyRepo from "../../data/storyRepo";
 import { useIonRouter } from "@ionic/react";
 import Paths from "../../core/paths";
+import styles from "../../styles/style";
 
 export default function UpcomingEventsSection({
   events = [],
@@ -63,7 +64,7 @@ showPrompt({
   }
 };
   return (
-    <section className="mt-14" aria-label="Upcoming events">
+    <section className={[styles.pageShell.body,"mt-14"].join(" ")} aria-label="Upcoming events">
       <SectionHeader
         eyebrow="For you"
         title="Something happening"

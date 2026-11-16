@@ -12,6 +12,7 @@ import horiz from "../../images/icons/more_vert.svg";
 import {
   deleteComment,
   promoteCommentToStory,
+  setPageInView,
 } from "../../actions/PageActions.jsx";
 
 import {
@@ -261,8 +262,9 @@ export default function Comment({
         checkResult(
           result,
           ({ story }) => {
+            dispatch(setPageInView({page:story}))
             router.push(
-              Paths.editPage.createRoute(story.id, story.type)
+              Paths.editor.createRoute(story.id)
             );
             closeDialog();
           },

@@ -19,6 +19,7 @@ import storyRepo from "../data/storyRepo.js";
 import { useAlert } from "../core/useAlert.jsx";
 import AlertType from "../core/AlertType.js";
 import { Preferences } from "@capacitor/preferences";
+import { setEditingPage, setPageInView } from "../actions/PageActions.jsx";
 
 // Keep fallback references stable.
 // Do not use `|| []` or `|| {}` directly inside a selector.
@@ -320,15 +321,16 @@ suggestedEvent
   const goToEvents = () => {
     router.push(Paths.calendar());
   };
-
+const dispatch = useDispatch()
   const goToStory = (story) => {
     if (!story?.id) return;
 
-    const type = story.type || PageType.text;
 
-    if (Paths.editPage?.createRoute) {
+    if (Paths.editor) {
+       dispatch(setPageInView({page:story}))
+       dispatch(setEditingPage({page:story}))
       router.push(
-        Paths.editPage.createRoute(story.id, type)
+        Paths.editor.createRoute(story.id)
       );
       return;
     }

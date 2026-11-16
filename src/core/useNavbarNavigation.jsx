@@ -18,6 +18,7 @@ const {currentProfile}= useSelector(state=>state.users)
   const handleEvents = () => navigate(Paths.calendar());
   const handleAbout = () => navigate(Paths.about());
   const handleLogin = () => navigate(Paths.login);
+ const handleBack = () => router.goBack()
 
   const handleProfile = () => {
 
@@ -32,6 +33,7 @@ const {currentProfile}= useSelector(state=>state.users)
     router,
     dispatch,
     navigate,
+    handleBack,
     handleSearch,
     handleWrite,
     handleHome,

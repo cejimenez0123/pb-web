@@ -1,5 +1,3 @@
-import React, { useContext, useEffect } from 'react';
-import Context from '../context';
 
 const NotFound = () => {
 

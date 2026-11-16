@@ -71,8 +71,8 @@ fullscreen={true}
 
 {/* BOOGIE*/}
         <div className="grid sm:grid-cols-2 pb-12 gap-x-10 gap-y-8 ">
-          <FeatureBlock title="Collections, not feeds">
-            A collection holds work and other collections. It can be a book, a
+          <FeatureBlock title="Rooms, not feeds">
+            A rooms holds work and other collections. It can be a book, a
             library, a workshop table, or a place you keep things while you
             decide. It changes shape as you fill it — you never have to name
             it correctly on day one.

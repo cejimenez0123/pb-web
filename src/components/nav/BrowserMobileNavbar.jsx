@@ -10,6 +10,8 @@ import SignInButton from "./SignInButton";
 import BrowserNavItem from "./BroswerNavItem";
 
 function BrowserMobileNavbar({
+      showBack,pathname,
+
   currentProfile,
 
 }) {
@@ -27,7 +29,7 @@ const {
   handleNotifications
 } = useNavbarNavigation(currentProfile);
  
-  const isLoggedIn = !!currentProfile;
+  const isLoggedIn = !!currentProfile?.id
 
 
 

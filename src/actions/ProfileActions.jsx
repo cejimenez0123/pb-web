@@ -137,52 +137,95 @@ const uploadProfilePicture = createAsyncThunk(
     };
   }
 );
-
 const uploadPicture = createAsyncThunk(
   "users/uploadPicture",
   async (params, thunkApi) => {
     try {
       const { file } = params;
-      if (!file) throw new Error("No file provided");
 
-      const fileName = `image/${Date.now()}-${uuidv4()}.jpg`;
-      const storageRef = ref(storage, fileName);
-
-
-      if (!Capacitor.isNativePlatform()) {
-        // ✅ WEB → needs Blob/File
-        await uploadBytes(storageRef, file);
-      } else {
-        // ✅ NATIVE → needs URI
-        if (!file.path) throw new Error("Missing file path");
-
-        await new Promise((resolve, reject) => {
-          FirebaseStorage.uploadFile(
-            {
-              path: fileName,
-              uri: file.path,
-            },
-            (event, error) => {
-              if (error) reject(error);
-              else if (event?.completed) resolve(event);
-            }
-          );
-        });
+      if (!file) {
+        throw new Error("No file provided");
       }
 
-    const url = Capacitor.isNativePlatform()
-  ? await FirebaseStorage.getDownloadUrl({ path: fileName }).then(r => r.downloadUrl)
-  : await getDownloadURL(storageRef);
-      return { url, fileName };
+      if (!file.type?.startsWith("image/")) {
+        throw new Error("Please select a valid image.");
+      }
 
+      const extension =
+        file.type === "image/png"
+          ? "png"
+          : file.type === "image/webp"
+            ? "webp"
+            : "jpg";
+
+      const fileName = `image/${Date.now()}-${uuidv4()}.${extension}`;
+
+      const storageRef = ref(storage, fileName);
+
+      await uploadBytes(storageRef, file, {
+        contentType: file.type,
+      });
+
+      const url = await getDownloadURL(storageRef);
+
+      return {
+        url,
+        fileName,
+      };
     } catch (err) {
       console.error("Upload error:", err);
+
       return thunkApi.rejectWithValue({
         message: "UPLOAD FAILED: " + err.message,
       });
     }
   }
 );
+// const uploadPicture = createAsyncThunk(
+//   "users/uploadPicture",
+//   async (params, thunkApi) => {
+//     try {
+//       const { file } = params;
+//       if (!file) throw new Error("No file provided");
+
+//       const fileName = `image/${Date.now()}-${uuidv4()}.jpg`;
+//       const storageRef = ref(storage, fileName);
+
+
+//       if (!Capacitor.isNativePlatform()) {
+//         // ✅ WEB → needs Blob/File
+//         await uploadBytes(storageRef, file);
+//       } else {
+//         // ✅ NATIVE → needs URI
+//         if (!file.path) throw new Error("Missing file path");
+
+//         await new Promise((resolve, reject) => {
+//           FirebaseStorage.uploadFile(
+//             {
+//               path: fileName,
+//               uri: file.path,
+//             },
+//             (event, error) => {
+//               if (error) reject(error);
+//               else if (event?.completed) resolve(event);
+//             }
+//           );
+//         });
+//       }
+
+//     const url = Capacitor.isNativePlatform()
+//   ? await FirebaseStorage.getDownloadUrl({ path: fileName }).then(r => r.downloadUrl)
+//   : await getDownloadURL(storageRef);
+//       return { url, fileName };
+
+//     } catch (err) {
+//       console.error("Upload error:", err);
+//       return thunkApi.rejectWithValue({
+//         message: "UPLOAD FAILED: " + err.message,
+//       });
+//     }
+//   }
+// );
 const fetchProfileRecommendations = createAsyncThunk(
   "profile/fetchRecommendations",
   async ({ profileId, limit = 10 }, { rejectWithValue }) => {

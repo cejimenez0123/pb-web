@@ -20,8 +20,7 @@ import { useParams } from "react-router";
 import {
   fetchCollectionProtected,
   deleteCollection,
-  deleteCollectionFromCollection,
-  deleteStoryFromCollection,
+
   patchCollectionContent,
   patchCollectionDetails,
 } from "../../actions/CollectionActions";
@@ -107,8 +106,9 @@ export default function EditCollectionContainer() {
   const currentProfile = useSelector(
     (state) => state.users.currentProfile
   );
-
-  const colInView = useSelector(
+ 
+  const ptIDs =currentProfile.profileToCollections.map(ptc=>ptc.collectionId)
+ const colInView = useSelector(
     (state) => state.books.collectionInView
   );
 
@@ -1105,8 +1105,9 @@ buttonClass={"bg-transparent rounded-full  border-plumb-mint/70 text-plumb-mint/
 <section className={styles.pageShell.body+" flex flex-row justify-between"}>
                   <div
                     type="button"
-                    onClick={handleDelete}
-                    className={[styles.button.base," rounded-full  ",styles.button.danger]}
+                    onClick={()=>ptIDs.includes(id)?showAlert({message:"This is personal, can't delete",type:AlertType.success}): handleDelete()}
+                    
+                    className={[styles.button.base," rounded-full  ",ptIDs.includes(id)?" ":styles.button.danger].join(" ")}
                   >
                    <h6 className="my-auto mx-auto">Delete room</h6> 
                   </div>

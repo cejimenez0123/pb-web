@@ -199,13 +199,13 @@ function App(props) {
 
   const isNative = Capacitor.isNativePlatform();
 
-  const isMobile = useMediaQuery({
-    query: "(max-width: 480px)",
-  });
+  // const isMobile = useMediaQuery({
+  //   query: "(max-width: 480px)",
+  // });
 
-  const isTablet = useMediaQuery({
-    query: "(min-width: 481px) and (max-width: 1199px)",
-  });
+  // const isTablet = useMediaQuery({
+  //   query: "(min-width: 481px) and (max-width: 1199px)",
+  // });
 
   const isDesktop = useMediaQuery({
     query: "(min-width: 1200px)",
@@ -215,8 +215,7 @@ function App(props) {
     query: "(min-width: 800px)",
   });
 
-  const isMobileOrTablet =
-    isMobile || isTablet;
+  
 
   const [isFirstLaunch, setIsFirstLaunch] =
     useState(true);
@@ -411,13 +410,7 @@ useEffect(() => {
     showSplash();
   }, [isNative]);
 
-  const hiddenPaths = [
 
-    Paths.onboard,
-    Paths.login,
-    Paths.register
-   
-  ];
 
   
 
@@ -426,13 +419,7 @@ useEffect(() => {
    * Do not pass duplicate props such as htmlContent/currentProfile unless
    * your component explicitly relies on them.
    */
-  const editorPage = (
-    <PageWrapper>
-      <PrivateRoute>
-        <EditorContainer />
-      </PrivateRoute>
-    </PageWrapper>
-  );
+
 
 function RootRoute() {
   const authResolved = useSelector(
@@ -458,9 +445,7 @@ function RootRoute() {
       <Context.Provider
         value={{
           setPresentingEl,
-          isDesktop,
-     
-          isHorizPhone,
+        
           seo,
           setSeo,
           formerPage,
@@ -481,8 +466,7 @@ function RootRoute() {
 
            
   <AppNavigationChrome
-    isDesktop={isDesktop}
-    isMobileOrTablet={isMobileOrTablet}
+
     currentProfile={currentProfile}
   />
               <div className="relative flex-1">
@@ -840,27 +824,20 @@ function RootRoute() {
 
               
                   <Route
-                    exact
-                    path="/story/:id/:type/edit"
-                    render={() => editorPage}
+                  
+                    path={Paths.editor.pre}
+                 
+                    render={() =>   <PageWrapper>
+      <PrivateRoute>
+        <EditorContainer />
+      </PrivateRoute>
+    </PageWrapper>}
                   />
 
-                  {/*
-                   * New story:
-                   * /story/:type/edit
-                   */}
-                  <Route
-                    exact
-                    path="/story/:type/edit"
-                    render={() => editorPage}
-                  />
-
+               
+                
            
-                  <Route
-                    exact
-                    path={Paths.editPage.route}
-                    render={() => editorPage}
-                  />
+                
 
                   <Route
                     exact

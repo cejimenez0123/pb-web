@@ -18,6 +18,7 @@ import { useAlert } from "../../core/useAlert.jsx";
 import AlertType from "../../core/AlertType.js";
 
 import ReportContentDialog from "../auth/ReportProfileDialog.jsx";
+import { setPageInView } from "../../actions/PageActions.jsx";
 
 const EMPTY_ARRAY = [];
 
@@ -410,14 +411,12 @@ const handleBookmark = async () => {
           <button
             type="button"
             className={MENU_ITEM}
-            onClick={() =>
+            onClick={() =>{
+              dispatch(setPageInView({page:page}))
               closeAndNavigate(
-                Paths.editPage.createRoute(
-                  page.id,
-                  page.type
-                )
+                Paths.editor.createRoute(page.id)
               )
-            }
+            }}
           >
             <h5 className={MENU_TEXT}>
               Edit

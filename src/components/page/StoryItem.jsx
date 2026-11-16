@@ -32,7 +32,7 @@ const DESCRIPTION =
 const CARD_WIDTH =
   "w-[100%] max-w-[12rem]"; // ❗ remove min/max width constraints
 function StoryItem({ page, isGrid = true, html = null }) {
-  const { isHorizPhone } = useContext(Context);
+
   const router = useIonRouter();
 const [loading, setLoading] = useState(true);
   const initialImage =

@@ -300,65 +300,7 @@ function WorkPreview({ work, router }) {
     </article>
   );
 }
-// function RoomContents({ collection, router }) {
 
-// const rooms = collection.childCollections.map(c=>c.childCollection)
-// const works =  collection.storyIdList.map(c=>c.story)
-// console.log(works)
-//   return (
-//     <div className="space-y-12">
-
-//       {/* Works */}
-//      && (
-//         <section>
-//           <SectionHeader
-//             eyebrow="Writing"
-//             title="Works"
-//             description="Individual pieces of writing collected here."
-//           />
-
-//           <div className="mt-6">
-//             <PageList
-//               items={works}
-//               isGrid={false}
-//               hasMore={false}
-//               getMore={() => {}}
-//               forFeedback={false}
-//             />
-//           </div>
-//         </section>
-      
-
-//       {/* Nested rooms */}
-//       {rooms.length > 0 && (
-//         <section>
-//           <SectionHeader
-//             eyebrow="Spaces"
-//             title="Rooms"
-//             description="Enter another room to explore what's inside."
-//           />
-
-//           <div className="
-//             mt-6
-//             grid
-//             grid-cols-1
-//             gap-5
-//             sm:grid-cols-2
-//           ">
-//             {rooms.map((room) => (
-//               <RoomPreview
-//                 key={room.id}
-//                 room={room}
-//                 router={router}
-//               />
-//             ))}
-//           </div>
-//         </section>
-//       )}
-
-//     </div>
-//   );
-// }
 function RoomAddContent({
   collection,
   router,

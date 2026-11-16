@@ -1,20 +1,30 @@
 
-import { useLocation } from "react-router";
 import NavbarContainer from "../container/NavbarContainer";
 import Paths from "../core/paths";
 import { useDialog } from "../domain/usecases/useDialog";
 import ErrorBoundary from "../ErrorBoundary";
+import { Capacitor } from "@capacitor/core";
+import { useMediaQuery } from "react-responsive";
+import { useIonRouter } from "@ionic/react";
 
 function AppNavigationChrome({
-  isDesktop,
-  isMobileOrTablet,
+
   currentProfile,
 }) {
-  const location = useLocation();
+const pathname = useIonRouter().routeInfo.pathname
+const isDesktop = useMediaQuery({
+  query: "(min-width: 1200px)",
+});
 
-  const hiddenPaths = [
+
+const isUsersPublicProfile = pathname == Paths.profile.createRoute(currentProfile?.id)
+const showBackPath = [Paths.editor.pre,Paths.page.pre,Paths.collection.pre,Paths.editCollection.pre
+  ,Paths.feedback(),Paths.editProfile,Paths.editor
+]
+
+  const hiddenLoggedOut = [
    Paths.onboard,
-    // "/apply",
+
     Paths.onboard,
     Paths.signup,
     Paths.register,
@@ -22,38 +32,34 @@ function AppNavigationChrome({
     "/oauth2callback",
   ];
 
-  const pathname = location?.pathname || "";
 
-  const shouldHideBottomNavbar = hiddenPaths.some((path) =>
-    pathname.startsWith(path)
-  );
-
-  const showTopNavbar = isDesktop;
-  const showBottomNavbar =
-    isMobileOrTablet && !shouldHideBottomNavbar;
  const {dialog}=useDialog()
+
+ const hideNavbar =hiddenLoggedOut.some((path) =>
+    pathname.includes(path)
+  );
+  const showBack  = isUsersPublicProfile || showBackPath.some(path=>{
+    return pathname.includes(path)
+  })
+ 
+   
+
+  if (hideNavbar || dialog?.isOpen) return null;
+
   return (
     <>
     <ErrorBoundary>
-      {/* Desktop */}
-      {showTopNavbar && (
 
+  
           <NavbarContainer
-            isDesktop={isDesktop}
+          isDesktop={isDesktop}
+          showBack={showBack}
+          hideNavbar={hideNavbar}
+          pathname={pathname}
+        
             currentProfile={currentProfile}
           />
-    
-      )}
-
-      {/* Mobile / Tablet */}
-      {showBottomNavbar && !dialog.isOpen && (
-        <div >
-          <NavbarContainer
-            isDesktop={false}
-            currentProfile={currentProfile}
-          />
-       </div>
-      )}
+  
       </ErrorBoundary>
     </>
   );

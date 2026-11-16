@@ -2,15 +2,15 @@
 import { Preferences } from "@capacitor/preferences";
 import { useEffect, useState } from "react";
 import Paths from "../../core/paths";
-import { useParams } from "react-router";
 import { useDialog } from "../../domain/usecases/useDialog";
 import RoleForm from "../role/RoleForm";
+import FeedbackDialog from "./FeedbackDialog";
 
 
 function TopBarDropdown({
   id, router, editPage, openFeedback, handleChange,
-  handleView, parameters, setOpenHashtag, openHashtag,
-  openGoogleDrive, openConfirmDeleteDialog,
+   parameters, 
+  openGoogleDrive
 }) {
   const driveTokenKey = "googledrivetoken";
   const TOKEN_EXPIRY_KEY = "googledrivetoken_expiry";
@@ -24,10 +24,11 @@ function TopBarDropdown({
     const tokenValid = token && tokenExpiry && Date.now() < parseInt(tokenExpiry, 10);
     setAccessToken(tokenValid ? token : null);
   }
-const handleMenuClick = (action) => (e) => {
-  e.currentTarget.blur();
-  action();
-};
+  const handleHandOut = ()=>{
+    openFeedback()
+    
+  }
+
   const openRoleFormDialog = () => {
     openDialog({
       ...dialog,
@@ -53,12 +54,8 @@ const liClass=" dark:bg-base-bg dark:border-b dark:border-1 dark:border-plumb-su
                 {editPage && (
   <li
   className={liClass}
-    // className="text-plumb-surface pt-3 pb-2 text-center cursor-pointer"
-    onClick={handleMenuClick(() =>
-   
-         openFeedback(false)
-       
-    )}
+  
+    onClick={handleHandOut}
   >
    <p className={pLiClass}> Share</p>
   </li>

@@ -54,11 +54,11 @@ const PageWrapper = ({ children }) => {
 
   return (
     <IonPage>
-<div className={[styles.pageShell.base,isNative?"pt-32 pb-40":"pt-10"].join(" ")}>
+<div className={[styles.pageShell.base,isNative?"pt-32 pb-28":"pt-10"].join(" ")}>
 
-  {/* <div className="pt-4"> */}
+
         {children}
-   {/* </div> */}
+
   </div>
     </IonPage>
   );

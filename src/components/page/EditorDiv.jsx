@@ -5,7 +5,7 @@ import RichEditor from "./RichEditor";
 import PicturePageForm from "./PicturePageForm";
 
 export default function EditorDiv({
-  page,
+
   handleChange,
   isSaved,
   setIsSaved,

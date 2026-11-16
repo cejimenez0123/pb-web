@@ -11,17 +11,13 @@ import DataElement from "./DataElement";
 // import { initGA, sendGAEvent } from "../../core/ga4";
 import { useDialog } from "../../domain/usecases/useDialog";
 import { useDispatch } from "react-redux";
-import { setHtmlContent } from "../../actions/PageActions";
+import { setEditingPage, setHtmlContent, setPageInView } from "../../actions/PageActions";
 
 export default function PageViewItem({ page, canEdit }) {
   const router = useIonRouter();
   const currentProfile = useSelector((state) => state.users.currentProfile);
-  const { openDialog,closeDialog } = useDialog();
+  const { openDialog} = useDialog();
 const dispatch =useDispatch()
-  // useLayoutEffect(() => {
-  //   initGA();
-  //   // sendGAEvent("View Story", JSON.stringify(page));
-  // }, []);
 
   useEffect(() => {
     const unlock = () => {
@@ -94,8 +90,9 @@ const dispatch =useDispatch()
       {canEdit && (
         <div
           onClick={() =>{
-              dispatch(setHtmlContent(page.data))
-             router.push(Paths.editPage.createRoute(page.id,page.type), "forward")
+            dispatch(setPageInView({page}))
+            dispatch(setEditingPage({page}))
+             router.push(Paths.editor.createRoute(page.id), "forward")
           }}
           className="btn btn-sm btn-ghost text-soft dark:text-cream hover:bg-base-bg dark:hover:bg-base-bgDark rounded-full"
         >

@@ -374,7 +374,7 @@ export default function usePaginatedResource({
   select,
   infinite = false,
 }) {
- console.log(params)
+
   const dispatch = useDispatch();
 
   const [error, setError] = useState(null);

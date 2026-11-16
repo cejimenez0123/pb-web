@@ -188,9 +188,11 @@ const pageSlice = createSlice({
         state.error = payload.error
       })
       .addCase(deleteStory.fulfilled, (state, { payload }) => {
+        // console.log("PAY")
+        // console.log(payload)
   state.pageInView = null;
-
-  state.pagesInView = state.pagesInView.filter(
+let list = state?.pagesInView??[]
+  state.pagesInView = list.filter(
     (page) => page.id !== payload.id
   );
 
@@ -232,44 +234,13 @@ const pageSlice = createSlice({
   };
 })
 
-// .addCase(getMyStories.fulfilled, (state, { payload }) => {
-//   state.myStoriesLoading = false;
 
-//   state.myPages = payload.pageList || [];
-
-//   state.pagination = {
-//     skip: payload.skip,
-//     take: payload.take,
-//     totalCount: payload.totalCount,
-//     hasMore: payload.hasMore,
-//   };
-// })
 .addCase(getMyStories.rejected, (state) => {
   state.myStoriesLoading = false;
 })
 
 
-// .addCase(getMyStories.pending, (state) => {
-//   state.loading = true;
-// })
-// .addCase(getMyStories.fulfilled, (state, { payload }) => {
-//   console.log("REd")
-//   console.log(payload)
-//   state.loading = false;
 
-//   state.myPages = payload.pageList || [];
-
-//   state.pagination = {
-//     skip: payload.skip,
-//     take: payload.take,
-//     totalCount: payload.totalCount,
-//     hasMore: payload.hasMore,
-//   };
-// })
-// .addCase(getMyStories.rejected, (state, { payload }) => {
-//   state.loading = false;
-//   state.error = payload?.message || payload || "Failed to fetch stories";
-// })
 
 .addCase(clearPagesInView.type,(state)=>{
       state.pagesInView = []

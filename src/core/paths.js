@@ -1,8 +1,10 @@
+import { create } from "lodash";
 import { PageType } from "./constants";
 
 
 
 const Paths ={
+    search:"/search",
     terms:"/terms",
     newsletter:()=>`/newsletter`,
     feedback:()=>`/feedback`,
@@ -13,58 +15,61 @@ const Paths ={
     write: "/write",
     signup: "/signup",
     register:"/register",
-    library: {
-        route: ()=>`/library/:id`,
-        createRoute:(id)=>{return `/library/${id}`;}},
-    page:{ route: ()=>`/story/:id/view`,createRoute:(id)=>{return `/story/${id}/view`
+   
+    page:{ 
+        pre:"/s",
+        route: ()=>`/s/:id/view`,createRoute:(id)=>{return `/s/${id}/view`
     }},
     workshop:{
+             pre:"/workshop",
         route:()=>"/workshop/page/:storyId",
         reader:()=>"/workshop",
         createRoute:(pageId)=>{return "/workshop/page/"+pageId}
     },
     hashtag:{
+             pre:"/hashtag",
         route:()=>"/hashtag/:id",
         createRoute:(id)=>`/hashtag/${id}`
     },
     editCollection:{
-        route: ()=>`/collection/:id/edit`,
-        createRoute:(id)=>{return `/collection/${id}/edit`;}},
+             pre:"/col",
+        route: ()=>`/col/:id/edit`,
+        createRoute:(id)=>{return `/col${id}/edit`;}},
     
     apply:()=>{return "/apply"},
-    book: {
-        route: ()=>{return `/book/:id`;},
-        createRoute:(id)=>{return `/book/${id}`
-    } },
-    collections: "/collections",
+
+    collections: "/cols",
     collection:{
+        pre:"/col",
         route: ()=>{return '/col/:id/view'},
         createRoute:(id)=>{return "/col/"+id+"/view"}
     },
     editor:
     {
-        text:`/story/text/edit`,
-        link:`/story/link/edit`,
-        image:`/story/image/edit`  
+           pre:"/s/editor",
+            route:"/s/editor/:id",
+            createRoute:(id)=>"/s/editor/"+id
     },
     login: `/login`,
     
-    editPage:{route:`/story/:type/edit/:id`,
+    editPage:{
+        pre:"/s",
+        route:`/s/:type/edit/:id`,
         createRoute:(id,type)=>{
             let addType = type
             if(type==PageType.text){
                 addType = "text"
             }
-            return `/story/${addType}/edit/${id}`
+            return `/s/${addType}/edit/${id}`
         }},
 
     addToCollection:{
-        route:'/collection/:id/add',
-        createRoute:(id)=>{return `/collection/${id}/add`}},
-    createCollection:{
-        route:()=>{return "/collection"}
-    },
+        pre:"/col",
+        route:'/col/:id/add',
+        createRoute:(id)=>{return `/col/${id}/add`}},
+    
     addStoryToCollection:{
+        pre:"/item",
         collection:(id)=>`/item/${id}/collection`,
         story:(id)=>`/item/${id}/story`,
                route:"/item/:id/:type",
@@ -75,9 +80,12 @@ const Paths ={
     discovery:"/discovery",
     home:`/home`,
     about:()=>{return `/about`},
-    editProfile:`/profile/edit`,
+    editProfile:
+    
+    `/profile/edit`,
     profile:{route:()=>{return `/profile/:id/view`},
             createRoute:(id)=>{return `/profile/${id}/view`}},
+        
     myProfile:`/profile`,
     notifications:"/profile/alert"
 }

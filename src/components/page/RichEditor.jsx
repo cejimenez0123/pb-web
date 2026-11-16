@@ -1,6 +1,5 @@
 
 import React, { useEffect, useRef, useCallback, useState } from "react";
-import { useSelector } from "react-redux";
 import ErrorBoundary from "../../ErrorBoundary";
 const alignLeft =(<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="24px" width="24px" fill="currentColor"><path d="M3,21V19H21v2H3Zm0-4V15H15v2H3Zm0-4V11H21v2H3ZM3,9V7H15V9H3ZM3,5V3H21V5H3Z"/></svg>)
 const alignCenter =(<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="24px" width="24px" fill="currentColor"><path d="M3,21V19H21v2H3Zm4-4V15H17v2H7ZM3,13V11H21v2H3ZM7,9V7H17V9H7ZM3,5V3H21V5H3Z"/></svg>)
@@ -17,7 +16,7 @@ const codeBlock = (<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" h
 const clearFormat =(<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="24px" width="24px" fill="currentColor"><path d="M13.2,10.35L10.88,8.02L7.85,5H20V8H14.2l-1,2.35ZM19.8,22.6l-8.3-8.3L9.5,19H6.23L9.2,12L1.4,4.2L2.8,2.8L21.2,21.2l-1.4,1.4Z"/></svg>)
 const imageIcon =(<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="24px" width="24px" fill="currentColor"><path d="M5,21q-0.83,0-1.41-0.59T3,19V5Q3,4.17 3.59,3.59T5,3H19q0.83,0 1.41,0.59T21,5V19q0,0.82-0.59,1.41T19,21H5Zm0-2H19V5H5V19Zm1-2H18l-3.75-5l-3,4L9,13L6,17ZM5,19V5V19Z"/></svg>)
 const insetLink =(<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="24px" width="24px" fill="currentColor"><path d="M11,17H7q-2.07,0-3.54-1.46T2,12Q2,9.92 3.46,8.46T7,7h4V9H7Q5.75,9 4.88,9.88T4,12t0.88,2.13T7,15h4v2ZM8,13V11h8v2H8Zm5,4V15h4q1.25,0 2.13-0.88T20,12T19.13,9.88T17,9H13V7h4q2.07,0 3.54,1.46T22,12t-1.46,3.54T17,17H13Z"/></svg>)
-import Enviroment from "../../core/Enviroment";
+
 
 const FONTS = ["Default", "Georgia", "Courier New", "Arial"];
 const SIZES = [ "16px", "18px", "20px", "24px", "32px","36px",];

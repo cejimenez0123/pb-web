@@ -103,7 +103,7 @@ function AllItemsDialog({
         />
       </div>
 
-      <div className="flex max-h-[65vh] flex-col gap-3 overflow-y-auto pb-4">
+      <div className="flex  flex-col gap-3  pb-4">
         {filteredItems.length > 0 ? (
           filteredItems.map((item, index) => (
             <div
@@ -477,6 +477,7 @@ export default function WriteLanding({
   const handleShowAllStories = () => {
     openDialog({
       title: "All your stories",
+         
       text: (
         <AllItemsDialog
           items={visibleStories}
@@ -492,6 +493,7 @@ export default function WriteLanding({
   const handleShowAllRooms = () => {
     openDialog({
       title: "All your rooms",
+
       text: (
         <AllItemsDialog
           items={visibleRooms}
@@ -556,7 +558,7 @@ export default function WriteLanding({
 
         {/* Workspace */}
 
-        <section className="mt-24 sm:mt-28">
+        <section className={[styles.pageShell.body,"mt-14 sm:mt-28"].join(" ")}>
           <div className="flex flex-col gap-5 border-b border-soft/15 pb-7 dark:border-cream/10">
             <SectionHeader
               eyebrow="Your workspace"
@@ -581,16 +583,16 @@ export default function WriteLanding({
             </label>
           </div>
 
-          <div className="mt-10 flex flex-col gap-14">
+          <div className="mt-4 flex flex-col gap-4">
 
             {/* Profile collections */}
 
             {visibleCollections.length > 0 && (
-              <section>
+              <section className={styles.pageShell.body}>
                 <div className="mb-4">
                   <SectionHeader
                     eyebrow="Your profile"
-                    title="Collections"
+                    title=""
                   />
                 </div>
 
@@ -614,70 +616,7 @@ export default function WriteLanding({
 
             {/* Rooms */}
 
-            <section>
-              <div className="mb-5">
-                <SectionHeader
-                  eyebrow="Your spaces"
-                  title="Rooms"
-                />
-              </div>
-
-              {roomsLoading && roomList.length === 0 ? (
-                <LoadingState />
-              ) : previewRooms.length > 0 ? (
-                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                  {previewRooms.map((room, index) => (
-                    <RoomCard
-                      key={room.id || `room-${index}`}
-                      room={room}
-                      onSelect={onSelectRoom}
-                    />
-                  ))}
-                </div>
-              ) : (
-                <p className="py-4 font-serif text-base text-soft/55 dark:text-cream/50">
-                  {hasSearch
-                    ? "No rooms match your search."
-                    : "Your rooms will appear here."}
-                </p>
-              )}
-
-              {visibleRooms.length > 3 && (
-                <div className="mt-6 flex justify-center">
-                  <button
-                    type="button"
-                    onClick={handleShowAllRooms}
-                    className="
-                      inline-flex
-                      items-center
-                      gap-2
-                      rounded-full
-                      border
-                      border-soft/15
-                      px-5
-                      py-3
-                      text-sm
-                      font-medium
-                      text-soft
-                      transition-colors
-                      hover:bg-soft/5
-                      dark:border-cream/15
-                      dark:text-cream
-                      dark:hover:bg-cream/5
-                    "
-                  >
-                    See all rooms
-
-                    <span className="text-soft/50 dark:text-cream/50">
-                      ({visibleRooms.length})
-                    </span>
-
-                    <span aria-hidden="true">→</span>
-                  </button>
-                </div>
-              )}
-            </section>
-
+         
             {/* Stories */}
 
             <section>
@@ -691,7 +630,7 @@ export default function WriteLanding({
               {storiesLoading && storyList.length === 0 ? (
                 <LoadingState />
               ) : previewStories.length > 0 ? (
-                <div className="flex w-[100%] flex-col gap-4">
+                <div className={[styles.pageShell.body,"flex w-[100%] flex-col gap-4"].join(" ")}>
                   {previewStories.map((story, index) => (
                     <StoryCard
                       key={story.id || `story-${index}`}
@@ -755,6 +694,70 @@ export default function WriteLanding({
                 </div>
               )}
             </section>
+               <section>
+              <div className="mb-5">
+                <SectionHeader
+                  eyebrow="Your spaces"
+                  title="Rooms"
+                />
+              </div>
+
+              {roomsLoading && roomList.length === 0 ? (
+                <LoadingState />
+              ) : previewRooms.length > 0 ? (
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  {previewRooms.map((room, index) => (
+                    <RoomCard
+                      key={room.id || `room-${index}`}
+                      room={room}
+                      onSelect={onSelectRoom}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <p className="py-4 font-serif text-base text-soft/55 dark:text-cream/50">
+                  {hasSearch
+                    ? "No rooms match your search."
+                    : "Your rooms will appear here."}
+                </p>
+              )}
+
+              {visibleRooms.length > 3 && (
+                <div className="mt-6 flex justify-center">
+                  <button
+                    type="button"
+                    onClick={handleShowAllRooms}
+                    className="
+                      inline-flex
+                      items-center
+                      gap-2
+                      rounded-full
+                      border
+                      border-soft/15
+                      px-5
+                      py-3
+                      text-sm
+                      font-medium
+                      text-soft
+                      transition-colors
+                      hover:bg-soft/5
+                      dark:border-cream/15
+                      dark:text-cream
+                      dark:hover:bg-cream/5
+                    "
+                  >
+                    See all rooms
+
+                    <span className="text-soft/50 dark:text-cream/50">
+                      ({visibleRooms.length})
+                    </span>
+
+                    <span aria-hidden="true">→</span>
+                  </button>
+                </div>
+              )}
+            </section>
+
           </div>
 
           {/* Global empty search state */}

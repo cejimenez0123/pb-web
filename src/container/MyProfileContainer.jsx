@@ -47,7 +47,7 @@ function MyProfileContainer() {
 
 
 
-  const [tab, setTab] = useState(TABS.PORTFOLIO);
+  const [tab, setTab] = useState(TABS.HOME);
   const [homeSearchInput, setHomeSearchInput] =
     useState("");
      const [homeSearch, setHomeSearch] =

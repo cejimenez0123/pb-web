@@ -492,7 +492,7 @@ primary: [
   "active:shadow-sm",
 ].join(" "),
 
-danger:[" border-plumb-button-danger-bg bg-transparent",
+danger:[" border-plumb-button-danger-bg text-plumb-button-bg bg-transparent",
   " text-white border  border-1 border",
   " dark:bg-transparent",
   " font-open-sans rounded-full  ",].join(" "),
