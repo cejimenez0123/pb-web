@@ -61,7 +61,7 @@ export default function IndexItem({item,type}) {
       if(comp.author){
         dispatch(setHtmlContent(comp.data))
         dispatch(setPageInView({page:comp}))
-        // dispatch(setPageInView({page:comp}))
+   
         router.push(Paths.editor.route);
       }else{
         router.push(Paths.editCollection.createRoute(comp.id))

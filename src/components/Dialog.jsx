@@ -563,6 +563,7 @@ style={
               type="button"
               onClick={dialog.disagree}
               className={`
+                dark:text-plumb-surface
                 ${styles.button.base}
                 ${styles.button.secondary}
                 ${styles.button.large}
@@ -573,17 +574,20 @@ style={
           )}
 
           {dialog.agree && (
-            <button
+            <div
               type="button"
               onClick={dialog.agree}
               className={`
+                border-plumb-mint
+                dark:border-plumb-mintLight
+                border-1 border
                 ${styles.button.base}
                 ${styles.button.primary}
                 ${styles.button.large}
               `}
             >
               {dialog.agreeText || "Continue"}
-            </button>
+            </div>
           )}
         </footer>
       )}

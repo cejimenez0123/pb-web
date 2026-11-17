@@ -15,6 +15,7 @@ export default function UpcomingEventsSection({
   currentProfile,
   onViewEvents,
 }) {
+
  const {showAlert,showPrompt}=useAlert()
  const router =useIonRouter()
   const handleSelectSuggestedEvent = async (event) => {
@@ -63,6 +64,38 @@ showPrompt({
     });
   }
 };
+const now = new Date();
+const today = new Date(now);
+today.setHours(0, 0, 0, 0);
+
+const upcomingEvents = events
+  .map((story) => ({
+    ...story,
+    eventInfo: extractEventDateInfo(story),
+  }))
+  .filter(({ eventInfo }) => {
+    const { date, isDateOnly } = eventInfo;
+
+    // Keep events when no date could be extracted.
+    if (!date) return true;
+
+    // Date-only events remain upcoming throughout today.
+    if (isDateOnly) return date >= today;
+
+    // Timed events must not have already started.
+    return date >= now;
+  })
+  .sort((a, b) => {
+    const dateA = a.eventInfo.date?.getTime() ?? Infinity;
+    const dateB = b.eventInfo.date?.getTime() ?? Infinity;
+
+    return dateA - dateB;
+  })
+  .slice(0, 2);
+
+
+
+
   return (
     <section className={[styles.pageShell.body,"mt-14"].join(" ")} aria-label="Upcoming events">
       <SectionHeader
@@ -83,17 +116,20 @@ showPrompt({
       />
 
       <div className="mt-6">
-        {events.length > 0 ? (
-          <div className="space-y-3">
-            {events.slice(0,2).map((event) => {
-              const eventDate = extractEventDate(event.data);
-              const eventTime = formatEventTime(eventDate);
-              const metadata = extractEventMetadata(event.data);
+        {upcomingEvents.length > 0 ? (
+  <div className="space-y-3">
+    {upcomingEvents.map((event) => {
+    
+      const eventDate = event.eventInfo.date;
+    
+      const eventTime = formatEventTime(eventDate);
+      const metadata = extractEventMetadata(getEventHtml(event));
 
-              const location = event.location || metadata.location;
-              const area = event.area || metadata.area;
-              const moreInfoUrl =
-                event.moreInfoUrl || metadata.moreInfoUrl;
+      const location = event.location || metadata.location;
+      const area = event.area || metadata.area;
+      const moreInfoUrl =
+        event.moreInfoUrl || metadata.moreInfoUrl;
+    
 
               return (
                 <article
@@ -106,22 +142,41 @@ showPrompt({
                     p-5
                     dark:bg-plumb-dark-surface
                   "
-                  onClick={()=>handleSelectSuggestedEvent(event)}
+                  onClick={()=>{
+router.push(Paths.page.createRoute(event.id))
+                  }
+                }
+                    // handleSelectSuggestedEvent(event)}
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div className="min-w-0">
-                      <p className="text-xs font-medium uppercase tracking-[0.12em] text-text-brand">
-                        {eventDayLabel(eventDate)}
-                      </p>
 
-                      <h3 className="mt-1 font-serif text-xl leading-tight text-text-primary dark:text-text-dark">
-                        {event.title || "Untitled event"}
-                      </h3>
+
+                   <h3 className="mt-1 font-serif text-xl leading-tight text-text-primary dark:text-text-dark">
+  {event.title || "Untitled event"}
+</h3>
+<div className="flex flex-row gap-1">
+                                  {eventDate && (
+  <p className="text-xs font-medium uppercase my-auto tracking-[0.12em] text-text-brand">
+    {eventDayLabel(eventDate)}:
+  </p>
+)}
+
+
+{eventTime && (
+  <span className="shrink-0 text-xs my-auto font-medium text-text-secondary">
+    {eventTime}
+  </span>
+)}</div>
                     </div>
 
                     <span className="shrink-0 text-sm font-medium text-text-secondary">
-                      {eventTime || "Time TBD"}
+
+
+
+                      {/* {eventTime || "Time TBD"} */}
                     </span>
+                    {/*  */}
                   </div>
 
                   {location && (
@@ -302,4 +357,97 @@ function extractEventMetadata(data) {
   result.moreInfoUrl = linkMatch?.[1] || "";
 
   return result;
+}
+
+function extractEventDateInfo(story) {
+  console.log("EXTRACT")
+  console.log(story)
+  const html = getEventHtml(story);
+
+  if (!html) {
+    return {
+      date: null,
+      isDateOnly: false,
+      source: "missing-html",
+    };
+  }
+
+  const patterns = [
+    // Semantic HTML
+    /<time\b[^>]*\bdatetime=["']([^"']+)["']/i,
+
+    // Common event date attributes
+    /data-start-date=["']([^"']+)["']/i,
+    /data-event-date=["']([^"']+)["']/i,
+
+    // JSON-LD
+    /"startDate"\s*:\s*"([^"]+)"/i,
+
+    // Organizer-generated metadata
+    /(?:Date|When|Starts|Event date)\s*:\s*<\/?[^>]*>?\s*([^<\n]+)/i,
+  ];
+
+  let value = null;
+  let source = null;
+
+  for (let i = 0; i < patterns.length; i++) {
+    const match = html.match(patterns[i]);
+
+    if (match?.[1]) {
+      value = match[1].trim();
+      source = `pattern-${i}`;
+      break;
+    }
+  }
+
+  if (!value) {
+    return {
+      date: null,
+      isDateOnly: false,
+      source: "not-found",
+    };
+  }
+
+  const isDateOnly = /^\d{4}-\d{2}-\d{2}$/.test(value);
+
+  let date;
+
+  if (isDateOnly) {
+    const [year, month, day] = value.split("-").map(Number);
+    date = new Date(year, month - 1, day);
+  } else {
+    date = new Date(value);
+  }
+
+  if (Number.isNaN(date.getTime())) {
+    return {
+      date: null,
+      isDateOnly: false,
+      source: "invalid-date",
+    };
+  }
+
+  return { date, isDateOnly, source };
+}
+function getEventHtml(story) {
+  if (!story) return "";
+
+  const candidates = [
+    story.data,
+    story.content,
+    story.html,
+    story.body,
+    story.page?.data,
+    story.page?.content,
+    story.event?.data,
+    story.event?.content,
+    story.story?.data,
+    story.story?.content,
+  ];
+
+  return candidates.find(
+    (value) =>
+      typeof value === "string" &&
+      value.trim().length > 0
+  ) || "";
 }

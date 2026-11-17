@@ -8,7 +8,15 @@ import { Geolocation } from "@capacitor/geolocation";
 import { Capacitor } from "@capacitor/core";
 import { IonContent, IonLoading, useIonRouter } from "@ionic/react";
 import { SocialLogin } from "@capgo/capacitor-social-login";
+import {
+ 
+  deleteUserAccounts,
 
+  signOutAction,
+} from "../actions/UserActions";
+import { updateProfile } from "../actions/UserActions";
+import { deletePicture } from "../actions/UserActions";
+import {uploadProfilePicture  } from "../actions/ProfileActions";
 import { useAlert } from "../core/useAlert.jsx";
 import AlertType from "../core/AlertType.js";
 import checkResult from "../core/checkResult";
@@ -16,14 +24,6 @@ import Enviroment from "../core/Enviroment";
 import Paths from "../core/paths";
 import fetchCity from "../core/fetchCity";
 
-import {
-  updateProfile,
-  deleteUserAccounts,
-  deletePicture,
-  signOutAction,
-} from "../actions/UserActions";
-
-import { uploadProfilePicture } from "../actions/ProfileActions";
 
 import {
   fetchBlockedProfiles,
@@ -32,6 +32,7 @@ import {
 
 import { useDialog } from "../domain/usecases/useDialog";
 import GoogleMapSearch from "./collection/GoogleMapSearch";
+import styles from "../styles/style.js";
 
 const SPRINT_SLOTS = [
   { id: "morning", label: "Morning", emoji: "🌅", time: "7:00 AM" },
@@ -44,6 +45,7 @@ const SPRINT_SLOTS = [
 const DEFAULT_PICTURE = "https://placehold.co/200";
 
 const FIELD_CLASSES = `
+text-base
   input-bordered
   border-plumb-borderStrong
   bg-plumb-surface
@@ -263,73 +265,102 @@ export default function SettingsContainer() {
     setPictureUrl(URL.createObjectURL(selected));
   };
 
-  // Save profile changes.
-  const handleSubmit = async () => {
-    if (!currentProfile || saving) return;
+const handleSubmit = async () => {
+  if (!currentProfile || saving) return;
 
-    setSaving(true);
+  setSaving(true);
 
-    try {
-      let profilePicture = form.profilePicture;
+  const oldProfilePicture = currentProfile.profilePic;
 
-      if (file) {
-        if (currentProfile.profilePic) {
-          await dispatch(
-            deletePicture({
-              fileName: currentProfile.profilePic,
-            })
-          );
-        }
+  try {
+    let profilePicture = form.profilePicture;
 
-        const upload = await dispatch(
-          uploadProfilePicture({ file })
-        );
+    // 1. Upload the replacement picture.
+    if (file) {
+      const upload = await dispatch(
+        uploadProfilePicture({
+          file,
+          id: currentProfile.id,
+        })
+      ).unwrap();
 
-        checkResult(upload, (payload) => {
-          profilePicture = payload.fileName;
-        });
+      if (!upload?.fileName || !upload?.url) {
+        throw new Error("Image upload did not return a valid result.");
       }
 
-      const result = await dispatch(
-        updateProfile({
-          profile: currentProfile,
-          username: form.username,
-          profilePicture,
-          writingSprintSlots: form.writingSprintSlots,
-          selfStatement: form.selfStatement,
-          privacy: form.isPrivate,
-          location: form.location,
-        })
-      );
-
-      checkResult(
-        result,
-        () => {
-          showAlert({
-            message: "Profile updated",
-            type: AlertType.success,
-          });
-
-          setFile(null);
-        },
-        (err) => {
-          showAlert({
-            message: err.message,
-            type: AlertType.error,
-          });
-        }
-      );
-    } catch (err) {
-      console.error("Profile update failed:", err);
-
-      showAlert({
-        message: err?.message || "Update failed",
-        type: AlertType.error,
-      });
-    } finally {
-      setSaving(false);
+      profilePicture = upload.fileName;
     }
-  };
+
+    // 2. Persist the profile changes.
+    // updateProfile.fulfilled updates currentProfile in Redux.
+    const result = await dispatch(
+      updateProfile({
+        profile: currentProfile,
+        username: form.username,
+        profilePicture,
+        writingSprintSlots: form.writingSprintSlots,
+        selfStatement: form.selfStatement,
+        privacy: form.isPrivate,
+        location: form.location,
+      })
+    ).unwrap();
+
+    if (!result?.profile) {
+      throw new Error("Profile update failed.");
+    }
+
+    // 3. Delete the previous picture only after successful persistence.
+    if (
+      file &&
+      oldProfilePicture &&
+      oldProfilePicture !== profilePicture
+    ) {
+      try {
+        await dispatch(
+          deletePicture({
+            fileName: oldProfilePicture,
+          })
+        ).unwrap();
+      } catch (error) {
+        console.warn(
+          "Old profile picture cleanup failed:",
+          error
+        );
+      }
+    }
+
+    // 4. Update local state.
+    setForm((prev) => ({
+      ...prev,
+      profilePicture,
+    }));
+
+    setFile(null);
+
+    setPictureUrl(
+      profilePicture
+        ? Enviroment.imageProxy(profilePicture)
+        : DEFAULT_PICTURE
+    );
+
+    showAlert({
+      message: "Profile updated",
+      type: AlertType.success,
+    });
+
+  } catch (err) {
+    console.error("Profile update failed:", err);
+
+    showAlert({
+      message: err?.message || "Update failed",
+      type: AlertType.error,
+    });
+  } finally {
+    setSaving(false);
+  }
+};
+
+
 
   // Load blocked users and display the list.
   const handleShowBlocked = () => {
@@ -539,6 +570,7 @@ export default function SettingsContainer() {
 
   return (
     <IonContent fullscreen>
+   
       <IonLoading
         isOpen={locationLoading || saving}
         message={
@@ -546,25 +578,17 @@ export default function SettingsContainer() {
         }
         spinner="crescent"
       />
-
-      <div
-        className="
-          flex min-h-[100dvh] justify-center
-          bg-plumb-canvas px-4 pt-20 pb-32
-          text-plumb-ink
-          dark:bg-plumb-dark-canvas dark:text-plumb-darkText
-        "
-      >
-        <div
-          className="
+         <main className={[styles.pageShell.base, "px-2"].join(" ")}>
+          <div className={styles.pageShell.body}>
+<section className= {[styles.pageShell.body,`
             card h-fit w-full max-w-xl space-y-6
             rounded-3xl border p-6 sm:p-8
             border-plumb-borderStrong bg-plumb-paper
             dark:border-plumb-darkBorderStrong
             dark:bg-plumb-dark-surface
             shadow-sm
-          "
-        >
+          `].join(" ")}
+        > 
           <h2
             className="
               text-center font-serif text-2xl font-semibold
@@ -636,19 +660,19 @@ export default function SettingsContainer() {
               </div>
             </div>
 
-            <label htmlFor="settings-picture" className="w-full">
-              <span className="label mb-2 block">
+            <label htmlFor="settings-picture"  className="w-[100%]">
+              <span className="label  mb-2 block">
                 <span className="label-text font-medium text-plumb-text dark:text-plumb-darkText">
                   Profile Picture
                 </span>
               </span>
-
+<div className="flex flex-row justify-start">
               <input
                 id="settings-picture"
                 type="file"
                 accept="image/*"
                 className="
-                  file-input file-input-bordered w-full
+                  file-input file-input-bordered  w-[80%] mx-auto 
                   border-plumb-borderStrong
                   bg-plumb-surface text-plumb-text
                   file:border-0 file:bg-plumb-mint file:text-white
@@ -663,6 +687,7 @@ export default function SettingsContainer() {
                 "
                 onChange={handleImage}
               />
+              </div>
             </label>
           </div>
 
@@ -719,6 +744,7 @@ export default function SettingsContainer() {
               maxLength={120}
               aria-describedby="settings-statement-count"
               className={`
+
                 textarea textarea-bordered
                 min-h-32 w-full resize-y rounded-xl
                 ${FIELD_CLASSES}
@@ -917,8 +943,9 @@ export default function SettingsContainer() {
           >
             Delete Account
           </button>
+          </section>
         </div>
-      </div>
+</main>
     </IonContent>
   );
 }

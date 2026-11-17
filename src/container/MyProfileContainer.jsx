@@ -240,11 +240,11 @@ const tabs = [
  
       text-plumb-blueSea
       bg-transparent
-      min-h-11 px-5 py-2.5
+      min-h-11 px-5 py-2
       inline-flex items-center justify-center 
      flex flex-col
  
-      dark:border dark:border-current
+      
     `}
   >
     
@@ -261,7 +261,7 @@ const tabs = [
     title="Settings"
     onClick={() => router.push(Paths.editProfile)}
     className={`
-  
+
     my-auto p-6 
 text-plumb-blueSea
     `}
@@ -360,7 +360,7 @@ id={tabs.find(t=>t.key==TABS.PORTFOLIO)?.collectionId}
     searchInput={eventsSearchInput}
 
     setSearchInput={setEventsSearchInput}
-    // resource={eventsResource}
+
     resource={eventCollectionsResource}
                   
                   />

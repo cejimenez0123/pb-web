@@ -19,9 +19,10 @@ export default function EventsSection({
   const eventsCollection = profile?.profileToCollections?.find(
     (item) => item.type === "events"
   )?.collection;
-
-  const collectionId = eventsCollection?.id;
-
+console.log(eventsCollection)
+console.log("RPF"+profile?.id)
+  const collectionId = eventsCollection.id
+console.log(collectionId)
   return (
     <section aria-labelledby="events-heading">
       <div className={styles.profile.mine.sectionHeader}>

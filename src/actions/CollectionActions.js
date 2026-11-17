@@ -193,10 +193,7 @@ const deleteStoryFromCollection = createAsyncThunk(
     return data
   }
 )
-// const deleteStoryFromCollection = createAsyncThunk("collection/deleteStoryFromCollection", async ({ storyId, collectionId }, thunkApi) => {
-//   let data = await collectionRepo.deleteStoryToCollection({ storyId, collectionId })
-//   return data
-// })
+
 
  const deleteCollectionFromCollection = createAsyncThunk("collection/deleteCollectionFromCollection",async({tcId},thunkApi)=>{
    try{

@@ -1,12 +1,12 @@
 import UpcomingEventsSection from "./UpcomingEventsSection";
 const EMPTY_ARRAY = [];
 function FeaturedEventSection({
+  events,
   onViewEvents,
   currentProfile,
 }) {
 
-  // Keep empty until the Home event data source is connected.
-  const upcomingEvents =currentProfile.profileToCollections.find(c=>c.type=="events").collection.storyIdList??EMPTY_ARRAY
+
 
   return (
     <section
@@ -15,10 +15,24 @@ function FeaturedEventSection({
     >
       <UpcomingEventsSection
         profile={currentProfile}
-        events={upcomingEvents.map(t=>t.story)}
+        events={events}
         onViewEvents={onViewEvents}
       />
     </section>
   );
 }
 export default FeaturedEventSection
+function getEventHtml(event) {
+  const candidates = [
+    event?.data,
+    event?.page?.data,
+    event?.story?.data,
+    event?.event?.data,
+    event?.content,
+    event?.page?.content,
+  ];
+
+  return candidates.find(
+    (value) => typeof value === "string" && value.trim()
+  ) || "";
+}

@@ -19,7 +19,7 @@ const isDesktop = useMediaQuery({
 
 const isUsersPublicProfile = pathname == Paths.profile.createRoute(currentProfile?.id)
 const showBackPath = [Paths.editor.pre,Paths.page.pre,Paths.collection.pre,Paths.editCollection.pre
-  ,Paths.feedback(),Paths.editProfile,Paths.editor
+  ,Paths.feedback(),Paths.editProfile,Paths.editor,Paths.workshop.pre
 ]
 
   const hiddenLoggedOut = [

@@ -36,7 +36,9 @@ const TAG_ICON = (
   </svg>
 );
 
-function EditorFooter({ pageInView, effectiveId, openConfirmDeleteDialog }) {
+function EditorFooter({ pageInView,routeId, effectiveId, openConfirmDeleteDialog }) {
+  console.log("FOOT"+routeId)
+  console.log("FOOFEF"+effectiveId)
   const [openHashtag, setOpenHashtag] = useState(false);
   const pathname = typeof window !== "undefined" ? window.location.pathname : "";
   const isEditorRoute = pathname.split("/").pop() !== "edit";
@@ -54,7 +56,7 @@ function EditorFooter({ pageInView, effectiveId, openConfirmDeleteDialog }) {
           exit={{ opacity: 0, y: 6 }}
           transition={{ duration: 0.22, ease: "easeOut" }}
         >
-          <div className="flex flex-row justify-between ">
+          <div className="flex flex-row mb-4 justify-between ">
             <div
               type="button"
               onClick={() => setOpenHashtag((previous) => !previous)}
@@ -118,9 +120,11 @@ function EditorFooter({ pageInView, effectiveId, openConfirmDeleteDialog }) {
                       ))}
                     </div>
                   )}
+                  <div >
                   <HashtagForm 
                effectiveId={ effectiveId}
                   item={pageInView} type="story" />
+                </div>
                 </div>
               </motion.div>
             )}

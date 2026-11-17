@@ -38,7 +38,9 @@ handleBack
           
           <button
             type="button"
-            onClick={()=> showBack?isLoggedIn?handleNotifications():handleBack():handleHome()}
+            onClick={()=> 
+              isLoggedIn?!showBack?handleNotifications():handleBack():handleHome()
+             }
            
                  className="text-plumb-surface font-open-sans text-base bg-transparent"
             aria-label="Go to Plumbum home"

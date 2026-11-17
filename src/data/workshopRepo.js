@@ -22,13 +22,13 @@ async findWorkshops({ radius = 50, global = true, location, type, skip, take }) 
         { params: { radius, global, type, skip, take }, headers }  // config — params + headers
     ).then(res => res.data);
 }
-async joinWorkshop({ profile, story, location, radius = 50, isGlobal = false }) {
+async joinWorkshop({  story, location, radius = 50, isGlobal = false }) {
  
   const headers = await this.getAuthHeaders();
   const query = new URLSearchParams({ radius, global: isGlobal });
   const res = await axios.post(
     `${this.url}/group/join?${query.toString()}`,
-    { profile, story, location },
+    {  story, location },
     { headers }
   );
   return res.data;

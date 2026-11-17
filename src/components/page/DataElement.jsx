@@ -162,7 +162,7 @@ export default function DataElement({
       return (
         <>
           {hasAnnotations && isStoryRoute && (
-            <div className="flex justify-end px-2 pt-2">
+            <div className="flex dark:text-plumb-surface justify-end px-2 pt-2">
               <button
                 type="button"
                 onClick={(e) => {

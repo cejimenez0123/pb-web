@@ -57,7 +57,7 @@ const liClass=" dark:bg-base-bg dark:border-b dark:border-1 dark:border-plumb-su
   
     onClick={handleHandOut}
   >
-   <p className={pLiClass}> Share</p>
+   <p className={pLiClass}> Publish & Get Feedback</p>
   </li>
 )}
         <li   

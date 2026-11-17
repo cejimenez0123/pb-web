@@ -47,7 +47,27 @@ async search(query = "", filters = []) {
     );
     return res.data;
   }
+  async searchMyWork(query = "", filters = []) {
+    const headers = await this.getAuthHeaders();
 
+    const params = {
+      q: query ?? "",
+    };
+
+    filters.forEach((filter, index) => {
+      params[index] = filter;
+    });
+
+    const res = await axios.get(
+      `${Enviroment.url}/api/algolia/search/my-work`,
+      {
+        headers,
+        params,
+      }
+    );
+
+    return res.data;
+  }
   // 🗑️ Delete object from Algolia
   async deleteObject(indexName, objectID) {
     const headers = await this.getAuthHeaders();

@@ -98,7 +98,7 @@ seen:seen
     async updateProfile(params){
         let headers = await this.getAuthHeaders()
 
-        let res = await axios.patch(this.url+"/"+params.profile.id,{
+        let res = await axios.patch(this.url+"/me",{
             ...params
         },{headers:headers})
     

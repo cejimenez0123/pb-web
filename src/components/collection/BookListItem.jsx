@@ -33,7 +33,8 @@ function BookListItem({ book }) {
   return (
     <div
       onClick={navigateToBook}
-      className={styles.hash.card+" h-[12em]"}
+      className={["border border-2 border-plumb-mint/30 darK:bg-surface dark:border-plumb-mintLight max-w-30 rounded-2xl h-[10em] p-4 w-[18em]"].join(" ")}
+      // className={[styles.hash.card," border border-2 border-plumb-mint/30 darK:bg-surface dark:border-plumb-mintLight max-w-30"].join(" ")}
 
     >
 

@@ -55,6 +55,7 @@ import TabBar from "../../components/TabBar.jsx";
 import PlumbHead from "../head.jsx";
 import PlumbButton from "../../components/profile/FollowButton.jsx";
 import InsideRoom from "../../components/collection/InsideRoom.jsx";
+import { Capacitor } from "@capacitor/core";
 
 // ---------------------------------------------------------
 // Layout
@@ -107,7 +108,9 @@ const router = useIonRouter()
     (state) => state.users.currentProfile
   );
 
- 
+ const colId = router.routeInfo.pathname.split("/")[router.routeInfo.pathname.split("/").length-2]
+console.log("Col")
+console.log(colId)
   const collection = useSelector(
     (state) => state.books.collectionInView
   );
@@ -953,15 +956,15 @@ const handleArchive = () =>
                   what is inside this room.
                 </p>
 
-                <div
+               {!Capacitor.isNativePlatform() && <div
                   type="button"
                   onClick={() =>
-                    router.push(Paths.collections.path)
+                    router.goBack()
                   }
                   className={PRIMARY_BUTTON}
                 >
-                  Back to Rooms
-                </div>
+                  Back to Room
+                </div>}
               </div>
             </div>
           </main>
@@ -1001,15 +1004,15 @@ const handleArchive = () =>
                   return to Rooms and try again.
                 </p>
 
-                <button
+          {!Capacitor.isNativePlatform() && <div
                   type="button"
                   onClick={() =>
-                    router.push(Paths.collections.path)
+                    router.goBack()
                   }
                   className={PRIMARY_BUTTON}
                 >
-                  Back to Rooms
-                </button>
+                  Back to Room
+                </div>}
               </div>
             </div>
           </main>
@@ -1091,8 +1094,7 @@ type={collection.type}
                   type="button"
                   onClick={() =>
                     router.push(
-                      Paths.editCollection.createRoute(
-                        collection.id
+                      Paths.editCollection.createRoute( colId
                       )
                     )
                   }
@@ -1108,7 +1110,7 @@ type={collection.type}
                   onClick={() =>
                     router.push(
                       Paths.addToCollection.createRoute(
-                        collection.id
+                      colId
                       )
                     )
                   }

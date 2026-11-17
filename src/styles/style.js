@@ -228,19 +228,9 @@ hash: {
     flex flex-col gap-3
     min-w-0 w-full
   `,
-    //  group
-    //     w-[100%]
-    //     text-left
-    //     transition-all
-    //     duration-200
-    //     focus:outline-none
-    //     focus:ring-2
-    //     focus:ring-soft/40
-    //     focus:ring-offset-2
-    //     focus:ring-offset-cream
-    //     dark:focus:ring-offset-base-bgDark
 
   card: `
+  w-[100%]
     relative flex flex-col gap-4
     rounded-2xl  p-4 sm:p-5
   border
@@ -495,21 +485,24 @@ primary: [
 danger:[" border-plumb-button-danger-bg text-plumb-button-bg bg-transparent",
   " text-white border  border-1 border",
   " dark:bg-transparent",
+  
   " font-open-sans rounded-full  ",].join(" "),
 
   
 secondary: [
-  "py-2 px-6 ",
-  "border border-2 border-plumb-button-secondary-bg rounded-full",
-"rounded-full",
-"bg-plumb-button-secondary-bg text-plumb-surface dark:text-plumb-button-secondary-bg"
-,
-"text-surface",
-"shadow-sm",
-"dark:bg-transparent   ",
-"hover:bg-plumb-button-secondary-hover/60 hover:border-3",
+     "border border-2 border-plumb-button-secondary-bg rounded-full",
+    "rounded-full font-semiBold rounded-full  ",
+  "bg-plumb-button-secondary-bg text-plumb-surface dark:text-plumb-button-secondary-bg text-plumb-surface",
+  " dark:bg-transparent",
+
+  "hover:bg-plumb-button-secondary-hover/60 hover:border-3",
 "hover:shadow-md",
 "active:shadow-sm",
+  "hover:bg-plumb-mint/60 hover:border-plumb-mintLight hover:border-3",
+,
+
+
+
 ].join(" "),
 
   accent: [
@@ -1070,14 +1063,14 @@ searchbar: [
 
   empty: [
     "px-3",
-    "py-12",
+    "py-2",
     "text-center",
-    "sm:py-16",
+    "sm:py-4",
   ].join(" "),
 
   emptyTitle: [
     "font-serif",
-    "text-xl",
+    "text-lg",
     "text-plumb-ink",
     "dark:text-plumb-darkText",
   ].join(" "),
@@ -1086,7 +1079,7 @@ searchbar: [
     "mx-auto",
     "mt-2",
     "max-w-md",
-    "text-sm",
+    "text-base",
     "leading-relaxed",
     "text-plumb-muted",
     "dark:text-plumb-darkSubtle",

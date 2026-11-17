@@ -3,7 +3,7 @@ import storyRepo from "../data/storyRepo";
 import { PageType } from "../core/constants";
 import { Preferences } from "@capacitor/preferences";
 import algoliaRepo from "../data/algoliaRepo";
-import { FirebaseStorage } from "@capacitor-firebase/storage";
+import { getStorage, ref, deleteObject } from "firebase/storage";
 
 const getStory = createAsyncThunk("story/getStory",async ({id},thunkApi)=>{
   try{
@@ -30,19 +30,28 @@ const getStory = createAsyncThunk("story/getStory",async ({id},thunkApi)=>{
 const deleteStory = createAsyncThunk(
   "pages/deleteStory",
   async (params, thunkApi) => {
-    try {
-      const { page } = params;
+         const { page } = params;
+         
 
-      if (page && page.type === PageType.picture) {
-        try {
-          await FirebaseStorage.deleteFile({
-            path: page.data,
-          });
-        }catch (error) {
-  return thunkApi.rejectWithValue({
-    message: error.message,
-  });
-}}
+    try {
+ 
+      
+   
+if (page?.type === PageType.picture && page.data) {
+       
+          // page.data is the Firebase download URL.
+         const storage = getStorage();
+
+  const imageRef = ref(storage, page.data);
+
+  await deleteObject(imageRef);
+
+
+         
+        } 
+        
+      
+        
 
       await storyRepo.deleteStory({
         id: page.id,

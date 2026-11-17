@@ -1,5 +1,8 @@
 import { useIonRouter } from "@ionic/react";
 import styles from "../styles/style";
+import truncate from "html-truncate";
+import Paths from "../core/paths";
+import Enviroment from "../core/Enviroment";
 
   
 const TYPE_LABELS = {
@@ -9,7 +12,7 @@ const TYPE_LABELS = {
   hashtag: "Hashtag",
 };
 
-  const ResultItem = ({result, index}) => {
+  const ResultItem = ({result, index,searchScope}) => {
   
     const item = result?.item ?? {};
 
@@ -25,23 +28,31 @@ const router = useIonRouter()
     if (!result?.type || !result?.objectID) {
       return;
     }
-
-   result && router.push(
-      `/${result?.type}/${result?.objectID}/view`
-    );
+ 
+    
+    let path = ""
+    switch(result.type){
+      case "story":
+      path =  Paths.page.createRoute(result.objectID)
+break
+      case "profile": path =  Paths.profile.createRoute(result.objectID)
+      break;
+      case "hashtag": path =  Paths.hashtag.createRoute(result.objectID)
+      break;
+      case "collection":Paths.collection.createRoute(result.objectID)
+      break
+    }
+   
+    router.push(path);
   };
 
 
-    const description = result? getItemDescription(
-      item,
-      result?.type
-    ):null
 
     const author = result? getItemAuthor(
       item,
       result?.type
     ):null
-console.log(item)
+
     const typeLabel = result?
       TYPE_LABELS[result?.type] || result.type:null
 
@@ -61,18 +72,18 @@ console.log(item)
           {title}
         </div>
 
-        <div 
+    { <div 
         className={styles.text.metadata}
         >
           {typeLabel}
-          {author ? ` · ${author}` : ""}
-        </div>
+       {(!(searchScope=="mine") && author) ? ` · ${author}` : ""}
+        </div>}
 
-        {description && (
+        {/* {description && (
           <p className={styles.text.metadata}>
             {description}
           </p>
-        )}
+        )} */}
       </div>
     );
   }
@@ -80,12 +91,12 @@ console.log(item)
   
 
   function getItemDescription(item) {
-  return (
+  return truncate(
     item?.description ||
     item?.story?.description ||
     item?.collection?.purpose ||
     ""
-  );
+  ,50)
 }
 
 function getItemTitle(item) {

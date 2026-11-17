@@ -20,11 +20,12 @@ const Paths ={
         pre:"/s",
         route: ()=>`/s/:id/view`,createRoute:(id)=>{return `/s/${id}/view`
     }},
+    
     workshop:{
              pre:"/workshop",
-        route:()=>"/workshop/page/:storyId",
+        route:()=>"/workshop/:storyId",
         reader:()=>"/workshop",
-        createRoute:(pageId)=>{return "/workshop/page/"+pageId}
+        createRoute:(pageId)=>{return "/workshop/"+pageId}
     },
     hashtag:{
              pre:"/hashtag",
@@ -34,11 +35,12 @@ const Paths ={
     editCollection:{
              pre:"/col",
         route: ()=>`/col/:id/edit`,
-        createRoute:(id)=>{return `/col${id}/edit`;}},
+        createRoute:(id)=>{return `/col/${id}/edit`;}},
     
     apply:()=>{return "/apply"},
 
     collections: "/cols",
+
     collection:{
         pre:"/col",
         route: ()=>{return '/col/:id/view'},
@@ -82,7 +84,7 @@ const Paths ={
     about:()=>{return `/about`},
     editProfile:
     
-    `/profile/edit`,
+    `/me/edit`,
     profile:{route:()=>{return `/profile/:id/view`},
             createRoute:(id)=>{return `/profile/${id}/view`}},
         

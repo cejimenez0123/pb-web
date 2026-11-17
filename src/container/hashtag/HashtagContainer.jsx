@@ -48,6 +48,7 @@ import usePaginatedResource from "../../core/usePaginatedResource.jsx";
 import grid from "../../images/grid.svg";
 import stream from "../../images/stream.svg";
 import styles from "../../styles/style.js";
+import FollowButton from "../../components/profile/FollowButton.jsx";
 
 
 // ---------------------------------------------------------
@@ -60,19 +61,9 @@ const PAGE =
 const SECTION =
   "py-8 sm:py-10";
 
-const BUTTON =
-  "inline-flex items-center justify-center h-11 px-5 rounded-full " +
-  "text-sm font-medium transition-all duration-200 " +
-  "focus:outline-none focus:ring-2 focus:ring-button-primary-bg/30 " +
-  "disabled:opacity-50 disabled:pointer-events-none";
 
-const PRIMARY_BUTTON =
-  `${BUTTON} bg-button-primary-bg text-white hover:bg-button-primary-hover`;
 
-const SECONDARY_BUTTON =
-  `${BUTTON} border border-card-border bg-card-background ` +
-  `text-text-primary hover:border-button-primary-bg ` +
-  `hover:text-text-brand`;
+
 
 const PAGE_SIZE = 20;
 
@@ -166,7 +157,7 @@ export default function HashtagContainer() {
       pagesInView.filter(Boolean),
     [pagesInView]
   );
-
+console.log("sTORIES:"+stories.length)
 
   // -------------------------------------------------------
   // Scroll / responsive behavior
@@ -188,6 +179,12 @@ export default function HashtagContainer() {
   // Load hashtag
   // -------------------------------------------------------
 
+  const followLabel =
+    following?.approved === false
+      ? "Requested"
+      : following
+        ? "Following"
+        : "Follow";
   useLayoutEffect(() => {
     if (!id) return;
 
@@ -200,17 +197,17 @@ export default function HashtagContainer() {
        * Clear stale room content when moving
        * from one hashtag to another.
        */
-      dispatch(
-        setCollections({
-          collections: [],
-        })
-      );
+      // dispatch(
+      //   setCollections({
+      //     collections: [],
+      //   })
+      // );
 
-      dispatch(
-        setPagesInView({
-          pages: [],
-        })
-      );
+      // dispatch(
+      //   setPagesInView({
+      //     pages: [],
+      //   })
+      // );
 
       try {
         const result = await dispatch(
@@ -523,22 +520,24 @@ const margin = `
 
 
                 {currentProfile && (
-                  <button
-                    type="button"
-                    onClick={handleFollow}
-                    disabled={followPending}
-                    className={
-                      following
-                        ? SECONDARY_BUTTON
-                        : PRIMARY_BUTTON
-                    }
-                  >
-                    {followPending
-                      ? "..."
-                      : following
-                        ? "Following"
-                        : "Follow"}
-                  </button>
+                  <FollowButton label={followLabel} following={following} isSelf={false}
+              onClick={handleFollow}/> 
+                  // <div
+                  //   type="button"
+                  //   onClick={handleFollow}
+                  //   disabled={followPending}
+                  //   className={
+                  //     styles.button.base+" "+
+                  //     following
+                  //       ?  PRIMARY_BUTTON:SECONDARY_BUTTON
+                  //   }
+                  // >
+                  //   {followPending
+                  //     ? "..."
+                  //     : following
+                  //       ? "Following"
+                  //       : "Follow"}
+                  // </div>
                 )}
 
               </div>
@@ -565,21 +564,15 @@ const margin = `
 </div>
          
      <div className="mt-7 overflow-hidden">
-                    <div className="flex gap-5 justify-center overflow-x-auto pb-4">
-                  {libraries.map((library) => (
-                    <div
-                      key={library.id}
-                      className="
-                        shrink-0
-                        w-[17rem]
-                        sm:w-[20rem]
-                      "
-                    >
+                    <div className="flex flex-row gap-5 justify-center overflow-x-auto pb-4">
+                  {libraries.map((library) => 
+           
                       <BookListItem
+                            key={library.id}
                         book={library}
                       />
-                    </div>
-                  ))}
+                    // </div>
+                  )}
             
 </div>
               </div>
@@ -642,25 +635,13 @@ const margin = `
           {/* Stories */}
           {/* ================================================= */}
 
-          <section
-         className={styles.pageShell.body+{margin}}
+             {stories.length>0 &&  <section
+         className={[styles.pageShell.body,margin].join(" ")}
       
           >
 
-            <div
- 
-            >
 
-              <div
-                className="
-                  flex
-                  items-end
-                  justify-between
-                  gap-4
-                "
-              >
-
-                <SectionHeading
+           <SectionHeading
                   eyebrow="Writing"
                   title="Stories"
                   description={
@@ -670,90 +651,31 @@ const margin = `
                   }
                 />
 
-
-                {isNotPhone &&
-                  stories.length > 0 && (
-
-                    <div
-                      className="
-                        flex
-                        items-center
-                        gap-1
-                        shrink-0
-                      "
-                    >
-
-                      <ViewButton
-                        active={isGrid}
-                        onClick={() =>
-                          setIsGrid(true)
-                        }
-                        icon={grid}
-                        label="Grid view"
-                      />
-
-                      <ViewButton
-                        active={!isGrid}
-                        onClick={() =>
-                          setIsGrid(false)
-                        }
-                        icon={stream}
-                        label="List view"
-                      />
-
-                    </div>
-
-                  )}
-
-              </div>
-
-<div className={styles.pageShell.body}>
-              {stories.length > 0 ? (
-
-                <div
-                  className={`
-                    mt-7
-                    // ${
-                    //   isGrid
-                    //     ? "grid grid-cols-1 sm:grid-cols-2 gap-4"
-                        // :
-                        "space-y-4"
-                    }
-                  `}
-                >
-                  {stories.map(
-                    (story, index) => (
-                      <div
-                        key={`${story.id}_${index}`}
-                        className="
-                          break-inside-avoid
-                        "
-                      >
-                        <DashboardItem
-                          item={story}
-                          index={index}
-                          isGrid={isGrid}
-                          page={story}
-                        />
-                      </div>
-                    )
-                  )}
-                </div>
-
-              ) : (
-
-                <EmptySection
-                  title="No stories yet."
-                  description="Maybe yours will be the first."
-                />
-
-              )}
-</div>
-            </div>
+<div className="flex flex-col mt-4 gap-2">
+ {stories.length > 0 ? (
+  stories.map((story, i) => {
+    console.log("blow"+story.title)
+   return <DashboardItem
+      key={story.id}
+      item={story}
+      index={i}
+      shortenTo={60}
+      forFeedback={false}
+      isGrid={isGrid}
+      page={story}
+    />
+  })
+) : (
+  <EmptySection
+    title="No stories yet."
+    description="Maybe yours will be the first."
+  />
+)}
+   </div>      
 
           </section>
 
-
+            }
           {/* ================================================= */}
           {/* Explore */}
           {/* ================================================= */}
@@ -761,11 +683,7 @@ const margin = `
           {items?.length > 0 && (
 
             <section
-              // className="
-              //   border-t
-              //   border-card-border
-              //   dark:border-white/10
-              // "
+          
             >
 
               <div

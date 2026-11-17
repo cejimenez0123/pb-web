@@ -285,6 +285,7 @@ function ContentHubContent() {
 suggestedEvent
   
   } = useHomeData();
+ 
   const eventCol = useMemo(() => {
     const profileCollections =
       currentProfile?.profileToCollections;
@@ -440,7 +441,7 @@ showPrompt({
           onRooms={goToRooms}
           onWorkshop={goToWorkshop}
         />
-<FeaturedEventSection  currentProfile={currentProfile} onViewEvents={goToEvents}/>
+<FeaturedEventSection events={eventCol?.storyIdList?.map(s=>s.story)||[]} currentProfile={currentProfile} onViewEvents={goToEvents}/>
 
 
      <OpenWorkSection

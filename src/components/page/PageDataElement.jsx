@@ -28,7 +28,7 @@ export default function PageDataElement({ page, isGrid, compact, truncateNumber 
       return (
         <div className="w-full h-[100%] px-4 py-2 overflow-hidden">
           <div
-            className="text-[14px] editor-content leading-6 text-soft dark:text-cream overflow-hidden"
+            className="text-base editor-content leading-6 text-plumb-ink dark:text-plumb-surface overflow-hidden"
             dangerouslySetInnerHTML={{ __html: truncated }}
           />
         </div>
@@ -40,7 +40,7 @@ export default function PageDataElement({ page, isGrid, compact, truncateNumber 
       return (
         <div className="w-full h-[100%]">
           <img
-            className="w-full h-full object-cover transition active:scale-[0.98]"
+            className="w-full h-full object-cover text-plumb-ink dark:text-plumb-surface transition active:scale-[0.98]"
             style={{ WebkitTapHighlightColor: "transparent" }}
             alt={page.title}
             src={image}
@@ -57,7 +57,7 @@ export default function PageDataElement({ page, isGrid, compact, truncateNumber 
     case PageType.link: {
       if (!page.data) return null;
       return (
-        <div className="w-full h-[100%] overflow-hidden">
+        <div className="w-full h-[100%] text-plumb-ink dark:text-plumb-surface overflow-hidden">
           <LinkPreview isGrid={isGrid} url={page.data} compact={compact} />
         </div>
       );

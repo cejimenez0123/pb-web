@@ -140,6 +140,25 @@ let data = await profileRepo.register({
     }
   }
 );
+
+
+const searchMyWork = createAsyncThunk(
+  "users/searchMyWork",
+  async ({ query = "", filters = [] }, thunkAPI) => {
+    try {
+      return await algoliaRepo.searchMyWork(
+        query,
+        filters
+      );
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data || error.message
+      );
+    }
+  }
+);
+
+
 const searchMultipleIndexes = createAsyncThunk(
   "users/searchMultipleIndexes",
   async (params, thunkApi) => {
@@ -228,24 +247,57 @@ const getCurrentProfile = createAsyncThunk(
   }
 );
 
-const updateProfile = createAsyncThunk("users/updateProfile",
-                    async (params,thunkApi)=>{
-try{
-          let data = await  profileRepo.updateProfile(params)
-          if(data.profile){
-            const {profile}=data
+const updateProfile = createAsyncThunk(
+  "users/updateProfile",
+  async (params, thunkApi) => {
+    try {
+      const data = await profileRepo.updateProfile(params);
+
+      if (data.profile) {
+        const { profile } = data;
+
+        try {
+          await algoliaRepo.partialUpdateObject(
+            "profile",
+            profile.id,
+            { username: profile.username }
+          );
+        } catch (err) {
+          // Algolia synchronization should not invalidate
+          // a successful profile update.
+          console.warn("Algolia profile update failed:", err);
+        }
+      }
+
+      return {
+        profile: data.profile,
+      };
+    } catch (err) {
+      return thunkApi.rejectWithValue({
+        message: err?.message || "Unable to update profile.",
+      });
+    }
+  }
+);
+
+// const updateProfile = createAsyncThunk("users/updateProfile",
+//                     async (params,thunkApi)=>{
+// try{
+//           let data = await  profileRepo.updateProfile(params)
+//           if(data.profile){
+//             const {profile}=data
            
-        try{
-        await algoliaRepo.partialUpdateObject("profile",profile.id,{username:profile.username})
-        }catch(err){
-          return thunkApi.rejectWithValue(err)
-        }
-          }
-          return {profile:data.profile}
-        }catch(err){
-          return err
-        }
-})
+//         try{
+//         await algoliaRepo.partialUpdateObject("profile",profile.id,{username:profile.username})
+//         }catch(err){
+//           return thunkApi.rejectWithValue(err)
+//         }
+//           }
+//           return {profile:data.profile}
+//         }catch(err){
+//           return err
+//         }
+// })
 
 
 const fetchProfile = createAsyncThunk(
@@ -380,5 +432,6 @@ export {logIn,
         getIosInfo,
         setAuthResolved,
         acceptTerms,
+        searchMyWork,
         setUserLoading,setCurrentProfile,referSomeone,setMainLoading,setAlert
     }

@@ -17,7 +17,7 @@ const GRID =
   "grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-6 lg:gap-5";
 
 const CARD_SURFACE =
-  "rounded-2xl border border-plumb-border bg-plumb-surface dark:border-plumb-darkBorder dark:bg-plumb-dark-surface";
+  "rounded-2xl border px-2 border-plumb-border bg-plumb-surface dark:border-plumb-darkBorder dark:bg-plumb-dark-surface";
 
 const SKELETON_LINE =
   "rounded bg-plumb-border/60 dark:bg-plumb-darkBorder";
@@ -139,7 +139,7 @@ export default function ExploreList({
         </div>
 
         {/* Content */}
-        <div className="mt-6">
+        <div className=" flex flex-row overflow-x-auto">
           {isLoading ? (
             <div
               className={GRID}

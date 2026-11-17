@@ -3,11 +3,17 @@ import { createAsyncThunk,createAction } from "@reduxjs/toolkit";
 import profileRepo from "../data/profileRepo";
 import uuidv4 from "../core/uuidv4";
 import {storage} from  "../core/di"
-import {  ref, uploadBytes,getDownloadURL   } from "firebase/storage";
+
 import { Preferences } from "@capacitor/preferences";
 import Enviroment from "../core/Enviroment";
-import { Capacitor } from "@capacitor/core";
-import { FirebaseStorage } from "@capacitor-firebase/storage";
+
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject,
+} from "firebase/storage";
 const addNotification = createAction("profile/ADD_NOTIFICATION",(notification)=>{
 
 return notification
@@ -113,35 +119,8 @@ const createProfile= createAsyncThunk("users/createProfile",async (params,thunkA
 const uploadProfilePicture = createAsyncThunk(
   "users/uploadProfilePicture",
   async (params, thunkApi) => {
-    const { file } = params;
-
-    if (!file) throw new Error("No file provided");
-
-    // give Firebase a proper filename + extension
-    const fileName = `profile/${uuidv4()}-${uuidv4()}.jpg`;
-
-    const storageRef = ref(storage, fileName);
-
-    // 💡 IMPORTANT: tell Firebase what this blob is
-    const metadata = {
-      contentType: "image/jpeg",
-    };
-
-    await uploadBytes(storageRef, file, metadata);
-
-    const url = await getDownloadURL(storageRef);
-
-    return {
-      url,
-      fileName,
-    };
-  }
-);
-const uploadPicture = createAsyncThunk(
-  "users/uploadPicture",
-  async (params, thunkApi) => {
-    try {
-      const { file } = params;
+      try {
+      const { file, id } = params;
 
       if (!file) {
         throw new Error("No file provided");
@@ -150,6 +129,79 @@ const uploadPicture = createAsyncThunk(
       if (!file.type?.startsWith("image/")) {
         throw new Error("Please select a valid image.");
       }
+
+      const storage = getStorage();
+
+      const extension =
+        file.type === "image/png"
+          ? "png"
+          : file.type === "image/webp"
+            ? "webp"
+            : "jpg";
+
+     const fileName = `profile/${uuidv4()}-${uuidv4()}.jpg`;
+
+      const storageRef = ref(storage, fileName);
+
+      await uploadBytes(storageRef, file, {
+        contentType: file.type,
+      });
+
+      const url = await getDownloadURL(storageRef);
+
+      return {
+        url,
+        fileName,
+      };
+    } catch (err) {
+      console.error("Upload error:", err);
+
+      return thunkApi.rejectWithValue({
+        message: "UPLOAD FAILED: " + err.message,
+      });
+    }
+  }
+  //   const { file } = params;
+
+  //   if (!file) throw new Error("No file provided");
+
+  //   // give Firebase a proper filename + extension
+  //   const fileName = `profile/${uuidv4()}-${uuidv4()}.jpg`;
+
+  //   const storageRef = ref(storage, fileName);
+
+  //   // 💡 IMPORTANT: tell Firebase what this blob is
+  //   const metadata = {
+  //     contentType: "image/jpeg",
+  //   };
+
+  //   await uploadBytes(storageRef, file, metadata);
+
+  //   const url = await getDownloadURL(storageRef);
+
+  //   return {
+  //     url,
+  //     fileName,
+  //   };
+  // }
+);
+
+
+const uploadPicture = createAsyncThunk(
+  "users/uploadPicture",
+  async (params, thunkApi) => {
+    try {
+      const { file, id } = params;
+
+      if (!file) {
+        throw new Error("No file provided");
+      }
+
+      if (!file.type?.startsWith("image/")) {
+        throw new Error("Please select a valid image.");
+      }
+
+      const storage = getStorage();
 
       const extension =
         file.type === "image/png"
@@ -185,41 +237,40 @@ const uploadPicture = createAsyncThunk(
 //   "users/uploadPicture",
 //   async (params, thunkApi) => {
 //     try {
-//       const { file } = params;
-//       if (!file) throw new Error("No file provided");
+//       const { file,id} = params;
 
-//       const fileName = `image/${Date.now()}-${uuidv4()}.jpg`;
-//       const storageRef = ref(storage, fileName);
-
-
-//       if (!Capacitor.isNativePlatform()) {
-//         // ✅ WEB → needs Blob/File
-//         await uploadBytes(storageRef, file);
-//       } else {
-//         // ✅ NATIVE → needs URI
-//         if (!file.path) throw new Error("Missing file path");
-
-//         await new Promise((resolve, reject) => {
-//           FirebaseStorage.uploadFile(
-//             {
-//               path: fileName,
-//               uri: file.path,
-//             },
-//             (event, error) => {
-//               if (error) reject(error);
-//               else if (event?.completed) resolve(event);
-//             }
-//           );
-//         });
+//       if (!file) {
+//         throw new Error("No file provided");
 //       }
 
-//     const url = Capacitor.isNativePlatform()
-//   ? await FirebaseStorage.getDownloadUrl({ path: fileName }).then(r => r.downloadUrl)
-//   : await getDownloadURL(storageRef);
-//       return { url, fileName };
+//       if (!file.type?.startsWith("image/")) {
+//         throw new Error("Please select a valid image.");
+//       }
 
+//       const extension =
+//         file.type === "image/png"
+//           ? "png"
+//           : file.type === "image/webp"
+//             ? "webp"
+//             : "jpg";
+
+//       const fileName = `image/${Date.now()}-${uuidv4()}.${extension}`;
+
+//       const storageRef = ref(storage, fileName);
+
+//       await uploadBytes(storageRef, file, {
+//         contentType: file.type,
+//       });
+
+//       const url = await getDownloadURL(storageRef);
+
+//       return {
+//         url,
+//         fileName,
+//       };
 //     } catch (err) {
 //       console.error("Upload error:", err);
+
 //       return thunkApi.rejectWithValue({
 //         message: "UPLOAD FAILED: " + err.message,
 //       });
@@ -261,6 +312,7 @@ const getMyProfileCollections = createAsyncThunk(
  export {
   getMyProfileCollections,
     createProfile,
+
     uploadPicture,
     uploadProfilePicture,
     fetchProfiles,

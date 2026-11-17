@@ -1,5 +1,5 @@
 
-import React, {
+import {
   useEffect,
   useMemo,
   useState,
@@ -16,7 +16,10 @@ import {
   useDispatch,
 } from "react-redux";
 
-import { searchMultipleIndexes } from "../actions/UserActions";
+import {
+  searchMultipleIndexes,
+  searchMyWork,
+} from "../actions/UserActions";
 import ErrorBoundary from "../ErrorBoundary";
 import styles from "../styles/style";
 import ResultItem from "./ResultItem";
@@ -189,16 +192,10 @@ const shouldShowRemoteResults = searchScope === "all";
    * than the entire profile object, to prevent redundant
    * requests when unrelated profile fields change.
    */
+
+
+
 useEffect(() => {
-  const query = searchQuery.trim();
-
-if (searchScope !== "all") {
-    setSearchContent([]);
-    setIsSearching(false);
-    setSearchError(false);
-    return undefined;
-  }
-
   let cancelled = false;
 
   const runSearch = async () => {
@@ -211,12 +208,21 @@ if (searchScope !== "all") {
         : [selectedFilter];
 
     try {
-      const result = await dispatch(
-        searchMultipleIndexes({
-          query,
-          filters,
-        })
-      );
+     
+      const action =
+        searchScope === "mine"
+          ? searchMyWork({
+              query: searchText,
+              filters: filters.filter((filter) =>
+                ["story", "collection"].includes(filter)
+              ),
+            })
+          : searchMultipleIndexes({
+              query: searchText,
+              filters,
+            });
+
+      const result = await dispatch(action);
 
       if (cancelled) return;
 
@@ -228,7 +234,6 @@ if (searchScope !== "all") {
 
         setSearchContent([]);
         setSearchError(true);
-        setIsSearching(false);
         return;
       }
 
@@ -253,6 +258,7 @@ if (searchScope !== "all") {
       if (cancelled) return;
 
       console.error("Search failed:", error);
+
       setSearchContent([]);
       setSearchError(true);
     } finally {
@@ -269,25 +275,14 @@ if (searchScope !== "all") {
   };
 }, [
   dispatch,
-  searchQuery,
+  searchText,
   selectedFilter,
   searchScope,
   currentProfileId,
   searchAttempt,
 ]);
-  /*
-   * Navigation
-   *
-   * Keep the existing route contract. "collection"
-   * remains the internal route type even though the
-   * interface calls these spaces Rooms.
-   */
 
-
-  const results =
-    searchScope === "mine"
-      ? personalResults
-      : searchContent;
+ const results = searchContent;
 
   const hasQuery = searchText.trim().length > 0;
 
@@ -336,12 +331,12 @@ if (searchScope !== "all") {
 
      </div>
           </header>
-     <span className={" max-w-[100%] "+" "}>   
+     <span className={" max-w-[100%] "}>   
           {/* Search scope */}
 
           {currentProfile && (
             <div
-              className={[styles.search.scopeRow, " mx-auto max-w-3xl"].join(" ")}
+              className={[styles.search.scopeRow, styles.pageShell.body].join(" ")}
               role="group"
               aria-label="Search location"
             >
@@ -388,7 +383,10 @@ if (searchScope !== "all") {
             {FILTERS.map((filter) => {
               const active =
                 selectedFilter === filter.key;
-
+if((searchScope=="mine") &&(
+filter.key == "profile"||filter.key == "hashtag")){
+  return null
+}
               return (
                 <button
                   key={filter.key}
@@ -428,14 +426,21 @@ if (searchScope !== "all") {
               )}
 
               {searchScope === "mine" && (
-                <section className={styles.search.section}>
+                <section className={[styles.search.section,styles.pageShell.body].join(" ")}>
                   <h2 className={styles.search.sectionTitle}>
                     Available to you
                   </h2>
 
                   {personalResults.length > 0 ? (
                     <div className={[styles.pageShell.body].join(" ")}>
-              { personalResults.map((result)=><ResultItem result={result} index={result.id}/>)}
+              { personalResults.map((result) => (
+  <ResultItem
+    searchScope={searchScope}
+    key={`${result.type}:${result.objectID}`}
+    result={result}
+    index={result.objectID}
+  />
+))}
                    </div>
                   ) : (
                     <div className={styles.search.empty}>
@@ -487,10 +492,10 @@ if (searchScope !== "all") {
           )}
 </span>
 <span>
-        {shouldShowRemoteResults &&
-  !isSearching &&
+        {!isSearching &&
   !searchError &&
-  results.length > 0 && (
+  results.length > 0 &&
+  (searchScope === "all" || hasQuery) && (
     <section
       className={[ "mb-4",styles.pageShell.body].join(" ")}
       aria-label="Search results"
@@ -511,6 +516,7 @@ if (searchScope !== "all") {
       <div className={"max-w-3xl mx-auto flex gap-2 flex-col"}>
         {results.map((result) => (
           <ResultItem
+          searchScope={searchScope}
             key={`${result.type}:${result.objectID}`}
             result={result}
             index={result.objectID}
@@ -523,10 +529,10 @@ if (searchScope !== "all") {
 </span>
           {/* No results */}
 
-{shouldShowRemoteResults &&
-  !isSearching &&
+{!isSearching &&
   !searchError &&
-  results.length === 0 && (
+  results.length === 0 &&
+  (searchScope === "all" || hasQuery)  && (
     <section className={styles.search.empty}>
       <h2 className={styles.search.emptyTitle}>
         {hasQuery

@@ -32,10 +32,10 @@ function StoryCard({ story, onSelect }) {
       : "Untitled";
 
   return (
-    <button
+    <div
       type="button"
       onClick={() => onSelect?.(story)}
-      className="
+      className={`
         group
         flex
         w-[100%]
@@ -46,15 +46,17 @@ function StoryCard({ story, onSelect }) {
         rounded-2xl
         border
         border-soft/15
+        dark:bg-transparent
         bg-plumb-canvas
         p-5
+        dark:border-plumb-canvas
         text-left
         transition-colors
         hover:bg-soft/5
-        dark:border-cream/10
+        dark:border-plumb-mintLight
         dark:bg-base-bg
         dark:hover:bg-base-bgDark/70
-      "
+      `}
     >
       <div className="min-w-0 flex-1">
         {/* Metadata */}
@@ -168,7 +170,7 @@ function StoryCard({ story, onSelect }) {
           →
         </span>
       </div>
-    </button>
+    </div>
   );
 }
 

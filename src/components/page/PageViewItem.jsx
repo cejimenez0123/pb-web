@@ -11,7 +11,7 @@ import DataElement from "./DataElement";
 // import { initGA, sendGAEvent } from "../../core/ga4";
 import { useDialog } from "../../domain/usecases/useDialog";
 import { useDispatch } from "react-redux";
-import { setEditingPage, setHtmlContent, setPageInView } from "../../actions/PageActions";
+import { setPageInView } from "../../actions/PageActions";
 
 export default function PageViewItem({ page, canEdit }) {
   const router = useIonRouter();
@@ -55,6 +55,12 @@ const dispatch =useDispatch()
 
         });
   };
+  const handleEdit = ()=>{
+     dispatch(setPageInView({page}))
+           
+ 
+             router.push(Paths.editor.createRoute(page.id))
+  }
 
   const header = () => (
     <div className="bg-transparent   border-b border-t   py-2  border-base-border dark:border-soft rounded-xl shadow-sm px-4 flex items-start justify-between gap-4">
@@ -89,11 +95,7 @@ const dispatch =useDispatch()
 
       {canEdit && (
         <div
-          onClick={() =>{
-            dispatch(setPageInView({page}))
-            dispatch(setEditingPage({page}))
-             router.push(Paths.editor.createRoute(page.id), "forward")
-          }}
+          onClick={handleEdit}
           className="btn btn-sm btn-ghost text-soft dark:text-cream hover:bg-base-bg dark:hover:bg-base-bgDark rounded-full"
         >
           ✏️

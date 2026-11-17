@@ -37,6 +37,7 @@ import StoryPreview from "./StoryPreview";
 import styles from "../../styles/style";
 import { PageType } from "../../core/constants";
 import computePermissions from "../../core/compusePermissions";
+import PageDataElement from "./PageDataElement";
 
 const theme = styles.dashboardItem;
 const EMPTY_ARRAY = [];
@@ -647,9 +648,10 @@ const handleRequestPermission = async (event) => {
     setAccessPending(false);
   }
 };
- if(!(page.isPrivate && !canSee && accessStatus !== "approved")){
-return null
- }
+
+if (page.isPrivate && !canSee && accessStatus !== "approved") {
+  return null;
+}
   /*
    * CARD
    */
@@ -815,10 +817,12 @@ return null
                     shortenTo={previewLength}
                   />
                 ) : (
-                  <DataElement
-                    isGrid={isGrid}
-                    page={page}
-                  />
+                  <PageDataElement
+                  truncateNumber={40}
+                  compact={null}
+                   isGrid={false}
+                   page={page}/>
+                  
                 )}
               </div>
             </div>

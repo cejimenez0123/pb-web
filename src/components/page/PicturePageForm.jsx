@@ -9,16 +9,13 @@ import { uploadPicture } from "../../actions/ProfileActions.jsx";
 import isValidUrl from "../../core/isValidUrl";
 import LinkPreview from "../LinkPreview";
 
-import {
-  Camera,
-
-  MediaTypeSelection,
-} from "@capacitor/camera";
+import { Camera,  MediaTypeSelection } from "@capacitor/camera";
 
 import { Capacitor } from "@capacitor/core";
 import styles from "../../styles/style.js";
 import { useAlert } from "../../core/useAlert.jsx";
 import AlertType from "../../core/AlertType.js";
+import { useSelector } from "react-redux";
 
 const ACCEPTED_IMAGE_TYPES = [
   "image/jpeg",
@@ -109,35 +106,112 @@ const handleInput = (event) => {
     // Allow selecting the same file again.
     event.target.value = "";
   };
-
   const pickImage = async () => {
-const { results = [] } = await Camera.chooseFromGallery({
-  mediaType: MediaTypeSelection.All,
-  allowMultipleSelection: false,
-  limit: 1,
-  includeMetadata: true,
-});
+  try {
+    const { results = [] } = await Camera.chooseFromGallery({
+      mediaType: MediaTypeSelection.Photo,
+      allowMultipleSelection: false,
+      limit: 1,
+      includeMetadata: true,
+    });
 
-const image = results.find(
-  (item) => item.type === MediaType.Photo
-);
+    const image = results.find(
+      (item) => item.type === MediaTypeSelection.Photo
+    );
 
-if (!image?.webPath) {
-  throw new Error("Unable to access the selected image.");
-}
+    if (!image?.webPath) {
+      throw new Error("The selected image could not be accessed.");
+    }
 
-const response = await fetch(image.webPath);
-const blob = await response.blob();
+    // The new API puts the format inside metadata.
+    const format = image.metadata?.format?.toLowerCase();
 
-const selectedFile = new File(
-  [blob],
-  `image-${Date.now()}.${blob.type === "image/png" ? "png" : "jpg"}`,
-  { type: blob.type }
-);
+    if (format && !["jpeg", "jpg", "png"].includes(format)) {
+      throw new Error("Only JPG and PNG images are allowed.");
+    }
 
-prepareFile(selectedFile);
-  };
+    // Read the selected image into a Blob.
+    const response = await fetch(image.webPath);
 
+    if (!response.ok) {
+      throw new Error("Unable to read the selected image.");
+    }
+
+    const blob = await response.blob();
+
+    // Validate the actual image MIME type.
+    const mimeType =
+      blob.type ||
+      (format === "png" ? "image/png" : "image/jpeg");
+
+    if (!ACCEPTED_IMAGE_TYPES.includes(mimeType)) {
+      throw new Error("Only JPG and PNG images are allowed.");
+    }
+
+    const extension = mimeType === "image/png" ? "png" : "jpg";
+
+    const selectedFile = new File(
+      [blob],
+      `image-${Date.now()}.${extension}`,
+      { type: mimeType }
+    );
+
+    prepareFile(selectedFile);
+
+  } catch (err) {
+    console.error("Image pick error:", err);
+    showAlert({
+      message: err?.message || "Unable to select this image.",
+      type: AlertType.error,
+    });
+  }
+};
+//  const pickImage = async () => {
+//     try {
+//    const { results } = await Camera.chooseFromGallery({
+//       mediaType: MediaTypeSelection.Photo, // photos, videos, or both
+//       allowMultipleSelection: true,
+//       limit: 1,
+//       includeMetadata: true,
+//     });
+//     console.log(results)
+//     const image = results[0]
+//     console.log(image)
+//       // const image = await Camera.getPhoto({
+//       //   quality: 80,
+//       //   resultType: CameraResultType.Uri,
+//       //   source: CameraSource.Photos,
+//       // });
+
+//       let mimeType = image.format;
+//       if (mimeType) mimeType = mimeType.toLowerCase();
+
+//       const isValid = mimeType === "jpeg" || mimeType === "jpg" || mimeType === "png";
+//       if (!isValid) {
+//         setError("Only JPG and PNG images are allowed");
+//         return;
+//       }
+
+//       dispatch(setHtmlContent(image.webPath));
+
+//       if (isNative) {
+//         setFile({ path: image.path, format: mimeType });
+//       } else {
+//         const response = await fetch(image.webPath);
+//         const blob = await response.blob();
+//         if (!["image/jpeg", "image/png"].includes(blob.type)) {
+//           setError("Only JPG and PNG images are allowed");
+//           return;
+//         }
+//         const file = new File([blob], "image.jpg", { type: blob.type });
+//         setFile(file);
+//       }
+//     } catch (err) {
+//       console.error("Image pick error:", err);
+//     }
+//   };
+
+const { currentProfile } = useSelector(state=>state.users)
   const uploadSelectedImage = async () => {
     if (!file) {
       return value;
@@ -145,7 +219,7 @@ prepareFile(selectedFile);
 
     try {
       const result = await dispatch(
-        uploadPicture({ file })
+        uploadPicture({ file,id:currentProfile.id })
       ).unwrap();
 
       const uploadedUrl = result?.url;
@@ -257,39 +331,6 @@ setIsSaved?.(true);
 
 //   return;
 // }
-
-// // const result = await createPageAction(finalValue);
-
-// if (!result) return;
-
-// setIsSaved?.(true);
-
-//         return;
-//       }
-// // const result = await dispatch(
-// //   uploadPicture({ file })
-// // ).unwrap();
-// const result = await dispatch(
-//   uploadPicture({ file })
-// ).unwrap();
-
-// const uploadedUrl = result.url;
-
-// const savedStory = await createPageAction(uploadedUrl);
-
-// if (!savedStory) {
-//   throw new Error("Unable to save the picture page.");
-// }
-
-
-//     } catch (error) {
-//       console.error("Unable to save media page:", error);
-//       showAlert({message:error?.message || "Unable to save this page.",type:AlertType.error});
- 
-//     } finally {
-//       setUploading(false);
-//     }
-//   };
 
   const previewSource = filePreview || value;
 
