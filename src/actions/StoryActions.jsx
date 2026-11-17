@@ -4,6 +4,7 @@ import { PageType } from "../core/constants";
 import { Preferences } from "@capacitor/preferences";
 import algoliaRepo from "../data/algoliaRepo";
 import { getStorage, ref, deleteObject } from "firebase/storage";
+import photoRepo from "../data/photoRepo";
 
 const getStory = createAsyncThunk("story/getStory",async ({id},thunkApi)=>{
   try{
@@ -38,7 +39,7 @@ const deleteStory = createAsyncThunk(
       
    
 if (page?.type === PageType.picture && page.data) {
-       
+       photoRepo.deletePhoto({})
           // page.data is the Firebase download URL.
          const storage = getStorage();
 

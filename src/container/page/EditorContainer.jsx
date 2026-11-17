@@ -1205,7 +1205,8 @@ isIdValid && loadStory();
    * DELETE
    * ---------------------------------------------------------
    */
-
+  console.log("FOC")
+console.log(parameters)
   const handleDelete = useCallback(async () => {
     const storyId =
       parametersRef.current.id || routeId;
@@ -1218,13 +1219,14 @@ isIdValid && loadStory();
 
     isDeletedRef.current = true;
     saveRequestedRef.current = false;
-
+  
     try {
       await dispatch(
         deleteStory({
           page: {
             ...parametersRef.current,
             id: storyId,
+            photoId:""
           },
         })
       ).unwrap();

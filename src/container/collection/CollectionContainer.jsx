@@ -55,6 +55,7 @@ import PlumbButton from "../../components/profile/FollowButton.jsx";
 import InsideRoom from "../../components/collection/InsideRoom.jsx";
 import { Capacitor } from "@capacitor/core";
 import grabId from "../../core/grabId.jsx";
+import { useMediaQuery } from "react-responsive";
 
 // ---------------------------------------------------------
 // Layout
@@ -108,9 +109,7 @@ const router = useIonRouter()
     (state) => state.users.currentProfile
   );
 
-//  const colId = router.routeInfo.pathname.split("/")[router.routeInfo.pathname.split("/").length-2]
-// console.log("Col")
-console.log(colId)
+
   const collection = useSelector(
     (state) => state.books.collectionInView
   );
@@ -829,7 +828,9 @@ const handleUnfollow = async () => {
 // -------------------------------------------------------
 // Save / remove from Home or Archive
 // -------------------------------------------------------
-
+ const isDesktop = useMediaQuery({
+    query: "(min-width: 1200px)",
+  });
 const updateCollectionLocation = async (destination) => {
   if (bookmarkLock.current || bookmarkLoading) return;
 
@@ -956,7 +957,7 @@ const handleArchive = () =>
                   what is inside this room.
                 </p>
 
-               {!Capacitor.isNativePlatform() && <div
+               {(!Capacitor.isNativePlatform() && !isDesktop) && <div
                   type="button"
                   onClick={() =>
                     router.goBack()

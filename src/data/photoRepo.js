@@ -24,6 +24,7 @@ class PhotoRepo {
   async uploadPhoto({
     file,
     profileId,
+    storyId,
     purpose = "general",
     filename,
     originalUrl,
@@ -55,6 +56,7 @@ class PhotoRepo {
     formData.append("file", file, filename || file.name);
     formData.append("profileId", profileId);
     formData.append("purpose", purpose);
+    formData.append("storyId", storyId);
 
     if (filename) {
       formData.append("filename", filename);
@@ -65,7 +67,7 @@ class PhotoRepo {
     }
 
     const res = await axios.post(
-      this.url,
+      this.url+"/",
       formData,
       {
         headers: {
