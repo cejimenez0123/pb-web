@@ -388,8 +388,9 @@ setIsSaved?.(true);
               Choose an image
 
               <input
-                type="file"
-                accept="image/jpeg,image/png"
+               accept=".jpg,.jpeg,.png,image/jpeg,image/png"
+
+               
                 onChange={handleFileChange}
                 disabled={uploading}
                 className="sr-only"

@@ -68,14 +68,14 @@ const CARD_PAD = "p-4 sm:p-5";
 // ── Skeleton ────────────────────────────────────
 const SKELETON_BLOCK = "bg-gray-200 rounded animate-pulse";
 
-const WorkshopItem = ({ item, router }) => {
+const WorkshopItem = ({ profile,item, router }) => {
   const dispatch = useDispatch();
-  const { currentProfile } = useSelector(state => state.users);
+  // const { currentProfile } = useSelector(state => state.users);
   const [joining, setJoining] = useState(false);
 
 const {showPrompt}=useAlert()
 const joinWorkshop = () => {
-  if (!currentProfile?.id) {
+  if (!profile?.id) {
     showPrompt({
       message: "You need to log in to join this workshop.",
       agree: () => {
@@ -92,7 +92,7 @@ const joinWorkshop = () => {
   dispatch(
     postCollectionRole({
       type: "writer",
-      profileId: currentProfile.id,
+      profileId: profile.id,
       collectionId: item.id,
     })
   )
@@ -366,7 +366,7 @@ const fetchSubCollections = useCallback(async (skip, take) => {
       ) : sortedWorkshops.length ? (
         <div className="grid gap-4 sm:grid-cols-2 px-4 lg:grid-cols-2">
           {sortedWorkshops.map(workshop => (
-            <WorkshopItem key={workshop?.id} item={workshop} router={router} />
+            <WorkshopItem key={workshop?.id} item={workshop} profile={currentProfile}router={router} />
           ))}
         </div>
       ) : (

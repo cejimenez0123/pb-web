@@ -32,7 +32,7 @@ function TopBarDropdown({
   const openRoleFormDialog = () => {
     openDialog({
       ...dialog,
-      text: <RoleForm item={parameters.page} />,
+      text: <RoleForm item={{page:parameters.page}} />,
       disagreeText: null,
       disagree: null,
     });

@@ -220,7 +220,9 @@ export default function UseReferralContainer() {
             <label className="flex-1 cursor-pointer">
               <div className="border-2 border-dashed border-emerald-200 rounded-2xl px-4 py-3 text-center text-sm text-emerald-600 hover:border-emerald-400 hover:bg-emerald-50 transition-colors">
                 Tap to upload photo
-                <input type="file" accept="image/*" className="hidden" onChange={handleProfilePicture} />
+                <input type="file" 
+    accept=".jpg,.jpeg,.png,.svg,image/jpeg,image/png"
+                className="hidden" onChange={handleProfilePicture} />
               </div>
             </label>
           </div>

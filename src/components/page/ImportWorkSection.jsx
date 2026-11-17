@@ -181,7 +181,9 @@ export default function ImportWorkSection({
         <input
           ref={inputRef}
           type="file"
-          accept={ACCEPTED_FILE_TYPES}
+           accept=".jpg,.jpeg,.png,.heic,.heif,.svg,image/jpeg,image/png,image/heic,image/heif,image/svg+xml"
+
+          // accept={ACCEPTED_FILE_TYPES}
           onChange={handleInputChange}
           className="sr-only"
           aria-label="Choose a document to import"

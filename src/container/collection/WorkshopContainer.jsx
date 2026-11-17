@@ -5,12 +5,11 @@ import AlertType from "../../core/AlertType.js";
 import {
   registerUser,
   findWorkshopGroup,
-  findWorkshopGroups,
+
 } from "../../actions/WorkshopActions";
 import {
   getProfileCollections,
   getRoomRecommendations,
-  getProfileRecommendations,
   setCollections,
 } from "../../actions/CollectionActions";
 import { useSelector, useDispatch } from "react-redux";
@@ -37,6 +36,8 @@ import { getStory } from "../../actions/StoryActions";
 import usePaginatedResource from "../../core/usePaginatedResource";
 import styles from "../../styles/style.js";
 import requestLocation from "../../core/requestLocation.js";
+import { RoleType } from "../../core/constants.js";
+import grabId from "../../core/grabId.jsx";
 
 const DEFAULT_LOCATION = {
   latitude: 40.818622458906425,
@@ -79,22 +80,22 @@ const EYEBROW = `
 const WorkshopContainer = () => {
   const dispatch = useDispatch();
   const router = useIonRouter();
-  const { storyId } = useParams();
-
+  // const { storyId } = useParams();
+const storyId = grabId(location.pathname)
   const isNative = DeviceCheck();
   const isMounted = useRef(true);
 
   const [loading, setLoading] = useState(false);
   const [radius, setRadius] = useState(50);
   const [isGlobal, setIsGlobal] = useState(true);
-  const [location, setLocation] = useState(DEFAULT_LOCATION);
+  const [latLong, setlatLong] = useState(DEFAULT_LOCATION);
 
   const { currentProfile } = useSelector(
     (state) => state.users
   );
 
   const page = useSelector(
-    (state) => state.pages.pageInView
+    (state) => state.pages.pageInView??{id:storyId}
   );
 
   const { showAlert } = useAlert();
@@ -150,28 +151,28 @@ const {
    * --------------------------------------------------------------------------
    */
 
-  const {
-    items: workshops,
-    page: workshopPage,
-    setPage: setWorkshopPage,
-    totalPages: workshopTotalPages,
-    totalCount: workshopTotal,
-  } = usePaginatedResource({
-    cacheKey: "collections:workshops",
-    fetcher: findWorkshopGroups,
-    pageSize: 10,
-    enabled: !!currentProfile?.id,
-    params: {
-      type: "feedback",
-      location: isGlobal ? null : location,
-      global: isGlobal,
-      radius,
-    },
-    select: (res) => ({
-      items: res.groups,
-      totalCount: res.totalCount,
-    }),
-  });
+  // const {
+  //   items: workshops,
+  //   page: workshopPage,
+  //   setPage: setWorkshopPage,
+  //   totalPages: workshopTotalPages,
+  //   totalCount: workshopTotal,
+  // } = usePaginatedResource({
+  //   cacheKey: "collections:workshops",
+  //   fetcher: findWorkshopGroups,
+  //   pageSize: 10,
+  //   enabled: !!currentProfile?.id,
+  //   params: {
+  //     type: "feedback",
+  //     location: isGlobal ? null : location,
+  //     global: isGlobal,
+  //     radius,
+  //   },
+  //   select: (res) => ({
+  //     items: res.groups,
+  //     totalCount: res.totalCount,
+  //   }),
+  // });
 
   /*
    * --------------------------------------------------------------------------
@@ -191,7 +192,6 @@ const {
 
   useEffect(() => {
     if (!storyId) return;
-
     dispatch(getStory({ id: storyId })).then((res) =>
       checkResult(
         res,
@@ -217,7 +217,7 @@ const {
    */
 
   useEffect(() => {
-    setLocation(DEFAULT_LOCATION);
+    setlatLong(DEFAULT_LOCATION);
   }, [isGlobal]);
 
   /*
@@ -245,14 +245,14 @@ const {
       const city = await fetchCity(location);
 
       registerUser(currentProfile.id, {
-        longitude: location.longitude,
-        latitude: location.latitude,
+        longitude: latLong.longitude,
+        latitude: latLong.latitude,
         city,
       });
     };
 
     register();
-  }, [location, currentProfile?.id]);
+  }, [latLong, currentProfile?.id]);
 
   /*
    * --------------------------------------------------------------------------
@@ -261,7 +261,7 @@ const {
    */
 
   const applyLocation = (coords) => {
-    setLocation(coords);
+    setlatLong(coords);
 
     if (currentProfile?.id) {
       registerUser(currentProfile.id, coords);
@@ -309,7 +309,14 @@ const {
   };
 
   const handleGroupClick = () => {
-    if (!location?.latitude || !location?.longitude) return;
+      if (!currentProfile?.id) {
+    showAlert({
+      message: "Please sign in",
+      type: AlertType.error,
+    });
+    return;
+  }
+    if (!latLong?.latitude || !latLong?.longitude) return;
 
     setLoading(true);
 
@@ -329,8 +336,11 @@ const {
       findWorkshopGroup({
         profile: currentProfile,
         story: page ?? null,
+        storyId:storyId,
+        mode:RoleType.writer,
+        // mode:id RoleType.
         isGlobal,
-        location,
+        location:latLong,
         radius,
       })
     ).then((res) => {
@@ -346,7 +356,7 @@ const {
           }
         },
         (err) => {
-          
+          console.error(err)
           showAlert({
             message: err.message,
             type: AlertType.error,
@@ -378,11 +388,11 @@ const {
         page: 1,
       })
     );
-  }, [isGlobal, location, radius, dispatch]);
+  }, [isGlobal, latLong, radius, dispatch]);
 
   const isLocationReady =
     isGlobal ||
-    (location?.latitude && location?.longitude);
+    (latLong?.latitude && latLong?.longitude);
 
   return (
       <IonContent
@@ -557,7 +567,7 @@ fullscreen={true}
 
                     <div className="space-y-5">
                       <GoogleMapSearch
-                        onLocationSelected={setLocation}
+                        onLocationSelected={setlatLong}
                       />
 
                       <div

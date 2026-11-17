@@ -207,10 +207,6 @@ const deleteStoryFromCollection = createAsyncThunk(
     return{error,collection:null}
 }
  })
- // actions/collectionActions.js
-
-
-// ─── GET /collections/:id/feed/stories ───────────────────────────────────────
 
  const fetchCollectionFeedStories = createAsyncThunk(
   "collection/feedStories",

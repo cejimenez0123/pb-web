@@ -44,6 +44,7 @@ import ListPill from "../../components/page/ListPill";
 import { useAlert } from "../../core/useAlert";
 import usePaginatedResource from "../../core/usePaginatedResource";
 import { truncate } from "lodash";
+import grabId from "../../core/grabId";
 
 const TABS = {
   POSTS: "pages",
@@ -67,8 +68,8 @@ const EmptyState = ({ text }) => (
 const PENCIL=(<svg className="p-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="30px" width="30px" fill="currentColor"><path d="M5,19H6.43L16.2,9.23L14.78,7.8L5,17.58V19ZM3,21V16.75L16.2,3.57q0.3-0.28 0.66-0.43T17.63,3q0.4,0 0.78,0.15T19.05,3.6L20.43,5q0.3,0.27 0.44,0.65T21,6.4q0,0.4-0.14,0.76T20.43,7.82L7.25,21H3ZM19,6.4L17.6,5L19,6.4ZM15.48,8.52L14.78,7.8L16.2,9.23l-0.72-0.7Z"/></svg>)
 
 function ProfileContainer() {
-  const { id } = useParams();
-console.log(id)
+
+const id = grabId(location.pathname)
   const dispatch = useDispatch();
   const router = useIonRouter();
 

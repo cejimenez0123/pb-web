@@ -1,8 +1,7 @@
 
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect,  useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router";
 import { IonContent, useIonRouter } from "@ionic/react";
 
 import ErrorBoundary from "../../ErrorBoundary";
@@ -27,6 +26,7 @@ import TabBar from "../../components/TabBar.jsx";
 import SelectedItems from "../../components/collection/SelectableItems.jsx";
 import SelectableItem from "../../components/collection/SelectableItem.jsx";
 import usePaginatedResource from "../../core/usePaginatedResource.jsx";
+import grabId from "../../core/grabId.jsx";
 
 const filterTypes = {
   filter: "Filter",
@@ -117,8 +117,8 @@ function EmptySelection({ children }) {
 export default function AddToCollectionContainer() {
   const router = useIonRouter();
   const dispatch = useDispatch();
-  const { id } = useParams();
 
+const id = grabId(location.pathname)
   const [filterType, setFilterType] = useState(
     filterTypes.filter
   );

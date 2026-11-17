@@ -32,6 +32,7 @@ import { useDialog } from "../../domain/usecases/useDialog";
 import styles from "../../styles/style";
 import usePaginatedResource from "../../core/usePaginatedResource";
 import EmptyState from "../../components/general/EmptyState";
+import grabId from "../../core/grabId";
 
 // ── Helpers ──────────────────────────────────────────
 
@@ -243,8 +244,8 @@ export default function AddStoryToCollection() {
   const router = useIonRouter();
   const dispatch = useDispatch();
 
-
-  const { id, type } = useParams();
+const id = grabId(location.pathname)
+  const {  type } = useParams();
 
   const itemType = type || "story";
   const isStory = itemType === "story";

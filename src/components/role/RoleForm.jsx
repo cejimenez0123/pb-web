@@ -68,6 +68,7 @@ const getRoleDescription = (role) => {
 };
 
 export default function RoleForm({ item }) {
+  const {col,page}=item
   const dispatch = useDispatch();
 
   const profiles = useSelector(
@@ -84,7 +85,7 @@ export default function RoleForm({ item }) {
   const [search, setSearch] = useState("");
   const [saving, setSaving] = useState(false);
 
-  const isCollection = Boolean(item?.storyIdList);
+  const isCollection = !!col?.id
 
   /*
    * ------------------------------------------------------------

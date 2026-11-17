@@ -15,6 +15,7 @@ import checkResult from "../../core/checkResult.js";
 
 import computePermissions from "../../core/compusePermissions.jsx";
 import styles from "../../styles/style.js";
+import grabId from "../../core/grabId.jsx";
 
 // ── Module level — stable references, never recreated ─────────────────────────
 const EMPTY_COMMENTS = [];
@@ -45,7 +46,9 @@ const CENTER  = "text-center mx-auto";
 
 export default function PageViewContainer() {
   const { showAlert } = useAlert();
-  const { id } = useParams();
+  const pathname = location.pathname
+const id = grabId(pathname)
+console.log("PAGEID:"+id)
   const dispatch = useDispatch();
   const router = useIonRouter();
   const currentProfile = useSelector((state) => state.users.currentProfile);

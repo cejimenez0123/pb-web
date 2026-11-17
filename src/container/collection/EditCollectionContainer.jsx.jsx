@@ -49,6 +49,7 @@ import { useDialog } from "../../domain/usecases/useDialog";
 
 import styles from "../../styles/style.js";
 import SectionHeader from "../../components/pieces/SectionHeader.jsx";
+import grabId from "../../core/grabId.jsx";
 
 const TAG_ICON = (
   <svg
@@ -87,8 +88,8 @@ const PRIMARY_BUTTON =
 
 
 export default function EditCollectionContainer() {
-  const { id } = useParams();
 
+const id = grabId(location.pathname)
   const router = useIonRouter();
   const dispatch = useDispatch();
   const { showAlert } = useAlert();
@@ -599,7 +600,7 @@ export default function EditCollectionContainer() {
     openDialog({
       text: (
         <RoleForm
-          item={colInView}
+          item={{col:colInView}}
         />
       ),
     });

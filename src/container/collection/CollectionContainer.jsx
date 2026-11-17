@@ -7,12 +7,10 @@ import {
 } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
-import {  useParams } from "react-router";
+
 
 import { useAlert } from "../../core/useAlert.jsx";
 import AlertType from "../../core/AlertType.js";
-
-import PageList from "../../components/page/PageList";
 import ProfileCircle from "../../components/profile/ProfileCircle.jsx";
 import ErrorBoundary from "../../ErrorBoundary";
 
@@ -56,6 +54,7 @@ import PlumbHead from "../head.jsx";
 import PlumbButton from "../../components/profile/FollowButton.jsx";
 import InsideRoom from "../../components/collection/InsideRoom.jsx";
 import { Capacitor } from "@capacitor/core";
+import grabId from "../../core/grabId.jsx";
 
 // ---------------------------------------------------------
 // Layout
@@ -98,8 +97,9 @@ const PRIMARY_BUTTON =
 // ---------------------------------------------------------
 
 export default function CollectionContainer() {
-  const { id } = useParams();
 
+const id = grabId(location.pathname)
+const colId = id
   const dispatch = useDispatch();
 const router = useIonRouter()
   const { showAlert } = useAlert();
@@ -108,8 +108,8 @@ const router = useIonRouter()
     (state) => state.users.currentProfile
   );
 
- const colId = router.routeInfo.pathname.split("/")[router.routeInfo.pathname.split("/").length-2]
-console.log("Col")
+//  const colId = router.routeInfo.pathname.split("/")[router.routeInfo.pathname.split("/").length-2]
+// console.log("Col")
 console.log(colId)
   const collection = useSelector(
     (state) => state.books.collectionInView

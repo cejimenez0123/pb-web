@@ -670,7 +670,8 @@ const handleSubmit = async () => {
               <input
                 id="settings-picture"
                 type="file"
-                accept="image/*"
+                accept=".jpg,.jpeg,.png,.svg,image/jpeg,image/png"
+
                 className="
                   file-input file-input-bordered  w-[80%] mx-auto 
                   border-plumb-borderStrong

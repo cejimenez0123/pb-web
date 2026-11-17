@@ -944,7 +944,7 @@ function IOSFormTemplate({
 
                 <input
                   type="file"
-                  accept="image/*"
+               accept=".jpg,.jpeg,.png,.svg,image/jpeg,image/png"
                   className="hidden"
                   onChange={
                     handleProfilePicture
@@ -956,73 +956,7 @@ function IOSFormTemplate({
             </div>
 
  </div>
-          {/* <div className="
-            mt-6 flex items-center gap-4
-            rounded-2xl border p-4
-            border-plumb-border
-            bg-plumb-elevated
-            dark:border-plumb-darkBorder
-            dark:bg-plumb-dark-elevated
-          ">
-            <div className="
-              h-16 w-16 shrink-0
-              overflow-hidden rounded-2xl
-              bg-plumb-surface
-              dark:bg-plumb-dark-canvas
-            ">
-              <img
-                src={pictureUrl}
-                alt="Profile preview"
-                className="h-full w-full object-cover"
-              />
-            </div>
-
-            <div className="min-w-0 flex-1">
-              <p className="
-                text-sm font-semibold
-                text-plumb-ink
-                dark:text-plumb-darkText
-              ">
-                Add a photo
-              </p>
-
-              <p className={`${subtleClass} mt-0.5`}>
-                Optional. A face, a drawing,
-                something that feels like you.
-              </p>
-
-              <label className={`
-                mt-3 inline-flex min-h-11
-                cursor-pointer items-center
-                rounded-full border
-                border-plumb-mint
-                bg-plumb-paper
-                px-4 py-2
-                text-xs font-semibold
-                text-plumb-mintHover
-                ${focusClass}
-                ${transitionClass}
-                hover:bg-plumb-mint/10
-                dark:border-plumb-mintLight
-                dark:bg-plumb-dark-surface
-                dark:text-plumb-mintLight
-                dark:hover:bg-plumb-mint/15
-              `}>
-                Choose photo
-
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleProfilePicture}
-                  aria-label="Choose a profile photo"
-                  className="
-                    sr-only
-                    focus-visible:outline-none
-                  "
-                />
-              </label>
-            </div>
-          </div> */}
+          
         </section>
 
         {/* YOUR RHYTHM */}
