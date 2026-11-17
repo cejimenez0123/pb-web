@@ -39,6 +39,7 @@ function useProfileDependentEffects(currentProfile, isGlobal) {
     if (!currentProfile) return;
     try {
       const res = await dispatch(findWorkshopGroups({
+        profile:currentProfile,
         location: currentProfile.location,
         radius: 50,
         global: isGlobal

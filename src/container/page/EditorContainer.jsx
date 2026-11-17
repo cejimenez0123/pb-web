@@ -29,7 +29,7 @@ import {
   setEditingPage,
   setHtmlContent,
   setPageInView,
-
+  setPageType,
 } from "../../actions/PageActions.jsx";
 
 import { useAlert } from "../../core/useAlert.jsx";
@@ -66,15 +66,27 @@ const STATUS_OPTIONS = [
  * ---------------------------------------------------------
  */
 
+function normalizeType(value) {
+  if (value === "text") {
+    return PageType.text;
+  }
 
+  return value || PageType.text;
+}
 
 function createEmptyParameters({
   routeId,
-
+  type=PageType.text,
   currentProfile,
 }) {
+    const hasValidId =
+    typeof routeId === "string" &&
+    /^[a-f\d]{24}$/i.test(routeId);
   return {
-    id: routeId ,
+    id:
+     hasValidId
+        ? routeId
+        : null,
     data: "",
     title: "",
     description: "",
@@ -82,7 +94,7 @@ function createEmptyParameters({
     isPrivate: true,
     commentable: true,
     needsFeedback: false,
-    type: PageType.text,
+    type: normalizeType(type),
     authorId: currentProfile?.id ?? null,
     profileId: currentProfile?.id ?? "",
     profile: currentProfile ?? null,
@@ -96,14 +108,14 @@ function createEmptyParameters({
  */
 function getEditableSnapshot(parameters = {}) {
   return {
-    data: parameters?.data ?? "",
-    title: parameters?.title ?? "",
-    description: parameters?.description ?? "",
-    status: parameters?.status || "draft",
-    isPrivate: parameters?.isPrivate ?? true,
-    commentable: parameters?.commentable ?? true,
-    needsFeedback: parameters?.needsFeedback ?? false,
-    type: parameters?.type??PageType.text,
+    data: parameters.data ?? "",
+    title: parameters.title ?? "",
+    description: parameters.description ?? "",
+    status: parameters.status || "draft",
+    isPrivate: parameters.isPrivate ?? true,
+    commentable: parameters.commentable ?? true,
+    needsFeedback: parameters.needsFeedback ?? false,
+    type: normalizeType(parameters.type),
   };
 }
 
@@ -126,7 +138,7 @@ export default function EditorContainer() {
   const dispatch = useDispatch();
   const router = useIonRouter();
 
-const routeId = router.routeInfo.pathname.split("/")[router.routeInfo.pathname.split("/").length-1]
+
 
   const { showAlert } = useAlert();
 
@@ -147,14 +159,19 @@ const routeId = router.routeInfo.pathname.split("/")[router.routeInfo.pathname.s
   const {
     editPage,
     pageInView,
-    
-
+    pageType: sliceType,
   } = useSelector((state) => state.pages);
 
-  const isNewStory = !routeId 
+ const routeId = location.pathname.split("/").pop()
 
+console.log(location.pathname)
 
+const isNewStory =
+  !routeId ||
+  ["new", "create","editor"].includes(routeId.toLowerCase());
 
+const isIdValid = !isNewStory;
+ 
   /*
    * ---------------------------------------------------------
    * STATE
@@ -163,8 +180,8 @@ const routeId = router.routeInfo.pathname.split("/")[router.routeInfo.pathname.s
 
   const [parameters, setParameters] = useState(() =>
     createEmptyParameters({
-      routeId:routeId,
-      type: PageType.text,
+      routeId,
+
       currentProfile,
     })
   );
@@ -175,11 +192,16 @@ const routeId = router.routeInfo.pathname.split("/")[router.routeInfo.pathname.s
   const [saveError, setSaveError] = useState(false);
   const [openHashtag, setOpenHashtag] = useState(false);
 
-  const type = parameters?.type
+  const type = normalizeType(
+    parameters.type || initialType
+  );
 
- 
+  const isMediaType =
+    type === PageType.picture ||
+    type === PageType.link;
 
-
+  const effectiveId =
+    parameters.id || routeId;
 
   /*
    * ---------------------------------------------------------
@@ -205,7 +227,7 @@ const routeId = router.routeInfo.pathname.split("/")[router.routeInfo.pathname.s
   const persistLatestRef = useRef(null);
 
   const routeIdentityRef = useRef(
-    `${routeId || "new"}`
+  routeId || "new"
   );
 
   /*
@@ -354,11 +376,10 @@ const routeId = router.routeInfo.pathname.split("/")[router.routeInfo.pathname.s
     setSaveError(false);
 
     try {
-      const resolvedId =
-        current.id || routeId || null;
-
-      const isCreating =
-        !resolvedId || resolvedId === "new";
+      const resolvedId =  routeId || parameters.id
+      
+      const isCreating = resolvedId
+        !resolvedId && isIdValid
 
       const payload = {
         ...current,
@@ -419,21 +440,31 @@ const routeId = router.routeInfo.pathname.split("/")[router.routeInfo.pathname.s
         hasCreatedRef.current = true;
         hasLoadedRef.current = true;
 
-  
+        dispatch(
+          setEditingPage({
+            page: savedStory,
+          })
+        );
+
         dispatch(
           setPageInView({
             page: savedStory,
           })
         );
 
-  
+        dispatch(
+          setPageType({
+            type: normalizeType(
+              savedStory.type || snapshot.type
+            ),
+          })
+        );
 
         window.history.replaceState(
           null,
           "",
-          Paths.editor.createRoute(savedStory.id)
-   
-        );
+          Paths.editor.createRoute(savedStory.id))
+       
       }
 
       /*
@@ -543,17 +574,21 @@ const routeId = router.routeInfo.pathname.split("/")[router.routeInfo.pathname.s
         return;
       }
 
+      const storyType = normalizeType(
+        story.type || type
+      );
+
       const loadedParameters = {
         ...parametersRef.current,
         id: story.id,
         data: story.data ?? "",
         title: story.title ?? "",
-        description: story?.description ?? "",
-        status: story?.status || "draft",
-        isPrivate: story?.isPrivate ?? true,
-        commentable: story?.commentable ?? true,
-        needsFeedback: story?.needsFeedback ?? false,
-        type: story?.type??PageType.text,
+        description: story.description ?? "",
+        status: story.status || "draft",
+        isPrivate: story.isPrivate ?? true,
+        commentable: story.commentable ?? true,
+        needsFeedback: story.needsFeedback ?? false,
+        type: storyType,
         authorId:
           story.authorId ??
           currentProfile?.id ??
@@ -580,7 +615,11 @@ const routeId = router.routeInfo.pathname.split("/")[router.routeInfo.pathname.s
       parametersRef.current = loadedParameters;
       setParameters(loadedParameters);
 
-
+      dispatch(
+        setEditingPage({
+          page: story,
+        })
+      );
 
       dispatch(
         setPageInView({
@@ -588,7 +627,11 @@ const routeId = router.routeInfo.pathname.split("/")[router.routeInfo.pathname.s
         })
       );
 
-
+      dispatch(
+        setPageType({
+          type: storyType,
+        })
+      );
 
       dispatch(
         setHtmlContent(loadedParameters.data)
@@ -597,7 +640,7 @@ const routeId = router.routeInfo.pathname.split("/")[router.routeInfo.pathname.s
       setIsSaved(true);
       setSaveError(false);
     },
-    [currentProfile, dispatch, pageInView,type]
+    [currentProfile, dispatch, type]
   );
 
   /*
@@ -609,7 +652,8 @@ const routeId = router.routeInfo.pathname.split("/")[router.routeInfo.pathname.s
    */
 
   useEffect(() => {
-    const nextIdentity =routeId
+    const nextIdentity =
+      `${routeId || "new"}`;
 
     if (
       routeIdentityRef.current === nextIdentity
@@ -634,7 +678,7 @@ const routeId = router.routeInfo.pathname.split("/")[router.routeInfo.pathname.s
     const nextParameters =
       createEmptyParameters({
         routeId,
-        type: PageType.text,
+     
         currentProfile,
       });
 
@@ -644,7 +688,11 @@ const routeId = router.routeInfo.pathname.split("/")[router.routeInfo.pathname.s
     setIsSaved(true);
     setSaveError(false);
 
-  
+    dispatch(
+      setEditingPage({
+        page: null,
+      })
+    );
 
     dispatch(
       setPageInView({
@@ -654,14 +702,20 @@ const routeId = router.routeInfo.pathname.split("/")[router.routeInfo.pathname.s
 
     dispatch(setHtmlContent(""));
 
-  
+    dispatch(
+      setPageType({
+        type: normalizeType(
+          sliceType
+        ),
+      })
+    );
   }, [
     clearSaveTimer,
     currentProfile,
     dispatch,
-parameters?.type,
+  
     routeId,
-    
+    sliceType,
   ]);
 
   /*
@@ -671,14 +725,14 @@ parameters?.type,
    */
 
 useEffect(() => {
-  if (isNewStory || !routeId) return;
+  if (!isIdValid) return;
 
   let cancelled = false;
 
   activeRequestIdRef.current = routeId;
 
   const loadStory = async () => {
-    // First, use the story already selected from the previous page.
+
     if (pageInView?.id === routeId) {
       setStory(pageInView);
       return;
@@ -713,22 +767,21 @@ useEffect(() => {
     }
   };
 
-  loadStory();
+isIdValid && loadStory();
 
   return () => {
     cancelled = true;
   };
 }, [
   dispatch,
-  isNewStory,
-  routeId,
+
+  isIdValid,
   pageInView,
   setStory,
   showError,
 ]);
-
   // useEffect(() => {
-  //   if (isNewStory) return;
+  //   if (isNewStory || !routeId) return;
 
   //   if (
   //     hasLoadedRef.current &&
@@ -741,47 +794,50 @@ useEffect(() => {
 
   //   activeRequestIdRef.current = routeId;
 
-  // //   const loadStory = async () => {
-  // //     try {
-  // //  console.log(pageInView?.id === routeId)
-  // //       if (pageInView?.id === routeId) {
-  // //         if (
-  // //           !cancelled &&
-  // //           activeRequestIdRef.current === routeId
-  // //         ) {
-  // //           setStory(pageInView);
-  // //         }
+  //   const loadStory = async () => {
+  //     try {
+  //       /*
+  //        * Reuse Redux data if the requested story is
+  //        * already available.
+  //        */
+  //       if (pageInView?.id === routeId) {
+  //         if (
+  //           !cancelled &&
+  //           activeRequestIdRef.current === routeId
+  //         ) {
+  //           setStory(pageInView);
+  //         }
 
-  // //         return;
-  // //       }
+  //         return;
+  //       }
 
-  // //       const response = await dispatch(
-  // //         getStory({
-  // //           id: routeId,
-  // //         })
-  // //       ).unwrap();
+  //       const response = await dispatch(
+  //         getStory({
+  //           id: routeId,
+  //         })
+  //       ).unwrap();
 
-  // //       if (cancelled) return;
+  //       if (cancelled) return;
 
-  // //       if (
-  // //         activeRequestIdRef.current !== routeId
-  // //       ) {
-  // //         return;
-  // //       }
+  //       if (
+  //         activeRequestIdRef.current !== routeId
+  //       ) {
+  //         return;
+  //       }
 
-  // //       if (!response?.story) {
-  // //         throw new Error(
-  // //           "The requested story could not be loaded."
-  // //         );
-  // //       }
+  //       if (!response?.story) {
+  //         throw new Error(
+  //           "The requested story could not be loaded."
+  //         );
+  //       }
 
-  // //       setStory(response.story);
-  // //     } catch (error) {
-  // //       if (!cancelled) {
-  // //         showError(error);
-  // //       }
-  // //     }
-  // //   };
+  //       setStory(response.story);
+  //     } catch (error) {
+  //       if (!cancelled) {
+  //         showError(error);
+  //       }
+  //     }
+  //   };
 
   //   loadStory();
 
@@ -791,9 +847,7 @@ useEffect(() => {
   // }, [
   //   dispatch,
   //   isNewStory,
-  //   // pageInView,
-  //   type,
-  
+  //   pageInView,
   //   routeId,
   //   setStory,
   //   showError,
@@ -815,7 +869,7 @@ useEffect(() => {
      * New image/link stories should wait for their
      * actual content before being created.
      */
-    if ( isNewStory) return;
+    if (isMediaType && isNewStory) return;
 
     const hasMeaningfulContent =
       Boolean(parameters.data?.trim()) ||
@@ -840,7 +894,7 @@ useEffect(() => {
     scheduleSave();
   }, [
     currentProfile?.id,
- parameters?.type,
+    isMediaType,
     isNewStory,
     parameters,
     scheduleSave,
@@ -897,6 +951,7 @@ useEffect(() => {
 
   const createPageAction = useCallback(
     async (data) => {
+      console.log("bast")
       if (isDeletedRef.current) return null;
 
       if (data !== undefined) {
@@ -1099,15 +1154,15 @@ useEffect(() => {
    */
 
   const handleView = useCallback(() => {
-    if (!parameters.id) {
+    if (!effectiveId || effectiveId === "new") {
       return;
     }
 
     router.push(
-      Paths.page.createRoute(parameters?.id),
+      Paths.page.createRoute(effectiveId),
       "forward"
     );
-  }, [parameters?.id, router]);
+  }, [effectiveId, router]);
 
   /*
    * ---------------------------------------------------------
@@ -1118,9 +1173,10 @@ useEffect(() => {
   const handlePostPublic = useCallback(
     async (description) => {
       if (
-        !parameters?.id
+        !effectiveId ||
+        effectiveId === "new"
       ) {
-       showAlert({message:"ID problem",type:AlertType.error})
+        return;
       }
 
       const story = await saveChangesNow({
@@ -1135,12 +1191,12 @@ useEffect(() => {
       resetDialog();
 
       router.push(
-        Paths.page.createRoute(parameters?.id),
+        Paths.page.createRoute(effectiveId),
         "forward"
       );
     },
     [
-   parameters?.id,
+      effectiveId,
       resetDialog,
       router,
       saveChangesNow,
@@ -1153,13 +1209,14 @@ useEffect(() => {
    * ---------------------------------------------------------
    */
 
-
   const handleFeedback = useCallback(
     async (description) => {
-      if(!parameters?.id){
-    showAlert({message:"ID problem",type:AlertType.error})
+      if (
+        !effectiveId ||
+        effectiveId === "new"
+      ) {
+        return;
       }
-
 
       const story = await saveChangesNow({
         description,
@@ -1167,18 +1224,17 @@ useEffect(() => {
         needsFeedback: true,
       });
 
-
       if (!story) return;
 
       resetDialog();
 
       router.push(
-        Paths.workshop.createRoute(parameters?.id),
-     
+        Paths.workshop.createRoute(effectiveId),
+        "forward"
       );
     },
     [
-      parameters?.id,
+      effectiveId,
       resetDialog,
       router,
       saveChangesNow,
@@ -1188,9 +1244,8 @@ useEffect(() => {
   const openFeedback = useCallback(
     (isFeedback) => {
       openDialog({
-        // disagree: closeDialog,
-        // disagreeText: "Close",
-        title:"Publish & Get Feedback",
+        disagree: closeDialog,
+        disagreeText: "Close",
         scrollY: false,
         text: (
           <FeedbackDialog
@@ -1224,7 +1279,7 @@ useEffect(() => {
 
   const handleDelete = useCallback(async () => {
     const storyId =
-      parametersRef.current.id || parameters?.id;
+      parametersRef.current.id || routeId;
 
     if (!storyId || storyId === "new") {
       return;
@@ -1287,7 +1342,7 @@ useEffect(() => {
     clearSaveTimer,
     closeDialog,
     dispatch,
-    parameters?.id,
+    routeId,
     router,
     showError,
   ]);
@@ -1308,6 +1363,1434 @@ useEffect(() => {
     handleDelete,
     openDialog,
   ]);
+
+  
+
+// import "../../styles/Editor.css";
+// import "../../App.css";
+
+// import { useDispatch, useSelector } from "react-redux";
+// import {
+//   useCallback,
+//   useEffect,
+//   useRef,
+//   useState,
+// } from "react";
+// import { useParams } from "react-router";
+// import { IonContent, useIonRouter } from "@ionic/react";
+// import { Preferences } from "@capacitor/preferences";
+// import axios from "axios";
+
+// import Paths from "../../core/paths";
+// import { PageType } from "../../core/constants";
+
+// import {
+//   createStory,
+//   deleteStory,
+//   getStory,
+//   updateStory,
+// } from "../../actions/StoryActions";
+
+// import {
+//   removeFromPaginatedKey,
+//   setEditingPage,
+//   setHtmlContent,
+//   setPageInView,
+
+// } from "../../actions/PageActions.jsx";
+
+// import { useAlert } from "../../core/useAlert.jsx";
+// import AlertType from "../../core/AlertType.js";
+
+// import EditorContext from "./EditorContext";
+// import FeedbackDialog from "../../components/page/FeedbackDialog";
+// import { useDialog } from "../../domain/usecases/useDialog.jsx";
+// import EditorDiv from "../../components/page/EditorDiv.jsx";
+// import TopBarDropdown from "../../components/page/TopBarDropdown.jsx";
+// import EditorFooter from "../../components/page/EditorFooter.jsx";
+
+// import Enviroment from "../../core/Enviroment.js";
+// import { useMediaQuery } from "react-responsive";
+// import styles from "../../styles/style.js";
+// import PageTypeSelector from "../../components/PageTypeSelector.jsx";
+// import ErrorBoundary from "../../ErrorBoundary.jsx";
+
+// const CONTAINER =
+//   "mx-auto w-full max-w-3xl rounded-lg bg-base-bg p-4 shadow-sm md:p-6";
+
+// const DRIVE_TOKEN_KEY = "googledrivetoken";
+
+// const STATUS_OPTIONS = [
+//   { value: "draft", label: "Draft" },
+//   { value: "fragment", label: "Fragment" },
+//   { value: "workshop", label: "Workshop" },
+//   { value: "finished", label: "Published" },
+// ];
+
+// /*
+//  * ---------------------------------------------------------
+//  * HELPERS
+//  * ---------------------------------------------------------
+//  */
+
+// function createEmptyParameters({ routeId, currentProfile }) {
+//   const hasValidId =
+//     typeof routeId === "string" &&
+//     /^[a-f\d]{24}$/i.test(routeId);
+
+//   return {
+//     id: hasValidId ? routeId : null,
+//     data: "",
+//     title: "",
+//     description: "",
+//     status: "draft",
+//     isPrivate: true,
+//     commentable: true,
+//     needsFeedback: false,
+//     type: PageType.text,
+
+//     profileId: currentProfile?.id || null,
+//     profile: currentProfile || null,
+//   };
+// }
+// // function createEmptyParameters({ routeId, currentProfile }) {
+// //   const hasValidId =
+// //     typeof routeId === "string" &&
+// //     /^[a-f\d]{24}$/i.test(routeId);
+
+// //   return {
+// //     id: hasValidId ? routeId : null,
+// //     data: "",
+// //     title: "",
+// //     description: "",
+// //     status: "draft",
+// //     isPrivate: true,
+// //     commentable: true,
+// //     needsFeedback: false,
+// //     type: PageType.text,
+// //     authorId: currentProfile?.id ?? null,
+// //     profileId: currentProfile?.id ?? "",
+// //     profile: currentProfile ?? null,
+// //     page: null,
+// //   };
+// // }
+
+// /*
+//  * Only fields that are persisted as editable story content
+//  * participate in save comparisons.
+//  */
+// function getEditableSnapshot(parameters = {}) {
+//   return {
+//     data: parameters?.data ?? "",
+//     title: parameters?.title ?? "",
+//     description: parameters?.description ?? "",
+//     status: parameters?.status || "draft",
+//     isPrivate: parameters?.isPrivate ?? true,
+//     commentable: parameters?.commentable ?? true,
+//     needsFeedback: parameters?.needsFeedback ?? false,
+//     type: parameters?.type??PageType.text,
+//   };
+// }
+
+// function snapshotsMatch(first, second) {
+//   if (!first || !second) return false;
+
+//   return (
+//     JSON.stringify(first) ===
+//     JSON.stringify(second)
+//   );
+// }
+
+// /*
+//  * ---------------------------------------------------------
+//  * COMPONENT
+//  * ---------------------------------------------------------
+//  */
+
+// export default function EditorContainer() {
+//   const dispatch = useDispatch();
+//   const router = useIonRouter();
+// const routeId = router.routeInfo.pathname
+//   .split("/")
+//   .filter(Boolean)
+//   .pop() || "";
+
+// const isNewStory =
+//   !routeId ||
+//   ["new", "create","editor"].includes(routeId.toLowerCase());
+
+// const isIdValid = !isNewStory;
+
+
+//   const { showAlert } = useAlert();
+
+//   const isPhone = useMediaQuery({
+//     query: "(max-width: 750px)",
+//   });
+
+//   const {
+//     openDialog,
+//     closeDialog,
+//     resetDialog,
+//   } = useDialog();
+
+//   const currentProfile = useSelector(
+//     (state) => state.users.currentProfile
+//   );
+
+//   const {
+//     editPage,
+//     pageInView,
+    
+
+//   } = useSelector((state) => state.pages);
+
+
+
+
+//   /*
+//    * ---------------------------------------------------------
+//    * STATE
+//    * ---------------------------------------------------------
+//    */
+
+//   const [parameters, setParameters] = useState(() =>
+//     createEmptyParameters({
+//       routeId:routeId,
+//       type: PageType.text,
+//       currentProfile,
+//     })
+//   );
+
+//   const [files, setFiles] = useState([]);
+//   const [accessToken, setAccessToken] = useState(null);
+//   const [isSaved, setIsSaved] = useState(true);
+//   const [saveError, setSaveError] = useState(false);
+//   const [openHashtag, setOpenHashtag] = useState(false);
+
+//   const type = parameters?.type
+
+ 
+
+
+
+//   /*
+//    * ---------------------------------------------------------
+//    * REFS
+//    * ---------------------------------------------------------
+//    */
+
+//   const parametersRef = useRef(parameters);
+
+//   const hasLoadedRef = useRef(false);
+//   const hasCreatedRef = useRef(false);
+//   const savingRef = useRef(false);
+//   const isSavingRef = useRef(false);
+//   const isDeletedRef = useRef(false);
+// const [isSaving,setIsSaving]=useState(false)
+//   const saveRequestedRef = useRef(false);
+
+//   const activeRequestIdRef = useRef(null);
+
+//   const lastSavedRef = useRef(null);
+
+//   const saveTimerRef = useRef(null);
+//   const persistLatestRef = useRef(null);
+
+//   const routeIdentityRef = useRef(
+//     `${routeId || "new"}`
+//   );
+
+//   /*
+//    * ---------------------------------------------------------
+//    * ERROR HANDLING
+//    * ---------------------------------------------------------
+//    */
+
+//   const showError = useCallback(
+//     (error) => {
+//       showAlert({
+//         message:
+//           error?.message ||
+//           "Something went wrong.",
+//         type: AlertType.error,
+//       });
+//     },
+//     [showAlert]
+//   );
+
+//   /*
+//    * ---------------------------------------------------------
+//    * PARAMETER UPDATES
+//    * ---------------------------------------------------------
+//    *
+//    * All changes update the ref immediately and then React
+//    * state. This keeps asynchronous save operations reading
+//    * the latest editor values.
+//    */
+
+//   const updateParameters = useCallback(
+//     (updater) => {
+//       const previous = parametersRef.current;
+
+//       const next =
+//         typeof updater === "function"
+//           ? updater(previous)
+//           : {
+//               ...previous,
+//               ...updater,
+//             };
+
+//       parametersRef.current = next;
+//       setParameters(next);
+
+//       return next;
+//     },
+//     []
+//   );
+
+//   const handleChange = useCallback(
+//     (key, value) => {
+//       updateParameters((previous) => ({
+//         ...previous,
+//         [key]: value,
+//       }));
+//     },
+//     [updateParameters]
+//   );
+
+//   /*
+//    * ---------------------------------------------------------
+//    * SAVE TIMER
+//    * ---------------------------------------------------------
+//    */
+
+//   const clearSaveTimer = useCallback(() => {
+//     if (saveTimerRef.current) {
+//       clearTimeout(saveTimerRef.current);
+//       saveTimerRef.current = null;
+//     }
+//   }, []);
+
+//   const scheduleSave = useCallback(
+//     (delay = 750) => {
+//       if (isDeletedRef.current) return;
+
+//       clearSaveTimer();
+
+//       saveTimerRef.current = setTimeout(() => {
+//         saveTimerRef.current = null;
+
+//         if (isDeletedRef.current) return;
+
+//         /*
+//          * If a request is already running, record that
+//          * another save is needed when it finishes.
+//          */
+//         if (isSavingRef.current) {
+//           saveRequestedRef.current = true;
+//           return;
+//         }
+
+//         persistLatestRef.current?.();
+//       }, delay);
+//     },
+//     [clearSaveTimer]
+//   );
+
+//   /*
+//    * ---------------------------------------------------------
+//    * PERSIST LATEST STORY
+//    * ---------------------------------------------------------
+//    *
+//    * This is the only function that creates or updates a
+//    * story during normal editor operation.
+//    */
+// const persistLatest = useCallback(async () => {
+//   if (!currentProfile?.id || isDeletedRef.current) {
+//     return null;
+//   }
+
+//   // Prevent overlapping saves.
+//   if (savingRef.current) {
+//     saveRequestedRef.current = true;
+//     return null;
+//   }
+
+//   const current = parametersRef.current;
+
+//   if (!current) {
+//     return null;
+//   }
+
+//   // Do not create a page until it has a title or content.
+//   const hasMeaningfulContent =
+//     Boolean(current.data?.trim()) ||
+//     Boolean(current.title?.trim());
+
+//   if (!hasMeaningfulContent) {
+//     return null;
+//   }
+
+//   const currentSnapshot = getEditableSnapshot(current);
+
+//   // Skip if nothing has changed since the last successful save.
+//   if (
+//     lastSavedRef.current &&
+//     snapshotsMatch(currentSnapshot, lastSavedRef.current)
+//   ) {
+//     return null;
+//   }
+
+//   // Only a valid MongoDB ObjectId identifies an existing story.
+//   const hasValidId =
+//     typeof current.id === "string" &&
+//     /^[a-f\d]{24}$/i.test(current.id);
+
+//   const isCreating = !hasValidId;
+
+//   const payload = {
+//     ...current,
+//     id: isCreating ? null : current.id,
+//     profileId: current.profileId || currentProfile.id,
+//   };
+
+//   savingRef.current = true;
+//    setIsSaved(true);
+//   setSaveError(false);
+
+//   try {
+//     const response = isCreating
+//       ? await dispatch(createStory(payload)).unwrap()
+//       : await dispatch(updateStory(payload)).unwrap();
+
+//     const savedStory = response?.story;
+
+//     if (!savedStory?.id) {
+//       throw new Error(
+//         isCreating
+//           ? "The page was created, but no story ID was returned."
+//           : "The page was updated, but no story ID was returned."
+//       );
+//     }
+
+//     // Store the returned ID immediately so subsequent saves update.
+//     const updatedParameters = {
+//       ...parametersRef.current,
+//       ...savedStory,
+//       id: savedStory.id,
+//     };
+
+//     parametersRef.current = updatedParameters;
+//     setParameters(updatedParameters);
+
+//     // Update the saved snapshot using the latest parameters.
+//     lastSavedRef.current = getEditableSnapshot(updatedParameters);
+
+//     activeRequestIdRef.current = savedStory.id;
+//     hasCreatedRef.current = true;
+//     hasLoadedRef.current = true;
+
+//     dispatch(setPageInView(savedStory));
+
+//     if (isCreating) {
+//       window.history.replaceState(
+//         null,
+//         "",
+//         Paths.editor.createRoute(savedStory.id)
+//       );
+//     }
+
+//     setIsSaved(true);
+//     setSaveError(false);
+
+//     return response;
+//   } catch (error) {
+//     console.error("Error saving page:", error);
+//     setSaveError(true);
+//     setIsSaved(false);
+
+//     return null;
+//   } finally {
+//     savingRef.current = false;
+//   setIsSaved(true);
+
+//     // If another edit happened while saving, save the latest version.
+//     if (saveRequestedRef.current) {
+//       saveRequestedRef.current = false;
+
+//       const latest = parametersRef.current;
+//       const latestSnapshot = getEditableSnapshot(latest);
+
+//       if (
+//         latest &&
+//         (Boolean(latest.data?.trim()) ||
+//           Boolean(latest.title?.trim())) &&
+//         !snapshotsMatch(latestSnapshot, lastSavedRef.current)
+//       ) {
+//         scheduleSave();
+//       }
+//     }
+//   }
+// }, [
+//   currentProfile?.id,
+//   dispatch,
+//   scheduleSave,
+// ]);
+// //   const persistLatest = useCallback(async () => {
+// //     if (!currentProfile?.id) return null;
+// //     if (isDeletedRef.current) return null;
+
+// //     if (isSavingRef.current) {
+// //       saveRequestedRef.current = true;
+// //       return null;
+// //     }
+
+// //     const current = parametersRef.current;
+
+// //     const hasMeaningfulContent =
+// //       Boolean(current.data?.trim()) ||
+// //       Boolean(current.title?.trim());
+
+// //     if (!hasMeaningfulContent) return null;
+
+// //     const snapshot = getEditableSnapshot(current);
+
+// //     /*
+// //      * Nothing has changed since the last confirmed save.
+// //      */
+// //     if (
+// //       snapshotsMatch(
+// //         snapshot,
+// //         lastSavedRef.current
+// //       )
+// //     ) {
+// //       setIsSaved(true);
+// //       setSaveError(false);
+// //       return current.page ?? null;
+// //     }
+
+// //     isSavingRef.current = true;
+// //     saveRequestedRef.current = false;
+
+// //     setIsSaved(false);
+// //     setSaveError(false);
+
+// //     try {
+// // const resolvedId =
+// //   current.id || (isNewStory ? null : routeId);
+
+// // const isCreating = !resolvedId;
+
+
+
+// //       const payload = {
+// //         ...current,
+// //         ...snapshot,
+// //         id: isCreating ? null : resolvedId,
+// //         authorId: currentProfile.id,
+// //         profileId: currentProfile.id,
+// //         profile: currentProfile,
+// //       };
+
+// //       const response = isCreating
+// //         ? await dispatch(
+// //             createStory(payload)
+// //           ).unwrap()
+// //         : await dispatch(
+// //             updateStory(payload)
+// //           ).unwrap();
+
+// //       if (isDeletedRef.current) return null;
+
+// //       const savedStory = response?.story;
+
+// //       /*
+// //        * A new story must return an ID before the editor
+// //        * can transition to update mode.
+// //        */
+// //       if (isCreating && !savedStory?.id) {
+// //         throw new Error(
+// //           "The story was created, but no story ID was returned."
+// //         );
+// //       }
+
+// //       /*
+// //        * The exact snapshot sent to the server is now
+// //        * confirmed as saved.
+// //        */
+// //       lastSavedRef.current = snapshot;
+
+// //       /*
+// //        * Creation establishes the permanent ID.
+// //        * Do not replace the latest editor parameters with
+// //        * the server response: the user may have continued
+// //        * typing while creation was in progress.
+// //        */
+// //       if (isCreating) {
+// //         const latest = parametersRef.current;
+
+// //         const createdParameters = {
+// //           ...latest,
+// //           id: savedStory.id,
+// //           page: savedStory,
+// //         };
+
+// //         parametersRef.current = createdParameters;
+// //         setParameters(createdParameters);
+
+// //         activeRequestIdRef.current = savedStory.id;
+// //         hasCreatedRef.current = true;
+// //         hasLoadedRef.current = true;
+
+  
+// //         dispatch(
+// //           setPageInView({
+// //             page: savedStory,
+// //           })
+// //         );
+
+  
+
+// //         window.history.replaceState(
+// //           null,
+// //           "",
+// //           Paths.editor.createRoute(savedStory.id)
+   
+// //         );
+// //       }
+
+// //       /*
+// //        * Compare the latest editor values with the
+// //        * version that the server just confirmed.
+// //        */
+// //       const latestSnapshot =
+// //         getEditableSnapshot(
+// //           parametersRef.current
+// //         );
+
+// //       const latestIsSaved =
+// //         snapshotsMatch(
+// //           latestSnapshot,
+// //           lastSavedRef.current
+// //         );
+
+// //       setIsSaved(latestIsSaved);
+// //       setSaveError(false);
+
+// //       /*
+// //        * If edits occurred during the request, save
+// //        * the newer version immediately afterward.
+// //        */
+// //       if (
+// //         !latestIsSaved ||
+// //         saveRequestedRef.current
+// //       ) {
+// //         scheduleSave(0);
+// //       }
+
+// //       return savedStory ?? response;
+// //     } catch (error) {
+// //       setIsSaved(false);
+// //       setSaveError(true);
+
+// //       showError(error);
+
+// //       return null;
+// //     } finally {
+// //       isSavingRef.current = false;
+
+// //       /*
+// //        * Do not lose a save request that was made while
+// //        * the previous request was still in flight.
+// //        */
+// //       if (
+// //         saveRequestedRef.current &&
+// //         !isDeletedRef.current
+// //       ) {
+// //         saveRequestedRef.current = false;
+// //         scheduleSave(0);
+// //       }
+// //     }
+// //   }, [
+// //     currentProfile,
+// //     dispatch,
+// //     routeId,
+// //     scheduleSave,
+// //     showError,
+// //   ]);
+
+//   persistLatestRef.current = persistLatest;
+
+//   /*
+//    * ---------------------------------------------------------
+//    * SAVE IMMEDIATELY
+//    * ---------------------------------------------------------
+//    *
+//    * Used by explicit actions such as publishing,
+//    * requesting feedback, and editor-driven creation.
+//    */
+
+//   const saveChangesNow = useCallback(
+//     async (changes = {}) => {
+//       if (isDeletedRef.current) return null;
+
+//       updateParameters((previous) => ({
+//         ...previous,
+//         ...changes,
+//       }));
+
+//       clearSaveTimer();
+
+//       return persistLatestRef.current?.() ?? null;
+//     },
+//     [clearSaveTimer, updateParameters]
+//   );
+
+//   /*
+//    * ---------------------------------------------------------
+//    * INITIALIZE LOADED STORY
+//    * ---------------------------------------------------------
+//    */
+
+//   const setStory = useCallback(
+//     (story) => {
+//       if (!story?.id) return;
+
+//       /*
+//        * Ignore duplicate initialization of the same story.
+//        */
+//       if (
+//         hasLoadedRef.current &&
+//         parametersRef.current.id === story.id
+//       ) {
+//         return;
+//       }
+
+//       const loadedParameters = {
+//         ...parametersRef.current,
+//         id: story.id,
+//         data: story.data ?? "",
+//         title: story.title ?? "",
+//         description: story?.description ?? "",
+//         status: story?.status || "draft",
+//         isPrivate: story?.isPrivate ?? true,
+//         commentable: story?.commentable ?? true,
+//         needsFeedback: story?.needsFeedback ?? false,
+//         type: story?.type??PageType.text,
+//         authorId:
+//           story.authorId ??
+//           currentProfile?.id ??
+//           null,
+//         profileId:
+//           story.profileId ??
+//           currentProfile?.id ??
+//           "",
+//         profile: currentProfile ?? null,
+//         page: story,
+//       };
+
+//       activeRequestIdRef.current = story.id;
+
+//       hasCreatedRef.current = true;
+//       hasLoadedRef.current = true;
+
+//       /*
+//        * The loaded server version is the saved baseline.
+//        */
+//       lastSavedRef.current =
+//         getEditableSnapshot(loadedParameters);
+
+//       parametersRef.current = loadedParameters;
+//       setParameters(loadedParameters);
+
+
+
+//       dispatch(
+//         setPageInView({
+//           page: story,
+//         })
+//       );
+
+
+
+//       dispatch(
+//         setHtmlContent(loadedParameters.data)
+//       );
+
+//       setIsSaved(true);
+//       setSaveError(false);
+//     },
+//     [currentProfile, dispatch, pageInView,type]
+//   );
+
+//   /*
+//    * ---------------------------------------------------------
+//    * ROUTE CHANGES
+//    * ---------------------------------------------------------
+//    *
+//    * Reset editor state when moving to another story.
+//    */
+
+//   useEffect(() => {
+//     const nextIdentity =routeId
+
+//     if (
+//       routeIdentityRef.current === nextIdentity
+//     ) {
+//       return;
+//     }
+
+//     routeIdentityRef.current = nextIdentity;
+
+//     clearSaveTimer();
+
+//     activeRequestIdRef.current =
+//       routeId || null;
+
+//     hasCreatedRef.current = false;
+//     hasLoadedRef.current = false;
+//     isDeletedRef.current = false;
+
+//     saveRequestedRef.current = false;
+//     lastSavedRef.current = null;
+
+//     const nextParameters =
+//       createEmptyParameters({
+//         routeId,
+//         type: PageType.text,
+//         currentProfile,
+//       });
+
+//     parametersRef.current = nextParameters;
+//     setParameters(nextParameters);
+
+//     setIsSaved(true);
+//     setSaveError(false);
+
+  
+
+//     dispatch(
+//       setPageInView({
+//         page: null,
+//       })
+//     );
+
+//     dispatch(setHtmlContent(""));
+
+  
+//   }, [
+//     clearSaveTimer,
+//     currentProfile,
+//     dispatch,
+// parameters?.type,
+//     routeId,
+    
+//   ]);
+
+//   /*
+//    * ---------------------------------------------------------
+//    * LOAD EXISTING STORY
+//    * ---------------------------------------------------------
+//    */
+
+
+
+// useEffect(() => {
+//   if (!isIdValid) return;
+
+//   let cancelled = false;
+
+//   activeRequestIdRef.current = routeId;
+
+//   const loadStory = async () => {
+
+//     if (pageInView?.id === routeId) {
+//       setStory(pageInView);
+//       return;
+//     }
+
+//     try {
+//       const response = await dispatch(
+//         getStory({ id: routeId })
+//       ).unwrap();
+
+//       if (
+//         cancelled ||
+//         activeRequestIdRef.current !== routeId
+//       ) {
+//         return;
+//       }
+
+//       if (!response?.story) {
+//         throw new Error(
+//           "The requested story could not be loaded."
+//         );
+//       }
+
+//       setStory(response.story);
+//     } catch (error) {
+//       if (
+//         !cancelled &&
+//         activeRequestIdRef.current === routeId
+//       ) {
+//         showError(error);
+//       }
+//     }
+//   };
+// console.log("isIDV"+isIdValid)
+// isIdValid && loadStory();
+
+//   return () => {
+//     cancelled = true;
+//   };
+// }, [
+//   dispatch,
+
+//   isIdValid,
+//   pageInView,
+//   setStory,
+//   showError,
+// ]);
+
+
+//   /*
+//    * ---------------------------------------------------------
+//    * AUTOSAVE
+//    * ---------------------------------------------------------
+//    *
+//    * This is the only autosave effect.
+//    */
+// useEffect(() => {
+//   if (!currentProfile?.id || isDeletedRef.current) {
+//     return;
+//   }
+
+//   const hasMeaningfulContent =
+//     Boolean(parameters.data?.trim()) ||
+//     Boolean(parameters.title?.trim());
+
+//   if (!hasMeaningfulContent) {
+//     return;
+//   }
+
+//   // Existing pages must finish loading before they can be updated.
+//   if (!isNewStory && !hasLoadedRef.current) {
+//     return;
+//   }
+
+//   setIsSaved(false);
+//   setSaveError(false);
+
+//   scheduleSave();
+// }, [
+//   currentProfile?.id,
+//   parameters,
+//   isNewStory,
+//   scheduleSave,
+// ]);
+// //   useEffect(() => {
+// //     if (!currentProfile?.id) return;
+// //     if (isDeletedRef.current) return;
+
+// //     /*
+// //      * New image/link stories should wait for their
+// //      * actual content before being created.
+// //      */
+// //     if ( !isIdValid) return;
+
+// //     const hasMeaningfulContent =
+// //       Boolean(parameters.data?.trim()) ||
+// //       Boolean(parameters.title?.trim());
+
+// //     if (!hasMeaningfulContent) return;
+
+// //     /*
+// //      * Do not update an existing story before its
+// //      * server version has loaded.
+// //      */
+// //     if (
+// //       isIdValid&&
+// //       !hasLoadedRef.current
+// //     ) {
+// //       return;
+// //     }
+
+// //     setIsSaved(false);
+// //     setSaveError(false);
+
+// //     scheduleSave();
+// //   }, [
+// //     currentProfile?.id,
+// //  parameters?.type,
+// //  isIdValid,
+  
+// //     parameters,
+// //     scheduleSave,
+// //   ]);
+
+//   /*
+//    * ---------------------------------------------------------
+//    * PROFILE METADATA
+//    * ---------------------------------------------------------
+//    */
+
+//   useEffect(() => {
+//     if (!currentProfile?.id) return;
+
+//     const current =
+//       parametersRef.current;
+
+//     if (
+//       current.authorId === currentProfile.id &&
+//       current.profileId === currentProfile.id &&
+//       current.profile === currentProfile
+//     ) {
+//       return;
+//     }
+
+//     updateParameters((previous) => ({
+//       ...previous,
+//       authorId: currentProfile.id,
+//       profileId: currentProfile.id,
+//       profile: currentProfile,
+//     }));
+//   }, [
+//     currentProfile,
+//     updateParameters,
+//   ]);
+
+//   /*
+//    * ---------------------------------------------------------
+//    * CLEANUP
+//    * ---------------------------------------------------------
+//    */
+
+//   useEffect(() => {
+//     return () => {
+//       clearSaveTimer();
+//     };
+//   }, [clearSaveTimer]);
+
+//   /*
+//    * ---------------------------------------------------------
+//    * EDITOR-DRIVEN CREATION
+//    * ---------------------------------------------------------
+//    */
+
+//   const createPageAction = useCallback(
+//     async (data) => {
+//       if (isDeletedRef.current) return null;
+
+//       if (data !== undefined) {
+//         updateParameters((previous) => ({
+//           ...previous,
+//           data,
+//         }));
+//       }
+
+//       clearSaveTimer();
+
+//       return persistLatestRef.current?.() ?? null;
+//     },
+//     [clearSaveTimer, updateParameters]
+//   );
+
+//   /*
+//    * ---------------------------------------------------------
+//    * GOOGLE DRIVE
+//    * ---------------------------------------------------------
+//    */
+
+//   const fetchFiles = useCallback(async () => {
+//     try {
+//       const { value: token } =
+//         await Preferences.get({
+//           key: DRIVE_TOKEN_KEY,
+//         });
+
+//       if (!token) {
+//         setFiles([]);
+//         setAccessToken(null);
+//         return;
+//       }
+
+//       const response = await fetch(
+//         'https://www.googleapis.com/drive/v3/files?q=mimeType="application/vnd.google-apps.document"&fields=files(id,name,mimeType,iconLink)',
+//         {
+//           headers: {
+//             Authorization: `Bearer ${token}`,
+//             Accept: "application/json",
+//           },
+//         }
+//       );
+
+//       if (response.status === 401) {
+//         throw new Error(
+//           "Your Google Drive session has expired."
+//         );
+//       }
+
+//       if (!response.ok) {
+//         throw new Error(
+//           "Unable to load Google Drive documents."
+//         );
+//       }
+
+//       const data = await response.json();
+
+//       setFiles(data.files || []);
+//       setAccessToken(token);
+//     } catch (error) {
+//       console.error(
+//         "Google Drive API error:",
+//         error
+//       );
+
+//       setFiles([]);
+//       setAccessToken(null);
+//     }
+//   }, []);
+
+//   useEffect(() => {
+//     fetchFiles();
+//   }, [fetchFiles]);
+
+//   const onFilePicked = useCallback(
+//     async (file) => {
+//       try {
+//         if (!file?.id || !accessToken) return;
+
+//         const url =
+//           "https://www.googleapis.com/drive/v3/files/" +
+//           `${file.id}/export?mimeType=text/html`;
+
+//         const response = await axios.get(url, {
+//           headers: {
+//             Authorization: `Bearer ${accessToken}`,
+//           },
+//           responseType: "text",
+//         });
+
+//         updateParameters((previous) => ({
+//           ...previous,
+//           data: response.data || "",
+//           status: "draft",
+//           needsFeedback: true,
+//           type: PageType.text,
+//         }));
+
+//         resetDialog();
+//       } catch (error) {
+//         console.error(
+//           "Error importing Google document:",
+//           error
+//         );
+
+//         showError(error);
+//       }
+//     },
+//     [
+//       accessToken,
+//       resetDialog,
+//       showError,
+//       updateParameters,
+//     ]
+//   );
+
+//   const openGoogleDrive = useCallback(() => {
+//     if (!accessToken) {
+//       showAlert({
+//         message:
+//           "No Google Drive access token was found.",
+//         type: AlertType.error,
+//       });
+
+//       return;
+//     }
+
+//     openDialog({
+//       title: null,
+//       text: (
+//         <div
+//           style={{
+//             "--background":
+//               Enviroment.palette.base.surface,
+//           }}
+//           className="rounded-xl bg-cream p-3"
+//         >
+//           <div
+//             className={
+//               isPhone
+//                 ? "grid grid-cols-2 gap-3 overflow-y-auto"
+//                 : "grid grid-cols-3 gap-4 overflow-y-auto"
+//             }
+//             style={{
+//               maxHeight: "70vh",
+//               padding: "0.5rem",
+//             }}
+//           >
+//             {files.length === 0 ? (
+//               <p className="col-span-full p-4 text-center text-sm text-slate-500">
+//                 No Google Docs were found.
+//               </p>
+//             ) : (
+//               files.map((file) => (
+//                 <button
+//                   key={file.id}
+//                   type="button"
+//                   onClick={() => onFilePicked(file)}
+//                   className="
+//                     flex flex-col items-center justify-center
+//                     rounded-xl border border-blueSea
+//                     border-opacity-20 bg-base-bg px-3 py-3
+//                     shadow-md transition-all duration-150
+//                     hover:border-blueSea hover:shadow-lg
+//                     focus:outline-none focus:ring-2
+//                     focus:ring-emerald-300
+//                   "
+//                 >
+//                   <img
+//                     src={file.iconLink}
+//                     alt=""
+//                     className="mb-2 h-10 w-10 rounded"
+//                   />
+
+//                   <span className="w-full break-words text-center text-sm dark:text-plumb-darkText text-plumb-ink">
+//                     {file.name}
+//                   </span>
+//                 </button>
+//               ))
+//             )}
+//           </div>
+//         </div>
+//       ),
+//     });
+//   }, [
+//     accessToken,
+//     files,
+//     isPhone,
+//     onFilePicked,
+//     openDialog,
+//     showAlert,
+//   ]);
+
+//   /*
+//    * ---------------------------------------------------------
+//    * NAVIGATION
+//    * ---------------------------------------------------------
+//    */
+
+//   const handleView = useCallback(() => {
+//     if (!parameters.id) {
+//       return;
+//     }
+
+//     router.push(
+//       Paths.page.createRoute(parameters?.id),
+//       "forward"
+//     );
+//   }, [parameters?.id, router]);
+
+//   /*
+//    * ---------------------------------------------------------
+//    * PUBLISH
+//    * ---------------------------------------------------------
+//    */
+
+//   const handlePostPublic = useCallback(
+//     async (description) => {
+//       if (
+//         !parameters?.id
+//       ) {
+//        showAlert({message:"ID problem",type:AlertType.error})
+//       }
+
+//       const story = await saveChangesNow({
+//         description,
+//         isPrivate: false,
+//         status: "finished",
+//         needsFeedback: true,
+//       });
+
+//       if (!story) return;
+
+//       resetDialog();
+
+//       router.push(
+//         Paths.page.createRoute(parameters?.id),
+//         "forward"
+//       );
+//     },
+//     [
+//    parameters?.id,
+//       resetDialog,
+//       router,
+//       saveChangesNow,
+//     ]
+//   );
+
+//   /*
+//    * ---------------------------------------------------------
+//    * FEEDBACK / WORKSHOP
+//    * ---------------------------------------------------------
+//    */
+
+
+//   const handleFeedback = useCallback(
+//     async (description) => {
+//       if(!parameters?.id){
+//     showAlert({message:"ID problem",type:AlertType.error})
+//       }
+
+
+//       const story = await saveChangesNow({
+//         description,
+//         status: "workshop",
+//         needsFeedback: true,
+//       });
+
+
+//       if (!story) return;
+
+//       resetDialog();
+
+//       router.push(
+//         Paths.workshop.createRoute(parameters?.id),
+     
+//       );
+//     },
+//     [
+//       parameters?.id,
+//       resetDialog,
+//       router,
+//       saveChangesNow,
+//     ]
+//   );
+
+//   const openFeedback = useCallback(
+//     (isFeedback) => {
+//       openDialog({
+//         // disagree: closeDialog,
+//         // disagreeText: "Close",
+//         title:"Publish & Get Feedback",
+//         scrollY: false,
+//         text: (
+//           <FeedbackDialog
+//             page={editPage}
+//             isFeedback={isFeedback}
+//             handleChange={(value) =>
+//               handleChange("description", value)
+//             }
+//             handleFeedback={handleFeedback}
+//             handlePostPublic={handlePostPublic}
+//             handleClose={closeDialog}
+//           />
+//         ),
+//       });
+//     },
+//     [
+//       closeDialog,
+//       editPage,
+//       handleChange,
+//       handleFeedback,
+//       handlePostPublic,
+//       openDialog,
+//     ]
+//   );
+
+//   /*
+//    * ---------------------------------------------------------
+//    * DELETE
+//    * ---------------------------------------------------------
+//    */
+
+//   const handleDelete = useCallback(async () => {
+//     const storyId =
+//       parametersRef.current.id || parameters?.id;
+
+//     if (!storyId || storyId === "new") {
+//       return;
+//     }
+
+//     clearSaveTimer();
+
+//     isDeletedRef.current = true;
+//     saveRequestedRef.current = false;
+
+//     try {
+//       await dispatch(
+//         deleteStory({
+//           page: {
+//             ...parametersRef.current,
+//             id: storyId,
+//           },
+//         })
+//       ).unwrap();
+
+//       dispatch(
+//         removeFromPaginatedKey({
+//           key: "stories",
+//           id: storyId,
+//         })
+//       );
+
+//       dispatch(
+//         removeFromPaginatedKey({
+//           key: "recommended",
+//           id: storyId,
+//         })
+//       );
+
+//       dispatch(
+//         setEditingPage({
+//           page: null,
+//         })
+//       );
+
+//       dispatch(
+//         setPageInView({
+//           page: null,
+//         })
+//       );
+
+//       dispatch(setHtmlContent(""));
+
+//       closeDialog();
+
+//       router.push(
+//         Paths.home,
+//         "root"
+//       );
+//     } catch (error) {
+//       isDeletedRef.current = false;
+//       showError(error);
+//     }
+//   }, [
+//     clearSaveTimer,
+//     closeDialog,
+//     dispatch,
+//     parameters?.id,
+//     router,
+//     showError,
+//   ]);
+
+//   const openConfirmDeleteDialog = useCallback(() => {
+//     openDialog({
+//       title:
+//         "Are you sure you want to delete this page?",
+//       text:
+//         parametersRef.current.title || "Untitled",
+//       disagreeText: "Close",
+//       disagree: closeDialog,
+//       agreeText: "Delete",
+//       agree: handleDelete,
+//     });
+//   }, [
+//     closeDialog,
+//     handleDelete,
+//     openDialog,
+//   ]);
 
 
 

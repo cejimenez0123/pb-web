@@ -37,8 +37,7 @@ const TAG_ICON = (
 );
 
 function EditorFooter({ pageInView,routeId, effectiveId, openConfirmDeleteDialog }) {
-  console.log("FOOT"+routeId)
-  console.log("FOOFEF"+effectiveId)
+
   const [openHashtag, setOpenHashtag] = useState(false);
   const pathname = typeof window !== "undefined" ? window.location.pathname : "";
   const isEditorRoute = pathname.split("/").pop() !== "edit";

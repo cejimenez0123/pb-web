@@ -346,7 +346,7 @@ const {
           }
         },
         (err) => {
-          console.log(JSON.stringify(err))
+          
           showAlert({
             message: err.message,
             type: AlertType.error,

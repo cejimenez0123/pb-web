@@ -22,17 +22,4 @@ function FeaturedEventSection({
   );
 }
 export default FeaturedEventSection
-function getEventHtml(event) {
-  const candidates = [
-    event?.data,
-    event?.page?.data,
-    event?.story?.data,
-    event?.event?.data,
-    event?.content,
-    event?.page?.content,
-  ];
 
-  return candidates.find(
-    (value) => typeof value === "string" && value.trim()
-  ) || "";
-}

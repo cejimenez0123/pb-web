@@ -47,9 +47,9 @@ const fetchYourWorkshops = createAsyncThunk("books/findYourWorkshops",async (par
 })
   const findWorkshopGroup = createAsyncThunk(
   "books/findWorkshopGroup",
-  async ({  story, location, isGlobal, radius }, thunkApi) => {
+  async ({  profile,story, location, isGlobal, radius }, thunkApi) => {
     try {
-      const data = await workshopRepo.joinWorkshop({  story, location, isGlobal, radius });
+      const data = await workshopRepo.joinWorkshop({  profile,story, location, isGlobal, radius });
       if (!data.collection) throw new Error(data.error);
       return data;
     } catch (error) {
