@@ -39,7 +39,7 @@ break
       break;
       case "hashtag": path =  Paths.hashtag.createRoute(result.objectID)
       break;
-      case "collection":Paths.collection.createRoute(result.objectID)
+      case "collection": path = Paths.collection.createRoute(result.objectID)
       break
     }
    

@@ -39,7 +39,8 @@ const deleteStory = createAsyncThunk(
       
    
 if (page?.type === PageType.picture && page.data) {
-       photoRepo.deletePhoto({})
+       
+try{
           // page.data is the Firebase download URL.
          const storage = getStorage();
 
@@ -49,11 +50,21 @@ if (page?.type === PageType.picture && page.data) {
 
 
          
-        } 
+        
         
       
-        
+}catch(e){
+console.log("FIREBASE DELEGt"
+  +e.message
+)
+}  
+try{
 
+  photoRepo.deletePhoto({})
+}catch(err){
+
+}
+try{
       await storyRepo.deleteStory({
         id: page.id,
       });
@@ -64,6 +75,8 @@ if (page?.type === PageType.picture && page.data) {
     message: error.message,
   });
   
+  }}}catch(e){
+
   }})
 const fetchRecommendedStories = createAsyncThunk(
   'pages/fetchRecommendedStories',

@@ -48,6 +48,7 @@ import styles from "../../styles/style.js";
 import PageTypeSelector from "../../components/PageTypeSelector.jsx";
 import ErrorBoundary from "../../ErrorBoundary.jsx";
 import grabId from "../../core/grabId.jsx";
+import photoRepo from "../../data/photoRepo.js";
 
 const CONTAINER =
   "mx-auto w-full max-w-3xl rounded-lg bg-base-bg p-4 shadow-sm md:p-6";
@@ -61,11 +62,7 @@ const STATUS_OPTIONS = [
   { value: "finished", label: "Published" },
 ];
 
-/*
- * ---------------------------------------------------------
- * HELPERS
- * ---------------------------------------------------------
- */
+
 
 function normalizeType(value) {
   if (value === "text") {
@@ -75,33 +72,6 @@ function normalizeType(value) {
   return value || PageType.text;
 }
 
-function createEmptyParameters({
-  routeId,
-  type=PageType.text,
-  currentProfile,
-}) {
-    const hasValidId =
-    typeof routeId === "string" &&
-    /^[a-f\d]{24}$/i.test(routeId);
-  return {
-    id:
-     hasValidId
-        ? routeId
-        : null,
-    data: "",
-    title: "",
-    description: "",
-    status: "draft",
-    isPrivate: true,
-    commentable: true,
-    needsFeedback: false,
-    type: normalizeType(type),
-    authorId: currentProfile?.id ?? null,
-    profileId: currentProfile?.id ?? "",
-    profile: currentProfile ?? null,
-    page: null,
-  };
-}
 
 /*
  * Only fields that are persisted as editable story content
@@ -136,6 +106,7 @@ function snapshotsMatch(first, second) {
  */
 
 export default function EditorContainer() {
+  const { pageType } = useSelector(state=>state.pages)
   const dispatch = useDispatch();
   const router = useIonRouter();
 const routeId = grabId(location.pathname)
@@ -237,6 +208,33 @@ const isIdValid = !isNewStory;
    * ERROR HANDLING
    * ---------------------------------------------------------
    */
+function createEmptyParameters({
+  routeId,
+  type=pageType??PageType.text,
+  currentProfile,
+}) {
+    const hasValidId =
+    typeof routeId === "string" &&
+    /^[a-f\d]{24}$/i.test(routeId);
+  return {
+    id:
+     hasValidId
+        ? routeId
+        : null,
+    data: "",
+    title: "",
+    description: "",
+    status: "draft",
+    isPrivate: true,
+    commentable: true,
+    needsFeedback: false,
+    type: normalizeType(type),
+    authorId: currentProfile?.id ?? null,
+    profileId: currentProfile?.id ?? "",
+    profile: currentProfile ?? null,
+    page: null,
+  };
+}
 
   const showError = useCallback(
     (error) => {
@@ -1205,8 +1203,7 @@ isIdValid && loadStory();
    * DELETE
    * ---------------------------------------------------------
    */
-  console.log("FOC")
-console.log(parameters)
+
   const handleDelete = useCallback(async () => {
     const storyId =
       parametersRef.current.id || routeId;
@@ -1221,6 +1218,7 @@ console.log(parameters)
     saveRequestedRef.current = false;
   
     try {
+      try{
       await dispatch(
         deleteStory({
           page: {
@@ -1230,7 +1228,10 @@ console.log(parameters)
           },
         })
       ).unwrap();
-
+    }catch{
+    photoRepo.deletePhoto()
+      
+    }
       dispatch(
         removeFromPaginatedKey({
           key: "stories",
@@ -1450,7 +1451,7 @@ console.log(parameters)
                         "type",
                         nextType
                       );
-
+                      dispatch(setPageType({type:nextType}))
                   
                       
                     }}

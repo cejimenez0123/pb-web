@@ -1,4 +1,3 @@
-import styles from "../styles/style";
 
  const PAGE_TYPES = [
   {

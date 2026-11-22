@@ -360,8 +360,7 @@ function extractEventMetadata(data) {
 }
 
 function extractEventDateInfo(story) {
-  console.log("EXTRACT")
-  console.log(story)
+
   const html = getEventHtml(story);
 
   if (!html) {

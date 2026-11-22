@@ -22,7 +22,7 @@ import {    logIn ,
             acceptTerms,
         } from "../actions/UserActions"
 
-import {  addNotification, createProfile, fetchNotifcations, fetchProfileRecommendations, fetchProfiles } from "../actions/ProfileActions"
+import {  addNotification, createProfile, fetchNotifcations, fetchProfileRecommendations, fetchProfiles, uploadProfilePicture } from "../actions/ProfileActions"
 import { deletePageApproval } from "../actions/PageActions.jsx" 
 import { postCollectionHistory, postStoryHistory } from "../actions/HistoryActions"
 import { createFollow, deleteFollow } from "../actions/FollowAction"
@@ -139,6 +139,16 @@ const userSlice = createSlice({
         state.currentProfile = { ...state.currentProfile, ...payload.profile };
     }
         })
+
+.addCase(uploadProfilePicture.fulfilled, (state, { payload }) => {
+  if (payload?.profile) {
+    state.currentProfile = {
+      ...state.currentProfile,
+      ...payload.profile,
+    };
+  }
+})
+
       .addCase(postStoryHistory.fulfilled, (state, { payload }) => {
       if (payload?.profile) {
         state.currentProfile = { ...state.currentProfile, ...payload.profile };

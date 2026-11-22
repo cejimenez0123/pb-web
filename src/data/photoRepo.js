@@ -1,40 +1,29 @@
-
 import axios from "axios";
 import Enviroment from "../core/Enviroment";
 import { Preferences } from "@capacitor/preferences";
 
 class PhotoRepo {
   headers = {};
-
-  url = Enviroment.url + "/photos";
+  url = Enviroment.url + "/api/photos";
 
   async getAuthHeaders() {
-    const { value } = await Preferences.get({ key: "token" });
+    const { value: token } = await Preferences.get({
+      key: "token",
+    });
+
+    if (!token) {
+      throw new Error("You must be signed in to upload or retrieve photos.");
+    }
 
     return {
       ...this.headers,
-      Authorization: `Bearer ${value}`,
+      Authorization: `Bearer ${token}`,
     };
   }
 
-  // -----------------------------------------
-  // UPLOAD PHOTO
-  // -----------------------------------------
-
-  async uploadPhoto({
-    file,
-    profileId,
-    storyId,
-    purpose = "general",
-    filename,
-    originalUrl,
-  } = {}) {
+  async uploadPhoto({ file, purpose = "general", filename } = {}) {
     if (!file) {
       throw new Error("No file provided.");
-    }
-
-    if (!profileId) {
-      throw new Error("Profile ID is required.");
     }
 
     const allowedTypes = [
@@ -44,53 +33,74 @@ class PhotoRepo {
     ];
 
     if (!allowedTypes.includes(file.type)) {
-      throw new Error(
-        "Only JPEG, JPG, PNG and SVG images are allowed."
-      );
+      throw new Error("Only JPEG, PNG and SVG images are allowed.");
+    }
+
+    if (!["general", "story"].includes(purpose)) {
+      throw new Error("Invalid photo purpose.");
     }
 
     const headers = await this.getAuthHeaders();
-
     const formData = new FormData();
 
     formData.append("file", file, filename || file.name);
-    formData.append("profileId", profileId);
     formData.append("purpose", purpose);
-    formData.append("storyId", storyId);
 
-    if (filename) {
-      formData.append("filename", filename);
-    }
-
-    if (originalUrl) {
-      formData.append("originalUrl", originalUrl);
-    }
-
-    const res = await axios.post(
-      this.url+"/",
+    const response = await axios.post(
+      `${this.url}/`,
       formData,
-      {
-        headers: {
-          ...headers,
-        },
-      }
+      { headers }
     );
-
-    const photo = res.data.photo;
+console.log(response)
+    const photo = response.data.photo;
+console.log(photo)
+    if (!photo?.id || !photo?.url) {
+      throw new Error("Y The server did not return a valid photo.");
+    }
 
     return {
       ...photo,
-      url: photo.url?.startsWith("http")
-        ? photo.url
-        : Enviroment.url + photo.url,
+      url: photo.url,
       fileName: photo.filename || filename || file.name,
       photoId: photo.id,
     };
   }
 
-  // -----------------------------------------
-  // GET PHOTO
-  // -----------------------------------------
+  async uploadProfilePicture({ file, filename } = {}) {
+    if (!file) {
+      throw new Error("No profile picture provided.");
+    }
+
+    const allowedTypes = [
+      "image/jpeg",
+      "image/png",
+      "image/svg+xml",
+    ];
+
+    if (!allowedTypes.includes(file.type)) {
+      throw new Error("Only JPEG, PNG and SVG images are allowed.");
+    }
+
+    const headers = await this.getAuthHeaders();
+    const formData = new FormData();
+
+    formData.append("file", file, filename || file.name);
+
+    const response = await axios.post(
+      `${this.url}/profile-picture`,
+      formData,
+      { headers }
+    );
+
+    if (!response.data.profile) {
+      throw new Error("X The server did not return an updated profile.");
+    }
+
+    return {
+      profile: response.data.profile,
+      photo: response.data.photo,
+    };
+  }
 
   async getPhoto({ id } = {}) {
     if (!id) {
@@ -99,7 +109,7 @@ class PhotoRepo {
 
     const headers = await this.getAuthHeaders();
 
-    const res = await axios.get(
+    const response = await axios.get(
       `${this.url}/${id}`,
       {
         headers,
@@ -107,39 +117,44 @@ class PhotoRepo {
       }
     );
 
-    return res.data;
+    return response.data;
   }
-
-  // -----------------------------------------
-  // GET PHOTO URL
-  // -----------------------------------------
 
   getPhotoUrl({ id } = {}) {
-    if (!id) {
-      throw new Error("Photo ID is required.");
-    }
+    if (!id) return null;
 
-    return `${this.url}/${id}`;
+    return `/api/photos/${id}`;
   }
 
-  // -----------------------------------------
-  // DELETE PHOTO
-  // -----------------------------------------
-
-  async deletePhoto({ id } = {}) {
-    if (!id) {
+  async deletePhoto({ photoId } = {}) {
+    if (!photoId) {
       throw new Error("Photo ID is required.");
     }
 
     const headers = await this.getAuthHeaders();
 
-    const res = await axios.delete(
-      `${this.url}/${id}`,
+    const response = await axios.delete(
+      `${this.url}/${photoId}`,
       { headers }
     );
 
-    return res.data;
+    return response.data;
   }
+  async associatePhotoWithStory({ photoId, storyId } = {}) {
+  if (!photoId || !storyId) {
+    throw new Error("Photo ID and Story ID are required.");
+  }
+
+  const headers = await this.getAuthHeaders();
+
+  const response = await axios.patch(
+    `${this.url}/${photoId}/story/${storyId}`,
+    {},
+    { headers }
+  );
+
+  return response.data;
+}
 }
 
 export default new PhotoRepo();

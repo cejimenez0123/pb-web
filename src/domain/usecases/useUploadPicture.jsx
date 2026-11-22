@@ -5,23 +5,23 @@ import photoRepo from "../../data/photoRepo";
 
 export const uploadPhoto = createAsyncThunk(
   "photo/uploadPhoto",
-  async ({ file, profileId, storyId, purpose = "general" }, thunkApi) => {
+  async ({ file, purpose = "general" }, thunkApi) => {
     try {
       if (!file) {
         throw new Error("No image was provided.");
       }
 
-      if (!profileId) {
-        throw new Error("Profile ID is required.");
-      }
-
-      return await photoRepo.uploadPhoto({
+      const result = await photoRepo.uploadPhoto({
         file,
-        storyId,
-        profileId,
         purpose,
       });
+
+      console.log("[uploadPhoto] Repository result:", result);
+
+      return result;
     } catch (error) {
+      console.error("[uploadPhoto] Failed:", error);
+
       return thunkApi.rejectWithValue({
         message:
           error?.response?.data?.message ||
@@ -31,7 +31,24 @@ export const uploadPhoto = createAsyncThunk(
     }
   }
 );
-
+export const associatePhotoWithStory = createAsyncThunk(
+  "photo/associatePhotoWithStory",
+  async ({ photoId, storyId }, thunkApi) => {
+    try {
+      return await photoRepo.associatePhotoWithStory({
+        photoId,
+        storyId,
+      });
+    } catch (error) {
+      return thunkApi.rejectWithValue({
+        message:
+          error?.response?.data?.message ||
+          error?.message ||
+          "Unable to associate photo with Story.",
+      });
+    }
+  }
+);
 export const getPhoto = createAsyncThunk(
   "photo/getPhoto",
   async ({ id }, thunkApi) => {
