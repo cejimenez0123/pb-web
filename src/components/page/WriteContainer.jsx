@@ -1,7 +1,8 @@
 
-import { useEffect, useState } from "react";
+// import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { IonContent, useIonRouter } from "@ionic/react";
+import { useCallback, useEffect, useState } from "react";
+import { IonContent, useIonRouter, useIonViewWillEnter } from "@ionic/react";
 
 import WriteLanding from "../lovehome/WriterLanding";
 import Paths from "../../core/paths";
@@ -20,31 +21,34 @@ export default function WriteContainer() {
   const currentProfile = useSelector(
     (state) => state.users.currentProfile
   );
-
+  const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const profileId = currentProfile?.id;
+const colRes = usePaginatedResource({
+  cacheKey: "profile:collections",
+  fetcher: getMyCollections,
+  pageSize: 8,
+  search: debouncedSearch,
+});
 
-const colRes = usePaginatedResource({cacheKey: "profile:collections",
-fetcher:getMyCollections,
-pageSize:8})
+const pageRes = usePaginatedResource({
+  cacheKey: "profile:stories",
+  fetcher: getMyStories,
+  pageSize: 8,
+  search: debouncedSearch,
+});
 
-const pageRes = usePaginatedResource({cacheKey: "profile:stories",
-fetcher:getMyStories,
-pageSize:8})
+const stories = pageRes.items;
+const rooms = colRes.items;
 
-
-const stories =pageRes.items
-
-const rooms =colRes.items
   const storiesLoading = useSelector(
     (state) => state.pages.loading
   );
-
   const roomsLoading = useSelector(
     (state) => state.books.loading
   );
 
-  const [search, setSearch] = useState("");
-  const [debouncedSearch, setDebouncedSearch] = useState("");
+
 
   /* -----------------------------------------------------
      Debounce search
@@ -62,19 +66,23 @@ const rooms =colRes.items
      Fetch workspace data
   ----------------------------------------------------- */
 
-  useEffect(() => {
+useIonViewWillEnter(
+  useCallback(() => {
     if (!profileId) return;
 
-    const params = {
-      skip: 0,
-      take: 100,
-      search: debouncedSearch,
-    };
+    pageRes.setPage(1);
+    colRes.setPage(1);
 
-    dispatch(getMyStories(params));
-    dispatch(getMyCollections(params));
-  }, [profileId, debouncedSearch, dispatch]);
-
+    pageRes.fetchPage(1, true);
+    colRes.fetchPage(1, true);
+  }, [
+    profileId,
+    pageRes.setPage,
+    pageRes.fetchPage,
+    colRes.setPage,
+    colRes.fetchPage,
+  ])
+);
   /* -----------------------------------------------------
      Navigation
   ----------------------------------------------------- */

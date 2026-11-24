@@ -30,6 +30,7 @@ import {
   setHtmlContent,
   setPageInView,
   setPageType,
+  updatePaginatedItem,
 } from "../../actions/PageActions.jsx";
 
 import { useAlert } from "../../core/useAlert.jsx";
@@ -394,7 +395,9 @@ function createEmptyParameters({
         : await dispatch(
             updateStory(payload)
           ).unwrap();
-
+     
+dispatch(updatePaginatedItem({key:"profile:stories",item:response.story}))
+  
       if (isDeletedRef.current) return null;
 
       const savedStory = response?.story;
@@ -763,9 +766,12 @@ useEffect(() => {
       }
     }
   };
-
-isIdValid  && (routeId && !parameters?.id)&& loadStory();
-
+if (
+ 
+  !isDeletedRef.current
+) {
+  loadStory();
+}
   return () => {
     cancelled = true;
   };
@@ -1223,7 +1229,7 @@ const handleDelete = useCallback(async () => {
 
     dispatch(
       removeFromPaginatedKey({
-        key: "stories",
+       key: "profile:stories",
         id: storyId,
       })
     );

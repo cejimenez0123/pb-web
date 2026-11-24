@@ -94,7 +94,7 @@ const { canSee, canAdd, canEdit } = useMemo(
 
   dispatch(setPageInView({ page: null })); // drop stale editor state
   fetchStory();
-}, [id]);
+}, []);
 
   // ── Unlock text selection inside Ionic shadow DOM ─────────────────────────
   useEffect(() => {

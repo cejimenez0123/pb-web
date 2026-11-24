@@ -461,7 +461,7 @@ const id = grabId(location.pathname)
           if (payload?.collection) {
             dispatch(
               updatePaginatedItem({
-                key: "collections",
+                key: "profile:collections",
                 item: payload.collection,
               })
             );
@@ -558,7 +558,7 @@ const id = grabId(location.pathname)
           if (payload?.collection) {
             dispatch(
               updatePaginatedItem({
-                key: "collections",
+                key: "profile:collections",
                 item: payload.collection,
               })
             );
@@ -646,7 +646,7 @@ const id = grabId(location.pathname)
             () => {
               dispatch(
                 removeFromPaginatedKey({
-                  key: "collections",
+                  key: "profile:collections",
                   id,
                 })
               );
