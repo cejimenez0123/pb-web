@@ -393,16 +393,16 @@ export default function PicturePageForm({
       // -----------------------------------------------
       // LINK PAGE
       // -----------------------------------------------
-      if (isLink) {
-        if (!finalValue || !isValidUrl(Enviroment.url + finalValue)) {
-          showAlert({
-            message: "Please enter a valid URL.",
-            type: AlertType.error,
-          });
+      // if (isLink) {
+      //   if (!finalValue || !isValidUrl(Enviroment.url + finalValue)) {
+      //     showAlert({
+      //       message: "Please enter a valid URL.",
+      //       type: AlertType.error,
+      //     });
 
-          return;
-        }
-      }
+      //     return;
+      //   }
+      // }
 
       // -----------------------------------------------
       // NEW STORY
@@ -575,7 +575,7 @@ export default function PicturePageForm({
       )}
 
       {/* Link validation */}
-      {isLink && value.trim() && !validUrl && (
+      {isLink && !validUrl && (
         <IonText color="danger">
           <p className="text-sm">
             Please enter a valid URL.
@@ -595,7 +595,7 @@ export default function PicturePageForm({
               <img
                 src={previewSource}
                 alt="Image preview"
-                className="max-h-[350px] w-full object-contain"
+                className="max-h-[600px] w-[100%] object-contain"
               />
             </div>
           )}
@@ -610,7 +610,7 @@ export default function PicturePageForm({
             )}
 
           {isLink && validUrl && (
-            <LinkPreview url={resolvedUrl} />
+            <LinkPreview url={draftValue} />
           )}
 
           {file && (

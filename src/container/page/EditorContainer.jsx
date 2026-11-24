@@ -110,12 +110,15 @@ export default function EditorContainer() {
   const dispatch = useDispatch();
   const router = useIonRouter();
 const routeId = grabId(location.pathname)
-console.log("ROUTe Grav"+routeId)
+const {
+    editPage,
+    pageInView,
+    pageType: sliceType,
+  } = useSelector((state) => state.pages);
   const currentProfile = useSelector(
     (state) => state.users.currentProfile
   );
-// grabId()
-// const isNewStory = !routeId.trim().length
+
 const isNewStory = !routeId?.trim()
 const isIdValid = !isNewStory;
 
@@ -143,11 +146,7 @@ const isIdValid = !isNewStory;
     resetDialog,
   } = useDialog();
 
-  const {
-    editPage,
-    pageInView,
-    pageType: sliceType,
-  } = useSelector((state) => state.pages);
+  
 
 
   /*
@@ -209,7 +208,7 @@ const isIdValid = !isNewStory;
    */
 function createEmptyParameters({
   routeId,
-  type=pageType??PageType.text,
+  type,
   currentProfile,
 }) {
     const hasValidId =
@@ -227,7 +226,7 @@ function createEmptyParameters({
     isPrivate: true,
     commentable: true,
     needsFeedback: false,
-    type: normalizeType(type),
+    type: sliceType??normalizeType(type),
     authorId: currentProfile?.id ?? null,
     profileId: currentProfile?.id ?? "",
     profile: currentProfile ?? null,
@@ -676,7 +675,7 @@ function createEmptyParameters({
     const nextParameters =
       createEmptyParameters({
         routeId,
-     
+        
         currentProfile,
       });
 
@@ -765,17 +764,16 @@ useEffect(() => {
     }
   };
 
-isIdValid && loadStory();
+isIdValid  && (routeId && !parameters?.id)&& loadStory();
 
   return () => {
     cancelled = true;
   };
 }, [
 
-  isIdValid,
-  pageInView,
+
   setStory,
-  showError,
+  // showError,
 ]);
 
   /*
@@ -1242,7 +1240,7 @@ const handleDelete = useCallback(async () => {
     dispatch(setHtmlContent(""));
 
     closeDialog();
-    router.push(Paths.home, "root");
+    router.push(Paths.write)
   } catch (error) {
     isDeletedRef.current = false;
     showError(error);
@@ -1255,80 +1253,10 @@ const handleDelete = useCallback(async () => {
   router,
   showError,
 ]);
-  // const handleDelete = useCallback(async () => {
-  //   const storyId =
-  //     parametersRef.current.id || routeId;
 
-  //   if (!storyId || storyId === "new") {
-  //     return;
-  //   }
 
-  //   clearSaveTimer();
 
-  //   isDeletedRef.current = true;
-  //   saveRequestedRef.current = false;
-  
-  //   try {
-  //     try{
-  //     await dispatch(
-  //       deleteStory({
-  //         page: {
-  //           ...parametersRef.current,
-  //           id: storyId,
-  //           photoId:""
-  //         },
-  //       })
-  //     ).unwrap();
-  //   }catch{
-  //   photoRepo.deletePhoto()
-      
-  //   }
-  //     dispatch(
-  //       removeFromPaginatedKey({
-  //         key: "stories",
-  //         id: storyId,
-  //       })
-  //     );
 
-  //     dispatch(
-  //       removeFromPaginatedKey({
-  //         key: "recommended",
-  //         id: storyId,
-  //       })
-  //     );
-
-  //     dispatch(
-  //       setEditingPage({
-  //         page: null,
-  //       })
-  //     );
-
-  //     dispatch(
-  //       setPageInView({
-  //         page: null,
-  //       })
-  //     );
-
-  //     dispatch(setHtmlContent(""));
-
-  //     closeDialog();
-
-  //     router.push(
-  //       Paths.home,
-  //       "root"
-  //     );
-  //   } catch (error) {
-  //     isDeletedRef.current = false;
-  //     showError(error);
-  //   }
-  // }, [
-  //   clearSaveTimer,
-  //   closeDialog,
-  //   dispatch,
-  //   routeId,
-  //   router,
-  //   showError,
-  // ]);
 
   const openConfirmDeleteDialog = useCallback(() => {
     openDialog({
@@ -1494,7 +1422,10 @@ const handleDelete = useCallback(async () => {
 
             <section>
               <div className="mx-auto w-full max-w-3xl">
-                <div className={CONTAINER}>
+
+
+              <div className={CONTAINER}>
+                {(isNewStory )&& (<>
                   <PageTypeSelector
                     value={parameters.type}
                     onChange={(nextType) => {
@@ -1507,8 +1438,8 @@ const handleDelete = useCallback(async () => {
                       
                     }}
                   />
-
-                  <div
+</>)}
+                        {(isNewStory&& parameters.data.trim().length>1 )&& (<>    <div
                     className="
                       mx-auto mb-4 mt-4
                       flex w-fit flex-row
@@ -1550,7 +1481,7 @@ const handleDelete = useCallback(async () => {
                       );
                     })}
                   </div>
-
+               </> )}
                   <div className="editor-toolbar-wrapper">
                     <EditorDiv
                       page={pageInView}
@@ -1559,12 +1490,12 @@ const handleDelete = useCallback(async () => {
                       handleChange={handleChange}
                       parameters={parameters}
                       type={parameters.type}
-                      createPageAction={
-                        createPageAction
-                      }
+                      createPageAction={createPageAction}
                     />
                   </div>
                 </div>
+
+
 
                 <div
                   className={styles.pageShell.padded}

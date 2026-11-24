@@ -1,18 +1,33 @@
 
-import { useState, useEffect, useContext } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
-import { IonImg } from "@ionic/react";
-import Enviroment from "../core/Enviroment";
-import Context from "../context";
-import SpotifyEmbed from "./SpotifyEmbed";
-import SoundCloudEmbed from "./page/SoundcloudEmbed";
-import { useMediaQuery } from "react-responsive";
 
-function normalizeUrl(url) {
-  if (!url) return "";
+import Enviroment from "../core/Enviroment";
+
+function normalizeUrl(value) {
+  if (!value || typeof value !== "string") return "";
+
   try {
-    const fixed = url.startsWith("http") ? url : `https://${url}`;
-    return new URL(fixed).href;
+    const input = value.trim();
+
+    if (!input) return "";
+
+    const withProtocol = /^https?:\/\//i.test(input)
+      ? input
+      : `https://${input}`;
+
+    const parsed = new URL(withProtocol);
+
+    if (
+      !["http:", "https:"].includes(parsed.protocol) ||
+      !parsed.hostname ||
+      parsed.username ||
+      parsed.password
+    ) {
+      return "";
+    }
+
+    return parsed.href;
   } catch {
     return "";
   }
@@ -20,116 +35,272 @@ function normalizeUrl(url) {
 
 function getHostname(url) {
   try {
-    return new URL(url).hostname;
+    return new URL(url).hostname.replace(/^www\./i, "");
   } catch {
-    return url;
+    return "";
   }
 }
 
-export default function LinkPreview({ url, compact }) {
-  const isPhone = useMediaQuery({ query: '(max-width: 750px)' });
+function resolveImageUrl(image, pageUrl) {
+  if (!image || typeof image !== "string") return null;
 
-  const [previewData, setPreviewData] = useState(null);
-  const [loading, setLoading] = useState(false);
+  try {
+    const resolved = new URL(image, pageUrl);
 
-  // Guard: no url at all
-  if (!url) return null;
+    if (!["http:", "https:"].includes(resolved.protocol)) {
+      return null;
+    }
 
+    return resolved.href;
+  } catch {
+    return null;
+  }
+}
+
+function getFallbackData(url) {
+  const hostname = getHostname(url);
+
+  return {
+    url,
+    title: hostname || "External website",
+    description: "",
+    image: null,
+  };
+}
+
+export default function LinkPreview({ url, compact = false }) {
   const normalizedUrl = normalizeUrl(url);
 
-  // Guard: url couldn't be normalized
-  if (!normalizedUrl) return null;
+  const hostname = normalizedUrl
+    ? getHostname(normalizedUrl)
+    : "";
 
-  const isSpotify    = normalizedUrl.includes("open.spotify.com");
-  const isSoundCloud = normalizedUrl.includes("soundcloud.com");
-  const isYouTube    = normalizedUrl.includes("youtube.com") || normalizedUrl.includes("youtu.be");
+  const proxyBase = String(
+    Enviroment.proxyUrl || ""
+  ).replace(/\/+$/, "");
+
+  const [previewData, setPreviewData] = useState(null);
+  const [loadingUrl, setLoadingUrl] = useState(null);
+  const [failedImageUrl, setFailedImageUrl] = useState(null);
 
   useEffect(() => {
-    if (!normalizedUrl) return;
-    if (isSpotify)    { setPreviewData({ type: "spotify" });    return; }
-    if (isSoundCloud) { setPreviewData({ type: "soundcloud" }); return; }
-    if (isYouTube)    { setPreviewData({ type: "youtube" });    return; }
-    fetchPreview(normalizedUrl);
-  }, [normalizedUrl]);
-
-  const fetchPreview = async (targetUrl) => {
-    setLoading(true);
-    try {
-      const res = await axios.get(
-        `${Enviroment.proxyUrl}/preview?url=${encodeURIComponent(targetUrl)}`,
-        { timeout: 8000 }
-      );
-      setPreviewData({
-        title:       res.data?.title       || targetUrl,
-        description: res.data?.description || "",
-        image:       res.data?.image       || null,
-      });
-    } catch {
-      const hostname = getHostname(targetUrl);
-      setPreviewData({
-        title:       hostname,
-        description: "Tap to open link",
-        image:       `https://www.google.com/s2/favicons?domain=${hostname}`,
-      });
-    } finally {
-      setLoading(false);
+    if (!normalizedUrl) {
+      setPreviewData(null);
+      setLoadingUrl(null);
+      return undefined;
     }
-  };
 
-  const handleClick = () => window.open(normalizedUrl, "_blank");
+    const controller = new AbortController();
+    let active = true;
 
-  if (previewData?.type === "spotify") {
-    return <SpotifyEmbed url={normalizedUrl} compact={compact} />;
-  }
+    // Always establish a usable fallback first.
+    setPreviewData(getFallbackData(normalizedUrl));
+    setFailedImageUrl(null);
 
-  if (previewData?.type === "soundcloud") {
-    return <SoundCloudEmbed url={normalizedUrl} />;
-  }
+    const fetchPreview = async () => {
+      if (!proxyBase) return;
 
-  if (previewData?.type === "youtube") {
-    const id =
-      normalizedUrl.split("v=")[1]?.split("&")[0] ||
-      normalizedUrl.split("youtu.be/")[1];
-    if (!id) return null;
-    return (
-      <img
-        src={`https://img.youtube.com/vi/${id}/maxresdefault.jpg`}
-        className="rounded-xl w-full cursor-pointer active:scale-[0.98] transition"
-        onClick={handleClick}
-        alt="YouTube thumbnail"
-      />
-    );
-  }
+      setLoadingUrl(normalizedUrl);
 
-  if (loading) {
-    return <div className="h-32 bg-base-bg dark:bg-base-bgDark animate-pulse rounded-xl border border-soft" />;
-  }
+      try {
+        const response = await axios.get(
+          `${proxyBase}/preview`,
+          {
+            params: { url: normalizedUrl },
+            timeout: 8000,
+            signal: controller.signal,
+          }
+        );
 
-  if (!previewData) return null;
+        if (!active) return;
 
-  const hostname = getHostname(normalizedUrl);
+        const metadata = response.data || {};
+        const fallback = getFallbackData(normalizedUrl);
+
+        setPreviewData({
+          url: normalizedUrl,
+          title:
+            typeof metadata.title === "string" &&
+            metadata.title.trim()
+              ? metadata.title.trim()
+              : fallback.title,
+
+          description:
+            typeof metadata.description === "string"
+              ? metadata.description.trim()
+              : "",
+
+          image: resolveImageUrl(
+            metadata.image,
+            normalizedUrl
+          ),
+        });
+      } catch (error) {
+        if (
+          !active ||
+          controller.signal.aborted ||
+          axios.isCancel(error)
+        ) {
+          return;
+        }
+
+        // Keep the hostname fallback.
+        console.warn(
+          "Unable to retrieve link metadata:",
+          error?.message
+        );
+
+        setPreviewData(getFallbackData(normalizedUrl));
+      } finally {
+        if (active) {
+          setLoadingUrl(null);
+        }
+      }
+    };
+
+    fetchPreview();
+
+    return () => {
+      active = false;
+      controller.abort();
+    };
+  }, [normalizedUrl, proxyBase]);
+
+  if (!normalizedUrl) return null;
+
+  // Never display metadata belonging to a previous URL.
+  const currentData =
+    previewData?.url === normalizedUrl
+      ? previewData
+      : getFallbackData(normalizedUrl);
+
+  const showImage = Boolean(
+    currentData.image &&
+    failedImageUrl !== normalizedUrl
+  );
+
+  const isLoading = loadingUrl === normalizedUrl;
 
   return (
-    <div
-      onClick={handleClick}
-      className="rounded-xl border border-soft bg-plumb-surface  dark:bg-base-bgDark shadow-sm overflow-hidden cursor-pointer active:scale-[0.98] transition"
+    <a
+      href={normalizedUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={`Open ${hostname} in a new tab`}
+      className={[
+        "group block w-full overflow-hidden",
+        "rounded-2xl border border-plumb-border",
+        "bg-plumb-surface shadow-sm",
+        "transition duration-200",
+        "hover:border-plumb-mint/50 hover:shadow-md",
+        "active:scale-[0.99]",
+        "dark:border-plumb-dark-border",
+        "dark:bg-plumb-dark-surface",
+        "focus-visible:outline-none",
+        "focus-visible:ring-2",
+        "focus-visible:ring-plumb-mint",
+        "focus-visible:ring-offset-2",
+      ].join(" ")}
     >
-      {previewData.image && (
-        <IonImg src={previewData.image} className="w-full h-40 object-cover" alt="Link preview" />
+      {/* Optional thumbnail */}
+      {showImage && (
+        <div
+          className={[
+            "relative w-full overflow-hidden",
+            "bg-plumb-paper dark:bg-plumb-dark-canvas",
+            compact ? "aspect-[16/5]" : "aspect-[16/9]",
+          ].join(" ")}
+        >
+          <img
+            src={currentData.image}
+            alt=""
+            loading="lazy"
+            className="h-full w-full object-cover"
+            onError={() => {
+              setFailedImageUrl(normalizedUrl);
+            }}
+          />
+        </div>
       )}
-      <div className="p-3">
-        <h4 className="text-sm font-medium text-soft dark:text-cream line-clamp-2">
-          {previewData.title}
-        </h4>
-        {!isPhone && previewData.description && (
-          <p className="text-xs text-soft dark:text-cream opacity-60 mt-1 line-clamp-2">
-            {previewData.description}
+
+      {/* Link information */}
+      <div
+        className={[
+          "flex items-start gap-3",
+          compact ? "p-3" : "p-4",
+        ].join(" ")}
+      >
+        {/* Website identity */}
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-plumb-border bg-plumb-paper text-plumb-mint dark:border-plumb-dark-border dark:bg-plumb-dark-canvas">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.7"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="h-5 w-5"
+            aria-hidden="true"
+          >
+            <circle cx="12" cy="12" r="9" />
+            <path d="M3 12h18" />
+            <path d="M12 3a15 15 0 0 1 0 18" />
+            <path d="M12 3a15 15 0 0 0 0 18" />
+          </svg>
+        </div>
+
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-xs font-medium tracking-wide text-plumb-muted dark:text-plumb-darkMuted">
+            {hostname}
           </p>
-        )}
-        <p className="text-xs text-soft dark:text-cream opacity-40 mt-1 truncate">
-          {hostname}
-        </p>
+
+          <h4
+            className={[
+              "mt-1 font-semibold leading-snug",
+              "text-plumb-ink dark:text-plumb-darkText",
+              compact ? "text-sm" : "text-base",
+              "line-clamp-2",
+            ].join(" ")}
+          >
+            {currentData.title}
+          </h4>
+
+          {!compact && currentData.description && (
+            <p className="mt-1 line-clamp-2 text-sm leading-relaxed text-plumb-muted dark:text-plumb-darkMuted">
+              {currentData.description}
+            </p>
+          )}
+
+          <p className="mt-2 truncate text-xs text-plumb-subtle dark:text-plumb-darkSubtle">
+            {normalizedUrl}
+          </p>
+        </div>
+
+        {/* External link indicator */}
+        <div className="shrink-0 pt-1 text-plumb-muted transition group-hover:text-plumb-mint dark:text-plumb-darkMuted">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="h-4 w-4"
+            aria-hidden="true"
+          >
+            <path d="M14 4h6v6" />
+            <path d="M20 4 10 14" />
+            <path d="M18 13v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6" />
+          </svg>
+        </div>
       </div>
-    </div>
+
+      {/* Quiet metadata loading indicator */}
+      {isLoading && (
+        <div className="h-0.5 w-full overflow-hidden bg-plumb-paper dark:bg-plumb-dark-canvas">
+          <div className="h-full w-1/3 animate-pulse rounded-full bg-plumb-mint" />
+        </div>
+      )}
+    </a>
   );
 }
