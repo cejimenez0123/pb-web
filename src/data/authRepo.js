@@ -10,22 +10,7 @@ class AuthRepo{
       Authorization: `Bearer ${value}`,
     };
   }
-  async referral({ email, name }) {
-  const headers = await this.getAuthHeaders();
 
-  const res = await axios.post(
-    Enviroment.url + "/auth/invite",
-    {
-      email,
-      name
-    },
-    {
-      headers
-    }
-  );
-
-  return res.data;
-}
 async acceptTerms({ version }) {
     const headers = await this.getAuthHeaders();
     const res = await axios.post(
@@ -95,14 +80,14 @@ async acceptTerms({ version }) {
 
         return res.data
         }
-    async generateReferral(){
-  const headers = await this.getAuthHeaders()
+  //   async generateReferral(){
+  // const headers = await this.getAuthHeaders()
       
-        let res = await axios.post(Enviroment.url+"/auth/generate-referral",{},{
-            headers:headers
-        })
-        return res.data
-    }
+  //       let res = await axios.post(Enviroment.url+"/auth/generate-referral",{},{
+  //           headers:headers
+  //       })
+  //       return res.data
+  //   }
     async resetPassword({username,password,token}){
          let res =   await axios.post(Enviroment.url+"/auth/reset-password",{username,password,token})
     
@@ -114,19 +99,7 @@ async acceptTerms({ version }) {
       return res.data
     }
 
-// async startSession({ uId, email, password, identityToken }) {
-//   const headers = await this.getAuthHeaders();
 
-
-
-//   const res = await axios.post(
-//     `${Enviroment.url}/auth/session`,
-//     { uId, email, password, identityToken },
-//     { headers }
-//   );
-
-//   return res.data;
-// }
 async startSession({ uId, email, password, identityToken, idToken }) {
   const res = await axios.post(
     `${Enviroment.url}/auth/session`,
@@ -140,28 +113,8 @@ async startSession({ uId, email, password, identityToken, idToken }) {
             token,frequency
         })
         return res.data
-    }async referral({email,name}){
-        const headers = await this.getAuthHeaders()
-        const res = await axios.post(Enviroment.url+"/auth/invite",{email,name}, {headers:headers})
-        return res.data
     }
 
-async useReferral(params) {
-  const { token, ...body } = params;
-
-  const headers = await this.getAuthHeaders();
-
-  const response = await axios.post(
-    `${Enviroment.url}/auth/use-referral`,
-    {
-      token,
-      ...body,
-    },
-    { headers }
-  );
-
-  return response.data;
-}
     async deleteUser(){
           const headers = await this.getAuthHeaders()
         let res = await axios.delete(Enviroment.url+"/auth/",{headers:headers})
@@ -219,6 +172,38 @@ async resendProfileSetup({ email }) {
 
     throw error;
   }
+}
+async referral({ email, name }) {
+  const headers = await this.getAuthHeaders();
+
+  const res = await axios.post(
+    Enviroment.url + "/auth/invite",
+    { email, name },
+    { headers }
+  );
+
+  return res.data;
+}
+
+async generateReferral() {
+  const headers = await this.getAuthHeaders();
+
+  const res = await axios.post(
+    Enviroment.url + "/auth/generate-referral",
+    {},
+    { headers }
+  );
+
+  return res.data;
+}
+
+async useReferral(params) {
+  const res = await axios.post(
+    Enviroment.url + "/auth/use-referral",
+    params
+  );
+
+  return res.data;
 }
     }
 

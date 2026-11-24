@@ -47,7 +47,7 @@ const onboardingStyles = {
     "min-h-12 px-4 py-3.5",
     "text-base leading-relaxed",
     "border-plumb-borderStrong dark:border-plumb-darkBorderStrong",
-    "bg-plumb-paper text-plumb-ink",
+    "bg-plumb-mintLight/20 text-plumb-ink",
     "placeholder:text-plumb-muted",
     "dark:bg-plumb-dark-surface dark:text-plumb-darkText",
     "dark:placeholder:text-plumb-darkMuted",
@@ -70,7 +70,7 @@ const onboardingStyles = {
   ].join(" "),
 
   option: [
-    "inline-flex min-h-11 max-w-full items-center gap-2",
+    "inline-flex min-h-11 max-w-full bg-plumb-mintLight/20 items-center gap-2",
     "rounded-full border px-3.5 py-2.5",
     "text-left text-sm font-medium leading-snug",
     "transition-colors duration-150",
@@ -88,7 +88,7 @@ const onboardingStyles = {
   ].join(" "),
 
   optionSelected: [
-    "border-plumb-ink bg-plumb-surface font-semibold",
+    "border-plumb-ink bg-plumb-blueSea/20 font-semibold",
     "text-plumb-ink ring-1 ring-plumb-ink",
     "dark:border-plumb-mintLight dark:bg-plumb-dark-canvas",
     "dark:text-plumb-darkText dark:ring-plumb-mintLight",
@@ -114,13 +114,13 @@ const onboardingStyles = {
   singleOptionSelected: [
     "border-plumb-ink bg-plumb-surface font-semibold",
     "text-plumb-ink ring-1 ring-plumb-ink",
-    "dark:border-plumb-mintLight dark:bg-plumb-dark-canvas",
+    "dark:border-plumb-mintLight bg-plumb-mintLight/20 dark:bg-plumb-dark-canvas",
     "dark:text-plumb-darkText dark:ring-plumb-mintLight",
   ].join(" "),
 
   selectedIndicator: [
-    "flex h-5 w-5 shrink-0 items-center justify-center",
-    "rounded-full border-2 text-xs font-bold",
+    "flex h-5 w-5 shrink-0 items-center bg-plumb-mintLight/20 justify-center",
+    "rounded-full border-2 text-xs  font-bold",
     "border-current",
   ].join(" "),
 

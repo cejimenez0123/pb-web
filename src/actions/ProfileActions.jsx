@@ -136,66 +136,6 @@ const uploadProfilePicture = createAsyncThunk(
   }
 );
 
-// const uploadProfilePicture = createAsyncThunk(
-//   "users/uploadProfilePicture",
-//   async (params, thunkApi) => {
-//     try {
-//       const { file, id } = params;
-
-//       if (!file) {
-//         throw new Error("No file provided");
-//       }
-
-//       if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
-//         throw new Error("Please select a valid image.");
-//       }
-
-//       const extension =
-//         file.type === "image/png"
-//           ? "png"
-//           : file.type === "image/webp"
-//             ? "webp"
-//             : "jpg";
-
-//       const fileName = `profile/${uuidv4()}-${uuidv4()}.${extension}`;
-
-//       const formData = new FormData();
-
-//       formData.append("file", file, fileName.split("/").pop());
-//       formData.append("profileId", id);
-//       formData.append("purpose", "profile");
-//       formData.append("filename", fileName);
-
-//       const response = await fetch(
-//         `${import.meta.env.VITE_API_URL}/api/photos`,
-//         {
-//           method: "POST",
-//           credentials: "include",
-//           body: formData,
-//         }
-//       );
-
-//       const result = await response.json();
-
-//       if (!response.ok) {
-//         throw new Error(result.message || "Upload failed.");
-//       }
-
-//       return {
-//         url: `${ import.meta.env.VITE_URL}${result.photo.url}`,
-//         fileName,
-//         photoId: result.photo.id,
-//       };
-
-//     } catch (err) {
-//       console.error("Upload error:", err);
-
-//       return thunkApi.rejectWithValue({
-//         message: "UPLOAD FAILED: " + err.message,
-//       });
-//     }
-//   }
-// );
 
 const uploadPicture = createAsyncThunk(
   "users/uploadPicture",

@@ -25,7 +25,37 @@ async getAuthHeaders() {
     Authorization: `Bearer ${this.token}`,
   };
 }
+async updateProfile({
+  username,
+  profilePicture,
+  selfStatement,
+  privacy,
+  location,
+  writingSprintSlots,
+} = {}) {
+  const headers = await this.getAuthHeaders();
 
+  const payload = {
+    ...(username !== undefined && { username }),
+    ...(profilePicture !== undefined && { profilePicture }),
+    ...(selfStatement !== undefined && { selfStatement }),
+    ...(privacy !== undefined && { privacy }),
+    ...(location !== undefined && { location }),
+    ...(writingSprintSlots !== undefined && { writingSprintSlots }),
+  };
+
+  try {
+    const res = await axios.patch(
+      this.url + "/me",
+      payload,
+      { headers }
+    );
+
+    return res.data;
+  } catch (e) {
+    throw e;
+  }
+}
 async getMyProfiles() {
   const headers = await this.getAuthHeaders();
 

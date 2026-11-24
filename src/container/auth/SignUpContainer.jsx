@@ -19,6 +19,8 @@ import {
 import {
   acceptTerms,
   signUp,
+  updateProfile,
+  // updateProfile,
 } from "../../actions/UserActions";
 
 import checkResult from "../../core/checkResult";
@@ -37,6 +39,7 @@ import EULATERMS from "./Agreement";
 
 import { useDialog } from "../../domain/usecases/useDialog";
 import CURRENT_TERMS_VERSION from "../../core/CURRENT_TERMS_VERSION";
+import { uploadPhoto } from "../../actions/PhotoActions";
 
 const DEFAULT_PROFILE_IMAGE =
   "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png";
@@ -452,7 +455,7 @@ const completeSignUp = async () => {
       referralToken: referralToken ?? storedToken,
       username: username.trim(),
       password,
-      googleId,
+   
       writingSprintSlots,
       frequency,
       selfStatement,
@@ -506,18 +509,13 @@ const submitSignup = async (params) => {
         // Upload profile picture after account creation.
         if (file) {
           const upload = await dispatch(
-            uploadPhoto({
+            uploadProfilePicture({
               file,
               purpose: "profile",
             })
           ).unwrap();
 
-          await dispatch(
-            updateProfile({
-              profile: payload.profile,
-              profilePictureId: upload.photoId,
-            })
-          ).unwrap();
+await dispatch(updateProfile({profile:payload.profile,profilePictureId:upload.photoId})).unwrap()
         }
 
         await Preferences.set({
@@ -577,7 +575,10 @@ const submitSignup = async (params) => {
       }}
     >
       <IOSFormTemplate
+      router={router}
         email={email}
+        selfStatement={selfStatement}
+setSelfStatement={setSelfStatement}
         writingSprintSlots={writingSprintSlots}
         toggleSlot={toggleSlot}
         username={username}
@@ -588,6 +589,7 @@ const submitSignup = async (params) => {
         setIsPrivate={setIsPrivate}
         onSubmit={completeSignUp}
         loading={loading}
+        setAgreedToTerms={setAgreedToTerms}
         agreedToTerms={agreedToTerms}
         openTerms={openTerms}
         confirmPassword={confirmPassword}
@@ -616,7 +618,11 @@ function IOSFormTemplate({
   setIsPrivate,
   onSubmit,
   loading,
+  selfStatement,
+  setSelfStatement,
+  router,
   agreedToTerms,
+  setAgreedToTerms,
   openTerms,
   pictureUrl,
   handleProfilePicture,
@@ -627,7 +633,9 @@ function IOSFormTemplate({
   const passwordsMatch =
     confirmPassword.length > 0 &&
     confirmPassword === password;
-
+const handleReview = ()=>{
+router.push(Paths.terms)
+}
   const passwordsMismatch =
     confirmPassword.length > 0 &&
     confirmPassword !== password;
@@ -719,6 +727,7 @@ function IOSFormTemplate({
             <p className={bodyClass}>
               This is how people will find you around Plumbum.
             </p>
+            
           </div>
 
           {/* USERNAME */}
@@ -914,6 +923,79 @@ function IOSFormTemplate({
  </div>
           
         </section>
+
+{/* YOUR INTRODUCTION */}
+
+<section className={sectionClass}>
+  <div className="mb-5">
+    <p className={sectionLabelClass}>
+      Your introduction
+    </p>
+
+    <h2 className={headingClass}>
+      A few words about you.
+    </h2>
+
+    <p className={bodyClass}>
+      What brings you here? What do you write about?
+      What are you curious about lately?
+    </p>
+  </div>
+
+  <div>
+    <label
+      htmlFor="signup-self-statement"
+      className={labelClass}
+    >
+      Your self-statement
+      <span className="
+        ml-2 text-xs font-normal
+        text-plumb-subtle
+        dark:text-plumb-darkSubtle
+      ">
+        Optional
+      </span>
+    </label>
+
+    <textarea
+      id="signup-self-statement"
+      value={selfStatement}
+      onChange={(e) => setSelfStatement(e.target.value)}
+      placeholder="I'm a writer, a curious person, and someone who..."
+      rows={5}
+      maxLength={500}
+      className={`
+        ${inputClass}
+        min-h-[130px]
+        resize-y
+        leading-7
+      `}
+    />
+
+    <div className="
+      mt-2 flex items-start justify-between gap-3
+    ">
+      <p className={subtleClass}>
+        No perfect introduction needed.
+        Just start somewhere.
+      </p>
+
+      <span
+        className={`
+          shrink-0 text-xs tabular-nums
+          ${
+            selfStatement.length >= 500
+              ? "text-plumb-muted dark:text-plumb-darkMuted"
+              : "text-plumb-subtle dark:text-plumb-darkSubtle"
+          }
+        `}
+        aria-live="polite"
+      >
+        {selfStatement.length}/500
+      </span>
+    </div>
+  </div>
+</section>
 
         {/* YOUR RHYTHM */}
 
@@ -1229,90 +1311,57 @@ function IOSFormTemplate({
         </section>
 
         {/* VISIBILITY */}
+{/* VISIBILITY */}
 
-        <section className={sectionClass}>
-          <div className="
-            flex items-start justify-between gap-5
-          ">
-            <div className="min-w-0">
-              <p className={sectionLabelClass}>
-                Your visibility
-              </p>
 
-              <h2 className="
-                mt-1.5 text-lg font-semibold
-                tracking-tight
-                text-plumb-ink
-                dark:text-plumb-darkText
-              ">
-                Keep your profile private
-              </h2>
+{/* VISIBILITY */}
 
-              <p className={bodyClass}>
-                Your profile won't appear in
-                search or public listings.
-              </p>
+<section className={sectionClass}>
+  <div className="mb-4">
+    <p className={sectionLabelClass}>
+      Your visibility
+    </p>
 
-              <p className="
-                mt-2 text-xs font-medium
-                text-plumb-muted
-                dark:text-plumb-darkMuted
-              ">
-                {isPrivate
-                  ? "Your profile is private."
-                  : "Your profile is discoverable."}
-              </p>
-            </div>
+    <h2 className={headingClass}>
+      Profile privacy
+    </h2>
 
-            <button
-              type="button"
-              role="switch"
-              aria-checked={isPrivate}
-              aria-label="Keep my profile private"
-              onClick={() => setIsPrivate(!isPrivate)}
-              className={`
-                relative mt-1
-                h-11 w-[3.5rem] shrink-0
-                rounded-full border
-                ${transitionClass}
-                ${focusClass}
-                ${
-                  isPrivate
-                    ? `
-                      border-plumb-mint
-                      bg-plumb-mint
-                      dark:border-plumb-mintLight
-                      dark:bg-plumb-mintLight
-                    `
-                    : `
-                      border-plumb-borderStrong
-                      bg-plumb-borderStrong
-                      dark:border-plumb-darkBorderStrong
-                      dark:bg-plumb-darkBorderStrong
-                    `
-                }
-              `}
-            >
-              <span
-                aria-hidden="true"
-                className={`
-                  absolute top-1
-                  h-8 w-8 rounded-full
-                  bg-plumb-paper
-                  shadow-sm
-                  ${transitionClass}
-                  ${
-                    isPrivate
-                      ? "translate-x-[1.3rem]"
-                      : "translate-x-0.5"
-                  }
-                  dark:bg-plumb-dark-surface
-                `}
-              />
-            </button>
-          </div>
-        </section>
+    <p className={bodyClass}>
+      Choose whether your profile can be discovered by others.
+    </p>
+         <span className="
+        mt-2 block text-xs font-medium
+        text-plumb-mintHover
+        dark:text-plumb-mintLight
+      ">
+        {isPrivate
+          ? "Your profile is private."
+          : "Your profile is discoverable."}
+      </span>
+  </div>
 
+  <label
+    htmlFor="signup-private"
+
+  >
+    <input
+      id="signup-private"
+      type="checkbox"
+      className="checkbox"
+      checked={isPrivate}
+      onChange={(e) => setIsPrivate(e.target.checked)}
+
+    />
+
+    <span className="min-w-0 flex-1">
+    
+
+ 
+    </span>
+  </label>
+</section>
+
+   
         {/* TERMS */}
 
         <section className="
@@ -1322,6 +1371,34 @@ function IOSFormTemplate({
           dark:border-plumb-darkBorderStrong
           dark:bg-plumb-dark-surface
         ">
+            <p className={sectionLabelClass}>
+      Review Terms and Conditions 
+    </p>
+
+    <h2 className={headingClass}>
+     User Agreement
+    </h2>
+   <p>Review the<a onClick={handleReview}> Terms & Conditions</a></p> 
+{/* <a onClick={handleReview}>see agreement </a> */}
+<div className="flex flex-col justify-between">
+       <span className="
+        mt-2 block text-xs font-medium
+        text-plumb-mintHover
+        dark:text-plumb-mintLight
+      ">
+       {agreedToTerms
+                  ? "Terms accepted"
+                  : "Review the Terms & Conditions"}
+    </span>
+        <input
+      id="signup-private"
+      type="checkbox"
+      className="checkbox mt-4"
+      checked={agreedToTerms}
+      onChange={(e) => setAgreedToTerms(e.target.checked)}
+
+    />
+    </div>
           <button
             type="button"
             onClick={openTerms}
@@ -1375,8 +1452,17 @@ function IOSFormTemplate({
                 </svg>
               )}
             </span>
+                 {/* <span className="
+                block text-sm font-semibold
+                text-plumb-ink
+                dark:text-plumb-darkText
+              ">
+                {agreedToTerms
+                  ? "Terms accepted"
+                  : "Review the Terms & Conditions"}
+              </span> */}
 
-            <span className="min-w-0">
+            {/* <span className="min-w-0">
               <span className="
                 block text-sm font-semibold
                 text-plumb-ink
@@ -1395,8 +1481,8 @@ function IOSFormTemplate({
                 {agreedToTerms
                   ? "You're all set."
                   : "Take a look before you step inside."}
-              </span>
-            </span>
+              </span> */}
+            {/* </span> */}
           </button>
         </section>
 
@@ -1473,3 +1559,5 @@ function IOSFormTemplate({
     </div>
   );
 }
+
+

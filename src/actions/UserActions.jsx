@@ -325,41 +325,22 @@ const getCurrentProfile = createAsyncThunk(
   }
 );
 
+
 const updateProfile = createAsyncThunk(
-  "users/updateProfile",
-  async (params, thunkApi) => {
+  "profile/updateProfile",
+  async (params, thunkAPI) => {
     try {
-      const data = await profileRepo.updateProfile(params);
-
-      if (data.profile) {
-        const { profile } = data;
-
-        try {
-          await algoliaRepo.partialUpdateObject(
-            "profile",
-            profile.id,
-            { username: profile.username }
-          );
-        } catch (err) {
-          // Algolia synchronization should not invalidate
-          // a successful profile update.
-          console.warn("Algolia profile update failed:", err);
+      return await profileRepo.updateProfile(params);
+    } catch (e) {
+      return thunkAPI.rejectWithValue(
+        e.response?.data || {
+          message: e.message || "Unable to update profile.",
+          status: e.response?.status,
         }
-      }
-
-      return {
-        profile: data.profile,
-      };
-    } catch (err) {
-      return thunkApi.rejectWithValue({
-        message: err?.message || "Unable to update profile.",
-      });
+      );
     }
   }
 );
-
-
-
 
 const fetchProfile = createAsyncThunk(
   "users/fetchProfile",

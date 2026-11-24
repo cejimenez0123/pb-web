@@ -1,18 +1,19 @@
 
 
-import { useState, useEffect, useRef, useContext } from "react";
+import { useState, useEffect, useRef, } from "react";
 import { useDispatch } from "react-redux";
 import { uploadProfilePicture } from "../../actions/ProfileActions";
-import { useReferral } from "../../actions/UserActions";
+import { updateProfile, useReferral } from "../../actions/UserActions";
 import Paths from "../../core/paths";
 import Enviroment from "../../core/Enviroment";
 import "../../App.css";
-import Context from "../../context";
 import authRepo from "../../data/authRepo";
 import { debounce } from "lodash";
 import { Preferences } from "@capacitor/preferences";
 import { IonContent, useIonRouter } from "@ionic/react";
 import ErrorBoundary from "../../ErrorBoundary";
+import { useAlert } from "../../core/useAlert";
+import AlertType from "../../core/AlertType";
 
 const ALLOWED_IMAGE_TYPES = [
   "image/jpeg",
@@ -26,7 +27,8 @@ const ACCEPTED_IMAGE_EXTENSIONS = /\.(jpe?g|png|heic|heif)$/i;
 export default function UseReferralContainer() {
   const router = useIonRouter();
   const dispatch = useDispatch();
-  const { setError } = useContext(Context);
+
+  const {showAlert}=useAlert()
 
   const params = new URLSearchParams(router.routeInfo?.search);
   const [token] = useState(params.get("token"));
@@ -44,7 +46,21 @@ export default function UseReferralContainer() {
   const [selectedImage, setSelectedImage] = useState(
     Enviroment.blankProfile
   );
-
+  const SPRINT_SLOTS = [
+  { id: "morning", label: "Morning", emoji: "🌅", time: "7:00 AM" },
+  { id: "midday", label: "Midday", emoji: "☀️", time: "12:00 PM" },
+  { id: "afternoon", label: "Afternoon", emoji: "🌤", time: "3:00 PM" },
+  { id: "evening", label: "Evening", emoji: "🌆", time: "7:00 PM" },
+  { id: "night", label: "Night", emoji: "🌙", time: "10:00 PM" },
+];
+const [writingSprintSlots, setWritingSprintSlots] = useState([]);
+  const toggleSlot = (slotId) => {
+  setWritingSprintSlots((previous) =>
+    previous.includes(slotId)
+      ? previous.filter((slot) => slot !== slotId)
+      : [...previous, slotId]
+  );
+};
   const [usernameUnique, setUsernameUnique] = useState(true);
   const [checkingUsername, setCheckingUsername] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -119,16 +135,17 @@ export default function UseReferralContainer() {
     );
 
     if (!validType && !validExtension) {
-      setError("Please choose a JPEG, PNG, HEIC, or HEIF image.");
+      showAlert({message:"Please choose a JPEG, PNG, HEIC, or HEIF image.",type:AlertType.error})
       event.target.value = "";
       return;
     }
 
-    if (selectedFile.size > 5 * 1024 * 1024) {
-      setError("Your profile picture must be smaller than 5 MB.");
-      event.target.value = "";
-      return;
-    }
+    // if (selectedFile.size > 5 * 1024 * 1024) {
+    //      showAlert({message:"Your profile picture must be smaller than 5 MB.",type:AlertType.error})
+
+    //   event.target.value = "";
+    //   return;
+    // }
 
     if (previewUrlRef.current) {
       URL.revokeObjectURL(previewUrlRef.current);
@@ -140,119 +157,132 @@ export default function UseReferralContainer() {
     setFile(selectedFile);
     setSelectedImage(previewUrl);
   };
+const handleUseReferral = async () => {
+  if (!token) {
+    throw new Error("Invalid referral link.");
+  }
 
-  const handleUseReferral = async () => {
-    if (!token) {
-      throw new Error("Invalid referral link.");
-    }
+  await Preferences.set({
+    key: "token",
+    value: token,
+  });
 
-    // The referral token authenticates the initial signup request.
-    await Preferences.set({
-      key: "token",
-      value: token,
-    });
+  const payload = await dispatch(
+    useReferral({
+      email: email.trim().toLowerCase(),
+      token,
+      password,
+      username: username.trim().toLowerCase(),
+      writingSprintSlots,
+      frequency,
+      selfStatement: selfStatement.trim(),
+      isPrivate,
+    })
+  ).unwrap();
 
-    const payload = await dispatch(
-      useReferral({
-        email: email.trim().toLowerCase(),
-        token,
-        password,
-        username: username.trim().toLowerCase(),
-        frequency,
-        selfStatement,
-        isPrivate,
-      })
-    ).unwrap();
+  if (!payload?.profile || !payload?.token) {
+    throw new Error(
+      "Signup did not return a profile and authentication token."
+    );
+  }
 
-    if (!payload?.profile || !payload?.token) {
-      throw new Error(
-        "Signup did not return a profile and authentication token."
-      );
-    }
+  await Preferences.set({
+    key: "token",
+    value: payload.token,
+  });
 
-    // The new token authenticates the MongoDB Photo upload.
-    await Preferences.set({
-      key: "token",
-      value: payload.token,
-    });
+  await Preferences.set({
+    key: "firstTime",
+    value: String(payload.firstTime || false),
+  });
 
-    await Preferences.set({
-      key: "firstTime",
-      value: "true",
-    });
+  return payload;
+};
+const completeSignUp = async (event) => {
+  event?.preventDefault();
 
-    return payload;
-  };
+  if (isSubmitting) return;
 
-  const completeSignUp = async (event) => {
-    event?.preventDefault();
+  if (!email.trim()) {
+    showAlert({message:
+  "Please enter your email address.",type:AlertType.error})
+    return;
+  }
 
-    if (isSubmitting) return;
+  if (username.trim().length < 4) {
+    showAlert({message:"Username must be at least 4 characters.",type:AlertType.error});
+    return;
+  }
 
-    if (!email.trim() || !username.trim() || !password) {
-      setError("Please complete all required fields.");
-      return;
-    }
+  if (!usernameUnique || checkingUsername) {
+showAlert({message:"Please choose an available username.",type:AlertType.error});
+    return;
+  }
 
-    if (username.trim().length < 4) {
-      setError("Username must be at least 4 characters.");
-      return;
-    }
+  if (!password || password.length < 6) {
+    showAlert({message:"Password must be at least 6 characters.",type:AlertType.error})
+    return;
+  }
 
-    if (!usernameUnique || checkingUsername) {
-      setError("Please choose an available username.");
-      return;
-    }
+  if (password !== confirmPassword) {
+   showAlert({message:"Passwords do not match.",type:AlertType.error})
+    return;
+  }
 
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters.");
-      return;
-    }
+  if (!token) {
+ showAlert({message:"Invalid referral link.",type:AlertType.error})
+    return;
+  }
 
-    if (password !== confirmPassword) {
-      setError("Passwords do not match.");
-      return;
-    }
+  setIsSubmitting(true);
 
-    if (!token) {
-      setError("Invalid referral link.");
-      return;
-    }
+  try {
+    // 1. Create account and profile.
+    const payload = await handleUseReferral();
 
-    setIsSubmitting(true);
+    // 2. Upload and associate profile picture.
+    if (file) {
+      try {
+        await dispatch(
+          uploadProfilePicture({
+            file,
+            purpose: "profile",
+          })
+        ).unwrap();
+      // try {
+      //   const upload = await dispatch(
+      //     uploadProfilePicture({
+      //       file,
+      //       purpose: "profile",
+      //     })
+      //   ).unwrap();
 
-    try {
-      // 1. Create the account and profile first.
-      await handleUseReferral();
+        // 3. Associate the uploaded Photo with the new profile.
+        // if (upload?.photoId) {
+        //   await dispatch(
+            updateProfile({
+              profile: payload.profile,
+              profilePictureId: upload.photoId,
+            })
+        // //   ).unwrap();
+        // } else {
+        //   throw new Error("Photo upload did not return a photo ID.");
+        // }
+      } catch (photoError) {
+console.log(photoError)
 
-      // 2. Upload the picture after the new auth token is saved.
-      if (file) {
-        try {
-          await dispatch(
-            uploadProfilePicture({ file })
-          ).unwrap();
-        } catch (photoError) {
-          console.error("Profile picture upload failed:", photoError);
-
-          setError(
-            "Your account was created, but your profile picture could not be uploaded. You can add it from your profile."
-          );
-        }
       }
-
-      // 3. Continue into the newly created profile.
-      router.push(Paths.myProfile);
-    } catch (error) {
-      console.error("Referral signup failed:", error);
-
-      setError(
-        error?.message ||
-        "Unable to complete signup. Please try again."
-      );
-    } finally {
-      setIsSubmitting(false);
     }
-  };
+
+    // 4. Enter the newly created profile.
+    router.push(Paths.myProfile);
+  } catch (error) {
+    console.error("Referral signup failed:", error);
+
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   return (
     <ErrorBoundary>
@@ -302,7 +332,7 @@ export default function UseReferralContainer() {
                   value={username}
                   placeholder="yourname"
                   autoComplete="username"
-                  onChange={setUsername}
+                  onChange={e=>setUsername(e.toLowerCase().trim())}
                 />
 
                 {username.length > 0 && username.length < 4 && (
@@ -447,41 +477,64 @@ export default function UseReferralContainer() {
                 </div>
               </FormSection>
 
-              {/* Email preferences */}
               <FormSection
-                title="Email preferences"
-                description="How often would you like to hear from us?"
-              >
-                <div className="grid grid-cols-2 gap-2">
-                  {[
-                    { label: "Daily", value: 1 },
-                    { label: "Weekly", value: 7 },
-                    { label: "Monthly", value: 30 },
-                    { label: "Unsubscribe", value: 0 },
-                  ].map((option) => {
-                    const active = frequency === option.value;
+  title="Your rhythm"
+  description="When do you like to write? Pick the windows that sound good. These are invitations, not homework."
+>
+  <div className="space-y-2">
+    {SPRINT_SLOTS.map((slot) => {
+      const selected = writingSprintSlots.includes(slot.id);
 
-                    return (
-                      <button
-                        key={option.value}
-                        type="button"
-                        onClick={() => setFrequency(option.value)}
-                        aria-pressed={active}
-                        className={[
-                          "rounded-xl border px-4 py-3 text-sm font-medium transition",
-                          "focus:outline-none focus-visible:ring-2 focus-visible:ring-plumb-focus",
-                          active
-                            ? "border-plumb-mint bg-plumb-mint text-white"
-                            : "border-plumb-border bg-plumb-paper text-plumb-ink hover:border-plumb-mint dark:border-plumb-dark-border dark:bg-plumb-dark-surface dark:text-plumb-dark-ink",
-                        ].join(" ")}
-                      >
-                        {option.label}
-                      </button>
-                    );
-                  })}
-                </div>
-              </FormSection>
+      return (
+        <button
+          key={slot.id}
+          type="button"
+          onClick={() => toggleSlot(slot.id)}
+          aria-pressed={selected}
+          className={[
+            "flex min-h-[68px] w-[100%] items-center justify-between",
+            "rounded-2xl border px-4 py-3.5 text-left transition-colors",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-plumb-focus",
+            selected
+              ? "border-plumb-mint bg-plumb-mint/10 dark:border-plumb-mintLight dark:bg-plumb-mint/15"
+              : "border-plumb-borderStrong bg-plumb-paper hover:border-plumb-mint dark:border-plumb-darkBorderStrong dark:bg-plumb-dark-elevated",
+          ].join(" ")}
+        >
+          <span className="flex items-center gap-3">
+            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-plumb-surface dark:bg-plumb-dark-canvas">
+              {slot.emoji}
+            </span>
 
+            <span>
+              <span className="block text-sm font-semibold text-plumb-ink dark:text-plumb-darkText">
+                {slot.label}
+              </span>
+
+              <span className="mt-0.5 block text-xs text-plumb-muted dark:text-plumb-darkMuted">
+                {slot.time}
+              </span>
+            </span>
+          </span>
+
+          <span
+            className={[
+              "flex h-7 w-7 items-center justify-center rounded-full border",
+              selected
+                ? "border-plumb-mint bg-plumb-mint text-white dark:border-plumb-mintLight dark:bg-plumb-mintLight dark:text-plumb-dark-canvas"
+                : "border-plumb-borderStrong text-transparent dark:border-plumb-darkBorderStrong",
+            ].join(" ")}
+          >
+            {selected ? "✓" : ""}
+          </span>
+        </button>
+      );
+    })}
+  </div>
+
+  <p className="text-xs leading-5 text-plumb-subtle dark:text-plumb-darkSubtle">
+    You can change these later. Your creative life doesn't need to fit a schedule.
+  </p>
+</FormSection>
               {/* Submit */}
               <div className="space-y-3 pb-12 pt-2">
                 <button
