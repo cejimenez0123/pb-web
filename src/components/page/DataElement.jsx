@@ -9,9 +9,9 @@ import { PageType } from "../../core/constants";
 import Enviroment from "../../core/Enviroment";
 import Paths from "../../core/paths";
 import "../../styles/Editor.css";
-
 import AnnotatedText from "./Annotation/AnnotatedText.jsx";
 import styles from "../../styles/style";
+import PictureElement from "./PictureElement.jsx";
 
 const EMPTY_COMMENTS = [];
 
@@ -75,51 +75,7 @@ function SelectionToolbar({ position, onAnnotate, onClose }) {
   );
 }
 
-// ─── Picture element ─────────────────────────────────────────────────────────
 
-function PictureElement({ page, image, onOpen }) {
-  const [imgError, setImgError] = useState(false);
-  const [src, setSrc] = useState(image);
-
-  if (imgError || !src) {
-    return (
-      <div className="flex h-48 w-full flex-col items-center justify-center gap-2 text-plumb-muted dark:text-plumb-darkMuted">
-        <svg
-          className="h-10 w-10"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          aria-hidden="true"
-        >
-          <rect x="3" y="3" width="18" height="18" rx="2" />
-          <path d="M3 15l5-5 4 4 3-3 4 4" />
-          <circle cx="8.5" cy="8.5" r="1.5" />
-        </svg>
-        <span className="text-xs">Image unavailable</span>
-      </div>
-    );
-  }
-
-  return (
-    <img
-      id="page-data-pic"
-      onClick={onOpen}
-      alt={page.title || "Story image"}
-      src={src}
-      className="h-full w-full object-contain"
-      onError={() => {
-        const raw = page?.data;
-
-        if (raw && !src.includes("imageProxy")) {
-          setSrc(Enviroment.imageProxy(raw));
-        } else {
-          setImgError(true);
-        }
-      }}
-    />
-  );
-}
 
 // ─── DataElement ─────────────────────────────────────────────────────────────
 
@@ -127,7 +83,7 @@ export default function DataElement({
   page,
   isGrid,
   shortenTo = null,
-  book = null,
+
   html = null,
   onAnnotationComment,
 }) {
@@ -146,7 +102,7 @@ export default function DataElement({
 
   const image =
     page.type === PageType.picture
-      ? resolveImageSrc(page.data)
+      ? `${page.data}`
       : null;
 
   const isStoryRoute = router.routeInfo?.pathname?.includes("story");
@@ -207,14 +163,8 @@ export default function DataElement({
         
       );
 
-    case PageType.picture:
-      return (
-        <PictureElement
-          page={page}
-          image={image}
-          onOpen={openPicture}
-        />
-      );
+case PageType.picture:
+  return <PictureElement page={page}  />;
 
     case PageType.link:
       return <LinkPreview isGrid={isGrid} url={page.data} />;

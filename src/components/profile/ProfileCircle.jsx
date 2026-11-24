@@ -1,9 +1,9 @@
+
 import isValidUrl from "../../core/isValidUrl";
 import Paths from "../../core/paths";
 import Enviroment from "../../core/Enviroment";
 import { sendGAEvent } from "../../core/ga4";
 import { useIonRouter } from "@ionic/react";
-import { useEffect, useState } from "react";
 import shortName from "../../core/shortName";
 
 const SIZES = {
@@ -13,20 +13,32 @@ const SIZES = {
     text: "text-xs",
     gap: "gap-1.5",
   },
-
   medium: {
     width: 32,
     height: 32,
     text: "text-sm",
     gap: "gap-2",
   },
-
   large: {
     width: 48,
     height: 48,
     text: "text-sm",
     gap: "gap-2.5",
   },
+};
+
+const getProfilePictureUrl = (profile) => {
+  if (profile?.profilePictureId) {
+    return `${Enviroment.url}/api/photos/${profile.profilePictureId}`;
+  }
+
+  if (profile?.profilePic) {
+    return isValidUrl(profile.profilePic)
+      ? profile.profilePic
+      : Enviroment.blankProfile;
+  }
+
+  return Enviroment.blankProfile;
 };
 
 function ProfileCircle({
@@ -39,26 +51,7 @@ function ProfileCircle({
 }) {
   const router = useIonRouter();
   const sizeConfig = SIZES[size] || SIZES.small;
-
-  const [pictureUrl, setPictureUrl] = useState(
-    Enviroment.blankProfile
-  );
-
-  useEffect(() => {
-    if (!profile?.profilePic) {
-      setPictureUrl(Enviroment.blankProfile);
-      return;
-    }
-
-    if (isValidUrl(profile.profilePic)) {
-      setPictureUrl(profile.profilePic);
-      return;
-    }
-
-    setPictureUrl(
-      Enviroment.imageProxy(profile.profilePic)
-    );
-  }, [profile?.profilePic]);
+  const pictureUrl = getProfilePictureUrl(profile);
 
   const handleNavigate = () => {
     if (!profile?.id) return;
@@ -74,9 +67,7 @@ function ProfileCircle({
       false
     );
 
-    router.push(
-      Paths.profile.createRoute(profile.id)
-    );
+    router.push(Paths.profile.createRoute(profile.id));
   };
 
   const avatarStyle = {
@@ -94,21 +85,14 @@ function ProfileCircle({
         className={[
           "inline-flex shrink-0 items-center",
           className,
-        ]
-          .filter(Boolean)
-          .join(" ")}
+        ].filter(Boolean).join(" ")}
         aria-hidden="true"
       >
         <span
           style={avatarStyle}
           className="
-            block
-            shrink-0
-            overflow-hidden
-            rounded-full
-            bg-base-soft/30
-            ring-1
-            ring-border-soft
+            block shrink-0 overflow-hidden rounded-full
+            bg-base-soft/30 ring-1 ring-border-soft
           "
         />
       </span>
@@ -124,9 +108,7 @@ function ProfileCircle({
         "inline-flex min-w-0 max-w-full shrink-0 items-center",
         sizeConfig.gap,
         className,
-      ]
-        .filter(Boolean)
-        .join(" ")}
+      ].filter(Boolean).join(" ")}
     >
       <button
         type="button"
@@ -135,25 +117,12 @@ function ProfileCircle({
         aria-label={accessibleLabel}
         style={avatarStyle}
         className="
-          relative
-          m-0
-          block
-          shrink-0
-          overflow-hidden
-          rounded-full
-          border-0
-          bg-base-soft
-          p-0
-          ring-1
-          ring-border-soft
-          focus:outline-none
-          focus-visible:ring-2
-          focus-visible:ring-border-focus
-          focus-visible:ring-offset-1
-          hover:ring-2
-          hover:ring-base-soft/50
-          disabled:cursor-default
-          motion-reduce:transition-none
+          relative m-0 block shrink-0 overflow-hidden rounded-full
+          border-0 bg-base-soft p-0 ring-1 ring-border-soft
+          focus:outline-none focus-visible:ring-2
+          focus-visible:ring-border-focus focus-visible:ring-offset-1
+          hover:ring-2 hover:ring-base-soft/50
+          disabled:cursor-default motion-reduce:transition-none
         "
       >
         <img
@@ -162,17 +131,13 @@ function ProfileCircle({
           aria-hidden="true"
           width={sizeConfig.width}
           height={sizeConfig.height}
+          loading="lazy"
           className="
-            absolute
-            inset-0
-            m-0
-            block
-            h-full
-            w-full
-            object-cover
+            absolute inset-0 m-0 block h-full w-full object-cover
           "
-          onError={() => {
-            setPictureUrl(Enviroment.blankProfile);
+          onError={(event) => {
+            event.currentTarget.onerror = null;
+            event.currentTarget.src = Enviroment.blankProfile;
           }}
         />
       </button>
@@ -204,3 +169,210 @@ function ProfileCircle({
 }
 
 export default ProfileCircle;
+
+// import isValidUrl from "../../core/isValidUrl";
+// import Paths from "../../core/paths";
+// import Enviroment from "../../core/Enviroment";
+// import { sendGAEvent } from "../../core/ga4";
+// import { useIonRouter } from "@ionic/react";
+// import { useEffect, useState } from "react";
+// import shortName from "../../core/shortName";
+
+// const SIZES = {
+//   small: {
+//     width: 24,
+//     height: 24,
+//     text: "text-xs",
+//     gap: "gap-1.5",
+//   },
+
+//   medium: {
+//     width: 32,
+//     height: 32,
+//     text: "text-sm",
+//     gap: "gap-2",
+//   },
+
+//   large: {
+//     width: 48,
+//     height: 48,
+//     text: "text-sm",
+//     gap: "gap-2.5",
+//   },
+// };
+
+// function ProfileCircle({
+//   profile,
+//   className = "",
+//   fontSize = "",
+//   includeUsername = true,
+//   isGrid = false,
+//   size = "small",
+// }) {
+//   const router = useIonRouter();
+//   const sizeConfig = SIZES[size] || SIZES.small;
+
+//   const [pictureUrl, setPictureUrl] = useState(
+//     Enviroment.blankProfile
+//   );
+
+//   useEffect(() => {
+//     if (!profile?.profilePic) {
+//       setPictureUrl(Enviroment.blankProfile);
+//       return;
+//     }
+
+//     if (isValidUrl(profile.profilePic)) {
+//       setPictureUrl(profile.profilePic);
+//       return;
+//     }
+
+//     setPictureUrl(
+//       Enviroment.imageProxy(profile.profilePic)
+//     );
+//   }, [profile?.profilePic]);
+
+//   const handleNavigate = () => {
+//     if (!profile?.id) return;
+
+//     sendGAEvent(
+//       "Navigate",
+//       `Navigate to profile:${{
+//         id: profile.id,
+//         username: profile.username,
+//       }}`,
+//       profile.username,
+//       0,
+//       false
+//     );
+
+//     router.push(
+//       Paths.profile.createRoute(profile.id)
+//     );
+//   };
+
+//   const avatarStyle = {
+//     width: `${sizeConfig.width}px`,
+//     height: `${sizeConfig.height}px`,
+//     minWidth: `${sizeConfig.width}px`,
+//     minHeight: `${sizeConfig.height}px`,
+//     maxWidth: `${sizeConfig.width}px`,
+//     maxHeight: `${sizeConfig.height}px`,
+//   };
+
+//   if (!profile) {
+//     return (
+//       <span
+//         className={[
+//           "inline-flex shrink-0 items-center",
+//           className,
+//         ]
+//           .filter(Boolean)
+//           .join(" ")}
+//         aria-hidden="true"
+//       >
+//         <span
+//           style={avatarStyle}
+//           className="
+//             block
+//             shrink-0
+//             overflow-hidden
+//             rounded-full
+//             bg-base-soft/30
+//             ring-1
+//             ring-border-soft
+//           "
+//         />
+//       </span>
+//     );
+//   }
+
+//   const username = profile.username || "Writer";
+//   const accessibleLabel = `View ${username}'s profile`;
+
+//   return (
+//     <div
+//       className={[
+//         "inline-flex min-w-0 max-w-full shrink-0 items-center",
+//         sizeConfig.gap,
+//         className,
+//       ]
+//         .filter(Boolean)
+//         .join(" ")}
+//     >
+//       <button
+//         type="button"
+//         onClick={handleNavigate}
+//         disabled={!profile.id}
+//         aria-label={accessibleLabel}
+//         style={avatarStyle}
+//         className="
+//           relative
+//           m-0
+//           block
+//           shrink-0
+//           overflow-hidden
+//           rounded-full
+//           border-0
+//           bg-base-soft
+//           p-0
+//           ring-1
+//           ring-border-soft
+//           focus:outline-none
+//           focus-visible:ring-2
+//           focus-visible:ring-border-focus
+//           focus-visible:ring-offset-1
+//           hover:ring-2
+//           hover:ring-base-soft/50
+//           disabled:cursor-default
+//           motion-reduce:transition-none
+//         "
+//       >
+//         <img
+//           src={pictureUrl}
+//           alt=""
+//           aria-hidden="true"
+//           width={sizeConfig.width}
+//           height={sizeConfig.height}
+//           className="
+//             absolute
+//             inset-0
+//             m-0
+//             block
+//             h-full
+//             w-full
+//             object-cover
+//           "
+//           onError={() => {
+//             setPictureUrl(Enviroment.blankProfile);
+//           }}
+//         />
+//       </button>
+
+//       {includeUsername && (
+//         <button
+//           type="button"
+//           onClick={handleNavigate}
+//           disabled={!profile.id}
+//           aria-label={accessibleLabel}
+//           className={[
+//             "min-w-0 max-w-full truncate",
+//             "bg-transparent p-0 text-left",
+//             "text-text-primary",
+//             fontSize || sizeConfig.text,
+//             "hover:text-text-brand",
+//             "focus:outline-none",
+//             "focus-visible:underline",
+//             "focus-visible:underline-offset-2",
+//             "disabled:cursor-default",
+//             "motion-reduce:transition-none",
+//           ].join(" ")}
+//         >
+//           {shortName(username, 20)}
+//         </button>
+//       )}
+//     </div>
+//   );
+// }
+
+// export default ProfileCircle;

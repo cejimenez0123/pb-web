@@ -393,223 +393,179 @@ export default function SignUpContainer() {
       setUsernameUnique(true);
     }
   }, [username]);
+const completeSignUp = async () => {
+  if (loading) return;
 
-  const completeSignUp = async () => {
-    if (loading) return;
+  if (username.trim().length < 4) {
+    showAlert({
+      message: "Choose a username with at least 4 characters.",
+      type: AlertType.error,
+    });
+    return;
+  }
 
-    if (username.trim().length < 4) {
-      showAlert({
-        message: "Choose a username with at least 4 characters.",
-        type: AlertType.error,
-      });
+  if (!usernameUnique) {
+    showAlert({
+      message: "That username is already taken. Try another one.",
+      type: AlertType.error,
+    });
+    return;
+  }
 
-      return;
-    }
+  if (!password) {
+    showAlert({
+      message: "Please create a password.",
+      type: AlertType.error,
+    });
+    return;
+  }
 
-    if (!usernameUnique) {
-      showAlert({
-        message: "That username is already taken. Try another one.",
-        type: AlertType.error,
-      });
+  if (password !== confirmPassword) {
+    showAlert({
+      message: "Your passwords don't match.",
+      type: AlertType.error,
+    });
+    return;
+  }
 
-      return;
-    }
+  if (!agreedToTerms) {
+    showAlert({
+      message: "Please review and accept the Terms & Conditions before continuing.",
+      type: AlertType.error,
+    });
+    return;
+  }
 
-    if (!password) {
-      showAlert({
-        message: "Please create a password.",
-        type: AlertType.error,
-      });
+  try {
+    setLoading(true);
 
-      return;
-    }
+    const { value: identityToken } = await Preferences.get({
+      key: "idToken",
+    });
 
-    if (password !== confirmPassword) {
-      showAlert({
-        message: "Your passwords don't match.",
-        type: AlertType.error,
-      });
+    const { value: storedToken } = await Preferences.get({
+      key: "token",
+    });
 
-      return;
-    }
+    const params = {
+      authToken: identityToken,
+      referralToken: referralToken ?? storedToken,
+      username: username.trim(),
+      password,
+      googleId,
+      writingSprintSlots,
+      frequency,
+      selfStatement,
+      privacy: isPrivate,
+      termsVersion: CURRENT_TERMS_VERSION,
+      termsAcceptedAt: new Date().toISOString(),
+      file: fileFind || null,
+      profilePicture: fileFind ? null : selectedImage,
+    };
 
-    if (!agreedToTerms) {
-      showAlert({
-        message: "Please review and accept the Terms & Conditions before continuing.",
-        type: AlertType.error,
-      });
+    await submitSignup(params);
 
-      return;
-    }
+  } catch (err) {
+    console.error("SIGN UP ERROR:", err);
 
-    try {
-      setLoading(true);
+    showAlert({
+      message:
+        err?.status === 409
+          ? "That username is already taken. Try another one."
+          : err?.message ||
+            "We couldn't finish setting up your account. Please try again.",
+      type: AlertType.error,
+    });
+  } finally {
+    setLoading(false);
+  }
+};
+const submitSignup = async (params) => {
+  try {
+    const { file, ...signupParams } = params;
 
-      const { value: identityToken } =
-        await Preferences.get({
-          key: "idToken",
-        });
+    const res = await dispatch(signUp(signupParams));
 
-      const { value: googleId } =
-        await Preferences.get({
-          key: "googleId",
-        });
+    await checkResult(
+      res,
 
-      const { value: storedToken } =
-        await Preferences.get({
-          key: "token",
-        });
-
-      const pictureParams = fileFind
-        ? { file: fileFind }
-        : { profilePicture: selectedImage };
-
-      const params = {
-        authToken: identityToken,
-
-        referralToken:
-          referralToken ?? storedToken,
-
-        username: username.trim() || null,
-        password,
-        googleId,
-        writingSprintSlots,
-        frequency,
-        selfStatement,
-        privacy: isPrivate,
-
-        termsVersion: CURRENT_TERMS_VERSION,
-
-        termsAcceptedAt: new Date().toISOString(),
-
-        ...pictureParams,
-      };
-
-      if (fileFind) {
-        const uploadRes = await dispatch(
-          uploadProfilePicture({
-            file: fileFind,
-          })
-        );
-
-        await checkResult(
-          uploadRes,
-
-          async (uploadPayload) => {
-            params.profilePicture =
-              uploadPayload.fileName;
-
-            await submitSignup(params);
-          },
-
-          (err) => {
-            showAlert({
-              message:
-                err?.message ||
-                "We couldn't upload your photo. Please try again.",
-              type: AlertType.error,
-            });
-          }
-        );
-
-        return;
-      }
-
-      await submitSignup(params);
-    } catch (err) {
-      console.error("SIGN UP ERROR:", err);
-
-      showAlert({
-        message:
-          err?.status === 409
-            ? "That username is already taken. Try another one."
-            : err?.message ||
-              "We couldn't finish setting up your account. Please try again.",
-        type: AlertType.error,
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const submitSignup = async (params) => {
-    try {
-      const res = await dispatch(signUp(params));
-
-      await checkResult(
-        res,
-
-        async (payload) => {
-          await Preferences.set({
-            key: "firstTime",
-            value: String(payload.firstTime || false),
-          });
-
-          if (!payload.profile) {
-            showAlert({
-              message:
-                payload?.error?.status === 409
-                  ? "That username is already taken. Try another one."
-                  : payload?.error?.message ||
-                    "We couldn't finish setting up your account. Please try again.",
-              type: AlertType.error,
-            });
-
-            return;
-          }
-
-          if (!Capacitor.isNativePlatform()) {
-            showPrompt({
-              message:
-                "You're in. Now go to the app and make some space for your writing.",
-
-              agree: () => {
-                router.push(Paths.login);
-              },
-
-              agreeText: "Let's go",
-            });
-
-            return;
-          }
-
-          showPrompt({
-            message:
-              "You're in. Open Plumbum and make some space for your writing.",
-
-            agree: () => {
-              router.push(Paths.login);
-            },
-
-            agreeText: "Open Plumbum",
-            disagreeText: "Stay here",
-          });
-        },
-
-        (err) => {
+      async (payload) => {
+        if (!payload.profile) {
           showAlert({
             message:
-              err?.status === 409
+              payload?.error?.status === 409
                 ? "That username is already taken. Try another one."
-                : err?.message ||
+                : payload?.error?.message ||
                   "We couldn't finish setting up your account. Please try again.",
             type: AlertType.error,
           });
-        }
-      );
-    } catch (err) {
-      console.error("SIGN UP REQUEST ERROR:", err);
 
-      showAlert({
-        message:
-          err?.status === 409
-            ? "That username is already taken. Try another one."
-            : err?.message ||
-              "We couldn't finish setting up your account. Please try again.",
-        type: AlertType.error,
-      });
-    }
-  };
+          return;
+        }
+
+        // Upload profile picture after account creation.
+        if (file) {
+          const upload = await dispatch(
+            uploadPhoto({
+              file,
+              purpose: "profile",
+            })
+          ).unwrap();
+
+          await dispatch(
+            updateProfile({
+              profile: payload.profile,
+              profilePictureId: upload.photoId,
+            })
+          ).unwrap();
+        }
+
+        await Preferences.set({
+          key: "firstTime",
+          value: String(payload.firstTime || false),
+        });
+
+        const message = Capacitor.isNativePlatform()
+          ? "You're in. Open Plumbum and make some space for your writing."
+          : "You're in. Now go to the app and make some space for your writing.";
+
+        showPrompt({
+          message,
+          agree: () => {
+            router.push(Paths.login);
+          },
+          agreeText: Capacitor.isNativePlatform()
+            ? "Open Plumbum"
+            : "Let's go",
+          ...(Capacitor.isNativePlatform() && {
+            disagreeText: "Stay here",
+          }),
+        });
+      },
+
+      (err) => {
+        showAlert({
+          message:
+            err?.status === 409
+              ? "That username is already taken. Try another one."
+              : err?.message ||
+                "We couldn't finish setting up your account. Please try again.",
+          type: AlertType.error,
+        });
+      }
+    );
+  } catch (err) {
+    console.error("SIGN UP REQUEST ERROR:", err);
+
+    showAlert({
+      message:
+        err?.message ||
+        "We couldn't finish setting up your account. Please try again.",
+      type: AlertType.error,
+    });
+  }
+};
+
 
   return (
     <IonContent
@@ -794,7 +750,7 @@ function IOSFormTemplate({
                 value={username}
                 onChange={(e) =>
                   setUsername(
-                    e.target.value
+                    e.target.value.trim()
                       .toLowerCase()
                       .replace(/\s/g, "")
                   )

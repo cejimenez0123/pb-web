@@ -141,10 +141,26 @@ const userSlice = createSlice({
         })
 
 .addCase(uploadProfilePicture.fulfilled, (state, { payload }) => {
-  if (payload?.profile) {
+  const photo = payload?.photo;
+
+  if (!photo?.id) return;
+
+  const updatedPicture = {
+    profilePictureId: photo.id,
+    profilePic: null,
+  };
+
+  if (state.currentProfile) {
     state.currentProfile = {
       ...state.currentProfile,
-      ...payload.profile,
+      ...updatedPicture,
+    };
+  }
+
+  if (state.profileInView) {
+    state.profileInView = {
+      ...state.profileInView,
+      ...updatedPicture,
     };
   }
 })

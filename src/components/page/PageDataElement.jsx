@@ -1,30 +1,23 @@
 
-import { useEffect, useState } from "react";
 import { PageType } from "../../core/constants";
 import LinkPreview from "../LinkPreview";
-import isValidUrl from "../../core/isValidUrl";
-import Paths from "../../core/paths";
-import { useIonRouter } from "@ionic/react";
-import Enviroment from "../../core/Enviroment";
+import PictureElement from "./PictureElement";
 import truncate from "html-truncate";
 
-export default function PageDataElement({ page, isGrid, compact, truncateNumber = 350 }) {
-  const [image, setImage] = useState(isValidUrl(page?.data) ? page.data : null);
-  const router   = useIonRouter();
-  const location = router.routeInfo.pathname;
-
-  useEffect(() => {
-    if (page?.type === PageType.picture) {
-      setImage(isValidUrl(page.data) ? page.data : Enviroment.imageProxy(page.data));
-    }
-  }, [page]);
-
+export default function PageDataElement({
+  page,
+  isGrid,
+  compact,
+  truncateNumber = 350,
+}) {
   if (!page) return null;
 
   switch (page.type) {
     case PageType.text: {
       const truncated = truncate(page.data || "", truncateNumber, {});
+
       if (!truncated) return null;
+
       return (
         <div className="w-full h-[100%] px-4 py-2 overflow-hidden">
           <div
@@ -35,33 +28,25 @@ export default function PageDataElement({ page, isGrid, compact, truncateNumber 
       );
     }
 
-    case PageType.picture: {
-      if (!image) return null;
+    case PageType.picture:
       return (
         <div className="w-full h-[100%]">
-          <img
-            className="w-full h-full object-cover text-plumb-ink dark:text-plumb-surface transition active:scale-[0.98]"
-            style={{ WebkitTapHighlightColor: "transparent" }}
-            alt={page.title}
-            src={image}
-            onClick={() => {
-              if (location !== Paths.page.createRoute(page.id)) {
-                router.push(Paths.page.createRoute(page.id));
-              }
-            }}
+          <PictureElement page={page} />
+        </div>
+      );
+
+    case PageType.link:
+      if (!page.data) return null;
+
+      return (
+        <div className="w-full h-[100%] text-plumb-ink dark:text-plumb-surface overflow-hidden">
+          <LinkPreview
+            isGrid={isGrid}
+            url={page.data}
+            compact={compact}
           />
         </div>
       );
-    }
-
-    case PageType.link: {
-      if (!page.data) return null;
-      return (
-        <div className="w-full h-[100%] text-plumb-ink dark:text-plumb-surface overflow-hidden">
-          <LinkPreview isGrid={isGrid} url={page.data} compact={compact} />
-        </div>
-      );
-    }
 
     default:
       return null;

@@ -6,14 +6,9 @@ import {storage} from  "../core/di"
 
 import { Preferences } from "@capacitor/preferences";
 import Enviroment from "../core/Enviroment";
+import photoRepo from "../data/photoRepo";
 
-import {
-  getStorage,
-  ref,
-  uploadBytes,
-  getDownloadURL,
-  deleteObject,
-} from "firebase/storage";
+
 const addNotification = createAction("profile/ADD_NOTIFICATION",(notification)=>{
 
 return notification
@@ -116,21 +111,44 @@ const createProfile= createAsyncThunk("users/createProfile",async (params,thunkA
   
  })
 
+const uploadProfilePicture = createAsyncThunk(
+  "users/uploadProfilePicture",
+  async (params, thunkApi) => {
+    try {
+      const { file } = params;
+
+      if (!file) {
+        throw new Error("No profile picture provided.");
+      }
+
+      const result = await photoRepo.uploadProfilePicture({ file });
+
+      return {
+        photo: result.photo,
+      };
+    } catch (err) {
+      console.error("Profile picture upload error:", err);
+
+      return thunkApi.rejectWithValue({
+        message: err?.message || "Unable to upload profile picture.",
+      });
+    }
+  }
+);
+
 // const uploadProfilePicture = createAsyncThunk(
 //   "users/uploadProfilePicture",
 //   async (params, thunkApi) => {
-//       try {
+//     try {
 //       const { file, id } = params;
 
 //       if (!file) {
 //         throw new Error("No file provided");
 //       }
 
-//       if (!file.type?.startsWith("image/")) {
+//       if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
 //         throw new Error("Please select a valid image.");
 //       }
-
-//       const storage = getStorage();
 
 //       const extension =
 //         file.type === "image/png"
@@ -139,20 +157,36 @@ const createProfile= createAsyncThunk("users/createProfile",async (params,thunkA
 //             ? "webp"
 //             : "jpg";
 
-//      const fileName = `profile/${uuidv4()}-${uuidv4()}.jpg`;
+//       const fileName = `profile/${uuidv4()}-${uuidv4()}.${extension}`;
 
-//       const storageRef = ref(storage, fileName);
+//       const formData = new FormData();
 
-//       await uploadBytes(storageRef, file, {
-//         contentType: file.type,
-//       });
+//       formData.append("file", file, fileName.split("/").pop());
+//       formData.append("profileId", id);
+//       formData.append("purpose", "profile");
+//       formData.append("filename", fileName);
 
-//       const url = await getDownloadURL(storageRef);
+//       const response = await fetch(
+//         `${import.meta.env.VITE_API_URL}/api/photos`,
+//         {
+//           method: "POST",
+//           credentials: "include",
+//           body: formData,
+//         }
+//       );
+
+//       const result = await response.json();
+
+//       if (!response.ok) {
+//         throw new Error(result.message || "Upload failed.");
+//       }
 
 //       return {
-//         url,
+//         url: `${ import.meta.env.VITE_URL}${result.photo.url}`,
 //         fileName,
+//         photoId: result.photo.id,
 //       };
+
 //     } catch (err) {
 //       console.error("Upload error:", err);
 
@@ -161,91 +195,7 @@ const createProfile= createAsyncThunk("users/createProfile",async (params,thunkA
 //       });
 //     }
 //   }
-//   //   const { file } = params;
-
-//   //   if (!file) throw new Error("No file provided");
-
-//   //   // give Firebase a proper filename + extension
-//   //   const fileName = `profile/${uuidv4()}-${uuidv4()}.jpg`;
-
-//   //   const storageRef = ref(storage, fileName);
-
-//   //   // 💡 IMPORTANT: tell Firebase what this blob is
-//   //   const metadata = {
-//   //     contentType: "image/jpeg",
-//   //   };
-
-//   //   await uploadBytes(storageRef, file, metadata);
-
-//   //   const url = await getDownloadURL(storageRef);
-
-//   //   return {
-//   //     url,
-//   //     fileName,
-//   //   };
-//   // }
 // );
-
-const uploadProfilePicture = createAsyncThunk(
-  "users/uploadProfilePicture",
-  async (params, thunkApi) => {
-    try {
-      const { file, id } = params;
-
-      if (!file) {
-        throw new Error("No file provided");
-      }
-
-      if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
-        throw new Error("Please select a valid image.");
-      }
-
-      const extension =
-        file.type === "image/png"
-          ? "png"
-          : file.type === "image/webp"
-            ? "webp"
-            : "jpg";
-
-      const fileName = `profile/${uuidv4()}-${uuidv4()}.${extension}`;
-
-      const formData = new FormData();
-
-      formData.append("file", file, fileName.split("/").pop());
-      formData.append("profileId", id);
-      formData.append("purpose", "profile");
-      formData.append("filename", fileName);
-
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/photos`,
-        {
-          method: "POST",
-          credentials: "include",
-          body: formData,
-        }
-      );
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.message || "Upload failed.");
-      }
-
-      return {
-        url: `${ import.meta.env.VITE_URL}${result.photo.url}`,
-        fileName,
-        photoId: result.photo.id,
-      };
-
-    } catch (err) {
-      console.error("Upload error:", err);
-
-      return thunkApi.rejectWithValue({
-        message: "UPLOAD FAILED: " + err.message,
-      });
-    }
-  }
-);
 
 const uploadPicture = createAsyncThunk(
   "users/uploadPicture",

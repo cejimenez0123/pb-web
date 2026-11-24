@@ -61,30 +61,36 @@ const signOutAction = createAsyncThunk('users/signOut',async (params,thunkApi)=>
         profile:null
    }
 })
-const useReferral = createAsyncThunk("users/useReferral",async(params,thunkApi)=>{
-  try{ 
-  let data = await authRepo.useReferral(params)
- if (data.profile && !data.profile.isPrivate) {
-  const { profile } = data;
+const useReferral = createAsyncThunk(
+  "users/useReferral",
+  async (params, thunkApi) => {
+    try {
+      const data = await authRepo.useReferral(params);
 
-  try {
-    await algoliaRepo.partialUpdateObject(
-      "profile", // ✅ index name
-      profile.id, // ✅ objectID
-      {
-        username: profile.username, // ✅ field(s) to update
+      if (data.profile && !data.profile.isPrivate) {
+        try {
+          await algoliaRepo.partialUpdateObject(
+            "profile",
+            data.profile.id,
+            { username: data.profile.username }
+          );
+        } catch (error) {
+          // Algolia failure should not undo a successful signup.
+          console.error("Referral profile Algolia update failed:", error);
+        }
       }
-    );
 
-  } catch (err) {
-    return thunkApi.rejectWithValue(err);
+      return data;
+    } catch (error) {
+      return thunkApi.rejectWithValue({
+        message:
+          error?.response?.data?.message ||
+          error?.message ||
+          "Unable to complete referral signup.",
+      });
+    }
   }
-}
-    return data
-  }catch(err){
-    return err
-  }
-})
+);
 const setMainLoading = createAction("books/setCollectionInView", (params)=> {
 
   
@@ -94,52 +100,124 @@ const setMainLoading = createAction("books/setCollectionInView", (params)=> {
 
 
   })
-const signUp = createAsyncThunk(
-    'users/signUp',
-    async (params,thunkApi) => {
-         const { email, referralToken, writingSprintSlots, idToken, googleId, frequency, password, username, profilePicture, selfStatement, privacy } = params
+  const signUp = createAsyncThunk(
+  "users/signUp",
+  async (params, thunkApi) => {
+    const {
+      email,
+      referralToken,
+      writingSprintSlots,
+      idToken,
+      googleId,
+      frequency,
+      password,
+      username,
+      profilePicture,
+      selfStatement,
+      privacy,
+    } = params;
 
-      try {
-        
-
-let data = await profileRepo.register({
-  uId: "",
-  idToken,
-  writingSprintSlots,
-  frequency,
-  referralToken,  // ← renamed
-  email,
-  password,
-  username,
-  profilePicture,
-  selfStatement,
-  privacy
-})
-           
-          if (!privacy) {
-            const {profile}= data
     try {
-      await algoliaRepo.saveObject("profile", {
-        objectID: profile.id,
-        username: profile.username,
-        selfStatement: profile.selfStatement,
-        profilePic: profile.profilePic,
+      const data = await profileRepo.register({
+        uId: "",
+        idToken,
+        writingSprintSlots,
+        frequency,
+        referralToken,
+        email,
+        password,
+        username,
+        profilePicture,
+        selfStatement,
+        privacy,
       });
-    } catch (err) {
-      return thunkApi.rejectWithValue(err);
-    }
-  }
-            
-      return {
-      
-            profile:data.profile
-            
+
+      if (!data?.profile || !data?.token) {
+        throw new Error("Registration did not return a profile and authentication token.");
       }
-    } catch (error){
-      return thunkApi.rejectWithValue(error);
+
+      // Save the authenticated profile token before uploading Photos.
+      await Preferences.set({
+        key: "token",
+        value: data.token,
+      });
+
+      // Update the cached token too.
+      profileRepo.token = data.token;
+
+      if (!privacy) {
+        try {
+          await algoliaRepo.saveObject("profile", {
+            objectID: data.profile.id,
+            username: data.profile.username,
+            selfStatement: data.profile.selfStatement,
+            profilePic: data.profile.profilePic,
+          });
+        } catch (err) {
+          console.warn("Algolia profile indexing failed:", err);
+        }
+      }
+
+      return {
+        profile: data.profile,
+        token: data.token,
+      };
+    } catch (error) {
+      return thunkApi.rejectWithValue({
+        message:
+          error?.response?.data?.message ||
+          error?.message ||
+          "Unable to complete registration.",
+      });
     }
   }
 );
+// const signUp = createAsyncThunk(
+//     'users/signUp',
+//     async (params,thunkApi) => {
+//          const { email, referralToken, writingSprintSlots, idToken, googleId, frequency, password, username, profilePicture, selfStatement, privacy } = params
+
+//       try {
+        
+
+// let data = await profileRepo.register({
+//   uId: "",
+//   idToken,
+//   writingSprintSlots,
+//   frequency,
+//   referralToken,  // ← renamed
+//   email,
+//   password,
+//   username,
+//   profilePicture,
+//   selfStatement,
+//   privacy
+// })
+           
+//           if (!privacy) {
+//             const {profile}= data
+//     try {
+//       await algoliaRepo.saveObject("profile", {
+//         objectID: profile.id,
+//         username: profile.username,
+//         selfStatement: profile.selfStatement,
+//         profilePic: profile.profilePic,
+//       });
+//     } catch (err) {
+//       return thunkApi.rejectWithValue(err);
+//     }
+//   }
+            
+//       return {
+      
+//             profile:data.profile
+            
+//       }
+//     } catch (error){
+//       return thunkApi.rejectWithValue(error);
+//     }
+//   }
+// );
 
 
 const searchMyWork = createAsyncThunk(
@@ -280,24 +358,7 @@ const updateProfile = createAsyncThunk(
   }
 );
 
-// const updateProfile = createAsyncThunk("users/updateProfile",
-//                     async (params,thunkApi)=>{
-// try{
-//           let data = await  profileRepo.updateProfile(params)
-//           if(data.profile){
-//             const {profile}=data
-           
-//         try{
-//         await algoliaRepo.partialUpdateObject("profile",profile.id,{username:profile.username})
-//         }catch(err){
-//           return thunkApi.rejectWithValue(err)
-//         }
-//           }
-//           return {profile:data.profile}
-//         }catch(err){
-//           return err
-//         }
-// })
+
 
 
 const fetchProfile = createAsyncThunk(
@@ -365,7 +426,20 @@ const fetchProfile = createAsyncThunk(
       
     
   })
-
+ const resendProfileSetup = createAsyncThunk(
+  "user/resendProfileSetup",
+  async ({ email }, thunkAPI) => {
+    try {
+      return await authRepo.resendProfileSetup({ email });
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message ||
+          error.message ||
+          "Unable to send the profile setup email."
+      );
+    }
+  }
+);
 
 const deletePicture = createAsyncThunk("users/deletePicture",async (params,thunkApi)=>{
   try {
@@ -433,5 +507,6 @@ export {logIn,
         setAuthResolved,
         acceptTerms,
         searchMyWork,
+        resendProfileSetup,
         setUserLoading,setCurrentProfile,referSomeone,setMainLoading,setAlert
     }

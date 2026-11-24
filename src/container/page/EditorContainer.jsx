@@ -110,14 +110,13 @@ export default function EditorContainer() {
   const dispatch = useDispatch();
   const router = useIonRouter();
 const routeId = grabId(location.pathname)
-
+console.log("ROUTe Grav"+routeId)
   const currentProfile = useSelector(
     (state) => state.users.currentProfile
   );
-
-const isNewStory =
-  !routeId ||
-  ["new", "create","editor"].includes(routeId.toLowerCase());
+// grabId()
+// const isNewStory = !routeId.trim().length
+const isNewStory = !routeId?.trim()
 const isIdValid = !isNewStory;
 
  const [parameters, setParameters] = useState(() =>
@@ -383,7 +382,7 @@ function createEmptyParameters({
       const payload = {
         ...current,
         ...snapshot,
-        id: routeId??null,
+        id: resolvedId,
         authorId: currentProfile.id,
         profileId: currentProfile.id,
         profile: currentProfile,
@@ -772,7 +771,6 @@ isIdValid && loadStory();
     cancelled = true;
   };
 }, [
-  dispatch,
 
   isIdValid,
   pageInView,
@@ -1203,81 +1201,134 @@ isIdValid && loadStory();
    * DELETE
    * ---------------------------------------------------------
    */
+const handleDelete = useCallback(async () => {
+  const storyId = parametersRef.current.id || routeId;
 
-  const handleDelete = useCallback(async () => {
-    const storyId =
-      parametersRef.current.id || routeId;
+  if (!storyId || storyId === "new") {
+    return;
+  }
 
-    if (!storyId || storyId === "new") {
-      return;
-    }
+  clearSaveTimer();
 
-    clearSaveTimer();
+  isDeletedRef.current = true;
+  saveRequestedRef.current = false;
 
-    isDeletedRef.current = true;
-    saveRequestedRef.current = false;
+  try {
+    await dispatch(
+      deleteStory({
+        page: {
+          ...parametersRef.current,
+          id: storyId,
+        },
+      })
+    ).unwrap();
+
+    dispatch(
+      removeFromPaginatedKey({
+        key: "stories",
+        id: storyId,
+      })
+    );
+
+    dispatch(
+      removeFromPaginatedKey({
+        key: "recommended",
+        id: storyId,
+      })
+    );
+
+    dispatch(setEditingPage({ page: null }));
+    dispatch(setPageInView({ page: null }));
+    dispatch(setHtmlContent(""));
+
+    closeDialog();
+    router.push(Paths.home, "root");
+  } catch (error) {
+    isDeletedRef.current = false;
+    showError(error);
+  }
+}, [
+  clearSaveTimer,
+  closeDialog,
+  dispatch,
+  routeId,
+  router,
+  showError,
+]);
+  // const handleDelete = useCallback(async () => {
+  //   const storyId =
+  //     parametersRef.current.id || routeId;
+
+  //   if (!storyId || storyId === "new") {
+  //     return;
+  //   }
+
+  //   clearSaveTimer();
+
+  //   isDeletedRef.current = true;
+  //   saveRequestedRef.current = false;
   
-    try {
-      try{
-      await dispatch(
-        deleteStory({
-          page: {
-            ...parametersRef.current,
-            id: storyId,
-            photoId:""
-          },
-        })
-      ).unwrap();
-    }catch{
-    photoRepo.deletePhoto()
+  //   try {
+  //     try{
+  //     await dispatch(
+  //       deleteStory({
+  //         page: {
+  //           ...parametersRef.current,
+  //           id: storyId,
+  //           photoId:""
+  //         },
+  //       })
+  //     ).unwrap();
+  //   }catch{
+  //   photoRepo.deletePhoto()
       
-    }
-      dispatch(
-        removeFromPaginatedKey({
-          key: "stories",
-          id: storyId,
-        })
-      );
+  //   }
+  //     dispatch(
+  //       removeFromPaginatedKey({
+  //         key: "stories",
+  //         id: storyId,
+  //       })
+  //     );
 
-      dispatch(
-        removeFromPaginatedKey({
-          key: "recommended",
-          id: storyId,
-        })
-      );
+  //     dispatch(
+  //       removeFromPaginatedKey({
+  //         key: "recommended",
+  //         id: storyId,
+  //       })
+  //     );
 
-      dispatch(
-        setEditingPage({
-          page: null,
-        })
-      );
+  //     dispatch(
+  //       setEditingPage({
+  //         page: null,
+  //       })
+  //     );
 
-      dispatch(
-        setPageInView({
-          page: null,
-        })
-      );
+  //     dispatch(
+  //       setPageInView({
+  //         page: null,
+  //       })
+  //     );
 
-      dispatch(setHtmlContent(""));
+  //     dispatch(setHtmlContent(""));
 
-      closeDialog();
+  //     closeDialog();
 
-      router.push(
-        Paths.home,
-        "root"
-      );
-    } catch (error) {
-      isDeletedRef.current = false;
-      showError(error);
-    }
-  }, [
-    clearSaveTimer,
-    closeDialog,
-    dispatch,
-    routeId,
-    router,
-    showError,
-  ]);
+  //     router.push(
+  //       Paths.home,
+  //       "root"
+  //     );
+  //   } catch (error) {
+  //     isDeletedRef.current = false;
+  //     showError(error);
+  //   }
+  // }, [
+  //   clearSaveTimer,
+  //   closeDialog,
+  //   dispatch,
+  //   routeId,
+  //   router,
+  //   showError,
+  // ]);
 
   const openConfirmDeleteDialog = useCallback(() => {
     openDialog({

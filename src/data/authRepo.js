@@ -151,18 +151,16 @@ async useReferral(params) {
 
   const headers = await this.getAuthHeaders();
 
-  let res = await axios.post(
-    Enviroment.url + "/auth/use-referral",
+  const response = await axios.post(
+    `${Enviroment.url}/auth/use-referral`,
     {
-      token, // referral token ONLY
-      ...body
+      token,
+      ...body,
     },
-    {
-      headers
-    }
+    { headers }
   );
 
-  return res.data;
+  return response.data;
 }
     async deleteUser(){
           const headers = await this.getAuthHeaders()
@@ -201,6 +199,26 @@ async blockProfile({ blockedProfileId, reason }) {
     { headers }
   );
   return res.data;
+}
+async resendProfileSetup({ email }) {
+  try {
+    const res = await axios.post(
+      Enviroment.url + "/auth/resend-profile-setup",
+      { email: email.trim().toLowerCase() }
+    );
+
+    return res.data;
+  } catch (err) {
+    const error = new Error(
+      err?.response?.data?.message ||
+        "Unable to send the profile setup email."
+    );
+
+    error.status = err?.response?.status;
+    error.code = err?.response?.data?.code;
+
+    throw error;
+  }
 }
     }
 

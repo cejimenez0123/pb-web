@@ -63,7 +63,19 @@ const promptTermsAcceptance = useTermsAcceptance();
     closeDialog,
     dialog,
   } = useDialog();
-
+const handleProfileSetupDialog = () => {
+  openDialog({
+    ...dialog,
+    isOpen: true,
+    title: "Finish creating your profile",
+    agree: null,
+    agreeText: null,
+    disagreeText: "Close",
+    breakpoint: 1,
+    text: <ProfileSetupForm onClose={closeDialog} />,
+    onClose: closeDialog,
+  });
+};
   const isNative = Capacitor.isNativePlatform();
 
   const [email, setEmail] = useState("");
@@ -429,22 +441,30 @@ const promptTermsAcceptance = useTermsAcceptance();
           <div
             type="button"
             onClick={() => router.push(Paths.onboard)}
-
-         className={"my-4"+" text-center border-plumb-surface border border-1 rounded-full py-3 hover:bg-plumb-mint/30 font-bold text-plumb-ink dark:text-plumb-darkText font-open-sans"}
-          >
+  
+className={[styles.text.subLabel," mx-auto rounded-full border border-2 hover:border-plumb-mintLight hover:border-plumb-mintLight focus:border-plumb-mintLight focus:bg-plumb-mint/10 border-plumb-mintLight/80 w-[26rem] max-w-[90%] mt-8 py-4 text-center "].join(" ")}
+           >
             First time here?
           </div>
 
           <div
             type="button"
             onClick={handleForgotPasswordDialog}
-            className={styles.button.base+" border border-1 border-button-secondary-bg "+styles.button.secondary}
+            className={styles.text.subLabel+" text-plumb-ink mx-auto border border-2 max-w-[90%] rounded-full py-4  w-[26rem] text-center border-plumb-blueSea"}
+        
+            
          
     
       
           >
             Forgot password?
           </div>
+          <div
+  onClick={handleProfileSetupDialog}
+            className={styles.text.subLabel+" text-plumb-ink mx-auto border border-2 rounded-full min-w-[26rem]  py-4 text-center border-plumb-blueSea"}
+>
+  Already approved? Create your profile.
+</div>
         </div>
 
       </div>
@@ -452,3 +472,105 @@ const promptTermsAcceptance = useTermsAcceptance();
   );
 }
 
+
+
+function ProfileSetupForm({ onClose }) {
+  const dispatch = useDispatch();
+  const { showAlert } = useAlert();
+
+  const [email, setEmail] = useState("");
+  const [pending, setPending] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!email.trim()) {
+      showAlert({
+        message: "Please enter your email address.",
+        type: AlertType.error,
+      });
+      return;
+    }
+
+    setPending(true);
+
+    try {
+      await dispatch(
+        resendProfileSetup({ email })
+      ).unwrap();
+
+      onClose();
+
+      showAlert({
+        message:
+          "If your account is approved and still needs a profile, you will receive an email with instructions.",
+        type: AlertType.success,
+      });
+    } catch (error) {
+      showAlert({
+        message:
+          typeof error === "string"
+            ? error
+            : "Unable to send the email. Please try again.",
+        type: AlertType.error,
+      });
+    } finally {
+      setPending(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-5">
+      <div className="space-y-2">
+        <p className={styles.text.body}>
+          Already approved? Enter the email you used to apply and we'll
+          send you a link to finish creating your Plumbum profile.
+        </p>
+
+        <label
+          htmlFor="profile-setup-email"
+          className={`${styles.text.body} block font-medium`}
+        >
+          Email
+        </label>
+
+        <input
+          id="profile-setup-email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="example@email.com"
+          autoComplete="email"
+          required
+          disabled={pending}
+          className="
+            w-full min-h-12 rounded-full border
+            border-plumb-borderStrong bg-plumb-canvas px-4
+            text-plumb-ink placeholder:text-plumb-subtle
+            outline-none focus:border-plumb-mint
+            focus:ring-2 focus:ring-plumb-mint/20
+            disabled:opacity-60
+            dark:border-plumb-darkBorderStrong
+            dark:bg-plumb-dark-surface
+            dark:text-plumb-darkText
+            dark:placeholder:text-plumb-darkSubtle
+          "
+        />
+      </div>
+
+      <button
+        type="submit"
+        disabled={pending}
+        className={
+          "w-full rounded-full " +
+          styles.button.base +
+          " bg-plumb-mint dark:border dark:border-plumb-mintLight dark:bg-transparent"
+        }
+      >
+        <span className="block py-3 text-plumb-darkText dark:text-plumb-mintLight">
+          {pending ? "Sending..." : "Send profile setup email"}
+        </span>
+      </button>
+    </form>
+  );
+}

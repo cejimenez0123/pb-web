@@ -66,41 +66,49 @@ console.log(photo)
     };
   }
 
-  async uploadProfilePicture({ file, filename } = {}) {
-    if (!file) {
-      throw new Error("No profile picture provided.");
-    }
-
-    const allowedTypes = [
-      "image/jpeg",
-      "image/png",
-      "image/svg+xml",
-    ];
-
-    if (!allowedTypes.includes(file.type)) {
-      throw new Error("Only JPEG, PNG and SVG images are allowed.");
-    }
-
-    const headers = await this.getAuthHeaders();
-    const formData = new FormData();
-
-    formData.append("file", file, filename || file.name);
-
-    const response = await axios.post(
-      `${this.url}/profile-picture`,
-      formData,
-      { headers }
-    );
-
-    if (!response.data.profile) {
-      throw new Error("X The server did not return an updated profile.");
-    }
-
-    return {
-      profile: response.data.profile,
-      photo: response.data.photo,
-    };
+async uploadProfilePicture({ file, filename } = {}) {
+  if (!file) {
+    throw new Error("No profile picture provided.");
   }
+
+  const allowedTypes = [
+    "image/jpeg",
+    "image/png",
+    "image/heic",
+    "image/heif",
+  ];
+
+  if (!allowedTypes.includes(file.type)) {
+    throw new Error("Only JPEG, PNG and HEIC images are allowed.");
+  }
+
+  const headers = await this.getAuthHeaders();
+  const formData = new FormData();
+
+  formData.append("file", file, filename || file.name);
+
+  const response = await axios.post(
+    `${this.url}/profile-picture`,
+    formData,
+    { headers }
+  );
+
+  const photo = response.data.photo;
+
+  if (!photo?.id) {
+    throw new Error("The server did not return a valid profile picture.");
+  }
+
+  return {
+    photo: {
+      ...photo,
+      photoId: photo.id,
+      url: `${this.url}/${photo.id}`,
+    },
+  };
+}
+
+
 
   async getPhoto({ id } = {}) {
     if (!id) {

@@ -1,10 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import storyRepo from "../data/storyRepo";
-import { PageType } from "../core/constants";
 import { Preferences } from "@capacitor/preferences";
 import algoliaRepo from "../data/algoliaRepo";
-import { getStorage, ref, deleteObject } from "firebase/storage";
-import photoRepo from "../data/photoRepo";
 
 const getStory = createAsyncThunk("story/getStory",async ({id},thunkApi)=>{
   try{
@@ -27,57 +24,34 @@ const getStory = createAsyncThunk("story/getStory",async ({id},thunkApi)=>{
   })
   }
 })
-
 const deleteStory = createAsyncThunk(
   "pages/deleteStory",
-  async (params, thunkApi) => {
-         const { page } = params;
-         
-
+  async ({ page }, thunkApi) => {
     try {
- 
-      
-   
-if (page?.type === PageType.picture && page.data) {
-       
-try{
-          // page.data is the Firebase download URL.
-         const storage = getStorage();
+      if (!page?.id) {
+        throw new Error("Story ID is required.");
+      }
 
-  const imageRef = ref(storage, page.data);
-
-  await deleteObject(imageRef);
-
-
-         
-        
-        
-      
-}catch(e){
-console.log("FIREBASE DELEGt"
-  +e.message
-)
-}  
-try{
-
-  photoRepo.deletePhoto({})
-}catch(err){
-
-}
-try{
       await storyRepo.deleteStory({
         id: page.id,
       });
 
       return page;
-  }catch (error) {
-  return thunkApi.rejectWithValue({
-    message: error.message,
-  });
-  
-  }}}catch(e){
+    } catch (error) {
+      return thunkApi.rejectWithValue({
+        message:
+          error?.response?.data?.message ||
+          error?.message ||
+          "Unable to delete story.",
+      });
+    }
+  }
+);
 
-  }})
+
+         
+        
+  
 const fetchRecommendedStories = createAsyncThunk(
   'pages/fetchRecommendedStories',
   async (params,thunkApi) => {

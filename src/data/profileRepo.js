@@ -95,15 +95,50 @@ seen:seen
     throw e;
   }
 }
-    async updateProfile(params){
-        let headers = await this.getAuthHeaders()
+async uploadPhoto({ file, purpose = "general", filename } = {}) {
+  if (!file) {
+    throw new Error("No file provided.");
+  }
+const allowedTypes = [
+  "image/jpeg",
+  "image/png",
+  "image/heic",
+];
 
-        let res = await axios.patch(this.url+"/me",{
-            ...params
-        },{headers:headers})
-    
-        return res.data
-    }
+  if (!allowedTypes.includes(file.type)) {
+  throw new Error("Only JPEG, PNG and HEIC images are allowed.");
+}
+
+  if (!["general", "story", "profile"].includes(purpose)) {
+    throw new Error("Invalid photo purpose.");
+  }
+
+  const headers = await this.getAuthHeaders();
+  const formData = new FormData();
+
+  formData.append("file", file, filename || file.name);
+  formData.append("purpose", purpose);
+
+  const response = await axios.post(
+    `${this.url}/`,
+    formData,
+    { headers }
+  );
+
+  const photo = response.data.photo;
+
+  if (!photo?.id || !photo?.url) {
+    throw new Error("The server did not return a valid photo.");
+  }
+
+  return {
+    ...photo,
+    url: photo.url,
+    fileName: photo.filename || filename || file.name,
+    photoId: photo.id,
+  };
+}
+
 
     async createBookmark({profile,collection}){
              const headers = await this.getAuthHeaders();

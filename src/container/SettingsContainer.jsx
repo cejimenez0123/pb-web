@@ -264,40 +264,36 @@ export default function SettingsContainer() {
     setFile(selected);
     setPictureUrl(URL.createObjectURL(selected));
   };
-
 const handleSubmit = async () => {
   if (!currentProfile || saving) return;
 
   setSaving(true);
 
-  const oldProfilePicture = currentProfile.profilePic;
-
   try {
-    let profilePicture = form.profilePicture;
+    let profilePictureId = currentProfile.profilePictureId;
 
-    // 1. Upload the replacement picture.
+    // Upload replacement picture.
     if (file) {
       const upload = await dispatch(
-        uploadProfilePicture({
+        uploadPhoto({
           file,
-          id: currentProfile.id,
+          purpose: "profile",
         })
       ).unwrap();
 
-      if (!upload?.fileName || !upload?.url) {
-        throw new Error("Image upload did not return a valid result.");
+      if (!upload?.photoId) {
+        throw new Error("Image upload did not return a valid Photo ID.");
       }
 
-      profilePicture = upload.fileName;
+      profilePictureId = upload.photoId;
     }
 
-    // 2. Persist the profile changes.
-    // updateProfile.fulfilled updates currentProfile in Redux.
+    // Persist profile changes.
     const result = await dispatch(
       updateProfile({
         profile: currentProfile,
         username: form.username,
-        profilePicture,
+        profilePictureId,
         writingSprintSlots: form.writingSprintSlots,
         selfStatement: form.selfStatement,
         privacy: form.isPrivate,
@@ -309,39 +305,12 @@ const handleSubmit = async () => {
       throw new Error("Profile update failed.");
     }
 
-    // 3. Delete the previous picture only after successful persistence.
-    if (
-      file &&
-      oldProfilePicture &&
-      oldProfilePicture !== profilePicture
-    ) {
-      try {
-        await dispatch(
-          deletePicture({
-            fileName: oldProfilePicture,
-          })
-        ).unwrap();
-      } catch (error) {
-        console.warn(
-          "Old profile picture cleanup failed:",
-          error
-        );
-      }
-    }
-
-    // 4. Update local state.
     setForm((prev) => ({
       ...prev,
-      profilePicture,
+      profilePicture: null,
     }));
 
     setFile(null);
-
-    setPictureUrl(
-      profilePicture
-        ? Enviroment.imageProxy(profilePicture)
-        : DEFAULT_PICTURE
-    );
 
     showAlert({
       message: "Profile updated",
@@ -359,10 +328,6 @@ const handleSubmit = async () => {
     setSaving(false);
   }
 };
-
-
-
-  // Load blocked users and display the list.
   const handleShowBlocked = () => {
     openDialog({
       title: "Blocked Users",

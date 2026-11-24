@@ -31,7 +31,6 @@ import { useDialog } from "../../domain/usecases/useDialog";
 
 import ProfileCircle from "../profile/ProfileCircle";
 import ShareList from "./ShareList";
-import DataElement from "./DataElement";
 import StoryPreview from "./StoryPreview";
 
 import styles from "../../styles/style";

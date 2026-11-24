@@ -1,159 +1,29 @@
 
-
-// const ACCEPTED_IMAGE_TYPES = [
-//   "image/jpeg",
-//   "image/png",
-// ];
-
-
-
-// //  const pickImage = async () => {
-// //     try {
-// //    const { results } = await Camera.chooseFromGallery({
-// //       mediaType: MediaTypeSelection.Photo, // photos, videos, or both
-// //       allowMultipleSelection: true,
-// //       limit: 1,
-// //       includeMetadata: true,
-// //     });
-// //     console.log(results)
-// //     const image = results[0]
-// //     console.log(image)
-// //       // const image = await Camera.getPhoto({
-// //       //   quality: 80,
-// //       //   resultType: CameraResultType.Uri,
-// //       //   source: CameraSource.Photos,
-// //       // });
-
-// //       let mimeType = image.format;
-// //       if (mimeType) mimeType = mimeType.toLowerCase();
-
-// //       const isValid = mimeType === "jpeg" || mimeType === "jpg" || mimeType === "png";
-// //       if (!isValid) {
-// //         setError("Only JPG and PNG images are allowed");
-// //         return;
-// //       }
-
-// //       dispatch(setHtmlContent(image.webPath));
-
-// //       if (isNative) {
-// //         setFile({ path: image.path, format: mimeType });
-// //       } else {
-// //         const response = await fetch(image.webPath);
-// //         const blob = await response.blob();
-// //         if (!["image/jpeg", "image/png"].includes(blob.type)) {
-// //           setError("Only JPG and PNG images are allowed");
-// //           return;
-// //         }
-// //         const file = new File([blob], "image.jpg", { type: blob.type });
-// //         setFile(file);
-// //       }
-// //     } catch (err) {
-// //       console.error("Image pick error:", err);
-// //     }
-// //   };
-
-// //     try {
-// //       let finalValue = value.trim();
-
-// //       if (isPicture && file) {
-// //         finalValue = await uploadSelectedImage();
-
-// //         if (!finalValue) return;
-// //       }
-
-// //       if (!finalValue || !isValidUrl(finalValue)) {
-// //          showAlert({message:      isPicture
-// //             ? "Please upload an image or enter a valid image URL."
-// //             : "Please enter a valid URL.",type:AlertType.error});
-     
-// //         if (isExistingPage) {
-// //   if (!file) {
-// //     updateValue(finalValue);
-// //   }
-
-// //   return;
-// // }
-
-//   const previewSource = filePreview || value;
-
-//   return (
-//     <div className="mx-auto flex w-full max-w-xl flex-col gap-4">
-
-//       {/* URL input */}
-//       <div>
-//         <IonLabel className="mb-2 block text-sm font-semibold text-plumb-ink dark:text-plumb-darkText">
-//           {isPicture ? "Image URL" : "Link URL"}
-//         </IonLabel>
-
-//         <IonInput
-//           value={value}
-//           onIonChange={handleInput}
-//           placeholder={
-//             isPicture
-//               ? "Paste a direct image URL..."
-//               : "https://example.com"
-//           }
-//           type="url"
-//           disabled={uploading}
-//           className="rounded-xl border border-plumb-mint/40 px-3 dark:text-plumb-darkText"
-//         />
-
-
-
-
-
-import { useEffect, useState } from "react";
-import { IonInput, IonLabel, IonText,} from "@ionic/react";
+import { useEffect, useRef, useState } from "react";
+import { IonInput, IonLabel, IonText } from "@ionic/react";
 import { Capacitor } from "@capacitor/core";
 import { Camera, MediaTypeSelection } from "@capacitor/camera";
-import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
+
 import { PageType } from "../../core/constants";
 import isValidUrl from "../../core/isValidUrl";
 import LinkPreview from "../LinkPreview";
 
-
 import styles from "../../styles/style.js";
 import { useAlert } from "../../core/useAlert.jsx";
 import AlertType from "../../core/AlertType.js";
-import { uploadPhoto,getPhoto, associatePhotoWithStory } from "../../domain/usecases/useUploadPicture.jsx";
-import grabId from "../../core/grabId.jsx";
-// import { useDispatch } from "react-redux";
+import {
+  uploadPhoto,
+  getPhoto,
+  associatePhotoWithStory,
+} from "../../actions/PhotoActions.jsx";
+import Enviroment from "../../core/Enviroment.js";
 
 const ACCEPTED_IMAGE_TYPES = [
   "image/jpeg",
   "image/png",
   "image/svg+xml",
 ];
-
-
-
-
-// const getStoredPhotoId = (imageUrl) => {
-//   if (!imageUrl || typeof imageUrl !== "string") return null;
-
-//   try {
-//     const photoBase = new URL(PhotoRepo.url);
-//     const candidate = new URL(imageUrl, photoBase.origin);
-
-//     // Only recognize URLs belonging to our own photo API.
-//     if (candidate.origin !== photoBase.origin) return null;
-
-//     const basePath = photoBase.pathname.replace(/\/+$/, "");
-
-//     if (!candidate.pathname.startsWith(`${basePath}/`)) {
-//       return null;
-//     }
-
-//     const id = candidate.pathname
-//       .slice(basePath.length + 1)
-//       .split("/")[0];
-
-//     return id ? decodeURIComponent(id) : null;
-//   } catch {
-//     return null;
-//   }
-// };
 
 export default function PicturePageForm({
   handleChange,
@@ -164,20 +34,8 @@ export default function PicturePageForm({
 }) {
   const dispatch = useDispatch();
   const { showAlert } = useAlert();
-  const { currentProfile } = useSelector((state) => state.users);
-const storyId = grabId(location.pathname)
-const [file, setFile] = useState(null);
-const [filePreview, setFilePreview] = useState(null);
-const [storedImagePreview, setStoredImagePreview] = useState(null);
-const [uploading, setUploading] = useState(false);
-
-// Retain a successfully uploaded Photo if Story creation or
-// association fails. This prevents unnecessary duplicate uploads.
-const [pendingUpload, setPendingUpload] = useState(null);
-
 
   const isNative = Capacitor.isNativePlatform();
-
   const isPicture = type === PageType.picture;
   const isLink = type === PageType.link;
 
@@ -185,187 +43,249 @@ const [pendingUpload, setPendingUpload] = useState(null);
     parameters?.data || ""
   );
 
+  const [file, setFile] = useState(null);
+  const [filePreview, setFilePreview] = useState(null);
+  const [storedImagePreview, setStoredImagePreview] = useState(null);
+  const [pendingUpload, setPendingUpload] = useState(null);
+  const [uploading, setUploading] = useState(false);
 
-const getStoredPhotoId = (imageUrl) => {
-  if (!imageUrl || typeof imageUrl !== "string") return null;
+  // Keep requests and the alert callback stable across renders.
+  const photoRequestsRef = useRef(new Map());
+  const showAlertRef = useRef(showAlert);
 
-  try {
-    const url = new URL(imageUrl, window.location.origin);
-    const match = url.pathname.match(/\/photos\/([^/]+)\/?$/);
+  showAlertRef.current = showAlert;
 
-    return match?.[1] ? decodeURIComponent(match[1]) : null;
-  } catch {
-    return null;
-  }
-};
+  const value = draftValue;
+
+  const isExistingPage = Boolean(
+    parameters?.id && parameters.id !== "new"
+  );
+
+  const getStoredPhotoId = (imageUrl) => {
+    if (!imageUrl || typeof imageUrl !== "string") {
+      return null;
+    }
+
+    try {
+      const url = new URL(
+        imageUrl,
+        window.location.origin
+      );
+
+      const match = url.pathname.match(
+        /\/photos\/([^/]+)\/?$/
+      );
+
+      return match?.[1]
+        ? decodeURIComponent(match[1])
+        : null;
+    } catch {
+      return null;
+    }
+  };
+
+  const storedPhotoId = isPicture
+    ? getStoredPhotoId(value)
+    : null;
+
+  // Preserve the existing Link Page URL behavior.
+  const resolvedUrl = Enviroment.url + value;
+  const validUrl = isLink
+    ? isValidUrl(resolvedUrl)
+    : false;
+
+  // Picture Pages require an uploaded file.
+  // An existing Photo is displayed but does not need saving again.
+  const hasContent = isPicture
+    ? Boolean(file) || (
+        isExistingPage && Boolean(storedPhotoId)
+      )
+    : isLink && validUrl;
+
+  // Sync when the parent loads or changes the page.
   useEffect(() => {
     setDraftValue(parameters?.data || "");
   }, [parameters?.data]);
 
+  // Revoke local file preview URLs when they are replaced or removed.
+  useEffect(() => {
+    return () => {
+      if (filePreview) {
+        URL.revokeObjectURL(filePreview);
+      }
+    };
+  }, [filePreview]);
 
+  // Load existing Photos through the authenticated endpoint.
+  // Skip the request while a local file preview is available.
+  useEffect(() => {
+    let cancelled = false;
+    let objectUrl = null;
 
-    //
-const value = draftValue;
+    setStoredImagePreview(null);
 
-const isExistingPage = Boolean(
-  parameters?.id && parameters.id !== "new"
-);
+    if (!storedPhotoId || filePreview) {
+      return undefined;
+    }
 
-const storedPhotoId = isPicture
-  ? getStoredPhotoId(value)
-  : null;
-
-const validUrl = isValidUrl(value);
-
-// A Plumbum Photo URL is valid even though it is relative
-// and may not pass the existing absolute-URL validator.
-const validImageValue = Boolean(storedPhotoId) || validUrl;
-
-const hasContent = isPicture
-  ? validImageValue || Boolean(file)
-  : isLink && validUrl;
-///
-useEffect(() => {
-  let cancelled = false;
-  let objectUrl = null;
-
-  setStoredImagePreview(null);
-
-  if (!storedPhotoId) {
-    return undefined;
-  }
-
-  const loadPhoto = async () => {
-    try {
-      const result = await dispatch(
-        getPhoto({ id: storedPhotoId })
-      ).unwrap();
-
-      if (cancelled) return;
-
-      objectUrl = URL.createObjectURL(result.blob);
-      setStoredImagePreview(objectUrl);
-    } catch (error) {
-      if (!cancelled) {
-        console.error(
-          "Unable to load stored photo:",
-          error
+    const loadPhoto = async () => {
+      try {
+        let request = photoRequestsRef.current.get(
+          storedPhotoId
         );
 
-        showAlert({
-          message:
-            error?.message ||
-            "Unable to load this image. You may not have access to it.",
-          type: AlertType.error,
-        });
+        if (!request) {
+          request = dispatch(
+            getPhoto({ id: storedPhotoId })
+          ).unwrap();
+
+          photoRequestsRef.current.set(
+            storedPhotoId,
+            request
+          );
+        }
+
+        const result = await request;
+
+        if (cancelled) return;
+
+        if (!result?.blob) {
+          throw new Error(
+            "The Photo response did not contain an image."
+          );
+        }
+
+        objectUrl = URL.createObjectURL(result.blob);
+        setStoredImagePreview(objectUrl);
+      } catch (error) {
+        photoRequestsRef.current.delete(storedPhotoId);
+
+        if (!cancelled) {
+          console.error(
+            "Unable to load stored Photo:",
+            error
+          );
+
+          showAlertRef.current({
+            message:
+              error?.message ||
+              "Unable to load this image. You may not have access to it.",
+            type: AlertType.error,
+          });
+        }
       }
-    }
+    };
+
+    loadPhoto();
+
+    return () => {
+      cancelled = true;
+
+      if (objectUrl) {
+        URL.revokeObjectURL(objectUrl);
+      }
+    };
+  }, [dispatch, storedPhotoId, filePreview]);
+
+  const updateValue = (nextValue) => {
+    setDraftValue(nextValue);
+    handleChange("data", nextValue);
+    setIsSaved?.(false);
   };
 
-  loadPhoto();
+  // Link Page input.
+  const handleInput = (event) => {
+    const nextValue =
+      event.detail?.value ??
+      event.target?.value ??
+      "";
 
-  return () => {
-    cancelled = true;
-
-    if (objectUrl) {
-      URL.revokeObjectURL(objectUrl);
-    }
+    setDraftValue(String(nextValue));
   };
-}, [dispatch, storedPhotoId]);
 
- useEffect(() => {
-  return () => {
-    if (filePreview) {
-      URL.revokeObjectURL(filePreview);
+  const prepareFile = (selectedFile) => {
+    if (!selectedFile) return;
+
+    if (
+      !ACCEPTED_IMAGE_TYPES.includes(selectedFile.type)
+    ) {
+      showAlert({
+        message: "Only JPG, PNG and SVG images are allowed.",
+        type: AlertType.error,
+      });
+
+      return;
     }
+
+    setFile(selectedFile);
+    setPendingUpload(null);
+    setFilePreview(
+      URL.createObjectURL(selectedFile)
+    );
   };
-}, [filePreview]);
-///XXX
-
-
-const updateValue = (nextValue) => {
-  setDraftValue(nextValue);
-  handleChange("data", nextValue);
-
-  setIsSaved?.(false);
-};
-
-const handleInput = (event) => {
-  const nextValue = event.target.value ?? "";
-
-  setFile(null);
-  setPendingUpload(null);
-  setFilePreview(null);
-  setDraftValue(nextValue);
-};
-
-const prepareFile = (selectedFile) => {
-  if (!selectedFile) return;
-
-  if (!ACCEPTED_IMAGE_TYPES.includes(selectedFile.type)) {
-    showAlert({
-      message: "Only JPG, PNG and SVG images are allowed.",
-      type: AlertType.error,
-    });
-    return;
-  }
-
-  setFile(selectedFile);
-  setPendingUpload(null);
-  setFilePreview(URL.createObjectURL(selectedFile));
-};
-
-
-/////XXXXX
-
-
 
   const handleFileChange = (event) => {
     const selectedFile = event.target.files?.[0];
 
     prepareFile(selectedFile);
 
-    // Allow selecting the same file again.
+    // Allow the same file to be selected again.
     event.target.value = "";
   };
 
   const pickImage = async () => {
     try {
-      const { results = [] } = await Camera.chooseFromGallery({
-        mediaType: MediaTypeSelection.Photo,
-        allowMultipleSelection: false,
-        limit: 1,
-        includeMetadata: true,
-      });
+      const { results = [] } =
+        await Camera.chooseFromGallery({
+          mediaType: MediaTypeSelection.Photo,
+          allowMultipleSelection: false,
+          limit: 1,
+          includeMetadata: true,
+        });
 
       const image = results.find(
-        (item) => item.type === MediaTypeSelection.Photo
+        (item) =>
+          item.type === MediaTypeSelection.Photo
       );
 
       if (!image?.webPath) {
-        throw new Error("The selected image could not be accessed.");
+        throw new Error(
+          "The selected image could not be accessed."
+        );
       }
 
-      const format = image.metadata?.format?.toLowerCase();
+      const format =
+        image.metadata?.format?.toLowerCase();
 
-      if (format && !["jpeg", "jpg", "png"].includes(format)) {
-        throw new Error("Only JPG and PNG images are allowed.");
+      if (
+        format &&
+        !["jpeg", "jpg", "png"].includes(format)
+      ) {
+        throw new Error(
+          "Only JPG and PNG images are allowed."
+        );
       }
 
       const response = await fetch(image.webPath);
 
       if (!response.ok) {
-        throw new Error("Unable to read the selected image.");
+        throw new Error(
+          "Unable to read the selected image."
+        );
       }
 
       const blob = await response.blob();
 
       const mimeType =
         blob.type ||
-        (format === "png" ? "image/png" : "image/jpeg");
+        (format === "png"
+          ? "image/png"
+          : "image/jpeg");
 
       if (!ACCEPTED_IMAGE_TYPES.includes(mimeType)) {
-        throw new Error("Only JPG and PNG images are allowed.");
+        throw new Error(
+          "Only JPG and PNG images are allowed."
+        );
       }
 
       const extension =
@@ -378,224 +298,251 @@ const prepareFile = (selectedFile) => {
       );
 
       prepareFile(selectedFile);
-    } catch (err) {
-      console.error("Image pick error:", err);
+    } catch (error) {
+      console.error("Image pick error:", error);
 
       showAlert({
-        message: err?.message || "Unable to select this image.",
+        message:
+          error?.message ||
+          "Unable to select this image.",
         type: AlertType.error,
       });
     }
   };
-const uploadSelectedImage = async () => {
-  if (!file) return null;
 
-  // Reuse the upload if the same file has already been uploaded.
-  if (pendingUpload?.file === file) {
-    return pendingUpload;
-  }
+  // Upload once and retain the result for association retries.
+  const uploadSelectedImage = async () => {
+    if (!file) return pendingUpload;
 
-  try {
-  const result = await dispatch(
-  uploadPhoto({
-    file,
-    purpose: "story",
-  })
-).unwrap();
-
-   console.log("[PicturePageForm] Upload result:", result);
-
-const photo = result?.photo ?? result;
-
-const uploadedUrl = photo?.url;
-const photoId = photo?.photoId || photo?.id;
-
-    if (!uploadedUrl || !photoId) {
-      throw new Error(
-        "The image upload did not return a valid Photo URL and ID."
-      );
+    if (pendingUpload?.file === file) {
+      return pendingUpload;
     }
 
-    const uploaded = {
-      file,
-      url: uploadedUrl,
-      photoId,
-    };
-
-    setPendingUpload(uploaded);
-
-    return uploaded;
-  } catch (error) {
-    console.error("Image upload failed:", error);
-
-    showAlert({
-      message:
-        error?.message || "Unable to upload this image.",
-      type: AlertType.error,
-    });
-
-    return null;
-  }
-};
-
-
-const handleSave = async () => {
-  if (uploading) return;
-  if (!isPicture && !isLink) return;
-
-  setUploading(true);
-
-  try {
-    let finalValue = value.trim();
-    let uploadedPhoto = null;
-
-    // Upload a newly selected image.
-    if (isPicture && file) {
-      uploadedPhoto = await uploadSelectedImage();
-
-      if (!uploadedPhoto) return;
-
-      finalValue = uploadedPhoto.url;
-    }
-
-    const isValidContent = isPicture
-      ? Boolean(getStoredPhotoId(finalValue)) ||
-        isValidUrl(finalValue)
-      : isValidUrl(finalValue);
-
-    if (!finalValue || !isValidContent) {
-      showAlert({
-        message: isPicture
-          ? "Please upload an image or enter a valid image URL."
-          : "Please enter a valid URL.",
-        type: AlertType.error,
-      });
-
-      return;
-    }
-
-    // --------------------------------------------------
-    // NEW STORY
-    // --------------------------------------------------
-    if (!isExistingPage) {
-      // Keep the editor's state synchronized before creation.
-      // The parent save pipeline ignores updates without a Story ID.
-      updateValue(finalValue);
-
-      const result = await createPageAction(finalValue);
-
-      if (!result) {
-        // Keep the file and pending upload so the user can retry.
-        return;
-      }
-
-      setDraftValue(finalValue);
-      setFile(null);
-      setFilePreview(null);
-      setPendingUpload(null);
-
-      setIsSaved?.(true);
-
-      return;
-    }
-
-    // --------------------------------------------------
-    // EXISTING STORY
-    // --------------------------------------------------
-    if (uploadedPhoto) {
-      const storyId = parameters?.id;
-
-      if (!storyId || storyId === "new") {
-        throw new Error(
-          "The existing Story ID could not be identified."
-        );
-      }
-
-      // The backend authorizes the user, associates the Photo,
-      // and updates Story.data in one request.
-      await dispatch(
-        associatePhotoWithStory({
-          photoId: uploadedPhoto.photoId,
-          storyId,
+    try {
+      const result = await dispatch(
+        uploadPhoto({
+          file,
+          purpose: "story",
         })
       ).unwrap();
 
-      // Synchronize the editor's local and parent state.
-      // The regular autosave may issue a duplicate data update,
-      // but it will contain the same URL.
-      updateValue(finalValue);
+      const photo = result?.photo ?? result;
 
-      setFile(null);
-      setFilePreview(null);
-      setPendingUpload(null);
+      const uploadedUrl = photo?.url;
+      const photoId = photo?.photoId || photo?.id;
 
-      return;
+      if (!uploadedUrl || !photoId) {
+        throw new Error(
+          "The image upload did not return a valid Photo URL and ID."
+        );
+      }
+
+      const uploaded = {
+        file,
+        url: uploadedUrl,
+        photoId,
+      };
+
+      setPendingUpload(uploaded);
+
+      return uploaded;
+    } catch (error) {
+      console.error("Image upload failed:", error);
+
+      showAlert({
+        message:
+          error?.message ||
+          "Unable to upload this image.",
+        type: AlertType.error,
+      });
+
+      return null;
     }
+  };
 
-    // Existing Story with a manually entered URL.
-    // Preserve the existing autosave behavior.
-    updateValue(finalValue);
-  } catch (error) {
-    console.error("Unable to save media page:", error);
+  const handleSave = async () => {
+    if (uploading) return;
+    if (!isPicture && !isLink) return;
 
-    showAlert({
-      message:
-        error?.message || "Unable to save this page.",
-      type: AlertType.error,
-    });
-  } finally {
-    setUploading(false);
-  }
-};
+    setUploading(true);
 
-  // Local file previews take priority.
-  // MongoDB photos must be fetched with authentication.
-  // External image URLs can still be used directly.
- const previewSource =
-  filePreview ||
-  (storedPhotoId
-    ? storedImagePreview
-    : value);
-// const previewSource =  value ||;
+    try {
+      let finalValue = value.trim();
+      let uploadedPhoto = null;
+
+      // -----------------------------------------------
+      // PICTURE PAGE
+      // -----------------------------------------------
+      if (isPicture) {
+        if (file || pendingUpload) {
+          uploadedPhoto = await uploadSelectedImage();
+
+          if (!uploadedPhoto) return;
+
+          finalValue = uploadedPhoto.url;
+        } else {
+          showAlert({
+            message: "Please choose an image to upload.",
+            type: AlertType.error,
+          });
+
+          return;
+        }
+      }
+
+      // -----------------------------------------------
+      // LINK PAGE
+      // -----------------------------------------------
+      if (isLink) {
+        if (!finalValue || !isValidUrl(Enviroment.url + finalValue)) {
+          showAlert({
+            message: "Please enter a valid URL.",
+            type: AlertType.error,
+          });
+
+          return;
+        }
+      }
+
+      // -----------------------------------------------
+      // NEW STORY
+      // -----------------------------------------------
+      if (!isExistingPage) {
+        // Update the editor state before creating the Story.
+        updateValue(finalValue);
+
+        const result = await createPageAction(finalValue);
+
+        if (!result) {
+          // Keep the file and pending upload for retry.
+          return;
+        }
+
+        if (uploadedPhoto) {
+          const storyId =
+            result?.id ?? result?.story?.id;
+
+          if (!storyId) {
+            throw new Error(
+              "The Story was created, but its ID could not be identified."
+            );
+          }
+
+          await dispatch(
+            associatePhotoWithStory({
+              photoId: uploadedPhoto.photoId,
+              storyId,
+            })
+          ).unwrap();
+        }
+
+        setDraftValue(finalValue);
+        setFile(null);
+        setFilePreview(null);
+        setPendingUpload(null);
+        setIsSaved?.(true);
+
+        return;
+      }
+
+      // -----------------------------------------------
+      // EXISTING STORY
+      // -----------------------------------------------
+      if (isPicture && uploadedPhoto) {
+        const storyId = parameters?.id;
+
+        if (!storyId || storyId === "new") {
+          throw new Error(
+            "The existing Story ID could not be identified."
+          );
+        }
+
+        // The backend associates the Photo and updates Story.data.
+        await dispatch(
+          associatePhotoWithStory({
+            photoId: uploadedPhoto.photoId,
+            storyId,
+          })
+        ).unwrap();
+
+        // Synchronize the editor's local state.
+        // The parent may also persist the same URL through autosave.
+        updateValue(finalValue);
+
+        setFile(null);
+        setFilePreview(null);
+        setPendingUpload(null);
+
+        return;
+      }
+
+      // Existing Link Page.
+      if (isLink) {
+        updateValue(finalValue);
+      }
+    } catch (error) {
+      console.error(
+        "Unable to save media page:",
+        error
+      );
+
+      showAlert({
+        message:
+          error?.message ||
+          "Unable to save this page.",
+        type: AlertType.error,
+      });
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const previewSource =
+    filePreview || storedImagePreview;
+
+  const canSaveExisting = isPicture
+    ? Boolean(file || pendingUpload)
+    : isLink &&
+      validUrl &&
+      value.trim() !== (parameters?.data || "").trim();
+
   return (
     <div className="mx-auto flex w-full max-w-xl flex-col gap-4">
 
-      {/* URL input */}
-      <div>
-        <IonLabel className="mb-2 block text-sm font-semibold text-plumb-ink dark:text-plumb-darkText">
-          {isPicture ? "Image URL" : "Link URL"}
-        </IonLabel>
+      {/* Link Page input */}
+      {isLink && (
+        <div>
+          <IonLabel className="mb-2 block text-sm font-semibold text-plumb-ink dark:text-plumb-darkText">
+            Link URL
+          </IonLabel>
 
-        <IonInput
-          value={value}
-          onIonChange={handleInput}
-          placeholder={
-            isPicture
-              ? "Paste a direct image URL..."
-              : "https://example.com"
-          }
-          type="url"
-          disabled={uploading}
-          className="rounded-xl border border-plumb-mint/40 px-3 dark:text-plumb-darkText"
-        />
+          <IonInput
+            value={value}
+            onIonChange={handleInput}
+            placeholder="https://example.com"
+            type="url"
+            disabled={uploading}
+            className="rounded-xl border border-plumb-mint/40 px-3 dark:text-plumb-darkText"
+          />
 
-        <p className="mt-1 text-xs text-plumb-muted">
-          {isPicture
-            ? "Paste an image address or choose an image from your device."
-            : "Paste a webpage address to create a link page."}
-        </p>
-      </div>
+          <p className="mt-1 text-xs text-plumb-muted">
+            Paste a webpage address to create a link page.
+          </p>
+        </div>
+      )}
 
-      {/* Image upload */}
+      {/* Picture Page upload */}
       {isPicture && (
-        <div className="flex flex-col gap-2">
-          <div className="flex items-center gap-3">
-            <div className="h-px flex-1 bg-base-content/10" />
-            <span className="text-xs text-base-content/50">
-              OR
-            </span>
-            <div className="h-px flex-1 bg-base-content/10" />
-          </div>
+        <div className="flex flex-col gap-3">
+          <IonLabel className="block text-sm font-semibold text-plumb-ink dark:text-plumb-darkText">
+            {storedPhotoId
+              ? "Your image"
+              : "Choose an image"}
+          </IonLabel>
+
+          <p className="text-xs text-plumb-muted">
+            Upload a JPG, PNG or SVG image from your device.
+          </p>
 
           {isNative ? (
             <button
@@ -607,7 +554,12 @@ const handleSave = async () => {
               Choose an image
             </button>
           ) : (
-            <label className="flex cursor-pointer items-center justify-center rounded-xl border border-plumb-mint/40 px-4 py-3 font-medium transition hover:bg-plumb-mint/10">
+            <label
+              className={[
+                "flex cursor-pointer items-center justify-center rounded-xl border border-plumb-mint/40 px-4 py-3 font-medium transition hover:bg-plumb-mint/10",
+                uploading ? "pointer-events-none opacity-50" : "",
+              ].join(" ")}
+            >
               Choose an image
 
               <input
@@ -622,8 +574,8 @@ const handleSave = async () => {
         </div>
       )}
 
-      {/* URL validation */}
-      {value.trim() && !validUrl && (
+      {/* Link validation */}
+      {isLink && value.trim() && !validUrl && (
         <IonText color="danger">
           <p className="text-sm">
             Please enter a valid URL.
@@ -638,45 +590,27 @@ const handleSave = async () => {
             Preview
           </p>
 
-{isPicture && previewSource && (
-  <div className="overflow-hidden rounded-2xl border border-base-content/10">
-    <img
-      src={previewSource}
-      alt="Image preview"
-      className="max-h-[350px] w-full object-contain"
-    />
-  </div>
-)}
-        {isPicture &&
-  storedPhotoId &&
-  !storedImagePreview &&
-  !filePreview && (
-    <p className="text-xs text-plumb-muted">
-      Loading image...
-    </p>
-  )}
+          {isPicture && previewSource && (
+            <div className="overflow-hidden rounded-2xl border border-base-content/10">
+              <img
+                src={previewSource}
+                alt="Image preview"
+                className="max-h-[350px] w-full object-contain"
+              />
+            </div>
+          )}
+
+          {isPicture &&
+            storedPhotoId &&
+            !storedImagePreview &&
+            !filePreview && (
+              <p className="text-xs text-plumb-muted">
+                Loading image...
+              </p>
+            )}
 
           {isLink && validUrl && (
-            <LinkPreview url={value} />
-          )}
-
-          {/* External image URLs remain directly accessible.
-              MongoDB URLs require authenticated loading. */}
-          {isPicture && !file && validUrl && !storedPhotoId && (
-            <a
-              href={value}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="break-all text-sm text-plumb-mint underline underline-offset-2"
-            >
-              {value}
-            </a>
-          )}
-
-          {isPicture && storedPhotoId && (
-            <p className="break-all text-sm text-plumb-mint">
-              {value}
-            </p>
+            <LinkPreview url={resolvedUrl} />
           )}
 
           {file && (
@@ -687,59 +621,52 @@ const handleSave = async () => {
         </div>
       )}
 
-      {/* Save/create */}
+      {/* Create new page */}
       {!isExistingPage && (
-    <button
-  type="button"
-  onClick={handleSave}
-  disabled={uploading || !hasContent}
-  className={[
-    styles.button.base,
-    styles.button.primary,
-    uploading || !hasContent
-      ? "cursor-not-allowed opacity-50"
-      : "",
-  ].join(" ")}
->
-  {uploading
-    ? file
-      ? "Uploading image..."
-      : "Creating page..."
-    : "Create page"}
-</button>
+        <button
+          type="button"
+          onClick={handleSave}
+          disabled={uploading || !hasContent}
+          className={[
+            styles.button.base,
+            styles.button.primary,
+            uploading || !hasContent
+              ? "cursor-not-allowed opacity-50"
+              : "",
+          ].join(" ")}
+        >
+          {uploading
+            ? isPicture
+              ? "Uploading image..."
+              : "Creating page..."
+            : "Create page"}
+        </button>
       )}
 
+      {/* Save existing page */}
       {isExistingPage && (
-<button
-  type="button"
-  onClick={handleSave}
-  disabled={
-    uploading ||
-    (!file &&
-      draftValue.trim() ===
-        (parameters?.data || "").trim())
-  }
-  className={[
-    styles.button.base,
-    styles.button.primary,
-    uploading ||
-    (!file &&
-      draftValue.trim() ===
-        (parameters?.data || "").trim())
-      ? "cursor-not-allowed opacity-50"
-      : "",
-  ].join(" ")}
->
-  {uploading
-    ? "Saving..."
-    : file
-      ? "Upload and save image"
-      : isPicture
-        ? "Save image URL"
-        : "Save link"}
-</button>
+        <button
+          type="button"
+          onClick={handleSave}
+          disabled={uploading || !canSaveExisting}
+          className={[
+            styles.button.base,
+            styles.button.primary,
+            uploading || !canSaveExisting
+              ? "cursor-not-allowed opacity-50"
+              : "",
+          ].join(" ")}
+        >
+          {uploading
+            ? "Saving..."
+            : isPicture
+              ? "Upload and save image"
+              : "Save link"}
+        </button>
       )}
-
     </div>
   );
 }
+
+
+
