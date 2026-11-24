@@ -465,7 +465,7 @@ style={
       }
 }
       className={`
-        flex flex-col w-1 w-[100%] overflow-hidden
+        flex h-full min-h-0 w-[100%] flex-col overflow-hidden
         text-plumb-ink dark:text-plumb-darkText
         ${
           isModal

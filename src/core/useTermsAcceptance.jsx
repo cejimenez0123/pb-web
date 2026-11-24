@@ -22,9 +22,12 @@ export default function useTermsAcceptance() {
     (onAccepted) => {
       openDialog({
         title: "Updated Terms & Conditions",
-        height: 90,
-        breakpoint: 1,
-        text: () => <EULATERMS />,
+              height:"100%",
+     text: (
+  <div className="w-full h-full min-h-0">
+    <EULATERMS />
+  </div>
+),
 
         agree: async () => {
           try {

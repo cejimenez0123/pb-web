@@ -302,10 +302,10 @@ export default function SignUpContainer() {
   const openTerms = () => {
     openDialog({
       title: "Terms & Conditions",
-      height: 90,
+       scrollY: false,
       breakpoint: 1,
-
-      text: () => <EULATERMS />,
+      height:"100%",
+      text: <EULATERMS />,
 
       agree: async () => {
         await dispatch(

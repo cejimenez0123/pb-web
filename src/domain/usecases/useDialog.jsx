@@ -25,7 +25,7 @@ export const useDialog = () => {
               ? data.text
               : () => data.text,
 
-          height: data.height ?? "80",
+      height: data.height ?? "80%",
 
           agree: data.agree ?? null,
           agreeText: data.agreeText ?? null,
