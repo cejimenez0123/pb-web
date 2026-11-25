@@ -3,7 +3,7 @@ import {  useEffect, useState } from "react";
 import { useAlert } from "../../core/useAlert.jsx";
 import AlertType from "../../core/AlertType.js";
 import "../../App.css";
-import {  logIn } from "../../actions/UserActions";
+import {  logIn, resendProfileSetup } from "../../actions/UserActions";
 import { useDispatch } from "react-redux";
 import Paths from "../../core/paths";
 import checkResult from "../../core/checkResult";
@@ -507,6 +507,7 @@ function ProfileSetupForm({ onClose }) {
         type: AlertType.success,
       });
     } catch (error) {
+      console.log(error)
       showAlert({
         message:
           typeof error === "string"
