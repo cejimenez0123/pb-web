@@ -1,0 +1,21 @@
+{
+	"appId": "com.plumbum.app",
+	"appName": "ios",
+	"webDir": "dist",
+	"server": {
+		"androidScheme": "https"
+	},
+	"plugins": {
+		"Keyboard": {
+			"resize": "none",
+			"style": "default"
+		},
+		"PushNotifications": {
+			"presentationOptions": [
+				"badge",
+				"sound",
+				"alert"
+			]
+		}
+	}
+}
