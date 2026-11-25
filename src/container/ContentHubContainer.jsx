@@ -359,15 +359,15 @@ const dispatch = useDispatch()
 
   const goToRooms = () => {
     openDialog({
-      title: "Make a room",
-      scrollY: false,
+    
       text: (
         <CreateCollectionForm
           onClose={closeDialog}
         />
       ),
      
-     
+       title: "Make a room",
+      scrollY: false,
       breakpoint: 1,
     });
   };

@@ -5,7 +5,7 @@ import {
   DragDropContext,
   Droppable,
   Draggable,
-} from "react-beautiful-dnd";
+} from "@hello-pangea/dnd";
 
 import { useIonRouter } from "@ionic/react";
 import Paths from "../core/paths";

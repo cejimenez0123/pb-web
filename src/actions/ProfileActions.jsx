@@ -2,7 +2,7 @@
 import { createAsyncThunk,createAction } from "@reduxjs/toolkit";
 import profileRepo from "../data/profileRepo";
 import uuidv4 from "../core/uuidv4";
-import {storage} from  "../core/di"
+
 
 import { Preferences } from "@capacitor/preferences";
 import Enviroment from "../core/Enviroment";
@@ -113,28 +113,114 @@ const createProfile= createAsyncThunk("users/createProfile",async (params,thunkA
 
 const uploadProfilePicture = createAsyncThunk(
   "users/uploadProfilePicture",
-  async (params, thunkApi) => {
+  async ({ file }, thunkApi) => {
     try {
-      const { file } = params;
-
-      if (!file) {
-        throw new Error("No profile picture provided.");
-      }
-
       const result = await photoRepo.uploadProfilePicture({ file });
+
+      if (!result?.photo?.id) {
+        throw new Error("Invalid profile picture upload response.");
+      }
 
       return {
         photo: result.photo,
+        profile: result.profile,
       };
+
     } catch (err) {
-      console.error("Profile picture upload error:", err);
+      const status = err?.response?.status || err?.status;
+      const code = err?.response?.data?.code || err?.code;
+
+      let message =
+        err?.response?.data?.message ||
+        err?.message ||
+        "Unable to upload profile picture.";
+
+      if (status === 413 || code === "LIMIT_FILE_SIZE") {
+        message = "Image is too large. The maximum size is 5 MB.";
+      } else if (status === 401) {
+        message = "Your session has expired. Please sign in again.";
+      } else if (status === 403) {
+        message = "You are not authorized to update this picture.";
+      } else if (status >= 500) {
+        message = "The server couldn't save your picture. Please try again.";
+      } else if (!err?.response && !status && err?.code === "ERR_NETWORK") {
+        message = "Network error. Check your connection and try again.";
+      }
+
+      console.error("Profile picture upload failed:", {
+        status,
+        code,
+        message,
+      });
 
       return thunkApi.rejectWithValue({
-        message: err?.message || "Unable to upload profile picture.",
+        status,
+        code,
+        message,
       });
     }
   }
 );
+
+// const uploadProfilePicture = createAsyncThunk(
+//   "users/uploadProfilePicture",
+//   async ({ file }, thunkApi) => {
+//     try {
+//       if (!file) {
+//         throw new Error("No profile picture provided.");
+//       }
+
+//       if (file.size > 5 * 1024 * 1024) {
+//         throw new Error("Image exceeds the 5 MB upload limit.");
+//       }
+
+//       const result = await photoRepo.uploadProfilePicture({ file });
+
+//       if (!result?.photo?.id) {
+//         throw new Error(
+//           "The image was uploaded, but the server did not return a valid Photo ID."
+//         );
+//       }
+
+//       return {
+//         photo: result.photo,
+//         profile: result.profile,
+//       };
+//     } catch (err) {
+//       const status = err?.response?.status || err?.status;
+//       const serverMessage = err?.response?.data?.message;
+
+//       let message = serverMessage || err?.message;
+
+//       if (
+//         status === 413 ||
+//         err?.code === "LIMIT_FILE_SIZE" ||
+//         err?.code === "ERR_FR_MAX_BODY_LENGTH_EXCEEDED"
+//       ) {
+//         message = "Image is too large. Please choose an image smaller than 5 MB.";
+//       } else if (status === 401) {
+//         message = "Your session has expired. Please sign in again.";
+//       } else if (status === 403) {
+//         message = "You don't have permission to update your profile picture.";
+//       } else if (!status && !err?.response) {
+//         message =
+//           message || "Network error. Check your connection and try again.";
+//       }
+
+//       console.error("Profile picture upload error:", {
+//         status,
+//         code: err?.code,
+//         message,
+//       });
+
+//       return thunkApi.rejectWithValue({
+//         status,
+//         code: err?.code,
+//         message: message || "Unable to upload profile picture.",
+//       });
+//     }
+//   }
+// );
 
 
 const uploadPicture = createAsyncThunk(
@@ -198,53 +284,6 @@ const uploadPicture = createAsyncThunk(
   }
 );
 
-
-// const uploadPicture = createAsyncThunk(
-//   "users/uploadPicture",
-//   async (params, thunkApi) => {
-//     try {
-//       const { file, id } = params;
-
-//       if (!file) {
-//         throw new Error("No file provided");
-//       }
-
-//       if (!file.type?.startsWith("image/")) {
-//         throw new Error("Please select a valid image.");
-//       }
-
-//       const storage = getStorage();
-
-//       const extension =
-//         file.type === "image/png"
-//           ? "png"
-//           : file.type === "image/webp"
-//             ? "webp"
-//             : "jpg";
-
-//       const fileName = `image/${Date.now()}-${uuidv4()}.${extension}`;
-
-//       const storageRef = ref(storage, fileName);
-
-//       await uploadBytes(storageRef, file, {
-//         contentType: file.type,
-//       });
-
-//       const url = await getDownloadURL(storageRef);
-
-//       return {
-//         url,
-//         fileName,
-//       };
-//     } catch (err) {
-//       console.error("Upload error:", err);
-
-//       return thunkApi.rejectWithValue({
-//         message: "UPLOAD FAILED: " + err.message,
-//       });
-//     }
-//   }
-// );
 const fetchProfileRecommendations = createAsyncThunk(
   "profile/fetchRecommendations",
   async ({ profileId, limit = 10 }, { rejectWithValue }) => {

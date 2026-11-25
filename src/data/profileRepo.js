@@ -25,6 +25,7 @@ async getAuthHeaders() {
     Authorization: `Bearer ${this.token}`,
   };
 }
+
 async updateProfile({
   username,
   profilePicture,
@@ -44,18 +45,15 @@ async updateProfile({
     ...(writingSprintSlots !== undefined && { writingSprintSlots }),
   };
 
-  try {
-    const res = await axios.patch(
-      this.url + "/me",
-      payload,
-      { headers }
-    );
+  const res = await axios.patch(
+    `${this.url}/me`,
+    payload,
+    { headers }
+  );
 
-    return res.data;
-  } catch (e) {
-    throw e;
-  }
+  return res.data;
 }
+
 async getMyProfiles() {
   const headers = await this.getAuthHeaders();
 

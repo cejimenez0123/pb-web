@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+
 import CommentPopover from "./CommentPopover";
 import { truncate } from "lodash";
 import styles from "../../../styles/style";

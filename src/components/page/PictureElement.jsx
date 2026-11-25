@@ -1,10 +1,11 @@
 
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+
 import { useIonRouter } from "@ionic/react";
 
 import { getPhoto } from "../../domain/usecases/useUploadPicture.jsx";
 import Paths from "../../core/paths";
+import { useDispatch } from "react-redux";
 
 export default function PictureElement({
   page,

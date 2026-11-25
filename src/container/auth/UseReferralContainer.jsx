@@ -249,25 +249,12 @@ showAlert({message:"Please choose an available username.",type:AlertType.error})
             purpose: "profile",
           })
         ).unwrap();
-      // try {
-      //   const upload = await dispatch(
-      //     uploadProfilePicture({
-      //       file,
-      //       purpose: "profile",
-      //     })
-      //   ).unwrap();
 
-        // 3. Associate the uploaded Photo with the new profile.
-        // if (upload?.photoId) {
-        //   await dispatch(
             updateProfile({
               profile: payload.profile,
               profilePictureId: upload.photoId,
             })
-        // //   ).unwrap();
-        // } else {
-        //   throw new Error("Photo upload did not return a photo ID.");
-        // }
+   
       } catch (photoError) {
 console.log(photoError)
 

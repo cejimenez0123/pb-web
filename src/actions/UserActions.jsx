@@ -1,6 +1,5 @@
 import { createAsyncThunk,createAction } from "@reduxjs/toolkit";
-import { storage} from  "../core/di"
-import {  ref,deleteObject } from "firebase/storage";
+
 import authRepo from "../data/authRepo";
 import profileRepo from "../data/profileRepo";
 import { Preferences } from "@capacitor/preferences";
@@ -326,21 +325,32 @@ const getCurrentProfile = createAsyncThunk(
 );
 
 
+
+
 const updateProfile = createAsyncThunk(
   "profile/updateProfile",
   async (params, thunkAPI) => {
     try {
       return await profileRepo.updateProfile(params);
-    } catch (e) {
-      return thunkAPI.rejectWithValue(
-        e.response?.data || {
-          message: e.message || "Unable to update profile.",
-          status: e.response?.status,
-        }
-      );
+    } catch (err) {
+      const data = err?.response?.data || {};
+
+      return thunkAPI.rejectWithValue({
+        ...data,
+        status: err?.response?.status || err?.status,
+        code: data?.code || err?.code,
+        message:
+          data?.message ||
+          data?.error ||
+          err?.message ||
+          "Unable to update profile.",
+      });
     }
   }
 );
+
+
+
 
 const fetchProfile = createAsyncThunk(
   "users/fetchProfile",
@@ -371,32 +381,7 @@ const fetchProfile = createAsyncThunk(
     }
   }
 );
-// const fetchProfile = createAsyncThunk("users/fetchProfile", async function(params,thunkApi){
-  
-//     try {
-//       const token =(await Preferences.get({key:"token"})).value
-//       if(token){
-   
-//         let data = await profileRepo.getProfileProtected(params)
-     
-//         return{
-//           profile:data.profile
-//         }
-//       }else{
-        
-//         let data = await profileRepo.getProfile(params)
 
-
-//         return{
-//           profile:data.profile
-//         }
-//       }
-//     }catch(e){
-//       return thunkApi.rejectWithValue(e)
-//     }
-  
-  
-//   })
 
   const setProfileInView = createAction("users/setProfileInView", (params)=> {
 
@@ -422,18 +407,18 @@ const fetchProfile = createAsyncThunk(
   }
 );
 
-const deletePicture = createAsyncThunk("users/deletePicture",async (params,thunkApi)=>{
-  try {
-    const {fileName}=params
-    const imageRef = ref(storage, fileName); // Create a reference to the file
-    await deleteObject(imageRef); // Delete the file
-    return{message:"Success delete"}
-  } catch (error) {
+// const deletePicture = createAsyncThunk("users/deletePicture",async (params,thunkApi)=>{
+//   try {
+//     const {fileName}=params
+//     const imageRef = ref(storage, fileName); // Create a reference to the file
+//     await deleteObject(imageRef); // Delete the file
+//     return{message:"Success delete"}
+//   } catch (error) {
     
-    console.error('Error deleting file:', error);
-       return{message:error.message}
-  }
-})
+//     console.error('Error deleting file:', error);
+//        return{message:error.message}
+//   }
+// })
 
 
 const deleteUserAccounts = createAsyncThunk("users/deleteUserAccounts",async (params,thunkApi)=>{
@@ -482,7 +467,7 @@ export {logIn,
         setDialog,
 
         searchMultipleIndexes,
-        deletePicture,
+
         updateSubscription,
         getIosInfo,
         setAuthResolved,

@@ -66,20 +66,34 @@ console.log(photo)
     };
   }
 
+
 async uploadProfilePicture({ file, filename } = {}) {
-  if (!file) {
-    throw new Error("No profile picture provided.");
-  }
+  const MAX_SIZE = 5 * 1024 * 1024;
 
   const allowedTypes = [
     "image/jpeg",
     "image/png",
     "image/heic",
     "image/heif",
+
   ];
 
+  if (!file) {
+    throw new Error("No profile picture provided.");
+  }
+
+  if (!file.size) {
+    throw new Error("The selected image is empty.");
+  }
+
+  if (file.size > MAX_SIZE) {
+    throw new Error("Image exceeds the 5 MB upload limit.");
+  }
+
   if (!allowedTypes.includes(file.type)) {
-    throw new Error("Only JPEG, PNG and HEIC images are allowed.");
+    throw new Error(
+      "Unsupported image format. Use JPEG, PNG, HEIC, HEIF, or SVG."
+    );
   }
 
   const headers = await this.getAuthHeaders();
@@ -87,26 +101,38 @@ async uploadProfilePicture({ file, filename } = {}) {
 
   formData.append("file", file, filename || file.name);
 
-  const response = await axios.post(
-    `${this.url}/profile-picture`,
-    formData,
-    { headers }
-  );
+  try {
+    const response = await axios.post(
+      `${this.url}/profile-picture`,
+      formData,
+      { headers }
+    );
 
-  const photo = response.data.photo;
+    const { photo, profile } = response.data || {};
 
-  if (!photo?.id) {
-    throw new Error("The server did not return a valid profile picture.");
+    if (!photo?.id) {
+      throw new Error(
+        "The server did not return a valid profile picture."
+      );
+    }
+
+    return {
+      photo: {
+        ...photo,
+        id: photo.id,
+        url: photo.url || this.getPhotoUrl({ id: photo.id }),
+      },
+      profile,
+    };
+
+  } catch (error) {
+    console.error("PhotoRepo.uploadProfilePicture:", error);
+
+    // Preserve Axios response details for the Redux thunk.
+    throw error;
   }
-
-  return {
-    photo: {
-      ...photo,
-      photoId: photo.id,
-      url: `${this.url}/${photo.id}`,
-    },
-  };
 }
+
 
 
 

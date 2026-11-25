@@ -461,9 +461,9 @@ className={[styles.text.subLabel," mx-auto rounded-full border border-2 hover:bo
           </div>
           <div
   onClick={handleProfileSetupDialog}
-            className={styles.text.subLabel+" text-plumb-ink mx-auto border border-2 rounded-full min-w-[26rem]  py-4 text-center border-plumb-blueSea"}
+            className={styles.text.subLabel+" text-plumb-ink mx-auto border border-2 rounded-full w-[26rem] max-w-[90%]  py-4 text-center border-plumb-blueSea"}
 >
-  Already approved? Create your profile.
+  Already approved? 
 </div>
         </div>
 
@@ -544,7 +544,7 @@ function ProfileSetupForm({ onClose }) {
           required
           disabled={pending}
           className="
-            w-full min-h-12 rounded-full border
+            w-[100%] min-h-12 rounded-full border
             border-plumb-borderStrong bg-plumb-canvas px-4
             text-plumb-ink placeholder:text-plumb-subtle
             outline-none focus:border-plumb-mint

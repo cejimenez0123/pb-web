@@ -24,8 +24,9 @@ const showBackPath = [Paths.editor.pre,Paths.page.pre,Paths.collection.pre,Paths
 
   const hiddenLoggedOut = [
    Paths.onboard,
-
+    Paths.login,
     Paths.onboard,
+    
     Paths.signup,
     Paths.register,
     "/reset-password",

@@ -1,6 +1,6 @@
-import React from "react";
+
 import ReactDOM from "react-dom/client";
-import { Provider } from "react-redux";
+// import { Provider } from "react-redux";
 import { HelmetProvider } from "react-helmet-async";
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { default as logger } from "redux-logger";
@@ -31,6 +31,7 @@ import commentSlice from "./reducers/CommentReducer";
 import hashSlice from "./reducers/HashtagReducer.jsx";
 import paginationSlice from "./reducers/PaginationSlice.jsx";
 import moderationSlice from "./reducers/ModerationReducer.jsx";
+import { Provider } from "react-redux";
 
 const reducer = combineReducers({
   hashtags: hashSlice.reducer,

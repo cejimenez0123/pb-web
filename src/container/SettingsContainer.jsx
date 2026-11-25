@@ -1,8 +1,7 @@
 
 
 
-
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Geolocation } from "@capacitor/geolocation";
 import { Capacitor } from "@capacitor/core";
@@ -14,9 +13,9 @@ import {
 
   signOutAction,
 } from "../actions/UserActions";
+import { getPhoto } from "../actions/PhotoActions.jsx";
 import { updateProfile } from "../actions/UserActions";
-import { deletePicture } from "../actions/UserActions";
-import {uploadProfilePicture  } from "../actions/ProfileActions";
+
 import { useAlert } from "../core/useAlert.jsx";
 import AlertType from "../core/AlertType.js";
 import checkResult from "../core/checkResult";
@@ -33,6 +32,7 @@ import {
 import { useDialog } from "../domain/usecases/useDialog";
 import GoogleMapSearch from "./collection/GoogleMapSearch";
 import styles from "../styles/style.js";
+import { uploadProfilePicture } from "../actions/ProfileActions.jsx";
 
 const SPRINT_SLOTS = [
   { id: "morning", label: "Morning", emoji: "🌅", time: "7:00 AM" },
@@ -131,11 +131,21 @@ async function getPosition() {
     throw err;
   }
 }
+const MAX_PROFILE_PICTURE_SIZE = 5 * 1024 * 1024;
+
+const ALLOWED_PROFILE_PICTURE_TYPES = [
+  "image/jpeg",
+  "image/png",
+  "image/heic",
+  "image/heif",
+
+];
+
 
 export default function SettingsContainer() {
   const dispatch = useDispatch();
   const router = useIonRouter();
-
+const [previewUrl, setPreviewUrl] = useState(null);
   const { openDialog, closeDialog } = useDialog();
   const { showAlert } = useAlert();
   const { currentProfile } = useSelector((state) => state.users);
@@ -143,7 +153,12 @@ export default function SettingsContainer() {
   const [file, setFile] = useState(null);
   const [locationLoading, setLocationLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+const photoRequestsRef = useRef(new Map());
+const showAlertRef = useRef(showAlert);
 
+useEffect(() => {
+  showAlertRef.current = showAlert;
+}, [showAlert]);
   const [form, setForm] = useState({
     username: "",
     selfStatement: "",
@@ -167,33 +182,112 @@ export default function SettingsContainer() {
   }, [currentProfile, router]);
 
   // Load profile information into the form.
-  useEffect(() => {
-    if (!currentProfile) return;
+  // useEffect(() => {
+  //   if (!currentProfile) return;
 
-    const pic = currentProfile.profilePic;
+  //   const pic = currentProfile.profilePic;
 
-    setForm({
-      username: currentProfile.username ?? "",
-      selfStatement: currentProfile.selfStatement ?? "",
-      isPrivate: currentProfile.isPrivate ?? false,
-      writingSprintSlots: currentProfile.writingSprintSlots ?? [],
-      profilePicture: pic ?? "",
-      location: {
-        latitude: currentProfile.location?.latitude ?? null,
-        longitude: currentProfile.location?.longitude ?? null,
-        city: currentProfile.location?.city ?? "",
-      },
-    });
+  //   setForm({
+  //     username: currentProfile.username ?? "",
+  //     selfStatement: currentProfile.selfStatement ?? "",
+  //     isPrivate: currentProfile.isPrivate ?? false,
+  //     writingSprintSlots: currentProfile.writingSprintSlots ?? [],
+  //     profilePicture: pic ?? "",
+  //     location: {
+  //       latitude: currentProfile.location?.latitude ?? null,
+  //       longitude: currentProfile.location?.longitude ?? null,
+  //       city: currentProfile.location?.city ?? "",
+  //     },
+  //   });
 
-    if (pic) {
-      setPictureUrl(
-        pic.includes("http") ? pic : Enviroment.imageProxy(pic)
-      );
-    } else {
+  //   if (pic) {
+  //     setPictureUrl(
+  //       pic.includes("http") ? pic : Enviroment.imageProxy(pic)
+  //     );
+  //   } else {
+  //     setPictureUrl(DEFAULT_PICTURE);
+  //   }
+  // }, [currentProfile]);
+  const storedPhotoId = currentProfile?.profilePictureId;
+
+useEffect(() => {
+  let cancelled = false;
+  let objectUrl = null;
+
+  const loadPhoto = async () => {
+    if (!storedPhotoId) {
       setPictureUrl(DEFAULT_PICTURE);
+      return;
     }
-  }, [currentProfile]);
 
+    try {
+      let request = photoRequestsRef.current.get(storedPhotoId);
+
+      if (!request) {
+        request = dispatch(
+          getPhoto({ id: storedPhotoId })
+        ).unwrap();
+
+        photoRequestsRef.current.set(storedPhotoId, request);
+      }
+
+      const result = await request;
+
+      if (cancelled) return;
+
+      if (!result?.blob) {
+        throw new Error(
+          "The Photo response did not contain an image."
+        );
+      }
+
+      objectUrl = URL.createObjectURL(result.blob);
+      setPictureUrl(objectUrl);
+
+    } catch (error) {
+      photoRequestsRef.current.delete(storedPhotoId);
+
+      if (!cancelled) {
+        console.error("Unable to load profile picture:", error);
+
+        setPictureUrl(DEFAULT_PICTURE);
+
+        showAlertRef.current({
+          message:
+            error?.message ||
+            "Unable to load your profile picture.",
+          type: AlertType.error,
+        });
+      }
+    }
+  };
+
+  loadPhoto();
+
+  return () => {
+    cancelled = true;
+
+    if (objectUrl) {
+      URL.revokeObjectURL(objectUrl);
+    }
+  };
+}, [storedPhotoId, dispatch]);
+useEffect(() => {
+  if (!currentProfile) return;
+
+  setForm({
+    username: currentProfile.username ?? "",
+    selfStatement: currentProfile.selfStatement ?? "",
+    isPrivate: currentProfile.isPrivate ?? false,
+    writingSprintSlots: currentProfile.writingSprintSlots ?? [],
+    profilePicture: currentProfile.profilePic ?? "",
+    location: {
+      latitude: currentProfile.location?.latitude ?? null,
+      longitude: currentProfile.location?.longitude ?? null,
+      city: currentProfile.location?.city ?? "",
+    },
+  });
+}, [currentProfile]);
   // Update a top-level form field.
   const handleChange = (key, value) => {
     setForm((prev) => ({
@@ -244,90 +338,183 @@ export default function SettingsContainer() {
       setLocationLoading(false);
     }
   };
+const handleImage = (event) => {
+  const selected = event.target.files?.[0];
 
-  // Validate and preview a profile image.
-  const handleImage = (event) => {
-    const selected = event.target.files?.[0];
+  if (!selected) return;
 
-    if (!selected) return;
+  const input = event.target;
 
-    if (!selected.type.startsWith("image/")) {
-      showAlert({
-        message: "Upload a valid image.",
-        type: AlertType.error,
-      });
+  const reject = (message) => {
+    input.value = "";
 
-      event.target.value = "";
-      return;
-    }
-
-    setFile(selected);
-    setPictureUrl(URL.createObjectURL(selected));
+    showAlert({
+      message,
+      type: AlertType.error,
+    });
   };
+
+  if (!selected.size) {
+    reject("The selected image is empty.");
+    return;
+  }
+
+  if (selected.size > MAX_PROFILE_PICTURE_SIZE) {
+    reject("Your image is too large. Please choose an image smaller than 5 MB.");
+    return;
+  }
+
+  if (!ALLOWED_PROFILE_PICTURE_TYPES.includes(selected.type)) {
+    reject("Unsupported image format. Please use JPEG, PNG, HEIC, HEIF, or SVG.");
+    return;
+  }
+
+ const nextPreview = URL.createObjectURL(selected);
+
+setPreviewUrl(nextPreview);
+setFile(selected);
+setPictureUrl(nextPreview);
+
+  
+};
+useEffect(() => {
+  return () => {
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+    }
+  };
+}, [previewUrl]);
+
 const handleSubmit = async () => {
   if (!currentProfile || saving) return;
 
   setSaving(true);
 
+  let pictureUploaded = false;
+
   try {
-    let profilePictureId = currentProfile.profilePictureId;
-
-    // Upload replacement picture.
     if (file) {
-      const upload = await dispatch(
-        uploadPhoto({
-          file,
-          purpose: "profile",
-        })
-      ).unwrap();
+  const upload = await dispatch(
+    uploadProfilePicture({ file })
+  ).unwrap();
 
-      if (!upload?.photoId) {
-        throw new Error("Image upload did not return a valid Photo ID.");
-      }
+  if (!upload?.photo?.id) {
+    throw new Error("Invalid profile picture upload response.");
+  }
 
-      profilePictureId = upload.photoId;
-    }
+  pictureUploaded = true;
 
-    // Persist profile changes.
-    const result = await dispatch(
-      updateProfile({
-        profile: currentProfile,
-        username: form.username,
-        profilePictureId,
-        writingSprintSlots: form.writingSprintSlots,
-        selfStatement: form.selfStatement,
-        privacy: form.isPrivate,
-        location: form.location,
-      })
-    ).unwrap();
+  // The upload fulfilled reducer updates currentProfile.
+  // The getPhoto effect will load the saved picture.
 
-    if (!result?.profile) {
-      throw new Error("Profile update failed.");
-    }
+  setFile(null);
+  setPreviewUrl(null);
+}
+    // if (file) {
+    //   const upload = await dispatch(
+    //     uploadProfilePicture({ file })
+    //   ).unwrap();
 
-    setForm((prev) => ({
-      ...prev,
-      profilePicture: null,
-    }));
+    //   if (!upload?.photo?.id) {
+    //     throw new Error("Invalid profile picture upload response.");
+    //   }
 
-    setFile(null);
+    //   pictureUploaded = true;
+
+    //   // The backend has already associated the picture
+    //   // with the authenticated profile.
+    //   const uploadedUrl =
+    //     upload.profile?.profilePic || upload.photo.url;
+
+    //   if (uploadedUrl) {
+    //     setPictureUrl(
+    //       uploadedUrl.includes("http")
+    //         ? uploadedUrl
+    //         : Enviroment.imageProxy(uploadedUrl)
+    //     );
+
+    //     setForm((prev) => ({
+    //       ...prev,
+    //       profilePicture: uploadedUrl,
+    //     }));
+    //   }
+
+    //   // Do not upload the same picture again if the
+    //   // subsequent profile details update fails.
+    //   setFile(null);
+    //   setPreviewUrl(null);
+    // }
+
+    // Do not send profilePictureId here.
+const result = await dispatch(
+  updateProfile({
+    username: form.username,
+    writingSprintSlots: form.writingSprintSlots,
+    selfStatement: form.selfStatement,
+    privacy: form.isPrivate,
+    location: form.location,
+  })
+).unwrap();
 
     showAlert({
-      message: "Profile updated",
+      message: pictureUploaded
+        ? "Profile picture and profile details updated!"
+        : "Profile updated successfully!",
       type: AlertType.success,
     });
+
+    console.log("Profile update response:", result);
 
   } catch (err) {
     console.error("Profile update failed:", err);
 
+    const message =
+      err?.message ||
+      "Unable to update your profile.";
+
     showAlert({
-      message: err?.message || "Update failed",
+      message: pictureUploaded
+        ? `Your picture was updated, but your other profile changes failed: ${message}`
+        : message,
       type: AlertType.error,
     });
+
   } finally {
     setSaving(false);
   }
 };
+
+
+
+//     setForm((prev) => ({
+//       ...prev,
+//       profilePicture: null,
+//     }));
+
+//     setFile(null);
+
+//     showAlert({
+//       message: "Profile updated",
+//       type: AlertType.success,
+//     });
+
+//   } catch (err) {
+//     // console.log("Profile update failed:", err);
+
+//     if(err.status){
+//       showAlert({message:"File may be too large",type:AlertType.error})
+    
+//     }else{
+      
+//     showAlert({
+//       message: err?.message || "Update failed",
+//       type: AlertType.error,
+//     });
+//   }
+//   } finally {
+//     setSaving(false);
+//   }
+// };
   const handleShowBlocked = () => {
     openDialog({
       title: "Blocked Users",
@@ -635,8 +822,8 @@ const handleSubmit = async () => {
               <input
                 id="settings-picture"
                 type="file"
-                accept=".jpg,.jpeg,.png,.svg,image/jpeg,image/png"
-
+                
+accept=".jpg,.jpeg,.png,.heic,.heif,image/jpeg,image/png,image/heic,image/heif"
                 className="
                   file-input file-input-bordered  w-[80%] mx-auto 
                   border-plumb-borderStrong
