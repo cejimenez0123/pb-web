@@ -64,8 +64,7 @@ export default function CollectionsSection({
                   : "No rooms yet."
               }
             />}
-//   emptyState={<EmptyState title={"No Rooms"} description={"Join or create rooms"}/>}
-  renderItem={(item) => (
+              renderItem={(item) => (
     <CollectionRoomCard
       item={item}
       profile={profile}

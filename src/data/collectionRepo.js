@@ -275,13 +275,7 @@ async deleteStoryToCollection({ stId }) {
 
   return res.data
 }
-//     async deleteStoryToCollection({ storyId, collectionId }) {
-//   const headers = await this.getAuthHeaders()
-//   let res = await axios.delete(this.url + "/storyToCol/" + collectionId + "/" + storyId,
-//     { headers: headers }
-//   )
-//   return res.data
-// }
+
 
     async fetchSubCollectionsProtected({id}){
           const headers = await this.getAuthHeaders()
@@ -289,15 +283,15 @@ async deleteStoryToCollection({ stId }) {
       
         return res.data
     }
-    async postProfileToCollection({collection,type,token}){
-          const headers = await this.getAuthHeaders()
-        const res = await axios.post(this.url+"/home",{collection,type},{
-            headers:headers
-        })
+    // async postProfileToCollection({collection,type,token}){
+    //       const headers = await this.getAuthHeaders()
+    //     const res = await axios.post(this.url+"/home",{collection,type},{
+    //         headers:headers
+    //     })
   
-        return res.data
+    //     return res.data
 
-    }
+    // }
  
     async recommendedColCollections({ colId, skip = 0, take = 10, type } = {}) {
   const res = await axios.get(`${this.url}/${colId}/recommendations`, {
@@ -380,6 +374,25 @@ async getRoomRecommendations({ skip = 0, take = 10 } = {}) {
 
   return res.data;
 }
+
+async fetchCollectionFeed({ id, skip = 0, take = 12 }) {
+  if (!id) {
+    throw new Error("A collection ID is required.");
+  }
+
+  const headers = await this.getAuthHeaders();
+
+  const res = await axios.get(
+    `${this.url}/${id}/feed`,
+    {
+      headers,
+      params: { skip, take },
+    }
+  );
+
+  return res.data;
+}
+
 
 }
 export default new CollectionRepo()

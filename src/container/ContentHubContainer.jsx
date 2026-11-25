@@ -4,7 +4,6 @@ import { IonContent, useIonRouter } from "@ionic/react";
 import { useSelector } from "react-redux";
 
 import Paths from "../core/paths.js";
-import { PageType } from "../core/constants.js";
 import { useDialog } from "../domain/usecases/useDialog.jsx";
 
 import CreateCollectionForm from "../components/collection/CreateCollectionForm.jsx";
@@ -20,6 +19,11 @@ import { useAlert } from "../core/useAlert.jsx";
 import AlertType from "../core/AlertType.js";
 import { Preferences } from "@capacitor/preferences";
 import { setEditingPage, setPageInView } from "../actions/PageActions.jsx";
+import SectionHeader from "../components/pieces/SectionHeader.jsx";
+import CollectionFeed from "../components/collection/CollectionFeed.jsx";
+import { fetchCollectionFeed } from "../actions/CollectionActions.js";
+import { getProfileCollectionId } from "../core/getProfileCollectionId.jsx";
+import EmptyState from "../components/general/EmptyState.jsx";
 
 // Keep fallback references stable.
 // Do not use `|| []` or `|| {}` directly inside a selector.
@@ -65,12 +69,14 @@ const [loadingEvents, setLoadingEvents] = useState(false);
 
   const [stories, setStories] = useState(EMPTY_ARRAY);
   const [loadingStories, setLoadingStories] = useState(false);
-
+  console.log("username")
+  console.log(currentProfile)
   const profileCollections = Array.isArray(
     currentProfile?.profileToCollections
   )
     ? currentProfile.profileToCollections
     : EMPTY_ARRAY;
+  
 useEffect(() => {
   let cancelled = false;
 
@@ -262,7 +268,7 @@ const suggestedEvent = useMemo(() => {
       .filter((item) => item?.collection?.id)
       .slice(0, 4);
   }, [profileCollections]);
-
+console.log(homeRooms)
 return {
   currentProfile,
   stories,
@@ -281,7 +287,7 @@ function ContentHubContent() {
   const {
     currentProfile,
     openStories,
-    homeRooms,
+
 suggestedEvent
   
   } = useHomeData();
@@ -306,6 +312,9 @@ suggestedEvent
   |--------------------------------------------------------------------------
   */
 
+
+ const homeCol = getProfileCollectionId(currentProfile,"home")
+console.log(homeCol)
   const goToWrite = () => {
     router.push(Paths.write);
   };
@@ -451,12 +460,32 @@ showPrompt({
   onSelectStory={goToStory}
   onSelectEvent={handleSelectSuggestedEvent}
 />
+<div className={styles.pageShell.section}>
+<SectionHeader 
+title={"Home"}
+description={"This is for you, curate your space."}
+eyebrow={"Your Feed"}
 
-        <RoomsPreviewSection
-          rooms={homeRooms}
-          onViewRooms={goToRooms}
-          onSelectRoom={goToRoom}
-        />
+
+/>
+
+<CollectionFeed
+  collection={homeCol}
+  fetcher={fetchCollectionFeed}
+  pageSize={12}
+  
+  emptyState={
+    <EmptyState
+    action={"+ Add"}
+   
+    onAction={()=>{
+      router.push(Paths.addToCollection.createRoute(homeCol.id))
+    }}
+      text="Your Home is yours to arrange. Add a room, story, or collection you want to keep close."
+    />
+  }
+/>
+</div>
       </div>
     </div>
   );

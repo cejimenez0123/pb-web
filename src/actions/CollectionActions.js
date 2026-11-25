@@ -208,18 +208,50 @@ const deleteStoryFromCollection = createAsyncThunk(
 }
  })
 
- const fetchCollectionFeedStories = createAsyncThunk(
-  "collection/feedStories",
-  async ({ id, skip = 0, take = 20 }, thunkApi) => {
+//  const fetchCollectionFeedStories = createAsyncThunk(
+//   "collection/feedStories",
+//   async ({ id, skip = 0, take = 20 }, thunkApi) => {
+//     try {
+//       const data = await collectionRepo.fetchCollectionFeedStories({ id, skip, take });
+//       return {
+//         items: data.items,
+//         totalCount: data.totalCount,
+//       };
+//     } catch (e) {
+//       console.log("FETCH COLLECTION FEED STORIES ERROR:", e);
+//       return thunkApi.rejectWithValue(e?.response?.data || e.message);
+//     }
+//   }
+// );
+
+ const fetchCollectionFeed = createAsyncThunk(
+  "collection/fetchCollectionFeed",
+  async (
+    { id, skip = 0, take = 12 },
+    thunkApi
+  ) => {
     try {
-      const data = await collectionRepo.fetchCollectionFeedStories({ id, skip, take });
+      const data = await collectionRepo.fetchCollectionFeed({
+        id,
+        skip,
+        take,
+      });
+
       return {
-        items: data.items,
-        totalCount: data.totalCount,
+        items: data.items ?? [],
+        totalCount: data.totalCount ?? 0,
       };
-    } catch (e) {
-      console.log("FETCH COLLECTION FEED STORIES ERROR:", e);
-      return thunkApi.rejectWithValue(e?.response?.data || e.message);
+    } catch (error) {
+      console.error(
+        "FETCH COLLECTION FEED ERROR:",
+        error
+      );
+
+      return thunkApi.rejectWithValue(
+        error?.response?.data ||
+        error?.message ||
+        "Unable to load collection feed."
+      );
     }
   }
 );
@@ -570,7 +602,8 @@ export {
     getRecommendedCollectionStory,
     getRecommendedCollectionsProfile,
     setCollections,
-    fetchCollectionFeedStories,
+    // fetchCollectionFeedStories,
+    fetchCollectionFeed,
     fetchCollectionFeedSubCollections,
     getProfileCollections,
     getRoomRecommendations

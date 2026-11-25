@@ -9,6 +9,7 @@ import { createSlice} from "@reduxjs/toolkit"
         getRecommendedCollectionsProfile,
        setCollections,
        getPublicCollections,
+       fetchCollectionFeed,
       
             } from "../actions/CollectionActions"
 import { deleteCollectionRole, postCollectionRole } from "../actions/RoleActions"
@@ -34,7 +35,8 @@ myCollectionsLoading: false,
     loading:false,
     error:"",
     roles:[],
-
+collectionFeedLoading: false,
+collectionFeedError: null,
     role:null
 }
 const bookSlice = createSlice({
@@ -219,7 +221,25 @@ state.collectionInView = payload.collection
   state.comments = state.comments.filter(
     (c) => c && c.profileId !== profileId
   );
-});
+})
+.addCase(fetchCollectionFeed.pending, (state) => {
+  state.collectionFeedLoading = true;
+  state.collectionFeedError = null;
+})
+.addCase(fetchCollectionFeed.fulfilled, (state) => {
+  state.collectionFeedLoading = false;
+  state.collectionFeedError = null;
+})
+.addCase(fetchCollectionFeed.rejected, (state, { payload, error }) => {
+  state.collectionFeedLoading = false;
+  state.collectionFeedError =
+    payload?.error ||
+    payload?.message ||
+    payload ||
+    error?.message ||
+    "Unable to load collection feed.";
+})
+
 }
 
 })

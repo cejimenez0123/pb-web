@@ -61,8 +61,8 @@ const submitCollection = async ({
           )
         );
     } else {
-      dispatch(setCollectionInView({ collection }));
-      router.push(Paths.collection.createRoute(collection.id));
+  
+      router.push(Paths.collection.createRoute(collection.id))
     }
 
     // Reset form data

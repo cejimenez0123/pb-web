@@ -1,4 +1,3 @@
-import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useState, useLayoutEffect, useEffect, useMemo } from "react";
 import { IonContent, useIonRouter } from "@ionic/react";
@@ -38,7 +37,7 @@ const SECTION = ""
 const BLOCK   = "py-4";
 const HEADING = ""
 // "text-[1em] font-bold text-plumb-ink dark:text-plumb-darkText px-4 ";
-const CARD    = ""
+
 // ["bg-[#f4f4e0] dark:bg-slate-900", "rounded-xl shadow-sm", "transition-colors duration-300"].join(" ");
 const FADE    = ""
 // "transition-opacity duration-500";
@@ -48,7 +47,7 @@ export default function PageViewContainer() {
   const { showAlert } = useAlert();
   const pathname = location.pathname
 const id = grabId(pathname)
-console.log("PAGEID:"+id)
+
   const dispatch = useDispatch();
   const router = useIonRouter();
   const currentProfile = useSelector((state) => state.users.currentProfile);

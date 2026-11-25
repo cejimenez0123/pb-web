@@ -2,19 +2,19 @@ import { useIonRouter } from "@ionic/react";
 import ProfileCircle from "../components/profile/ProfileCircle";
 import styles from "../styles/style";
 
-function PlumbHead({isWorkshop=null,buttons=[],label=null,onClick,title="Untitled",backText="Rooms",type,purpose="",isPrivate=false,profile=null}){
+function PlumbHead({isWorkshop=null,buttons=[],label=null,onClick,title="Untitled",yesBackText=false,backText="Rooms",type,purpose="",isPrivate=false,profile=null}){
 
     return( <section className={styles.pageShell.head}>
       <div className={styles.pageShell.headInner}>
           {/* <div className={`w-full max-w-[52rem] mt-4 mx-auto  sm:px-6 lg:px-8" pt-10 pb-8 sm:pt-14`}> */}
-            <button
+       {yesBackText &&     <button
               
                 onClick={onClick}
               
             >
               <span aria-hidden="true" className="text-plumb-ink dark:text-plumb-darkText">←</span>
               <span className="mx-2 text-plumb-ink dark:text-plumb-darkText">{backText}</span>
-            </button>
+            </button>}
             <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-soft">
                   {label}
                 </p>

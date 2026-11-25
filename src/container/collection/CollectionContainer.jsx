@@ -1,6 +1,7 @@
 
 import {
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -117,7 +118,7 @@ let works = []
 let rooms = []
 if(collection.storyIdList || collection.childCollections){
 works = collection?.storyIdList?.map(s=>s?.story)
-let rooms = collection?.childColletions?.map(t=>t?.childCollection)??[]
+ rooms = collection?.childColletions?.map(t=>t?.childCollection)??[]
 }
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
@@ -166,17 +167,13 @@ let rooms = collection?.childColletions?.map(t=>t?.childCollection)??[]
       ],
     }
   );
-// const [following,setFollowing]=useState(!!role)
+
   // -------------------------------------------------------
   // Load collection
   // -------------------------------------------------------
 
-  useEffect(() => {
-    if (!id) {
-      setLoading(false);
-      setLoadError(true);
-      return;
-    }
+  useLayoutEffect(() => {
+
 
     let cancelled = false;
 
@@ -309,7 +306,7 @@ checkResult(
     return () => {
       cancelled = true;
     };
-  }, [id, currentProfile?.id]);
+  }, [id])
 
   // -------------------------------------------------------
   // Clear stale lists when changing rooms
@@ -1025,7 +1022,7 @@ const handleArchive = () =>
   // -------------------------------------------------------
   // Main
   // -------------------------------------------------------
-
+const isNative = Capacitor.isNativePlatform()
   return (
     <IonContent>
     <ErrorBoundary>
@@ -1037,6 +1034,7 @@ const handleArchive = () =>
         onClick={()=>router.goBack()}
 title={collection.title}
 backText="Room"
+yesBackText={!!isNative}
 profile={collection.profile}
 isPrivate={collection.isPrivate}
 type={collection.type}
