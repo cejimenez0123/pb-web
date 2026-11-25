@@ -251,41 +251,7 @@ checkResult(
       //         return;
       //       }
 
-      //       const sortedPages = [
-      //         ...(col.storyIdList ?? []),
-      //       ]
-      //         .filter((item) => item?.story)
-      //         .sort(
-      //           (a, b) =>
-      //             (a.index ?? 0) - (b.index ?? 0)
-      //         )
-      //         .map((item) => item.story);
 
-      //       dispatch(
-      //         setPagesInView({
-      //           pages: sortedPages,
-      //         })
-      //       );
-
-      //       setLoading(false);
-      //     },
-      //     (error) => {
-      //       if (cancelled) return;
-
-      //       setLoadError(true);
-      //       setLoading(false);
-
-      //       showAlert({
-      //         message:
-      //           error?.status === 403
-      //             ? "You do not have permission to view this room."
-      //             : error?.message ||
-      //               "Failed to load this room.",
-      //         type: AlertType.error,
-      //       });
-      //     }
-      //   );
-      // }
        catch (error) {
         if (cancelled) return;
 
@@ -1034,7 +1000,7 @@ const isNative = Capacitor.isNativePlatform()
         onClick={()=>router.goBack()}
 title={collection.title}
 backText="Room"
-yesBackText={!!isNative}
+yesBackText={!isNative}
 profile={collection.profile}
 isPrivate={collection.isPrivate}
 type={collection.type}
